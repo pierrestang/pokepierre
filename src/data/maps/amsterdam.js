@@ -1,0 +1,125 @@
+import { parseGrid } from './parseGrid.js';
+import { toAirport, airportSign } from './airportLinks.js';
+import { FLAGS } from '../story.js';
+
+// Hors de la carte : les canaux, la rue et les quais se prolongent ; pavés ailleurs.
+function outside(x, y, grid) {
+  if (y >= 0 && y < grid.length) {
+    const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
+    if (['G', 'A', 'C'].includes(edge)) return edge;
+  }
+  return 'C';
+}
+
+const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
+
+// Amsterdam — canaux, maisons à pignons, vélos et tulipes, 32 x 26 cases.
+// Légende : voir src/data/tiles.js (G = canal, I = pont, c = vélos, h = tulipes, e = drapeau)
+export const amsterdamMap = {
+  id: 'amsterdam',
+  name: 'Amsterdam',
+  grid: parseGrid([
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0  arbres : bord de l'écran
+    'CCRRRRRRRRRCCRRRRRRRRRCRRRRRRCCC', // 1  maisons de canal, CORNING
+    'CCRRRRRRRRRTCRRRRRRRRRCRRRRRRTCC', // 2
+    'CCWWWWWWWWWCCWWWWWWWWWCWWWWWWCTC', // 3
+    'CCWDWWDWWDWCCWWWWDWWWWCWDWWDWCCC', // 4  portes (maison commune : 2e à gauche)
+    'CcCCCCCCCCCccCCCCCCCeCcCCCCCCccC', // 5  vélos, drapeau
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 6  rue (vers l'aéroport)
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
+    'C<TCCCCCCCTCCCTCCCCCTCCCCCCCTC>C', // 8  quai arboré  panneaux aéroport
+    'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 9  premier canal et ses ponts
+    'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 10
+    'CCTCCCCCCCTCCCTCCCCCTCCCCCCCTCCC', // 11
+    'CCCRRRRRCRRRRRRCCCh.T.RRR.h.hh.C', // 12 coffee shop, maisons, moulin et tulipes
+    'CCCRRRRRCRRRRRRCCC.h..RRR..h..eC', // 13
+    'CCCWWWWWCWWWWWWCCC..h.WWW...h..C', // 14
+    'CCCWDWWWCWDWWDWCCC.h..WWW.h..h.C', // 15 portes (coffee shop : à gauche)
+    'CCcCCCCCCCCCCCCCccCCCCCCCCCCCCCC', // 16
+    'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 17 deuxième canal
+    'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 18
+    'CCCTCCCCCCCTCCCTCCCCTCCCCCCCCTCC', // 19
+    'CCRRRRRRRRRCRRRRRRCT...h....h.TC', // 20 maisons de canal, parc aux tulipes
+    'CCRRRRRRRRRCRRRRRRC.h...h.T....C', // 21
+    'CCWWWWWWWWWCWWWWWWC..h.....h...C', // 22
+    'CCWDWWDWWDWCWDWWDWC...h..T....hC', // 23
+    'CCCCCCCCCCCccCCCCCCCCCCCCCCCCCCC', // 24
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 25 arbres : bord de l'écran
+  ]),
+  doors: [
+    { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
+    // La maison commune (avec Romain) : ouverte quand Romain t'a donné rendez-vous.
+    {
+      x: 6, y: 4, interior: 'maisonCommune',
+      lock: { ifFlags: [FLAGS.romainDemande] },
+      lockedDialogue: ["[Texte provisoire] C'est votre maison commune, mais il n'y a personne pour l'instant."],
+    },
+    { x: 9,  y: 4,  lockedDialogue: NOT_HOME },
+    { x: 17, y: 4,  interior: 'corning' },
+    { x: 24, y: 4,  lockedDialogue: NOT_HOME },
+    { x: 27, y: 4,  lockedDialogue: NOT_HOME },
+    // Le coffee shop : une fois que Romain t'a demandé la marchandise.
+    {
+      x: 4, y: 15, interior: 'coffeeShop',
+      lock: { ifFlags: [FLAGS.romainDemande] },
+      lockedDialogue: ["[Texte provisoire] Rien à faire ici pour l'instant."],
+    },
+    { x: 10, y: 15, lockedDialogue: NOT_HOME },
+    { x: 13, y: 15, lockedDialogue: NOT_HOME },
+    { x: 3,  y: 23, lockedDialogue: NOT_HOME },
+    { x: 6,  y: 23, lockedDialogue: NOT_HOME },
+    { x: 9,  y: 23, lockedDialogue: NOT_HOME },
+    { x: 13, y: 23, lockedDialogue: NOT_HOME },
+    { x: 16, y: 23, lockedDialogue: NOT_HOME },
+  ],
+  buildings: [
+    { type: 'canalHouse', x: 2,  y: 1, variant: 0 },
+    { type: 'canalHouse', x: 5,  y: 1, variant: 2 },
+    { type: 'canalHouse', x: 8,  y: 1, variant: 4 },
+    { type: 'corning',    x: 13, y: 1 },
+    { type: 'canalHouse', x: 23, y: 1, variant: 1 },
+    { type: 'canalHouse', x: 26, y: 1, variant: 3 },
+    { type: 'houseboat',  x: 10, y: 10 },
+    { type: 'houseboat',  x: 15, y: 9 },
+    { type: 'coffeeShop', x: 3,  y: 12 },
+    { type: 'canalHouse', x: 9,  y: 12, variant: 3 },
+    { type: 'canalHouse', x: 12, y: 12, variant: 0 },
+    { type: 'windmill',   x: 22, y: 12 },
+    { type: 'houseboat',  x: 12, y: 18 },
+    { type: 'houseboat',  x: 18, y: 17 },
+    { type: 'canalHouse', x: 2,  y: 20, variant: 1 },
+    { type: 'canalHouse', x: 5,  y: 20, variant: 4 },
+    { type: 'canalHouse', x: 8,  y: 20, variant: 2 },
+    { type: 'canalHouse', x: 12, y: 20, variant: 0 },
+    { type: 'canalHouse', x: 15, y: 20, variant: 3 },
+  ],
+  npcs: [
+    // Romain t'attend à la sortie de CORNING, après ton premier rendez-vous avec Laurent.
+    {
+      id: 'romain-dehors', name: 'Romain', x: 18, y: 5, facing: 'left', color: 0xc0602c,
+      ifFlags: [FLAGS.stageCorning],
+      unlessFlags: [FLAGS.romainDemande],
+      dialogue: [
+        '[Romain - texte provisoire] Hé ! Tu sors du boulot ?',
+        'Tu peux passer au coffee shop acheter la marchandise ?',
+        'Rejoins-moi ensuite à notre maison commune (2e maison en haut à gauche).',
+      ],
+      setFlag: FLAGS.romainDemande,
+    },
+  ],
+  events: [
+    // En sortant de CORNING : Romain t'interpelle.
+    {
+      on: 'enter',
+      ifFlags: [FLAGS.stageCorning],
+      unlessFlags: [FLAGS.romainDemande],
+      steps: [{ talk: 'romain-dehors' }],
+    },
+  ],
+  // Les deux bouts de la rue mènent à l'aéroport.
+  // Panneaux « Aéroport » à côté des sorties.
+  objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
+  triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
+  surroundings: { outside, border: 'T', borderSkip: ['G', 'A'] },
+  spawn: { x: 1, y: 6, facing: 'right' },
+};
