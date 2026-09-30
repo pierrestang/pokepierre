@@ -73,7 +73,7 @@ export const saintAyMap = {
   ],
   // La voiture chargée bloque la route du nord après l'annonce de Papa : on y monte pour partir.
   props: [
-    { type: 'familyCar', x: 14, y: 2, w: 2, h: 2, ifFlags: [FLAGS.annonceMutation], script: CAR },
+    { type: 'familyCar', x: 14, y: 2, w: 2, h: 2, ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
   // Décors liés à l'histoire : la corde sur la bitte d'amarrage, la cabane à l'emplacement choisi.
   decals: [

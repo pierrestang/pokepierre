@@ -60,6 +60,8 @@ function borderSet(row, sheet = FRLG_SHEETS.outdoor) {
   };
 }
 const SAND_ON_GRASS = borderSet(0);     // chemin de sable bordé d'herbe
+const CONCRETE_ON_GRASS = borderSet(12);  // dalles grises bordées d'herbe (place d'armes du Prytanée)
+const COBBLE_ON_GRASS = borderSet(15);    // pavés gris bordés d'herbe (rues de Montépilloy)
 const SAND_ON_SEA = borderSet(27);      // plage bordée d'écume (partie transparente : la mer dessous)
 const GRASS_RIMS = borderSet(0, FRLG_SHEETS.rims);   // liseré d'herbe seul, posé sur une plage à écume
 
@@ -90,7 +92,8 @@ const BEACH_ROCK = { sheet: FRLG_SHEETS.beachrock, sx: 0, sy: 0 };   // rocher g
 const LOGS = O(7, 17);
 // Petit plateau rocheux herbeux (bloc de cases 'ɱ', au moins 3 x 3) : bords de falaise, dessus en herbe,
 // escalier au bas (sauf dans les coins).
-const PLATEAU_CODES = ['ɱ', 'ɲ'];   // ɱ : falaise et statues (bloquant), ɲ : herbe du sommet et escalier
+// ɱ : falaise et statues (bloquant), ɲ : herbe du sommet et escalier ; ɟ / ɺ : même butte, sans statues
+const PLATEAU_CODES = ['ɱ', 'ɲ', 'ɟ', 'ɺ'];
 const PLATEAU = {
   tl: O(19, 15), top: [O(20, 15), O(21, 15)], tr: O(22, 15),
   left: O(19, 16), grass: O(20, 16), right: O(22, 16),
@@ -125,17 +128,22 @@ export const FRLG_BUILDINGS = {
   slateHouse: { sx: 300, sy: 24, w: 80, h: 55, footH: 4 },   // toit d'ardoise, porte rouge
   blueHouse: { sx: 395, sy: 24, w: 96, h: 56, footH: 4 },    // toit bleu, 6 cases, porte en 3e colonne
   clinic: { sx: 421, sy: 343, w: 80, h: 72, footH: 4 },      // toit orange (pension), porte au milieu
+  // Montépilloy et Prytanée.
+  school: { sx: 620, sy: 242, w: 80, h: 71, footH: 4 },      // auvent vert et jardinières (fan-club), porte en 2e colonne
+  lab: { sx: 528, sy: 342, w: 112, h: 72, footH: 4 },       // labo du Prof. Chen : 7 cases, porte en 4e colonne
+  mansion: { sx: 296, sy: 126, w: 112, h: 124, footH: 8 },   // grand immeuble vert : 7 x 8 cases, porte en 4e colonne
+  museum: { sx: 136, sy: 338, w: 176, h: 120, footH: 8 },    // musée à colonnes : 11 x 8 cases, porche au milieu (porte en 6e colonne)
 };
 
 // ---------- Sol ----------
 
 // Cases posées sur l'herbe (le sable voisin reçoit un liseré d'herbe) : herbe, fleurs, buissons, arbres,
 // barrières, panneaux, plateau du mémorial…
-const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F', 'ʬ', 'ʭ', 'ʀ', 'ɓ']);
+const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F', 'ʬ', 'ʭ', 'ʀ', 'ɓ', 'ɟ', 'ɺ']);
 const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ', 'χ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
-const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ']);
+const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ', 'U', 'O', 'Q', 'V', 'J']);
 
 // Sol Rouge Feu d'une case : 'grass' | 'sand' | 'sea' | 'path' | 'pier', ou null (sol procédural).
 // `buildingFloor(x, y)` : vrai sous un bâtiment Rouge Feu.
@@ -147,6 +155,8 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
   if (SAND_CODES.has(code)) return 'sand';
   if (SEA_CODES.has(code)) return 'sea';
   if (code === 'ç') return 'path';
+  if (code === 'ɔ') return 'cobble';
+  if (code === 'ɐ') return 'concrete';
   if (code === '=') return 'pier';
   if (code === '~') return 'pond';
   if (!ON_NEIGHBOURS.has(code)) return null;
@@ -154,7 +164,8 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
   const counts = {};
   for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
     const n = at(x + dx, y + dy);
-    const kind = GRASS_CODES.has(n) ? 'grass' : SAND_CODES.has(n) ? 'sand' : SEA_CODES.has(n) ? 'sea' : null;
+    const kind = GRASS_CODES.has(n) ? 'grass' : SAND_CODES.has(n) ? 'sand' : SEA_CODES.has(n) ? 'sea'
+      : n === 'ɔ' ? 'cobble' : n === 'ɐ' ? 'concrete' : null;
     if (kind) counts[kind] = (counts[kind] ?? 0) + 1;
   }
   const best = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
@@ -238,6 +249,15 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
     } else {
       blit(ctx, textures, borderTile(SAND_ON_GRASS, isGrass), px, py);
     }
+  } else if (ground === 'cobble' || ground === 'concrete') {
+    // Pavés et dalles : continuent sous les bâtiments et les objets posés dessus.
+    const code = ground === 'cobble' ? 'ɔ' : 'ɐ';
+    const other = (dx, dy) => {
+      const n = at(x + dx, y + dy);
+      if (n === undefined || n === code || ['R', 'W', 'D'].includes(n) || buildingFloor(x + dx, y + dy)) return false;
+      return groundAt(dx, dy) !== ground;
+    };
+    blit(ctx, textures, borderTile(ground === 'cobble' ? COBBLE_ON_GRASS : CONCRETE_ON_GRASS, other), px, py);
   } else if (ground === 'pond') {
     blit(ctx, textures, borderTile(POND, (dx, dy) => groundAt(dx, dy) !== 'pond'), px, py);
   } else if (ground === 'path') {
@@ -252,7 +272,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
 }
 
 // Codes entièrement dessinés par les couches Rouge Feu (le dessin procédural les ignore).
-const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ', '~', 'F', 'ʬ', 'ʭ']);
+const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ', '~', 'F', 'ʬ', 'ʭ', 'ɔ', 'ɐ', 'ɟ', 'ɺ']);
 
 export function isFrlgOnly(code) {
   return FRLG_ONLY.has(code);
@@ -302,7 +322,9 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
     case 'ø': return put(SEA_ROCK);
     case 'ł': return put(LOGS);
     case 'ɱ':
-    case 'ɲ': {
+    case 'ɲ':
+    case 'ɟ':
+    case 'ɺ': {
       // Position de la case dans son bloc : bords, coins, dessus en herbe, escalier au bas.
       const inBlock = (cx, cy) => PLATEAU_CODES.includes(at(cx, cy));
       let bx = x;
@@ -510,6 +532,11 @@ export const FRLG_DECOR = {
   bed: RS(488, 79, 24, 32, 2, 2),       // lit
   computerDesk: RS(448, 74, 32, 39, 2, 2),   // bureau avec ordinateur et tabouret
   pottedPlant: RS(630, 50, 16, 15, 1, 1),   // petite plante en pot
+  chalkboard: RS(369, 51, 64, 18, 4, 1),   // tableau vert (au mur)
+  schoolDesk: RS(498, 128, 32, 22, 2, 1),  // pupitre avec des livres
+  paperDesk: RS(539, 129, 32, 20, 2, 1),   // pupitre avec des copies
+  longTable: RS(506, 50, 48, 16, 3, 1),    // longue table en bois (bureau du maître)
+  shelf: RS(519, 80, 32, 31, 2, 2),        // étagère à livres
   carton: { sprite: { sheet: 'frlg-carton', sx: 0, sy: 0 }, pw: 15, ph: 14, w: 1, h: 1 },        // carton de déménagement
   smallCarton: { sprite: { sheet: 'frlg-carton', sx: 15, sy: 0 }, pw: 11, ph: 9, w: 1, h: 1 },   // petit carton (sur un meuble)
 };

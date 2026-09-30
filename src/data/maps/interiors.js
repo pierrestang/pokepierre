@@ -409,19 +409,32 @@ export const interiors = {
   },
 
   // Montépilloy — la maison de la famille : Maman annonce le premier jour d'école.
+  // Montépilloy — la maison de la famille, façon Rouge Feu : cuisine, télé, table, plantes.
   montHouse: {
     name: 'Maison de Montépilloy',
+    frlg: true,
     grid: parseGrid([
       'XXXXXXXXXX',
-      'XmmoooommX',
-      'XooooooooX',
-      'XoommooooX',
-      'XoommooooX',
-      'XooooooooX',
-      'XoooEEoooX',
       'XXXXXXXXXX',
+      'mmmoooommm',
+      'oooooooooo',
+      'ooommmmooo',
+      'moommmmoom',
+      'moooooooom',
+      'ooooEEoooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'kitchen', x: 0, y: 1 },
+      { kind: 'fridge', x: 2, y: 1 },
+      { kind: 'window', x: 4, y: 0 },
+      { kind: 'crtTv', x: 7, y: 2 },
+      { kind: 'blueShelf', x: 8, y: 1 },
+      { kind: 'pottedPlant', x: 9, y: 2 },
+      { kind: 'table', x: 3, y: 4 },
+      { kind: 'plant', x: 0, y: 5 },
+      { kind: 'plant', x: 9, y: 5 },
+    ],
+    spawn: { x: 4, y: 6, facing: 'up' },
     npcs: [
       {
         id: 'maman-mont', name: 'Maman', x: 6, y: 3, facing: 'left', color: 0xe86fa0,
@@ -429,7 +442,7 @@ export const interiors = {
       },
       // Jean, ton frère : deux quêtes avant de partir pour le Prytanée.
       {
-        id: 'jean', name: 'Jean', x: 2, y: 5, facing: 'right', color: 0x3c7c5c,
+        id: 'jean', name: 'Jean', x: 2, y: 4, facing: 'right', color: 0x3c7c5c,
         unlessFlags: [FLAGS.tracteurRepare],
         dialogue: [
           "[Jean - texte provisoire] Salut frérot ! J'ai besoin de toi pour deux choses.",
@@ -440,7 +453,7 @@ export const interiors = {
         setFlag: FLAGS.jeanQuetes,
       },
       {
-        id: 'jean-fin', name: 'Jean', x: 2, y: 5, facing: 'right', color: 0x3c7c5c,
+        id: 'jean-fin', name: 'Jean', x: 2, y: 4, facing: 'right', color: 0x3c7c5c,
         ifFlags: [FLAGS.tracteurRepare],
         dialogue: ['[Jean - texte provisoire] Le tracteur de M. Bouly est réparé ? Génial !'],
       },
@@ -456,7 +469,9 @@ export const interiors = {
         on: 'enter',
         unlessFlags: [FLAGS.manonEcole],
         steps: [
+          { approach: 'maman-mont' },
           { speaker: 'Maman', say: ["[Maman - texte provisoire] Te voilà ! Aujourd'hui, c'est ton premier jour d'école.", 'Il faut y aller !'] },
+          { approach: 'manon' },
           { speaker: 'Manon', say: ["[Manon - texte provisoire] Je t'accompagne, suis-moi !"] },
           { setFlag: FLAGS.manonEcole },
         ],
@@ -465,25 +480,35 @@ export const interiors = {
   },
 
   // Montépilloy — l'école : Margot, Étienne et Benoît.
+  // Montépilloy — l'école, façon Rouge Feu : tableau vert, bureau du maître, deux rangées de pupitres.
   school: {
     name: 'École',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXNNNNXXXXX', // tableau noir
-      'XooooooooooooX',
-      'XooooommoooooX', // bureau du maître
-      'XooooooooooooX',
-      'XomoomoomoomoX', // pupitres
-      'XooooooooooooX',
-      'XomoomoomoomoX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooooooEEooooX',
       'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXX',
+      'ooooommmoooooo', // bureau du maître
+      'oooooooooooooo',
+      'ommommommommoo', // pupitres
+      'oooooooooooooo',
+      'ommommommommoo',
+      'moooooooooooom',
+      'moooooEEooooom',
     ]),
-    spawn: { x: 7, y: 8, facing: 'up' },
+    decor: [
+      { kind: 'window', x: 1, y: 0 },
+      { kind: 'chalkboard', x: 5, y: 1 },
+      { kind: 'window', x: 11, y: 0 },
+      { kind: 'longTable', x: 5, y: 2 },
+      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'paperDesk' : 'schoolDesk', x, y: 4 })),
+      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'schoolDesk' : 'paperDesk', x, y: 6 })),
+      { kind: 'plant', x: 0, y: 7 },
+      { kind: 'plant', x: 13, y: 7 },
+    ],
+    spawn: { x: 6, y: 7, facing: 'up' },
     npcs: [
       {
-        id: 'manon-ecole', name: 'Manon', x: 8, y: 8, facing: 'left', color: 0xf0a030,
+        id: 'manon-ecole', name: 'Manon', x: 8, y: 7, facing: 'left', color: 0xf0a030,
         ifFlags: [FLAGS.arriveeEcole],
         dialogue: ['[Manon - texte provisoire] Va dire bonjour à tout le monde !'],
       },
@@ -500,7 +525,7 @@ export const interiors = {
         souvenir: { id: 'souvenir-etienne', name: "Souvenir d'Étienne" },
       },
       {
-        id: 'benoit', name: 'Benoît', x: 6, y: 7, facing: 'up', color: 0xa07040,
+        id: 'benoit', name: 'Benoît', x: 3, y: 5, facing: 'up', color: 0xa07040,
         dialogue: ['[Benoît - texte provisoire] Coucou ! Ceci est le premier dialogue de Benoît.'],
         after: ['[Benoît - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-benoit', name: 'Souvenir de Benoît' },
@@ -520,29 +545,37 @@ export const interiors = {
   },
 
   // Prytanée — bâtiment 1 : ton dortoir. Tanguy et Geoffrey y sont.
+  // Prytanée — le dortoir, façon Rouge Feu : cinq lits alignés contre le mur, casiers, fenêtres.
   dortoir: {
     name: 'Dortoir',
+    frlg: true,
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
-      'XLLoLLooLLoLLX', // lits
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XLLoLLooLLoLLX',
-      'XooooooooooooX',
-      'XmoooooooooomX', // casiers
-      'XooooooEEooooX',
       'XXXXXXXXXXXXXX',
+      'mmommommommomm', // lits
+      'mmommommommomm',
+      'oooooooooooooo',
+      'mmoooooooooomm', // casiers
+      'mmoooooooooomm',
+      'ooooooEEoooooo',
     ]),
+    decor: [
+      ...[0, 3, 6, 9, 12].map((x) => ({ kind: 'bed', x, y: 2 })),
+      { kind: 'window', x: 2, y: 0 },
+      { kind: 'notice', x: 7, y: 0 },
+      { kind: 'window', x: 10, y: 0 },
+      ...[0, 1, 12, 13].map((x) => ({ kind: 'cabinet', x, y: 5 })),
+    ],
     spawn: { x: 7, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'tanguy', name: 'Tanguy', x: 3, y: 3, facing: 'down', color: 0x8c6c3c,
+        id: 'tanguy', name: 'Tanguy', x: 3, y: 4, facing: 'down', color: 0x8c6c3c,
         dialogue: ['[Tanguy - texte provisoire] Salut ! Ceci est le premier dialogue de Tanguy.'],
         after: ['[Tanguy - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-tanguy', name: 'Souvenir de Tanguy' },
       },
       {
-        id: 'geoffrey', name: 'Geoffrey', x: 10, y: 5, facing: 'left', color: 0x4c7cb0,
+        id: 'geoffrey', name: 'Geoffrey', x: 10, y: 4, facing: 'left', color: 0x4c7cb0,
         dialogue: ['[Geoffrey - texte provisoire] Bonjour ! Ceci est le premier dialogue de Geoffrey.'],
         after: ['[Geoffrey - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-geoffrey', name: 'Souvenir de Geoffrey' },
@@ -558,25 +591,37 @@ export const interiors = {
   },
 
   // Prytanée — bâtiment 2 : la salle de cours. Le professeur te remet ton baccalauréat.
+  // Prytanée — la salle de cours, façon Rouge Feu : tableau vert, bureau de l'instructeur, pupitres, étagères.
   salleCours: {
     name: 'Salle de cours',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXNNNNXXXXX', // tableau
-      'XooooooooooooX',
-      'XooooommoooooX', // bureau de l'instructeur
-      'XooooooooooooX',
-      'XomoomoomoomoX', // tables
-      'XooooooooooooX',
-      'XomoomoomoomoX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooooooEEooooX',
       'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXX',
+      'mmoooooooooomm',
+      'mmoooommmooomm', // bureau de l'instructeur
+      'oooooooooooooo',
+      'ommommommommoo', // pupitres
+      'oooooooooooooo',
+      'ommommommommoo',
+      'moooooooooooom',
+      'moooooEEooooom',
     ]),
-    spawn: { x: 7, y: 8, facing: 'up' },
+    decor: [
+      { kind: 'shelf', x: 0, y: 2 },
+      { kind: 'chalkboard', x: 5, y: 1 },
+      { kind: 'notice', x: 10, y: 0 },
+      { kind: 'shelf', x: 12, y: 2 },
+      { kind: 'longTable', x: 5, y: 3 },
+      ...[1, 4, 7, 10].map((x) => ({ kind: 'paperDesk', x, y: 5 })),
+      ...[1, 4, 7, 10].map((x) => ({ kind: 'schoolDesk', x, y: 7 })),
+      { kind: 'plant', x: 0, y: 8 },
+      { kind: 'plant', x: 13, y: 8 },
+    ],
+    spawn: { x: 6, y: 8, facing: 'up' },
     npcs: [
       {
-        id: 'professeur', name: 'Professeur', x: 7, y: 1, facing: 'down', color: 0x6c4c8c,
+        id: 'professeur', name: 'Professeur', x: 6, y: 2, facing: 'down', color: 0x6c4c8c,
         dialogue: [
           '[Professeur - texte provisoire] Te voilà ! Félicitations, tu as réussi tes examens.',
           'Voici ton baccalauréat. Il t\'ouvre les portes de la suite : Bordeaux !',

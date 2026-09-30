@@ -86,7 +86,7 @@ export const bordeauxMap = {
       x: 0,
       y,
       readyDialogue: ['Tu retournes au Prytanée.'],
-      warp: { map: 'prytanee', x: 11, y: 1, facing: 'down' },
+      warp: { map: 'prytanee', x: 24, y: 1, facing: 'down' },
     })),
     // Sud-est : la route de Paris, libre une fois le diplôme de Bordeaux en poche.
     ...[22, 23].map((y) => ({

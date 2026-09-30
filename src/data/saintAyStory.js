@@ -143,7 +143,7 @@ export const CAR = [
   { say: ['Tu emportes : Grand frère et Cousins pour la vie.'] },
   { say: ['Montépilloy.'] },
   { setFlag: FLAGS.arriveeMontepilloy },
-  { travel: { map: 'montepilloy', x: 11, y: 22, facing: 'up' } },
+  { travel: { map: 'montepilloy', x: 14, y: 21, facing: 'up' } },
 ];
 
 // Positions des cousins autour de la cabane, selon l'emplacement choisi.

@@ -358,7 +358,8 @@ function asphalt(g, px, py, x, y, at) {
 // Mât avec le drapeau tricolore, sur la place d'armes.
 function flagpole(g, px, py, x, y, at) {
   // Sur la place d'armes : asphalte ; ailleurs : le sol des voisins (pavés, herbe…).
-  if ([at(x - 1, y), at(x + 1, y), at(x, y - 1), at(x, y + 1)].includes('A')) asphalt(g, px, py, x, y, at);
+  if (groundProvided) { /* sol Rouge Feu déjà posé */ }
+  else if ([at(x - 1, y), at(x + 1, y), at(x, y - 1), at(x, y + 1)].includes('A')) asphalt(g, px, py, x, y, at);
   else smallObjectGround(g, px, py, x, y, at);
   rect(g, 0x9c9ca4, px + 5, py + 12, 6, 3);            // socle
   rect(g, 0x505058, px + 7, py + 1, 2, 13);            // mât
