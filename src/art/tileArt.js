@@ -1907,25 +1907,51 @@ function furniture(g, px, py, x, y = 0, at = () => undefined) {
 }
 
 // Lit sur une ou deux cases (tête de lit en haut, couverture en dessous).
+// Lit façon Rouge Feu (14 x 30 px sur deux cases 'L') : tête et pied de lit en bois, oreiller blanc,
+// drap, couverture bleue à motif ; dessiné en entier depuis la case du haut.
+const BED = [
+  '.kkkkkkkkkkkk.',
+  'kWWWWWWWWWWWWk',
+  'kWwwwwwwwwwwWk',
+  'kkkkkkkkkkkkkk',
+  'kSSSSSSSSSSSSk',
+  'kSPPPPPPPPPPSk',
+  'kSPPPPPPPPPpSk',
+  'kSppppppppppSk',
+  'kSSSSSSSSSSSSk',
+  'kLLLLLLLLLLLLk',
+  'kBBBBBBBBBBBBk',
+  'kBBbBBBBBBbBBk',
+  'kBbbbBBBBbbbBk',
+  'kBBbBBBBBBbBBk',
+  'kBBBBBBBBBBBBk',
+  'kBBBBBbbBBBBBk',
+  'kBBBBbbbbBBBBk',
+  'kBBBBBbbBBBBBk',
+  'kBBBBBBBBBBBBk',
+  'kBBbBBBBBBbBBk',
+  'kBbbbBBBBbbbBk',
+  'kBBbBBBBBBbBBk',
+  'kBBBBBBBBBBBBk',
+  'kbbbbbbbbbbbbk',
+  'kkkkkkkkkkkkkk',
+  'kWWWWWWWWWWWWk',
+  'kwwwwwwwwwwwwk',
+  '.kkkkkkkkkkkk.',
+];
+const BED_C = {
+  k: 0x404048, W: 0xc88c50, w: 0x946030, S: 0xf0f0f8, P: 0xf8f8f8, p: 0xc8d0e0,
+  L: 0x90b0f0, B: 0x5878d0, b: 0x3858a8,
+};
+
 function bed(g, px, py, x, y = 0, at = () => undefined) {
   floor(g, px, py, x, y);
-  const K = 0x404858;
-  const top = at(x, y - 1) !== 'L';
-  const bottom = at(x, y + 1) !== 'L';
-  g.fillStyle(0x000000, 0.18);
-  if (bottom) g.fillRect(px + 2, py + 15, 13, 1);
-  rect(g, K, px + 1, py + (top ? 0 : 0), 14, S - (bottom ? 1 : 0));
-  if (top) {
-    rect(g, 0x8c5c30, px + 1, py - 3, 14, 5);                       // tête de lit en bois
-    rect(g, 0xb07840, px + 2, py - 2, 12, 2);
-    rect(g, 0xf8f8f8, px + 2, py + 2, 12, S - 2);                   // drap
-    rect(g, 0xe0e8f4, px + 3, py + 3, 10, 5);                       // oreiller
-    rect(g, 0xffffff, px + 4, py + 3, 6, 2);
-  }
-  const blanket = top && bottom ? 9 : top ? 10 : 0;
-  rect(g, 0x4870c8, px + 2, py + blanket, 12, S - blanket - (bottom ? 2 : 0));   // couverture
-  rect(g, 0x78a0e8, px + 2, py + blanket, 12, 1);
-  for (let ly = blanket + 3; ly < S - 2; ly += 4) rect(g, 0x3c5cb0, px + 2, py + ly, 12, 1);
+  if (at(x, y - 1) === 'L') return;                                 // dessiné depuis la case du haut
+  g.fillStyle(0x000000, 0.18);                                       // ombre au pied
+  g.fillRect(px + 2, py + 30, 13, 2);
+  BED.forEach((row, ry) => [...row].forEach((c, rx) => {
+    if (c !== '.') rect(g, BED_C[c], px + 1 + rx, py + 2 + ry, 1, 1);
+  }));
 }
 
 // Plante verte en pot (feuillage qui dépasse sur la case du dessus).
@@ -2048,17 +2074,25 @@ function rug(g, px, py, x, y, at) {
 }
 
 // Escalier : vers le haut (marches qui montent contre le mur) ou vers le bas (trémie sombre).
+// Escalier façon Rouge Feu (16 x 32 px : la case de l'escalier et le mur au-dessus) : rampes en bois
+// sombre, marches claires à contremarche ombrée ; celui qui monte s'enfonce dans le mur, celui qui
+// descend s'assombrit vers le bas (vers l'étage du dessous).
 function stairsInside(g, px, py, x, y, up) {
   floor(g, px, py, x, y);
-  const K = 0x402818;
-  rect(g, K, px + 1, py - 2, 14, 18);
-  for (let i = 0; i < 4; i++) {
-    const ly = py - 1 + i * 4;
-    const shade = up ? [0xa87848, 0xb88450, 0xc89460, 0xd8a470][i] : [0x3c2818, 0x5c3c24, 0x7c5430, 0x9c6c40][i];
-    rect(g, shade, px + 2, ly, 12, 3);
-    rect(g, up ? 0xe8bc88 : 0x8c6038, px + 2, ly, 12, 1);
+  const top = py - S;
+  rect(g, 0x303038, px, top, S, 2 * S);                              // contour
+  for (let i = 0; i < 7; i++) {
+    const ly = top + 2 + i * 4;
+    const k = up ? i / 6 : 1 - i / 6;                                // 0 : au fond, 1 : devant
+    const light = up ? [0xa07848, 0xb08450, 0xc09460, 0xd0a470, 0xe0b880, 0xe8c490, 0xf0d0a0][i]
+      : [0xf0d0a0, 0xe0b880, 0xc09460, 0xa07848, 0x805830, 0x604020, 0x402810][i];
+    rect(g, light, px + 3, ly, 10, 3);                                // marche
+    rect(g, k > 0.5 ? 0x906030 : 0x604020, px + 3, ly + 3, 10, 1);   // contremarche
   }
-  rect(g, 0xe8e0d0, px + 1, py - 2, 1, 18);                          // rampe
+  rect(g, 0x5c3818, px + 1, top + 1, 2, 2 * S - 2);                  // rampes
+  rect(g, 0x5c3818, px + S - 3, top + 1, 2, 2 * S - 2);
+  rect(g, 0x946030, px + 1, top + 1, 1, 2 * S - 2);
+  rect(g, 0x946030, px + S - 3, top + 1, 1, 2 * S - 2);
 }
 
 // Plan de travail de cuisine : évier ou plaques, selon la case.

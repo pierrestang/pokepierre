@@ -97,6 +97,7 @@ export const TILES = {
   '¶': { name: 'drapeaux de prière', color: 0xe8c040, solid: true },
   'ň': { name: 'drapeau népalais', color: 0xc82838, solid: true },
   'ɸ': { name: 'drapeau martiniquais', color: 0x00a848, solid: true },
+  'ƫ': { name: 'arbre tropical', color: 0x58a848, solid: true },
   'ɲ': { name: "plateau du mémorial (herbe du sommet, escalier)", color: 0x70c8a0, solid: false },
   'Ŧ': { name: 'grand arbre feuillu', color: 0x58a040, solid: true },
   'ɱ': { name: "plateau des statues (mémorial de l'Anse Caffard)", color: 0xe8e4dc, solid: true },

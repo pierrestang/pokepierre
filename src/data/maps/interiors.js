@@ -28,16 +28,16 @@ const HOME_FDF = { unlessFlags: [FLAGS.departFortDeFrance] };
 // Intérieurs des bâtiments. `spawn` = position d'arrivée (juste au-dessus du tapis).
 export const interiors = {
   // Fort-de-France — la maison familiale, façon Rouge Feu (`frlg`, voir art/frlgArt.js) : mur de deux
-  // rangées en haut, meubles de la planche (`decor`, cases 'm' bloquantes) ; télé et escalier dessinés dans
-  // le code. Textes provisoires, à réécrire.
+  // rangées en haut, meubles des planches (`decor`, cases 'm' bloquantes), télé au mur ; escalier dessiné
+  // dans le code. Textes provisoires, à réécrire.
   ffHouse: {
     name: 'Maison familiale',
     frlg: true,
-    // Étagère, vitrine, télé, cuisine, frigo et escalier contre le mur ; table au milieu ; plantes.
+    // Étagère, vitrine, télé murale, fenêtre, cuisine, frigo et escalier contre le mur ; table ; plantes.
     grid: parseGrid([
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmmoτoommmη',
+      'mmmoooommmη',
       'ooooooooooo',
       'mooommmmooo',
       'mooommmmooo',
@@ -47,6 +47,7 @@ export const interiors = {
     decor: [
       { kind: 'blueShelf', x: 0, y: 1 },
       { kind: 'glassCabinet', x: 1, y: 1 },
+      { kind: 'tv', x: 3, y: 0 },
       { kind: 'window', x: 5, y: 0 },
       { kind: 'kitchen', x: 7, y: 1 },
       { kind: 'fridge', x: 9, y: 1 },
@@ -59,7 +60,7 @@ export const interiors = {
       { x: 10, y: 2, warp: { interior: 'ffHouseUp', x: 8, y: 3, facing: 'down' } },
     ],
     objects: [
-      { x: 4, y: 2, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
+      ...[3, 4].map((x) => ({ x, y: 1, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] })),
       { x: 9, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
     ],
     npcs: [
@@ -97,22 +98,24 @@ export const interiors = {
   },
 
   // Fort-de-France — la chambre de Pierre, à l'étage (invisible de l'extérieur), façon Rouge Feu :
-  // lit, bureau et ordinateur (dessinés dans le code), bibliothèque, fenêtre, plantes. Escalier : ξ.
+  // lit (dessiné dans le code), bureau au globe, ordinateur, bibliothèque, fenêtre, plantes. Escalier : ξ.
   ffHouseUp: {
     name: 'Chambre de Pierre',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
-      'Lδuommooξ',
+      'Lmmommooξ',
       'Loooooooo',
       'mooooooom',
       'mooooooom',
     ]),
     decor: [
+      { kind: 'desk', x: 1, y: 1 },
+      { kind: 'computer', x: 2, y: 1 },
       { kind: 'bookshelf', x: 4, y: 0 },
       { kind: 'window', x: 6, y: 0 },
-      { kind: 'painting', x: 2, y: 0 },
+      { kind: 'painting', x: 3, y: 0 },
       { kind: 'plant', x: 0, y: 4 },
       { kind: 'plant', x: 8, y: 4 },
     ],
@@ -122,7 +125,7 @@ export const interiors = {
     ],
     objects: [
       { x: 0, y: 2, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
-      { x: 1, y: 2, dialogue: ['[Texte provisoire] Ton bureau, couvert de cartes du monde.'] },
+      { x: 1, y: 2, dialogue: ['[Texte provisoire] Ton bureau, avec ton globe et tes cartes du monde.'] },
       { x: 2, y: 2, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
     ],
   },

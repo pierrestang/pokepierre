@@ -12,6 +12,9 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   frlg-travel-sea.png  mer de la traversée en ferry (256 x 192, répétable) ;
   frlg-ferry-wake.png  ferry avec son sillage, pour la traversée (voir ferry_wake) ;
   frlg-townmap.png     carte du voyage : mer rayée, point de ville, tête de Red (voir town_map) ;
+  frlg-beachrock.png   rocher de plage sans écume (voir beach_rock) ;
+  frlg-center-items.png  ordinateur et télé murale du Centre Pokémon (voir center_items) ;
+  emerald-trees.png    deux arbres tropicaux d'Émeraude, sur sable puis sur herbe (voir tropical_trees) ;
   frlg-props.png     planche de Hoeloe (arbre isolé, rocher, mer animée…), fond violet rendu transparent ;
   frlg-seven.png     carte de Seven Island (24 x 20 cases), sans le cadre ;
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent.
@@ -122,11 +125,13 @@ def sea_rock(seven):
 
 # Pièces d'intérieur Rouge Feu (11 x 9 cases chacune), rangées côte à côte dans frlg-rooms.png :
 # 0 = maison de Three Island (cuisine, frigo, étagères, table), 1 = maison du dresseur de Seven Island
-# (bibliothèques, placards jaunes), 2 = maison inutilisée de Seven Island (fenêtres à rideaux, panneau).
+# (bibliothèques, placards jaunes), 2 = maison inutilisée de Seven Island (fenêtres à rideaux, panneau),
+# 3 = maison de Lostelle à Three Island (bureau au globe).
 ROOMS = [
     ('maps__towns_buildings_etc._-three_island.png', (400, 376)),
     ('maps__towns_buildings_etc._-seven_island.png', (648, 24)),
     ('maps__towns_buildings_etc._-seven_island.png', (848, 192)),
+    ('maps__towns_buildings_etc._-three_island.png', (400, 544)),
 ]
 ROOM_W, ROOM_H = 11 * 16, 9 * 16
 
@@ -147,6 +152,74 @@ def rooms(rgba):
         for x in range(16):
             if px[x, y] in dark:
                 px[x, y] = floor[x, y % 16]
+    return out
+
+
+def cut_out(im, background):
+    """Rend transparents les pixels des couleurs `background` reliés au bord de l'image, puis ne garde que
+    le plus grand morceau (l'objet)."""
+    px = im.load()
+    w, h = im.size
+    queue = deque([(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)])
+    seen = set()
+    while queue:
+        x, y = queue.popleft()
+        if (x, y) in seen or not (0 <= x < w and 0 <= y < h) or px[x, y] not in background:
+            continue
+        seen.add((x, y))
+        px[x, y] = (0, 0, 0, 0)
+        queue.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
+    keep_largest(im)
+    return im
+
+
+def center_items(three):
+    """Ordinateur (case 11, rangées 1-2) et télé murale (cases 7-8, rangées 0-1) du Centre Pokémon de
+    Three Island (origine 400, 24), sans le mur ni le sol du centre : 16 x 32 puis 32 x 32, côte à côte."""
+    cell = lambda c, r, w=1, h=1: three.crop((400 + c * 16, 24 + r * 16, 400 + (c + w) * 16, 24 + (r + h) * 16))
+    background = set()
+    for c, r in ((12, 3), (6, 5), (3, 3), (10, 0), (12, 0), (13, 0), (5, 0), (6, 0), (9, 0)):
+        background |= set(cell(c, r).getdata())
+    out = Image.new('RGBA', (48, 32), (0, 0, 0, 0))
+    out.paste(cut_out(cell(11, 1, 1, 2), background), (0, 0))
+    out.paste(cut_out(cell(7, 0, 2, 2), background), (16, 0))
+    return out
+
+
+def beach_rock(props):
+    """Rocher gris de la planche de Hoeloe (16 x 16 en 140, 3) sans l'écume blanche autour : posé sur le
+    sable, il ne doit pas avoir de contour blanc."""
+    rock = props.crop((140, 3, 156, 19))
+    foam = {(200, 216, 232, 255), (240, 240, 248, 255)}
+    px = rock.load()
+    queue = deque([(x, y) for x in range(16) for y in range(16) if px[x, y][3] == 0])
+    seen = set(queue)
+    while queue:
+        x, y = queue.popleft()
+        for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            if 0 <= n[0] < 16 and 0 <= n[1] < 16 and n not in seen and px[n] in foam:
+                seen.add(n)
+                px[n] = (0, 0, 0, 0)
+                queue.append(n)
+    return rock
+
+
+def tropical_trees(emerald):
+    """Arbres tropicaux à racines d'Émeraude (planche d'extérieur, 32 x 32 chacun), sans leur fond : sur le
+    sable (cases 72-73, 15-16) puis sur l'herbe (cases 78-79, 17-18), côte à côte."""
+    out = Image.new('RGBA', (64, 32), (0, 0, 0, 0))
+    for i, (c, r, background) in enumerate((
+        (72, 15, {(216, 200, 128, 255), (208, 176, 104, 255), (224, 216, 160, 255)}),
+        (78, 17, {(112, 192, 160, 255), (64, 176, 128, 255), (160, 208, 192, 255)}),
+    )):
+        tree = emerald.crop((c * 16, r * 16, c * 16 + 32, r * 16 + 32))
+        # Deux rangées du haut : restes des racines roses de l'arbre rangé au-dessus dans la planche.
+        px = tree.load()
+        for y in range(2):
+            for x in range(32):
+                if px[x, y][:3] in ((128, 88, 88), (152, 112, 112), (184, 144, 136)):
+                    px[x, y] = (0, 0, 0, 0)
+        out.paste(cut_out(tree, background), (i * 32, 0))
     return out
 
 
@@ -247,7 +320,9 @@ def main():
     outdoor.save(OUT / 'frlg-outdoor.png')
     grass_rims(outdoor).save(OUT / 'frlg-rims.png')
     white_stairs(outdoor).save(OUT / 'frlg-stairs.png')
-    gba_palette(clear_color(rgba('tilesets-tileset.png'), (153, 51, 204, 255))).save(OUT / 'frlg-props.png')
+    props = gba_palette(clear_color(rgba('tilesets-tileset.png'), (153, 51, 204, 255)))
+    props.save(OUT / 'frlg-props.png')
+    beach_rock(props).save(OUT / 'frlg-beachrock.png')
     seven = gba_palette(rgba('maps__towns_buildings_etc._-seven_island.png').crop((8, 24, 392, 344)))
     seven.save(OUT / 'frlg-seven.png')
     pier(seven).save(OUT / 'frlg-pier.png')
@@ -255,6 +330,9 @@ def main():
     gba_palette(clear_outside(rgba('tilesets-buildings.png'), (255, 255, 255, 255))).save(OUT / 'frlg-buildings.png')
     gba_palette(ferry(rgba('maps-seagallop_ferry.png'))).save(OUT / 'frlg-ferry.png')
     rooms(rgba).save(OUT / 'frlg-rooms.png')
+    emerald = Image.open(ROOT / 'assets-source' / 'emerald' / 'miscellaneous-exterior_tileset.png').convert('RGBA')
+    gba_palette(tropical_trees(emerald)).save(OUT / 'emerald-trees.png')
+    gba_palette(center_items(rgba('maps__towns_buildings_etc._-three_island.png'))).save(OUT / 'frlg-center-items.png')
     seagallop = rgba('maps-seagallop_ferry.png')
     gba_palette(seagallop.crop((288, 24, 544, 216))).save(OUT / 'frlg-travel-sea.png')
     gba_palette(ferry_wake(seagallop)).save(OUT / 'frlg-ferry-wake.png')

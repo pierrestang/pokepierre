@@ -14,13 +14,13 @@ const BOAT_POS = { x: 14, y: 25, w: 4, h: 2 };
 
 // Fort-de-France — île ronde de départ, bordée de larges plages, 30 x 31 cases : maison familiale et son jardin fleuri en
 // haut, allée de sable (3 cases, centrée sur la porte) jusqu'à la plage, puis ponton en bois (2 cases) jusqu'au ferry, cabane de pêche
-// à droite, trois grands sapins isolés (on peut passer derrière) et deux grands arbres feuillus (dont un à gauche
-// de la maison), hautes herbes aux formes arrondies,
+// à droite, trois grands sapins isolés (on peut passer derrière) deux grands arbres feuillus (dont un à gauche
+// de la maison) et des arbres tropicaux à racines, sur la plage et dans l'herbe, hautes herbes aux formes arrondies,
 // buissons et fleurs, rochers dans la mer, drapeau de la Martinique à droite de la maison ; en bas à gauche,
 // les six statues du mémorial de l'Anse Caffard (Cap 110), en trois rangées tournées vers la mer.
 // Légende : voir src/data/tiles.js (w = mer, s = sable, ĥ = hautes herbes, ƀ = buisson, ç = pavés,
 // ƒ = petites fleurs, ŕ = rocher, ø = rocher dans la mer, T = grand arbre, = = ponton, B = ferry,
-// ɱ / ɲ = plateau du mémorial de l'Anse Caffard (bloquant / praticable), Ŧ = grand arbre feuillu, ɸ = drapeau de la Martinique)
+// ƫ = arbre tropical, ɱ / ɲ = plateau du mémorial de l'Anse Caffard (bloquant / praticable), Ŧ = grand arbre feuillu, ɸ = drapeau de la Martinique)
 export const fortDeFranceMap = {
   id: 'fortDeFrance',
   name: 'Fort-de-France',
@@ -28,26 +28,26 @@ export const fortDeFranceMap = {
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 0
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 1
     'wwwwwwwwwwsssssssssswwwwwwwwww', // 2
-    'wwøwwwwwsssssssssssssswwwwwwww', // 3
-    'wwwwwwssss..RRRRR...sssswwwøww', // 4
-    'wwwwwsssŦŦŦ.RRRRR.f.ssssswwwww', // 5
+    'wwøwwwwwssssssssssssƫƫwwwwwwww', // 3
+    'wwwwwwƫƫss..RRRRR...ƫƫsswwwøww', // 4
+    'wwwwwsƫƫŦŦŦ.RRRRR.f.ssssswwwww', // 5
     'wwwwssssŦŦŦ.WWWWWƒ.f.ssssswwww', // 6
     'wwwwssssŦŦŦ.WDWWWɸ....f.sswwww', // 7
     'wwwssss.ŦŦŦ.çççM....TT..ssswww', // 8
-    'wwwsss...f.ƒççç.fƒƀ.TT..ssswww', // 9
-    'wwwsssTT....ççç..ƀ.f....ssswww', // 10
-    'wwsss.TT.f.Sççç...ƀ..RRRRsssww', // 11
-    'wwsss.ĥĥĥ...ççç...TT.RRRRsssww', // 12
+    'wwwsss...ƫƫƒççç.fƒƀ.TTƫƫssswww', // 9
+    'wwwsssTT.ƫƫ.ççç..ƀ.f..ƫƫssswww', // 10
+    'wwsss.TT.f.Sçççƫƫ.ƀ..RRRRsssww', // 11
+    'wwsss.ĥĥĥ...çççƫƫ.TT.RRRRsssww', // 12
     'wwss.ĥĥĥĥ...ççç...TT.WWWWsssww', // 13
     'wøss.ɱɱɱɱ..fççç.ŦŦŦ..WDWWsssww', // 14
-    'wwws.ɱɱɱɱ...ççç.ŦŦŦf....ssswww', // 15
-    'wwws.ɱɲɲɱ.TTççç.ŦŦŦ.ƀƒ.sssswww', // 16
+    'wwws.ɱɱɱɱ...ççç.ŦŦŦf....ƫƫswww', // 15
+    'wwws.ɱɲɲɱ.TTççç.ŦŦŦ.ƀƒ.sƫƫswww', // 16
     'wwws.ɱɲɲɱ.TTççç.ŦŦŦĥĥĥssssswww', // 17
     'wwws.......fççç.f.ĥĥĥĥsssswwøw', // 18
     'wwwssssssssssssssssĥĥssssswwww', // 19
-    'wwwwwssssssssssssssŕssssswwwww', // 20
-    'wwwwwwssssŕssssssssssssswwwwww', // 21
-    'wwwwwwwwsssssssssssssswwwwwwww', // 22
+    'wwwwwssƫƫssssssssssŕssssswwwww', // 20
+    'wwwwwwsƫƫsŕsssssssssƫƫsswwwwww', // 21
+    'wwwwwwwwssssssssssssƫƫwwwwwwww', // 22
     'wwwwwøwwwwss==sswwwwwwwwwwwwww', // 23
     'wwwwwwwwwwww==wwwwwwwøwwwwwwww', // 24
     'wwwwwwwwwwww==BBBBwwwwwwøwwwww', // 25
