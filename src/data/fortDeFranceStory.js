@@ -85,3 +85,28 @@ export const FERRY = [
   ...DEPARTURE.map((step) => ({ ...READY_TO_LEAVE, ...step })),
   { say: ["Le ferry n'embarque pas encore. Le pêcheur, sur le ponton, sait ce qu'il te reste à faire."] },
 ];
+
+// Manon — Complicité : elle attend devant la maison et vient te parler à la sortie ; elle a caché un
+// coquillage dans les hautes herbes de l'île.
+export const MANON = [
+  { ifSouvenirs: [QUALITIES.complicite.id], speaker: 'Manon', say: ["Chut… c'est notre secret."], end: true },
+  { ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon', say: ["Tu l'as trouvé !"] },
+  { ifItems: [ITEMS.coquillageNacre.id], say: ['Manon sort de sa poche un deuxième coquillage, identique.'] },
+  {
+    ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon',
+    say: ["Un pour toi, un pour moi. Comme ça, où qu'on aille, on garde un bout de l'île. Et c'est notre secret."],
+  },
+  { ifItems: [ITEMS.coquillageNacre.id], quality: QUALITIES.complicite, end: true },
+  { ifFlags: [FLAGS.manonDemande], speaker: 'Manon', say: ["C'est dans les hautes herbes. Trouve-le."], end: true },
+  // Première fois, à la sortie de la maison.
+  { speaker: 'Manon', say: ['Psst. Viens.'] },
+  {
+    speaker: 'Manon',
+    say: [
+      "J'ai caché un truc sur l'île avant qu'on parte. Personne ne le sait. Même pas Papa.",
+      'Surtout pas Papa, il le mettrait dans la caisse « À DONNER ».',
+      "C'est dans les hautes herbes. Trouve-le.",
+    ],
+  },
+  { setFlag: FLAGS.manonDemande },
+];

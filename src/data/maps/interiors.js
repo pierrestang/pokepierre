@@ -29,7 +29,7 @@ const HOME_FDF = { unlessFlags: [FLAGS.departFortDeFrance] };
 export const interiors = {
   // Fort-de-France — la maison familiale, façon Rouge Feu (`frlg`, voir art/frlgArt.js) : mur de deux
   // rangées en haut, meubles des planches (`decor`, cases 'm' bloquantes), télé au mur, escalier encastré.
-  // Salon : Maman (Joie de vivre) et Manon (Complicité) ; Papa trie à sa cabane de pêche.
+  // Salon : Maman (Joie de vivre) ; Manon attend dehors, Papa trie à sa cabane de pêche.
   // Scénario : voir data/fortDeFranceStory.js.
   ffHouse: {
     name: 'Maison familiale',
@@ -90,37 +90,8 @@ export const interiors = {
           { ifSouvenirs: [QUALITIES.joie.id], speaker: 'Maman', say: ['Allez, file profiter de l\'île ! La musique reste allumée jusqu\'au départ.'], end: true },
           { speaker: 'Maman', say: ['Tu entends cette chanson ? Viens danser avec moi !'] },
           { dance: 'maman' },
-          { speaker: 'Maman', say: ['On part demain, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi.'] },
+          { speaker: 'Maman', say: ['On part cet après-midi, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi.'] },
           { quality: QUALITIES.joie },
-        ],
-      },
-      // Manon — Complicité : elle a caché un coquillage dans les hautes herbes de l'île.
-      {
-        id: 'manon', name: 'Manon', x: 2, y: 6, facing: 'up', color: 0xf0a030,
-        ...HOME_FDF,
-        script: [
-          { ifSouvenirs: [QUALITIES.complicite.id], speaker: 'Manon', say: ['Chut… c\'est notre secret.'], end: true },
-          { ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon', say: ["Tu l'as trouvé !"] },
-          { ifItems: [ITEMS.coquillageNacre.id], say: ['Manon sort de sa poche un deuxième coquillage, identique.'] },
-          {
-            ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon',
-            say: ["Un pour toi, un pour moi. Comme ça, où qu'on aille, on garde un bout de l'île. Et c'est notre secret."],
-          },
-          { ifItems: [ITEMS.coquillageNacre.id], quality: QUALITIES.complicite, end: true },
-          { ifFlags: [FLAGS.manonDemande], speaker: 'Manon', say: ["C'est dans les hautes herbes. Trouve-le."], end: true },
-          // Première fois : Manon attend que Maman regarde ailleurs.
-          { face: { maman: 'up' } },
-          { wait: 400 },
-          { speaker: 'Manon', say: ['Psst. Viens.'] },
-          {
-            speaker: 'Manon',
-            say: [
-              "J'ai caché un truc sur l'île avant qu'on parte. Personne ne le sait. Même pas Papa.",
-              'Surtout pas Papa, il le mettrait dans la caisse « À DONNER ».',
-              "C'est dans les hautes herbes. Trouve-le.",
-            ],
-          },
-          { setFlag: FLAGS.manonDemande },
         ],
       },
     ],
@@ -175,7 +146,7 @@ export const interiors = {
           { sea: false },
           { black: false },
           { wait: 300 },
-          { speaker: "Maman (d'en bas)", say: ['Pierre ! Le ferry part cet après-midi ! Descends !'] },
+          { speaker: 'Maman', say: ['Pierre ! Le ferry part cet après-midi ! Descends !'] },
           { setFlag: FLAGS.reveilFortDeFrance },
         ],
       },

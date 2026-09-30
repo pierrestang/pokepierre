@@ -1,6 +1,6 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
-import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY } from '../fortDeFranceStory.js';
+import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON } from '../fortDeFranceStory.js';
 
 // Le ferry amarré au ponton : départ vers Saint-Ay une fois tout réuni (voir data/fortDeFranceStory.js).
 const BOAT_POS = { x: 17, y: 27, w: 4, h: 2 };   // une case d'eau entre le ponton et le ferry
@@ -101,6 +101,12 @@ export const fortDeFranceMap = {
         'Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ?',
       ],
     },
+    // Manon attend devant la maison (quête du coquillage, voir data/fortDeFranceStory.js).
+    {
+      id: 'manon', name: 'Manon', x: 13, y: 9, facing: 'right', color: 0xf0a030,
+      unlessFlags: [FLAGS.departFortDeFrance],
+      script: MANON,
+    },
     // Le pêcheur : au bout du ponton, puis devant le ferry avec sa canne cassée une fois la scène de Papa
     // terminée (voir data/fortDeFranceStory.js).
     {
@@ -112,6 +118,15 @@ export const fortDeFranceMap = {
       id: 'pecheur', name: 'Pêcheur', x: 15, y: 27, facing: 'up', still: true,
       ifFlags: [FLAGS.papaFait],
       script: FISHER_AT_FERRY,
+    },
+  ],
+  // En sortant de la maison pour la première fois, Manon vient te parler.
+  events: [
+    {
+      on: 'enter',
+      ifFlags: [FLAGS.journeeLancee],
+      unlessFlags: [FLAGS.manonDemande, FLAGS.departFortDeFrance],
+      steps: [{ talk: 'manon' }],
     },
   ],
   // Coquillage caché par Manon dans les hautes herbes (quête de Manon), trouvé une seule fois.
