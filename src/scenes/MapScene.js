@@ -5,8 +5,8 @@ import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
 import { drawDecal } from '../art/tileArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
-import { Player } from '../systems/Player.js';
-import { CharacterSprite, OPPOSITE } from '../systems/CharacterSprite.js';
+import { Player, WALK_DURATION } from '../systems/Player.js';
+import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
 import { Followers } from '../systems/Followers.js';
 import { lookOf } from '../data/characters.js';
 import { interact } from '../systems/interactions.js';
@@ -83,6 +83,12 @@ export class MapScene extends Phaser.Scene {
     this.decals = [];
     this.followers = new Followers(this);
     const tileWalkable = createWalkableCheck(grid);
+    this.tileWalkable = tileWalkable;
+    // Les PNJ qui se sont avancés vers le joueur (voir approach) reprennent leur place à la prochaine visite.
+    this.events.once('shutdown', () => (map.npcs ?? []).forEach((d) => {
+      if (d.home) Object.assign(d, d.home);
+      delete d.home;
+    }));
 
     // Position sauvegardée devenue invalide (carte modifiée) : retour au point de départ de la carte.
     const spawnWalkable = tileWalkable(spawn.x, spawn.y);
@@ -250,7 +256,8 @@ export class MapScene extends Phaser.Scene {
   // Scénette : liste d'étapes jouées dans l'ordre. Chaque étape peut avoir des conditions (ifFlags,
   // unlessFlags, ifItems, unlessItems, ifSouvenirs, unlessSouvenirs), vérifiées au moment où elle est jouée.
   //   { say: [pages], speaker? }         texte (avec le nom de la personne qui parle)
-  //   { talk: npcId }                    le PNJ se tourne vers le joueur et dit son dialogue
+  //   { talk: npcId }                    le PNJ s'avance jusqu'au joueur, se tourne vers lui et dit son dialogue
+  //   { approach: npcId }                le PNJ s'avance jusqu'au joueur et ils se font face
   //   { setFlag } / { setFlags: [] }     drapeaux d'histoire (les personnages sont mis à jour)
   //   { quality: { id, name } }          qualité reçue (compte comme un souvenir) : « Tu as reçu : X. »
   //   { give: item, text? }              objet reçu (message `text`, sinon « Tu as reçu : X. »)
@@ -271,10 +278,11 @@ export class MapScene extends Phaser.Scene {
       if (step.dance) await this.dance(step.dance);
       if (step.wait) await this.wait(step.wait);
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
+      if (step.approach) await this.approach(step.approach);
       if (step.talk) {
         const npc = this.npcs.find((n) => n.data.id === step.talk);
         if (npc) {
-          npc.sprite.setFacing(this.directionTo(npc.data, this.player));
+          await this.approach(step.talk);
           await this.talkTo(npc.data);
         }
       }
@@ -304,6 +312,62 @@ export class MapScene extends Phaser.Scene {
       if (step.end) return true;
     }
     return false;
+  }
+
+  // Le PNJ s'avance vers le joueur (plus court chemin jusqu'à une case voisine), puis ils se font face.
+  async approach(id) {
+    const npc = this.npcs.find((n) => n.data.id === id);
+    if (!npc) return;
+    const path = this.pathNextToPlayer(npc.data) ?? [];
+    for (const [x, y] of path) {
+      const d = npc.data;
+      d.home ??= { x: d.x, y: d.y, facing: d.facing };
+      npc.sprite.setFacing(this.directionTo(d, { x, y }));
+      npc.sprite.walkStep(WALK_DURATION);
+      d.x = x;
+      d.y = y;
+      const [px, py] = tileCenter(x, y);
+      await new Promise((resolve) => this.tweens.add({
+        targets: npc.sprite, x: px, y: py, duration: WALK_DURATION,
+        onUpdate: () => npc.sprite.updateDepth(), onComplete: resolve,
+      }));
+    }
+    const toPlayer = this.directionTo(npc.data, this.player);
+    npc.sprite.setFacing(toPlayer);
+    npc.data.facing = toPlayer;
+    this.player.facing = OPPOSITE[toPlayer];
+    this.player.sprite.setFacing(this.player.facing);
+  }
+
+  // Cases à parcourir pour arriver à côté du joueur (sans la case de départ), [] s'il y est déjà,
+  // null si le chemin est bloqué ou trop long.
+  pathNextToPlayer(from) {
+    const { tileX: px, tileY: py } = this.player;
+    const beside = (x, y) => Math.abs(x - px) + Math.abs(y - py) === 1;
+    if (beside(from.x, from.y)) return [];
+    const free = (x, y) => this.tileWalkable(x, y) && !(x === px && y === py) && !this.npcAt(x, y) && !this.propAt(x, y);
+    const prev = new Map([[`${from.x},${from.y}`, null]]);
+    let frontier = [[from.x, from.y]];
+    for (let depth = 0; depth < 20 && frontier.length; depth++) {
+      const next = [];
+      for (const [x, y] of frontier) {
+        for (const { dx, dy } of Object.values(DIRECTIONS)) {
+          const nx = x + dx;
+          const ny = y + dy;
+          const key = `${nx},${ny}`;
+          if (prev.has(key) || !free(nx, ny)) continue;
+          prev.set(key, [x, y]);
+          if (beside(nx, ny)) {
+            const path = [];
+            for (let c = [nx, ny]; c && !(c[0] === from.x && c[1] === from.y); c = prev.get(`${c[0]},${c[1]}`)) path.unshift(c);
+            return path;
+          }
+          next.push([nx, ny]);
+        }
+      }
+      frontier = next;
+    }
+    return null;
   }
 
   wait(ms) {

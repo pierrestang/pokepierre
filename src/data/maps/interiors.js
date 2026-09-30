@@ -72,7 +72,7 @@ export const interiors = {
         ifFlags: [FLAGS.reveilFortDeFrance],
         unlessFlags: [FLAGS.journeeLancee],
         steps: [
-          { face: { maman: 'right' } },
+          { approach: 'maman' },
           {
             speaker: 'Maman',
             say: ["On part tous ensemble cet après-midi. Avant ça, profite de l'île une dernière fois. Ton père est à sa cabane, et ta sœur… mystère."],
