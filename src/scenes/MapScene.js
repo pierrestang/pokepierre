@@ -3,6 +3,7 @@ import { TILE_SIZE, getTile } from '../data/tiles.js';
 import { FOLLOWERS } from '../data/story.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
+import { drawDecal } from '../art/tileArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE } from '../systems/CharacterSprite.js';
@@ -79,6 +80,7 @@ export class MapScene extends Phaser.Scene {
 
     this.npcs = [];
     this.props = [];
+    this.decals = [];
     this.followers = new Followers(this);
     const tileWalkable = createWalkableCheck(grid);
 
@@ -210,6 +212,20 @@ export class MapScene extends Phaser.Scene {
       this.props.push({ data, graphics });
     }
 
+    // Décors qui changent avec l'histoire (ex. cannes dans la caisse « À DONNER ») : { kind, x, y, ...options }.
+    const wantedDecals = (this.map.decals ?? []).filter(meetsConditions);
+    this.decals = this.decals.filter((d) => {
+      if (wantedDecals.includes(d.data)) return true;
+      d.graphics.destroy();
+      return false;
+    });
+    for (const data of wantedDecals) {
+      if (this.decals.some((d) => d.data === data)) continue;
+      const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);
+      drawDecal(graphics, data.kind, data.x * TILE_SIZE, data.y * TILE_SIZE, data);
+      this.decals.push({ data, graphics });
+    }
+
     const { tileX, tileY, facing } = this.player;
     this.followers.sync(
       FOLLOWERS.filter(meetsConditions),
@@ -267,10 +283,11 @@ export class MapScene extends Phaser.Scene {
         if (await this.runSteps(step.choices[index]?.steps ?? [])) return true;
       }
       if (step.give && items.add(step.give)) {
+        this.refreshActors();
         sfx('item');
         await this.dialog.open([step.text ?? `Tu as reçu : ${step.give.name}.`]);
       }
-      if (step.take) items.remove(step.take);
+      if (step.take && items.remove(step.take)) this.refreshActors();
       if (step.quality && souvenirs.add(step.quality)) {
         sfx('item');
         await this.dialog.open([`Tu as reçu : ${step.quality.name}.`]);

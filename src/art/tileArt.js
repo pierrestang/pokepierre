@@ -1689,6 +1689,33 @@ function fishCrate(g, px, py, x, y) {
   pixelArt(g, FISH_CRATE, px, py + 2);
 }
 
+// Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene) :
+// cannes à pêche qui dépassent de la caisse « À DONNER » (`count` : 1 ou 2), case (x, y) en pixels px, py.
+const DECALS = {
+  rodsInCrate(g, px, py, { count = 2 } = {}) {
+    const rods = [[4, 13, -1], [10, 16, 1]].slice(0, count);
+    for (const [bx, h, dir] of rods) {
+      const by = py + 6;                                                // pied, dans la caisse
+      for (let i = 0; i < h; i++) {
+        const x = px + bx + dir * Math.floor(i / 5);
+        rect(g, 0x303038, x - 1, by - i, 3, 1);                          // contour
+      }
+      for (let i = 0; i < h; i++) {
+        const x = px + bx + dir * Math.floor(i / 5);
+        rect(g, i < 4 ? 0xd8a868 : i < h - 4 ? 0x585860 : 0x8890a0, x, by - i, 1, 1);   // liège, brin, scion
+      }
+      const tx = px + bx + dir * Math.floor((h - 1) / 5);
+      rect(g, 0xd84838, tx, by - h, 1, 2);                              // pointe
+      rect(g, 0x383840, px + bx - (dir < 0 ? 3 : -1), by - 3, 3, 3);    // moulinet
+      rect(g, 0xc0c8d8, px + bx - (dir < 0 ? 2 : -2), by - 2, 1, 1);
+    }
+  },
+};
+
+export function drawDecal(g, kind, px, py, options) {
+  DECALS[kind]?.(g, px, py, options);
+}
+
 // Caisse « À DONNER » : caisse vide avec son étiquette de papier (texte griffonné au feutre rouge).
 const GIVE_CRATE = [
   '.kkkkkkkkkkkkkk.',

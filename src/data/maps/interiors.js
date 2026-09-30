@@ -200,6 +200,12 @@ export const interiors = {
       { kind: 'notice', x: 4, y: 0 },
       { kind: 'plant', x: 6, y: 3 },
     ],
+    // Cannes jetées par Papa dans la caisse « À DONNER » : deux, puis une fois que tu en as pris une.
+    decals: [
+      { kind: 'rodsInCrate', x: 0, y: 4, count: 2, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id] },
+      { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte] },
+      { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifItems: [ITEMS.canneAPeche.id] },
+    ],
     spawn: { x: 3, y: 4, facing: 'up' },
     npcs: [
       {
@@ -232,6 +238,11 @@ export const interiors = {
       { x: 4, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
       // Caisse « À DONNER » : une canne pour le pêcheur, une fois qu'il t'a montré la sienne, cassée.
       { x: 0, y: 4, unlessFlags: [FLAGS.papaFait], dialogue: ['Une caisse marquée « À DONNER ». Elle est encore vide.'] },
+      // Avant que le pêcheur t'ait montré sa canne cassée : les cannes restent dans la caisse.
+      {
+        x: 0, y: 4, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneMontree],
+        dialogue: ['Deux cannes à pêche dépassent de la caisse « À DONNER ».'],
+      },
       {
         x: 0, y: 4,
         ifFlags: [FLAGS.papaFait, FLAGS.canneMontree],
