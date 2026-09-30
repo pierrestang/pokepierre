@@ -1,21 +1,22 @@
 import { TILE_SIZE as S } from '../data/tiles.js';
 import { rect, sprite, hash } from './pixel.js';
+import { mod2, inFullTreeBlock, inForest } from '../data/treeBlocks.js';
 
 // Dessin procédural de chaque tuile (16x16), dans l'esprit de Rouge Feu.
 // `at(x, y)` renvoie le code de la case voisine (undefined hors carte).
 
 const C = {
-  path: 0xb0e2c0, pathDot: 0xc8f0d4,
-  grass: 0x90d49c, grassTuft: 0x70bc80, grassEdge: 0xc8f4d4, grassEdge2: 0xa8e2b4,
-  water: 0x4888e8, waterDeep: 0x3870d0, waterWave: 0x98c4f8,
+  path: 0xa8e8bc, pathDot: 0xc8f8d8,
+  grass: 0x78c890, grassTuft: 0x58a878, grassLight: 0xa8e0b8, grassEdge: 0xc0ecd0, grassEdge2: 0x98d8b0,
+  water: 0x3890f0, waterDeep: 0x2878e0, waterWave: 0xa8d8ff,
   rim: 0xa85838, rimLight: 0xe0a070,
 };
 
 // Cases considérées comme « pelouse » pour le liseré clair des zones d'herbe.
-const GRASSY = new Set(['.', 'f', 'h', 'i', '♣', '≈', '♠', '¥', 'F', 'S', 'M', 'R', 'W', 'D', 'U', 'O', 'Q', 'V', 'x']);
+const GRASSY = new Set(['.', 'f', 'ł', 'h', 'i', '♣', '≈', '♠', '¥', 'ĥ', 'ƀ', 'ƒ', 'F', 'S', 'M', 'R', 'W', 'D', 'U', 'O', 'Q', 'V', 'x']);
 
 // Petits objets posés au sol (lanterne, drapeau, cabine…) : leur sol est celui de leurs voisins.
-const SMALL_OBJECTS = new Set(['b', 'j', 'l', 'n', 'v', 't', 'y', 'c', 'e', 'a', 'd', 'g', 'p', 'H', 'z', '*', '&', '$', '!', '>', '<', '§', '¢', '€', 'þ', '¶', 'ň']);
+const SMALL_OBJECTS = new Set(['b', 'j', 'l', 'n', 'v', 't', 'y', 'c', 'e', 'a', 'd', 'g', 'p', 'H', 'z', '*', '&', '$', '!', '>', '<', '§', '¢', '€', 'þ', '¶', 'ň', 'ŕ']);
 
 function objectOnGrass(x, y, at) {
   const around = [at(x, y - 1), at(x, y + 1), at(x - 1, y), at(x + 1, y)].filter(Boolean);
@@ -44,64 +45,140 @@ function isGrassy(x, y, at) {
   return GRASSY.has(c);
 }
 
-const TREE = [
-  '.....kkkkkk.....',
-  '...kkmmllmmkk...',
-  '..kmmllhhllmmk..',
-  '.kdmmllhhllmmdk.',
-  '.kdmmmllllmmmdk.',
-  'kddkmmmmmmmmkddk',
-  'kdmmkkmmmmkkmmdk',
-  'kdmmllkmmkllmmdk',
-  'kddmmllmmllmmddk',
-  'kdddmmmmmmmmdddk',
-  '.kddkkmmmmkkddk.',
-  '.kdddddkkdddddk.',
-  '..kkddddddddkk..',
-  '....kkkttkkk....',
-  '......kttk......',
-  '......kkkk......',
-];
-const TREE_PAL = { k: 0x1c4a2c, d: 0x2c6c3c, m: 0x3c8c4c, l: 0x5cac5c, h: 0x94d484, t: 0x6c4c2c };
+// Sapin conique façon Rouge Feu, dessiné par étages superposés aux bords en dents de scie.
+// W = 32 (massif de 2x2 cases, 42 px de feuillage : dépasse de 12 px au-dessus du bloc)
+// ou 16 (arbre d'une case, 22 px de feuillage).
+const PINE = { k: 0x28582c, s: 0x2c6c34, d: 0x44903c, m: 0x6cb844, L: 0x9cd850, h: 0xd0f47c, t: 0x6c4828, T: 0x4c3018 };
+const pineCache = {};
+const PINE_H = { 32: 42, 16: 22 };
+function pineShape(W) {
+  if (pineCache[W]) return pineCache[W];
+  const f = W / 32;
+  const H = PINE_H[W];
+  const fy = (H - 1) / 30;
+  // [haut, bas, demi-largeur max] de chaque étage, du sommet vers le pied.
+  const tiers = [[0, 9, 5], [4, 16, 9.5], [9, 23, 13], [15, 30, 16]].map(([a, b, h]) => [a * fy, b * fy, h * f]);
+  const owner = [];                                                  // étage visible de chaque pixel (-1 : vide)
+  for (let y = 0; y < H; y++) {
+    owner.push([]);
+    for (let x = 0; x < W; x++) {
+      const dx = Math.abs(x + 0.5 - W / 2);
+      let o = -1;
+      tiers.forEach(([top, bottom, maxHalf], i) => {
+        if (o !== -1) return;
+        const tooth = [0, 1, 2, 1][Math.floor(dx) % 4] * fy * 1.2;  // bas de l'étage en dents de scie
+        if (y < top || y > bottom - tooth) return;
+        const hw = maxHalf * (y - top + 1.5) / (bottom - top + 1.5);
+        if (dx < hw) o = i;
+      });
+      owner[y].push(o);
+    }
+  }
+  pineCache[W] = owner;
+  return owner;
+}
 
-const PALM = [
-  '....kkk..kkk....',
-  '..kkllgkkgllkk..',
-  '.kllggllllggllk.',
-  'kllgkkgllgkkgllk',
-  'kgk..kgccgk..kgk',
-  'kk..kglccglk..kk',
-  '...kgk.tT.kgk...',
-  '...kk..tT..kk...',
-  '.......tT.......',
-  '......tT........',
-  '......tT........',
-  '......tT........',
-  '.....tTT........',
-  '.....tT.........',
-  '....sttTs.......',
-  '.....sss........',
-];
-const PALM_PAL = { k: 0x1c4a2c, g: 0x3c9c4c, l: 0x78cc60, c: 0x6c4020, t: 0xa87848, T: 0x6c4424 };
+// Dessine un sapin dont le pied est en (px + W/2, baseY).
+function pine(g, px, baseY, W) {
+  const owner = pineShape(W);
+  const H = owner.length;
+  const top = baseY - H - 1;
+  g.fillStyle(0x1c5040, 0.35);                                        // ombre au sol
+  g.fillRect(px + W * 0.12, baseY - 3, W * 0.76, 4);
+  g.fillRect(px + W * 0.22, baseY + 1, W * 0.56, 1);
+  const tw = W === 32 ? 6 : 4;                                        // tronc, à peine visible sous l'arbre
+  rect(g, PINE.k, px + W / 2 - tw / 2 - 1, baseY - 4, tw + 2, 5);
+  rect(g, PINE.t, px + W / 2 - tw / 2, baseY - 4, tw, 4);
+  rect(g, PINE.T, px + W / 2, baseY - 4, tw / 2, 4);
+  const at = (x, y) => (y >= 0 && y < H && x >= 0 && x < W ? owner[y][x] : -1);
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const o = at(x, y);
+      if (o < 0) continue;
+      const rel = (x + 0.5 - W / 2) / (W / 2);                        // -1 à gauche, +1 à droite
+      let c;
+      const edge = at(x - 1, y) < 0 || at(x + 1, y) < 0 || at(x, y - 1) < 0 || at(x, y + 1) < 0;
+      const skirt = at(x, y + 1) > o;                                 // bord de l'étage posé sur celui du dessous
+      if (edge) c = PINE.k;
+      else if (skirt) c = rel < -0.2 ? PINE.d : PINE.s;
+      else {
+        // Ombre sous l'étage du dessus : 2 px sombres juste sous son bord.
+        const underUpper = (at(x, y - 1) >= 0 && at(x, y - 1) < o) || (at(x, y - 2) >= 0 && at(x, y - 2) < o);
+        if (underUpper) c = rel < -0.3 ? PINE.m : PINE.d;
+        else if (rel < -0.45) c = (x + y) % 2 ? PINE.h : PINE.L;       // flanc éclairé, tramé
+        else if (rel < -0.1) c = (x + y) % 2 ? PINE.L : PINE.m;
+        else if (rel < 0.35) c = (x * 2 + y) % 5 === 0 ? PINE.L : PINE.m;
+        else c = (x + y) % 2 ? PINE.d : PINE.m;
+      }
+      rect(g, c, px + x, top + y, 1, 1);
+    }
+  }
+}
 
-const FLOWER = [
-  '................',
-  '....RRR..RRR....',
-  '...RWWRRRWWRR...',
-  '...RWRRRRRRRD...',
-  '....RRRYYRRD....',
-  '..RRRRYYYYRRRR..',
-  '.RWWRRYYYYRRRRD.',
-  '.RWRRRRYYRRRRRD.',
-  '..RRRDRRRRDRRD..',
-  '...RRDRRRRRDD...',
-  '....DDRRRRDD....',
-  '..GG..DDDD..GG..',
-  '.GGGG..gg..GGGG.',
-  '..GGGg.gg.gGGG..',
-  '....ggggggg.....',
+// Sol de sous-bois (façon Rouge Feu) : vert-bleu sombre, petites touffes.
+function forestFloor(g, px, py, x, y) {
+  rect(g, 0x4c9c78, px, py, S, S);
+  const h = hash(x, y, 41);
+  rect(g, 0x3c8468, px + (h % 10) + 2, py + ((h >> 4) % 10) + 3, 3, 1);
+  rect(g, 0x68b890, px + ((h >> 8) % 12) + 1, py + ((h >> 12) % 12) + 1, 1, 1);
+}
+
+// Sol sous un sapin : celui qui domine autour de l'arbre (autour de tout le bloc pour un grand sapin).
+function treeGround(g, px, py, x, y, at) {
+  let around;
+  if (inFullTreeBlock(x, y, at)) {
+    const bx = x - mod2(x);
+    const by = y - mod2(y);
+    around = [];
+    for (let i = -1; i <= 2; i++) {
+      around.push([bx + i, by - 1], [bx + i, by + 2], [bx - 1, by + i], [bx + 2, by + i]);
+    }
+  } else {
+    around = [[x, y - 1], [x, y + 1], [x - 1, y], [x + 1, y]];
+  }
+  const votes = { grass: 0, sand: 0, cobble: 0, path: 0 };
+  for (const [nx, ny] of around) {
+    const c = at(nx, ny);
+    if (!c || c === 'T') continue;
+    if (c === 'C') votes.cobble++;
+    else if (c === 's' || c === 'w') votes.sand++;
+    else if (c === 'P') votes.path++;
+    else if (isGrassy(nx, ny, at)) votes.grass++;
+  }
+  const best = ['grass', 'sand', 'cobble', 'path'].reduce((a, b) => (votes[b] > votes[a] ? b : a));
+  if (best === 'grass' && inFullTreeBlock(x, y, at) && inForest(x, y, at)) return forestFloor(g, px, py, x, y);
+  if (best === 'sand') return sand(g, px, py, x, y);
+  if (best === 'cobble') return cobble(g, px, py, x, y);
+  if (best === 'path') return path(g, px, py, x, y);
+  grass(g, px, py, x, y, at, { edges: false });
+}
+
+
+// Parterre façon Rouge Feu : deux fleurs rouges à cœur jaune et leurs feuilles.
+const BLOOM = [
+  '..kkk..',
+  '.kRRRk.',
+  'kRRWRRk',
+  'kRYYYRk',
+  'kRRYRRk',
+  '.kRRRk.',
+  'g.kkk.g',
+  'gg...gg',
 ];
-const FLOWER_PAL = { R: 0xe83838, D: 0xa82020, W: 0xf8f8f8, Y: 0xf8d030, G: 0x48a848, g: 0x2f7f3f };
+// `sway` : décalage des fleurs pour la deuxième image de l'animation (elles se balancent au vent).
+function flowerPatch(g, px, py, x, y, sway = 0) {
+  const white = hash(x, y, 23) % 5 === 0;
+  const pal = white
+    ? { k: 0x9098b0, R: 0xf8f8f8, W: 0xffffff, Y: 0xf8d030, g: 0x3c9848 }
+    : { k: 0xa01818, R: 0xf04030, W: 0xf8a090, Y: 0xf8d030, g: 0x3c9848 };
+  for (const [fx, fy] of [[1, 1], [8, 7]]) sprite(g, BLOOM, pal, px + fx + sway, py + fy);
+}
+
+// Deuxième image d'un parterre de fleurs ('f'), fleurs penchées d'un pixel (animation dans MapScene).
+export function drawFlowerSway(g, x, y, at) {
+  grass(g, x * S, y * S, x, y, at);
+  flowerPatch(g, x * S, y * S, x, y, 1);
+}
 
 function path(g, px, py, x, y) {
   rect(g, C.path, px, py, S, S);
@@ -110,16 +187,26 @@ function path(g, px, py, x, y) {
   rect(g, C.pathDot, px + ((h >> 8) % 13) + 1, py + ((h >> 12) % 13) + 1, 2, 1);
 }
 
-function grass(g, px, py, x, y, at) {
+function grass(g, px, py, x, y, at, { edges = true } = {}) {
   rect(g, C.grass, px, py, S, S);
   const h = hash(x, y, 1);
-  for (let i = 0; i < 2; i++) {
-    const tx = px + ((h >> (i * 8)) % 11) + 2;
-    const ty = py + ((h >> (i * 8 + 4)) % 11) + 3;
-    rect(g, C.grassTuft, tx, ty, 1, 2);
-    rect(g, C.grassTuft, tx + 2, ty, 1, 2);
-    rect(g, C.grassTuft, tx + 1, ty + 1, 1, 2);
+  // Petites touffes « ᵥᵥ » régulières, comme dans Rouge Feu : une case sur deux, en quinconce.
+  if ((x + y) % 2 === 0) {
+    const tx = px + 3 + (h % 3) + (y % 2) * 5;
+    const ty = py + 5 + ((h >> 4) % 3);
+    for (const dx of [0, 4]) {
+      rect(g, C.grassTuft, tx + dx, ty, 1, 1);
+      rect(g, C.grassTuft, tx + dx + 1, ty + 1, 1, 1);
+      rect(g, C.grassTuft, tx + dx + 2, ty, 1, 1);
+    }
   }
+  if (at(x, y - 1) === 'ĥ') {
+    g.fillStyle(0x1c5030, 0.25);                                     // ombre des hautes herbes du dessus
+    g.fillRect(px, py, S, 2);
+    g.fillStyle(0x1c5030, 0.12);
+    g.fillRect(px, py + 2, S, 1);
+  }
+  if (!edges) return;
   // Liseré clair là où la pelouse touche le chemin.
   const edge = (dx, dy) => {
     const n = at(x + dx, y + dy);
@@ -974,6 +1061,136 @@ function wheat(g, px, py, x, y) {
   if ((x + y) % 3 === 0) rect(g, 0xf8e080, px + 6, py + 7, 2, 1);
 }
 
+// Hautes herbes (façon Pokémon) : deux rangées de brins par case, pointe claire, flanc éclairé à gauche,
+// pied sombre souligné d'un trait, rangées décalées.
+const TALL_GRASS = [
+  '....L.......L...',
+  '....Lk..L...Lk..',
+  'L...LLk.Lk..LLk.',
+  'Lk..LLmdLLk.LLmd',
+  'Lmk.LmmdLmmdLmmd',
+  'mmddmmddmmddmmdd',
+  'mdddmdddmdddmddd',
+  'kkkkkkkkkkkkkkkk',
+  '......L.......L.',
+  '..L...Lk......Lk',
+  'k.Lk..LLk.L...LL',
+  'mdLLk.LLmdLk..LL',
+  'mdLmmdLmmdLmk.Lm',
+  'ddmmddmmddmmddmm',
+  'ddmdddmdddmdddmd',
+  'kkkkkkkkkkkkkkkk',
+];
+const TALL_PAL = { k: 0x1c5030, L: 0x9ce07c, m: 0x5cb45c, d: 0x3c8c48, '.': 0x347c4c };
+
+// Couleur d'un pixel de touffe : chaque touffe a sa nuance (plus claire, normale ou plus sombre),
+// tirée au hasard par touffe, pour casser l'effet de bloc.
+const TALL_SHADES = [
+  { k: 0x1c5030, L: 0x9ce07c, m: 0x5cb45c, d: 0x3c8c48 },
+  { k: 0x1c5030, L: 0xb0ec8c, m: 0x6cc468, d: 0x489c50 },
+  { k: 0x184828, L: 0x88d070, m: 0x4ca450, d: 0x347c40 },
+];
+function tuftColor(c, lx, ly, x, y) {
+  const row = ly < 8 ? 0 : 1;
+  const col = row === 0 ? (lx < 8 ? 0 : 1) : ((lx + 4) % 16 < 8 ? 2 : 3);
+  return TALL_SHADES[hash(x, y, 50 + row * 4 + col) % 3][c];
+}
+
+// Coins arrondis : sur un coin extérieur de la zone, la touffe du coin n'est pas dessinée.
+function tuftSkipped(lx, ly, up, down, left, right) {
+  if (ly < 8) return (!up && !left && lx < 8) || (!up && !right && lx >= 8);
+  const inLeft = (lx + 4) % 16 >= 12 || lx < 4;
+  return (!down && !left && inLeft && lx < 8) || (!down && !right && lx >= 12);
+}
+
+// Relief : au bord d'une zone de hautes herbes, le sol sombre laisse voir la pelouse, les coins sont
+// arrondis, les touffes du haut dépassent sur la case du dessus et la pelouse du dessous reçoit leur ombre.
+function tallGrass(g, px, py, x, y, at) {
+  const tall = (dx, dy) => at(x + dx, y + dy) === 'ĥ';
+  const up = tall(0, -1);
+  const down = tall(0, 1);
+  const left = tall(-1, 0);
+  const right = tall(1, 0);
+  if (!up || !down || !left || !right) grass(g, px, py, x, y, at, { edges: false });
+  TALL_GRASS.forEach((row, ly) => {
+    for (let lx = 0; lx < S; lx++) {
+      const c = row[lx];
+      if (c === '.') {
+        const inside = (up || ly >= 5) && (down || ly <= 12) && (left || lx >= 3) && (right || lx <= 12);
+        if (inside) rect(g, TALL_PAL['.'], px + lx, py + ly, 1, 1);
+      } else if (!tuftSkipped(lx, ly, up, down, left, right)) {
+        rect(g, tuftColor(c, lx, ly, x, y), px + lx, py + ly, 1, 1);
+      }
+    }
+  });
+  if (!up) {
+    // Pointes des touffes qui dépassent sur la case du dessus (déjà dessinée).
+    TALL_GRASS.slice(0, 4).forEach((row, ly) => {
+      for (let lx = 0; lx < S; lx++) {
+        const c = row[lx];
+        if (c !== '.' && !tuftSkipped(lx, ly, up, down, left, right)) rect(g, tuftColor(c, lx, ly, x, y), px + lx, py + ly - 3, 1, 1);
+      }
+    });
+  }
+}
+
+// Touffes de la case (x, y) qui passent devant un personnage qui s'y tient (comme dans Pokémon) :
+// les 10 rangées du bas de la case, sol transparent, dessinées en (0, 0).
+export function drawTallGrassCover(g, x, y, at) {
+  const tall = (dx, dy) => at(x + dx, y + dy) === 'ĥ';
+  const [up, down, left, right] = [tall(0, -1), tall(0, 1), tall(-1, 0), tall(1, 0)];
+  TALL_GRASS.forEach((row, ly) => {
+    if (ly < 6) return;
+    for (let lx = 0; lx < S; lx++) {
+      const c = row[lx];
+      if (c !== '.' && !tuftSkipped(lx, ly, up, down, left, right)) rect(g, tuftColor(c, lx, ly, x, y), lx, ly - 6, 1, 1);
+    }
+  });
+}
+
+// Buisson rond (façon Pokémon), contour sombre, reflets clairs.
+function bush(g, px, py, x, y, at) {
+  grass(g, px, py, x, y, at);
+  rect(g, 0x000000, px + 3, py + 14, 10, 1);
+  rect(g, 0x1c4c1c, px + 2, py + 3, 12, 11);
+  rect(g, 0x1c4c1c, px + 1, py + 5, 14, 7);
+  rect(g, 0x3c8c34, px + 3, py + 4, 10, 9);
+  rect(g, 0x3c8c34, px + 2, py + 6, 12, 5);
+  rect(g, 0x2c6c2c, px + 3, py + 10, 10, 2);
+  // Grappes de feuilles : petits arcs clairs
+  for (const [lx, ly] of [[4, 4], [9, 5], [5, 8], [10, 8]]) {
+    rect(g, 0x5cb048, px + lx, py + ly, 3, 2);
+    rect(g, 0x88d068, px + lx, py + ly, 2, 1);
+    rect(g, 0x2c6c2c, px + lx, py + ly + 2, 3, 1);
+  }
+}
+
+// Rocher sur la plage.
+function beachRock(g, px, py, x, y, at) {
+  smallObjectGround(g, px, py, x, y, at);
+  rect(g, 0x000000, px + 3, py + 13, 10, 1);
+  rect(g, 0x4c4c54, px + 2, py + 6, 12, 7);
+  rect(g, 0x4c4c54, px + 4, py + 4, 8, 2);
+  rect(g, 0x9c9ca8, px + 3, py + 6, 10, 6);
+  rect(g, 0x9c9ca8, px + 5, py + 5, 6, 1);
+  rect(g, 0xc8c8d0, px + 4, py + 6, 4, 2);
+  rect(g, 0x70707c, px + 8, py + 9, 4, 3);
+}
+
+// Petites fleurs blanches et jaunes semées dans l'herbe.
+function smallFlowers(g, px, py, x, y, at) {
+  grass(g, px, py, x, y, at);
+  const h = hash(x, y, 19);
+  const spots = [[2, 3], [9, 2], [5, 8], [12, 7], [3, 12], [10, 12]];
+  spots.forEach(([fx, fy], i) => {
+    const c = (h >> i) & 1 ? 0xf8f8f8 : 0xf8d840;
+    rect(g, c, px + fx, py + fy, 2, 2);
+    rect(g, c, px + fx - 1, py + fy + 1, 1, 1);
+    rect(g, c, px + fx + 2, py + fy + 1, 1, 1);
+    rect(g, 0xe88838, px + fx, py + fy + 1, 1, 1);
+  });
+}
+
 function blackboard(g, px, py, x, y, at) {
   innerWall(g, px, py, x, y, at);
   rect(g, 0x6c4424, px, py + 2, S, 11);
@@ -982,31 +1199,61 @@ function blackboard(g, px, py, x, y, at) {
   rect(g, 0xe8e8e0, px + 2, py + 8, 10, 1);
 }
 
+// Barrière blanche façon Rouge Feu : poteau à chapeau arrondi, deux traverses, contour gris ardoise,
+// ombre portée sur l'herbe. Verticale quand elle continue vers le haut ou le bas.
 function fence(g, px, py, x, y, at) {
-  const k = 0x606870, w = 0xf8f8f8, s = 0xb8c0c8;
-  const joins = (dx) => ['F', 'S'].includes(at(x + dx, y));
-  // Traverses (vers les voisins de clôture)
-  for (const ry of [6, 10]) {
-    const x0 = joins(-1) ? 0 : 6;
-    const x1 = joins(1) ? S : 10;
-    rect(g, k, px + x0, py + ry - 1, x1 - x0, 4);
-    rect(g, w, px + x0, py + ry, x1 - x0, 1);
-    rect(g, s, px + x0, py + ry + 1, x1 - x0, 1);
+  const k = 0x58606c, w = 0xf8f8f8, s1 = 0xd0d4e0, s2 = 0x9ca4b4;
+  const isFence = (dx, dy) => ['F', 'S'].includes(at(x + dx, y + dy));
+  const left = isFence(-1, 0);
+  const right = isFence(1, 0);
+  const up = isFence(0, -1);
+  const down = isFence(0, 1);
+  g.fillStyle(0x000000, 0.15);                                      // ombre
+  // Traverses horizontales
+  for (const ry of [4, 9]) {
+    const x0 = left ? 0 : 7;
+    const x1 = right ? S : 9;
+    if (x1 <= x0) continue;
+    g.fillRect(px + x0, py + ry + 5, x1 - x0, 1);
+    rect(g, k, px + x0, py + ry, x1 - x0, 4);
+    rect(g, w, px + x0, py + ry + 1, x1 - x0, 1);
+    rect(g, s1, px + x0, py + ry + 2, x1 - x0, 1);
   }
   // Poteau
-  rect(g, k, px + 5, py + 3, 6, 12);
-  rect(g, w, px + 6, py + 4, 4, 10);
-  rect(g, s, px + 9, py + 4, 1, 10);
-  rect(g, 0x78a080, px + 5, py + 15, 6, 1); // ombre
+  if (up || down) {
+    // Clôture verticale : poteau continu, traverses vues de dessus, un chapeau par case
+    const top = up ? 0 : 2;
+    const bottom = down ? S : 14;
+    rect(g, k, px + 5, py + top, 6, bottom - top);
+    rect(g, w, px + 6, py + top + (up ? 0 : 1), 3, bottom - top - (up ? 0 : 1) - (down ? 0 : 1));
+    rect(g, s1, px + 9, py + top + (up ? 0 : 1), 1, bottom - top - (up ? 0 : 1) - (down ? 0 : 1));
+    rect(g, k, px + 5, py + 7, 6, 1);                               // jointure entre deux poteaux
+    rect(g, s2, px + 6, py + 6, 4, 1);
+    g.fillRect(px + 11, py + top + 1, 1, bottom - top - 1);          // ombre à droite
+  } else {
+    g.fillRect(px + 6, py + 15, 5, 1);
+    rect(g, k, px + 6, py + 1, 4, 1);                                // chapeau arrondi
+    rect(g, k, px + 5, py + 2, 6, 13);
+    rect(g, w, px + 6, py + 2, 4, 12);
+    rect(g, s1, px + 9, py + 3, 1, 11);
+    rect(g, s2, px + 6, py + 13, 4, 1);
+    rect(g, 0xffffff, px + 6, py + 2, 2, 1);
+  }
 }
 
 function sign(g, px, py) {
-  rect(g, 0x5c3818, px + 7, py + 10, 3, 6);            // pied
-  rect(g, 0x5c3818, px + 1, py + 2, 14, 10);           // cadre
-  rect(g, 0xd8a058, px + 2, py + 3, 12, 8);            // planche
-  rect(g, 0xf0c880, px + 2, py + 3, 12, 1);
-  rect(g, 0x8c5c28, px + 4, py + 6, 8, 1);             // « texte »
-  rect(g, 0x8c5c28, px + 4, py + 8, 6, 1);
+  const K = 0x503018;
+  g.fillStyle(0x000000, 0.2);                            // ombre
+  g.fillRect(px + 3, py + 14, 11, 2);
+  rect(g, K, px + 6, py + 10, 4, 6);                     // pied
+  rect(g, 0x8c5c30, px + 7, py + 10, 2, 5);
+  rect(g, K, px + 1, py + 2, 14, 10);                    // cadre
+  rect(g, 0xd8a060, px + 2, py + 3, 12, 8);              // planche
+  rect(g, 0xf0c888, px + 2, py + 3, 12, 1);
+  rect(g, 0xb88040, px + 2, py + 10, 12, 1);
+  rect(g, 0xc08848, px + 2, py + 6, 12, 1);              // veine du bois
+  rect(g, K, px + 4, py + 5, 7, 1);                      // « texte »
+  rect(g, K, px + 4, py + 8, 5, 1);
 }
 
 function mailbox(g, px, py) {
@@ -1022,24 +1269,197 @@ function mailbox(g, px, py) {
 }
 
 function sand(g, px, py, x, y) {
-  rect(g, 0xf2e0a8, px, py, S, S);
+  rect(g, 0xf8e4a0, px, py, S, S);
   const h = hash(x, y, 3);
-  rect(g, 0xdcc488, px + (h % 13) + 1, py + ((h >> 4) % 13) + 1, 1, 1);
-  rect(g, 0xdcc488, px + ((h >> 8) % 13) + 1, py + ((h >> 12) % 13) + 1, 2, 1);
-  rect(g, 0xfff4d0, px + ((h >> 16) % 13) + 1, py + ((h >> 20) % 13) + 1, 1, 1);
+  const h2 = hash(x, y, 13);
+  for (let i = 0; i < 4; i++) {                                     // grains sombres, un par quart
+    const gx = px + (i % 2) * 8 + ((h >> (i * 6)) % 7);
+    const gy = py + Math.floor(i / 2) * 8 + ((h >> (i * 6 + 3)) % 7);
+    rect(g, 0xe0c488, gx, gy, i % 2 ? 2 : 1, 1);
+  }
+  for (let i = 0; i < 3; i++) {                                     // grains clairs
+    rect(g, 0xfff4d0, px + ((h2 >> (i * 8)) % 15), py + ((h2 >> (i * 8 + 4)) % 15), 1, 1);
+  }
+
+}
+
+// Pavés gris posés en chevrons, bordés de petites pierres blanches là où ils touchent autre chose.
+function pavement(g, px, py, x, y, at) {
+  rect(g, 0xb8bcc8, px, py, S, S);
+  // Chevrons : briquettes 4x2 alternant horizontal / vertical, décalées à chaque rangée.
+  for (let by = 0; by < S; by += 4) {
+    for (let bx = 0; bx < S; bx += 4) {
+      const cx = px + bx;
+      const cy = py + by;
+      if (((bx + by) / 4) % 2 === 0) {
+        rect(g, 0xdcdee6, cx, cy, 3, 1);
+        rect(g, 0xdcdee6, cx + 1, cy + 2, 3, 1);
+      } else {
+        rect(g, 0xdcdee6, cx, cy, 1, 3);
+        rect(g, 0xdcdee6, cx + 2, cy + 1, 1, 3);
+      }
+    }
+  }
+  const other = (dx, dy) => {
+    const n = at(x + dx, y + dy);
+    return n !== undefined && n !== 'ç' && n !== 'ŝ';
+  };
+  const stones = (horizontal, fixed) => {
+    for (let i = 0; i < S; i += 4) {
+      const [sx, sy] = horizontal ? [px + i, py + fixed] : [px + fixed, py + i];
+      rect(g, 0x9098a8, sx, sy, 4, 4);
+      rect(g, 0xf8f8f8, sx, sy, 3, 3);
+    }
+  };
+  if (other(0, -1)) stones(true, 0);
+  if (other(0, 1)) stones(true, S - 4);
+  if (other(-1, 0)) stones(false, 0);
+  if (other(1, 0)) stones(false, S - 4);
+}
+
+// Barrière en rondins (poteaux ronds bruns), horizontale ou verticale selon les voisins.
+// Petite barrière de jardin en rondins : piquets ronds bas reliés par une traverse. Les piquets sont
+// alignés sur deux colonnes fixes (x 1 et 10 de la case) pour que les côtés tombent pile sur les coins.
+function logFence(g, px, py, x, y, at) {
+  grass(g, px, py, x, y, at);
+  const is = (dx, dy) => at(x + dx, y + dy) === 'ł';
+  const K = 0x3c2014;
+  const horizontal = is(-1, 0) || is(1, 0);
+  // Côté gauche ou droit d'un enclos : la clôture continue vers la droite ou vers la gauche au-dessus / en dessous.
+  const rightSide = is(-1, -1) || is(-1, 1);
+  const col = horizontal ? null : rightSide ? 10 : 1;
+  const post = (lx, ly) => {
+    g.fillStyle(0x000000, 0.18);
+    g.fillRect(px + lx + 1, py + ly + 8, 4, 1);
+    rect(g, K, px + lx, py + ly + 1, 5, 7);
+    rect(g, K, px + lx + 1, py + ly, 3, 1);
+    rect(g, 0x8c5030, px + lx + 1, py + ly + 2, 3, 5);
+    rect(g, 0xb07040, px + lx + 1, py + ly + 2, 1, 5);
+    rect(g, 0xe0b078, px + lx + 1, py + ly + 1, 3, 1);                // dessus du rondin
+  };
+  const vRail = (c, y0, y1) => {
+    rect(g, K, px + c + 1, py + y0, 3, y1 - y0);
+    rect(g, 0x9c6038, px + c + 2, py + y0, 1, y1 - y0);
+  };
+  if (horizontal) {
+    const x0 = is(-1, 0) ? 0 : 2;
+    const x1 = is(1, 0) ? S : 14;
+    rect(g, K, px + x0, py + 9, x1 - x0, 3);                          // traverse
+    rect(g, 0x9c6038, px + x0, py + 10, x1 - x0, 1);
+    // Coin d'enclos : la traverse repart vers le bas (ou le haut) sous le piquet du coin.
+    const cornerCol = is(-1, 0) && !is(1, 0) ? 10 : 1;
+    if (is(0, 1)) vRail(cornerCol, 11, S);
+    if (is(0, -1)) vRail(cornerCol, 0, 9);
+    post(1, 5);
+    post(10, 5);
+  } else {
+    vRail(col, is(0, -1) ? 0 : 6, is(0, 1) ? S : 12);
+    post(col, 5);
+  }
+}
+
+// Potager : terre retournée en sillons, rangées de salades et de carottes.
+function vegetablePatch(g, px, py, x, y) {
+  rect(g, 0x7c5030, px, py, S, S);
+  for (let ly = 1; ly < S; ly += 5) {
+    rect(g, 0x5c3820, px, py + ly + 3, S, 1);                         // creux du sillon
+    rect(g, 0x9c6c40, px, py + ly, S, 1);                             // crête
+  }
+  // Deux variétés : une rangée de carottes et une rangée de salades (ordre alterné d'une case à l'autre).
+  for (const ly of [2, 10]) {
+    const carrots = (ly === 2) === (x % 2 === 0);
+    for (const lx of [2, 9]) {
+      if (carrots) {
+        rect(g, 0xe87828, px + lx + 1, py + ly + 3, 2, 2);             // carotte
+        rect(g, 0x3c9c3c, px + lx, py + ly, 1, 3);                     // fanes
+        rect(g, 0x58b848, px + lx + 1, py + ly - 1, 2, 4);
+        rect(g, 0x3c9c3c, px + lx + 3, py + ly, 1, 3);
+      } else {
+        rect(g, 0x1c5028, px + lx, py + ly, 5, 5);                     // salade
+        rect(g, 0x68c050, px + lx + 1, py + ly, 3, 4);
+        rect(g, 0x98e070, px + lx + 1, py + ly + 1, 2, 2);
+        rect(g, 0x48a040, px + lx, py + ly + 2, 1, 2);
+        rect(g, 0x48a040, px + lx + 4, py + ly + 2, 1, 2);
+      }
+    }
+  }
+}
+
+// Falaise de roche brune (façon Rouge Feu) : arête herbeuse en haut, fissures, pied ombré.
+function cliff2(g, px, py, x, y, at) {
+  const isCliff = (dx, dy) => ['ĉ', 'ŝ'].includes(at(x + dx, y + dy));
+  // Roche en gros blocs arrondis (4 par case, rangées décalées) : contour sombre, reflet en haut à gauche.
+  rect(g, 0x5c3418, px, py, S, S);
+  const shift = (y % 2) * 4;
+  for (const [bx, by] of [[-8, 0], [0, 0], [8, 0], [-8, 8], [0, 8], [8, 8]]) {
+    const rx = bx + (by ? shift : 4 - shift);
+    const x0 = Math.max(rx, 0);
+    const x1 = Math.min(rx + 8, S);
+    if (x1 - x0 < 2) continue;
+    const r = (c, dx, dy, w, h) => {
+      const a = Math.max(rx + dx, x0);
+      const b = Math.min(rx + dx + w, x1);
+      if (b > a) rect(g, c, px + a, py + by + dy, b - a, h);
+    };
+    r(0xa86c3c, 1, 1, 6, 6);
+    r(0xa86c3c, 0, 2, 8, 4);
+    r(0xd09860, 1, 1, 4, 1);                                        // reflet
+    r(0xd09860, 1, 2, 1, 2);
+    r(0x7c4824, 2, 6, 5, 1);                                        // ombre du bas
+    r(0x7c4824, 6, 3, 1, 3);
+  }
+  if (!isCliff(0, -1)) {                                             // arête : herbe qui déborde
+    rect(g, C.grass, px, py, S, 3);
+    rect(g, 0x58a878, px, py + 3, S, 1);
+    rect(g, 0x5c3418, px, py + 4, S, 1);
+  }
+  if (!isCliff(0, 1)) { rect(g, 0x5c3418, px, py + S - 2, S, 2); }   // pied
+  if (!isCliff(-1, 0)) { rect(g, 0x70401c, px, py, 1, S); rect(g, 0xd8a070, px + 1, py + 4, 1, S - 6); }
+  if (!isCliff(1, 0)) { rect(g, 0x5c3418, px + S - 2, py, 2, S); }
+}
+
+// Escalier de pierre taillé dans la falaise.
+function stairs(g, px, py, x, y, at) {
+  rect(g, 0x70401c, px, py, S, S);
+  for (let ly = 0; ly < S; ly += 4) {
+    rect(g, 0xd8d0c0, px + 2, py + ly, S - 4, 3);
+    rect(g, 0xf0ece0, px + 2, py + ly, S - 4, 1);
+    rect(g, 0x9c9080, px + 2, py + ly + 3, S - 4, 1);
+  }
+}
+
+// Eau de mer : bleu profond, vaguelettes en biais qui se raccordent d'une case à l'autre.
+function seaWater(g, px, py, x, y) {
+  rect(g, 0x4078e0, px, py, S, S);
+  for (const [wx, wy] of [[0, 1], [8, 5], [0, 9], [8, 13]]) {
+    const ox = (wx + (y % 2) * 4) % 16;
+    rect(g, 0x70a0f8, px + ox, py + wy, 4, 1);                     // crête claire
+    rect(g, 0x70a0f8, px + ox + 4, py + wy + 1, 2, 1);
+    rect(g, 0x3068d0, px + ox + 1, py + wy + 1, 3, 1);             // creux sombre
+  }
+  if (hash(x, y, 4) % 3 === 0) rect(g, 0xa8c8f8, px + 10, py + 10, 2, 1);
+}
+
+// Rocher dans la mer (façon îles Sevii) : bloc gris cerclé d'écume.
+function seaRock(g, px, py, x, y) {
+  seaWater(g, px, py, x, y);
+  rect(g, 0x305ec0, px + 1, py + 3, 14, 12);                       // eau plus sombre autour
+  rect(g, 0x305ec0, px + 2, py + 2, 12, 14);
+  rect(g, 0xd0e4f8, px + 2, py + 12, 12, 2);                       // écume
+  rect(g, 0x404850, px + 3, py + 4, 10, 9);
+  rect(g, 0x404850, px + 4, py + 3, 8, 11);
+  rect(g, 0xa8b0b8, px + 4, py + 4, 8, 8);
+  rect(g, 0xe0e4e8, px + 5, py + 5, 3, 2);
+  rect(g, 0x70787c, px + 8, py + 8, 4, 3);
+  rect(g, 0x70787c, px + 5, py + 10, 3, 1);
 }
 
 // Mer : écume blanche là où l'eau touche la terre (pas le ponton).
 function sea(g, px, py, x, y, at) {
-  rect(g, 0x3c80e0, px, py, S, S);
-  rect(g, 0x3070d0, px, py + 7, S, 1);
-  rect(g, 0x3070d0, px, py + 15, S, 1);
-  const h = hash(x, y, 4);
-  rect(g, 0x88bcf8, px + (h % 8) + 2, py + 3, 4, 1);
-  rect(g, 0x88bcf8, px + ((h >> 5) % 8) + 3, py + 11, 3, 1);
+  seaWater(g, px, py, x, y);
   const shore = (dx, dy) => {
     const n = at(x + dx, y + dy);
-    return n !== undefined && !['w', '~', '=', 'B'].includes(n);
+    return n !== undefined && !['w', '~', '=', 'B', 'ø'].includes(n);
   };
   if (shore(0, -1)) { rect(g, 0xf0f8ff, px, py, S, 2); rect(g, 0xb8d8f8, px, py + 2, S, 1); }
   if (shore(0, 1)) { rect(g, 0xf0f8ff, px, py + S - 2, S, 2); rect(g, 0xb8d8f8, px, py + S - 3, S, 1); }
@@ -1056,53 +1476,502 @@ function pier(g, px, py, x, y, at) {
   }
   if (at(x - 1, y) !== '=') { rect(g, 0x5c3818, px, py, 2, S); rect(g, 0x3c2410, px + 1, py + 6, 2, 3); }
   if (at(x + 1, y) !== '=') { rect(g, 0x5c3818, px + S - 2, py, 2, S); rect(g, 0x3c2410, px + S - 3, py + 6, 2, 3); }
+  // Bout du ponton : bitte d'amarrage sur le coin extérieur, et un rouleau de corde.
+  const outerEdge = at(x - 1, y) !== '=' || at(x + 1, y) !== '=';
+  if (outerEdge && at(x, y + 1) !== '=' && at(x, y + 1) !== undefined) {
+    const bx = at(x - 1, y) !== '=' ? 2 : S - 7;
+    rect(g, 0x303038, px + bx, py + 8, 5, 6);
+    rect(g, 0x585868, px + bx + 1, py + 8, 3, 2);
+    rect(g, 0x9098a8, px + bx + 1, py + 8, 1, 1);
+    if (at(x - 1, y) !== '=') {
+      rect(g, 0xc8a870, px + 9, py + 9, 5, 4);                        // corde enroulée
+      rect(g, 0x8c7048, px + 10, py + 10, 3, 2);
+      rect(g, 0xe0c890, px + 11, py + 10, 1, 1);
+    }
+  }
 }
 
+// Étoile de mer et coquillage posés sur le sable.
+function starfish(g, px, py, x, y) {
+  sand(g, px, py, x, y);
+  const c = 0xf08850, k = 0xa84828;
+  rect(g, k, px + 6, py + 4, 3, 9);
+  rect(g, k, px + 3, py + 7, 9, 3);
+  rect(g, k, px + 4, py + 11, 2, 2);
+  rect(g, k, px + 9, py + 11, 2, 2);
+  rect(g, c, px + 7, py + 5, 1, 7);
+  rect(g, c, px + 4, py + 8, 7, 1);
+  rect(g, c, px + 5, py + 11, 1, 1);
+  rect(g, c, px + 9, py + 11, 1, 1);
+  rect(g, 0xf8c8a0, px + 7, py + 8, 1, 1);
+}
+
+function shell(g, px, py, x, y) {
+  sand(g, px, py, x, y);
+  const k = 0xb07868;
+  rect(g, k, px + 5, py + 6, 6, 5);
+  rect(g, k, px + 7, py + 11, 2, 1);
+  rect(g, 0xf8e0d0, px + 6, py + 7, 4, 3);
+  rect(g, 0xe8b8a8, px + 7, py + 7, 1, 3);
+  rect(g, 0xe8b8a8, px + 9, py + 7, 1, 3);
+  rect(g, 0xfff4ec, px + 6, py + 7, 1, 1);
+}
+
+// Parasol rayé planté dans le sable (la toile dépasse sur la case du dessus).
+function parasol(g, px, py, x, y) {
+  sand(g, px, py, x, y);
+  g.fillStyle(0x000000, 0.15);
+  g.fillEllipse(px + 9, py + 13, 18, 6);
+  rect(g, 0x8c7050, px + 7, py - 1, 2, 16);                           // mât
+  rect(g, 0x5c3c20, px - 1, py - 8, 18, 8);                           // toile
+  rect(g, 0x5c3c20, px + 1, py - 10, 14, 2);
+  for (let i = 0; i < 4; i++) rect(g, i % 2 ? 0xf8f8f8 : 0xe84848, px + i * 4, py - 9 + (i === 0 || i === 3 ? 2 : 0), 4, i === 0 || i === 3 ? 5 : 7);
+  rect(g, 0xffffff, px + 5, py - 9, 2, 1);
+}
+
+// Transat en toile bleue.
+function deckchair(g, px, py, x, y) {
+  sand(g, px, py, x, y);
+  g.fillStyle(0x000000, 0.15);
+  g.fillRect(px + 3, py + 14, 11, 2);
+  rect(g, 0x6c5030, px + 3, py + 2, 10, 13);
+  rect(g, 0x48a0d8, px + 4, py + 3, 8, 11);
+  for (let ly = 4; ly < 14; ly += 3) rect(g, 0xf8f8f8, px + 4, py + ly, 8, 1);
+  rect(g, 0x6c5030, px + 4, py + 8, 8, 1);                             // pliure du dossier
+}
+
+// Râtelier de cannes à pêche contre le mur, et caisse de poissons (cabane de pêche).
+function fishingRods(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  rect(g, 0x5c3818, px + 1, py + 10, 14, 4);
+  for (const rx of [3, 7, 11]) {
+    rect(g, 0x8c5c30, px + rx, py - 8, 1, 20);
+    rect(g, 0x303038, px + rx - 1, py + 6, 3, 2);                      // moulinet
+  }
+  rect(g, 0xe8e8e8, px + 4, py - 8, 1, 6);                              // fil
+}
+
+function fishCrate(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 2, py + 14, 13, 2);
+  rect(g, 0x5c3818, px + 1, py + 3, 14, 12);
+  rect(g, 0xa87848, px + 2, py + 4, 12, 10);
+  rect(g, 0x5c3818, px + 2, py + 8, 12, 1);
+  for (const [fx, fy] of [[3, 5], [8, 5], [5, 9]]) {                   // poissons
+    rect(g, 0x5878a8, px + fx, py + fy, 5, 2);
+    rect(g, 0xa8c8e8, px + fx + 1, py + fy, 2, 1);
+  }
+}
+
+
+
+// Sol sous un palmier (le palmier lui-même est dessiné dans la passe des grands objets, drawTall).
 function palm(g, px, py, x, y, at) {
   const around = [at(x, y - 1), at(x, y + 1), at(x - 1, y), at(x + 1, y)];
   if (palmOnGrass(x, y, at)) grass(g, px, py, x, y, at);
   else if (around.includes('C') && !around.includes('s')) cobble(g, px, py, x, y);   // palmier en ville
   else sand(g, px, py, x, y);
-  // Ombre au pied (semi-transparente)
-  g.fillStyle(0x000000, 0.18);
-  g.fillRect(px + 4, py + 14, 7, 2);
-  sprite(g, PALM, PALM_PAL, px, py); // les 's' du motif restent transparents
 }
 
-function floor(g, px, py, x) {
+// Grand palmier (36 x 40 px, pied au centre du bas de sa case) : tronc à écailles légèrement courbé,
+// onze palmes épaisses aux bords dentelés avec nervure claire.
+const PALM_C = { k: 0x1c4c28, d: 0x2c7c38, m: 0x48a848, L: 0x7cd05c, h: 0xc0f080, tk: 0x4c2c14, t1: 0xc89058, t2: 0x9c6834, t3: 0x6c4424 };
+const PALM_W = 36;
+const PALM_H = 40;
+let palmPixels = null;
+function palmSprite() {
+  if (palmPixels) return palmPixels;
+  const W = PALM_W;
+  const H = PALM_H;
+  const grid = Array.from({ length: H }, () => Array(W).fill(null));
+  const set = (x, y, c) => { if (x >= 0 && x < W && y >= 0 && y < H) grid[y][x] = c; };
+  const cx = 18;
+  const cy = 13;
+  // Tronc : du pied (17, 39) à la couronne, courbé vers la gauche au milieu ; écailles en chevrons.
+  for (let y = H - 1; y >= cy; y--) {
+    const t = (H - 1 - y) / (H - 1 - cy);
+    const mid = Math.round(17 - Math.sin(t * Math.PI) * 2.5 + t);
+    const w = t < 0.12 ? 6 : 5;
+    const ring = (H - 1 - y) % 4;
+    for (let dx = -1; dx <= w; dx++) {
+      const x = mid - Math.floor(w / 2) + dx;
+      let c;
+      if (dx === -1 || dx === w) c = 'tk';
+      else if (ring === 0) c = dx === Math.floor(w / 2) ? 't3' : 't2';  // bord d'écaille
+      else if (dx <= 1) c = 't1';
+      else if (dx >= w - 1) c = 't3';
+      else c = ring === 1 ? 't1' : 't2';
+      set(x, y, c);
+    }
+  }
+  // Palmes : [angle (degrés), longueur, courbure vers le bas]
+  // Palmes en arc : elles partent vers le haut puis retombent (angle négatif = vers le haut).
+  const leaves = [[-160, 16, 1.1], [-20, 16, 1.1], [-125, 13, 1.3], [-55, 13, 1.3], [-92, 9, 1.5], [170, 13, 0.7], [10, 13, 0.7], [135, 10, 0.6], [45, 10, 0.6]];
+  const leaf = Array.from({ length: H }, () => Array(W).fill(0));
+  const rib = Array.from({ length: H }, () => Array(W).fill(false));
+  for (const [deg, len, droop] of leaves) {
+    const a = (deg * Math.PI) / 180;
+    for (let t = 0; t <= 1; t += 0.015) {
+      const x = cx + Math.cos(a) * t * len;
+      const y = cy + Math.sin(a) * t * len + droop * t * t * len;
+      const r = 3.4 * Math.pow(Math.sin(Math.PI * Math.min(t * 1.15, 1)), 0.7) + 0.6;   // large au milieu, pointue au bout
+      for (let yy = Math.floor(y - r); yy <= Math.ceil(y + r); yy++) {
+        for (let xx = Math.floor(x - r); xx <= Math.ceil(x + r); xx++) {
+          if (xx < 0 || xx >= W || yy < 0 || yy >= H) continue;
+          if ((xx + 0.5 - x) ** 2 + (yy + 0.5 - y) ** 2 <= r * r) leaf[yy][xx] = 1;
+        }
+      }
+      if (t > 0.1 && t < 0.9) {
+        const rx = Math.round(x);
+        const ry = Math.round(y);
+        if (ry >= 0 && ry < H && rx >= 0 && rx < W) rib[ry][rx] = true;
+      }
+    }
+  }
+  // Bords dentelés : on creuse une encoche sur le bord inférieur des palmes, un pixel sur trois.
+  const on0 = (x, y) => y >= 0 && y < H && x >= 0 && x < W && leaf[y][x];
+  const notches = [];
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (on0(x, y) && !on0(x, y + 1) && !rib[y][x] && x % 3 === 0 && Math.abs(x - cx) > 8) notches.push([x, y]);
+    }
+  }
+  notches.forEach(([x, y]) => { leaf[y][x] = 0; });
+  const on = (x, y) => y >= 0 && y < H && x >= 0 && x < W && leaf[y][x];
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (!leaf[y][x]) continue;
+      if (!on(x - 1, y) || !on(x + 1, y) || !on(x, y - 1) || !on(x, y + 1)) set(x, y, 'k');
+      else if (rib[y][x]) set(x, y, 'h');
+      else if (!on(x, y - 2)) set(x, y, 'L');
+      else if (!on(x, y + 2)) set(x, y, 'd');
+      else set(x, y, (x + y) % 4 === 0 ? 'L' : 'm');
+    }
+  }
+  palmPixels = grid;
+  return grid;
+}
+
+function tallPalm(g, px, py) {
+  const grid = palmSprite();
+  const ox = px + S / 2 - PALM_W / 2;
+  const oy = py + S - grid.length;
+  g.fillStyle(0x000000, 0.18);                                      // ombre au pied
+  g.fillRect(px + 2, py + 13, 12, 3);
+  grid.forEach((row, y) => row.forEach((c, x) => { if (c) rect(g, PALM_C[c], ox + x, oy + y, 1, 1); }));
+}
+
+// Objets hauts (sapins, palmiers) : ils dépassent de leurs cases et passent devant les personnages qui
+// sont derrière eux. Sur les cartes, chacun est une image triée en profondeur (voir tallObject) ;
+// dans le décor autour des cartes, ils sont dessinés directement avec drawTall.
+// Géométrie de chaque sorte, relative au coin haut-gauche de sa case (ou de son bloc) :
+// left / top : décalage de l'image, w / h : taille, base : y du pied (tri en profondeur).
+const TALL_KINDS = {
+  pine32: { left: 0, top: -12, w: 32, h: 45, base: 31, draw: (g, px, py) => pine(g, px, py + 31, 32) },
+  pine16: { left: 0, top: -8, w: 16, h: 25, base: 15, draw: (g, px, py) => pine(g, px, py + 15, 16) },
+  palm: { left: -10, top: -24, w: 36, h: 40, base: 15, draw: (g, px, py) => tallPalm(g, px, py) },
+};
+
+// Objet haut ancré sur la case (x, y), ou null : { kind, px, py } (coin haut-gauche de sa case / son bloc).
+function tallAnchor(code, x, y, at) {
+  if (code === 'Y') return { kind: 'palm', px: x * S, py: y * S };
+  if (code !== 'T') return null;
+  if (!inFullTreeBlock(x, y, at)) return { kind: 'pine16', px: x * S, py: y * S };
+  // Grand sapin : ancré sur la dernière case de son bloc (en bas à droite).
+  if (mod2(x) === 1 && mod2(y) === 1) return { kind: 'pine32', px: (x - 1) * S, py: (y - 1) * S };
+  return null;
+}
+
+export function drawTall(g, code, x, y, at) {
+  const a = tallAnchor(code, x, y, at);
+  if (a) TALL_KINDS[a.kind].draw(g, a.px, a.py);
+}
+
+// Description d'un objet haut pour le rendu en image : { kind, x, y (coin de l'image), w, h, baseY }.
+export function tallObject(code, x, y, at) {
+  const a = tallAnchor(code, x, y, at);
+  if (!a) return null;
+  const k = TALL_KINDS[a.kind];
+  return { kind: a.kind, x: a.px + k.left, y: a.py + k.top, w: k.w, h: k.h, baseY: a.py + k.base };
+}
+
+// Dessine un objet haut dans sa propre texture (coin haut-gauche en 0, 0).
+export function drawTallKind(g, kind) {
+  const k = TALL_KINDS[kind];
+  k.draw(g, -k.left, -k.top);
+}
+
+function floor(g, px, py, x, y = 0) {
+  // Lames en diagonale, alternées d'une case à l'autre : effet de chevrons.
   rect(g, 0xe8c890, px, py, S, S);
-  for (const ly of [0, 5, 10, 15]) rect(g, 0xc8a068, px, py + ly, S, 1);
-  const off = (x % 2) * 8;
-  rect(g, 0xc8a068, px + off, py + 1, 1, 4);
-  rect(g, 0xc8a068, px + ((off + 5) % S), py + 6, 1, 4);
-  rect(g, 0xc8a068, px + ((off + 11) % S), py + 11, 1, 4);
+  const flip = (x + y) % 2 === 1;
+  for (let i = -S; i < S; i += 4) {
+    for (let t = 0; t < S; t++) {
+      const lx = flip ? S - 1 - t : t;
+      const ly = t + i;
+      if (ly >= 0 && ly < S) rect(g, 0xd0a870, px + lx, py + ly, 1, 1);
+    }
+  }
 }
 
+// Mur intérieur façon Rouge Feu : le mur du fond montre son papier peint (lambris en bas, fenêtre de
+// temps en temps) ; les autres murs sont vus de dessus : bord sombre avec une arête claire côté pièce.
 function innerWall(g, px, py, x, y, at) {
-  rect(g, 0xd8d0c0, px, py, S, S);
-  rect(g, 0xc0b8a8, px, py + 4, S, 1);
-  rect(g, 0xc0b8a8, px, py + 10, S, 1);
-  // Plinthe au pied du mur, côté pièce
-  const below = at(x, y + 1);
-  if (below && below !== 'X') rect(g, 0x806850, px, py + S - 3, S, 3);
-  else if (at(x, y - 1) && at(x, y - 1) !== 'X') rect(g, 0x806850, px, py, S, 2);
+  const room = (dx, dy) => { const c = at(x + dx, y + dy); return c !== undefined && c !== 'X' && c !== 'N' && c !== '¤'; };
+  if (room(0, 1)) {
+    rect(g, 0xf0e4b8, px, py, S, S);                                  // papier peint
+    for (let lx = 1; lx < S; lx += 4) rect(g, 0xe4d4a0, px + lx, py + 1, 1, 8);
+    rect(g, 0x584838, px, py, S, 1);                                  // haut du mur
+    rect(g, 0xb08050, px, py + 9, S, 5);                              // lambris
+    rect(g, 0xd0a068, px, py + 9, S, 1);
+    for (let lx = 3; lx < S; lx += 8) rect(g, 0x906038, px + lx, py + 10, 1, 4);
+    rect(g, 0x604028, px, py + 14, S, 2);                             // plinthe
+    if (x % 4 === 2 && !['m', 'u', 'L', 'τ', 'κ', 'φ', 'η', 'ξ', 'λ', 'π', 'δ', 'ψ'].includes(at(x, y + 1))) {    // fenêtre
+      rect(g, 0x584838, px + 3, py + 1, 10, 8);
+      rect(g, 0x88c0f0, px + 4, py + 2, 8, 6);
+      rect(g, 0xd0e8f8, px + 4, py + 2, 8, 2);
+      rect(g, 0xf8f8f8, px + 4, py + 2, 2, 1);
+      rect(g, 0x584838, px + 7, py + 2, 1, 6);
+      rect(g, 0xf8f8f8, px + 2, py + 8, 12, 1);                       // rebord
+    }
+    return;
+  }
+  rect(g, 0x302838, px, py, S, S);                                    // mur vu de dessus
+  rect(g, 0x484058, px + 1, py + 1, S - 2, S - 2);
+  if (room(0, -1)) rect(g, 0x9890a8, px, py, S, 2);
+  if (room(-1, 0)) rect(g, 0x9890a8, px, py, 2, S);
+  if (room(1, 0)) rect(g, 0x9890a8, px + S - 2, py, 2, S);
 }
 
-function furniture(g, px, py, x) {
-  floor(g, px, py, x);
-  rect(g, 0x583018, px + 1, py + 2, 14, 13);
-  rect(g, 0xa86838, px + 2, py + 3, 12, 11);
-  rect(g, 0xc88850, px + 2, py + 3, 12, 3);
-  rect(g, 0x583018, px + 7, py + 8, 2, 1);
+// Meuble : contre le mur du fond, un buffet à étagères ; ailleurs, une table en bois.
+function furniture(g, px, py, x, y = 0, at = () => undefined) {
+  floor(g, px, py, x, y);
+  const K = 0x503018;
+  if (at(x, y - 1) === 'X') {
+    rect(g, K, px, py - 6, S, 21);                                    // buffet (dépasse sur le mur)
+    rect(g, 0xb87840, px + 1, py - 5, S - 2, 19);
+    rect(g, 0xd89858, px + 1, py - 5, S - 2, 2);
+    rect(g, 0x805028, px + 1, py + 1, S - 2, 1);                      // étagère
+    const books = [0xd84838, 0x3868c8, 0x48a048, 0xe8b830, 0x9048b0];
+    for (let i = 0; i < 5; i++) rect(g, books[(x + i) % 5], px + 2 + i * 2 + (i > 2 ? 1 : 0), py - 3, 2, 4);
+    rect(g, 0x906030, px + 2, py + 3, 5, 9);                          // portes
+    rect(g, 0x906030, px + 9, py + 3, 5, 9);
+    rect(g, 0xf0c848, px + 6, py + 7, 1, 1);
+    rect(g, 0xf0c848, px + 9, py + 7, 1, 1);
+    g.fillStyle(0x000000, 0.2);
+    g.fillRect(px + 1, py + 15, S - 2, 1);
+    return;
+  }
+  // Table (se prolonge avec les cases de table voisines, dans les deux sens)
+  const joinL = at(x - 1, y) === 'm' && at(x - 1, y - 1) !== 'X';
+  const joinR = at(x + 1, y) === 'm' && at(x + 1, y - 1) !== 'X';
+  const joinU = at(x, y - 1) === 'm';
+  const joinD = at(x, y + 1) === 'm';
+  const x0 = joinL ? 0 : 1;
+  const x1 = joinR ? S : S - 1;
+  const top = joinU ? 0 : 2;
+  const bottom = joinD ? S : 12;
+  const ix0 = x0 + (joinL ? 0 : 1);
+  const iw = x1 - ix0 - (joinR ? 0 : 1);
+  if (!joinD) {
+    g.fillStyle(0x000000, 0.18);
+    g.fillRect(px + x0 + 1, py + 13, x1 - x0 - 1, 2);
+  }
+  rect(g, K, px + x0, py + top, x1 - x0, bottom - top);
+  rect(g, 0xc88850, px + ix0, py + top + (joinU ? 0 : 1), iw, bottom - top - (joinU ? 0 : 1) - (joinD ? 0 : 3));
+  if (!joinU) rect(g, 0xe0a870, px + ix0, py + top + 1, iw, 1);
+  if (!joinD) {
+    rect(g, 0x985c30, px + ix0, py + 9, iw, 2);                       // chant de la table
+    if (!joinL) rect(g, K, px + 2, py + 12, 2, 3);                    // pieds
+    if (!joinR) rect(g, K, px + S - 4, py + 12, 2, 3);
+  }
 }
 
-function bed(g, px, py, x) {
-  floor(g, px, py, x);
-  rect(g, 0x707888, px + 1, py + 1, 14, 15);          // cadre
-  rect(g, 0xf8f8f8, px + 2, py + 2, 12, 13);          // drap
-  rect(g, 0xe0e8f4, px + 3, py + 3, 10, 4);           // oreiller
-  rect(g, 0x6890d8, px + 2, py + 8, 12, 7);           // couverture
-  rect(g, 0x88acf0, px + 2, py + 8, 12, 1);
+// Lit sur une ou deux cases (tête de lit en haut, couverture en dessous).
+function bed(g, px, py, x, y = 0, at = () => undefined) {
+  floor(g, px, py, x, y);
+  const K = 0x404858;
+  const top = at(x, y - 1) !== 'L';
+  const bottom = at(x, y + 1) !== 'L';
+  g.fillStyle(0x000000, 0.18);
+  if (bottom) g.fillRect(px + 2, py + 15, 13, 1);
+  rect(g, K, px + 1, py + (top ? 0 : 0), 14, S - (bottom ? 1 : 0));
+  if (top) {
+    rect(g, 0x8c5c30, px + 1, py - 3, 14, 5);                       // tête de lit en bois
+    rect(g, 0xb07840, px + 2, py - 2, 12, 2);
+    rect(g, 0xf8f8f8, px + 2, py + 2, 12, S - 2);                   // drap
+    rect(g, 0xe0e8f4, px + 3, py + 3, 10, 5);                       // oreiller
+    rect(g, 0xffffff, px + 4, py + 3, 6, 2);
+  }
+  const blanket = top && bottom ? 9 : top ? 10 : 0;
+  rect(g, 0x4870c8, px + 2, py + blanket, 12, S - blanket - (bottom ? 2 : 0));   // couverture
+  rect(g, 0x78a0e8, px + 2, py + blanket, 12, 1);
+  for (let ly = blanket + 3; ly < S - 2; ly += 4) rect(g, 0x3c5cb0, px + 2, py + ly, 12, 1);
+}
+
+// Plante verte en pot (feuillage qui dépasse sur la case du dessus).
+function plant(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 3, py + 14, 10, 2);
+  rect(g, 0x6c3018, px + 4, py + 9, 8, 6);                          // pot
+  rect(g, 0xc86838, px + 5, py + 9, 6, 5);
+  rect(g, 0xe08850, px + 5, py + 9, 6, 1);
+  const K = 0x1c5028;
+  for (const [lx, ly, w, h] of [[2, -2, 5, 6], [9, -3, 5, 7], [5, -5, 6, 7], [1, 3, 5, 5], [10, 3, 5, 5], [5, 2, 6, 7]]) {
+    rect(g, K, px + lx, py + ly, w, h);
+    rect(g, 0x48a048, px + lx + 1, py + ly + 1, w - 2, h - 2);
+    rect(g, 0x78c860, px + lx + 1, py + ly + 1, w - 3, 1);
+  }
+}
+
+// Lampe sur pied (abat-jour clair, halo).
+function floorLamp(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  g.fillStyle(0xfff0b0, 0.18);                                       // halo
+  g.fillCircle(px + 8, py - 1, 8);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 4, py + 14, 8, 2);
+  rect(g, 0x303038, px + 5, py + 13, 6, 2);                          // socle
+  rect(g, 0x505060, px + 7, py + 1, 2, 12);                          // pied
+  rect(g, 0x6c5c40, px + 3, py - 6, 10, 8);                          // abat-jour
+  rect(g, 0xf8e8b0, px + 4, py - 5, 8, 6);
+  rect(g, 0xfff8e0, px + 4, py - 5, 3, 6);
+  rect(g, 0xd8c890, px + 4, py + 0, 8, 1);
+}
+
+// Bureau en bois avec lampe de bureau et livres.
+function desk(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  const K = 0x503018;
+  g.fillStyle(0x000000, 0.18);
+  g.fillRect(px + 1, py + 14, 15, 2);
+  rect(g, K, px, py + 1, S, 13);
+  rect(g, 0xc88850, px + 1, py + 2, 14, 5);                          // plateau
+  rect(g, 0xe0a870, px + 1, py + 2, 14, 1);
+  rect(g, 0x985c30, px + 1, py + 7, 14, 6);                          // façade
+  rect(g, 0xb87440, px + 2, py + 8, 6, 4);                           // tiroir
+  rect(g, 0xf0c848, px + 4, py + 10, 2, 1);
+  rect(g, 0xd84838, px + 10, py - 1, 2, 4);                          // livres
+  rect(g, 0x3868c8, px + 12, py, 2, 3);
+  rect(g, 0x48a048, px + 14, py - 1, 1, 4);
+  rect(g, 0x303038, px + 3, py - 1, 1, 4);                           // lampe de bureau
+  rect(g, 0x303038, px + 2, py - 3, 4, 2);
+  rect(g, 0xf8e070, px + 3, py - 1, 2, 1);
+}
+
+// Télévision sur un meuble bas, avec une console (clin d'œil à Rouge Feu).
+function tv(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  const K = 0x282830;
+  rect(g, 0x503018, px, py + 8, S, 8);                               // meuble
+  rect(g, 0xb07840, px + 1, py + 9, 14, 6);
+  rect(g, 0xc88850, px + 1, py + 9, 14, 1);
+  rect(g, K, px + 1, py - 4, 14, 13);                                // écran
+  rect(g, 0x606878, px + 2, py - 3, 12, 11);
+  rect(g, 0x3c5c90, px + 3, py - 2, 10, 8);
+  rect(g, 0x88b8f0, px + 4, py - 1, 3, 2);
+  rect(g, 0x9ca4b0, px + 5, py + 12, 6, 2);                          // console
+  rect(g, 0x4858a0, px + 6, py + 12, 2, 1);
+}
+
+// Canapé (se prolonge avec les cases voisines).
+function sofa(g, px, py, x, y, at) {
+  floor(g, px, py, x, y);
+  const K = 0x1c3c48;
+  const l = at(x - 1, y) === 'σ';
+  const r = at(x + 1, y) === 'σ';
+  g.fillStyle(0x000000, 0.18);
+  g.fillRect(px + 1, py + 14, 15, 2);
+  rect(g, K, px + (l ? 0 : 1), py + 1, S - (l ? 0 : 1) - (r ? 0 : 1), 14);
+  rect(g, 0x3c8c9c, px + (l ? 0 : 2), py + 2, S - (l ? 0 : 2) - (r ? 0 : 2), 6);   // dossier
+  rect(g, 0x5cacbc, px + (l ? 0 : 2), py + 2, S - (l ? 0 : 2) - (r ? 0 : 2), 1);
+  rect(g, 0x48a0b0, px + (l ? 0 : 2), py + 8, S - (l ? 0 : 2) - (r ? 0 : 2), 5);   // assise
+  rect(g, 0x70c0cc, px + 4, py + 9, 7, 2);                           // coussin
+  if (!l) rect(g, 0x2c7080, px + 1, py + 5, 2, 9);                   // accoudoirs
+  if (!r) rect(g, 0x2c7080, px + S - 3, py + 5, 2, 9);
+}
+
+// Canapé vu de dos (tourné vers le haut, face à la télé) : assise en haut, dossier haut en bas.
+function sofaBack(g, px, py, x, y, at) {
+  floor(g, px, py, x, y);
+  const K = 0x1c3c48;
+  const l = at(x - 1, y) === 'ς';
+  const r = at(x + 1, y) === 'ς';
+  const x0 = l ? 0 : 1;
+  const w = S - x0 - (r ? 0 : 1);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + x0, py + 15, w, 1);
+  rect(g, K, px + x0, py + 2, w, 13);
+  rect(g, 0x48a0b0, px + x0 + (l ? 0 : 1), py + 3, w - (l ? 0 : 1) - (r ? 0 : 1), 4);   // assise
+  rect(g, 0x70c0cc, px + x0 + (l ? 0 : 1), py + 3, w - (l ? 0 : 1) - (r ? 0 : 1), 1);
+  rect(g, 0x3c8c9c, px + x0 + (l ? 0 : 1), py + 7, w - (l ? 0 : 1) - (r ? 0 : 1), 7);   // dossier
+  rect(g, 0x5cacbc, px + x0 + (l ? 0 : 1), py + 7, w - (l ? 0 : 1) - (r ? 0 : 1), 1);
+  rect(g, 0x2c7080, px + x0 + (l ? 0 : 1), py + 11, w - (l ? 0 : 1) - (r ? 0 : 1), 1);   // coutures
+  if (!l) rect(g, 0x2c7080, px + 1, py + 2, 2, 12);                  // accoudoirs
+  if (!r) rect(g, 0x2c7080, px + S - 3, py + 2, 2, 12);
+}
+
+// Tapis à motif (on marche dessus), bordure là où il s'arrête.
+function rug(g, px, py, x, y, at) {
+  const is = (dx, dy) => at(x + dx, y + dy) === 'ρ';
+  rect(g, 0xc84848, px, py, S, S);
+  for (let i = 0; i < 4; i++) rect(g, 0xe07060, px + 4 + (i % 2) * 6, py + 3 + Math.floor(i / 2) * 7, 2, 2);
+  rect(g, 0xf0c060, px + 7, py + 7, 2, 2);
+  const border = (horizontal, pos) => {
+    if (horizontal) { rect(g, 0x882828, px, py + pos, S, 2); rect(g, 0xf0c060, px, py + pos + (pos ? -1 : 2), S, 1); }
+    else { rect(g, 0x882828, px + pos, py, 2, S); rect(g, 0xf0c060, px + pos + (pos ? -1 : 2), py, 1, S); }
+  };
+  if (!is(0, -1)) border(true, 0);
+  if (!is(0, 1)) border(true, S - 2);
+  if (!is(-1, 0)) border(false, 0);
+  if (!is(1, 0)) border(false, S - 2);
+}
+
+// Escalier : vers le haut (marches qui montent contre le mur) ou vers le bas (trémie sombre).
+function stairsInside(g, px, py, x, y, up) {
+  floor(g, px, py, x, y);
+  const K = 0x402818;
+  rect(g, K, px + 1, py - 2, 14, 18);
+  for (let i = 0; i < 4; i++) {
+    const ly = py - 1 + i * 4;
+    const shade = up ? [0xa87848, 0xb88450, 0xc89460, 0xd8a470][i] : [0x3c2818, 0x5c3c24, 0x7c5430, 0x9c6c40][i];
+    rect(g, shade, px + 2, ly, 12, 3);
+    rect(g, up ? 0xe8bc88 : 0x8c6038, px + 2, ly, 12, 1);
+  }
+  rect(g, 0xe8e0d0, px + 1, py - 2, 1, 18);                          // rampe
+}
+
+// Plan de travail de cuisine : évier ou plaques, selon la case.
+function counter(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  rect(g, 0x484858, px, py - 2, S, 17);
+  rect(g, 0xe8ecf0, px, py - 1, S, 7);                               // plan
+  rect(g, 0xffffff, px, py - 1, S, 1);
+  rect(g, 0xb8c0cc, px, py + 6, S, 8);                               // façade
+  rect(g, 0x9098a8, px + 7, py + 7, 1, 6);
+  if (x % 2) {
+    rect(g, 0x7888a0, px + 3, py + 1, 10, 4);                        // évier
+    rect(g, 0xa8c8e8, px + 4, py + 2, 8, 2);
+    rect(g, 0x9098a8, px + 7, py - 2, 2, 2);
+  } else {
+    for (const cx of [3, 9]) { rect(g, 0x303038, px + cx, py + 1, 4, 3); rect(g, 0xd84838, px + cx + 1, py + 2, 2, 1); }
+  }
+}
+
+// Réfrigérateur (dépasse sur le mur).
+function fridge(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 2, py + 15, 13, 1);
+  rect(g, 0x484858, px + 1, py - 9, 14, 24);
+  rect(g, 0xf0f4f8, px + 2, py - 8, 12, 22);
+  rect(g, 0xd0d8e0, px + 11, py - 8, 3, 22);
+  rect(g, 0x9098a8, px + 2, py - 1, 12, 1);
+  rect(g, 0x707888, px + 3, py - 5, 1, 3);                           // poignées
+  rect(g, 0x707888, px + 3, py + 2, 1, 4);
+  rect(g, 0xf06060, px + 7, py - 6, 2, 2);                           // aimant
 }
 
 function exitMat(g, px, py, x) {
@@ -1119,17 +1988,26 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'P': return path(g, px, py, x, y);
     case '.': return grass(g, px, py, x, y, at);
     case 'T':
-      if (treeOnGrass(x, y, at)) grass(g, px, py, x, y, at);
-      else if ([at(x - 1, y), at(x + 1, y), at(x, y - 1), at(x, y + 1)].includes('C')) cobble(g, px, py, x, y);
-      else path(g, px, py, x, y);
-      return sprite(g, TREE, TREE_PAL, px, py);
+      return treeGround(g, px, py, x, y, at);            // le sapin est un objet haut (voir tallObject)
     case '~': return water(g, px, py, x, y, at);
-    case 'f': grass(g, px, py, x, y, at); return sprite(g, FLOWER, FLOWER_PAL, px, py);
+    case 'f': grass(g, px, py, x, y, at); return flowerPatch(g, px, py, x, y);
     case 'F': grass(g, px, py, x, y, at); return fence(g, px, py, x, y, at);
     case 'S': grass(g, px, py, x, y, at); return sign(g, px, py);
     case 'M': grass(g, px, py, x, y, at); return mailbox(g, px, py);
     case 's': return sand(g, px, py, x, y);
     case 'w': return sea(g, px, py, x, y, at);
+    case 'ø': return seaRock(g, px, py, x, y);
+    case 'ç': return pavement(g, px, py, x, y, at);
+    case 'ł': return logFence(g, px, py, x, y, at);
+    case 'ν': return vegetablePatch(g, px, py, x, y);
+    case 'ʂ': return starfish(g, px, py, x, y);
+    case 'ɕ': return shell(g, px, py, x, y);
+    case 'ƥ': return parasol(g, px, py, x, y);
+    case 'ʈ': return deckchair(g, px, py, x, y);
+    case 'ψ': return fishingRods(g, px, py, x, y);
+    case 'χ': return fishCrate(g, px, py, x, y);
+    case 'ĉ': return cliff2(g, px, py, x, y, at);
+    case 'ŝ': return stairs(g, px, py, x, y, at);
     case '=': return pier(g, px, py, x, y, at);
     case 'Y': return palm(g, px, py, x, y, at);
     case 'B': // le bateau est dessiné par-dessus (buildingArt) ; eau d'étang ou de mer dessous
@@ -1187,6 +2065,10 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case '€': return elephant(g, px, py, x, y, at);
     case 'þ': return thaiFlag(g, px, py, x, y, at);
     case '¥': return wheat(g, px, py, x, y);
+    case 'ĥ': return tallGrass(g, px, py, x, y, at);
+    case 'ƀ': return bush(g, px, py, x, y, at);
+    case 'ŕ': return beachRock(g, px, py, x, y, at);
+    case 'ƒ': return smallFlowers(g, px, py, x, y, at);
     case 'ñ': return snow(g, px, py, x, y);
     case 'Ñ': return snowyPeak(g, px, py, x, y);
     case '¶': return prayerFlags(g, px, py, x, y, at);
@@ -1199,11 +2081,22 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'J': return flagpole(g, px, py, x, y, at);
     case 'Q': return sandbags(g, px, py, x, y, at);
     case 'V': return crate(g, px, py, x, y, at);
-    case 'o': return floor(g, px, py, x);
+    case 'o': return floor(g, px, py, x, y);
     case 'X': return innerWall(g, px, py, x, y, at);
-    case 'm': return furniture(g, px, py, x);
+    case 'm': return furniture(g, px, py, x, y, at);
     case 'E': return exitMat(g, px, py, x);
-    case 'L': return bed(g, px, py, x);
+    case 'L': return bed(g, px, py, x, y, at);
+    case 'π': return plant(g, px, py, x, y);
+    case 'λ': return floorLamp(g, px, py, x, y);
+    case 'δ': return desk(g, px, py, x, y);
+    case 'τ': return tv(g, px, py, x, y);
+    case 'σ': return sofa(g, px, py, x, y, at);
+    case 'ς': return sofaBack(g, px, py, x, y, at);
+    case 'ρ': return rug(g, px, py, x, y, at);
+    case 'η': return stairsInside(g, px, py, x, y, true);
+    case 'ξ': return stairsInside(g, px, py, x, y, false);
+    case 'κ': return counter(g, px, py, x, y);
+    case 'φ': return fridge(g, px, py, x, y);
     case 'R':
     case 'W':
     case 'D':
@@ -1233,6 +2126,7 @@ function groundUnderBuilding(g, px, py, x, y, at) {
     if (['~', 'k'].includes(c)) return 'water';
     if (SMALL_OBJECTS.has(c)) return objectGround(nx, ny, at);
     if (c === 'C') return 'cobble';
+    if (c === 'ç') return 'pavement';
     if (c === 'A') return 'asphalt';
     if (['s', '^'].includes(c)) return 'sand';
     if (c === '_') return 'terminal';
@@ -1244,9 +2138,10 @@ function groundUnderBuilding(g, px, py, x, y, at) {
   around.forEach((n) => { counts[kind(n)] = (counts[kind(n)] ?? 0) + 1; });
   if ((counts.water ?? 0) * 2 >= around.length) return water(g, px, py, x, y, at);
   // Le plus fréquent ; à égalité : herbe, puis pavés, puis asphalte, puis chemin.
-  const best = ['grass', 'cobble', 'sand', 'earth', 'asphalt', 'terminal', 'path'].reduce((a, b) => ((counts[b] ?? 0) > (counts[a] ?? 0) ? b : a));
+  const best = ['grass', 'pavement', 'cobble', 'sand', 'earth', 'asphalt', 'terminal', 'path'].reduce((a, b) => ((counts[b] ?? 0) > (counts[a] ?? 0) ? b : a));
   if (best === 'grass') return rect(g, C.grass, px, py, S, S);
   if (best === 'sand') return sand(g, px, py, x, y);
+  if (best === 'pavement') return pavement(g, px, py, x, y, () => 'ç');
   if (best === 'terminal') return terminalFloor(g, px, py, x, y);
   if (best === 'earth') return redEarth(g, px, py, x, y);
   if (best === 'cobble') return cobble(g, px, py, x, y);

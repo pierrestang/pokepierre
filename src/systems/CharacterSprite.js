@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { TILE_SIZE } from '../data/tiles.js';
+import { characterTexture, lookFromColor } from '../art/characterArt.js';
 
 export const DIRECTIONS = {
   up:    { dx: 0,  dy: -1 },
@@ -14,29 +15,49 @@ export function tileCenter(x, y) {
   return [x * TILE_SIZE + TILE_SIZE / 2, y * TILE_SIZE + TILE_SIZE / 2];
 }
 
-// Personnage provisoire (joueur ou PNJ) : carré coloré + petit indicateur de direction.
+// Personnage animé (joueur ou PNJ) : image 16 x 24 posée sur sa case, la tête dépasse au-dessus.
+// `appearance` : une apparence (voir art/characterArt.js) ou une simple couleur de haut.
 export class CharacterSprite extends Phaser.GameObjects.Container {
-  // options.hat : toque de diplômé (carré noir + pompon doré) sur le dessus.
-  constructor(scene, x, y, color, facing = 'down', { hat = false } = {}) {
+  constructor(scene, x, y, appearance, facing = 'down', { hat = false } = {}) {
     super(scene, ...tileCenter(x, y));
-    const stroke = Phaser.Display.Color.IntegerToColor(color).darken(40).color;
-    this.indicator = scene.add.rectangle(0, 0, 4, 4, 0xffffff);
-    this.add([scene.add.rectangle(0, 0, 12, 12, color).setStrokeStyle(1, stroke), this.indicator]);
-    if (hat) {
-      this.add([
-        scene.add.rectangle(0, -7, 14, 3, 0x101014),
-        scene.add.rectangle(0, -5, 6, 3, 0x101014),
-        scene.add.rectangle(5, -5, 1, 4, 0xe8c040),
-      ]);
-    }
+    const look = typeof appearance === 'number' ? lookFromColor(appearance, { hat }) : appearance;
+    this.image = scene.add.image(0, TILE_SIZE / 2, characterTexture(scene, look), `${facing}-0`).setOrigin(0.5, 1);
+    this.add(this.image);
+    this.foot = 0;
     scene.add.existing(this);
-    this.setDepth(10);
     this.setFacing(facing);
+    this.updateDepth();
   }
 
   setFacing(dir) {
     this.facing = dir;
-    const { dx, dy } = DIRECTIONS[dir];
-    this.indicator.setPosition(dx * 4, dy * 4);
+    this.image.setFrame(`${dir}-0`);
+  }
+
+  // Un pas animé de `duration` ms : pied gauche puis pied droit en alternance, retour debout à la fin.
+  walkStep(duration) {
+    this.foot = 1 - this.foot;
+    this.image.setFrame(`${this.facing}-${1 + this.foot}`);
+    this.walkTimer?.remove();
+    this.walkTimer = this.scene.time.delayedCall(duration * 0.6, () => this.image.setFrame(`${this.facing}-0`));
+  }
+
+  // Les personnages plus bas à l'écran passent devant ceux du dessus (`bias` : le joueur devant ses suiveurs).
+  updateDepth(bias = 0) {
+    this.setDepth(10 + this.y / 10000 + bias);
+  }
+
+  // Case sous les pieds du personnage (pendant un pas, celle dont il est le plus proche).
+  tile() {
+    return { x: Math.floor(this.x / TILE_SIZE), y: Math.floor(this.y / TILE_SIZE) };
+  }
+
+  // Cases touchées par le personnage : une seule à l'arrêt, les deux pendant un pas.
+  tiles() {
+    const xs = [Math.floor((this.x - 7) / TILE_SIZE), Math.floor((this.x + 7) / TILE_SIZE)];
+    const ys = [Math.floor((this.y - 7) / TILE_SIZE), Math.floor((this.y + 7) / TILE_SIZE)];
+    const out = [];
+    for (const tx of new Set(xs)) for (const ty of new Set(ys)) out.push({ x: tx, y: ty });
+    return out;
   }
 }

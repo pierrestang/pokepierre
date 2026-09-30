@@ -4,7 +4,7 @@ import { FLAGS, ITEMS, TOULON_QUESTS } from '../story.js';
 // L'aéroport (à Bordeaux) : la dame du guichet propose toutes les destinations déjà débloquées.
 // Une destination n'apparaît que si ses conditions sont remplies (ifFlags / ifItems / ifSouvenirs).
 const DESTINATIONS = [
-  { label: 'Fort-de-France (Martinique)', warp: { map: 'fortDeFrance', x: 8, y: 10, facing: 'down' } },
+  { label: 'Fort-de-France (Martinique)', warp: { map: 'fortDeFrance', x: 13, y: 10, facing: 'down' } },
   { label: 'Saint-Ay', ifFlags: [FLAGS.departFortDeFrance], warp: { map: 'saintAy', x: 11, y: 17, facing: 'left' } },
   { label: 'Montépilloy', ifFlags: [FLAGS.arriveeMontepilloy], warp: { map: 'montepilloy', x: 11, y: 22, facing: 'up' } },
   { label: 'Prytanée', ifFlags: [FLAGS.arriveePrytanee], warp: { map: 'prytanee', x: 11, y: 18, facing: 'up' } },

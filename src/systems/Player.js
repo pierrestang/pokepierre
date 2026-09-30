@@ -1,10 +1,16 @@
 import { CharacterSprite, DIRECTIONS, tileCenter } from './CharacterSprite.js';
+import { PIERRE } from '../data/characters.js';
+import { sfx } from './audio.js';
 
-const STEP_DURATION = 150; // ms par case
+// Vitesse de marche façon Pokémon (≈ 220 ms par case), course en maintenant Maj.
+export const WALK_DURATION = 220;
+export const RUN_DURATION = 120;
+const BUMP_EVERY = 320;   // ms entre deux « bump » contre un obstacle
 
 const KEY_TO_DIR = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
 
-// Joueur : déplacement case par case, interpolé. Maintenir la flèche = continuer d'avancer.
+// Joueur : déplacement case par case, interpolé. Maintenir la flèche = continuer d'avancer,
+// Maj = courir. Contre un obstacle : pas sur place et petit bruit sourd, comme dans Pokémon.
 export class Player {
   constructor(scene, { x, y, facing = 'down' }, { isWalkable, onStep, onMoveStart }) {
     this.scene = scene;
@@ -17,9 +23,11 @@ export class Player {
     this.onStep = onStep;
     this.onMoveStart = onMoveStart;
 
-    this.sprite = new CharacterSprite(scene, x, y, 0xe53935, facing);
+    this.sprite = new CharacterSprite(scene, x, y, PIERRE, facing);
+    this.sprite.updateDepth(0.001);
 
     this.cursors = scene.input.keyboard.createCursorKeys();
+    this.bumpAt = 0;
     // Un appui très bref peut être relâché avant la frame suivante : on le mémorise.
     this.queued = null;
     scene.input.keyboard.on('keydown', (e) => {
@@ -55,16 +63,27 @@ export class Player {
     const { dx, dy } = DIRECTIONS[dir];
     const nx = this.tileX + dx;
     const ny = this.tileY + dy;
-    if (!this.isWalkable(nx, ny)) return;
+    if (!this.isWalkable(nx, ny)) {
+      const now = this.scene.time.now;
+      if (now >= this.bumpAt) {
+        this.bumpAt = now + BUMP_EVERY;
+        sfx('bump');
+        this.sprite.walkStep(BUMP_EVERY * 0.8);                       // pas sur place
+      }
+      return;
+    }
 
+    const duration = this.cursors.shift.isDown ? RUN_DURATION : WALK_DURATION;
     this.moving = true;
-    this.onMoveStart?.(this.tileX, this.tileY);
+    this.onMoveStart?.(this.tileX, this.tileY, nx, ny, duration);
     const [px, py] = tileCenter(nx, ny);
+    this.sprite.walkStep(duration);
     this.scene.tweens.add({
       targets: this.sprite,
       x: px,
       y: py,
-      duration: STEP_DURATION,
+      duration,
+      onUpdate: () => this.sprite.updateDepth(0.001),
       onComplete: () => {
         this.tileX = nx;
         this.tileY = ny;

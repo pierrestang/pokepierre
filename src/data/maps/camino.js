@@ -11,12 +11,11 @@ const PILGRIM_LINES = [
 
 // Chemin de Saint-Jacques — la côte nord de l'Espagne, 96 x 20 cases (environ trois écrans) :
 // mer et falaises au nord, plages, prés et forêts, villages, et la cathédrale au bout.
-// Carte défilante : la caméra suit le joueur.
+// Plus longue que l’écran : la caméra suit le joueur (comme sur toutes les cartes).
 // Légende : voir src/data/tiles.js (£ = falaise, § = borne du Chemin, P = chemin, q = bus)
 export const caminoMap = {
   id: 'camino',
   name: 'Chemin de Saint-Jacques',
-  scroll: true,
   grid: parseGrid([
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 0
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 1

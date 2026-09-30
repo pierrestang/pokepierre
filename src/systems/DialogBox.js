@@ -3,10 +3,19 @@
 // choose(question, options) : pose une question, liste de réponses (flèches haut/bas + Entrée).
 // Vit dans la UIScene (pas de zoom) ; les scènes de jeu l'ouvrent via open(pages) ou choose().
 
+import { gameView, FONT } from './screen.js';
+import { sfx } from './audio.js';
+
 const CHAR_DELAY = 25; // ms par caractère
-const MARGIN = 12;
-const HEIGHT = 120;
-const MAX_WIDTH = 900;
+// Les dimensions sont en « pixels Game Boy » (u = facteur d'agrandissement de l'écran de jeu).
+const HEIGHT = 46;
+// Couleurs façon Rouge Feu : fond blanc, cadre bleu-gris arrondi, texte bleu ardoise ombré.
+const FRAME = 0x6888a8;
+const FRAME_LIGHT = 0xb8d0e8;
+const TEXT_STYLE = {
+  fontFamily: FONT, fontSize: '24px', color: '#404c68', lineSpacing: 8,
+  shadow: { offsetX: 2, offsetY: 2, color: '#c8d4e0', fill: true, blur: 0 },
+};
 
 export class DialogBox {
   constructor(scene) {
@@ -19,17 +28,12 @@ export class DialogBox {
     this.closedAt = 0;
 
     this.box = scene.add.graphics();
-    this.text = scene.add.text(0, 0, '', {
-      fontFamily: 'monospace',
-      fontSize: '22px',
-      color: '#303030',
-      lineSpacing: 6,
-    });
+    this.text = scene.add.text(0, 0, '', TEXT_STYLE);
 
     // Étiquette du nom de la personne qui parle
     this.nameBg = scene.add.graphics();
     this.nameText = scene.add.text(0, 0, '', {
-      fontFamily: 'monospace', fontSize: '18px', color: '#ffffff', fontStyle: 'bold',
+      fontFamily: FONT, fontSize: '18px', color: '#ffffff', fontStyle: 'bold',
     });
 
     this.arrow = scene.add.triangle(0, 0, 0, 0, 14, 0, 7, 9, 0xe04040);
@@ -53,23 +57,36 @@ export class DialogBox {
     scene.input.keyboard.on('keydown', (e) => this.onKey(e));
   }
 
-  // Place la boîte en bas de l'écran, centrée, largeur plafonnée. Rappelée à chaque redimensionnement.
+  // Place la boîte en bas de l'écran de jeu (comme dans Rouge Feu), à l'échelle de l'écran.
+  // Rappelée à chaque redimensionnement.
   layout() {
-    const { width, height } = this.scene.scale;
-    const w = Math.min(width - MARGIN * 2, MAX_WIDTH);
-    const x = (width - w) / 2;
-    const y = height - HEIGHT - MARGIN;
+    const v = gameView(this.scene.scale);
+    const u = v.zoom;
+    const H = HEIGHT * u;
+    const x = v.x + 2 * u;
+    const w = v.w - 4 * u;
+    const y = v.y + v.h - H - 2 * u;
+    this.u = u;
     this.boxX = x;
     this.boxY = y;
+    this.boxW = w;
 
     this.box.clear();
-    this.box.fillStyle(0x283048, 1).fillRoundedRect(x, y, w, HEIGHT, 10);
-    this.box.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 4, y + 4, w - 8, HEIGHT - 8, 7);
-    this.box.lineStyle(2, 0x6878a8, 1).strokeRoundedRect(x + 8, y + 8, w - 16, HEIGHT - 16, 5);
+    this.box.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, H, 4 * u);
+    this.box.fillStyle(FRAME_LIGHT, 1).fillRoundedRect(x + u, y + u, w - 2 * u, H - 2 * u, 3.5 * u);
+    this.box.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 2 * u, y + 2 * u, w - 4 * u, H - 4 * u, 3 * u);
+    // Réglettes bleu clair sur les côtés, comme dans Rouge Feu
+    this.box.fillStyle(FRAME_LIGHT, 1).fillRect(x + 4 * u, y + 7 * u, 1.5 * u, H - 14 * u);
+    this.box.fillStyle(FRAME_LIGHT, 1).fillRect(x + w - 5.5 * u, y + 7 * u, 1.5 * u, H - 14 * u);
 
-    this.text.setPosition(x + 24, y + 20).setWordWrapWidth(w - 48);
-    this.nameText.setPosition(x + 22, y - 26);
-    this.arrow.setPosition(x + w - 32, y + HEIGHT - 28);
+    this.text
+      .setFontSize(6 * u)
+      .setLineSpacing(2 * u)
+      .setShadow(Math.max(1, Math.round(u / 2)), Math.max(1, Math.round(u / 2)), '#c8d4e0', 0, false, true)
+      .setPosition(x + 9 * u, y + 6 * u)
+      .setWordWrapWidth(w - 18 * u);
+    this.nameText.setFontSize(4 * u).setPosition(x + 6 * u, y - 5.5 * u);
+    this.arrow.setScale(u / 5).setPosition(x + w - 11 * u, y + H - 9 * u);
     this.setSpeaker(this.nameText.text || undefined);
   }
 
@@ -97,18 +114,20 @@ export class DialogBox {
 
   showChoices() {
     this.hideChoices();
-    const lineH = 30;
+    const u = this.u;
+    const lineH = 9 * u;
     const texts = this.choices.map((label) =>
-      this.scene.add.text(0, 0, label, { fontFamily: 'monospace', fontSize: '20px', color: '#303030' }).setDepth(102),
+      this.scene.add.text(0, 0, '▶ ' + label, { ...TEXT_STYLE, fontSize: `${6 * u}px` }).setDepth(102),
     );
-    const w = Math.max(...texts.map((t) => t.width)) + 56;
-    const h = texts.length * lineH + 20;
-    const x = this.boxX + Math.min(this.scene.scale.width - MARGIN * 2, MAX_WIDTH) - w;
-    const y = this.boxY - h - 8;
+    const w = Math.max(...texts.map((t) => t.width)) + 12 * u;
+    const h = texts.length * lineH + 8 * u;
+    const x = this.boxX + this.boxW - w;
+    const y = this.boxY - h - 2 * u;
     this.choiceBox.clear().setVisible(true);
-    this.choiceBox.fillStyle(0x283048, 1).fillRoundedRect(x, y, w, h, 8);
-    this.choiceBox.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 3, y + 3, w - 6, h - 6, 6);
-    texts.forEach((t, i) => t.setPosition(x + 14, y + 12 + i * lineH));   // « ▶ » ajouté devant
+    this.choiceBox.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, h, 3 * u);
+    this.choiceBox.fillStyle(FRAME_LIGHT, 1).fillRoundedRect(x + u, y + u, w - 2 * u, h - 2 * u, 2.5 * u);
+    this.choiceBox.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 2 * u, y + 2 * u, w - 4 * u, h - 4 * u, 2 * u);
+    texts.forEach((t, i) => t.setPosition(x + 5 * u, y + 4 * u + i * lineH));   // « ▶ » ajouté devant
     this.choiceTexts = texts;
     this.renderChoices();
   }
@@ -117,7 +136,7 @@ export class DialogBox {
     this.choiceTexts.forEach((t, i) => {
       const selected = i === this.choiceIndex;
       t.setText((selected ? '▶ ' : '  ') + this.choices[i]);
-      t.setColor(selected ? '#d04040' : '#303030');
+      t.setColor(selected ? '#d04040' : '#404c68');
     });
   }
 
@@ -131,8 +150,9 @@ export class DialogBox {
     this.nameBg.clear();
     this.nameText.setText(speaker ?? '');
     if (!speaker) return;
-    const w = this.nameText.width + 20;
-    this.nameBg.fillStyle(0x283048, 1).fillRoundedRect(this.boxX + 12, this.boxY - 32, w, 30, 6);
+    const u = this.u;
+    const w = this.nameText.width + 6 * u;
+    this.nameBg.fillStyle(FRAME, 1).fillRoundedRect(this.boxX + 3 * u, this.boxY - 7 * u, w, 7.5 * u, 2 * u);
   }
 
   showPage() {
@@ -147,6 +167,7 @@ export class DialogBox {
       callback: () => {
         i++;
         this.text.setText(full.slice(0, i));
+        if (i % 3 === 1 && full[i - 1] !== ' ') sfx('blip');     // petit bip du texte, comme dans Pokémon
         if (i >= full.length) this.finishTyping();
       },
     });
@@ -170,13 +191,17 @@ export class DialogBox {
       const n = this.choices.length;
       if (e.key === 'ArrowUp') this.choiceIndex = (this.choiceIndex - 1 + n) % n;
       else if (e.key === 'ArrowDown') this.choiceIndex = (this.choiceIndex + 1) % n;
-      else if (e.key === 'Enter' || e.key === ' ') return this.close(this.choiceIndex);
-      else return;
+      else if (e.key === 'Enter' || e.key === ' ') {
+        sfx('confirm');
+        return this.close(this.choiceIndex);
+      } else return;
+      sfx('select');
       return this.renderChoices();
     }
 
     if (e.key !== 'Enter' && e.key !== ' ') return;
     if (this.typing) return this.finishTyping();
+    sfx('select');
     if (this.pageIndex < this.pages.length - 1) {
       this.pageIndex++;
       return this.showPage();

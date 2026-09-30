@@ -1,6 +1,7 @@
 import { CharacterSprite, tileCenter } from './CharacterSprite.js';
+import { lookOf } from '../data/characters.js';
 
-const STEP_DURATION = 150; // identique au joueur
+import { WALK_DURATION } from './Player.js';
 
 // File de personnages qui suivent le joueur : à chaque pas du joueur, le premier prend
 // la case qu'il quitte, le deuxième celle du premier, etc. Non bloquants.
@@ -21,14 +22,14 @@ export class Followers {
     for (const f of list) {
       if (this.members.some((m) => m.id === f.id)) continue;
       const { x, y, facing = 'down' } = startAt(f.id);
-      const sprite = new CharacterSprite(this.scene, x, y, f.color, facing).setDepth(9);
+      const sprite = new CharacterSprite(this.scene, x, y, lookOf(f), facing);
       this.members.push({ id: f.id, x, y, sprite });
     }
     this.members.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
   }
 
-  // Le meneur (joueur) quitte la case (x, y).
-  advance(x, y) {
+  // Le meneur (joueur) quitte la case (x, y) ; `duration` : durée de son pas (marche ou course).
+  advance(x, y, duration = WALK_DURATION) {
     let tx = x;
     let ty = y;
     for (const m of this.members) {
@@ -39,7 +40,11 @@ export class Followers {
         const dy = ty - oy;
         m.sprite.setFacing(Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
         const [px, py] = tileCenter(tx, ty);
-        this.scene.tweens.add({ targets: m.sprite, x: px, y: py, duration: STEP_DURATION });
+        m.sprite.walkStep(duration);
+        this.scene.tweens.add({
+          targets: m.sprite, x: px, y: py, duration,
+          onUpdate: () => m.sprite.updateDepth(),
+        });
         m.x = tx;
         m.y = ty;
       }

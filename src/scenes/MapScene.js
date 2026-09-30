@@ -3,15 +3,24 @@ import { TILE_SIZE, getTile } from '../data/tiles.js';
 import { FOLLOWERS } from '../data/story.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
+import { drawFlowerSway } from '../art/tileArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE } from '../systems/CharacterSprite.js';
 import { Followers } from '../systems/Followers.js';
+import { lookOf } from '../data/characters.js';
 import { interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
 import { items } from '../systems/items.js';
 import { savePosition } from '../systems/save.js';
+import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
+import { canopyTiles } from '../data/treeBlocks.js';
+import {
+  GrassCovers, InteractHint, stepEffect, footprint, startFallingLeaves, startSeaShimmer, startShoreFoam,
+  startSeagulls, startCrabs, startJumpingFish, lightWindows, applyTimeOfDay,
+} from '../systems/effects.js';
+import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 
 const FADE_MS = 150;
 const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`reply`)
@@ -30,7 +39,6 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 //             affiche `readyDialogue`, lève `setFlags` puis téléporte vers `warp` { map, x, y, facing }.
 //   props:    [{ type, x, y, w, h, dialogue?, ifFlags?, unlessFlags? }] — obstacles dessinés comme un
 //             bâtiment (voir art/buildingArt.js), bloquants tant que leurs conditions sont remplies
-//   scroll:   true pour une carte plus longue que l'écran (la caméra suit le joueur)
 //   events:   [{ on: 'enter', ifFlags?, unlessFlags?, steps: [{ say, speaker? } | { setFlag } | { talk: npcId }] }]
 //             `talk` : le PNJ se tourne vers le joueur et dit son dialogue (+ souvenir éventuel).
 //             scénettes jouées automatiquement à l'arrivée sur la carte.
@@ -46,6 +54,27 @@ export class MapScene extends Phaser.Scene {
     this.grid = grid;
     this.transitioning = false;
     renderMap(this, map);
+    this.canopy = canopyTiles(grid);
+    this.startWaterSparkles();
+    this.startFlowerSway();
+    this.grassCovers = new GrassCovers(this, map);
+    const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
+    startSeaShimmer(this, map, seaAround);
+    // Musique du lieu et ressac près de la mer.
+    playMusic(this.scene.key === 'Interior' ? 'home' : 'island');
+    const hasSea = seaAround || grid.some((row) => row.includes('w'));
+    setSeaAmbience(hasSea);
+    // Vie de l'île : écume qui bouge, mouettes, crabe, poissons, fenêtres éclairées le soir.
+    startShoreFoam(this, map);
+    if (hasSea) {
+      startSeagulls(this, map);
+      startJumpingFish(this, map);
+    }
+    startCrabs(this, map);
+    if (this.scene.key === 'Overworld') lightWindows(this, map, this.game);
+    this.hint = new InteractHint(this);
+    this.startIdleNpcs();
+    startFallingLeaves(this, map);
     const fillTile = map.surroundings ?? this.surroundingTile;
     this.surroundings = fillTile ? createSurroundings(this, map, fillTile) : null;
 
@@ -54,10 +83,20 @@ export class MapScene extends Phaser.Scene {
     this.followers = new Followers(this);
     const tileWalkable = createWalkableCheck(grid);
 
+    // Position sauvegardée devenue invalide (carte modifiée) : retour au point de départ de la carte.
+    const spawnWalkable = tileWalkable(spawn.x, spawn.y);
+    if (!spawnWalkable && map.spawn) spawn = map.spawn;
+
     this.player = new Player(this, spawn, {
       isWalkable: (x, y) => tileWalkable(x, y) && !this.npcAt(x, y) && !this.propAt(x, y),
       onStep: (x, y) => this.handleStep(x, y),
-      onMoveStart: (x, y) => this.followers.advance(x, y),
+      onMoveStart: (x, y, nx, ny, duration) => {
+        this.followers.advance(x, y, duration);
+        const code = this.grid[ny]?.[nx];
+        if (this.grid[y]?.[x] === 's') footprint(this, x, y, this.player.facing);
+        if (code === 'ĥ') this.grassCovers.rustle(nx, ny);
+        else stepEffect(this, code, nx, ny);
+      },
     });
     this.refreshActors();
     this.savePosition();
@@ -70,32 +109,88 @@ export class MapScene extends Phaser.Scene {
     const cam = this.cameras.main;
     cam.roundPixels = true;
     // Bandes autour de la carte (si rien ne les remplit) : couleur de sa tuile de coin.
-    cam.setBackgroundColor(getTile(grid[0][0]).color);
+    // Intérieurs : noir autour de la pièce, comme dans Rouge Feu ; dehors, la couleur du bord de la carte.
+    cam.setBackgroundColor(grid[0][0] === 'X' ? 0x000000 : getTile(grid[0][0]).color);
     this.fitCamera();
     this.scale.on('resize', this.fitCamera, this);
     this.events.once('shutdown', () => this.scale.off('resize', this.fitCamera, this));
+    // Touche moderne : bords de l'écran légèrement assombris (WebGL uniquement).
+    if (!cam.vignetteFX && cam.postFX) {
+      cam.vignetteFX = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.18);
+      if (this.scene.key === 'Overworld') applyTimeOfDay(cam, this.game);   // lumière selon l'heure
+    }
     cam.fadeIn(FADE_MS);
 
     this.runEnterEvents();
   }
 
   // La carte entière est visible, aussi grande que possible dans la fenêtre.
-  // Carte normale : entièrement visible, centrée. Carte `scroll` (plus longue que l'écran) :
-  // la hauteur remplit l'écran et la caméra suit le joueur de gauche à droite.
+  // Reflets animés sur l'eau (mer, étangs, rivières) : petits éclats qui apparaissent et s'effacent.
+  // Fleurs qui se balancent (comme dans Rouge Feu) : une deuxième image par parterre, affichée une
+  // demi-seconde sur deux par-dessus la carte.
+  startFlowerSway() {
+    const at = (x, y) => this.grid[y]?.[x];
+    const overlays = [];
+    this.grid.forEach((row, y) => row.forEach((c, x) => {
+      if (c !== 'f') return;
+      const key = `flower-${this.map.id}-${x}-${y}`;
+      if (!this.textures.exists(key)) {
+        const g = this.make.graphics({}, false);
+        g.translateCanvas(-x * TILE_SIZE, -y * TILE_SIZE);
+        drawFlowerSway(g, x, y, at);
+        g.generateTexture(key, TILE_SIZE, TILE_SIZE);
+        g.destroy();
+      }
+      overlays.push(this.add.image(x * TILE_SIZE, y * TILE_SIZE, key).setOrigin(0).setDepth(1).setVisible(false));
+    }));
+    if (!overlays.length) return;
+    this.time.addEvent({
+      delay: 500,
+      loop: true,
+      callback: () => overlays.forEach((o) => o.setVisible(!o.visible)),
+    });
+  }
+
+  startWaterSparkles() {
+    const water = [];
+    this.grid.forEach((row, y) => row.forEach((c, x) => {
+      if (['w', '~', 'G'].includes(c)) water.push([x, y]);
+    }));
+    if (!water.length) return;
+    const pool = Array.from({ length: 16 }, () => this.add.rectangle(0, 0, 3, 1, 0xffffff).setAlpha(0).setDepth(1));
+    let next = 0;
+    this.time.addEvent({
+      delay: 180,
+      loop: true,
+      callback: () => {
+        const spark = pool[next++ % pool.length];
+        const [x, y] = Phaser.Utils.Array.GetRandom(water);
+        spark.setPosition(x * TILE_SIZE + 3 + Math.floor(Math.random() * 10), y * TILE_SIZE + 3 + Math.floor(Math.random() * 10));
+        this.tweens.add({ targets: spark, alpha: { from: 0, to: 0.85 }, duration: 500, yoyo: true });
+      },
+    });
+  }
+
+  // Vue « Pokémon » : l'écran de Rouge Feu (15 x 10 cases) agrandi d'un facteur entier, centré avec
+  // des bandes noires ; la caméra suit le joueur et s'arrête aux bords de la carte. Si la carte est plus
+  // petite que l'écran dans un sens, elle reste centrée dans ce sens (le décor autour comble le vide).
   fitCamera() {
     const cam = this.cameras.main;
-    const width = this.grid[0].length * TILE_SIZE;
-    const height = this.grid.length * TILE_SIZE;
-    if (this.map.scroll) {
-      cam.setZoom(this.scale.height / height);
-      cam.setBounds(0, 0, width, height);
-      cam.startFollow(this.player.sprite, true);
-      return;
-    }
-    const zoom = Math.min(this.scale.width / width, this.scale.height / height);
-    cam.setZoom(zoom);
-    cam.centerOn(width / 2, height / 2);
-    this.surroundings?.resize(this.scale.width / zoom, this.scale.height / zoom);
+    const mapW = this.grid[0].length * TILE_SIZE;
+    const mapH = this.grid.length * TILE_SIZE;
+    const view = gameView(this.scale);
+    const viewW = SCREEN_W;
+    const viewH = SCREEN_H;
+    cam.setViewport(view.x, view.y, view.w, view.h);
+    cam.setZoom(view.zoom);
+    cam.setBounds(
+      Math.min(0, (mapW - viewW) / 2),
+      Math.min(0, (mapH - viewH) / 2),
+      Math.max(mapW, viewW),
+      Math.max(mapH, viewH),
+    );
+    cam.startFollow(this.player.sprite, true, 0.18, 0.18);   // suivi adouci
+    this.surroundings?.resize(viewW, viewH);
   }
 
   get dialog() {
@@ -123,7 +218,7 @@ export class MapScene extends Phaser.Scene {
     });
     for (const data of wanted) {
       if (this.npcs.some((n) => n.data === data)) continue;
-      const sprite = new CharacterSprite(this, data.x, data.y, data.color, data.facing, { hat: data.hat });
+      const sprite = new CharacterSprite(this, data.x, data.y, lookOf(data), data.facing);
       this.npcs.push({ data, sprite });
     }
 
@@ -181,7 +276,8 @@ export class MapScene extends Phaser.Scene {
   tryInteract(e) {
     const dialog = this.dialog;
     // Ignore la touche qui vient de fermer un dialogue.
-    if (dialog.isOpen || e.timeStamp <= dialog.closedAt) return;
+    const menu = this.scene.get('UI')?.menu;
+    if (dialog.isOpen || this.menuOpen || e.timeStamp <= dialog.closedAt || e.timeStamp <= (menu?.closedAt ?? 0)) return;
     if (this.transitioning || this.player.moving) return;
 
     const { x, y } = this.player.facingTile();
@@ -244,16 +340,23 @@ export class MapScene extends Phaser.Scene {
     const ready =
       (trigger.requiresSouvenirs ?? []).every((id) => souvenirs.has(id)) && meetsConditions(trigger);
     if (!ready) {
-      await this.dialog.open(trigger.dialogue);
+      if (trigger.dialogue) await this.dialog.open(trigger.dialogue);
       return;
     }
     // Conditions remplies : `readyDialogue` (ou `dialogue` pour un simple message), puis voyage éventuel.
     const pages = trigger.readyDialogue ?? (trigger.warp ? null : trigger.dialogue);
     if (pages) await this.dialog.open(pages);
-    if (trigger.item && items.add(trigger.item)) await this.dialog.open([`Tu as obtenu : ${trigger.item.name} !`]);
+    if (trigger.item && items.add(trigger.item)) {
+      sfx('item');
+      await this.dialog.open([`Tu as obtenu : ${trigger.item.name} !`]);
+    }
     (trigger.setFlags ?? []).forEach(flags.add);
     if (trigger.setFlags?.length) this.refreshActors();
-    if (trigger.warp) this.travel(trigger.warp);
+    if (trigger.warp) {
+      const code = this.grid[trigger.y]?.[trigger.x];
+      if (code === 'η' || code === 'ξ') sfx('stairs');
+      this.travel(trigger.warp);
+    }
   }
 
   // Voyage : { map, x, y, facing } vers une carte extérieure, ou { interior, x, y, facing }
@@ -274,11 +377,56 @@ export class MapScene extends Phaser.Scene {
   onTileEntered() {}
 
   update() {
+    this.updateCovers();
+    this.updateHint();
     // Pendant un dialogue le joueur ne bouge pas, et on oublie les flèches appuyées.
-    if (this.dialog?.isOpen) {
+    if (this.dialog?.isOpen || this.menuOpen) {
       this.player.queued = null;
       return;
     }
     this.player.update();
+  }
+
+  // Bulle « ! » au-dessus du personnage ou de l'objet que le joueur regarde (s'il peut lui parler).
+  updateHint() {
+    if (!this.hint) return;
+    if (this.dialog?.isOpen || this.menuOpen || this.player.moving || this.transitioning) return this.hint.show(null);
+    const { x, y } = this.player.facingTile();
+    if (this.npcAt(x, y)) return this.hint.show({ x, y }, true);
+    const object = (this.map.objects ?? []).find((o) => o.x === x && o.y === y && (o.warp || meetsConditions(o)));
+    this.hint.show(object ? { x, y } : null, false);
+  }
+
+  // Les PNJ tournent la tête de temps en temps (sauf pendant une conversation, près du joueur
+  // ou couchés dans un lit), pour que les lieux aient l'air vivants.
+  startIdleNpcs() {
+    this.time.addEvent({
+      delay: 2400,
+      loop: true,
+      callback: () => {
+        if (this.dialog?.isOpen || !this.npcs.length) return;
+        const npc = Phaser.Utils.Array.GetRandom(this.npcs);
+        const { x, y } = npc.data;
+        const near = Math.abs(x - this.player.tileX) + Math.abs(y - this.player.tileY) <= 2;
+        if (near || npc.data.still || this.grid[y]?.[x] === 'L') return;
+        npc.sprite.setFacing(Phaser.Utils.Array.GetRandom(['up', 'down', 'left', 'right']));
+      },
+    });
+  }
+
+  // Menu Start ouvert (dans la scène d'interface) : le joueur ne bouge pas.
+  get menuOpen() {
+    return this.scene.get('UI')?.menu?.isOpen ?? false;
+  }
+
+  // Hautes herbes devant les pieds des personnages, et ombre sur le joueur quand il passe derrière un arbre.
+  updateCovers() {
+    const player = this.player.sprite;
+    this.grassCovers.update([player, ...this.followers.members.map((m) => m.sprite), ...this.npcs.map((n) => n.sprite)]);
+
+    // Derrière un arbre : le feuillage (dessiné devant lui) le cache ; ce qui dépasse est à l'ombre.
+    const { x, y } = player.tile();
+    if (this.canopy.has(`${x},${y}`)) player.image.setTint(0x8890a8);
+    else player.image.clearTint();
   }
 }

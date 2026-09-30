@@ -2,23 +2,49 @@ import Phaser from 'phaser';
 import { DialogBox } from '../systems/DialogBox.js';
 import { souvenirs, souvenirEvents } from '../systems/souvenirs.js';
 import { items, itemEvents } from '../systems/items.js';
+import { gameView, FONT } from '../systems/screen.js';
+import { StartMenu } from '../systems/StartMenu.js';
+import { TouchControls, isTouchDevice } from '../systems/TouchControls.js';
 
-// Étiquette arrondie en haut à gauche (fond sombre + cadre clair).
-function createLabel(scene, y) {
+// Étiquette en haut à gauche de l'écran de jeu, façon panneau de lieu de Rouge Feu (cadre bleu-gris,
+// fond blanc). Comme dans le jeu, elle descend quand sa valeur change puis remonte au bout de 2,5 s.
+// `row` : rang de l'étiquette. Renvoie set(value, show = true).
+function createLabel(scene, row) {
   const bg = scene.add.graphics();
-  const text = scene.add.text(22, y + 6, '', {
-    fontFamily: 'monospace', fontSize: '18px', color: '#303030', fontStyle: 'bold',
-  });
-  return (value) => {
-    text.setText(value);
+  const text = scene.add.text(0, 0, '', { fontFamily: FONT, color: '#404c68', fontStyle: 'bold' });
+  const label = scene.add.container(0, 0, [bg, text]).setDepth(90).setVisible(false);
+  let hideTimer = null;
+  const draw = () => {
+    const v = gameView(scene.scale);
+    const u = v.zoom;
+    const x = v.x + 2 * u;
+    const y = v.y + 2 * u + row * 11 * u;
+    text.setFontSize(5 * u).setPosition(x + 4 * u, y + 2 * u);
     bg.clear();
-    bg.fillStyle(0x283048, 0.9).fillRoundedRect(10, y, text.width + 24, 32, 8);
-    bg.fillStyle(0xf8f8f8, 1).fillRoundedRect(13, y + 3, text.width + 18, 26, 6);
+    bg.fillStyle(0x6888a8, 1).fillRoundedRect(x, y, text.width + 8 * u, 10 * u, 1.5 * u);
+    bg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + u, y + u, text.width + 6 * u, 8 * u, u);
+    return { v, y };
+  };
+  scene.scale.on('resize', draw);
+  scene.events.once('shutdown', () => scene.scale.off('resize', draw));
+  return (value, show = true) => {
+    text.setText(value);
+    const { v, y } = draw();
+    if (!show || !value) return;
+    const hidden = -(y - v.y + 12 * v.zoom);                          // hors de l'écran de jeu, au-dessus
+    scene.tweens.killTweensOf(label);
+    hideTimer?.remove();
+    label.setVisible(true).setY(hidden);
+    scene.tweens.add({ targets: label, y: 0, duration: 250, ease: 'Quad.easeOut' });
+    hideTimer = scene.time.delayedCall(2500, () => {
+      scene.tweens.add({ targets: label, y: hidden, duration: 250, ease: 'Quad.easeIn', onComplete: () => label.setVisible(false) });
+    });
   };
 }
 
 // Interface affichée par-dessus les scènes de jeu (sans zoom) :
-// nom de la ville, compteur de souvenirs, objets (touche I pour la liste), dialogues.
+// nom de la ville, compteur de souvenirs, objets (touche I pour la liste), dialogues,
+// menu Start (Échap) et commandes tactiles sur téléphone.
 // La ville vient du registre du jeu (`city`), mis à jour par les scènes de carte.
 export class UIScene extends Phaser.Scene {
   constructor() {
@@ -27,8 +53,10 @@ export class UIScene extends Phaser.Scene {
 
   create() {
     this.dialog = new DialogBox(this);
+    this.menu = new StartMenu(this, this.dialog);          // Échap
+    if (isTouchDevice()) this.touch = new TouchControls(this);
 
-    const setCity = createLabel(this, 8);
+    const setCity = createLabel(this, 0);
     setCity(this.registry.get('city') ?? '');
     const onCity = (_parent, value) => setCity(value);
     // Première valeur : événement général `setdata` ; changements suivants : `changedata-city`.
@@ -36,22 +64,26 @@ export class UIScene extends Phaser.Scene {
     this.registry.events.on('setdata', onFirstSet);
     this.registry.events.on('changedata-city', onCity);
 
-    const setSouvenirs = createLabel(this, 46);
-    const render = (count) => setSouvenirs(`Souvenirs : ${count}`);
-    render(souvenirs.count());
+    const setSouvenirs = createLabel(this, 1);
+    const render = (count, show = true) => setSouvenirs(`Souvenirs : ${count}`, show);
+    render(souvenirs.count(), false);
     souvenirEvents.on('change', render);
 
-    const setItems = createLabel(this, 84);
-    const renderItems = (count) => setItems(`Objets : ${count}  (I)`);
-    renderItems(items.count());
+    const setItems = createLabel(this, 2);
+    const renderItems = (count, show = true) => setItems(`Objets : ${count}  (I)`, show);
+    renderItems(items.count(), false);
     itemEvents.on('change', renderItems);
 
     // Touche I : liste des objets dans la boîte de dialogue.
     this.input.keyboard.on('keydown', (e) => {
       if (e.key !== 'i' && e.key !== 'I') return;
-      if (this.dialog.isOpen) return;
+      if (this.dialog.isOpen || this.menu.isOpen) return;
       const names = items.list().map((i) => i.name);
-      this.dialog.open(names.length ? [`Tes objets : ${names.join(', ')}.`] : ["Tu n'as encore aucun objet."]);
+      const count = souvenirs.count();
+      this.dialog.open([
+        `Souvenirs : ${count}.`,
+        names.length ? `Tes objets : ${names.join(', ')}.` : "Tu n'as encore aucun objet.",
+      ]);
     });
 
     this.events.once('shutdown', () => {

@@ -1,6 +1,7 @@
 import { MapScene } from './MapScene.js';
 import { interiors } from '../data/maps/interiors.js';
 import { MAPS } from '../data/maps/index.js';
+import { sfx } from '../systems/audio.js';
 
 // Scène générique pour tous les intérieurs ; le contenu vient de data/maps/interiors.js.
 export class InteriorScene extends MapScene {
@@ -27,6 +28,9 @@ export class InteriorScene extends MapScene {
   }
 
   onTileEntered(tile) {
-    if (tile.exit) this.goTo('Overworld', { mapId: this.fromMap, fromInterior: this.interiorId });
+    if (tile.exit) {
+      sfx('door');
+      this.goTo('Overworld', { mapId: this.fromMap, fromInterior: this.interiorId });
+    }
   }
 }

@@ -21,34 +21,84 @@ function roundWindow(g, cx, cy) {
   rect(g, 0xf8f8f8, cx - 2, cy - 2, 2, 1);
 }
 
+// Maison façon Rouge Feu (5 x 4 cases) : grand toit rouge en rangées de tuiles avec faîtage clair et
+// pans latéraux en relief, murs blancs en bardage, deux fenêtres à croisillons, porte en retrait sur
+// une marche. Porte en case locale (1, 3).
 function drawHouse(g, ox, oy) {
-  // Toit
-  rect(g, 0x7a2818, ox, oy + 1, 80, 32);
-  rect(g, 0xe05838, ox + 1, oy + 2, 78, 29);
-  for (let y = 7; y < 30; y += 6) {
-    rect(g, 0xb83828, ox + 14, oy + y, 65, 1);
-    rect(g, 0xf07858, ox + 14, oy + y + 1, 65, 1);
+  const K = 0x383850;
+  const R = (c, x, y, w, h) => rect(g, c, ox + x, oy + y, w, h);
+  g.fillStyle(0x000000, 0.22);                                        // ombre portée
+  g.fillRect(ox + 4, oy + 63, 76, 2);
+  g.fillRect(ox + 78, oy + 38, 2, 26);
+
+  // ---- Toit (y 1..37) ----
+  R(K, 1, 1, 78, 37);
+  R(K, 0, 3, 80, 34);
+  // Pan avant : rangées de tuiles, plus claires vers le haut
+  const rows = [0xf07860, 0xe86850, 0xe06048, 0xd85840, 0xd05038];
+  for (let i = 0; i < 6; i++) {
+    const y = 6 + i * 5;
+    R(rows[Math.min(i, 4)], 7, y, 66, 5);
+    R(0xf8a088, 7, y, 66, 1);                                         // arête claire de la rangée
+    R(0xa83828, 7, y + 4, 66, 1);                                     // ombre sous la rangée
+    for (let x = 9 + (i % 2) * 4; x < 72; x += 8) R(0xb84030, x, y + 1, 1, 3);   // joints des tuiles
   }
-  rect(g, 0xf8a080, ox + 14, oy + 2, 65, 1);
-  // Pignon clair à gauche
-  rect(g, 0xf09040, ox + 1, oy + 2, 12, 29);
-  for (let y = 5; y < 30; y += 5) rect(g, 0xf8c070, ox + 2, oy + y, 10, 1);
-  rect(g, 0x7a2818, ox + 13, oy + 2, 1, 29);
-  rect(g, 0x983020, ox, oy + 31, 80, 2);
+  // Faîtage
+  R(0xf8c0a8, 7, 3, 66, 2);
+  R(0xfff0e0, 9, 3, 20, 1);
+  R(0xa83828, 7, 5, 66, 1);
+  // Rives du toit : fines bordures dans les rouges du toit (légèrement éclairée à gauche, ombrée à droite)
+  R(0xe87058, 2, 4, 4, 32);
+  R(0xf09078, 2, 4, 1, 32);
+  for (let y = 9; y < 36; y += 5) R(0xc04030, 2, y, 4, 1);
+  R(0xb04028, 74, 4, 4, 32);
+  R(0x882818, 77, 4, 1, 32);
+  for (let y = 9; y < 36; y += 5) R(0x882818, 74, y, 3, 1);
+  R(K, 6, 3, 1, 34);
+  R(K, 73, 3, 1, 34);
+  // Bord du toit (avancée) et son ombre sur le mur
+  R(0xa03020, 1, 35, 78, 2);
+  R(0x702018, 1, 37, 78, 1);
 
-  // Murs
-  rect(g, 0x586070, ox + 2, oy + 33, 76, 31);
-  rect(g, 0xd0d8e8, ox + 3, oy + 33, 74, 28);
-  rect(g, 0x9098b0, ox + 3, oy + 33, 74, 2);
-  rect(g, 0x8088a0, ox + 3, oy + 59, 74, 2);
-  window_(g, ox + 36, oy + 38, 14, 9);
-  window_(g, ox + 56, oy + 38, 14, 9);
+  // ---- Murs (y 38..63) ----
+  R(K, 3, 38, 74, 26);
+  R(0xf0f2f8, 4, 38, 72, 25);
+  for (let y = 42; y < 58; y += 4) R(0xd8dce8, 4, y, 72, 1);          // bardage
+  R(0xb0b8cc, 4, 38, 72, 2);                                          // ombre sous l'avancée
+  R(0xffffff, 4, 40, 2, 18);                                          // angle gauche éclairé
+  R(0xc0c6d6, 74, 40, 2, 18);                                         // angle droit dans l'ombre
+  // Soubassement en pierre
+  R(0x9098ac, 4, 58, 72, 5);
+  R(0xb8c0d0, 4, 58, 72, 1);
+  for (let x = 6; x < 76; x += 7) R(0x707890, x, 59, 1, 4);
+  R(0x707890, 4, 61, 72, 1);
 
-  // Porte (case locale 1,3)
-  rect(g, 0x603018, ox + 18, oy + 45, 12, 19);
-  rect(g, 0xe07038, ox + 19, oy + 46, 10, 18);
-  rect(g, 0xf09858, ox + 19, oy + 46, 10, 2);
-  rect(g, 0xf8d048, ox + 26, oy + 55, 1, 2);
+  // Fenêtres à croisillons (cadre blanc, vitres bleues avec reflet)
+  for (const wx of [40, 58]) {
+    R(K, wx - 1, 42, 16, 13);
+    R(0xffffff, wx, 43, 14, 11);
+    R(0x4878d0, wx + 2, 45, 10, 7);
+    R(0x78a8f0, wx + 2, 45, 10, 3);
+    R(0xc8e0ff, wx + 3, 45, 2, 1);                                    // reflet
+    R(0xc8e0ff, wx + 2, 46, 1, 1);
+    R(0xffffff, wx + 6, 45, 2, 7);                                    // croisillon
+    R(0xffffff, wx + 2, 48, 10, 1);
+    R(K, wx - 1, 54, 16, 1);
+    R(0xd8dce8, wx - 2, 55, 18, 1);                                   // appui
+  }
+
+  // Porte en retrait sur une marche (case locale 1, 3)
+  R(K, 17, 42, 15, 20);
+  R(0xd8dce8, 18, 43, 13, 18);                                        // chambranle
+  R(K, 20, 45, 9, 16);
+  R(0x5870a8, 21, 46, 7, 15);                                         // battant
+  R(0x7890c8, 21, 46, 7, 1);
+  R(0xa8c8f0, 22, 48, 5, 4);                                          // petite vitre
+  R(0xd8e8ff, 22, 48, 2, 1);
+  R(0x405890, 22, 54, 5, 5);                                          // panneau
+  R(0xf8d048, 27, 54, 1, 2);                                          // poignée
+  R(0xb0b4c0, 16, 61, 17, 3);                                         // marche
+  R(0xd8dce4, 16, 61, 17, 1);
 }
 
 function drawLab(g, ox, oy) {
@@ -1449,15 +1499,49 @@ function drawStoneHouse(g, ox, oy, { variant = 0 } = {}) {
 }
 
 // Cabane de plage balinaise (3x3, porte en (1,2)) : bambou sur pilotis, toit de chaume pointu.
+// Cabane de pêche (3 x 3 cases) façon Rouge Feu : toit de chaume en trois couches à bord festonné,
+// murs en planches, porte sombre en case locale (1, 2), petite fenêtre et bouée.
 function drawBeachHut(g, ox, oy) {
-  rect(g, 0x5c4020, ox + 4, oy + 2, 40, 22);              // toit de chaume
-  for (let i = 0; i < 10; i++) rect(g, 0xc8a050, ox + 20 - i * 2, oy + 2 + i * 2, 8 + i * 4, 2);
-  for (let x = 6; x < 44; x += 4) rect(g, 0xa07c34, ox + x, oy + 14, 1, 8);
-  rect(g, 0x6c4c24, ox + 6, oy + 24, 36, 18);             // murs de bambou
-  for (let x = 7; x < 42; x += 3) rect(g, 0xc8a060, ox + x, oy + 24, 2, 18);
-  for (const x of [8, 38]) rect(g, 0x5c4020, ox + x, oy + 42, 3, 6);   // pilotis
-  rect(g, 0x3c2410, ox + 18, oy + 32, 12, 14);            // entrée (case locale 1,2)
-  rect(g, 0xd8a860, ox + 16, oy + 44, 16, 4);             // marches
+  const K = 0x4a3020;
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(ox + 4, oy + 47, 42, 2);
+
+  // Murs en planches
+  rect(g, K, ox + 4, oy + 22, 40, 26);
+  rect(g, 0xd8a868, ox + 5, oy + 23, 38, 24);
+  for (let x = 5; x < 43; x += 5) {
+    rect(g, 0xb88448, ox + x + 4, oy + 23, 1, 24);                  // joints
+    rect(g, 0xe8c088, ox + x, oy + 23, 1, 24);                      // arête claire
+  }
+  rect(g, 0xa87438, ox + 5, oy + 44, 38, 3);                        // bas des planches
+  // Fenêtre
+  rect(g, K, ox + 33, oy + 28, 8, 8);
+  rect(g, 0x70a8e8, ox + 34, oy + 29, 6, 6);
+  rect(g, 0xc0e0f8, ox + 34, oy + 29, 6, 2);
+  // Porte
+  rect(g, K, ox + 18, oy + 30, 13, 18);
+  rect(g, 0x5c3820, ox + 19, oy + 31, 11, 17);
+  rect(g, 0x70482c, ox + 20, oy + 32, 4, 15);
+  rect(g, 0xf0c848, ox + 27, oy + 39, 1, 2);
+  // Bouée accrochée
+  rect(g, K, ox + 7, oy + 29, 8, 8);
+  rect(g, 0xf04838, ox + 8, oy + 30, 6, 6);
+  rect(g, 0xf8f8f8, ox + 8, oy + 32, 6, 2);
+  rect(g, 0xf8f8f8, ox + 10, oy + 30, 2, 6);
+  rect(g, 0xd8a868, ox + 10, oy + 32, 2, 2);
+
+  // Toit de chaume : trois couches, chacune avec un bord festonné et un reflet
+  rect(g, K, ox + 1, oy + 1, 46, 24);
+  const layers = [[2, 0xd8b058, 0xf0d080, 0xa88030], [9, 0xd0a850, 0xe8c878, 0xa07828], [16, 0xc8a048, 0xe0c070, 0x987020]];
+  for (const [ly, base, hi, lo] of layers) {
+    rect(g, base, ox + 2, oy + ly, 44, 7);
+    rect(g, hi, ox + 2, oy + ly, 44, 1);
+    for (let x = 2; x < 46; x += 3) rect(g, lo, ox + x + 1, oy + ly + 2, 1, 3);   // brins de paille
+    for (let x = 2; x < 46; x += 4) rect(g, lo, ox + x, oy + ly + 6, 3, 1);        // feston
+  }
+  rect(g, K, ox + 2, oy + 23, 44, 1);
+  for (let x = 3; x < 46; x += 4) rect(g, K, ox + x, oy + 24, 2, 1);              // bord effiloché
+  rect(g, 0xf8e0a0, ox + 4, oy + 2, 40, 1);                                        // faîtage
 }
 
 // Porte balinaise fendue (candi bentar, 3x3, décor) : deux moitiés de tour sculptée.
@@ -1607,41 +1691,50 @@ function drawTractor(g, ox, oy, { broken = false } = {}) {
 }
 
 // Voilier vu de dessus, 3x2 cases, proue vers l'est, amarré contre le ponton (à l'ouest).
+// Bateau à moteur (3 x 2 cases) façon ferry de Rouge Feu, vu de trois quarts : pont vu de dessus,
+// flanc blanc à bande bleue, cabine vitrée, proue pointue à droite.
 function drawBoat(g, ox, oy) {
-  const top = 5;
-  const bottom = 27;
-  const mid = (top + bottom) / 2;
-  // Ombre dans l'eau puis coque (proue effilée à droite)
-  for (let y = top; y <= bottom; y++) {
-    const bow = 38 + Math.round(8 * (1 - Math.abs(y - mid) / (mid - top + 1)));
-    rect(g, 0x2c60b0, ox + 4, oy + y + 2, bow - 3, 1);
-    rect(g, 0x303848, ox + 2, oy + y, bow - 1, 1);
-    if (y > top && y < bottom) rect(g, 0xf4f4f4, ox + 3, oy + y, bow - 4, 1);
+  const K = 0x283048;
+  const mid = 15;
+  const bow = (y) => 38 + Math.round(8 * (1 - Math.abs(y - mid) / 11));   // x de la proue à la rangée y
+  // Ombre et remous dans l'eau
+  g.fillStyle(0x1c3c8c, 0.45);
+  for (let y = 8; y <= 30; y++) g.fillRect(ox + 4, oy + y, bow(Math.min(y, 26)) - 4, 1);
+  for (let x = 0; x < 6; x += 2) rect(g, 0xd8ecfc, ox - 2 + x, oy + 28 + (x % 4 ? 1 : 0), 2, 1);
+  // Flanc (visible sous le pont)
+  for (let y = 18; y <= 28; y++) {
+    const r = bow(Math.min(y, 26)) - (y > 24 ? (y - 24) * 2 : 0);
+    rect(g, K, ox + 2, oy + y, r - 1, 1);
+    if (y < 28) rect(g, y === 22 || y === 23 ? 0x3058b8 : y > 25 ? 0xc8d0e0 : 0xf8f8f8, ox + 3, oy + y, r - 3, 1);
   }
-  // Liseré rouge le long du bord
-  for (let y = top + 1; y < bottom; y++) {
-    const bow = 38 + Math.round(8 * (1 - Math.abs(y - mid) / (mid - top + 1)));
-    rect(g, 0xd04040, ox + bow - 3, oy + y, 1, 1);
+  // Pont vu de dessus
+  for (let y = 4; y <= 19; y++) {
+    const r = bow(y);
+    rect(g, K, ox + 2, oy + y, r - 1, 1);
+    if (y > 4 && y < 19) rect(g, 0xe8dcc0, ox + 3, oy + y, r - 4, 1);
   }
-  rect(g, 0xd04040, ox + 3, oy + top + 1, 36, 1);
-  rect(g, 0xd04040, ox + 3, oy + bottom - 1, 36, 1);
-  rect(g, 0xd04040, ox + 3, oy + top + 1, 1, bottom - top - 1);
-  // Pont en bois
-  rect(g, 0xc89058, ox + 6, oy + 9, 32, 15);
-  for (let x = 9; x < 38; x += 4) rect(g, 0xa87038, ox + x, oy + 9, 1, 15);
+  rect(g, 0xf8f0d8, ox + 3, oy + 5, 34, 1);
+  for (let x = 6; x < 40; x += 4) rect(g, 0xd0c4a0, ox + x, oy + 6, 1, 12);   // lattes
   // Cabine
-  rect(g, 0x586070, ox + 8, oy + 11, 12, 11);
-  rect(g, 0xe8ecf4, ox + 9, oy + 12, 10, 9);
-  rect(g, 0x6090e0, ox + 11, oy + 14, 6, 3);
-  rect(g, 0xb0d0f8, ox + 11, oy + 14, 2, 1);
-  // Mât + voile
-  g.fillStyle(0xfafafa, 1);
-  g.fillTriangle(ox + 29, oy + 3, ox + 29, oy + 22, ox + 40, oy + 18);
-  g.fillStyle(0xd8dce8, 1);
-  g.fillTriangle(ox + 29, oy + 12, ox + 29, oy + 22, ox + 40, oy + 18);
-  rect(g, 0x5c3818, ox + 28, oy + 2, 2, 22);
+  rect(g, K, ox + 8, oy + 3, 20, 15);
+  rect(g, 0xf8f8f8, ox + 9, oy + 4, 18, 13);
+  rect(g, 0xd0d8e8, ox + 9, oy + 4, 18, 3);                                  // toit
+  rect(g, 0xa8b4c8, ox + 9, oy + 7, 18, 1);
+  for (const wx of [11, 17, 23]) {                                           // hublots
+    rect(g, K, ox + wx - 1, oy + 9, 5, 5);
+    rect(g, 0x5890e8, ox + wx, oy + 10, 3, 3);
+    rect(g, 0xb8d8f8, ox + wx, oy + 10, 2, 1);
+  }
+  rect(g, 0x3058b8, ox + 9, oy + 15, 18, 2);                                 // bande bleue
+  // Bouée et bitte d'amarrage
+  rect(g, K, ox + 31, oy + 8, 7, 7);
+  rect(g, 0xf04838, ox + 32, oy + 9, 5, 5);
+  rect(g, 0xf8f8f8, ox + 32, oy + 11, 5, 1);
+  rect(g, 0xf8f8f8, ox + 34, oy + 9, 1, 5);
+  rect(g, 0xe8dcc0, ox + 34, oy + 11, 1, 1);
+  rect(g, K, ox + 4, oy + 14, 3, 3);
   // Amarre vers le ponton
-  rect(g, 0xe8d8a8, ox, oy + 16, 3, 1);
+  rect(g, 0xe8d8a8, ox, oy + 15, 5, 1);
 }
 
 const BUILDINGS = {

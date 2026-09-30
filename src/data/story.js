@@ -1,6 +1,7 @@
 // Drapeaux d'histoire utilisés dans les données (évite les fautes de frappe).
 export const FLAGS = {
   departFortDeFrance: 'depart-fort-de-france', // parti en bateau
+  coquillageTrouve: 'coquillage-trouve',        // Fort-de-France : coquillage caché dans les hautes herbes
   familleSuit: 'famille-suit',                  // Papa et Manon suivent le joueur
   familleArrivee: 'famille-arrivee',            // arrivés à l'hôpital de Saint-Ay
   felixInvite: 'felix-invite',                  // Felix t'a invité dans la maison 2
@@ -64,6 +65,7 @@ export const TOULON_QUESTS = {
 
 // Objets remis au joueur (voir systems/items.js).
 export const ITEMS = {
+  coquillageNacre: { id: 'coquillage-nacre', name: 'Coquillage nacré' },
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },
   clesAppartement: { id: 'cles-appartement', name: "Clés de l'appartement" },
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },

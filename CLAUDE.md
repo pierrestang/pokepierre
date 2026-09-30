@@ -12,7 +12,9 @@ On commence par une seule ville jouable, puis on étend à une petite région.
 
 ## Graphismes
 - Phase actuelle : graphismes provisoires uniquement (rectangles colorés 16x16, zoom x3).
-- Ne jamais utiliser d'assets Nintendo (sprites, tilesets, musiques).
+- Assets Nintendo (sprites, tilesets, musiques) : autorisés, légèrement modifiés, uniquement s'ils sont
+  fournis par l'utilisateur (déposés dans le projet), et pour un usage personnel. Le jeu ne doit alors
+  pas être publié (GitHub Pages, itch.io…). Sans fichier fourni, tout reste dessiné dans le code.
 - Le rendu des tuiles doit rester centralisé pour pouvoir brancher un vrai tileset plus tard.
 
 ## Structure

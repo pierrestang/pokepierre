@@ -1,6 +1,7 @@
 import { souvenirs } from './souvenirs.js';
 import { flags } from './flags.js';
 import { items } from './items.js';
+import { sfx } from './audio.js';
 
 // Parler à un PNJ ou examiner un objet.
 // Cible : { name?, dialogue: [pages], after?: [pages], souvenir?: { id, name }, item?: { id, name }, setFlag? }
@@ -17,6 +18,7 @@ export async function interact(dialog, target) {
   if (receive && !flags.has(receive.setFlag) && items.has(receive.item.id)) {
     await dialog.open(receive.dialogue, { speaker: target.name });
     items.remove(receive.item.id);
+    sfx('confirm');
     await dialog.open([`Tu as donné : ${receive.item.name}.`]);
     flags.add(receive.setFlag);
     return true;
@@ -34,7 +36,10 @@ export async function interact(dialog, target) {
 
   if (souvenir) await giveSouvenir(dialog, souvenir);
   // Objet remis une seule fois (même s'il a été donné depuis, si `setFlag` marque l'échange).
-  if (item && !done && items.add(item)) await dialog.open([`Tu as obtenu : ${item.name} !`]);
+  if (item && !done && items.add(item)) {
+    sfx('item');
+    await dialog.open([`Tu as obtenu : ${item.name} !`]);
+  }
   if (setFlag && !flags.has(setFlag)) {
     flags.add(setFlag);
     return true;
@@ -45,6 +50,7 @@ export async function interact(dialog, target) {
 // Donne un souvenir (s'il est nouveau) avec le message d'obtention.
 export async function giveSouvenir(dialog, souvenir) {
   if (souvenirs.add(souvenir)) {
+    sfx('item');
     await dialog.open([`Tu as obtenu un souvenir : ${souvenir.name} !`]);
   }
 }

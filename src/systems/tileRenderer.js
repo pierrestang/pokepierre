@@ -1,5 +1,5 @@
 import { TILE_SIZE, getTile } from '../data/tiles.js';
-import { drawTile } from '../art/tileArt.js';
+import { drawTile, drawTall, tallObject, drawTallKind } from '../art/tileArt.js';
 import { drawBuilding } from '../art/buildingArt.js';
 
 // Point unique de rendu des cartes.
@@ -22,21 +22,72 @@ export function renderMap(scene, map) {
         drawTile(g, drawn, x, y, at, getTile(drawn).color);
       });
     });
-    (map.buildings ?? []).forEach((b) => drawBuilding(g, b));
+    (map.buildings ?? []).filter((b) => b.type !== 'boat').forEach((b) => drawBuilding(g, b));
     g.generateTexture(key, width, height);
     g.destroy();
   }
 
-  return scene.add.image(0, 0, key).setOrigin(0).setDepth(0);
+  const image = scene.add.image(0, 0, key).setOrigin(0).setDepth(0);
+  addTallObjects(scene, map);
+  addBoats(scene, map);
+  return image;
 }
 
-// Texture 16x16 d'une seule tuile (clé `tile-<code>`), dessinée comme sur les cartes.
+// Bateaux : une image à part, qui tangue doucement sur l'eau.
+function addBoats(scene, map) {
+  for (const b of (map.buildings ?? []).filter((d) => d.type === 'boat')) {
+    const key = 'building-boat';
+    if (!scene.textures.exists(key)) {
+      const g = scene.make.graphics({}, false);
+      g.translateCanvas(-b.x * TILE_SIZE + 4, -b.y * TILE_SIZE + 2);
+      drawBuilding(g, b);
+      g.generateTexture(key, 56, 36);
+      g.destroy();
+    }
+    const image = scene.add.image(b.x * TILE_SIZE - 4, b.y * TILE_SIZE - 2, key).setOrigin(0)
+      .setDepth(10 + (b.y * TILE_SIZE + 30) / 10000);
+    scene.tweens.add({ targets: image, y: image.y + 1, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+  }
+}
+
+// Sapins et palmiers : une image chacun, triée en profondeur comme les personnages (depth 10 + y / 10000),
+// pour qu'ils passent devant les personnages situés derrière eux.
+function addTallObjects(scene, map) {
+  const { grid } = map;
+  const at = (x, y) => grid[y]?.[x];
+  grid.forEach((row, y) => row.forEach((code, x) => {
+    const o = tallObject(code, x, y, at);
+    if (!o) return;
+    const key = `tall-${o.kind}`;
+    if (!scene.textures.exists(key)) {
+      const g = scene.make.graphics({}, false);
+      drawTallKind(g, o.kind);
+      g.generateTexture(key, o.w, o.h);
+      g.destroy();
+    }
+    scene.add.image(o.x, o.y, key).setOrigin(0).setDepth(10 + o.baseY / 10000);
+  }));
+}
+
+// Texture répétable d'une tuile (clé `tile-<code>`), dessinée comme sur les cartes.
+// Les sapins forment des blocs de 2x2 cases : leur motif fait 32x32.
+function tileSpan(code) {
+  return code === 'T' ? 2 : 1;
+}
+
 function tileTexture(scene, code) {
   const key = `tile-${code}`;
   if (!scene.textures.exists(key)) {
+    const n = tileSpan(code);
     const g = scene.make.graphics({}, false);
-    drawTile(g, code, 0, 0, () => code, getTile(code).color);
-    g.generateTexture(key, TILE_SIZE, TILE_SIZE);
+    // Deux fois la hauteur du motif : ce qui dépasse vers le haut (cime des sapins) raccorde la répétition.
+    for (let y = 0; y < n * 2; y++) {
+      for (let x = 0; x < n; x++) drawTile(g, code, x, y, () => code, getTile(code).color);
+    }
+    for (let y = 0; y < n * 2; y++) {
+      for (let x = 0; x < n; x++) drawTall(g, code, x, y, () => code);
+    }
+    g.generateTexture(key, n * TILE_SIZE, n * TILE_SIZE);
     g.destroy();
   }
   return key;
@@ -69,8 +120,9 @@ function repeatedSurroundings(scene, map, code) {
   return {
     resize(viewW, viewH) {
       const { x0, y0, x1, y1 } = visibleTiles(map, viewW, viewH);
-      fill.setPosition((x0 - 1) * TILE_SIZE, (y0 - 1) * TILE_SIZE);
-      fill.setSize((x1 - x0 + 3) * TILE_SIZE, (y1 - y0 + 3) * TILE_SIZE);
+      // Calé sur des coordonnées paires, comme les blocs de sapins de la carte.
+      fill.setPosition(Math.floor((x0 - 1) / 2) * 2 * TILE_SIZE, Math.floor((y0 - 1) / 2) * 2 * TILE_SIZE);
+      fill.setSize((x1 - x0 + 5) * TILE_SIZE, (y1 - y0 + 5) * TILE_SIZE);
     },
   };
 }
@@ -102,6 +154,9 @@ function ruleSurroundings(scene, map, { outside, border, borderSkip = [] }) {
           const code = at(x, y);
           drawTile(g, code, x, y, at, getTile(code).color);
         }
+      }
+      for (let y = y0; y <= y1; y++) {
+        for (let x = x0; x <= x1; x++) if (!inMap(x, y)) drawTall(g, at(x, y), x, y, at);
       }
       image?.destroy();
       if (scene.textures.exists(key)) scene.textures.remove(key);

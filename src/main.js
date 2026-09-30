@@ -9,6 +9,12 @@ import { flags } from './systems/flags.js';
 import { items } from './systems/items.js';
 import { eraseSave } from './systems/save.js';
 
+// La police des dialogues doit être chargée avant de dessiner le premier texte (1,5 s au plus).
+await Promise.race([
+  document.fonts.load('24px "Pixelify Sans"').catch(() => {}),
+  new Promise((resolve) => setTimeout(resolve, 1500)),
+]);
+
 const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',

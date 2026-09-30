@@ -1,0 +1,137 @@
+import { gameView, FONT } from './screen.js';
+import { souvenirs } from './souvenirs.js';
+import { items } from './items.js';
+import { sfx, options, setMusicEnabled, setSfxEnabled } from './audio.js';
+
+// Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu.
+// Souvenirs, Objets, Sauvegarder, Options (musique, sons), Fermer.
+// Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
+// Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
+const FRAME = 0x6888a8;
+const FRAME_LIGHT = 0xb8d0e8;
+
+export class StartMenu {
+  constructor(scene, dialog) {
+    this.scene = scene;
+    this.dialog = dialog;
+    this.isOpen = false;
+    this.closedAt = 0;
+    this.index = 0;
+    this.bg = scene.add.graphics().setDepth(110);
+    this.texts = [];
+    this.container = scene.add.container(0, 0, [this.bg]).setDepth(110).setVisible(false);
+    scene.input.keyboard.on('keydown', (e) => this.onKey(e));
+    scene.scale.on('resize', () => this.isOpen && this.render());
+  }
+
+  // Scène de carte active (le menu ne s'ouvre qu'en jeu).
+  mapScene() {
+    return this.scene.game.scene.getScenes(true).find((s) => s.player && s.savePosition);
+  }
+
+  entries() {
+    if (this.page === 'options') {
+      return [
+        { label: `MUSIQUE : ${options.music ? 'OUI' : 'NON'}`, action: () => { setMusicEnabled(!options.music); this.render(); } },
+        { label: `SONS : ${options.sfx ? 'OUI' : 'NON'}`, action: () => { setSfxEnabled(!options.sfx); this.render(); } },
+        { label: 'RETOUR', action: () => this.showPage('main', 3) },
+      ];
+    }
+    return [
+      { label: 'SOUVENIRS', action: () => this.showInDialog(this.souvenirPages()) },
+      { label: 'OBJETS', action: () => this.showInDialog(this.itemPages()) },
+      { label: 'SAUVEGARDER', action: () => this.save() },
+      { label: 'OPTIONS', action: () => this.showPage('options', 0) },
+      { label: 'FERMER', action: () => this.close() },
+    ];
+  }
+
+  souvenirPages() {
+    const list = souvenirs.list().map((s) => s.name);
+    return list.length ? [`Souvenirs (${list.length}) : ${list.join(', ')}.`] : ["Tu n'as encore aucun souvenir."];
+  }
+
+  itemPages() {
+    const list = items.list().map((i) => i.name);
+    return list.length ? [`Tes objets : ${list.join(', ')}.`] : ["Tu n'as encore aucun objet."];
+  }
+
+  open() {
+    const map = this.mapScene();
+    if (!map || map.transitioning || map.player.moving || this.dialog.isOpen) return;
+    sfx('menu');
+    this.isOpen = true;
+    this.showPage('main', this.index);
+  }
+
+  close() {
+    this.isOpen = false;
+    this.closedAt = performance.now();
+    this.container.setVisible(false);
+  }
+
+  showPage(page, index) {
+    this.page = page;
+    this.index = index;
+    this.render();
+  }
+
+  async showInDialog(pages) {
+    this.close();
+    await this.dialog.open(pages);
+  }
+
+  async save() {
+    this.close();
+    this.mapScene()?.savePosition();
+    sfx('save');
+    await this.dialog.open(['Partie sauvegardée !']);
+  }
+
+  render() {
+    const v = gameView(this.scene.scale);
+    const u = v.zoom;
+    const list = this.entries();
+    this.texts.forEach((t) => t.destroy());
+    this.texts = list.map((e, i) =>
+      this.scene.add.text(0, 0, `${i === this.index ? '▶' : '  '} ${e.label}`, {
+        fontFamily: FONT, fontSize: `${6 * u}px`, color: i === this.index ? '#d04040' : '#404c68',
+      }),
+    );
+    const lineH = 10 * u;
+    const w = Math.max(...this.texts.map((t) => t.width)) + 12 * u;
+    const h = list.length * lineH + 8 * u;
+    const x = v.x + v.w - w - 2 * u;
+    const y = v.y + 2 * u;
+    this.bg.clear();
+    this.bg.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, h, 3 * u);
+    this.bg.fillStyle(FRAME_LIGHT, 1).fillRoundedRect(x + u, y + u, w - 2 * u, h - 2 * u, 2.5 * u);
+    this.bg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 2 * u, y + 2 * u, w - 4 * u, h - 4 * u, 2 * u);
+    this.texts.forEach((t, i) => {
+      t.setPosition(x + 5 * u, y + 4 * u + i * lineH);
+      this.container.add(t);
+    });
+    this.container.setVisible(true);
+  }
+
+  onKey(e) {
+    if (!this.isOpen) {
+      if (e.key === 'Escape') this.open();
+      return;
+    }
+    const n = this.entries().length;
+    if (e.key === 'Escape') {
+      sfx('select');
+      if (this.page === 'options') return this.showPage('main', 3);
+      return this.close();
+    }
+    if (e.key === 'ArrowUp') this.index = (this.index - 1 + n) % n;
+    else if (e.key === 'ArrowDown') this.index = (this.index + 1) % n;
+    else if (e.key === 'Enter' || e.key === ' ') {
+      sfx('confirm');
+      return this.entries()[this.index].action();
+    } else return;
+    sfx('select');
+    this.render();
+  }
+}
