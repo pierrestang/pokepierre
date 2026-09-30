@@ -1713,10 +1713,103 @@ const DECALS = {
   rodsOnRack(g, px, py, { count = 3 } = {}) {
     drawRackRods(g, px, py, count);
   },
+  // Vieille corde enroulée autour de la bitte d'amarrage (Saint-Ay).
+  rope(g, px, py) {
+    rect(g, 0x5c4020, px + 4, py + 7, 8, 5);
+    for (const [dy, c] of [[7, 0xc8a868], [9, 0xe0c890], [11, 0xb09050]]) rect(g, c, px + 5, py + dy, 6, 1);
+    rect(g, 0xc8a868, px + 11, py + 11, 3, 1);                        // bout qui pend
+    rect(g, 0xc8a868, px + 13, py + 12, 1, 3);
+  },
+  // Fanny, emmaillotée dans une couverture rose, dans les bras de Maman (lit de l'hôpital).
+  baby(g, px, py) {
+    rect(g, 0x302830, px + 4, py + 4, 9, 8);
+    rect(g, 0xf0a0c0, px + 5, py + 5, 7, 6);
+    rect(g, 0xf8d0e0, px + 5, py + 5, 7, 1);
+    rect(g, 0xf0c8a0, px + 6, py + 6, 4, 3);                            // visage
+    rect(g, 0x302830, px + 7, py + 7, 1, 1);
+    rect(g, 0x302830, px + 9, py + 7, 1, 1);
+  },
+  // Cabane des cousins, selon l'emplacement choisi : dans le grand arbre, sur pilotis au bord du lac, ou
+  // au milieu du champ de blé. (x, y) : case en bas à gauche d'un bloc de 2 x 2 cases.
+  cabane(g, px, py, { place = 'champ' } = {}) {
+    const ox = px;
+    const oy = py + S - 34;                                             // bas du dessin sur le bas de la case
+    const K = 0x383028;
+    if (place === 'arbre') {
+      rect(g, K, ox + 2, oy - 2, 28, 4);                                // plateforme dans les branches
+      rect(g, 0xa87040, ox + 3, oy - 1, 26, 2);
+      rect(g, 0xd8c890, ox + 26, oy + 2, 1, 22);                        // échelle de corde
+      rect(g, 0xd8c890, ox + 29, oy + 2, 1, 22);
+      for (let y = 4; y < 24; y += 4) rect(g, 0xa87040, ox + 26, oy + y, 4, 1);
+    } else if (place === 'etang') {
+      for (const x of [4, 12, 20, 26]) { rect(g, K, ox + x, oy + 22, 3, 12); rect(g, 0x806040, ox + x + 1, oy + 22, 1, 12); }   // pilotis
+      rect(g, K, ox + 1, oy + 20, 30, 4);                               // ponton
+      rect(g, 0xb08050, ox + 2, oy + 21, 28, 2);
+    }
+    const base = place === 'arbre' ? oy - 22 : oy;                      // la cabane
+    const top = place === 'etang' ? base - 2 : base + 4;
+    rect(g, K, ox + 4, top + 8, 24, 14);                                // murs en planches
+    rect(g, 0xc89058, ox + 5, top + 9, 22, 12);
+    for (let y = top + 12; y < top + 21; y += 3) rect(g, 0x9c6834, ox + 5, y, 22, 1);
+    rect(g, K, ox + 13, top + 13, 6, 9);                                // porte
+    rect(g, 0x5c3c20, ox + 14, top + 14, 4, 8);
+    rect(g, K, ox + 21, top + 11, 4, 4);                                // fenêtre
+    rect(g, 0x9cc8e8, ox + 22, top + 12, 2, 2);
+    for (let i = 0; i < 9; i++) rect(g, K, ox + 2 + i, top + 8 - i, 28 - 2 * i, 1);   // toit
+    for (let i = 1; i < 8; i++) rect(g, i % 2 ? 0xd84838 : 0xb83028, ox + 3 + i, top + 8 - i, 26 - 2 * i, 1);
+    rect(g, 0xf8f8f0, ox + 7, top + 16, 4, 3);                          // panneau « QG »
+    rect(g, 0xd83030, ox + 8, top + 17, 2, 1);
+  },
 };
 
 export function drawDecal(g, kind, px, py, options) {
   DECALS[kind]?.(g, px, py, options);
+}
+
+// Tas de planches de la ferme (Saint-Ay), posé sur l'herbe (sol Rouge Feu dessous).
+const PLANKS = [
+  '................',
+  '..kkkkkkkkkkkk..',
+  '.kWWWWWWWWWWWWk.',
+  '.kwwwwwwwwwwwwk.',
+  'kkkkkkkkkkkkkkk.',
+  'kWWWWWWWWWWWWWk.',
+  'kwwwwwwwwwwwwwkk',
+  'kkkkkkkkkkkkkkWk',
+  '.kWWWWWWWWWWWkwk',
+  '.kwwwwwwwwwwwkkk',
+  'kkkkkkkkkkkkkkk.',
+  'kWWWWWWWWWWWWWWk',
+  'kwwwwwwwwwwwwwwk',
+  'kDDDDDDDDDDDDDDk',
+  '.kkkkkkkkkkkkkk.',
+];
+function planksPile(g, px, py) {
+  if (!groundProvided) grass(g, px, py, 0, 0);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 1, py + 15, 15, 1);
+  pixelArt(g, PLANKS, px, py + 1);
+}
+
+// Bitte d'amarrage en bois au bord du lac (Saint-Ay) ; la corde est un décor à part (DECALS.rope).
+const BOLLARD = [
+  '....kkkkkk....',
+  '...kWWWWWWk...',
+  '...kwwwwwwk...',
+  '....kWWWWk....',
+  '....kWwwWk....',
+  '....kWwwWk....',
+  '....kWwwWk....',
+  '....kWwwWk....',
+  '...kWWwwWWk...',
+  '...kDDDDDDk...',
+  '....kkkkkk....',
+];
+function bollard(g, px, py) {
+  if (!groundProvided) grass(g, px, py, 0, 0);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 4, py + 14, 8, 2);
+  pixelArt(g, BOLLARD, px + 1, py + 4);
 }
 
 // Caisse « À DONNER » : caisse vide avec son étiquette de papier (texte griffonné au feutre rouge).
@@ -2291,6 +2384,8 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'ψ': return fishingRods(g, px, py, x, y);
     case 'χ': return fishCrate(g, px, py, x, y);
     case 'ʁ': return giveCrate(g, px, py, x, y);
+    case 'ʀ': return planksPile(g, px, py);
+    case 'ɓ': return bollard(g, px, py);
     case 'ĉ': return cliff2(g, px, py, x, y, at);
     case 'ŝ': return stairs(g, px, py, x, y, at);
     case '=': return pier(g, px, py, x, y, at);

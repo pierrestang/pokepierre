@@ -38,6 +38,7 @@ function hash(text) {
 // Apparence d'un PNJ ou d'un suiveur : par nom (ou par id), sinon un figurant.
 export function lookOf(data) {
   if (data.id === 'chat') return fullLook({ kind: 'cat' });
+  if (data.id?.startsWith('poule')) return fullLook({ kind: 'hen' });
   const sprite = BY_NAME[data.name] ?? BY_NAME[capitalize(data.id)];
   return { sprite: sprite ?? EXTRAS[hash(`${data.id}:${data.x},${data.y}`) % EXTRAS.length] };
 }

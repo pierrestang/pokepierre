@@ -131,7 +131,7 @@ export const FRLG_BUILDINGS = {
 
 // Cases posées sur l'herbe (le sable voisin reçoit un liseré d'herbe) : herbe, fleurs, buissons, arbres,
 // barrières, panneaux, plateau du mémorial…
-const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F', 'ʬ', 'ʭ']);
+const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F', 'ʬ', 'ʭ', 'ʀ', 'ɓ']);
 const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ', 'χ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.

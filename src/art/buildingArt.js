@@ -1191,6 +1191,32 @@ function drawBrokenCar(g, ox, oy) {
   rect(g, 0xe0e0e8, ox + 13, oy - 11, 4, 3);
 }
 
+// Voiture familiale chargée pour le départ (obstacle 2x2, vue de dessus, capot vers le nord) : break bleu,
+// valises et cartons sanglés sur la galerie du toit.
+function drawFamilyCar(g, ox, oy) {
+  const K = 0x283048;
+  rect(g, 0x000000, ox + 5, oy + 29, 24, 2);               // ombre
+  rect(g, K, ox + 6, oy + 1, 20, 29);                      // contour
+  rect(g, 0x3868c0, ox + 7, oy + 2, 18, 27);               // carrosserie
+  rect(g, 0x5888e0, ox + 8, oy + 3, 16, 5);                // capot (reflet)
+  rect(g, 0xf8e8a0, ox + 8, oy + 2, 3, 1);                 // phares
+  rect(g, 0xf8e8a0, ox + 21, oy + 2, 3, 1);
+  rect(g, K, ox + 8, oy + 8, 16, 4);                       // pare-brise
+  rect(g, 0x9cc8e8, ox + 9, oy + 9, 14, 2);
+  rect(g, 0x2c4c98, ox + 8, oy + 12, 16, 14);              // toit
+  rect(g, 0x303038, ox + 9, oy + 13, 1, 12);               // galerie
+  rect(g, 0x303038, ox + 22, oy + 13, 1, 12);
+  rect(g, K, ox + 10, oy + 13, 7, 6); rect(g, 0xc87838, ox + 11, oy + 14, 5, 4);   // valise
+  rect(g, K, ox + 16, oy + 15, 6, 7); rect(g, 0xd8b070, ox + 17, oy + 16, 4, 5);   // carton
+  rect(g, K, ox + 10, oy + 19, 6, 6); rect(g, 0x60a060, ox + 11, oy + 20, 4, 4);   // sac
+  rect(g, 0xe8e0d0, ox + 9, oy + 18, 14, 1);               // sangle
+  rect(g, K, ox + 8, oy + 26, 16, 3);                      // lunette arrière
+  rect(g, 0x9cc8e8, ox + 9, oy + 27, 14, 1);
+  rect(g, 0xd83030, ox + 7, oy + 28, 3, 1);                // feux
+  rect(g, 0xd83030, ox + 22, oy + 28, 3, 1);
+  for (const [wx, wy] of [[4, 4], [26, 4], [4, 21], [26, 21]]) rect(g, 0x202020, ox + wx, oy + wy, 2, 6);   // roues
+}
+
 // Café parisien (5x4, porte en (1,3)) : façade bois bordeaux, store rayé rouge, enseigne « CAFE ».
 function drawCafe(g, ox, oy) {
   drawImmeuble(g, ox, oy, { variant: 2 });
@@ -1773,6 +1799,7 @@ const BUILDINGS = {
   plane: drawPlane,
   stadium: drawStadium,
   brokenCar: drawBrokenCar,
+  familyCar: drawFamilyCar,
   cafe: drawCafe,
   bistro: drawBistro,
   eiffelTower: drawEiffelTower,

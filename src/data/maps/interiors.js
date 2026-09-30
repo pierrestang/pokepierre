@@ -1,5 +1,8 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS, QUALITIES } from '../story.js';
+import {
+  BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT,
+} from '../saintAyStory.js';
 
 // Ascenseur de l'entreprise parisienne (mêmes cases, en haut à droite, à chaque étage).
 const floor = (interior) => ({ interior, x: 11, y: 1, facing: 'down' });
@@ -233,15 +236,16 @@ export const interiors = {
     ],
   },
 
-  // Saint-Ay — la chaumière de la famille, façon Rouge Feu : on vient d'emménager, cartons partout.
-  // Papa et Manon t'attendent et te demandent de les suivre.
+  // Saint-Ay — la chaumière de la famille, façon Rouge Feu. Le déménagement est terminé (plus de cartons).
+  // La famille y rentre après la naissance de Fanny et la cabane ; Papa y annonce le départ pour Montépilloy.
+  // Scénario : voir data/saintAyStory.js.
   playerHouse: {
     name: 'Maison de la famille',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'mmmooommom',
+      'mmmoooommm',
       'oooooooooo',
       'ooommmmooo',
       'moommmmoom',
@@ -252,44 +256,49 @@ export const interiors = {
       { kind: 'kitchen', x: 0, y: 1 },
       { kind: 'fridge', x: 2, y: 1 },
       { kind: 'window', x: 4, y: 0 },
-      { kind: 'carton', x: 6, y: 2 },
-      { kind: 'carton', x: 7, y: 2 },
+      { kind: 'crtTv', x: 7, y: 2 },
+      { kind: 'blueShelf', x: 8, y: 1 },
       { kind: 'pottedPlant', x: 9, y: 2 },
       { kind: 'table', x: 3, y: 4 },
-      { kind: 'carton', x: 0, y: 5 },
-      { kind: 'carton', x: 9, y: 5 },
+      { kind: 'plant', x: 0, y: 5 },
+      { kind: 'plant', x: 9, y: 5 },
     ],
     spawn: { x: 4, y: 6, facing: 'up' },
     objects: [
-      ...[[6, 2], [7, 2], [0, 5], [9, 5]].map(([x, y]) => ({ x, y, dialogue: ['Des cartons de Fort-de-France, pas encore ouverts.'] })),
+      { x: 7, y: 2, dialogue: ['La télé. Les nouvelles de la région passent en boucle.'] },
     ],
     npcs: [
       {
-        id: 'papa', name: 'Papa', x: 2, y: 3, facing: 'down', color: 0x3f6fd8,
-        unlessFlags: [FLAGS.familleSuit],
-        dialogue: ['[Papa - texte provisoire] Suis-nous !'],
+        id: 'papa-maison', name: 'Papa', x: 2, y: 4, facing: 'right', color: 0x3f6fd8,
+        ifFlags: [FLAGS.cabaneFinie], still: true,
+        script: [
+          { ifFlags: [FLAGS.annonceMutation], speaker: 'Papa', say: ['La voiture est chargée, sur la route du nord. Va dire au revoir à tes cousins.'], end: true },
+          { speaker: 'Papa', say: ['Tes cousins ont de la chance de t\'avoir.'] },
+        ],
       },
       {
-        id: 'manon', name: 'Manon', x: 8, y: 4, facing: 'left', color: 0xf0a030,
-        unlessFlags: [FLAGS.familleSuit],
-        dialogue: ['[Manon - texte provisoire] Suis-nous !'],
+        id: 'maman-maison', name: 'Maman', x: 7, y: 4, facing: 'left', color: 0xe86fa0,
+        ifFlags: [FLAGS.cabaneFinie], still: true,
+        script: [
+          { ifFlags: [FLAGS.annonceMutation], speaker: 'Maman', say: ['Fanny dort. On part dès que tu es prêt.'], end: true },
+          { speaker: 'Maman', say: ['Chut… Fanny vient de s\'endormir.'] },
+        ],
       },
-    ],
-    // En entrant : ils te parlent puis te suivent jusqu'à l'hôpital.
-    events: [
       {
-        on: 'enter',
-        unlessFlags: [FLAGS.familleSuit],
-        steps: [
-          { speaker: 'Papa', say: ['[Papa - texte provisoire] Te voilà enfin !', 'Maman est à l\'hôpital. Suis-nous !'] },
-          { speaker: 'Manon', say: ['[Manon - texte provisoire] Vite, viens avec nous !'] },
-          { setFlag: FLAGS.familleSuit },
+        id: 'manon-maison', name: 'Manon', x: 8, y: 3, facing: 'down', color: 0xf0a030,
+        ifFlags: [FLAGS.cabaneFinie],
+        script: [
+          { ifFlags: [FLAGS.annonceMutation], speaker: 'Manon', say: ['Encore un déménagement…'], end: true },
+          { speaker: 'Manon', say: ['Tu as vu ? Fanny m\'a souri !'] },
         ],
       },
     ],
+    // En rentrant avec « Grand frère » et « Cousins pour la vie » : l'annonce de la mutation.
+    events: [{ on: 'enter', ...ANNOUNCEMENT_EVENT, ifFlags: [FLAGS.cabaneFinie], steps: ANNOUNCEMENT }],
   },
 
-  // Saint-Ay — la maison au toit d'ardoise : Felix et sa famille, qui viennent d'emménager.
+  // Saint-Ay — la maison au toit d'ardoise : Felix, Joshua, Yanis et Val, les cousins, qui viennent
+  // d'emménager. Felix y lance (puis dirige) le chantier de la cabane ; Val sculpte dans son atelier.
   felixHouse: {
     name: 'Maison de Felix',
     frlg: true,
@@ -317,43 +326,34 @@ export const interiors = {
     npcs: [
       {
         id: 'felix-maison', name: 'Felix', x: 2, y: 6, facing: 'right', color: 0x9060d0,
-        ifFlags: [FLAGS.maisonFelixVisitee],
-        dialogue: ['[Felix - texte provisoire] Bienvenue chez nous ! Va dire bonjour à tout le monde.'],
+        ifFlags: [FLAGS.maisonFelixVisitee], unlessFlags: [FLAGS.cabaneFinie],
+        script: FELIX_CHANTIER,
       },
       {
-        id: 'val', name: 'Val', x: 2, y: 3, facing: 'right', color: 0x5cb85c,
+        id: 'val', name: 'Val', x: 8, y: 4, facing: 'left', color: 0x5cb85c, still: true,
         ifFlags: [FLAGS.felixInvite],
-        dialogue: ['[Val - texte provisoire] Bonjour ! Ceci est le premier dialogue de Val.'],
-        after: ['[Val - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-val', name: 'Souvenir de Val' },
+        script: [
+          { say: ['Val sculpte un cheval. Des copeaux partout.'] },
+          { speaker: 'Val', say: ['Regarde, il commence à ressembler à quelque chose. La crinière, c\'est le plus dur.'] },
+          { speaker: 'Val', say: ['Il me faudra encore quelques semaines. Il doit être parfait.'] },
+        ],
       },
       {
         id: 'joshua', name: 'Joshua', x: 6, y: 3, facing: 'down', color: 0x20a0c0,
-        ifFlags: [FLAGS.felixInvite],
-        dialogue: ['[Joshua - texte provisoire] Salut ! Ceci est le premier dialogue de Joshua.'],
-        after: ['[Joshua - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-joshua', name: 'Souvenir de Joshua' },
+        ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.planCabane],
+        dialogue: ['Felix a un plan. Il a toujours un plan.'],
       },
       {
-        id: 'yanis', name: 'Yanis', x: 8, y: 4, facing: 'left', color: 0xc0b040,
-        ifFlags: [FLAGS.felixInvite],
-        dialogue: ['[Yanis - texte provisoire] Coucou ! Ceci est le premier dialogue de Yanis.'],
-        after: ['[Yanis - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-yanis', name: 'Souvenir de Yanis' },
+        id: 'yanis', name: 'Yanis', x: 2, y: 3, facing: 'right', color: 0xc0b040,
+        ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.planCabane],
+        dialogue: ['Salut, cousin !'],
       },
     ],
-    // Felix, qui te suivait, arrive avec toi et t'accueille.
-    events: [
-      {
-        on: 'enter',
-        unlessFlags: [FLAGS.maisonFelixVisitee],
-        steps: [{ setFlag: FLAGS.maisonFelixVisitee }, { talk: 'felix-maison' }],
-      },
-    ],
+    // Felix, qui te suivait, arrive avec toi et expose son plan.
+    events: [{ on: 'enter', unlessFlags: [FLAGS.maisonFelixVisitee], steps: CABANE_PLAN }],
   },
 
-  // Saint-Ay — l'hôpital (ancien labo). Maman et Fanny y sont ; Papa et Manon arrivent avec toi.
-  // Façon Rouge Feu : trois lits contre le mur, ordinateur, accueil (table) au milieu, plantes.
+  // Saint-Ay — l'hôpital (toit orange), façon Rouge Feu : Maman vient d'accoucher de Fanny.
   hospital: {
     name: 'Hôpital',
     frlg: true,
@@ -381,47 +381,31 @@ export const interiors = {
       { kind: 'plant', x: 13, y: 6 },
     ],
     spawn: { x: 7, y: 7, facing: 'up' },
+    // Fanny, dans les bras de Maman.
+    decals: [{ kind: 'baby', x: 1, y: 3, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie] }],
+    objects: [
+      { x: 1, y: 3, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie], dialogue: ['Fanny dort, son petit poing serré.'] },
+      { x: 12, y: 2, dialogue: ['Un ordinateur. Des noms de bébés défilent à l\'écran.'] },
+    ],
     npcs: [
       {
-        id: 'maman-hopital', name: 'Maman', x: 1, y: 4, facing: 'up', color: 0xe86fa0,
-        ifFlags: [FLAGS.familleArrivee],
-        unlessFlags: [FLAGS.arriveeMontepilloy],
-        dialogue: ['[Maman - texte provisoire] Te voilà ! Je suis contente de te voir.'],
+        id: 'maman-hopital', name: 'Maman', x: 0, y: 3, facing: 'down', color: 0xe86fa0, still: true,
+        ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie],
+        dialogue: ['Fanny dort. Va voir tes cousins, ils viennent d\'emménager au village.'],
       },
       {
-        id: 'fanny', name: 'Fanny', x: 7, y: 4, facing: 'up', color: 0x40b0a0, // au pied d'un lit
-        ifFlags: [FLAGS.familleArrivee],
-        dialogue: [
-          '[Fanny - texte provisoire] Bonjour ! Ceci est le premier dialogue de Fanny.',
-          'Deuxième page du dialogue de Fanny.',
-        ],
-        after: ['[Fanny - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-fanny', name: 'Souvenir de Fanny' },
+        id: 'papa-hopital', name: 'Papa', x: 3, y: 4, facing: 'left', color: 0x3f6fd8,
+        ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie],
+        dialogue: ['Une petite sœur… Te voilà grand frère, maintenant.'],
       },
       {
-        id: 'papa-hopital', name: 'Papa', x: 4, y: 7, facing: 'right', color: 0x3f6fd8,
-        ifFlags: [FLAGS.familleArrivee],
-        unlessFlags: [FLAGS.arriveeMontepilloy],
-        dialogue: ['[Papa - texte provisoire] Va parler à Fanny.'],
-      },
-      {
-        id: 'manon-hopital', name: 'Manon', x: 10, y: 7, facing: 'left', color: 0xf0a030,
-        ifFlags: [FLAGS.familleArrivee],
-        unlessFlags: [FLAGS.arriveeMontepilloy],
-        dialogue: ['[Manon - texte provisoire] Maman va mieux ?'],
+        id: 'manon-hopital', name: 'Manon', x: 4, y: 4, facing: 'left', color: 0xf0a030,
+        ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie],
+        dialogue: ['Je pourrai la porter, moi aussi ? Plus tard ? Bon…'],
       },
     ],
-    events: [
-      {
-        on: 'enter',
-        ifFlags: [FLAGS.familleSuit],
-        unlessFlags: [FLAGS.familleArrivee],
-        steps: [
-          { setFlag: FLAGS.familleArrivee },
-          { speaker: 'Papa', say: ['[Papa - texte provisoire] Nous y sommes. Maman est là-bas.'] },
-        ],
-      },
-    ],
+    // Papa et Manon arrivent avec toi : la naissance de Fanny.
+    events: [{ on: 'enter', ifFlags: [FLAGS.familleSuit], unlessFlags: [FLAGS.familleArrivee], steps: BIRTH }],
   },
 
   // Montépilloy — la maison de la famille : Maman annonce le premier jour d'école.

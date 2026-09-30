@@ -54,6 +54,7 @@ export class MapScene extends Phaser.Scene {
     this.map = map;
     this.grid = grid;
     this.transitioning = false;
+    this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
     renderMap(this, map);
     if (this.scene.key === 'Overworld') flags.add(visitedFlag(map.id));    // pour la carte du voyage
     this.canopy = canopyTiles(grid);
@@ -472,6 +473,10 @@ export class MapScene extends Phaser.Scene {
 
     const { x, y } = this.player.facingTile();
     const prop = this.propAt(x, y);
+    if (prop?.data.script) {
+      this.runScript(prop.data.script);
+      return;
+    }
     if (prop?.data.dialogue) {
       dialog.open(prop.data.dialogue);
       return;

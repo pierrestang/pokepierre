@@ -368,6 +368,35 @@ function drawCat(g, L, dir, step, ox) {
   }
 }
 
+// Poule blanche de la ferme (Saint-Ay) : corps rond, crête rouge, bec jaune, pattes orange ; elle picore
+// (la tête baisse au pas).
+function drawHen(g, L, dir, step, ox) {
+  const r = (c, x, y, w, h) => rect(g, c, ox + x, y, w, h);
+  const side = dir === 'left' || dir === 'right';
+  const flip = (x, w) => (dir === 'left' ? 16 - x - w : x);
+  const R = (c, x, y, w, h) => r(c, side ? flip(x, w) : x, y, w, h);
+  const W = 0xf8f8f0, S = 0xc8c8c0, RED = 0xe03828, Y = 0xf0b030, LEG = 0xe88830;
+  const b = step === 0 ? 0 : 1;
+  g.fillStyle(0x000000, 0.22);
+  g.fillRect(ox + 3, 22, 10, 2);
+  if (side) {
+    R(OUTLINE, 3, 14, 10, 7); R(W, 4, 15, 8, 5); R(S, 4, 18, 5, 2);        // corps
+    R(OUTLINE, 1, 13, 3, 5); R(W, 2, 14, 2, 3);                            // queue
+    R(OUTLINE, 10, 9 + b, 5, 6); R(W, 11, 10 + b, 3, 4);                   // tête
+    R(RED, 11, 8 + b, 3, 2);                                               // crête
+    R(OUTLINE, 12, 11 + b, 1, 1);                                          // œil
+    R(Y, 15, 12 + b, 1, 2);                                                // bec
+    R(RED, 13, 14 + b, 1, 1);
+    R(LEG, 6, 21, 1, 2); R(LEG, 9, 21, 1, 2);
+  } else {
+    R(OUTLINE, 3, 13, 10, 8); R(W, 4, 14, 8, 6); R(S, 4, 18, 8, 2);
+    R(OUTLINE, 5, 8 + b, 6, 6); R(W, 6, 9 + b, 4, 4);
+    R(RED, 6, 7 + b, 4, 2);
+    if (dir === 'down') { R(OUTLINE, 6, 10 + b, 1, 1); R(OUTLINE, 9, 10 + b, 1, 1); R(Y, 7, 11 + b, 2, 2); R(RED, 7, 13 + b, 2, 1); }
+    R(LEG, 6, 21, 1, 2); R(LEG, 9, 21, 1, 2);
+  }
+}
+
 // Texture (planche de 12 images) d'une apparence, mise en cache par sa description.
 export function characterTexture(scene, look) {
   const L = fullLook(look);
@@ -378,6 +407,7 @@ export function characterTexture(scene, look) {
     for (let step = 0; step < 3; step++) {
       const ox = (d * 3 + step) * FRAME_W;
       if (L.kind === 'cat') drawCat(g, L, dir, step, ox);
+      else if (L.kind === 'hen') drawHen(g, L, dir, step, ox);
       else drawHuman(g, L, dir, step, ox);
     }
   });

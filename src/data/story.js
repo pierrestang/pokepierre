@@ -8,10 +8,20 @@ export const FLAGS = {
   canneOfferte: 'canne-offerte',                // canne de la caisse « À DONNER » offerte au pêcheur
   departFortDeFrance: 'depart-fort-de-france', // parti en ferry
   coquillageTrouve: 'coquillage-trouve',        // Fort-de-France : coquillage caché dans les hautes herbes
+  saArrivee: 'sa-arrivee',                      // Saint-Ay : Papa et Manon t'ont retrouvé au bord du lac
   familleSuit: 'famille-suit',                  // Papa et Manon suivent le joueur
   familleArrivee: 'famille-arrivee',            // arrivés à l'hôpital de Saint-Ay
-  felixInvite: 'felix-invite',                  // Felix t'a invité dans la maison 2
+  felixInvite: 'felix-invite',                  // Felix (ton cousin) t'a invité chez lui
   maisonFelixVisitee: 'maison-felix-visitee',   // entré chez Felix
+  planCabane: 'plan-cabane',                    // Saint-Ay : Felix a lancé le chantier de la cabane
+  pouleEnfuie1: 'poule-enfuie-1',               // les poules de la ferme ont fui (tas de planches)
+  pouleEnfuie2: 'poule-enfuie-2',
+  cabaneArbre: 'cabane-arbre',                  // emplacement choisi : le grand arbre
+  cabaneEtang: 'cabane-etang',                  //                      le bord du lac
+  cabaneChamp: 'cabane-champ',                  //                      le champ près de la ferme
+  cabaneFinie: 'cabane-finie',                  // la cabane des cousins est construite
+  annonceMutation: 'annonce-mutation',          // Papa a annoncé le départ pour Montépilloy
+  adieuCousins: 'adieu-cousins',                // au revoir aux cousins à la cabane
   arriveeMontepilloy: 'arrivee-montepilloy',    // arrivé à Montépilloy (la famille y vit désormais)
   manonEcole: 'manon-ecole',                    // Maman t'envoie à l'école, Manon t'accompagne
   arriveeEcole: 'arrivee-ecole',                // arrivés à l'école
@@ -76,10 +86,18 @@ export const QUALITIES = {
   complicite: { id: 'souvenir-manon', name: 'Complicité de Manon' },
 };
 
+// Rôles reçus à Saint-Ay (comptés comme des souvenirs).
+export const ROLES = {
+  grandFrere: { id: 'role-grand-frere', name: 'Grand frère' },
+  cousins: { id: 'role-cousins', name: 'Cousins pour la vie' },
+};
+
 // Objets remis au joueur (voir systems/items.js).
 export const ITEMS = {
   coquillageNacre: { id: 'coquillage-nacre', name: 'Coquillage nacré' },
   canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
+  planches: { id: 'planches', name: 'Planches' },
+  corde: { id: 'corde', name: 'Vieille corde' },
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },
   clesAppartement: { id: 'cles-appartement', name: "Clés de l'appartement" },
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },
