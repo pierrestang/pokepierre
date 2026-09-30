@@ -270,7 +270,7 @@ export const interiors = {
         dialogue: ['[Papa - texte provisoire] Suis-nous !'],
       },
       {
-        id: 'manon', name: 'Manon', x: 8, y: 3, facing: 'down', color: 0xf0a030,
+        id: 'manon', name: 'Manon', x: 8, y: 4, facing: 'left', color: 0xf0a030,
         unlessFlags: [FLAGS.familleSuit],
         dialogue: ['[Manon - texte provisoire] Suis-nous !'],
       },
@@ -383,7 +383,7 @@ export const interiors = {
     spawn: { x: 7, y: 7, facing: 'up' },
     npcs: [
       {
-        id: 'maman-hopital', name: 'Maman', x: 2, y: 4, facing: 'up', color: 0xe86fa0,
+        id: 'maman-hopital', name: 'Maman', x: 1, y: 4, facing: 'up', color: 0xe86fa0,
         ifFlags: [FLAGS.familleArrivee],
         unlessFlags: [FLAGS.arriveeMontepilloy],
         dialogue: ['[Maman - texte provisoire] Te voilà ! Je suis contente de te voir.'],
@@ -552,7 +552,7 @@ export const interiors = {
     spawn: { x: 7, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'tanguy', name: 'Tanguy', x: 3, y: 2, facing: 'down', color: 0x8c6c3c,
+        id: 'tanguy', name: 'Tanguy', x: 3, y: 3, facing: 'down', color: 0x8c6c3c,
         dialogue: ['[Tanguy - texte provisoire] Salut ! Ceci est le premier dialogue de Tanguy.'],
         after: ['[Tanguy - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-tanguy', name: 'Souvenir de Tanguy' },
@@ -1136,7 +1136,7 @@ export const interiors = {
         souvenir: { id: 'souvenir-hugues', name: "Souvenir d'Hugues" },
       },
       {
-        id: 'thomas', name: 'Thomas', x: 9, y: 4, facing: 'left', color: 0x2c7c9c,
+        id: 'thomas', name: 'Thomas', x: 8, y: 4, facing: 'left', color: 0x2c7c9c,
         ifFlags: [FLAGS.promotion],
         dialogue: ['[Thomas - texte provisoire] On est fiers de toi ! À la tienne !'],
         after: ['[Thomas - texte provisoire] Ce soir il y a un concert à Bercy, tu devrais y aller !'],
@@ -1530,7 +1530,7 @@ export const interiors = {
     spawn: { x: 5, y: 4, facing: 'up' },
     npcs: [
       {
-        id: 'moine', name: 'Moine', x: 2, y: 2, facing: 'right', color: 0xe88820,
+        id: 'moine', name: 'Moine', x: 3, y: 2, facing: 'right', color: 0xe88820,
         dialogue: ["[Moine - texte provisoire] Ayubowan. L'objet sacré t'attend sur l'autel."],
       },
     ],
@@ -1558,7 +1558,7 @@ export const interiors = {
     spawn: { x: 5, y: 4, facing: 'up' },
     npcs: [
       {
-        id: 'moine-thai', name: 'Moine', x: 2, y: 2, facing: 'right', color: 0xe88820,
+        id: 'moine-thai', name: 'Moine', x: 3, y: 2, facing: 'right', color: 0xe88820,
         dialogue: ["[Moine - texte provisoire] Sawasdee. L'objet magique repose au pied du Bouddha."],
       },
     ],
@@ -1586,7 +1586,7 @@ export const interiors = {
     spawn: { x: 5, y: 4, facing: 'up' },
     npcs: [
       {
-        id: 'moine-nepal', name: 'Moine', x: 2, y: 2, facing: 'right', color: 0x9c2830,
+        id: 'moine-nepal', name: 'Moine', x: 3, y: 2, facing: 'right', color: 0x9c2830,
         dialogue: ["[Moine - texte provisoire] Namaste. L'objet sacré t'attend sur l'autel, parmi les lampes."],
       },
     ],

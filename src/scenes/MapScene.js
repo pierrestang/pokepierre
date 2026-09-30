@@ -245,12 +245,18 @@ export class MapScene extends Phaser.Scene {
   }
 
   // Scénette pendant laquelle le joueur ne bouge pas et ne peut rien lancer d'autre.
+  // Même si une étape échoue, le joueur retrouve toujours la main.
   async runScript(steps) {
     this.scripting = true;
     this.player.frozen = true;
-    await this.runSteps(steps);
-    this.scripting = false;
-    if (!this.transitioning) this.player.frozen = false;
+    try {
+      await this.runSteps(steps);
+    } catch (error) {
+      console.error('Scénette interrompue', error);
+    } finally {
+      this.scripting = false;
+      if (!this.transitioning) this.player.frozen = false;
+    }
   }
 
   // Scénette : liste d'étapes jouées dans l'ordre. Chaque étape peut avoir des conditions (ifFlags,
@@ -340,12 +346,13 @@ export class MapScene extends Phaser.Scene {
   }
 
   // Cases à parcourir pour arriver à côté du joueur (sans la case de départ), [] s'il y est déjà,
-  // null si le chemin est bloqué ou trop long.
+  // null si le chemin est bloqué ou trop long. Le PNJ ne s'arrête jamais sur une case qui enfermerait
+  // le joueur (voir leavesWayOut).
   pathNextToPlayer(from) {
     const { tileX: px, tileY: py } = this.player;
-    const beside = (x, y) => Math.abs(x - px) + Math.abs(y - py) === 1;
-    if (beside(from.x, from.y)) return [];
     const free = (x, y) => this.tileWalkable(x, y) && !(x === px && y === py) && !this.npcAt(x, y) && !this.propAt(x, y);
+    const beside = (x, y) => Math.abs(x - px) + Math.abs(y - py) === 1 && this.leavesWayOut(x, y, from);
+    if (beside(from.x, from.y)) return [];
     const prev = new Map([[`${from.x},${from.y}`, null]]);
     let frontier = [[from.x, from.y]];
     for (let depth = 0; depth < 20 && frontier.length; depth++) {
@@ -368,6 +375,29 @@ export class MapScene extends Phaser.Scene {
       frontier = next;
     }
     return null;
+  }
+
+  // Vrai si, un PNJ venu de `from` se tenant en (x, y), le joueur peut encore aller loin : jusqu'à une sortie
+  // ('E') dans un intérieur, ou sur au moins 40 cases dehors.
+  leavesWayOut(x, y, from) {
+    const blocked = (cx, cy) => (cx === x && cy === y)
+      || (!(cx === from.x && cy === from.y) && (this.npcAt(cx, cy) || this.propAt(cx, cy)))
+      || !this.tileWalkable(cx, cy);
+    const start = `${this.player.tileX},${this.player.tileY}`;
+    const seen = new Set([start]);
+    const queue = [[this.player.tileX, this.player.tileY]];
+    const interior = this.scene.key === 'Interior';
+    while (queue.length) {
+      const [cx, cy] = queue.shift();
+      if (interior ? this.grid[cy]?.[cx] === 'E' : seen.size >= 40) return true;
+      for (const { dx, dy } of Object.values(DIRECTIONS)) {
+        const key = `${cx + dx},${cy + dy}`;
+        if (seen.has(key) || blocked(cx + dx, cy + dy)) continue;
+        seen.add(key);
+        queue.push([cx + dx, cy + dy]);
+      }
+    }
+    return false;
   }
 
   wait(ms) {
