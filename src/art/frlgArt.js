@@ -599,7 +599,7 @@ export function drawFrlgInteriorGround(ctx, textures, x, y, at) {
     ctx.fillStyle = '#000000';
     return ctx.fillRect(px, py, S, S);
   }
-  return blit(ctx, textures, at(x, y - 1) === 'X' && y === 2 ? FLOOR_UNDER_WALL : FLOOR, px, py);
+  return blit(ctx, textures, ['X', '¤'].includes(at(x, y - 1)) && y === 2 ? FLOOR_UNDER_WALL : FLOOR, px, py);
 }
 
 // Codes d'intérieur entièrement dessinés par les couches Rouge Feu.

@@ -5,10 +5,10 @@ import {
 } from '../saintAyStory.js';
 
 // Ascenseur de l'entreprise parisienne (mêmes cases, en haut à droite, à chaque étage).
-const floor = (interior) => ({ interior, x: 11, y: 1, facing: 'down' });
-const ELEVATOR = [11, 12].map((x) => ({
+const floor = (interior) => ({ interior, x: 10, y: 2, facing: 'down' });
+const ELEVATOR = [10, 11].map((x) => ({
   x,
-  y: 0,
+  y: 1,
   ask: {
     question: 'Ascenseur : quel étage ?',
     choices: [
@@ -635,20 +635,28 @@ export const interiors = {
   // Bordeaux — l'agence immobilière : l'agent te remet les clés de l'appartement.
   agence: {
     name: 'Agence immobilière',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XmmoooommX',
-      'XoommmoooX', // bureau
-      'XooooooooX',
-      'XooooooooX',
-      'XooooooooX',
-      'XoooEEoooX',
-      'XXXXXXXXXX',
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmoooomm',
+      'oommmooo', // bureau
+      'oooooooo',
+      'oooooooo',
+      'oooooooo',
+      'oooEEooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'blueShelf', x: 0, y: 1 },
+      { kind: 'cabinet', x: 1, y: 1 },
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'bookshelf', x: 6, y: 0 },
+      { kind: 'longTable', x: 2, y: 3 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'agent', name: 'Agent immobilier', x: 4, y: 3, facing: 'down', color: 0x3c4c6c,
+        id: 'agent', name: 'Agent immobilier', x: 3, y: 4, facing: 'down', color: 0x3c4c6c,
         dialogue: [
           "[Agent - texte provisoire] Bonjour ! Vous venez pour l'appartement ?",
           "Voici vos clés. C'est l'immeuble juste à gauche de l'agence.",
@@ -662,20 +670,29 @@ export const interiors = {
   // Bordeaux — ton appartement : tu poses tes affaires et rencontres Ousmane, ton colocataire.
   appartement: {
     name: 'Appartement',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XLooommoLX', // deux lits, table
-      'XooooooooX',
-      'XooooooooX',
-      'XmoooooomX',
-      'XooooooooX',
-      'XoooEEoooX',
-      'XXXXXXXXXX',
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmoommoo', // deux lits, table
+      'mmoommoo',
+      'oooooooo',
+      'moooooom',
+      'oooooooo',
+      'oooEEooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'bed', x: 0, y: 2 },
+      { kind: 'computerDesk', x: 4, y: 2 },
+      { kind: 'window', x: 2, y: 0 },
+      { kind: 'painting', x: 6, y: 0 },
+      { kind: 'pottedPlant', x: 0, y: 5 },
+      { kind: 'pottedPlant', x: 7, y: 5 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'ousmane', name: 'Ousmane', x: 6, y: 3, facing: 'left', color: 0x2c8c5c,
+        id: 'ousmane', name: 'Ousmane', x: 5, y: 4, facing: 'left', color: 0x2c8c5c,
         dialogue: [
           "[Ousmane - texte provisoire] Salut ! Moi c'est Ousmane, ton colocataire.",
           'Bienvenue à Bordeaux !',
@@ -700,23 +717,34 @@ export const interiors = {
   // Bordeaux — l'école KEDGE : on t'y remet ton diplôme d'anglais.
   kedge: {
     name: 'KEDGE',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XmmoooooooommX',
-      'XooooommmooooX', // accueil
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XmoooooooooomX',
-      'XooooooooooooX',
-      'XmoooooooooomX',
-      'XooooooooooooX',
-      'XooooooEEooooX',
-      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'mmoooooooomm',
+      'ooooommmoooo', // accueil
+      'oooooooooooo',
+      'oooooooooooo',
+      'moooooooooom',
+      'oooooooooooo',
+      'moooooooooom',
+      'oooooooooooo',
+      'ooooooEEoooo',
     ]),
-    spawn: { x: 7, y: 8, facing: 'up' },
+    decor: [
+      { kind: 'bookshelf', x: 0, y: 0 },
+      { kind: 'chalkboard', x: 4, y: 1 },
+      { kind: 'bookshelf', x: 10, y: 0 },
+      { kind: 'longTable', x: 5, y: 3 },
+      { kind: 'pottedPlant', x: 0, y: 6 },
+      { kind: 'pottedPlant', x: 11, y: 6 },
+      { kind: 'pottedPlant', x: 0, y: 8 },
+      { kind: 'pottedPlant', x: 11, y: 8 },
+    ],
+    spawn: { x: 6, y: 9, facing: 'up' },
     npcs: [
       {
-        id: 'prof-anglais', name: "Professeure d'anglais", x: 7, y: 3, facing: 'down', color: 0xb04c6c,
+        id: 'prof-anglais', name: "Professeure d'anglais", x: 6, y: 4, facing: 'down', color: 0xb04c6c,
         dialogue: [
           "[Professeure - texte provisoire] Bienvenue à KEDGE !",
           "Voici ton diplôme d'anglais. Il te permettra d'aller plus loin.",
@@ -730,23 +758,38 @@ export const interiors = {
   // Hull — l'université : un professeur te remet ton diplôme.
   hullUniversity: {
     name: 'Université de Hull',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXNNNNXXXXX', // tableau
-      'XmmoooooooommX',
-      'XooooommmooooX', // bureau du professeur
-      'XooooooooooooX',
-      'XomoomoomoomoX', // tables
-      'XooooooooooooX',
-      'XomoomoomoomoX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooooooEEooooX',
-      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXX', // tableau
+      'XXXXXXXXXXXX',
+      'mmoooooooomm',
+      'ooooommmoooo', // bureau du professeur
+      'oooooooooooo',
+      'ommommommomm', // tables
+      'oooooooooooo',
+      'ommommommomm',
+      'oooooooooooo',
+      'oooooooooooo',
+      'ooooooEEoooo',
     ]),
-    spawn: { x: 7, y: 8, facing: 'up' },
+    decor: [
+      { kind: 'bookshelf', x: 0, y: 0 },
+      { kind: 'chalkboard', x: 4, y: 1 },
+      { kind: 'bookshelf', x: 10, y: 0 },
+      { kind: 'longTable', x: 5, y: 3 },
+      { kind: 'paperDesk', x: 1, y: 5 },
+      { kind: 'schoolDesk', x: 4, y: 5 },
+      { kind: 'paperDesk', x: 7, y: 5 },
+      { kind: 'schoolDesk', x: 10, y: 5 },
+      { kind: 'schoolDesk', x: 1, y: 7 },
+      { kind: 'paperDesk', x: 4, y: 7 },
+      { kind: 'schoolDesk', x: 7, y: 7 },
+      { kind: 'paperDesk', x: 10, y: 7 },
+    ],
+    spawn: { x: 6, y: 9, facing: 'up' },
     npcs: [
       {
-        id: 'prof-hull', name: 'Professor', x: 7, y: 3, facing: 'down', color: 0x5c3c7c,
+        id: 'prof-hull', name: 'Professor', x: 6, y: 4, facing: 'down', color: 0x5c3c7c,
         dialogue: [
           '[Professor - texte provisoire] Welcome to Hull! Bienvenue à l\'université.',
           'Congratulations! Voici ton diplôme.',
@@ -757,7 +800,7 @@ export const interiors = {
       },
       // De retour après le mail d'Amsterdam : ta nouvelle affectation.
       {
-        id: 'prof-hull-echange', name: 'Professor', x: 7, y: 3, facing: 'down', color: 0x5c3c7c,
+        id: 'prof-hull-echange', name: 'Professor', x: 6, y: 4, facing: 'down', color: 0x5c3c7c,
         ifFlags: [FLAGS.mailLu],
         dialogue: [
           '[Professor - texte provisoire] Welcome back! Voici ta nouvelle affectation :',
@@ -773,26 +816,34 @@ export const interiors = {
   // Hull — maison à la porte rouge (en haut) : Romain et Paul.
   hullHouse: {
     name: 'Maison de Romain et Paul',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XmmoooommX',
-      'XooooooooX',
-      'XooommoooX',
-      'XooommoooX',
-      'XooooooooX',
-      'XoooEEoooX',
-      'XXXXXXXXXX',
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmoooomm',
+      'oooooooo',
+      'oommmmoo',
+      'oommmmoo',
+      'oooooooo',
+      'oooEEooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'kitchen', x: 0, y: 1 },
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'blueShelf', x: 6, y: 1 },
+      { kind: 'fridge', x: 7, y: 1 },
+      { kind: 'table', x: 2, y: 4 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'romain', name: 'Romain', x: 2, y: 3, facing: 'right', color: 0xc0602c,
+        id: 'romain', name: 'Romain', x: 1, y: 4, facing: 'right', color: 0xc0602c,
         dialogue: ['[Romain - texte provisoire] Salut ! Ceci est le premier dialogue de Romain.'],
         after: ['[Romain - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-romain', name: 'Souvenir de Romain' },
       },
       {
-        id: 'paul', name: 'Paul', x: 7, y: 3, facing: 'left', color: 0x3c8cb0,
+        id: 'paul', name: 'Paul', x: 6, y: 4, facing: 'left', color: 0x3c8cb0,
         dialogue: ['[Paul - texte provisoire] Hello ! Ceci est le premier dialogue de Paul.'],
         after: ['[Paul - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-paul', name: 'Souvenir de Paul' },
@@ -803,17 +854,25 @@ export const interiors = {
   // Hanoï — ta maison (maison-tube rose, 2e en haut à gauche).
   hanoiHome: {
     name: 'Ta maison à Hanoï',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XLooommooX', // lit, table basse
-      'XooooooooX',
-      'XmoooooomX',
-      'XooooooooX',
-      'XooooooooX',
-      'XoooEEoooX',
-      'XXXXXXXXXX',
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmoommoo', // lit, table basse
+      'mmoooooo',
+      'moooooom',
+      'oooooooo',
+      'oooooooo',
+      'oooEEooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'bed', x: 0, y: 2 },
+      { kind: 'window', x: 2, y: 0 },
+      { kind: 'kitchen', x: 4, y: 1 },
+      { kind: 'pottedPlant', x: 0, y: 4 },
+      { kind: 'pottedPlant', x: 7, y: 4 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
     events: [
       {
         on: 'enter',
@@ -826,20 +885,31 @@ export const interiors = {
   // Hanoï — l'agence de voyage : ton nouveau travail commence (étape 1).
   travelAgency: {
     name: 'Agence de voyage',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XmmoooooommX',
-      'XooommmmoooX', // comptoir
-      'XooooooooooX',
-      'XmoooooooomX',
-      'XooooooooooX',
-      'XooooEEooooX',
-      'XXXXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'mmoooooomm',
+      'ooommmmooo', // comptoir
+      'oooooooooo',
+      'moooooooom',
+      'oooooooooo',
+      'ooooEEoooo',
     ]),
-    spawn: { x: 5, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'bookshelf', x: 0, y: 0 },
+      { kind: 'window', x: 4, y: 0 },
+      { kind: 'notice', x: 7, y: 0 },
+      { kind: 'bookshelf', x: 8, y: 0 },
+      { kind: 'longTable', x: 3, y: 3 },
+      { kind: 'crtTv', x: 6, y: 3 },
+      { kind: 'pottedPlant', x: 0, y: 5 },
+      { kind: 'pottedPlant', x: 9, y: 5 },
+    ],
+    spawn: { x: 4, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'patron-agence', name: 'Directrice', x: 5, y: 3, facing: 'down', color: 0xc83c5c,
+        id: 'patron-agence', name: 'Directrice', x: 4, y: 4, facing: 'down', color: 0xc83c5c,
         unlessFlags: [FLAGS.visiteTerminee],
         dialogue: [
           "[Directrice - texte provisoire] Bienvenue dans l'équipe de l'agence !",
@@ -850,7 +920,7 @@ export const interiors = {
       },
       // Après la visite du temple : elle te remercie et te laisse partir.
       {
-        id: 'patron-agence-fin', name: 'Directrice', x: 5, y: 3, facing: 'down', color: 0xc83c5c,
+        id: 'patron-agence-fin', name: 'Directrice', x: 4, y: 4, facing: 'down', color: 0xc83c5c,
         ifFlags: [FLAGS.visiteTerminee],
         dialogue: [
           '[Directrice - texte provisoire] Merci pour ton travail, les touristes sont ravis !',
@@ -865,22 +935,34 @@ export const interiors = {
   // Hanoï — l'intérieur de la pagode : l'objet de chance est sur l'autel.
   temple: {
     name: 'Temple',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XmoommmmoomX', // autel au centre
-      'XooooooooooX',
-      'XooooooooooX',
-      'XmoooooooomX', // piliers
-      'XooooooooooX',
-      'XmoooooooomX',
-      'XooooEEooooX',
-      'XXXXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'moommmmoom', // autel au centre
+      'oooooooooo',
+      'oooooooooo',
+      'moooooooom', // piliers
+      'oooooooooo',
+      'moooooooom',
+      'ooooEEoooo',
     ]),
-    spawn: { x: 5, y: 6, facing: 'up' },
+    decor: [
+      { kind: 'pottedPlant', x: 0, y: 2 },
+      { kind: 'painting', x: 4, y: 0 },
+      { kind: 'longTable', x: 3, y: 2 },
+      { kind: 'pottedPlant', x: 6, y: 2 },
+      { kind: 'pottedPlant', x: 9, y: 2 },
+      { kind: 'plant', x: 0, y: 4 },
+      { kind: 'plant', x: 9, y: 4 },
+      { kind: 'pottedPlant', x: 0, y: 7 },
+      { kind: 'pottedPlant', x: 9, y: 7 },
+    ],
+    spawn: { x: 4, y: 7, facing: 'up' },
     // Les quatre cases de l'autel réagissent quand on leur fait face.
-    objects: [4, 5, 6, 7].map((x) => ({
+    objects: [3, 4, 5, 6].map((x) => ({
       x,
-      y: 1,
+      y: 2,
       dialogue: ["[Texte provisoire] Sur l'autel, tu trouves un objet de chance."],
       after: ["[Texte provisoire] L'autel est paisible."],
       item: ITEMS.objetChance,
@@ -890,23 +972,38 @@ export const interiors = {
   // Amsterdam — le bureau CORNING : Laurent, le patron, te lance dans ton nouveau stage.
   corning: {
     name: 'Corning',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XmmoooooooommX',
-      'XoooommmmooooX', // bureau du patron
-      'XooooooooooooX',
-      'XmmoommoommooX', // postes de travail
-      'XooooooooooooX',
-      'XmmoommoommooX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooooooEEooooX',
-      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'mmoooooooomm',
+      'oooommmmoooo', // bureau du patron
+      'oooooooooooo',
+      'mmoommoommoo', // postes de travail
+      'oooooooooooo',
+      'mmoommoommoo',
+      'oooooooooooo',
+      'oooooooooooo',
+      'ooooooEEoooo',
     ]),
-    spawn: { x: 7, y: 8, facing: 'up' },
+    decor: [
+      { kind: 'bookshelf', x: 0, y: 0 },
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'notice', x: 6, y: 0 },
+      { kind: 'bookshelf', x: 10, y: 0 },
+      { kind: 'longTable', x: 4, y: 3 },
+      { kind: 'crtTv', x: 7, y: 3 },
+      { kind: 'paperDesk', x: 0, y: 5 },
+      { kind: 'paperDesk', x: 4, y: 5 },
+      { kind: 'paperDesk', x: 8, y: 5 },
+      { kind: 'paperDesk', x: 0, y: 7 },
+      { kind: 'paperDesk', x: 4, y: 7 },
+      { kind: 'paperDesk', x: 8, y: 7 },
+    ],
+    spawn: { x: 6, y: 9, facing: 'up' },
     npcs: [
       {
-        id: 'laurent', name: 'Laurent', x: 7, y: 3, facing: 'down', color: 0x2c4c8c,
+        id: 'laurent', name: 'Laurent', x: 6, y: 4, facing: 'down', color: 0x2c4c8c,
         dialogue: [
           '[Laurent - texte provisoire] Bienvenue chez Corning ! Je suis Laurent, le patron.',
           'Ton stage commence aujourd\'hui. Bienvenue dans l\'équipe !',
@@ -920,20 +1017,33 @@ export const interiors = {
   // Amsterdam — le coffee shop : on t'y vend la marchandise pour Romain.
   coffeeShop: {
     name: 'Coffee shop',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XmmmmmmmmX', // comptoir
-      'XooooooooX',
-      'XmooooommX',
-      'XooooooooX',
-      'XmoooooomX',
-      'XoooEEoooX',
-      'XXXXXXXXXX',
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmmmmmmm', // comptoir
+      'oooooooo',
+      'mooooomm',
+      'oooooooo',
+      'moooooom',
+      'oooEEooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'kitchen', x: 0, y: 1 },
+      { kind: 'kitchen', x: 2, y: 1 },
+      { kind: 'fridge', x: 4, y: 1 },
+      { kind: 'blueShelf', x: 5, y: 1 },
+      { kind: 'glassCabinet', x: 6, y: 1 },
+      { kind: 'cabinet', x: 7, y: 1 },
+      { kind: 'pottedPlant', x: 0, y: 4 },
+      { kind: 'paperDesk', x: 6, y: 4 },
+      { kind: 'pottedPlant', x: 0, y: 6 },
+      { kind: 'pottedPlant', x: 7, y: 6 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'vendeur', name: 'Vendeur', x: 4, y: 2, facing: 'down', color: 0x3c9c4c,
+        id: 'vendeur', name: 'Vendeur', x: 3, y: 3, facing: 'down', color: 0x3c9c4c,
         dialogue: [
           '[Vendeur - texte provisoire] Salut ! Tu viens pour la commande de Romain ?',
           'Voilà, tu as acheté la marchandise.',
@@ -948,20 +1058,28 @@ export const interiors = {
   // Amsterdam — la maison commune : Romain t'attend pour récupérer la marchandise.
   maisonCommune: {
     name: 'Maison commune',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XLooommoLX', // deux lits, table
-      'XooooooooX',
-      'XooooooooX',
-      'XmoooooouX', // ordinateur à droite
-      'XooooooooX',
-      'XoooEEoooX',
-      'XXXXXXXXXX',
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmommomm', // deux lits, table
+      'mmommomm',
+      'oooooooo',
+      'moooooou', // ordinateur à droite
+      'oooooooo',
+      'oooEEooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'bed', x: 0, y: 2 },
+      { kind: 'computerDesk', x: 3, y: 2 },
+      { kind: 'bed', x: 6, y: 2 },
+      { kind: 'window', x: 2, y: 0 },
+      { kind: 'pottedPlant', x: 0, y: 5 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'romain-maison', name: 'Romain', x: 6, y: 3, facing: 'left', color: 0xc0602c,
+        id: 'romain-maison', name: 'Romain', x: 5, y: 5, facing: 'left', color: 0xc0602c,
         dialogue: ["[Romain - texte provisoire] Alors, tu es passé au coffee shop ?"],
         after: ['[Romain - texte provisoire] Merci encore !'],
         receive: {
@@ -977,12 +1095,12 @@ export const interiors = {
     // L'ordinateur (bureau à droite) : le mail n'arrive qu'après toutes les étapes d'Amsterdam.
     objects: [
       {
-        x: 8, y: 4,
+        x: 7, y: 5,
         unlessFlags: [FLAGS.marchandiseDonnee],
         dialogue: ["[Texte provisoire] C'est ton ordinateur. Aucun nouveau mail pour l'instant."],
       },
       {
-        x: 8, y: 4,
+        x: 7, y: 5,
         ifFlags: [FLAGS.marchandiseDonnee],
         dialogue: [
           '[Texte provisoire] Nouveau mail ! « Merci de retourner à l\'université de Hull',
@@ -997,23 +1115,38 @@ export const interiors = {
   // New Delhi — l'université : ton échange universitaire commence.
   delhiUniversity: {
     name: 'Université de Delhi',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXNNNNXXXXX', // tableau
-      'XmmoooooooommX',
-      'XooooommmooooX', // bureau du professeur
-      'XooooooooooooX',
-      'XomoomoomoomoX',
-      'XooooooooooooX',
-      'XomoomoomoomoX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooooooEEooooX',
-      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXX', // tableau
+      'XXXXXXXXXXXX',
+      'mmoooooooomm',
+      'ooooommmoooo', // bureau du professeur
+      'oooooooooooo',
+      'ommommommomm',
+      'oooooooooooo',
+      'ommommommomm',
+      'oooooooooooo',
+      'oooooooooooo',
+      'ooooooEEoooo',
     ]),
-    spawn: { x: 7, y: 8, facing: 'up' },
+    decor: [
+      { kind: 'bookshelf', x: 0, y: 0 },
+      { kind: 'chalkboard', x: 4, y: 1 },
+      { kind: 'bookshelf', x: 10, y: 0 },
+      { kind: 'longTable', x: 5, y: 3 },
+      { kind: 'paperDesk', x: 1, y: 5 },
+      { kind: 'schoolDesk', x: 4, y: 5 },
+      { kind: 'paperDesk', x: 7, y: 5 },
+      { kind: 'schoolDesk', x: 10, y: 5 },
+      { kind: 'schoolDesk', x: 1, y: 7 },
+      { kind: 'paperDesk', x: 4, y: 7 },
+      { kind: 'schoolDesk', x: 7, y: 7 },
+      { kind: 'paperDesk', x: 10, y: 7 },
+    ],
+    spawn: { x: 6, y: 9, facing: 'up' },
     npcs: [
       {
-        id: 'prof-delhi', name: 'Professeure', x: 7, y: 3, facing: 'down', color: 0xd06020,
+        id: 'prof-delhi', name: 'Professeure', x: 6, y: 4, facing: 'down', color: 0xd06020,
         unlessFlags: [FLAGS.potionDonnee],
         dialogue: [
           '[Professeure - texte provisoire] Namaste ! Bienvenue à l\'université.',
@@ -1024,7 +1157,7 @@ export const interiors = {
       },
       // Au retour du désert : fin du semestre.
       {
-        id: 'prof-delhi-fin', name: 'Professeure', x: 7, y: 3, facing: 'down', color: 0xd06020,
+        id: 'prof-delhi-fin', name: 'Professeure', x: 6, y: 4, facing: 'down', color: 0xd06020,
         ifFlags: [FLAGS.potionDonnee],
         dialogue: [
           '[Professeure - texte provisoire] Félicitations pour ton semestre !',
@@ -1039,19 +1172,27 @@ export const interiors = {
   // Rajasthan — la tente rayée : la potion magique est posée sur le coffre du fond.
   tente: {
     name: 'Tente',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XmoommoomX', // coffre au centre
-      'XooooooooX',
-      'XooooooooX',
-      'XmoooooomX',
-      'XoooEEoooX',
-      'XXXXXXXXXX',
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'moommoom', // coffre au centre
+      'oooooooo',
+      'oooooooo',
+      'moooooom',
+      'oooEEooo',
     ]),
-    spawn: { x: 4, y: 4, facing: 'up' },
-    objects: [4, 5].map((x) => ({
+    decor: [
+      { kind: 'pottedPlant', x: 0, y: 2 },
+      { kind: 'schoolDesk', x: 3, y: 2 },
+      { kind: 'pottedPlant', x: 7, y: 2 },
+      { kind: 'pottedPlant', x: 0, y: 5 },
+      { kind: 'pottedPlant', x: 7, y: 5 },
+    ],
+    spawn: { x: 3, y: 5, facing: 'up' },
+    objects: [3, 4].map((x) => ({
       x,
-      y: 1,
+      y: 2,
       dialogue: ['[Texte provisoire] Sur le coffre, une fiole scintille : la potion magique !'],
       after: ['[Texte provisoire] Le coffre est vide.'],
       item: ITEMS.potionMagique,
@@ -1132,17 +1273,35 @@ export const interiors = {
   // Paris — le bistrot : tu y manges et rencontres le cuisinier, gentil et drôle.
   bistro: {
     name: 'Bistrot',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XmmmmoommmmX', // cuisine
-      'XooooooooooX',
-      'XmoomoomoomX', // tables
-      'XooooooooooX',
-      'XmoomoomoomX',
-      'XooooEEooooX',
-      'XXXXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'mmmmoommmm', // cuisine
+      'oooooooooo',
+      'mmommommom', // tables
+      'oooooooooo',
+      'mmommommom',
+      'ooooEEoooo',
     ]),
-    spawn: { x: 5, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'kitchen', x: 0, y: 1 },
+      { kind: 'kitchen', x: 2, y: 1 },
+      { kind: 'window', x: 4, y: 0 },
+      { kind: 'glassCabinet', x: 6, y: 1 },
+      { kind: 'fridge', x: 7, y: 1 },
+      { kind: 'blueShelf', x: 8, y: 1 },
+      { kind: 'cabinet', x: 9, y: 1 },
+      { kind: 'paperDesk', x: 0, y: 4 },
+      { kind: 'paperDesk', x: 3, y: 4 },
+      { kind: 'paperDesk', x: 6, y: 4 },
+      { kind: 'paperDesk', x: 0, y: 6 },
+      { kind: 'paperDesk', x: 3, y: 6 },
+      { kind: 'paperDesk', x: 6, y: 6 },
+      { kind: 'pottedPlant', x: 9, y: 4 },
+      { kind: 'pottedPlant', x: 9, y: 6 },
+    ],
+    spawn: { x: 4, y: 6, facing: 'up' },
     // Après la promotion : Hugues et Thomas t'attendent pour trinquer.
     events: [
       {
@@ -1158,21 +1317,21 @@ export const interiors = {
     ],
     npcs: [
       {
-        id: 'hugues', name: 'Hugues', x: 8, y: 2, facing: 'left', color: 0x7c4c2c,
+        id: 'hugues', name: 'Hugues', x: 7, y: 3, facing: 'left', color: 0x7c4c2c,
         ifFlags: [FLAGS.promotion],
         dialogue: ['[Hugues - texte provisoire] Santé ! Bravo pour ta promotion !'],
         after: ['[Hugues - texte provisoire] Encore un petit verre ?'],
         souvenir: { id: 'souvenir-hugues', name: "Souvenir d'Hugues" },
       },
       {
-        id: 'thomas', name: 'Thomas', x: 8, y: 4, facing: 'left', color: 0x2c7c9c,
+        id: 'thomas', name: 'Thomas', x: 7, y: 5, facing: 'left', color: 0x2c7c9c,
         ifFlags: [FLAGS.promotion],
         dialogue: ['[Thomas - texte provisoire] On est fiers de toi ! À la tienne !'],
         after: ['[Thomas - texte provisoire] Ce soir il y a un concert à Bercy, tu devrais y aller !'],
         souvenir: { id: 'souvenir-thomas', name: 'Souvenir de Thomas' },
       },
       {
-        id: 'cuisinier', name: 'Cuisinier', x: 5, y: 1, facing: 'down', color: 0xf4f4f4,
+        id: 'cuisinier', name: 'Cuisinier', x: 4, y: 2, facing: 'down', color: 0xf4f4f4,
         dialogue: [
           '[Cuisinier - texte provisoire] Bonjour bonjour ! Bienvenue dans mon bistrot !',
           "Aujourd'hui, c'est boeuf bourguignon... et le boeuf, c'est moi qui l'ai motivé ce matin !",
@@ -1200,17 +1359,25 @@ export const interiors = {
   // Paris — ton appartement (immeuble en haut à droite) : l'ordinateur pour chercher un travail.
   parisAppart: {
     name: 'Ton appartement',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XLooommooX', // lit, table
-      'XooooooooX',
-      'XooooooooX',
-      'XmoooooouX', // ordinateur à droite
-      'XooooooooX',
-      'XoooEEoooX',
-      'XXXXXXXXXX',
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmoommoo', // lit, table
+      'mmoommoo',
+      'oooooooo',
+      'moooooou', // ordinateur à droite
+      'oooooooo',
+      'oooEEooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'bed', x: 0, y: 2 },
+      { kind: 'computerDesk', x: 4, y: 2 },
+      { kind: 'window', x: 2, y: 0 },
+      { kind: 'painting', x: 7, y: 0 },
+      { kind: 'pottedPlant', x: 0, y: 5 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
     events: [
       {
         on: 'enter',
@@ -1220,7 +1387,7 @@ export const interiors = {
     ],
     objects: [
       {
-        x: 8, y: 4,
+        x: 7, y: 5,
         unlessFlags: [FLAGS.rechercheTravail],
         ask: {
           question: 'Chercher un travail ?',
@@ -1238,7 +1405,7 @@ export const interiors = {
         },
       },
       {
-        x: 8, y: 4,
+        x: 7, y: 5,
         ifFlags: [FLAGS.rechercheTravail],
         dialogue: ["[Texte provisoire] Ton rendez-vous : l'entreprise, à droite de la tour Eiffel."],
       },
@@ -1248,22 +1415,36 @@ export const interiors = {
   // Paris — l'entreprise (tour de bureaux à droite de la tour Eiffel) : ton nouveau travail commence.
   entreprise: {
     name: 'Entreprise',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXX¤¤X', // ascenseur en haut à droite
-      'XmmooooooooooX',
-      'XoooommmmooooX', // accueil
-      'XooooooooooooX',
-      'XmmoommoommooX', // bureaux
-      'XooooooooooooX',
-      'XmmoommoommooX',
-      'XooooooooooooX',
-      'XooooooEEooooX',
-      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXX', // ascenseur en haut à droite
+      'XXXXXXXXXX¤¤',
+      'mmoooooooooo',
+      'oooommmmoooo', // accueil
+      'oooooooooooo',
+      'mmoommoommoo', // bureaux
+      'oooooooooooo',
+      'mmoommoommoo',
+      'oooooooooooo',
+      'ooooooEEoooo',
     ]),
-    spawn: { x: 7, y: 7, facing: 'up' },
+    decor: [
+      { kind: 'bookshelf', x: 0, y: 0 },
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'notice', x: 7, y: 0 },
+      { kind: 'longTable', x: 4, y: 3 },
+      { kind: 'crtTv', x: 7, y: 3 },
+      { kind: 'paperDesk', x: 0, y: 5 },
+      { kind: 'paperDesk', x: 4, y: 5 },
+      { kind: 'paperDesk', x: 8, y: 5 },
+      { kind: 'paperDesk', x: 0, y: 7 },
+      { kind: 'paperDesk', x: 4, y: 7 },
+      { kind: 'paperDesk', x: 8, y: 7 },
+    ],
+    spawn: { x: 6, y: 8, facing: 'up' },
     npcs: [
       {
-        id: 'responsable-paris', name: 'Responsable', x: 7, y: 3, facing: 'down', color: 0x2c3c6c,
+        id: 'responsable-paris', name: 'Responsable', x: 6, y: 4, facing: 'down', color: 0x2c3c6c,
         dialogue: [
           "[Responsable - texte provisoire] Bonjour ! On t'attendait.",
           "Bienvenue dans l'entreprise : ton nouveau travail commence aujourd'hui !",
@@ -1278,22 +1459,33 @@ export const interiors = {
   // Paris — l'entreprise, 1er étage : le manager (promotion).
   entrepriseManager: {
     name: 'Entreprise - 1er étage',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXX¤¤X', // ascenseur
-      'XooooooooooooX',
-      'XoooommmmooooX', // bureau
-      'XooooooooooooX',
-      'XmmoooooooommX',
-      'XooooooooooooX',
-      'XmmoooooooommX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXX', // ascenseur
+      'XXXXXXXXXX¤¤',
+      'oooooooooooo',
+      'oooommmmoooo', // bureau
+      'oooooooooooo',
+      'mmoooooooomm',
+      'oooooooooooo',
+      'mmoooooooomm',
+      'oooooooooooo',
+      'oooooooooooo',
     ]),
-    spawn: { x: 11, y: 1, facing: 'down' },
+    decor: [
+      { kind: 'window', x: 1, y: 0 },
+      { kind: 'painting', x: 6, y: 0 },
+      { kind: 'longTable', x: 4, y: 3 },
+      { kind: 'crtTv', x: 7, y: 3 },
+      { kind: 'paperDesk', x: 0, y: 5 },
+      { kind: 'paperDesk', x: 10, y: 5 },
+      { kind: 'paperDesk', x: 0, y: 7 },
+      { kind: 'paperDesk', x: 10, y: 7 },
+    ],
+    spawn: { x: 10, y: 2, facing: 'down' },
     npcs: [
       {
-        id: 'manager', name: 'Manager', x: 7, y: 3, facing: 'down', color: 0x3c6c9c,
+        id: 'manager', name: 'Manager', x: 6, y: 4, facing: 'down', color: 0x3c6c9c,
         unlessFlags: [FLAGS.promotion],
         dialogue: ['[Manager - texte provisoire] Bonjour ! Je suis ton manager.'],
         ask: {
@@ -1311,7 +1503,7 @@ export const interiors = {
         },
       },
       {
-        id: 'manager-fin', name: 'Manager', x: 7, y: 3, facing: 'down', color: 0x3c6c9c,
+        id: 'manager-fin', name: 'Manager', x: 6, y: 4, facing: 'down', color: 0x3c6c9c,
         ifFlags: [FLAGS.promotion],
         dialogue: ['[Manager - texte provisoire] Encore bravo ! Va fêter ta promotion au bistrot, tes amis t\'y attendent.'],
       },
@@ -1322,27 +1514,38 @@ export const interiors = {
   // Paris — l'entreprise, dernier étage : le directeur (rupture conventionnelle, après le concert).
   entrepriseDirecteur: {
     name: 'Entreprise - dernier étage',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXX¤¤X', // ascenseur
-      'XooooooooooooX',
-      'XoooommmmooooX', // bureau
-      'XooooooooooooX',
-      'XmmoooooooommX',
-      'XooooooooooooX',
-      'XmmoooooooommX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXX', // ascenseur
+      'XXXXXXXXXX¤¤',
+      'oooooooooooo',
+      'oooommmmoooo', // bureau
+      'oooooooooooo',
+      'mmoooooooomm',
+      'oooooooooooo',
+      'mmoooooooomm',
+      'oooooooooooo',
+      'oooooooooooo',
     ]),
-    spawn: { x: 11, y: 1, facing: 'down' },
+    decor: [
+      { kind: 'window', x: 1, y: 0 },
+      { kind: 'painting', x: 6, y: 0 },
+      { kind: 'longTable', x: 4, y: 3 },
+      { kind: 'crtTv', x: 7, y: 3 },
+      { kind: 'paperDesk', x: 0, y: 5 },
+      { kind: 'paperDesk', x: 10, y: 5 },
+      { kind: 'paperDesk', x: 0, y: 7 },
+      { kind: 'paperDesk', x: 10, y: 7 },
+    ],
+    spawn: { x: 10, y: 2, facing: 'down' },
     npcs: [
       {
-        id: 'directeur-paris', name: 'Directeur', x: 7, y: 3, facing: 'down', color: 0x3c2c4c,
+        id: 'directeur-paris', name: 'Directeur', x: 6, y: 4, facing: 'down', color: 0x3c2c4c,
         unlessFlags: [FLAGS.concertBercy],
         dialogue: ['[Directeur - texte provisoire] Ah, notre nouvelle recrue promue ! Profite bien de Paris.'],
       },
       {
-        id: 'directeur-paris-concert', name: 'Directeur', x: 7, y: 3, facing: 'down', color: 0x3c2c4c,
+        id: 'directeur-paris-concert', name: 'Directeur', x: 6, y: 4, facing: 'down', color: 0x3c2c4c,
         ifFlags: [FLAGS.concertBercy],
         unlessFlags: [FLAGS.ruptureConventionnelle],
         dialogue: ['[Directeur - texte provisoire] Tu voulais me voir ?'],
@@ -1363,7 +1566,7 @@ export const interiors = {
         },
       },
       {
-        id: 'directeur-paris-fin', name: 'Directeur', x: 7, y: 3, facing: 'down', color: 0x3c2c4c,
+        id: 'directeur-paris-fin', name: 'Directeur', x: 6, y: 4, facing: 'down', color: 0x3c2c4c,
         ifFlags: [FLAGS.ruptureConventionnelle],
         dialogue: ['[Directeur - texte provisoire] Bonne route vers Toulon !'],
       },
