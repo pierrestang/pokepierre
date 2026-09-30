@@ -20,7 +20,7 @@ const BOAT_POS = { x: 16, y: 27, w: 4, h: 2 };
 // les six statues du mémorial de l'Anse Caffard (Cap 110), en trois rangées tournées vers la mer.
 // Légende : voir src/data/tiles.js (w = mer, s = sable, ĥ = hautes herbes, ƀ = buisson, ç = pavés,
 // ƒ = petites fleurs, ŕ = rocher, ø = rocher dans la mer, T = grand arbre, = = ponton, B = ferry,
-// ƫ = arbre tropical, ƨ = plante à baies fleurie, ɱ / ɲ = plateau du mémorial de l'Anse Caffard (bloquant / praticable), Ŧ = grand arbre feuillu, ɸ = drapeau de la Martinique)
+// ƫ = arbre tropical, ƚ = petit arbre, ƨ = plante à baies fleurie, ɱ / ɲ = plateau du mémorial de l'Anse Caffard (bloquant / praticable), Ŧ = grand arbre feuillu, ɸ = drapeau de la Martinique)
 export const fortDeFranceMap = {
   id: 'fortDeFrance',
   name: 'Fort-de-France',
@@ -29,26 +29,26 @@ export const fortDeFranceMap = {
     'wwwwwwwwwwwwwwsssssswwwwwwwwwwwwww', // 1
     'wwwwwwwwwwsssssssssssssswwwwwwwwww', // 2
     'wwøwwwwwsssssss....ssssssswwwwwwww', // 3
-    'wwwwwwwssss...RRRRR....sssswwwwøww', // 4
-    'wwwwwsssŦŦŦ...RRRRR.f.ƫƫ.sssswwwww', // 5
-    'wwwwwsssŦŦŦ...WWWWWƒ.fƫƫ..ssswwwww', // 6
-    'wwwwsss.ŦŦŦ...WDWWWɸ......fssswwww', // 7
-    'wwwsss..ŦŦŦ...çççM..........ssswww', // 8
-    'wwwss.....ƨƒ..ççç.fƒƀ...ƨ....sswww', // 9
+    'wwwwwwwss.....RRRRR....sssswwwwøww', // 4
+    'wwwwwsss......RRRRR.f....sssswwwww', // 5
+    'wwwwwss..ŦŦŦ..WWWWWƒ.fƫƫ..ssswwwww', // 6
+    'wwwwsss..ŦŦŦ..WDWWWɸ..ƫƫ..fssswwww', // 7
+    'wwwsss...ŦŦŦ..çççM..........ssswww', // 8
+    'wwwss....ŦŦŦƨ.ççç.fƒƀ...ƨ....sswww', // 9
     'wwsss.TT......ççç..ƀ.f.......sssww', // 10
-    'wwss..TT.f.S..ççç...ƀ....RRRR.ssww', // 11
-    'wwss..ĥĥĥ...ƨ.ççç...TT...RRRR.ssww', // 12
+    'wwss..TT.f....ççç...ƀ....RRRR.ssww', // 11
+    'wwss..ĥĥĥƚ..S.ççç...TT...RRRR.ssww', // 12
     'wwss.ĥĥĥĥ.....ççç...TT...WWWW.ssww', // 13
     'wøss.ɱɱɱɱ..f..ççç.ŦŦŦ....WDWW.ssww', // 14
-    'wwss.ɱɱɱɱ.....ççç.ŦŦŦf......ƫƫssww', // 15
-    'wwss.ɱɲɲɱ..ƨ..ççç.ŦŦŦ...ƀƒ..ƫƫssww', // 16
-    'wwss.ɱɲɲɱ.....ççç.ŦŦŦĥĥĥĥĥ.ƨ.sssww', // 17
-    'wwwss.........ççç....ĥĥĥĥĥƫƫ.sswww', // 18
-    'wwwsss...ƫƫ...ççç....ĥĥĥĥĥƫƫssswww', // 19
-    'wwwwsss..ƫƫf..ççç.f.ĥĥĥĥĥĥ.ssswwøw', // 20
-    'wwwwwsss..ƫƫƨ.ççç.ƨ..ĥĥĥĥ.ssswwwww', // 21
+    'wwss.ɱɱɱɱ.....ççç.ŦŦŦf.....ƫƫ.ssww', // 15
+    'wwss.ɱɲɲɱ..ƨ..ççç.ŦŦŦ...ƀƒ.ƫƫ.ssww', // 16
+    'wwss.ɱɲɲɱ.....ççç.ŦŦŦĥĥĥĥĥ.ƨ..ssww', // 17
+    'wwwss.......ƚ.ççç....ĥĥĥĥƫƫ..sswww', // 18
+    'wwwsss...ƫƫ...ççç....ĥĥĥĥƫƫ..sswww', // 19
+    'wwwwsss..ƫƫf..ççç.f.ĥĥĥĥĥĥ..sswwøw', // 20
+    'wwwwwsss..ƫƫƨ.ççç.ƨƫƫĥĥĥĥ.ssswwwww', // 21
     'wwwwwssss.ƫƫ..ççç..ƫƫ....sssswwwww', // 22
-    'wwwwwwwsssŕ...ççç..ƫƫ..sssswwwwwww', // 23
+    'wwwwwwwss.ŕ...ççç......sssswwwwwww', // 23
     'wwwwwwwwsssssssssssssssssswwwwwwww', // 24
     'wwwwwøwwwwssss==sssssssswwwwwwwwww', // 25
     'wwwwwwwwwwwwww==wwwwwwwwwøwwwwwwww', // 26
@@ -69,7 +69,7 @@ export const fortDeFranceMap = {
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
   objects: [
-    { x: 11, y: 11, dialogue: ['Fort-de-France — Martinique. Bienvenue sur l\'île !'] },
+    { x: 12, y: 12, dialogue: ['Fort-de-France — Martinique. Bienvenue sur l\'île !'] },
     { x: 17, y: 8, dialogue: ['La boîte aux lettres de la famille.', "Rien aujourd'hui… Peut-être une carte postale de Saint-Ay, un jour ?"] },
     { x: 19, y: 7, dialogue: ['Le drapeau rouge, vert et noir de la Martinique flotte au vent.'] },
     // Mémorial de l'Anse Caffard (Cap 110) : six statues de pierre blanche tournées vers la mer, en trois

@@ -211,7 +211,8 @@ def tropical_trees(emerald):
 
 def berry_plants():
     """Quatre plantes à baies arrivées à maturité (Rubis/Saphir, planche des arbres à baies, fond en damier
-    rendu transparent) : arbuste rose, pêcher, baies bleues, fleurs rouges ; 16 x 32 chacune, posées en bas."""
+    rendu transparent) : arbuste rose, pêcher, baies bleues, fleurs rouges ; 16 x 32 chacune, posées en bas.
+    Le jeu n'utilise que les baies bleues et les fleurs rouges."""
     sheet = Image.open(ROOT / 'assets-source' / 'rs' / 'miscellaneous-berry_trees.png').convert('RGBA')
     checker = {(142, 255, 146, 255), (255, 196, 222, 255)}
     sheet.putdata([(0, 0, 0, 0) if p in checker else p for p in sheet.getdata()])

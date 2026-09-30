@@ -65,6 +65,7 @@ const GRASS = [O(6, 2), O(6, 2), O(6, 0), O(6, 1), O(7, 1)];
 const TALL_GRASS = O(7, 0);
 const FLOWERS = O(7, 2);
 const BUSH = O(7, 12);
+const SMALL_TREE = O(8, 0);    // petit arbre (celui qu'on coupe dans les jeux Pokémon)
 const SIGN = O(23, 3);
 const BEACH_ROCK = { sheet: FRLG_SHEETS.beachrock, sx: 0, sy: 0 };   // rocher gris sans écume, fond transparent
 // Barrière en rondins debout de la planche d'extérieur : deux rondins par case, rangées comme côtés.
@@ -80,9 +81,10 @@ const PLATEAU = {
 };
 const SEA_ROCK = { sheet: FRLG_SHEETS.searock, sx: 0, sy: 0 };   // sans l'eau autour : la mer animée passe dessous
 // Ponton en bois de Rouge Feu (quai de la planche d'extérieur, colonnes 9 à 13) : planches sur les cases
-// du ponton (marches au départ, côté plage), rambardes sur poteaux dans les cases voisines.
+// du ponton, rambardes sur poteaux dans les cases voisines ; au bout, une poutre ferme les planches, et
+// l'ombre du ponton et ses pieux se voient dans l'eau juste après.
 const PIER = {
-  start: { left: O(10, 21), right: O(12, 21) },
+  start: { left: O(10, 22), right: O(12, 22) },
   mid: { left: O(10, 22), right: O(12, 22) },
   end: { left: O(10, 23), right: O(12, 23) },
 };
@@ -105,7 +107,7 @@ export const FRLG_BUILDINGS = {
 
 // Cases posées sur l'herbe (le sable voisin reçoit un liseré d'herbe) : herbe, fleurs, buissons, arbres,
 // barrières, panneaux, plateau du mémorial…
-const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'h', 'i', 'x', 'F']);
+const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F']);
 const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ', 'χ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
@@ -189,8 +191,14 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
   // La mer n'est pas dessinée ici : c'est une couche animée sous la carte (voir addSeaLayer).
   if (ground === 'grass') blit(ctx, textures, GRASS[hash(x, y) % GRASS.length], px, py);
   else if (ground === 'pier') {
-    const part = PIER[pierPart(y, at, x)];
-    blit(ctx, textures, at(x - 1, y) === '=' ? part.right : part.left, px, py);
+    const where = pierPart(y, at, x);
+    blit(ctx, textures, at(x - 1, y) === '=' ? PIER[where].right : PIER[where].left, px, py);
+    if (where === 'end') {                                          // poutre du bout
+      ctx.fillStyle = '#a07040';
+      ctx.fillRect(px, py + S - 4, S, 1);
+      ctx.fillStyle = '#604020';
+      ctx.fillRect(px, py + S - 3, S, 3);
+    }
   } else if (ground === 'sand') {
     // Écume dès que la mer touche un côté ou un coin (avec le liseré d'herbe par-dessus si l'herbe touche
     // aussi), sinon bordure d'herbe.
@@ -217,7 +225,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
 }
 
 // Codes entièrement dessinés par les couches Rouge Feu (le dessin procédural les ignore).
-const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ']);
+const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ']);
 
 export function isFrlgOnly(code) {
   return FRLG_ONLY.has(code);
@@ -229,6 +237,16 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
   const px = x * S;
   const py = y * S;
   const put = (tile) => blit(ctx, textures, tile, px, py);
+  // Au bout du ponton, dans l'eau : son ombre et ses deux pieux.
+  if (code !== '=' && at(x, y - 1) === '=') {
+    ctx.fillStyle = 'rgba(16, 24, 72, 0.35)';
+    ctx.fillRect(px, py, S, 4);
+    ctx.fillStyle = '#503018';
+    const post = at(x - 1, y - 1) === '=' ? S - 4 : 1;
+    ctx.fillRect(px + post, py, 3, 6);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.fillRect(px + post - 1, py + 6, 5, 1);                     // clapotis au pied du pieu
+  }
   // Rambardes du ponton, posées dans les cases de part et d'autre.
   if (code !== '=') {
     if (at(x + 1, y) === '=' && at(x + 2, y) === '=') put(PIER_RAIL.left[pierPart(y, at, x + 1)]);
@@ -238,6 +256,7 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
     case 'ĥ': return put(TALL_GRASS);
     case 'f': return put(FLOWERS);
     case 'ƀ': return put(BUSH);
+    case 'ƚ': return put(SMALL_TREE);
     case 'S': return put(SIGN);
     case 'ŕ': return put(BEACH_ROCK);
     case 'M': return drawPixels(ctx, MAILBOX, MAILBOX_COLORS, px + 2, py + S - MAILBOX.length);
@@ -348,11 +367,12 @@ export function frlgTropicalTree(scene, code, x, y, at) {
   return { key, x: x * S, y: y * S, baseY: (y + 2) * S - 1 };
 }
 
-// Plante à baies fleurie de Rubis/Saphir (case 'ƨ', 16 x 32 px, dépasse vers le haut) : une des quatre
-// variantes selon la case. Renvoie { key, x, y, baseY } ou null.
+// Plante à baies fleurie de Rubis/Saphir (case 'ƨ', 16 x 32 px, dépasse vers le haut) : baies bleues ou
+// fleurs rouges (variantes 2 et 3 de rs-berries.png) selon la case. Renvoie { key, x, y, baseY } ou null.
+const BERRY_VARIANTS = [2, 3];
 export function frlgBerryPlant(scene, code, x, y) {
   if (code !== 'ƨ') return null;
-  const variant = hash(x, y) % 4;
+  const variant = BERRY_VARIANTS[hash(x, y) % BERRY_VARIANTS.length];
   const key = `rs-berry-${variant}`;
   if (!scene.textures.exists(key)) {
     const tex = scene.textures.createCanvas(key, S, 2 * S);
@@ -415,7 +435,7 @@ export function tallGrassCoverTexture(scene) {
 // en haut de la pièce, parquet partout ailleurs, noir autour ; les meubles (`decor`) sont des blocs repris
 // tels quels des pièces de frlg-rooms.png, le tapis de sortie est centré sur les cases 'E'.
 // Les cases de meubles sont des 'm' (bloquantes) dans la grille ; ce qui n'a pas d'équivalent Rouge Feu
-// (cannes à pêche, caisses de poissons…) reste dessiné dans le code, sur le parquet.
+// (escaliers, cannes à pêche, caisses de poissons…) reste dessiné dans le code, sur le parquet.
 const ROOM = (room, c, r) => ({ sheet: FRLG_SHEETS.rooms, sx: room * 11 * S + c * S, sy: r * S });
 const WALL_TOP = ROOM(1, 8, 0);
 const WALL = ROOM(1, 8, 1);
@@ -451,8 +471,7 @@ export const FRLG_DECOR = {
   bed: RS(488, 79, 24, 32, 2, 2),       // lit
   computerDesk: RS(448, 74, 32, 39, 2, 2),   // bureau avec ordinateur et tabouret
   bookDesk: RS(498, 128, 32, 22, 2, 1), // bureau avec des livres
-  stairsUp: RS(645, 130, 24, 22, 2, 1),     // escalier qui monte
-  stairsDown: RS(674, 131, 24, 22, 2, 1),   // escalier qui descend
+  pottedPlant: RS(630, 50, 16, 15, 1, 1),   // petite plante en pot
 };
 
 // Couche 1 d'un intérieur : mur (deux rangées du haut), noir (murs du bas et des côtés), parquet.
@@ -468,7 +487,7 @@ export function drawFrlgInteriorGround(ctx, textures, x, y, at) {
 }
 
 // Codes d'intérieur entièrement dessinés par les couches Rouge Feu.
-export const FRLG_INTERIOR_ONLY = new Set(['X', 'o', 'm', 'E', 'η', 'ξ']);   // escaliers : meubles `stairsUp` / `stairsDown`
+export const FRLG_INTERIOR_ONLY = new Set(['X', 'o', 'm', 'E']);
 
 // Couche 3 d'un intérieur : meubles, puis tapis de sortie sur chaque groupe de cases 'E' d'une rangée.
 export function drawFrlgInteriorDecor(ctx, textures, interior) {

@@ -2074,25 +2074,42 @@ function rug(g, px, py, x, y, at) {
 }
 
 // Escalier : vers le haut (marches qui montent contre le mur) ou vers le bas (trémie sombre).
-// Escalier façon Rouge Feu (16 x 32 px : la case de l'escalier et le mur au-dessus) : rampes en bois
-// sombre, marches claires à contremarche ombrée ; celui qui monte s'enfonce dans le mur, celui qui
-// descend s'assombrit vers le bas (vers l'étage du dessous).
+// Escaliers façon Rouge Feu, sur une case contre le mur du fond.
+// Qui monte (16 x 48 px : la case et les deux rangées de mur au-dessus) : ouverture sombre dans le mur,
+// limons de bois, marches claires qui s'assombrissent en s'enfonçant dans l'ouverture.
+// Qui descend (16 x 20 px : la case, 4 px sur le mur) : trémie cerclée de bois, marches qui plongent
+// vers le noir.
+const STAIRS_K = 0x302820;
 function stairsInside(g, px, py, x, y, up) {
   floor(g, px, py, x, y);
-  const top = py - S;
-  rect(g, 0x303038, px, top, S, 2 * S);                              // contour
-  for (let i = 0; i < 7; i++) {
-    const ly = top + 2 + i * 4;
-    const k = up ? i / 6 : 1 - i / 6;                                // 0 : au fond, 1 : devant
-    const light = up ? [0xa07848, 0xb08450, 0xc09460, 0xd0a470, 0xe0b880, 0xe8c490, 0xf0d0a0][i]
-      : [0xf0d0a0, 0xe0b880, 0xc09460, 0xa07848, 0x805830, 0x604020, 0x402810][i];
-    rect(g, light, px + 3, ly, 10, 3);                                // marche
-    rect(g, k > 0.5 ? 0x906030 : 0x604020, px + 3, ly + 3, 10, 1);   // contremarche
+  const R = (c, dx, dy, w, h) => rect(g, c, px + dx, py + dy, w, h);
+  if (up) {
+    const top = -2 * S;
+    R(STAIRS_K, 0, top + 4, S, 3 * S - 4);                           // contour de l'ouverture
+    R(0x181418, 1, top + 5, S - 2, 2 * S);                           // fond sombre
+    const treads = [0x2c2418, 0x4c3c28, 0x6c5434, 0x8c6c40, 0xac8850, 0xc8a060, 0xdcb470, 0xe8c888, 0xf0d8a0];
+    treads.forEach((c, i) => {
+      const ly = top + 12 + i * 4;
+      R(c, 3, ly, 10, 3);                                           // marche
+      R(i < 4 ? 0x100c10 : 0x8c6030, 3, ly + 3, 10, 1);             // contremarche
+    });
+    R(0x6c4420, 1, top + 8, 2, 2 * S + 8);                           // limons
+    R(0x6c4420, S - 3, top + 8, 2, 2 * S + 8);
+    R(0xa06c38, 1, S - 12, 2, 12);
+    R(0xa06c38, S - 3, S - 12, 2, 12);
+    g.fillStyle(0x000000, 0.18);                                     // ombre au pied
+    g.fillRect(px + 1, py + S - 1, S - 2, 1);
+  } else {
+    R(STAIRS_K, 0, -4, S, S + 4);                                    // cadre de bois
+    R(0x946030, 1, -3, S - 2, 2);
+    const treads = [0xf0d8a0, 0xd8b478, 0xb08c58, 0x886840, 0x604a2c, 0x3c2c1c];
+    treads.forEach((c, i) => {
+      R(c, 2, -1 + i * 3, S - 4, 2);                                  // marche
+      R(0x181410, 2, 1 + i * 3, S - 4, 1);
+    });
+    R(0x6c4420, 1, -1, 1, S);                                        // bords de la trémie
+    R(0x6c4420, S - 2, -1, 1, S);
   }
-  rect(g, 0x5c3818, px + 1, top + 1, 2, 2 * S - 2);                  // rampes
-  rect(g, 0x5c3818, px + S - 3, top + 1, 2, 2 * S - 2);
-  rect(g, 0x946030, px + 1, top + 1, 1, 2 * S - 2);
-  rect(g, 0x946030, px + S - 3, top + 1, 1, 2 * S - 2);
 }
 
 // Plan de travail de cuisine : évier ou plaques, selon la case.

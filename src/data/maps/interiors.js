@@ -37,7 +37,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmmmmommmηη',
+      'mmmmmommmoη',
       'ooooooooooo',
       'mooommmmooo',
       'mooommmmooo',
@@ -52,13 +52,12 @@ export const interiors = {
       { kind: 'window', x: 4, y: 0 },
       { kind: 'kitchen', x: 6, y: 1 },
       { kind: 'fridge', x: 8, y: 1 },
-      { kind: 'stairsUp', x: 9, y: 2 },
       { kind: 'plant', x: 0, y: 4 },
       { kind: 'table', x: 4, y: 4 },
       { kind: 'plant', x: 10, y: 6 },
     ],
     spawn: { x: 4, y: 6, facing: 'up' },
-    triggers: [9, 10].map((x) => ({ x, y: 2, warp: { interior: 'ffHouseUp', x: 7, y: 3, facing: 'down' } })),
+    triggers: [{ x: 10, y: 2, warp: { interior: 'ffHouseUp', x: 8, y: 3, facing: 'down' } }],
     objects: [
       { x: 3, y: 2, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
       { x: 4, y: 2, dialogue: ['[Texte provisoire] La console de Manon. Elle a encore battu ton record…'] },
@@ -103,14 +102,14 @@ export const interiors = {
   ffHouseUp: {
     name: 'Chambre de Pierre',
     frlg: true,
-    // Lit, bureau (livres), ordinateur, escalier qui descend ; fenêtre, tableau, plantes.
+    // Tout contre le mur du fond : lit, bureau (livres), ordinateur, plantes, escalier qui descend.
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
-      'mmmmmmoξξ',
+      'mmmmmmmmξ',
       'mmoommooo',
-      'mooooooom',
-      'mooooooom',
+      'ooooooooo',
+      'ooooooooo',
     ]),
     decor: [
       { kind: 'painting', x: 0, y: 0 },
@@ -118,12 +117,11 @@ export const interiors = {
       { kind: 'bed', x: 0, y: 2 },
       { kind: 'bookDesk', x: 2, y: 2 },
       { kind: 'computerDesk', x: 4, y: 2 },
-      { kind: 'stairsDown', x: 7, y: 2 },
-      { kind: 'plant', x: 0, y: 4 },
-      { kind: 'plant', x: 8, y: 4 },
+      { kind: 'pottedPlant', x: 6, y: 2 },
+      { kind: 'pottedPlant', x: 7, y: 2 },
     ],
-    spawn: { x: 7, y: 3, facing: 'down' },
-    triggers: [7, 8].map((x) => ({ x, y: 2, warp: { interior: 'ffHouse', x: 9, y: 3, facing: 'down' } })),
+    spawn: { x: 8, y: 3, facing: 'down' },
+    triggers: [{ x: 8, y: 2, warp: { interior: 'ffHouse', x: 10, y: 3, facing: 'down' } }],
     objects: [
       { x: 0, y: 3, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
       { x: 1, y: 3, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
