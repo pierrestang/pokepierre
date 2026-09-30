@@ -116,7 +116,7 @@ export const montepilloyMap = {
       x,
       y: 23,
       readyDialogue: ['Tu prends la route de Saint-Ay.'],
-      warp: { map: 'saintAy', x: 18, y: 1, facing: 'down' },
+      warp: { map: 'saintAy', x: 14, y: 1, facing: 'down' },
     })),
     // Porte nord : la route du Prytanée, une fois arrivé à l'école et les quêtes de Jean terminées.
     ...[11, 12].map((x) => ({

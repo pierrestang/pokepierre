@@ -15,7 +15,7 @@ export const READY_TO_LEAVE = { ifSouvenirs: ALL_QUALITIES, ifFlags: [FLAGS.cann
 export const DEPARTURE = [
   { say: ["Le ferry est prêt. Ta famille t'attend à bord."], speaker: PECHEUR },
   { setFlag: FLAGS.departFortDeFrance },
-  { travel: { map: 'saintAy', x: 6, y: 14, facing: 'left', ferry: true, deck: true } },
+  { travel: { map: 'saintAy', x: 5, y: 10, facing: 'left', ferry: true, deck: true } },
 ];
 
 // Ce qu'il reste à faire, rappelé par le pêcheur tant qu'une qualité manque.
