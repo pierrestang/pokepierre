@@ -171,8 +171,11 @@ export const interiors = {
       { kind: 'notice', x: 4, y: 0 },
       { kind: 'plant', x: 6, y: 3 },
     ],
-    // Cannes jetées par Papa dans la caisse « À DONNER » : deux, puis une fois que tu en as pris une.
+    // Cannes du râtelier (trois, puis celle que Papa garde) et cannes jetées dans la caisse « À DONNER »
+    // (deux, puis une fois que tu en as pris une).
     decals: [
+      { kind: 'rodsOnRack', x: 0, y: 2, count: 3, unlessFlags: [FLAGS.papaFait] },
+      { kind: 'rodsOnRack', x: 0, y: 2, count: 1, ifFlags: [FLAGS.papaFait] },
       { kind: 'rodsInCrate', x: 0, y: 4, count: 2, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id] },
       { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte] },
       { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifItems: [ITEMS.canneAPeche.id] },

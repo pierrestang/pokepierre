@@ -1615,16 +1615,33 @@ function pixelArt(g, rows, px, py) {
   }));
 }
 
-// Canne à pêche penchée : pied en (bx, by), `h` px de haut, la pointe part vers la droite.
-function fishingRod(g, bx, by, h) {
-  const xAt = (i) => bx + Math.floor(i / 7);                          // un pixel de biais tous les 7 px
-  for (let i = 0; i < h; i++) rect(g, i < h - 6 ? 0x484850 : 0x707880, xAt(i), by - i, 1, 1);   // brin, plus clair vers la pointe
-  rect(g, 0xd84838, xAt(h - 1), by - h, 1, 2);                        // pointe
-  rect(g, 0x383840, bx - 1, by - 7, 4, 7);                            // poignée en liège
-  rect(g, 0xd8a868, bx, by - 6, 2, 5);
-  rect(g, 0xa87040, bx, by - 3, 2, 1);
-  rect(g, 0x383840, bx + 1, by - 10, 3, 3);                           // moulinet
-  rect(g, 0xc0c8d8, bx + 2, by - 9, 1, 1);
+// Canne à pêche en bambou, contour sombre comme les objets de Rouge Feu : pied en (bx, by), `h` px de haut,
+// penchée d'un pixel tous les 6 px vers `lean` (1 : droite, -1 : gauche). Poignée rouge, moulinet, scion fin.
+export function fishingRod(g, bx, by, h, lean = 1) {
+  const K = 0x303038;
+  const xAt = (i) => bx + lean * Math.floor(i / 6);
+  const tip = 4;                                                       // scion : fin, sans contour
+  for (let i = 0; i < h - tip; i++) {                                  // contour
+    rect(g, K, xAt(i) - 1, by - i, 3, 1);
+  }
+  rect(g, K, xAt(0) - 1, by + 1, 3, 1);
+  for (let i = 0; i < h - tip; i++) {                                  // brin : bambou et ses nœuds
+    const c = i < 6 ? (i === 0 || i === 5 ? 0x802020 : 0xd04838) : (i - 6) % 5 === 4 ? 0x7c5028 : 0xc89050;
+    rect(g, c, xAt(i), by - i, 1, 1);
+  }
+  for (let i = h - tip; i < h; i++) rect(g, 0x585860, xAt(i), by - i, 1, 1);
+  const rx = xAt(8) - lean * 3 - (lean < 0 ? 1 : 0);                   // moulinet, sur le côté
+  rect(g, K, rx, by - 10, 3, 3);
+  rect(g, 0xd0d8e0, rx + 1, by - 9, 1, 1);
+}
+
+// Cannes du râtelier (au-dessus du socle, voir fishingRods) : trois, puis celle que Papa garde.
+const RACK_RODS = [[3, 26, 1], [9, 22, 1], [19, 24, 1]];
+export function drawRackRods(g, px, py, count) {
+  const base = py + 8;
+  for (const [bx, h, lean] of RACK_RODS.slice(0, count)) fishingRod(g, px + bx, base + 2, h, lean);
+  pixelArt(g, ROD_STAND, px, base);                                    // socle par-dessus les pieds des cannes
+  pixelArt(g, ROD_STAND, px + S, base);
 }
 
 // Tête d'épuisette : cercle et filet.
@@ -1653,11 +1670,8 @@ function fishingRods(g, px, py, x, y) {
   g.fillStyle(0x000000, 0.2);
   g.fillRect(px + 1, py + 15, 15, 1);
   const base = py + 8;
-  if (x % 2 === 0) {
-    fishingRod(g, px + 3, base + 2, 26);
-    fishingRod(g, px + 9, base + 2, 22);
-  } else {
-    fishingRod(g, px + 3, base + 2, 24);
+  // Les cannes sont posées par-dessus, selon l'histoire (décor `rodsOnRack`).
+  if (x % 2 === 1) {
     // Épuisette posée contre le mur : manche et filet.
     rect(g, 0x383840, px + 10, py - 13, 1, 23);
     rect(g, 0x9c6834, px + 11, py - 13, 1, 23);
@@ -1693,22 +1707,11 @@ function fishCrate(g, px, py, x, y) {
 // cannes à pêche qui dépassent de la caisse « À DONNER » (`count` : 1 ou 2), case (x, y) en pixels px, py.
 const DECALS = {
   rodsInCrate(g, px, py, { count = 2 } = {}) {
-    const rods = [[4, 13, -1], [10, 16, 1]].slice(0, count);
-    for (const [bx, h, dir] of rods) {
-      const by = py + 6;                                                // pied, dans la caisse
-      for (let i = 0; i < h; i++) {
-        const x = px + bx + dir * Math.floor(i / 5);
-        rect(g, 0x303038, x - 1, by - i, 3, 1);                          // contour
-      }
-      for (let i = 0; i < h; i++) {
-        const x = px + bx + dir * Math.floor(i / 5);
-        rect(g, i < 4 ? 0xd8a868 : i < h - 4 ? 0x585860 : 0x8890a0, x, by - i, 1, 1);   // liège, brin, scion
-      }
-      const tx = px + bx + dir * Math.floor((h - 1) / 5);
-      rect(g, 0xd84838, tx, by - h, 1, 2);                              // pointe
-      rect(g, 0x383840, px + bx - (dir < 0 ? 3 : -1), by - 3, 3, 3);    // moulinet
-      rect(g, 0xc0c8d8, px + bx - (dir < 0 ? 2 : -2), by - 2, 1, 1);
-    }
+    const rods = [[5, 14, -1], [10, 17, 1]].slice(0, count);
+    for (const [bx, h, lean] of rods) fishingRod(g, px + bx, py + 6, h, lean);
+  },
+  rodsOnRack(g, px, py, { count = 3 } = {}) {
+    drawRackRods(g, px, py, count);
   },
 };
 
