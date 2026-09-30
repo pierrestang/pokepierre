@@ -1603,28 +1603,113 @@ function deckchair(g, px, py, x, y) {
   rect(g, 0x6c5030, px + 4, py + 8, 8, 1);                             // pliure du dossier
 }
 
-// Râtelier de cannes à pêche contre le mur, et caisse de poissons (cabane de pêche).
-function fishingRods(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  rect(g, 0x5c3818, px + 1, py + 10, 14, 4);
-  for (const rx of [3, 7, 11]) {
-    rect(g, 0x8c5c30, px + rx, py - 8, 1, 20);
-    rect(g, 0x303038, px + rx - 1, py + 6, 3, 2);                      // moulinet
-  }
-  rect(g, 0xe8e8e8, px + 4, py - 8, 1, 6);                              // fil
+// Cabane de pêche : râtelier de cannes à pêche contre le mur, caisses de poissons, caisse « À DONNER ».
+// Dessins au pixel près, contour sombre comme les meubles de Rouge Feu.
+const HUT_C = {
+  k: 0x383840, W: 0xc89058, w: 0x9c6834, D: 0x6c4424, d: 0x4c3018,
+  F: 0xb8d0e8, f: 0x6888b8, e: 0x202028, P: 0xf8f8f0, p: 0xc8c8c0, R: 0xd84838,
+};
+function pixelArt(g, rows, px, py) {
+  rows.forEach((row, ry) => [...row].forEach((c, rx) => {
+    if (c !== '.') rect(g, HUT_C[c], px + rx, py + ry, 1, 1);
+  }));
 }
 
+// Canne à pêche penchée : pied en (bx, by), `h` px de haut, la pointe part vers la droite.
+function fishingRod(g, bx, by, h) {
+  const xAt = (i) => bx + Math.floor(i / 7);                          // un pixel de biais tous les 7 px
+  for (let i = 0; i < h; i++) rect(g, i < h - 6 ? 0x484850 : 0x707880, xAt(i), by - i, 1, 1);   // brin, plus clair vers la pointe
+  rect(g, 0xd84838, xAt(h - 1), by - h, 1, 2);                        // pointe
+  rect(g, 0x383840, bx - 1, by - 7, 4, 7);                            // poignée en liège
+  rect(g, 0xd8a868, bx, by - 6, 2, 5);
+  rect(g, 0xa87040, bx, by - 3, 2, 1);
+  rect(g, 0x383840, bx + 1, by - 10, 3, 3);                           // moulinet
+  rect(g, 0xc0c8d8, bx + 2, by - 9, 1, 1);
+}
+
+// Tête d'épuisette : cercle et filet.
+const NET_HEAD = [
+  '.kkkkk.',
+  'kPpPpPk',
+  'kpPpPpk',
+  'kPpPpPk',
+  '.kPpPk.',
+  '..kkk..',
+];
+
+// Râtelier : socle en bois percé, deux cannes (case de gauche) ou une canne et une épuisette (de droite).
+const ROD_STAND = [
+  '.kkkkkkkkkkkkkk.',
+  'kWWWWWWWWWWWWWWk',
+  'kWdWWWWdWWWWdWWk',
+  'kkkkkkkkkkkkkkkk',
+  'kwwwwwwwwwwwwwwk',
+  'kwDwwwwwwwwwwDwk',
+  'kDDDDDDDDDDDDDDk',
+  '.kkkkkkkkkkkkkk.',
+];
+function fishingRods(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 1, py + 15, 15, 1);
+  const base = py + 8;
+  if (x % 2 === 0) {
+    fishingRod(g, px + 3, base + 2, 26);
+    fishingRod(g, px + 9, base + 2, 22);
+  } else {
+    fishingRod(g, px + 3, base + 2, 24);
+    // Épuisette posée contre le mur : manche et filet.
+    rect(g, 0x383840, px + 10, py - 13, 1, 23);
+    rect(g, 0x9c6834, px + 11, py - 13, 1, 23);
+    pixelArt(g, NET_HEAD, px + 8, py - 19);
+  }
+  pixelArt(g, ROD_STAND, px, base);
+}
+
+// Caisse de poissons à claire-voie, vue de haut et de face : poissons argentés dans la caisse.
+const FISH_CRATE = [
+  '.kkkkkkkkkkkkkk.',
+  'kWWWWWWWWWWWWWWk',
+  'kWdFFFfedFFFFedk',
+  'kWdfFFFFdfFFFFdk',
+  'kWFFFFedFFFfddWk',
+  'kkkkkkkkkkkkkkkk',
+  'kWWWWWWWWWWWWWWk',
+  'kwwwwwwwwwwwwwwk',
+  'kdkdddddddddkddk',
+  'kWWWWWWWWWWWWWWk',
+  'kwwwwwwwwwwwwwwk',
+  'kDDDDDDDDDDDDDDk',
+  '.kkkkkkkkkkkkkk.',
+];
 function fishCrate(g, px, py, x, y) {
   floor(g, px, py, x, y);
   g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 2, py + 14, 13, 2);
-  rect(g, 0x5c3818, px + 1, py + 3, 14, 12);
-  rect(g, 0xa87848, px + 2, py + 4, 12, 10);
-  rect(g, 0x5c3818, px + 2, py + 8, 12, 1);
-  for (const [fx, fy] of [[3, 5], [8, 5], [5, 9]]) {                   // poissons
-    rect(g, 0x5878a8, px + fx, py + fy, 5, 2);
-    rect(g, 0xa8c8e8, px + fx + 1, py + fy, 2, 1);
-  }
+  g.fillRect(px + 2, py + 15, 14, 1);
+  pixelArt(g, FISH_CRATE, px, py + 2);
+}
+
+// Caisse « À DONNER » : caisse vide avec son étiquette de papier (texte griffonné au feutre rouge).
+const GIVE_CRATE = [
+  '.kkkkkkkkkkkkkk.',
+  'kWWWWWWWWWWWWWWk',
+  'kWddddddddddddWk',
+  'kWddddddddddddWk',
+  'kkkkkkkkkkkkkkkk',
+  'kWWWkkkkkkkkWWWk',
+  'kwwwkPPPPPPkwwwk',
+  'kdddkPRRpRPkdddk',
+  'kWWWkPpRRRPkWWWk',
+  'kwwwkPPPPPPkwwwk',
+  'kDDDkkkkkkkkDDDk',
+  'kDDDDDDDDDDDDDDk',
+  '.kkkkkkkkkkkkkk.',
+];
+function giveCrate(g, px, py, x, y) {
+  floor(g, px, py, x, y);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 2, py + 15, 14, 1);
+  pixelArt(g, GIVE_CRATE, px, py + 2);
 }
 
 
@@ -2175,6 +2260,7 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'ʈ': return deckchair(g, px, py, x, y);
     case 'ψ': return fishingRods(g, px, py, x, y);
     case 'χ': return fishCrate(g, px, py, x, y);
+    case 'ʁ': return giveCrate(g, px, py, x, y);
     case 'ĉ': return cliff2(g, px, py, x, y, at);
     case 'ŝ': return stairs(g, px, py, x, y, at);
     case '=': return pier(g, px, py, x, y, at);

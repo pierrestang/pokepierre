@@ -1,5 +1,5 @@
 import { parseGrid } from './parseGrid.js';
-import { FLAGS, ITEMS } from '../story.js';
+import { FLAGS, ITEMS, QUALITIES } from '../story.js';
 
 // Ascenseur de l'entreprise parisienne (mêmes cases, en haut à droite, à chaque étage).
 const floor = (interior) => ({ interior, x: 11, y: 1, facing: 'down' });
@@ -28,12 +28,12 @@ const HOME_FDF = { unlessFlags: [FLAGS.departFortDeFrance] };
 // Intérieurs des bâtiments. `spawn` = position d'arrivée (juste au-dessus du tapis).
 export const interiors = {
   // Fort-de-France — la maison familiale, façon Rouge Feu (`frlg`, voir art/frlgArt.js) : mur de deux
-  // rangées en haut, meubles des planches (`decor`, cases 'm' bloquantes), télé au mur ; escalier dessiné
-  // dans le code. Textes provisoires, à réécrire.
+  // rangées en haut, meubles des planches (`decor`, cases 'm' bloquantes), télé au mur, escalier encastré.
+  // Salon : Maman (Joie de vivre) et Manon (Complicité) ; Papa trie à sa cabane de pêche.
+  // Scénario : voir data/fortDeFranceStory.js.
   ffHouse: {
     name: 'Maison familiale',
     frlg: true,
-    // Étagère, vitrine, télé murale, fenêtre, cuisine, frigo et escalier contre le mur ; table ; plantes.
     grid: parseGrid([
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
@@ -55,6 +55,7 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 4 },
       { kind: 'table', x: 4, y: 4 },
       { kind: 'plant', x: 10, y: 6 },
+      { kind: 'carton', x: 10, y: 7 },
     ],
     spawn: { x: 4, y: 6, facing: 'up' },
     triggers: [{ x: 10, y: 2, warp: { interior: 'ffHouseUp', x: 8, y: 3, facing: 'down' } }],
@@ -62,53 +63,81 @@ export const interiors = {
       { x: 3, y: 2, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
       { x: 4, y: 2, dialogue: ['[Texte provisoire] La console de Manon. Elle a encore battu ton record…'] },
       { x: 8, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
+      { x: 10, y: 7, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] },
+    ],
+    // En descendant pour la première fois, Maman pose le cadre de la journée.
+    events: [
+      {
+        on: 'enter',
+        ifFlags: [FLAGS.reveilFortDeFrance],
+        unlessFlags: [FLAGS.journeeLancee],
+        steps: [
+          { face: { maman: 'right' } },
+          {
+            speaker: 'Maman',
+            say: ["On part tous ensemble cet après-midi. Avant ça, profite de l'île une dernière fois. Ton père est à sa cabane, et ta sœur… mystère."],
+          },
+          { setFlag: FLAGS.journeeLancee },
+        ],
+      },
     ],
     npcs: [
+      // Maman — Joie de vivre : la musique est allumée, elle t'entraîne dans une petite danse.
       {
         id: 'maman', name: 'Maman', x: 7, y: 3, facing: 'down', color: 0xe86fa0,
         ...HOME_FDF,
-        dialogue: [
-          '[Maman - texte provisoire] Bonjour ! Ceci est le premier dialogue de Maman.',
-          'Deuxième page du dialogue de Maman.',
+        script: [
+          { ifSouvenirs: [QUALITIES.joie.id], speaker: 'Maman', say: ['Allez, file profiter de l\'île ! La musique reste allumée jusqu\'au départ.'], end: true },
+          { speaker: 'Maman', say: ['Tu entends cette chanson ? Viens danser avec moi !'] },
+          { dance: 'maman' },
+          { speaker: 'Maman', say: ['On part demain, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi.'] },
+          { quality: QUALITIES.joie },
         ],
-        after: ['[Maman - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-maman', name: 'Souvenir de Maman' },
       },
-      {
-        id: 'papa', name: 'Papa', x: 9, y: 5, facing: 'left', color: 0x3f6fd8,
-        ...HOME_FDF,
-        dialogue: [
-          '[Papa - texte provisoire] Salut ! Ceci est le premier dialogue de Papa.',
-          'Deuxième page du dialogue de Papa.',
-        ],
-        after: ['[Papa - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-papa', name: 'Souvenir de Papa' },
-      },
+      // Manon — Complicité : elle a caché un coquillage dans les hautes herbes de l'île.
       {
         id: 'manon', name: 'Manon', x: 2, y: 6, facing: 'up', color: 0xf0a030,
         ...HOME_FDF,
-        dialogue: [
-          '[Manon - texte provisoire] Coucou ! Ceci est le premier dialogue de Manon.',
-          'Deuxième page du dialogue de Manon.',
+        script: [
+          { ifSouvenirs: [QUALITIES.complicite.id], speaker: 'Manon', say: ['Chut… c\'est notre secret.'], end: true },
+          { ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon', say: ["Tu l'as trouvé !"] },
+          { ifItems: [ITEMS.coquillageNacre.id], say: ['Manon sort de sa poche un deuxième coquillage, identique.'] },
+          {
+            ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon',
+            say: ["Un pour toi, un pour moi. Comme ça, où qu'on aille, on garde un bout de l'île. Et c'est notre secret."],
+          },
+          { ifItems: [ITEMS.coquillageNacre.id], quality: QUALITIES.complicite, end: true },
+          { ifFlags: [FLAGS.manonDemande], speaker: 'Manon', say: ["C'est dans les hautes herbes. Trouve-le."], end: true },
+          // Première fois : Manon attend que Maman regarde ailleurs.
+          { face: { maman: 'up' } },
+          { wait: 400 },
+          { speaker: 'Manon', say: ['Psst. Viens.'] },
+          {
+            speaker: 'Manon',
+            say: [
+              "J'ai caché un truc sur l'île avant qu'on parte. Personne ne le sait. Même pas Papa.",
+              'Surtout pas Papa, il le mettrait dans la caisse « À DONNER ».',
+              "C'est dans les hautes herbes. Trouve-le.",
+            ],
+          },
+          { setFlag: FLAGS.manonDemande },
         ],
-        after: ['[Manon - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-manon', name: 'Souvenir de Manon' },
       },
     ],
   },
 
-  // Fort-de-France — la chambre de Pierre, à l'étage (invisible de l'extérieur), façon Rouge Feu avec des
-  // meubles de Rubis/Saphir. Escalier : ξ.
+  // Fort-de-France — la chambre de Pierre, à l'étage (invisible de l'extérieur), façon Rouge Feu :
+  // lit, bureau avec ordinateur, plantes, escalier qui descend, et des cartons partout.
+  // Nouvelle partie : Pierre s'y réveille, le dernier matin à Fort-de-France.
   ffHouseUp: {
     name: 'Chambre de Pierre',
     frlg: true,
-    // Tout contre le mur du fond : lit, bureau avec ordinateur, plantes, escalier qui descend.
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
-      'mmmmommoξ',
+      'mmmmmmmoξ',
       'mmmmooooo',
-      'ooooooooo',
+      'moooommoo',
       'ooooooooo',
     ]),
     decor: [
@@ -116,21 +145,45 @@ export const interiors = {
       { kind: 'window', x: 5, y: 0 },
       { kind: 'bed', x: 0, y: 2 },
       { kind: 'computerDesk', x: 2, y: 2 },
+      { kind: 'smallCarton', x: 2, y: 2, dx: 1, dy: 3 },
+      { kind: 'carton', x: 4, y: 2 },
       { kind: 'pottedPlant', x: 5, y: 2 },
       { kind: 'pottedPlant', x: 6, y: 2 },
+      { kind: 'carton', x: 0, y: 4 },
+      { kind: 'carton', x: 5, y: 4 },
+      { kind: 'carton', x: 6, y: 4 },
     ],
-    spawn: { x: 8, y: 3, facing: 'down' },
+    spawn: { x: 1, y: 4, facing: 'up' },
     triggers: [{ x: 8, y: 2, warp: { interior: 'ffHouse', x: 10, y: 3, facing: 'down' } }],
     objects: [
-      { x: 0, y: 3, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
-      { x: 1, y: 3, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
-      { x: 2, y: 3, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
-      { x: 3, y: 3, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
+      { x: 0, y: 3, dialogue: ['Ton lit. Ce soir, tu dormiras à Saint-Ay.'] },
+      { x: 1, y: 3, dialogue: ['Ton lit. Ce soir, tu dormiras à Saint-Ay.'] },
+      { x: 2, y: 3, dialogue: ['Un carton marqué « CHAMBRE — FRAGILE ». Il est déjà scotché.'] },
+      { x: 3, y: 3, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
+      ...[[4, 2], [0, 4], [5, 4], [6, 4]].map(([x, y]) => ({ x, y, dialogue: ['Des cartons à moitié faits.'] })),
+    ],
+    // Écran noir, bruit des vagues, puis la chambre apparaît et Maman appelle d'en bas.
+    events: [
+      {
+        on: 'enter',
+        unlessFlags: [FLAGS.reveilFortDeFrance],
+        steps: [
+          { black: true },
+          { sea: true },
+          { wait: 1400 },
+          { say: ["C'est le dernier matin à Fort-de-France."] },
+          { sea: false },
+          { black: false },
+          { wait: 300 },
+          { speaker: "Maman (d'en bas)", say: ['Pierre ! Le ferry part cet après-midi ! Descends !'] },
+          { setFlag: FLAGS.reveilFortDeFrance },
+        ],
+      },
     ],
   },
 
-  // Fort-de-France — la cabane de pêche de Papa, façon Rouge Feu : cannes, caisses de poissons (dessinées
-  // dans le code), fenêtre, panneau, plante.
+  // Fort-de-France — la cabane de pêche de Papa, façon Rouge Feu : cannes, caisses (dessinées dans le code),
+  // fenêtre, panneau, plante. Papa trie avant le départ (Pragmatisme) ; caisse « À DONNER » en bas à gauche.
   ffHut: {
     name: 'Cabane de pêche',
     frlg: true,
@@ -139,20 +192,59 @@ export const interiors = {
       'XXXXXXX',
       'ψψoχχoo',
       'oooooom',
-      'χooooom',
+      'ʁooooom',
       'oooEooo',
     ]),
     decor: [
-      { kind: 'window', x: 1, y: 0 },
+      { kind: 'window', x: 2, y: 0 },
       { kind: 'notice', x: 4, y: 0 },
       { kind: 'plant', x: 6, y: 3 },
     ],
     spawn: { x: 3, y: 4, facing: 'up' },
+    npcs: [
+      {
+        id: 'papa', name: 'Papa', x: 1, y: 4, facing: 'left', color: 0x3f6fd8, still: true,
+        ...HOME_FDF,
+        script: [
+          { ifSouvenirs: [QUALITIES.pragmatisme.id], speaker: 'Papa', say: ["Hm. Il reste des caisses, si t'as rien à faire."], end: true },
+          { say: ['Des caisses partout. Papa trie sans lever les yeux.'] },
+          { speaker: 'Papa', say: ["T'es venu m'aider ou regarder ?"] },
+          {
+            choose: 'Trois cannes à pêche sont posées là. Tu en prends combien ?',
+            choices: [
+              { label: 'Une', steps: [{ speaker: 'Papa', say: ["Une. T'as compris : on n'a que deux bras."] }] },
+              { label: 'Les trois', steps: [{ speaker: 'Papa', say: ['Trois cannes. On a combien de bras ?'] }] },
+            ],
+          },
+          { say: ['Papa en garde une et jette les deux autres dans une caisse marquée « À DONNER ».'] },
+          { speaker: 'Papa', say: ['Voilà. Déménagement terminé.'] },
+          { quality: QUALITIES.pragmatisme },
+          { setFlag: FLAGS.papaFait },
+        ],
+      },
+    ],
     objects: [
-      { x: 0, y: 2, dialogue: ['[Texte provisoire] Les cannes à pêche de Papa, bien alignées.'] },
-      { x: 1, y: 2, dialogue: ['[Texte provisoire] Les cannes à pêche de Papa, bien alignées.'] },
-      { x: 3, y: 2, dialogue: ['[Texte provisoire] Des poissons pêchés ce matin. Ça sent la mer !'] },
-      { x: 4, y: 2, dialogue: ['[Texte provisoire] Des poissons pêchés ce matin. Ça sent la mer !'] },
+      { x: 0, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
+      { x: 1, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
+      { x: 0, y: 2, dialogue: ['La canne que Papa a gardée.'] },
+      { x: 1, y: 2, dialogue: ['La canne que Papa a gardée.'] },
+      { x: 3, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
+      { x: 4, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
+      // Caisse « À DONNER » : une canne pour le pêcheur, une fois qu'il t'a montré la sienne, cassée.
+      { x: 0, y: 4, unlessFlags: [FLAGS.papaFait], dialogue: ['Une caisse marquée « À DONNER ». Elle est encore vide.'] },
+      {
+        x: 0, y: 4,
+        ifFlags: [FLAGS.papaFait, FLAGS.canneMontree],
+        unlessFlags: [FLAGS.canneOfferte],
+        unlessItems: [ITEMS.canneAPeche.id],
+        script: [
+          { give: ITEMS.canneAPeche, text: 'Tu prends une canne à pêche dans la caisse.' },
+          { speaker: 'Papa', say: ['Tu vois. « À donner », ça veut dire à donner.'] },
+        ],
+      },
+      { x: 0, y: 4, ifFlags: [FLAGS.canneOfferte], dialogue: ['Il reste une canne à pêche dans la caisse « À DONNER ».'] },
+      { x: 0, y: 4, ifItems: [ITEMS.canneAPeche.id], dialogue: ['Il reste une canne à pêche dans la caisse « À DONNER ».'] },
+      { x: 0, y: 4, dialogue: ['Deux cannes à pêche dans la caisse « À DONNER ».'] },
     ],
   },
 

@@ -10,7 +10,7 @@ export function preloadFrlgFont(scene) {
 }
 
 // Caractères sans glyphe dans la police, remplacés par un équivalent.
-const REPLACE = { "'": '’', '"': '“', '«': '“', '»': '”', '—': '-', '–': '-', ' ': ' ', ' ': ' ' };
+const REPLACE = { '→': '▶', "'": '’', '"': '“', '«': '“', '»': '”', '—': '-', '–': '-', ' ': ' ', ' ': ' ' };
 
 function glyphs(scene) {
   return scene.cache.bitmapFont.get(FRLG_FONT).data.chars;
@@ -19,7 +19,9 @@ function glyphs(scene) {
 // Texte affichable avec la police : remplacements, puis accents retirés si la lettre accentuée manque.
 export function frlgText(scene, text) {
   const chars = glyphs(scene);
-  return [...text].map((c) => {
+  // Guillemets français « X » rendus “X” : sans les espaces intérieures.
+  const tight = text.replace(/«[\s\u00a0\u202f]+/g, '«').replace(/[\s\u00a0\u202f]+»/g, '»');
+  return [...tight].map((c) => {
     if (c === '\n' || chars[c.charCodeAt(0)]) return c;
     const r = REPLACE[c] ?? c.normalize('NFD')[0];
     return chars[r.charCodeAt(0)] || r === ' ' ? r : '?';

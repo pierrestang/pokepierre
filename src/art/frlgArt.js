@@ -472,7 +472,33 @@ export const FRLG_DECOR = {
   bed: RS(488, 79, 24, 32, 2, 2),       // lit
   computerDesk: RS(448, 74, 32, 39, 2, 2),   // bureau avec ordinateur et tabouret
   pottedPlant: RS(630, 50, 16, 15, 1, 1),   // petite plante en pot
+  carton: { sprite: { sheet: 'frlg-carton', sx: 0, sy: 0 }, pw: 15, ph: 14, w: 1, h: 1 },        // carton de déménagement
+  smallCarton: { sprite: { sheet: 'frlg-carton', sx: 15, sy: 0 }, pw: 11, ph: 9, w: 1, h: 1 },   // petit carton (sur un meuble)
 };
+
+// Cartons de déménagement, dessinés au pixel près dans les couleurs du carton de Rouge Feu :
+// grand carton (15 x 14) et petit carton scotché (11 x 9), côte à côte dans la texture 'frlg-carton'.
+function ensureCartonTexture(textures) {
+  if (textures.exists('frlg-carton')) return;
+  const tex = textures.createCanvas('frlg-carton', 26, 14);
+  const ctx = tex.getContext();
+  const R = (c, x, y, w, h) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+  const box = (ox, oy, w, h, lid) => {
+    const K = '#584028';
+    R(K, ox, oy, w, h);                                   // contour
+    R('#e0b070', ox + 1, oy + 1, w - 2, lid);              // dessus
+    R('#c89050', ox + 1, oy + 1 + lid, w - 2, h - lid - 2); // face
+    R('#a87038', ox + 1, oy + h - 3, w - 2, 1);            // ombre en bas de la face
+    R(K, ox + 1, oy + 1 + lid, w - 2, 1);                  // arête
+    R('#f0f0e0', ox + (w >> 1) - 1, oy + 1, 2, lid + 3);   // scotch
+    R('#f8e0a8', ox + 1, oy + 1, w - 2, 1);                // reflet
+  };
+  box(0, 0, 15, 14, 5);
+  R('#584028', 3, 9, 5, 1);                               // inscription au feutre
+  R('#584028', 3, 11, 3, 1);
+  box(15, 0, 11, 9, 3);
+  tex.refresh();
+}
 
 // Couche 1 d'un intérieur : mur (deux rangées du haut), noir (murs du bas et des côtés), parquet.
 export function drawFrlgInteriorGround(ctx, textures, x, y, at) {
@@ -498,6 +524,7 @@ const STAIRS_IN_WALL = {
 
 // Couche 3 d'un intérieur : meubles, puis tapis de sortie sur chaque groupe de cases 'E' d'une rangée.
 export function drawFrlgInteriorDecor(ctx, textures, interior) {
+  ensureCartonTexture(textures);
   const roomW = interior.grid[0].length * S;
   interior.grid.forEach((row, y) => row.forEach((code, x) => {
     const st = STAIRS_IN_WALL[code];
@@ -506,7 +533,7 @@ export function drawFrlgInteriorDecor(ctx, textures, interior) {
     const px = Math.max(0, Math.min(roomW - st.w, x * S + Math.round((S - st.w) / 2)));
     blit(ctx, textures, st, px, y * S + 2 - st.h, st.w, st.h);
   }));
-  for (const { kind, x, y } of interior.decor ?? []) {
+  for (const { kind, x, y, dx = 0, dy = 0 } of interior.decor ?? []) {
     const d = FRLG_DECOR[kind];
     if (d.sprite) {
       // Posé en bas de son emprise ; contre le mur du fond (rangée juste sous le mur), il remonte au besoin
@@ -514,7 +541,8 @@ export function drawFrlgInteriorDecor(ctx, textures, interior) {
       const px = x * S + Math.round((d.w * S - d.pw) / 2);
       const bottomAligned = (y + d.h) * S - d.ph;
       const againstWall = interior.grid[y - 1]?.[x] === 'X';
-      blit(ctx, textures, d.sprite, px, againstWall ? Math.min(y * S - 4, bottomAligned) : bottomAligned, d.pw, d.ph);
+      // `dx`, `dy` : décalage en pixels (ex. petit carton posé sur un bureau).
+      blit(ctx, textures, d.sprite, px + dx, (againstWall ? Math.min(y * S - 4, bottomAligned) : bottomAligned) + dy, d.pw, d.ph);
     } else blit(ctx, textures, d.tile, x * S, y * S, d.w * S, d.h * S);
   }
   interior.grid.forEach((row, y) => row.forEach((code, x) => {

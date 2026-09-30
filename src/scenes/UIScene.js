@@ -54,6 +54,8 @@ export class UIScene extends Phaser.Scene {
 
   create() {
     this.dialog = new DialogBox(this);
+    // Rideau noir des scénettes (écran noir du réveil…), sous la boîte de dialogue.
+    this.curtain = this.add.rectangle(0, 0, 8000, 8000, 0x000000).setOrigin(0).setDepth(95).setAlpha(0);
     this.menu = new StartMenu(this, this.dialog);          // Échap
     if (isTouchDevice()) this.touch = new TouchControls(this);
 

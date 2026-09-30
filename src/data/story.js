@@ -1,6 +1,12 @@
 // Drapeaux d'histoire utilisés dans les données (évite les fautes de frappe).
 export const FLAGS = {
-  departFortDeFrance: 'depart-fort-de-france', // parti en bateau
+  reveilFortDeFrance: 'reveil-fort-de-france', // Fort-de-France : réveil dans la chambre joué
+  journeeLancee: 'journee-lancee',              // Maman a lancé la journée au salon
+  papaFait: 'papa-fait',                        // tri des cannes avec Papa terminé (le pêcheur se déplace)
+  manonDemande: 'manon-demande',                // Manon t'a lancé à la recherche du coquillage
+  canneMontree: 'canne-montree',                // le pêcheur t'a montré sa canne cassée
+  canneOfferte: 'canne-offerte',                // canne de la caisse « À DONNER » offerte au pêcheur
+  departFortDeFrance: 'depart-fort-de-france', // parti en ferry
   coquillageTrouve: 'coquillage-trouve',        // Fort-de-France : coquillage caché dans les hautes herbes
   familleSuit: 'famille-suit',                  // Papa et Manon suivent le joueur
   familleArrivee: 'famille-arrivee',            // arrivés à l'hôpital de Saint-Ay
@@ -63,9 +69,17 @@ export const TOULON_QUESTS = {
   ifSouvenirs: ['souvenir-leo', 'souvenir-theo'],
 };
 
+// Qualités reçues de la famille à Fort-de-France (comptées comme des souvenirs).
+export const QUALITIES = {
+  joie: { id: 'souvenir-maman', name: 'Joie de vivre de Maman' },
+  pragmatisme: { id: 'souvenir-papa', name: 'Pragmatisme de Papa' },
+  complicite: { id: 'souvenir-manon', name: 'Complicité de Manon' },
+};
+
 // Objets remis au joueur (voir systems/items.js).
 export const ITEMS = {
   coquillageNacre: { id: 'coquillage-nacre', name: 'Coquillage nacré' },
+  canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },
   clesAppartement: { id: 'cles-appartement', name: "Clés de l'appartement" },
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },

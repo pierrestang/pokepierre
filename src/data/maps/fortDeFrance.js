@@ -1,15 +1,8 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
+import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY } from '../fortDeFranceStory.js';
 
-// Le ferry amarré au ponton : départ vers Saint-Ay une fois les souvenirs de la famille réunis.
-const BOAT = {
-  requiresSouvenirs: ['souvenir-maman', 'souvenir-papa', 'souvenir-manon'],
-  dialogue: ["Tu n'es pas encore prêt à partir."],
-  readyDialogue: ['Tu as réuni les souvenirs de ta famille.', 'Tu embarques sur le ferry pour Saint-Ay !'],
-  setFlags: [FLAGS.departFortDeFrance],
-  // Arrivée : au bord de l'étang de Saint-Ay, à côté de son bateau.
-  warp: { map: 'saintAy', x: 11, y: 17, facing: 'left', ferry: true },   // traversée en ferry
-};
+// Le ferry amarré au ponton : départ vers Saint-Ay une fois tout réuni (voir data/fortDeFranceStory.js).
 const BOAT_POS = { x: 17, y: 27, w: 4, h: 2 };   // une case d'eau entre le ponton et le ferry
 
 // Fort-de-France — île ronde de départ, bordée de plages, 34 x 33 cases : maison familiale et son jardin fleuri en
@@ -39,11 +32,11 @@ export const fortDeFranceMap = {
     'wwss..TT.f....ççç...ƀ....RRRR.ssww', // 11
     'wwss..ĥĥĥƚ..S.ççç...TT...RRRR.ssww', // 12
     'wwss.ĥĥĥĥ.....ççç...TT...WWWW.ssww', // 13
-    'wøss.ɱɱɱɱ..f..ççç.ŦŦŦ....WDWW.ssww', // 14
+    'wøss.ɱɱɱɱ..f..ççç........WDWW.ssww', // 14
     'wwss.ɱɱɱɱ.....ççç.ŦŦŦf.....ƫƫ.ssww', // 15
     'wwss.ɱɲɲɱ..ƨ..ççç.ŦŦŦ...ƀƒ.ƫƫ.ssww', // 16
     'wwss.ɱɲɲɱ.....ççç.ŦŦŦĥĥĥĥĥ.ƨ..ssww', // 17
-    'wwwss.......ƚ.ççç....ĥĥĥĥƫƫ..sswww', // 18
+    'wwwss.......ƚ.ççç.ŦŦŦĥĥĥĥƫƫ..sswww', // 18
     'wwwsss...ƫƫ...ççç....ĥĥĥĥƫƫ..sswww', // 19
     'wwwwsss..ƫƫf..ççç.f.ĥĥĥĥĥĥ..sswwøw', // 20
     'wwwwwsss..ƫƫƨ.ççç.ƨƫƫĥĥĥĥ.ssswwwww', // 21
@@ -78,8 +71,10 @@ export const fortDeFranceMap = {
     ...Array.from({ length: 8 }, (_, i) => ({
       x: 5 + (i % 4), y: 14 + Math.floor(i / 4),
       dialogue: [
-        'Des statues de pierre blanche, tête baissée, regardent la mer.',
-        "Mémorial de l'Anse Caffard : en souvenir des captifs du naufrage de 1830, au large du Diamant.",
+        'Des statues de pierre blanche, tête baissée, regardent vers le large.',
+        "Mémorial de l'Anse Caffard. En avril 1830, un navire négrier clandestin fit naufrage au large du Diamant.",
+        'Des captifs africains y périrent, enchaînés dans la cale.',
+        "Ces statues, tournées vers le golfe de Guinée, honorent leur mémoire et celle de toutes les victimes de l'esclavage.",
       ],
     })),
     // Chaque case du bateau réagit quand on lui fait face (Entrée / Espace), et aussi l'eau entre le ponton
@@ -87,7 +82,7 @@ export const fortDeFranceMap = {
     ...Array.from({ length: (BOAT_POS.w + 1) * BOAT_POS.h }, (_, i) => ({
       x: BOAT_POS.x - 1 + (i % (BOAT_POS.w + 1)),
       y: BOAT_POS.y + Math.floor(i / (BOAT_POS.w + 1)),
-      ...BOAT,
+      script: FERRY,
     })),
   ],
   npcs: [
@@ -106,15 +101,23 @@ export const fortDeFranceMap = {
         'Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ?',
       ],
     },
+    // Le pêcheur : au bout du ponton, puis devant le ferry avec sa canne cassée une fois la scène de Papa
+    // terminée (voir data/fortDeFranceStory.js).
     {
-      id: 'pecheur', name: 'Pêcheur', x: 16, y: 25, facing: 'down', still: true,
-      dialogue: ["Ça mord bien ce matin ! Tu vois ce ferry ? C'est lui qui t'emmènera à Saint-Ay.", 'Mais pas avant d\'avoir dit au revoir à ta famille, hein !'],
+      id: 'pecheur', name: 'Pêcheur', x: 15, y: 29, facing: 'down', still: true,
+      unlessFlags: [FLAGS.papaFait],
+      script: FISHER_AT_PIER_END,
+    },
+    {
+      id: 'pecheur', name: 'Pêcheur', x: 15, y: 27, facing: 'up', still: true,
+      ifFlags: [FLAGS.papaFait],
+      script: FISHER_AT_FERRY,
     },
   ],
-  // Coquillage caché dans les hautes herbes, trouvé une seule fois.
+  // Coquillage caché par Manon dans les hautes herbes (quête de Manon), trouvé une seule fois.
   triggers: [
     {
-      x: 7, y: 12, unlessFlags: [FLAGS.coquillageTrouve], setFlags: [FLAGS.coquillageTrouve],
+      x: 7, y: 12, ifFlags: [FLAGS.manonDemande], unlessFlags: [FLAGS.coquillageTrouve], setFlags: [FLAGS.coquillageTrouve],
       readyDialogue: ['Quelque chose brille entre les herbes…'], item: ITEMS.coquillageNacre,
     },
   ],

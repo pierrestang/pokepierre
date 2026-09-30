@@ -173,7 +173,8 @@ export class TitleScene extends Phaser.Scene {
 
   startNewGame() {
     eraseSave();
-    this.launchGame('Overworld', { mapId: START_MAP });
+    // Réveil dans la chambre, à l'étage de la maison de Fort-de-France (voir l'événement de ffHouseUp).
+    this.launchGame('Interior', { interior: 'ffHouseUp', fromMap: START_MAP });
   }
 
   continueGame() {

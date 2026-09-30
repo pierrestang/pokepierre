@@ -219,11 +219,41 @@ export class MapScene extends Phaser.Scene {
 
   async runEnterEvents() {
     const events = (this.map.events ?? []).filter((e) => e.on === 'enter' && meetsConditions(e));
-    for (const event of events) await this.runSteps(event.steps);
+    for (const event of events) await this.runScript(event.steps);
   }
 
+  // Scénette pendant laquelle le joueur ne bouge pas et ne peut rien lancer d'autre.
+  async runScript(steps) {
+    this.scripting = true;
+    this.player.frozen = true;
+    await this.runSteps(steps);
+    this.scripting = false;
+    if (!this.transitioning) this.player.frozen = false;
+  }
+
+  // Scénette : liste d'étapes jouées dans l'ordre. Chaque étape peut avoir des conditions (ifFlags,
+  // unlessFlags, ifItems, unlessItems, ifSouvenirs, unlessSouvenirs), vérifiées au moment où elle est jouée.
+  //   { say: [pages], speaker? }         texte (avec le nom de la personne qui parle)
+  //   { talk: npcId }                    le PNJ se tourne vers le joueur et dit son dialogue
+  //   { setFlag } / { setFlags: [] }     drapeaux d'histoire (les personnages sont mis à jour)
+  //   { quality: { id, name } }          qualité reçue (compte comme un souvenir) : « Tu as reçu : X. »
+  //   { give: item, text? }              objet reçu (message `text`, sinon « Tu as reçu : X. »)
+  //   { take: itemId }                   objet donné (quitte l'inventaire)
+  //   { black: true | false }            écran noir immédiat / retour de l'image en fondu
+  //   { sea: true | false }              bruit des vagues
+  //   { face: { npcId | 'player': direction } }
+  //   { dance: npcId }                   le PNJ et Pierre dansent un instant, notes de musique
+  //   { choose: question, speaker?, choices: [{ label, steps }] }
+  //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
+  // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
   async runSteps(steps) {
     for (const step of steps) {
+      if (!meetsConditions(step)) continue;
+      if (step.black !== undefined) await this.setCurtain(step.black);
+      if (step.sea !== undefined) setSeaAmbience(step.sea);
+      if (step.face) this.faceActors(step.face);
+      if (step.dance) await this.dance(step.dance);
+      if (step.wait) await this.wait(step.wait);
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
       if (step.talk) {
         const npc = this.npcs.find((n) => n.data.id === step.talk);
@@ -232,11 +262,86 @@ export class MapScene extends Phaser.Scene {
           await this.talkTo(npc.data);
         }
       }
-      if (step.setFlag) {
-        flags.add(step.setFlag);
+      if (step.choose) {
+        const index = await this.dialog.choose(step.choose, step.choices.map((c) => c.label), { speaker: step.speaker });
+        if (await this.runSteps(step.choices[index]?.steps ?? [])) return true;
+      }
+      if (step.give && items.add(step.give)) {
+        sfx('item');
+        await this.dialog.open([step.text ?? `Tu as reçu : ${step.give.name}.`]);
+      }
+      if (step.take) items.remove(step.take);
+      if (step.quality && souvenirs.add(step.quality)) {
+        sfx('item');
+        await this.dialog.open([`Tu as reçu : ${step.quality.name}.`]);
+      }
+      const raised = [step.setFlag, ...(step.setFlags ?? [])].filter(Boolean);
+      if (raised.length) {
+        raised.forEach(flags.add);
         this.refreshActors();
       }
+      if (step.travel) {
+        this.travel(step.travel);
+        return true;
+      }
+      if (step.end) return true;
     }
+    return false;
+  }
+
+  wait(ms) {
+    return new Promise((resolve) => this.time.delayedCall(ms, resolve));
+  }
+
+  // Rideau noir de l'interface (sous les dialogues) : posé d'un coup, levé en fondu.
+  setCurtain(on) {
+    const curtain = this.scene.get('UI').curtain;
+    if (on) {
+      curtain.setAlpha(1);
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+      this.tweens.add({ targets: curtain, alpha: 0, duration: 900, onComplete: resolve });
+    });
+  }
+
+  actorSprite(id) {
+    if (id === 'player') return this.player.sprite;
+    return this.npcs.find((n) => n.data.id === id)?.sprite;
+  }
+
+  faceActors(facing) {
+    for (const [id, dir] of Object.entries(facing)) this.actorSprite(id)?.setFacing(dir);
+  }
+
+  // Moment léger : le PNJ et Pierre tournent sur eux-mêmes en rythme, des notes s'envolent au-dessus.
+  async dance(id) {
+    const dancers = [this.actorSprite(id), this.player.sprite].filter(Boolean);
+    if (!this.textures.exists('music-note')) {
+      const g = this.make.graphics({ x: 0, y: 0 }, false);
+      g.fillStyle(0x303048, 1);
+      g.fillRect(4, 0, 1, 6);
+      g.fillRect(5, 0, 2, 1);
+      g.fillRect(6, 1, 1, 1);
+      g.fillRect(2, 5, 3, 2);
+      g.fillRect(1, 6, 1, 1);
+      g.generateTexture('music-note', 7, 8);
+      g.destroy();
+    }
+    const turns = ['down', 'left', 'up', 'right'];
+    for (let beat = 0; beat < 12; beat++) {
+      dancers.forEach((d, i) => d.setFacing(turns[(beat + i * 2) % 4]));
+      if (beat % 2 === 0) {
+        sfx(beat % 4 === 0 ? 'select' : 'blip');
+        const d = dancers[(beat / 2) % dancers.length];
+        const note = this.add.image(d.x + Phaser.Math.Between(-6, 6), d.y - 20, 'music-note').setDepth(50);
+        this.tweens.add({ targets: note, y: note.y - 14, alpha: 0, duration: 900, onComplete: () => note.destroy() });
+      }
+      await this.wait(220);
+    }
+    dancers.forEach((d) => d.setFacing('down'));
+    this.faceActors({ [id]: this.directionTo(this.npcs.find((n) => n.data.id === id)?.data ?? this.player, this.player) });
+    this.player.sprite.setFacing(this.player.facing);
   }
 
   // Direction principale de `from` vers `to` (positions en cases).
@@ -252,7 +357,7 @@ export class MapScene extends Phaser.Scene {
     // Ignore la touche qui vient de fermer un dialogue.
     const menu = this.scene.get('UI')?.menu;
     if (dialog.isOpen || this.menuOpen || e.timeStamp <= dialog.closedAt || e.timeStamp <= (menu?.closedAt ?? 0)) return;
-    if (this.transitioning || this.player.moving) return;
+    if (this.transitioning || this.scripting || this.player.moving) return;
 
     const { x, y } = this.player.facingTile();
     const prop = this.propAt(x, y);
@@ -273,7 +378,9 @@ export class MapScene extends Phaser.Scene {
   }
 
   // Parler à un PNJ / examiner un objet, puis poser sa question éventuelle (`ask`).
+  // Un PNJ ou un objet avec `script` joue sa scénette (voir runSteps) au lieu du dialogue simple.
   async talkTo(target) {
+    if (target.script) return this.runScript(target.script);
     if (await interact(this.dialog, target)) this.refreshActors();
     if (target.ask) await this.runAsk(target.ask, target.name);
   }
@@ -336,9 +443,10 @@ export class MapScene extends Phaser.Scene {
   // Voyage : { map, x, y, facing } vers une carte extérieure, ou { interior, x, y, facing }
   // vers un autre intérieur de la même ville (ex. étages d'un immeuble par l'ascenseur).
   // `ferry: true` : on passe d'abord par la traversée en ferry (voir FerryScene).
-  travel({ map, interior, ferry, ...spawn }) {
+  // `deck: true` : la traversée commence par la scène sur le pont du ferry (départ de Fort-de-France).
+  travel({ map, interior, ferry, deck, ...spawn }) {
     if (interior) this.goTo('Interior', { interior, fromMap: this.fromMap ?? this.map.id, spawn });
-    else if (ferry) this.goTo('Ferry', { next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
+    else if (ferry) this.goTo('Ferry', { deck, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
     else this.goTo('Overworld', { mapId: map, spawn });
   }
 

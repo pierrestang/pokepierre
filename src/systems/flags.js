@@ -40,12 +40,17 @@ export const flags = {
 // Conditions d'apparition communes (PNJ, suiveurs, événements, portes, passages) :
 //   ifFlags : tous doivent être levés ; unlessFlags : aucun ne doit l'être ;
 //   ifItems : le joueur doit posséder tous ces objets ;
-//   ifSouvenirs : le joueur doit avoir tous ces souvenirs.
-export function meetsConditions({ ifFlags = [], unlessFlags = [], ifItems = [], ifSouvenirs = [] } = {}) {
+//   ifSouvenirs : le joueur doit avoir tous ces souvenirs ;
+//   unlessItems / unlessSouvenirs : il ne doit en avoir aucun.
+export function meetsConditions({
+  ifFlags = [], unlessFlags = [], ifItems = [], unlessItems = [], ifSouvenirs = [], unlessSouvenirs = [],
+} = {}) {
   return (
     ifFlags.every(flags.has) &&
     !unlessFlags.some(flags.has) &&
     ifItems.every(items.has) &&
-    ifSouvenirs.every(souvenirs.has)
+    !unlessItems.some(items.has) &&
+    ifSouvenirs.every(souvenirs.has) &&
+    !unlessSouvenirs.some(souvenirs.has)
   );
 }
