@@ -233,28 +233,44 @@ export const interiors = {
     ],
   },
 
-  // Saint-Ay — maison de gauche : Papa et Manon t'attendent et te demandent de les suivre.
+  // Saint-Ay — la chaumière de la famille, façon Rouge Feu : on vient d'emménager, cartons partout.
+  // Papa et Manon t'attendent et te demandent de les suivre.
   playerHouse: {
-    name: 'Maison de gauche',
+    name: 'Maison de la famille',
+    frlg: true,
     grid: parseGrid([
       'XXXXXXXXXX',
-      'XmmoooommX',
-      'XooooooooX',
-      'XooommoooX',
-      'XooommoooX',
-      'XooooooooX',
-      'XoooEEoooX',
       'XXXXXXXXXX',
+      'mmmooommom',
+      'oooooooooo',
+      'ooommmmooo',
+      'moommmmoom',
+      'oooooooooo',
+      'ooooEEoooo',
     ]),
-    spawn: { x: 4, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'kitchen', x: 0, y: 1 },
+      { kind: 'fridge', x: 2, y: 1 },
+      { kind: 'window', x: 4, y: 0 },
+      { kind: 'carton', x: 6, y: 2 },
+      { kind: 'carton', x: 7, y: 2 },
+      { kind: 'pottedPlant', x: 9, y: 2 },
+      { kind: 'table', x: 3, y: 4 },
+      { kind: 'carton', x: 0, y: 5 },
+      { kind: 'carton', x: 9, y: 5 },
+    ],
+    spawn: { x: 4, y: 6, facing: 'up' },
+    objects: [
+      ...[[6, 2], [7, 2], [0, 5], [9, 5]].map(([x, y]) => ({ x, y, dialogue: ['Des cartons de Fort-de-France, pas encore ouverts.'] })),
+    ],
     npcs: [
       {
-        id: 'papa', name: 'Papa', x: 3, y: 4, facing: 'down', color: 0x3f6fd8,
+        id: 'papa', name: 'Papa', x: 2, y: 3, facing: 'down', color: 0x3f6fd8,
         unlessFlags: [FLAGS.familleSuit],
         dialogue: ['[Papa - texte provisoire] Suis-nous !'],
       },
       {
-        id: 'manon', name: 'Manon', x: 6, y: 4, facing: 'down', color: 0xf0a030,
+        id: 'manon', name: 'Manon', x: 8, y: 3, facing: 'down', color: 0xf0a030,
         unlessFlags: [FLAGS.familleSuit],
         dialogue: ['[Manon - texte provisoire] Suis-nous !'],
       },
@@ -273,42 +289,53 @@ export const interiors = {
     ],
   },
 
-  // Saint-Ay — maison 2 : Felix et sa famille, qui viennent d'emménager.
+  // Saint-Ay — la maison au toit d'ardoise : Felix et sa famille, qui viennent d'emménager.
   felixHouse: {
     name: 'Maison de Felix',
+    frlg: true,
     grid: parseGrid([
       'XXXXXXXXXX',
-      'XmooooommX',
-      'XmoooooooX',
-      'XooooooooX',
-      'XoommmoooX',
-      'XooooooooX',
-      'XoooEEoooX',
       'XXXXXXXXXX',
+      'mmoommoomm',
+      'oooooooooo',
+      'ooommmmooo',
+      'moommmmooo',
+      'mooooooooo',
+      'ooooEEoooo',
     ]),
-    spawn: { x: 5, y: 5, facing: 'up' },
+    decor: [
+      { kind: 'blueShelf', x: 0, y: 1 },
+      { kind: 'glassCabinet', x: 1, y: 1 },
+      { kind: 'crtTv', x: 4, y: 2 },
+      { kind: 'console', x: 5, y: 2 },
+      { kind: 'window', x: 4, y: 0 },
+      { kind: 'bookshelf', x: 8, y: 0 },
+      { kind: 'table', x: 3, y: 4 },
+      { kind: 'plant', x: 0, y: 5 },
+    ],
+    spawn: { x: 5, y: 6, facing: 'up' },
     npcs: [
       {
-        id: 'felix-maison', name: 'Felix', x: 2, y: 5, facing: 'right', color: 0x9060d0,
+        id: 'felix-maison', name: 'Felix', x: 2, y: 6, facing: 'right', color: 0x9060d0,
         ifFlags: [FLAGS.maisonFelixVisitee],
         dialogue: ['[Felix - texte provisoire] Bienvenue chez nous ! Va dire bonjour à tout le monde.'],
       },
       {
-        id: 'val', name: 'Val', x: 2, y: 2, facing: 'right', color: 0x5cb85c,
+        id: 'val', name: 'Val', x: 2, y: 3, facing: 'right', color: 0x5cb85c,
         ifFlags: [FLAGS.felixInvite],
         dialogue: ['[Val - texte provisoire] Bonjour ! Ceci est le premier dialogue de Val.'],
         after: ['[Val - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-val', name: 'Souvenir de Val' },
       },
       {
-        id: 'joshua', name: 'Joshua', x: 6, y: 2, facing: 'down', color: 0x20a0c0,
+        id: 'joshua', name: 'Joshua', x: 6, y: 3, facing: 'down', color: 0x20a0c0,
         ifFlags: [FLAGS.felixInvite],
         dialogue: ['[Joshua - texte provisoire] Salut ! Ceci est le premier dialogue de Joshua.'],
         after: ['[Joshua - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-joshua', name: 'Souvenir de Joshua' },
       },
       {
-        id: 'yanis', name: 'Yanis', x: 7, y: 4, facing: 'left', color: 0xc0b040,
+        id: 'yanis', name: 'Yanis', x: 8, y: 4, facing: 'left', color: 0xc0b040,
         ifFlags: [FLAGS.felixInvite],
         dialogue: ['[Yanis - texte provisoire] Coucou ! Ceci est le premier dialogue de Yanis.'],
         after: ['[Yanis - texte provisoire] Dialogue une fois le souvenir obtenu.'],
@@ -326,31 +353,43 @@ export const interiors = {
   },
 
   // Saint-Ay — l'hôpital (ancien labo). Maman et Fanny y sont ; Papa et Manon arrivent avec toi.
+  // Façon Rouge Feu : trois lits contre le mur, ordinateur, accueil (table) au milieu, plantes.
   hospital: {
     name: 'Hôpital',
+    frlg: true,
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
-      'XLoLoLooLoLoLX', // lits
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooommmmmmoooX', // accueil
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooooooooooooX',
-      'XooooooEEooooX',
       'XXXXXXXXXXXXXX',
+      'mmommommoooomm', // lits, ordinateur
+      'mmommommoooooo',
+      'oooooooooooooo',
+      'ooooommmmooooo', // accueil
+      'mooommmmooooom',
+      'moooooooooooom',
+      'ooooooEEoooooo',
     ]),
-    spawn: { x: 7, y: 8, facing: 'up' },
+    decor: [
+      { kind: 'bed', x: 0, y: 2 },
+      { kind: 'bed', x: 3, y: 2 },
+      { kind: 'bed', x: 6, y: 2 },
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'notice', x: 10, y: 0 },
+      { kind: 'computer', x: 12, y: 1 },
+      { kind: 'pottedPlant', x: 13, y: 2 },
+      { kind: 'table', x: 5, y: 5 },
+      { kind: 'plant', x: 0, y: 6 },
+      { kind: 'plant', x: 13, y: 6 },
+    ],
+    spawn: { x: 7, y: 7, facing: 'up' },
     npcs: [
       {
-        id: 'maman-hopital', name: 'Maman', x: 3, y: 2, facing: 'down', color: 0xe86fa0,
+        id: 'maman-hopital', name: 'Maman', x: 2, y: 4, facing: 'up', color: 0xe86fa0,
         ifFlags: [FLAGS.familleArrivee],
         unlessFlags: [FLAGS.arriveeMontepilloy],
         dialogue: ['[Maman - texte provisoire] Te voilà ! Je suis contente de te voir.'],
       },
       {
-        id: 'fanny', name: 'Fanny', x: 10, y: 1, facing: 'down', color: 0x40b0a0, // dans un lit
+        id: 'fanny', name: 'Fanny', x: 7, y: 4, facing: 'up', color: 0x40b0a0, // au pied d'un lit
         ifFlags: [FLAGS.familleArrivee],
         dialogue: [
           '[Fanny - texte provisoire] Bonjour ! Ceci est le premier dialogue de Fanny.',
@@ -360,13 +399,13 @@ export const interiors = {
         souvenir: { id: 'souvenir-fanny', name: 'Souvenir de Fanny' },
       },
       {
-        id: 'papa-hopital', name: 'Papa', x: 6, y: 7, facing: 'right', color: 0x3f6fd8,
+        id: 'papa-hopital', name: 'Papa', x: 4, y: 7, facing: 'right', color: 0x3f6fd8,
         ifFlags: [FLAGS.familleArrivee],
         unlessFlags: [FLAGS.arriveeMontepilloy],
         dialogue: ['[Papa - texte provisoire] Va parler à Fanny.'],
       },
       {
-        id: 'manon-hopital', name: 'Manon', x: 9, y: 7, facing: 'left', color: 0xf0a030,
+        id: 'manon-hopital', name: 'Manon', x: 10, y: 7, facing: 'left', color: 0xf0a030,
         ifFlags: [FLAGS.familleArrivee],
         unlessFlags: [FLAGS.arriveeMontepilloy],
         dialogue: ['[Manon - texte provisoire] Maman va mieux ?'],
