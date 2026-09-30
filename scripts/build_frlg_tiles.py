@@ -16,6 +16,7 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   emerald-trees.png    deux arbres tropicaux d'Émeraude, sur sable puis sur herbe (voir tropical_trees) ;
   rs-objects.png       meubles de Rubis/Saphir (planche d'objets), fond blanc extérieur rendu transparent ;
   rs-berries.png       quatre plantes à baies fleuries (voir berry_plants) ;
+  frlg-fields.png      champs de la campagne : blé (hautes herbes dorées) puis terre labourée à pousses (voir fields) ;
   rs-stairs.png        escaliers encastrés dans le mur de la maison de Bourg-en-Vol, qui monte puis qui descend
                        (voir rs_stairs) ;
   frlg-props.png     planche de Hoeloe (arbre isolé, rocher, mer animée…), fond violet rendu transparent ;
@@ -341,6 +342,34 @@ def rs_stairs():
     return out
 
 
+# Blé : les hautes herbes de Rouge Feu (colonne 7, rangée 0), vertes passées au doré.
+WHEAT_COLORS = {
+    (112, 200, 160): (232, 200, 96), (160, 224, 192): (248, 232, 152), (64, 176, 136): (208, 160, 64),
+    (56, 144, 48): (184, 128, 40), (56, 88, 16): (120, 80, 24), (24, 160, 104): (168, 112, 40),
+}
+
+
+def fields(outdoor):
+    out = Image.new('RGBA', (32, 16), (0, 0, 0, 0))
+    wheat = outdoor.crop((1 + 17 * 7, 1, 1 + 17 * 7 + 16, 17)).convert('RGBA')
+    wheat.putdata([WHEAT_COLORS.get(p[:3], p[:3]) + (255,) for p in wheat.getdata()])
+    out.paste(wheat, (0, 0))
+    # Terre labourée : sillons horizontaux (crête claire, terre, sillon sombre) et jeunes pousses sur les crêtes,
+    # décalées d'un sillon à l'autre.
+    ridge, soil, furrow = (200, 144, 88), (168, 112, 64), (112, 72, 40)
+    leaf, leaf_light = (56, 144, 48), (112, 200, 96)
+    px = out.load()
+    for y in range(16):
+        for x in range(16):
+            px[16 + x, y] = (ridge, soil, soil, furrow)[y % 4] + (255,)
+    for row, y in enumerate((1, 5, 9, 13)):
+        for x in ((3, 11) if row % 2 == 0 else (7, 15)):
+            px[16 + x, y - 1] = leaf_light + (255,)
+            for dx in (-1, 0, 1):
+                px[16 + (x + dx) % 16, y] = leaf + (255,)
+    return out
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     rgba = lambda name: Image.open(SRC / name).convert('RGBA')
@@ -362,6 +391,7 @@ def main():
     gba_palette(tropical_trees(emerald)).save(OUT / 'emerald-trees.png')
     gba_palette(berry_plants()).save(OUT / 'rs-berries.png')
     gba_palette(rs_stairs()).save(OUT / 'rs-stairs.png')
+    gba_palette(fields(outdoor)).save(OUT / 'frlg-fields.png')
     gba_palette(center_items(rgba('maps__towns_buildings_etc._-three_island.png'))).save(OUT / 'frlg-center-items.png')
     seagallop = rgba('maps-seagallop_ferry.png')
     gba_palette(seagallop.crop((288, 24, 544, 216))).save(OUT / 'frlg-travel-sea.png')

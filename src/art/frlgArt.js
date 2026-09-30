@@ -30,6 +30,7 @@ export const FRLG_SHEETS = {
   tropical: 'emerald-trees',
   berries: 'rs-berries',
   rsStairs: 'rs-stairs',
+  fields: 'frlg-fields',
   travelSea: 'frlg-travel-sea',
   ferryWake: 'frlg-ferry-wake',
   townMap: 'frlg-townmap',
@@ -68,6 +69,22 @@ const FLOWERS = O(7, 2);
 const BUSH = O(7, 12);
 const SMALL_TREE = O(8, 0);    // petit arbre (celui qu'on coupe dans les jeux Pokémon)
 const SIGN = O(23, 3);
+// Champs de la campagne (frlg-fields.png) : blé doré, terre labourée à pousses.
+const WHEAT = { sheet: FRLG_SHEETS.fields, sx: 0, sy: 0 };
+const SOIL = { sheet: FRLG_SHEETS.fields, sx: 16, sy: 0 };
+// Étang bordé de terre (planche d'extérieur, bloc 3 x 3) : rectangulaire, sans coins intérieurs.
+const POND = {
+  tl: O(10, 0), top: O(11, 0), tr: O(12, 0),
+  left: O(10, 1), fill: O(11, 1), right: O(12, 1),
+  bl: O(10, 2), bottom: O(11, 2), br: O(12, 2),
+};
+POND.innerTL = POND.innerTR = POND.innerBL = POND.innerBR = POND.fill;
+// Barrière blanche du Bourg Palette (poteaux et lisses) : coins, côtés verticaux, lisses horizontales.
+const FENCE = {
+  tl: O(6, 11), h: O(7, 11), tr: O(8, 11),
+  left: O(6, 12), right: O(8, 12),
+  bl: O(6, 13), br: O(8, 13),
+};
 const BEACH_ROCK = { sheet: FRLG_SHEETS.beachrock, sx: 0, sy: 0 };   // rocher gris sans écume, fond transparent
 // Barrière en rondins debout de la planche d'extérieur : deux rondins par case, rangées comme côtés.
 const LOGS = O(7, 17);
@@ -102,13 +119,19 @@ export const FRLG_TREE = { sheet: FRLG_SHEETS.props, sx: 95, sy: 33, w: 32, h: 4
 export const FRLG_BUILDINGS = {
   house: { sx: 208, sy: 22, w: 80, h: 72, footH: 4 },        // maison du Bourg Palette, porte en 2e colonne
   fishingHut: { sx: 507, sy: 25, w: 64, h: 63, footH: 4 },   // petite maison au toit orange
+  // Saint-Ay : maisons de village (porte en 2e colonne, sauf mention).
+  cottage: { sx: 24, sy: 22, w: 80, h: 64, footH: 4 },       // toit vert en chaume, jardinières fleuries
+  greenHouse: { sx: 114, sy: 22, w: 80, h: 56, footH: 4 },   // petite maison au toit vert
+  slateHouse: { sx: 300, sy: 24, w: 80, h: 55, footH: 4 },   // toit d'ardoise, porte rouge
+  blueHouse: { sx: 395, sy: 24, w: 96, h: 56, footH: 4 },    // toit bleu, 6 cases, porte en 3e colonne
+  clinic: { sx: 421, sy: 343, w: 80, h: 72, footH: 4 },      // toit orange (pension), porte au milieu
 };
 
 // ---------- Sol ----------
 
 // Cases posées sur l'herbe (le sable voisin reçoit un liseré d'herbe) : herbe, fleurs, buissons, arbres,
 // barrières, panneaux, plateau du mémorial…
-const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F']);
+const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F', 'ʬ', 'ʭ']);
 const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ', 'χ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
@@ -125,8 +148,9 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
   if (SEA_CODES.has(code)) return 'sea';
   if (code === 'ç') return 'path';
   if (code === '=') return 'pier';
+  if (code === '~') return 'pond';
   if (!ON_NEIGHBOURS.has(code)) return null;
-  if (code === 'B') return boatOnPond(x, y, at) ? null : 'sea';
+  if (code === 'B') return boatOnPond(x, y, at) ? 'pond' : 'sea';
   const counts = {};
   for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
     const n = at(x + dx, y + dy);
@@ -214,6 +238,8 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
     } else {
       blit(ctx, textures, borderTile(SAND_ON_GRASS, isGrass), px, py);
     }
+  } else if (ground === 'pond') {
+    blit(ctx, textures, borderTile(POND, (dx, dy) => groundAt(dx, dy) !== 'pond'), px, py);
   } else if (ground === 'path') {
     // Chemin de sable : continue sous les bâtiments, sur le ponton et dans le sable de la plage.
     const other = (dx, dy) => {
@@ -226,7 +252,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
 }
 
 // Codes entièrement dessinés par les couches Rouge Feu (le dessin procédural les ignore).
-const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ']);
+const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ', '~', 'F', 'ʬ', 'ʭ']);
 
 export function isFrlgOnly(code) {
   return FRLG_ONLY.has(code);
@@ -255,6 +281,18 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
   }
   switch (code) {
     case 'ĥ': return put(TALL_GRASS);
+    case 'ʬ': return put(WHEAT);
+    case 'ʭ': return put(SOIL);
+    case 'F': {
+      const f = (dx, dy) => at(x + dx, y + dy) === 'F';
+      const up = f(0, -1), down = f(0, 1), left = f(-1, 0), right = f(1, 0);
+      // Côté vertical : aligné sur les coins (côté est d'un enclos si l'intérieur est à gauche).
+      const side = ['ʬ', 'ʭ'].includes(at(x - 1, y)) ? FENCE.right : FENCE.left;
+      if (down && !up) return put(right ? FENCE.tl : left ? FENCE.tr : side);
+      if (up && !down) return put(right ? FENCE.bl : left ? FENCE.br : side);
+      if (up && down) return put(side);
+      return put(FENCE.h);
+    }
     case 'f': return put(FLOWERS);
     case 'ƀ': return put(BUSH);
     case 'ƚ': return put(SMALL_TREE);

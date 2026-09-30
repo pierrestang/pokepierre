@@ -2296,6 +2296,7 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case '=': return pier(g, px, py, x, y, at);
     case 'Y': return palm(g, px, py, x, y, at);
     case 'B': // le bateau est dessiné par-dessus (buildingArt) ; eau d'étang ou de mer dessous
+      if (groundProvided) return undefined;                           // eau Rouge Feu déjà posée
       return [at(x - 1, y), at(x + 1, y), at(x, y - 1), at(x, y + 1)].includes('~')
         ? water(g, px, py, x, y, at)
         : sea(g, px, py, x, y, at);

@@ -182,7 +182,7 @@ export class TitleScene extends Phaser.Scene {
     if (saved) return this.launchGame(saved.scene, { ...saved.data, spawn: saved.spawn });
     // Progression sans position enregistrée : reprise à l'arrivée de la dernière ville atteinte.
     if (flags.has(FLAGS.departFortDeFrance)) {
-      return this.launchGame('Overworld', { mapId: 'saintAy', spawn: { x: 11, y: 17, facing: 'left' } });
+      return this.launchGame('Overworld', { mapId: 'saintAy', spawn: { x: 11, y: 24, facing: 'left' } });
     }
     this.launchGame('Overworld', { mapId: START_MAP });
   }

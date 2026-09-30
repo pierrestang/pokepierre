@@ -91,6 +91,8 @@ export const TILES = {
   'ψ': { name: 'cannes à pêche', color: 0x8c5c30, solid: true },
   'χ': { name: 'caisse de poissons', color: 0x9c6c3c, solid: true },
   'ʁ': { name: 'caisse À DONNER', color: 0x9c6c3c, solid: true },
+  'ʬ': { name: 'champ de blé', color: 0xe8c860, solid: true },
+  'ʭ': { name: 'terre labourée', color: 0xa87040, solid: true },
   'ĉ': { name: 'falaise',       color: 0xa8683c, solid: true },
   'ŝ': { name: 'escalier',      color: 0xd8d0c0, solid: false },
   'ñ': { name: 'neige',         color: 0xf0f4f8, solid: false },
