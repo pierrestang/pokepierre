@@ -1736,6 +1736,49 @@ const DECALS = {
     pixelText(g, 'NEWLAND AVENUE', px + Math.round((W - 61) / 2), py + 4, 1, 0x1c2c48);
     rect(g, 0x000000, px, py + 24, W, 1);
   },
+  // Le pont de la Humber, au loin sur l'estuaire : deux hautes tours, câbles en guirlande, tablier fin
+  // (tout petit, gris-bleu, dans la brume). `w` cases de large.
+  humberBridge(g, px, py, { w = 8 } = {}) {
+    const W = w * S;
+    const C = 0x8898b0;
+    const deck = py + 10;
+    rect(g, C, px, deck, W, 2);
+    for (const tx of [Math.round(W * 0.2), Math.round(W * 0.8)]) {
+      rect(g, C, px + tx - 1, deck - 22, 3, 26);
+      rect(g, 0xa8b8d0, px + tx - 1, deck - 22, 1, 26);
+    }
+    const t1 = Math.round(W * 0.2);
+    const t2 = Math.round(W * 0.8);
+    for (let x = 0; x <= W; x++) {                                          // câble porteur
+      let y;
+      if (x < t1) y = deck - 22 + Math.round((22 * (t1 - x)) / t1 * 0.8);
+      else if (x > t2) y = deck - 22 + Math.round((22 * (x - t2)) / (W - t2) * 0.8);
+      else { const u = (x - t1) / (t2 - t1); y = deck - 22 + Math.round(20 * 4 * u * (1 - u)); }
+      rect(g, 0x9aaac0, px + x, py + (y - py), 1, 1);
+      if (x % 4 === 0 && y < deck) rect(g, 0xb0bccc, px + x, y + 1, 1, deck - y - 1);   // suspentes
+    }
+    rect(g, 0x506078, px, deck + 2, W, 1);
+  },
+  // Les pintes de la bande, posées sur une table du pub (sur deux cases).
+  pints(g, px, py) {
+    for (const [dx, dy] of [[4, 2], [11, 4], [19, 2], [25, 5]]) {
+      rect(g, 0x303038, px + dx - 1, py + dy - 1, 6, 10);
+      rect(g, 0xd89830, px + dx, py + dy + 2, 4, 6);               // bière
+      rect(g, 0xf8f0e0, px + dx, py + dy, 4, 2);                   // mousse
+      rect(g, 0xf0c060, px + dx, py + dy + 3, 1, 4);
+    }
+  },
+  // Piste de danse de l'Asylum : dalles lumineuses de couleurs (w x h cases), posée au sol.
+  danceFloor(g, px, py, { w = 4, h = 3 } = {}) {
+    const colors = [0x9040d0, 0x3070e0, 0xe04090, 0x30b0c0];
+    for (let y = 0; y < h * 2; y++) {
+      for (let x = 0; x < w * 2; x++) {
+        rect(g, 0x201828, px + x * 8, py + y * 8, 8, 8);
+        rect(g, colors[(x + y * 3) % colors.length], px + x * 8 + 1, py + y * 8 + 1, 6, 6);
+        rect(g, 0xf8e8ff, px + x * 8 + 2, py + y * 8 + 2, 2, 1);
+      }
+    }
+  },
   // Fanny, emmaillotée dans une couverture rose, dans les bras de Maman (lit de l'hôpital).
   baby(g, px, py) {
     rect(g, 0x302830, px + 4, py + 4, 9, 8);

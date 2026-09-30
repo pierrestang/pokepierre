@@ -1,8 +1,12 @@
 import { parseGrid } from './parseGrid.js';
-import { FLAGS, ITEMS, QUALITIES } from '../story.js';
+import { FLAGS, ITEMS, QUALITIES, ROLES } from '../story.js';
 import {
   BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT,
 } from '../saintAyStory.js';
+import {
+  LEO_CALLED, OUSMANE_JOINS, LEO_PLAN, GIRLS_JOIN, PUB_A_BAR, PUB_B_TABLE, PUB_B_OTHER, ASYLUM_ENTER, ASYLUM_DANCE,
+  LIBRARY, EXAM,
+} from '../hullStory.js';
 
 // Ascenseur de l'entreprise parisienne (mêmes cases, en haut à droite, à chaque étage).
 const floor = (interior) => ({ interior, x: 10, y: 2, facing: 'down' });
@@ -788,15 +792,19 @@ export const interiors = {
     ],
     spawn: { x: 6, y: 9, facing: 'up' },
     npcs: [
+      // Avant la soirée, puis après les révisions : l'examen et le Diplôme de Hull.
       {
         id: 'prof-hull', name: 'Professor', x: 6, y: 4, facing: 'down', color: 0x5c3c7c,
-        dialogue: [
-          '[Professor - texte provisoire] Welcome to Hull! Bienvenue à l\'université.',
-          'Congratulations! Voici ton diplôme.',
+        unlessFlags: [FLAGS.revisions, FLAGS.mailLu],
+        dialogue: ['Welcome to Hull!'],
+      },
+      {
+        id: 'prof-hull-examen', name: 'Professor', x: 6, y: 4, facing: 'down', color: 0x5c3c7c,
+        ifFlags: [FLAGS.revisions], unlessFlags: [FLAGS.mailLu],
+        script: [
+          { ifItems: [ITEMS.diplomeHull.id], speaker: 'Professor', say: ["Well done! Le bus rouge t'emmènera à l'aéroport."], end: true },
+          ...EXAM,
         ],
-        after: ['[Professor - texte provisoire] Well done! La route vers l\'est t\'est ouverte.'],
-        item: ITEMS.diplomeHull,
-        unlessFlags: [FLAGS.mailLu],
       },
       // De retour après le mail d'Amsterdam : ta nouvelle affectation.
       {
@@ -814,8 +822,9 @@ export const interiors = {
   },
 
   // Hull — maison à la porte rouge (en haut) : Romain et Paul.
+  // Hull — chez Léo, avec Romain et Paul (toit d'ardoise, en haut de Newland Avenue). Scénario : data/hullStory.js.
   hullHouse: {
-    name: 'Maison de Romain et Paul',
+    name: 'Chez Léo',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXX',
@@ -837,19 +846,243 @@ export const interiors = {
     spawn: { x: 3, y: 6, facing: 'up' },
     npcs: [
       {
+        id: 'leo-maison', name: 'Léo', x: 6, y: 6, facing: 'left',
+        unlessFlags: [FLAGS.leoPlan],
+        dialogue: ['Ce soir, on sort. Tout le monde.'],
+      },
+      {
         id: 'romain', name: 'Romain', x: 1, y: 4, facing: 'right', color: 0xc0602c,
-        dialogue: ['[Romain - texte provisoire] Salut ! Ceci est le premier dialogue de Romain.'],
-        after: ['[Romain - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-romain', name: 'Souvenir de Romain' },
+        unlessFlags: [FLAGS.leoPlan],
+        dialogue: ['Vous sortez ce soir ? On vous rejoint à l\'Asylum.'],
       },
       {
         id: 'paul', name: 'Paul', x: 6, y: 4, facing: 'left', color: 0x3c8cb0,
-        dialogue: ['[Paul - texte provisoire] Hello ! Ceci est le premier dialogue de Paul.'],
-        after: ['[Paul - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-paul', name: 'Souvenir de Paul' },
+        unlessFlags: [FLAGS.leoPlan],
+        dialogue: ['On a nos propres plans avant.'],
+      },
+      // Après la soirée : de retour chez eux.
+      ...[['leo-apres', 'Léo', 6, 6, 'J\'ai lu la même page six fois… hier. Et aujourd\'hui aussi.'],
+        ['romain-apres', 'Romain', 1, 4, 'Quelle soirée ! On en reparlera longtemps.'],
+        ['paul-apres', 'Paul', 6, 4, 'Bonne chance pour les exams, Pierre.']].map(([id, name, x, y, line]) => ({
+        id, name, x, y, facing: 'down', ifSouvenirs: [ROLES.bandeHull.id], dialogue: [line],
+      })),
+    ],
+    events: [{ on: 'enter', ifFlags: [FLAGS.leoAppel], unlessFlags: [FLAGS.leoPlan], steps: LEO_PLAN }],
+  },
+
+  // Hull — la coloc de Pierre et Ousmane, sur Newland Avenue.
+  hullColoc: {
+    name: 'La coloc',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmoommom',
+      'mmoommoo',
+      'oooommmm',
+      'oooommmm',
+      'oooooooo',
+      'oooEEooo',
+    ]),
+    decor: [
+      { kind: 'bed', x: 0, y: 2 },
+      { kind: 'window', x: 2, y: 0 },
+      { kind: 'computerDesk', x: 4, y: 2 },
+      { kind: 'pottedPlant', x: 7, y: 2 },
+      { kind: 'table', x: 4, y: 4 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
+    npcs: [
+      {
+        id: 'ousmane-coloc', name: 'Ousmane', x: 1, y: 5, facing: 'right',
+        ifFlags: [FLAGS.ousmaneRentre], unlessFlags: [FLAGS.ousmaneSuit],
+        script: [
+          { ifFlags: [FLAGS.leoAppel], speaker: 'Ousmane', say: ['Léo t\'attend chez lui, la maison au toit d\'ardoise en haut de Newland Avenue.'], end: true },
+          { speaker: 'Ousmane', say: ['Bienvenue à la coloc !'] },
+        ],
+      },
+      {
+        id: 'ousmane-apres', name: 'Ousmane', x: 1, y: 5, facing: 'right',
+        ifSouvenirs: [ROLES.bandeHull.id],
+        dialogue: ['Les exams… Allez, on va y arriver.'],
       },
     ],
+    events: [
+      { on: 'enter', ifFlags: [FLAGS.ousmaneRentre], unlessFlags: [FLAGS.leoAppel], steps: LEO_CALLED },
+      { on: 'enter', ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.ousmaneSuit], steps: OUSMANE_JOINS },
+    ],
   },
+
+  // Hull — la coloc de Charlotte et Anaïs, à côté de celle de Pierre.
+  hullColoc2: {
+    name: 'Coloc de Charlotte et Anaïs',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'momoommm',
+      'oooooomm',
+      'mmmmoooo',
+      'mmmmoooo',
+      'oooooooo',
+      'oooEEooo',
+    ]),
+    decor: [
+      { kind: 'pottedPlant', x: 0, y: 2 },
+      { kind: 'crtTv', x: 2, y: 2 },
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'bed', x: 6, y: 2 },
+      { kind: 'table', x: 0, y: 4 },
+    ],
+    spawn: { x: 3, y: 6, facing: 'up' },
+    npcs: [
+      {
+        id: 'charlotte-coloc', name: 'Charlotte', x: 5, y: 4, facing: 'down',
+        unlessFlags: [FLAGS.amiesSuivent],
+        dialogue: ['On se prépare, on arrive !'],
+      },
+      {
+        id: 'anais-coloc', name: 'Anaïs', x: 6, y: 5, facing: 'left',
+        unlessFlags: [FLAGS.amiesSuivent],
+        dialogue: ['Deux minutes !'],
+      },
+    ],
+    events: [{ on: 'enter', ifFlags: [FLAGS.ousmaneSuit], unlessFlags: [FLAGS.amiesSuivent], steps: GIRLS_JOIN }],
+  },
+
+  // Hull — premier pub de Newland Avenue : commander une pinte au bar (on parle au barman par-dessus le comptoir).
+  hullPubA: {
+    name: 'Pub',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'mmoooooomm',
+      'ooommmoooo',
+      'oooooooooo',
+      'mmommommoo',
+      'oooooooooo',
+      'ooooEEoooo',
+    ]),
+    decor: [
+      { kind: 'blueShelf', x: 0, y: 1 },
+      { kind: 'glassCabinet', x: 1, y: 1 },
+      { kind: 'painting', x: 4, y: 0 },
+      { kind: 'glassCabinet', x: 8, y: 1 },
+      { kind: 'cabinet', x: 9, y: 1 },
+      { kind: 'longTable', x: 3, y: 3 },
+      ...[0, 3, 6].map((x) => ({ kind: 'paperDesk', x, y: 5 })),
+    ],
+    spawn: { x: 4, y: 6, facing: 'up' },
+    objects: [3, 4, 5].map((x) => ({ x, y: 3, script: PUB_A_BAR })),
+    npcs: [{ id: 'barman-a', name: 'Barman', x: 4, y: 2, facing: 'down', still: true, dialogue: ['What can I get you?'] }],
+  },
+
+  // Hull — deuxième pub : retrouver la table de la bande, avec les verres.
+  hullPubB: {
+    name: 'Pub',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'mmmoooommm',
+      'oooooooooo',
+      'mmommommoo',
+      'oooooooooo',
+      'mmommommoo',
+      'ooooEEoooo',
+    ]),
+    decor: [
+      { kind: 'kitchen', x: 0, y: 1 },
+      { kind: 'fridge', x: 2, y: 1 },
+      { kind: 'window', x: 4, y: 0 },
+      { kind: 'glassCabinet', x: 7, y: 1 },
+      { kind: 'blueShelf', x: 8, y: 1 },
+      { kind: 'cabinet', x: 9, y: 1 },
+      ...[0, 3, 6].flatMap((x) => [4, 6].map((y) => ({ kind: 'paperDesk', x, y }))),
+    ],
+    // Les verres de la bande, sur la table du fond à droite.
+    decals: [{ kind: 'pints', x: 6, y: 4 }],
+    spawn: { x: 4, y: 6, facing: 'up' },
+    objects: [
+      ...[6, 7].map((x) => ({ x, y: 4, script: PUB_B_TABLE })),
+      ...[[0, 4], [1, 4], [3, 4], [4, 4], [0, 6], [1, 6], [3, 6], [4, 6], [6, 6], [7, 6]].map(([x, y]) => ({ x, y, script: PUB_B_OTHER })),
+    ],
+  },
+
+  // Hull — The Asylum, la boîte de l'université : Romain et Paul, la piste de danse, la dernière chanson.
+  hullAsylum: {
+    name: 'The Asylum',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'ooommmmmoooo',
+      'oooooooooooo',
+      'oooooooooooo',
+      'oooooooooooo',
+      'oooooooooooo',
+      'oooooooooooo',
+      'oooooEEooooo',
+    ]),
+    decor: [
+      { kind: 'crtTv', x: 3, y: 2 },
+      { kind: 'longTable', x: 4, y: 2 },
+      { kind: 'crtTv', x: 7, y: 2 },
+      { kind: 'notice', x: 1, y: 0 },
+      { kind: 'notice', x: 10, y: 0 },
+    ],
+    // La piste de danse (dalles lumineuses), où il faut rejoindre tout le monde.
+    decals: [{ kind: 'danceFloor', x: 4, y: 4, w: 4, h: 3, floor: true }],
+    spawn: { x: 5, y: 7, facing: 'up' },
+    npcs: [
+      { id: 'romain-asylum', name: 'Romain', x: 2, y: 4, facing: 'right', ifFlags: [FLAGS.tableTrouvee], dialogue: ['Sur la piste, tout le monde !'] },
+      { id: 'paul-asylum', name: 'Paul', x: 9, y: 4, facing: 'left', ifFlags: [FLAGS.tableTrouvee], dialogue: ['Enfin au complet !'] },
+      { id: 'leo-asylum', name: 'Léo', x: 9, y: 6, facing: 'left', ifFlags: [FLAGS.tableTrouvee], dialogue: ['Allez, sur la piste !'] },
+    ],
+    events: [{ on: 'enter', ifFlags: [FLAGS.tableTrouvee], unlessFlags: [FLAGS.asylumFini], steps: ASYLUM_ENTER }],
+    triggers: [4, 5, 6, 7].flatMap((x) => [4, 5, 6].map((y) => ({
+      x, y, ifFlags: [FLAGS.tableTrouvee], unlessFlags: [FLAGS.asylumFini], script: ASYLUM_DANCE,
+    }))),
+  },
+
+  // Hull — la bibliothèque Brynmor Jones : les révisions, le lendemain de la soirée.
+  hullLibrary: {
+    name: 'Bibliothèque Brynmor Jones',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'mmmmoooommmm',
+      'oooooooooooo',
+      'oooommmmoooo',
+      'oooommmmoooo',
+      'oooooooooooo',
+      'moooooooooom',
+      'oooooEEooooo',
+    ]),
+    decor: [
+      { kind: 'bookshelf', x: 0, y: 0 },
+      { kind: 'bookshelf', x: 2, y: 0 },
+      { kind: 'window', x: 5, y: 0 },
+      { kind: 'bookshelf', x: 8, y: 0 },
+      { kind: 'bookshelf', x: 10, y: 0 },
+      { kind: 'table', x: 4, y: 4 },
+      { kind: 'pottedPlant', x: 0, y: 7 },
+      { kind: 'pottedPlant', x: 11, y: 7 },
+    ],
+    spawn: { x: 5, y: 7, facing: 'up' },
+    npcs: [
+      ...[['leo-biblio', 'Léo', 3, 4, 'right', "J'ai lu la même page six fois."],
+        ['ousmane-biblio', 'Ousmane', 8, 4, 'left', 'Encore un chapitre, et on mange.'],
+        ['charlotte-biblio', 'Charlotte', 3, 5, 'right', 'Chut ! On révise.'],
+        ['anais-biblio', 'Anaïs', 8, 5, 'left', "L'examen, c'est à l'université. On va y arriver !"]].map(([id, name, x, y, facing, line]) => ({
+        id, name, x, y, facing, still: true, ifSouvenirs: [ROLES.bandeHull.id], dialogue: [line],
+      })),
+    ],
+    events: [{ on: 'enter', ifSouvenirs: [ROLES.bandeHull.id], unlessFlags: [FLAGS.revisions], steps: LIBRARY }],
+  },
+
 
   // Hanoï — ta maison (maison-tube rose, 2e en haut à gauche).
   hanoiHome: {

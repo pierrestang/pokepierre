@@ -54,6 +54,8 @@ export class MapScene extends Phaser.Scene {
     this.map = map;
     this.grid = grid;
     this.transitioning = false;
+    this.leaving = false;
+    this.events.once('shutdown', () => { this.leaving = true; });
     this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
     renderMap(this, map);
     if (this.scene.key === 'Overworld') flags.add(visitedFlag(map.id));    // pour la carte du voyage
@@ -128,6 +130,7 @@ export class MapScene extends Phaser.Scene {
       if (this.scene.key === 'Overworld') applyTimeOfDay(cam, this.game);   // lumière selon l'heure
     }
     cam.fadeIn(FADE_MS);
+    this.applyAmbience(map);
 
     this.runEnterEvents();
   }
@@ -229,7 +232,9 @@ export class MapScene extends Phaser.Scene {
     for (const data of wantedDecals) {
       if (this.decals.some((d) => d.data === data)) continue;
       // `above` : au-dessus des personnages (ex. tablier d'un pont sous lequel on passe).
-      const graphics = this.add.graphics().setDepth(data.above ? 45 : 10 + ((data.y + 1) * TILE_SIZE) / 10000);
+      // `floor` : au sol, sous tout le monde (ex. piste de danse).
+      const depth = data.above ? 45 : data.floor ? 1.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000;
+      const graphics = this.add.graphics().setDepth(depth);
       drawDecal(graphics, data.kind, data.x * TILE_SIZE, data.y * TILE_SIZE, data);
       this.decals.push({ data, graphics });
     }
@@ -274,6 +279,7 @@ export class MapScene extends Phaser.Scene {
   //   { sea: true | false }              bruit des vagues
   //   { face: { npcId | 'player': direction } }
   //   { dance: npcId }                   le PNJ et Pierre dansent un instant, notes de musique
+  //   { walk: npcId, to: [x, y], lead?, block?, then? }  le PNJ marche jusqu'à la case (voir walkNpc)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
   // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
@@ -287,6 +293,10 @@ export class MapScene extends Phaser.Scene {
       if (step.wait) await this.wait(step.wait);
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
       if (step.approach) await this.approach(step.approach);
+      if (step.walk) {
+        const walking = this.walkNpc(step.walk, step.to, { lead: step.lead, then: step.then });
+        if (step.block) await walking;
+      }
       if (step.talk) {
         const npc = this.npcs.find((n) => n.data.id === step.talk);
         if (npc) {
@@ -377,6 +387,125 @@ export class MapScene extends Phaser.Scene {
       frontier = next;
     }
     return null;
+  }
+
+  // Le PNJ `id` marche jusqu'à la case `to` [x, y] (plus court chemin), sans bloquer le joueur. Il attend si le
+  // joueur lui barre la route ; avec `lead`, il s'arrête aussi quand le joueur traîne (à plus de 6 cases).
+  // `then` : drapeaux levés à l'arrivée (ex. le PNJ entre dans une maison et disparaît).
+  async walkNpc(id, [tx, ty], { lead = false, then = [] } = {}) {
+    const npc = this.npcs.find((n) => n.data.id === id);
+    if (!npc) return;
+    const d = npc.data;
+    const alive = () => !this.leaving && this.npcs.includes(npc);
+    let stuck = 0;                                  // au bout d'une dizaine de secondes bloqué, on abandonne
+    while (alive() && (d.x !== tx || d.y !== ty) && stuck < 40) {
+      // On contourne le joueur si possible ; sinon on attend qu'il se pousse.
+      const path = this.pathTo(d, tx, ty, [this.player.tileX, this.player.tileY]) ?? this.pathTo(d, tx, ty);
+      const far = () => Math.abs(this.player.tileX - d.x) + Math.abs(this.player.tileY - d.y) > 6;
+      if (!path?.length || (lead && far())) {
+        if (!path?.length) stuck++;
+        await this.wait(250);
+        continue;
+      }
+      const [x, y] = path[0];
+      if (this.player.tileX === x && this.player.tileY === y) {
+        stuck++;
+        await this.wait(250);
+        continue;
+      }
+      stuck = 0;
+      d.home ??= { x: d.x, y: d.y, facing: d.facing };
+      npc.sprite.setFacing(this.directionTo(d, { x, y }));
+      npc.sprite.walkStep(WALK_DURATION);
+      d.x = x;
+      d.y = y;
+      const [px, py] = tileCenter(x, y);
+      await new Promise((resolve) => this.tweens.add({
+        targets: npc.sprite, x: px, y: py, duration: WALK_DURATION,
+        onUpdate: () => npc.sprite.updateDepth(), onComplete: resolve,
+      }));
+    }
+    if (!alive()) return;
+    d.facing = npc.sprite.facing;
+    if (then.length) {
+      then.forEach(flags.add);
+      this.refreshActors();
+    }
+  }
+
+  // Plus court chemin (cases, sans la case de départ) jusqu'à (tx, ty), sans passer par les autres PNJ.
+  pathTo(from, tx, ty, avoid = null) {
+    const free = (x, y) => this.tileWalkable(x, y) && !this.propAt(x, y)
+      && !(avoid && avoid[0] === x && avoid[1] === y)
+      && !this.npcs.some((n) => n.data !== from && n.data.x === x && n.data.y === y);
+    const prev = new Map([[`${from.x},${from.y}`, null]]);
+    const queue = [[from.x, from.y]];
+    while (queue.length) {
+      const [x, y] = queue.shift();
+      if (x === tx && y === ty) {
+        const path = [];
+        for (let c = [x, y]; c && !(c[0] === from.x && c[1] === from.y); c = prev.get(`${c[0]},${c[1]}`)) path.unshift(c);
+        return path;
+      }
+      for (const { dx, dy } of Object.values(DIRECTIONS)) {
+        const k = `${x + dx},${y + dy}`;
+        if (prev.has(k) || !free(x + dx, y + dy)) continue;
+        prev.set(k, [x, y]);
+        queue.push([x + dx, y + dy]);
+      }
+    }
+    return null;
+  }
+
+  // Ambiance de la carte, selon l'histoire : nuit (filtre sombre, halos des réverbères et des enseignes),
+  // petit matin bleuté, ou pluie. map.night / map.dawn / map.rain : conditions (ifFlags…) ; map.night.lights :
+  // halos en plus des réverbères ('l'), [x, y, couleur].
+  applyAmbience(map) {
+    const on = (spec) => spec && meetsConditions(spec);
+    const night = on(map.night);
+    const dawn = !night && on(map.dawn);
+    const W = this.grid[0].length * TILE_SIZE;
+    const H = this.grid.length * TILE_SIZE;
+    const M = 40 * TILE_SIZE;
+    if (night || dawn) {
+      this.add.rectangle(-M, -M, W + 2 * M, H + 2 * M, night ? 0x0c1030 : 0x5070b0, night ? 0.58 : 0.28)
+        .setOrigin(0).setDepth(40);
+    }
+    if (night) {
+      const lamps = [];
+      this.grid.forEach((row, y) => row.forEach((c, x) => { if (c === 'l') lamps.push([x, y, 0xffd070]); }));
+      // Halo chaud et doux : trois disques superposés, de plus en plus petits, qui respirent doucement.
+      for (const [x, y, color] of [...lamps, ...(map.night.lights ?? [])]) {
+        const cx = x * TILE_SIZE + 8;
+        const cy = y * TILE_SIZE + 4;
+        const glow = this.add.container(0, 0).setDepth(41);
+        for (const [w, a] of [[46, 0.1], [30, 0.14], [16, 0.22]]) glow.add(this.add.ellipse(cx, cy, w, w * 0.8, color, a));
+        this.tweens.add({ targets: glow, alpha: 0.7, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      }
+    }
+    if (!night && !dawn && on(map.rain)) this.startRain();
+  }
+
+  // Pluie fine : traits clairs qui tombent en biais sur tout l'écran.
+  startRain() {
+    const g = this.add.graphics().setDepth(42).setScrollFactor(0);
+    const drops = Array.from({ length: 70 }, () => ({ x: Math.random() * 400, y: Math.random() * 260, v: 3 + Math.random() * 2 }));
+    this.events.on('update', () => {
+      // Fixé à l'écran : avec le zoom, la zone visible est centrée sur le milieu de la caméra.
+      const cam = this.cameras.main;
+      const vw = cam.width / cam.zoom;
+      const vh = cam.height / cam.zoom;
+      const ox = (cam.width - vw) / 2;
+      const oy = (cam.height - vh) / 2;
+      g.clear();
+      g.lineStyle(1, 0xc8d8f0, 0.55);
+      for (const d of drops) {
+        d.y += d.v;
+        d.x -= d.v * 0.3;
+        if (d.y > vh) { d.y = -6; d.x = Math.random() * (vw + 40); }
+        g.lineBetween(ox + d.x, oy + d.y, ox + d.x - 2, oy + d.y + 6);
+      }
+    });
   }
 
   // Vrai si, un PNJ venu de `from` se tenant en (x, y), le joueur peut encore aller loin : jusqu'à une sortie
@@ -535,6 +664,11 @@ export class MapScene extends Phaser.Scene {
   }
 
   async runTrigger(trigger) {
+    // Déclencheur à scénette (`script`) : joué quand ses conditions sont remplies, rien sinon.
+    if (trigger.script) {
+      if (meetsConditions(trigger)) await this.runScript(trigger.script);
+      return;
+    }
     const ready =
       (trigger.requiresSouvenirs ?? []).every((id) => souvenirs.has(id)) && meetsConditions(trigger);
     if (!ready) {

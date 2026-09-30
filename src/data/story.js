@@ -37,6 +37,16 @@ export const FLAGS = {
   arriveeBordeaux: 'arrivee-bordeaux',          // arrivé à Bordeaux
   appartementVisite: 'appartement-visite',      // affaires posées dans l'appartement (Ousmane rencontré)
   arriveeHull: 'arrivee-hull',                  // arrivé à Hull (Angleterre)
+  hullAccueil: 'hull-accueil',                  // Hull : Ousmane t'a accueilli à l'arrêt de bus
+  ousmaneRentre: 'ousmane-rentre',              //        Ousmane est rentré à la coloc (devant toi)
+  leoAppel: 'leo-appel',                        //        Ousmane : « Léo a appelé, il a un plan »
+  leoPlan: 'leo-plan',                          //        chez Léo : la soirée commence (la nuit tombe)
+  ousmaneSuit: 'ousmane-suit',                  //        Ousmane rejoint la file
+  amiesSuivent: 'amies-suivent',                //        Charlotte et Anaïs rejoignent la file
+  pinteCommandee: 'pinte-commandee',            //        premier pub : pinte commandée au bar
+  tableTrouvee: 'table-trouvee',                //        deuxième pub : table de la bande retrouvée
+  asylumFini: 'asylum-fini',                    //        dernière chanson à l'Asylum : sortie au petit matin
+  revisions: 'revisions',                       //        révisions à la bibliothèque (le lendemain)
   arriveeHanoi: 'arrivee-hanoi',                // arrivé à Hanoï (Vietnam)
   travailEtape1: 'travail-etape-1',             // nouveau travail à l'agence de voyage : étape 1
   touristesSuivent: 'touristes-suivent',        // tu guides les deux touristes vers le temple
@@ -90,6 +100,7 @@ export const QUALITIES = {
 export const ROLES = {
   grandFrere: { id: 'role-grand-frere', name: 'Grand frère' },
   cousins: { id: 'role-cousins', name: 'Cousins pour la vie' },
+  bandeHull: { id: 'role-bande-hull', name: 'La bande de Hull' },
 };
 
 // Objets remis au joueur (voir systems/items.js).
@@ -126,6 +137,10 @@ export const FOLLOWERS = [
   // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
+  // Hull : la file de la soirée, qui s'allonge (Ousmane, puis Charlotte et Anaïs), jusqu'à la sortie de l'Asylum.
+  { id: 'ousmane', color: 0x3c6c9c, ifFlags: [FLAGS.ousmaneSuit], unlessSouvenirs: ['role-bande-hull'] },
+  { id: 'charlotte', color: 0xd05050, ifFlags: [FLAGS.amiesSuivent], unlessSouvenirs: ['role-bande-hull'] },
+  { id: 'anais', color: 0xe0c050, ifFlags: [FLAGS.amiesSuivent], unlessSouvenirs: ['role-bande-hull'] },
   // Chemin de Saint-Jacques : Yanis marche avec toi jusqu'à Saint-Jacques.
   { id: 'yanis', color: 0xc0b040, ifFlags: [FLAGS.caminoEnCours], unlessFlags: [FLAGS.caminoFini] },
 ];

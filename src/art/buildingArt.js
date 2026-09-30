@@ -655,11 +655,11 @@ function drawBigBen(g, ox, oy) {
 
 // Bus rouge à impériale, vu de dessus (3x2).
 function drawBus(g, ox, oy, { variant } = {}) {
-  // Bus rouge à impériale ; à Hull, bus local d'un seul niveau, bleu et crème.
+  // Bus rouge à impériale ; à Hull, bus local rouge d'un seul niveau, au toit crème.
   const hull = variant === 'hull';
-  const dark = hull ? 0x1c3464 : 0x701414;
-  const body = hull ? 0x2c58a8 : 0xc82828;
-  const light = hull ? 0x4c78c8 : 0xe84848;
+  const dark = 0x701414;
+  const body = 0xc82828;
+  const light = 0xe84848;
   rect(g, 0x000000, ox + 3, oy + 8, 44, 20);
   rect(g, dark, ox + 2, oy + 6, 44, 20);
   rect(g, body, ox + 3, oy + 7, 42, 18);
@@ -695,6 +695,46 @@ function drawTheDeep(g, ox, oy) {
   rect(g, 0x9cc0e0, ox + 19, oy + H - 15, 10, 15);
   rect(g, K, ox + 24, oy + H - 15, 1, 15);
   pixelText(g, 'THE DEEP', ox + 40, oy + H - 11, 1, 0xf0f0f0);
+}
+
+// Hull Minster (7x5, porte en (3,4)) : grande église gothique de brique et de pierre, tour carrée à
+// pinacles au centre, toits d'ardoise, grande verrière, portail en arc.
+function drawMinster(g, ox, oy) {
+  const K = 0x3c3028;
+  const BRICK = 0xb06048;
+  const BRICK_D = 0x8c4834;
+  const STONE = 0xe0d4b8;
+  rect(g, 0x000000, ox + 2, oy + 78, 110, 2);
+  // Nef et bas-côtés : toits d'ardoise
+  rect(g, K, ox + 1, oy + 30, 110, 22);
+  rect(g, 0x505868, ox + 2, oy + 31, 108, 20);
+  for (let x = 4; x < 108; x += 6) rect(g, 0x404858, ox + x, oy + 31, 1, 20);
+  // Façade de brique, contreforts de pierre
+  rect(g, K, ox + 1, oy + 51, 110, 29);
+  rect(g, BRICK, ox + 2, oy + 52, 108, 27);
+  for (let y = 55; y < 79; y += 4) rect(g, BRICK_D, ox + 2, oy + y, 108, 1);
+  for (const x of [2, 26, 82, 106]) rect(g, STONE, ox + x, oy + 52, 4, 27);
+  for (const x of [10, 90]) {                                                    // fenêtres en ogive des bas-côtés
+    rect(g, K, ox + x, oy + 56, 10, 16); rect(g, 0x5878a8, ox + x + 1, oy + 58, 8, 14);
+    rect(g, 0x5878a8, ox + x + 3, oy + 57, 4, 1);
+  }
+  // Tour centrale
+  rect(g, K, ox + 36, oy - 18, 40, 72);
+  rect(g, STONE, ox + 37, oy - 17, 38, 70);
+  for (let y = -12; y < 50; y += 5) rect(g, 0xc8bca0, ox + 37, oy + y, 38, 1);
+  for (const x of [34, 48, 62, 74]) { rect(g, K, ox + x, oy - 28, 4, 12); rect(g, STONE, ox + x + 1, oy - 27, 2, 10); }   // pinacles
+  rect(g, K, ox + 36, oy - 20, 40, 3);
+  for (let x = 38; x < 74; x += 6) rect(g, STONE, ox + x, oy - 23, 3, 3);       // créneaux
+  rect(g, K, ox + 46, oy - 8, 20, 22); rect(g, 0x303848, ox + 47, oy - 6, 18, 20);   // abat-son
+  for (let x = 49; x < 64; x += 4) rect(g, 0x5c6478, ox + x, oy - 6, 1, 20);
+  // Grande verrière et portail
+  rect(g, K, ox + 44, oy + 20, 24, 28); rect(g, 0x6888b8, ox + 45, oy + 22, 22, 26);
+  rect(g, 0x6888b8, ox + 49, oy + 21, 14, 1);
+  for (const x of [51, 56, 61]) rect(g, 0x384868, ox + x, oy + 22, 1, 26);
+  rect(g, 0x384868, ox + 45, oy + 34, 22, 1);
+  rect(g, K, ox + 48, oy + 60, 16, 20); rect(g, 0x5c3c24, ox + 49, oy + 62, 14, 18);   // portail (case locale 3,4)
+  rect(g, 0x5c3c24, ox + 51, oy + 61, 10, 1);
+  rect(g, 0x3c2818, ox + 56, oy + 62, 1, 18);
 }
 
 // Terrain de football (emprise w x h cases, vu de dessus) : pelouse rayée, lignes blanches, rond central,
@@ -1879,6 +1919,7 @@ const BUILDINGS = {
   bus: drawBus,
   theDeep: drawTheDeep,
   footballPitch: drawFootballPitch,
+  minster: drawMinster,
   asylum: drawAsylum,
   wilberforce: drawWilberforce,
   tubeHouse: drawTubeHouse,
