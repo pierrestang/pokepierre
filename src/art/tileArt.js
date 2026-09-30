@@ -445,15 +445,16 @@ function smallObjectGround(g, px, py, x, y, at) {
 
 // Cabine téléphonique rouge anglaise (vue de dessus, un peu de face).
 function phoneBooth(g, px, py, x, y, at) {
+  // Cabine crème de Hull (la ville a son propre réseau téléphonique : ses cabines ne sont pas rouges).
   smallObjectGround(g, px, py, x, y, at);
   rect(g, 0x000000, px + 3, py + 15, 10, 1);
-  rect(g, 0x701414, px + 3, py + 1, 10, 14);
-  rect(g, 0xc82828, px + 4, py + 2, 8, 12);
-  rect(g, 0xe84848, px + 4, py + 2, 8, 1);
-  rect(g, 0xf0f0e0, px + 5, py + 3, 6, 1);           // bandeau « TELEPHONE »
+  rect(g, 0x6c6450, px + 3, py + 1, 10, 14);
+  rect(g, 0xece4c8, px + 4, py + 2, 8, 12);
+  rect(g, 0xfcf8e8, px + 4, py + 2, 8, 1);
+  rect(g, 0x283c6c, px + 5, py + 3, 6, 1);           // bandeau « TELEPHONE »
   rect(g, 0xb8d8f0, px + 5, py + 5, 6, 7);           // vitres
-  for (const ly of [7, 9]) rect(g, 0xc82828, px + 5, py + ly, 6, 1);
-  rect(g, 0xc82828, px + 7, py + 5, 1, 7);
+  for (const ly of [7, 9]) rect(g, 0xece4c8, px + 5, py + ly, 6, 1);
+  rect(g, 0xece4c8, px + 7, py + 5, 1, 7);
 }
 
 // Mât avec l'Union Jack (drapeau britannique simplifié).

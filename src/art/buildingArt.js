@@ -651,19 +651,65 @@ function drawBigBen(g, ox, oy) {
 }
 
 // Bus rouge à impériale, vu de dessus (3x2).
-function drawBus(g, ox, oy) {
+function drawBus(g, ox, oy, { variant } = {}) {
+  // Bus rouge à impériale ; à Hull, bus local d'un seul niveau, bleu et crème.
+  const hull = variant === 'hull';
+  const dark = hull ? 0x1c3464 : 0x701414;
+  const body = hull ? 0x2c58a8 : 0xc82828;
+  const light = hull ? 0x4c78c8 : 0xe84848;
   rect(g, 0x000000, ox + 3, oy + 8, 44, 20);
-  rect(g, 0x701414, ox + 2, oy + 6, 44, 20);
-  rect(g, 0xc82828, ox + 3, oy + 7, 42, 18);
-  rect(g, 0xe84848, ox + 3, oy + 7, 42, 1);
-  for (let x = 6; x < 42; x += 7) {                    // fenêtres de l'impériale
+  rect(g, dark, ox + 2, oy + 6, 44, 20);
+  rect(g, body, ox + 3, oy + 7, 42, 18);
+  rect(g, light, ox + 3, oy + 7, 42, 1);
+  for (let x = 6; x < 42; x += 7) {                    // fenêtres
     rect(g, 0x9cc0e0, ox + x, oy + 8, 5, 2);
     rect(g, 0x9cc0e0, ox + x, oy + 22, 5, 2);
   }
-  rect(g, 0xa82020, ox + 10, oy + 12, 28, 8);          // toit
+  rect(g, hull ? 0xece4c8 : 0xa82020, ox + 10, oy + 12, 28, 8);   // toit (crème à Hull)
   rect(g, 0x303030, ox + 44, oy + 10, 2, 12);          // pare-brise
   rect(g, 0xf8e088, ox + 45, oy + 8, 1, 2);
   rect(g, 0xf8e088, ox + 45, oy + 22, 1, 2);
+}
+
+// The Deep, l'aquarium de Hull (6x4, porte en (1,3)) : bâtiment anguleux d'aluminium et de verre qui s'élève
+// vers l'estuaire comme un aileron, bandes vitrées en biais, enseigne au pied.
+function drawTheDeep(g, ox, oy) {
+  const W = 96;
+  const H = 64;
+  const K = 0x384048;
+  const top = (x) => Math.round(H - 20 - x * 0.46);                    // toit qui monte vers la droite
+  rect(g, 0x000000, ox + 2, oy + H - 2, W - 2, 2);
+  for (let x = 0; x < W; x++) {
+    const t = x === W - 1 ? top(x) + 6 : top(x);
+    rect(g, K, ox + x, oy + t, 1, H - t);                               // contour
+    if (x === 0 || x >= W - 2) continue;
+    rect(g, (x + Math.floor(x / 2)) % 12 < 2 ? 0x6890b0 : 0xb8c4cc, ox + x, oy + t + 1, 1, H - t - 3);   // alu et verre en biais
+    rect(g, 0xe0e8ec, ox + x, oy + t + 1, 1, 1);                        // arête du toit
+  }
+  rect(g, 0x284060, ox + 2, oy + H - 14, W - 4, 11);                    // rez-de-chaussée vitré
+  rect(g, 0x5888b0, ox + 3, oy + H - 13, W - 6, 1);
+  rect(g, K, ox + 18, oy + H - 16, 12, 16);                             // porte (case locale 1,3)
+  rect(g, 0x9cc0e0, ox + 19, oy + H - 15, 10, 15);
+  rect(g, K, ox + 24, oy + H - 15, 1, 15);
+  pixelText(g, 'THE DEEP', ox + 40, oy + H - 11, 1, 0xf0f0f0);
+}
+
+// Monument à William Wilberforce (2x2) : colonne dorique sur un socle, statue au sommet.
+function drawWilberforce(g, ox, oy) {
+  const K = 0x4c4840;
+  rect(g, 0x000000, ox + 6, oy + 30, 22, 2);
+  rect(g, K, ox + 5, oy + 18, 22, 13);                                  // socle
+  rect(g, 0xd8d0b8, ox + 6, oy + 19, 20, 11);
+  rect(g, 0xb8b098, ox + 6, oy + 26, 20, 4);
+  rect(g, K, ox + 11, oy - 30, 10, 49);                                 // colonne
+  rect(g, 0xe0d8c0, ox + 12, oy - 29, 8, 47);
+  rect(g, 0xc0b8a0, ox + 17, oy - 29, 2, 47);
+  rect(g, K, ox + 9, oy - 33, 14, 4);                                   // chapiteau
+  rect(g, 0xd8d0b8, ox + 10, oy - 32, 12, 2);
+  rect(g, K, ox + 13, oy - 44, 6, 11);                                  // statue
+  rect(g, 0x9ca098, ox + 14, oy - 43, 4, 9);
+  rect(g, 0x9ca098, ox + 14, oy - 47, 4, 4);
+  rect(g, K, ox + 13, oy - 48, 6, 1);
 }
 
 // Maison-tube vietnamienne (3x4, porte en (1,3)) : étroite et haute, façade colorée,
@@ -1780,6 +1826,8 @@ const BUILDINGS = {
   castle: drawCastle,
   bigBen: drawBigBen,
   bus: drawBus,
+  theDeep: drawTheDeep,
+  wilberforce: drawWilberforce,
   tubeHouse: drawTubeHouse,
   travelAgency: drawTravelAgency,
   pagoda: drawPagoda,
