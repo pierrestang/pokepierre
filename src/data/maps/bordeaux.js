@@ -9,11 +9,11 @@ function outside(x, y, grid) {
   const H = grid.length;
   if (y >= 0 && y < H) {
     const edge = grid[y][x < 0 ? 0 : W - 1];
-    if (['G', 'A', 'C'].includes(edge)) return edge;
+    if (['G', 'ɐ', 'ɔ'].includes(edge)) return edge;
   }
   const riverRows = grid.map((row, i) => (row[0] === 'G' ? i : null)).filter((i) => i !== null);
   const distance = Math.min(...riverRows.map((r) => Math.abs(r - y)));
-  return distance <= 4 ? '.' : 'C';
+  return distance <= 4 ? '.' : 'ɔ';
 }
 
 // Bordeaux — grande ville traversée par la Garonne, 32 x 26 cases.
@@ -22,37 +22,37 @@ export const bordeauxMap = {
   id: 'bordeaux',
   name: 'Bordeaux',
   grid: parseGrid([
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0  arbres : bord de l'écran
-    'CCCRRRRRCCRRRRRCCCRRRRRRRRRRRRCC', // 1  ton immeuble, l'agence, le stade
-    'CCCRRRRRCCRRRRRCCCRRRRRRRRRRRRCC', // 2
-    'CCCWWWWWCCWWWWWCCCWWWWWWWWWWWWCC', // 3
-    'CCCWWDWWCCWDWWWCCCWWWWWWDWWWWWCC', // 4  portes (stade : grande entrée)
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 5  trottoir
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 6  avenue (ouest : Prytanée, est : aéroport)
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC>C', // 8  panneaux aéroport
-    '..T...TCC.T...T...T...TCC.T...T.', // 9  quai arboré (herbe près de l'eau)
-    '.......CC..............CC.......', // 10
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 11 quai
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0  arbres : bord de l'écran
+    'ɔɔɔRRRRRɔɔRRRRRɔɔɔRRRRRRRRRRRRɔɔ', // 1  ton immeuble, l'agence, le stade
+    'ɔɔɔRRRRRɔɔRRRRRɔɔɔRRRRRRRRRRRRɔɔ', // 2
+    'ɔɔɔWWWWWɔɔWWWWWɔɔɔWWWWWWWWWWWWɔɔ', // 3
+    'ɔɔɔWDWWWɔɔWDWWWɔɔɔWWWWWWDWWWWWɔɔ', // 4  portes (stade : grande entrée)
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 5  trottoir
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  avenue (ouest : Prytanée, est : aéroport)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ>ɔ', // 8  panneaux aéroport
+    '..ƚ...ƚɔɔ.ƚ...ƚ...ƚ...ƚɔɔ.ƚ...ƚ.', // 9  quai arboré (herbe près de l'eau)
+    '.......ɔɔ..............ɔɔ.......', // 10
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 11 quai
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 12 la Garonne et ses deux ponts
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 13
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 14
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 15 quai sud
-    '....T..CC...T...T...T..CC...T...', // 16
-    'CCRRRRRCCCCRRRRRRRRRCCCCCCCCCCCC', // 17 immeuble, KEDGE
-    'CCRRRRRCCCCRRRRRRRRRCCCCCCCCCCCC', // 18
-    'CCWWWWWCCCCWWWWWWWWWCCCCCCCCCCCC', // 19
-    'CCWWDWWCCCCWWWWDWWWWCCCCCCCCCCCC', // 20 portes
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCT', // 21
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 22 rue sud (vers Paris, bloquée par une voiture en panne)
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 23
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCT', // 24
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 25 arbres : bord de l'écran
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 15 quai sud
+    '....ƚ..ɔɔ...ƚ...ƚ...ƚ..ɔɔ...ƚ...', // 16
+    'ɔɔRRRRRɔɔɔɔRRRRRRRRRɔɔɔɔɔɔɔɔɔɔɔɔ', // 17 immeuble, KEDGE
+    'ɔɔRRRRRɔɔɔɔRRRRRRRRRɔɔɔɔɔɔɔɔɔɔɔɔ', // 18
+    'ɔɔWWWWWɔɔɔɔWWWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔ', // 19
+    'ɔɔWDWWWɔɔɔɔWWWWDWWWWɔɔɔɔɔɔɔɔɔɔɔɔ', // 20 portes
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 21
+    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 22 rue sud (vers Paris, bloquée par une voiture en panne)
+    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 23
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 24
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 25 arbres : bord de l'écran
   ]),
   doors: [
     // Ton immeuble : il faut les clés de l'agence.
     {
-      x: 5, y: 4, interior: 'appartement',
+      x: 4, y: 4, interior: 'appartement',
       lock: { ifItems: [ITEMS.clesAppartement.id] },
       lockedDialogue: ["[Texte provisoire] C'est ton futur immeuble, mais tu n'as pas encore les clés. Va à l'agence."],
     },
@@ -63,7 +63,7 @@ export const bordeauxMap = {
       lock: { ifFlags: [FLAGS.semestreTermine] },
       lockedDialogue: ["[Texte provisoire] Le stade est fermé : la remise des diplômes n'a pas encore lieu."],
     },
-    { x: 4, y: 20, lockedDialogue: ['[Texte provisoire] Ce n\'est pas chez toi.'] },
+    { x: 3, y: 20, lockedDialogue: ['[Texte provisoire] Ce n\'est pas chez toi.'] },
     // KEDGE : une fois installé dans l'appartement.
     {
       x: 15, y: 20, interior: 'kedge',
@@ -72,10 +72,10 @@ export const bordeauxMap = {
     },
   ],
   buildings: [
-    { type: 'immeuble', x: 3,  y: 1, variant: 0 },
+    { type: 'slateHouse', x: 3, y: 1 },
     { type: 'agence',   x: 10, y: 1 },
     { type: 'stadium',  x: 18, y: 1 },
-    { type: 'immeuble', x: 2,  y: 17, variant: 1 },
+    { type: 'house', x: 2, y: 17 },
     { type: 'kedge',    x: 11, y: 17 },
   ],
   // Panneaux « Aéroport » à côté des sorties.
@@ -114,6 +114,6 @@ export const bordeauxMap = {
     },
   ],
   // Arbres seulement tout au bord de l'écran, sauf là où passent la rivière et les rues.
-  surroundings: { outside, border: 'T', borderSkip: ['G', 'A'] },
+  surroundings: { outside, border: 'ƚ', borderSkip: ['G', 'ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

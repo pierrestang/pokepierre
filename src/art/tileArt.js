@@ -223,6 +223,7 @@ function grass(g, px, py, x, y, at, { edges = true } = {}) {
 }
 
 function water(g, px, py, x, y, at) {
+  if (groundProvided) return;                                          // eau Rouge Feu déjà posée
   rect(g, C.water, px, py, S, S);
   rect(g, C.waterDeep, px, py + 7, S, 1);
   rect(g, C.waterDeep, px, py + 15, S, 1);
@@ -1906,6 +1907,7 @@ function capStatues(g, px, py) {
 
 function palm(g, px, py, x, y, at) {
   const around = [at(x, y - 1), at(x, y + 1), at(x - 1, y), at(x + 1, y)];
+  if (groundProvided) return;                                          // sol Rouge Feu déjà posé
   if (palmOnGrass(x, y, at)) grass(g, px, py, x, y, at);
   else if (around.includes('C') && !around.includes('s')) cobble(g, px, py, x, y);   // palmier en ville
   else sand(g, px, py, x, y);
@@ -2516,6 +2518,7 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
 
 // Sol sous un bâtiment (visible dans les interstices) : celui qui domine autour.
 function groundUnderBuilding(g, px, py, x, y, at) {
+  if (groundProvided) return;                                          // sol Rouge Feu déjà posé
   const BUILDING = ['R', 'W', 'D'];
   // Dans chaque direction, le premier vrai sol rencontré (arbres et baies vitrées ignorés) : on vote.
   const around = [];

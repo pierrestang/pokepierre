@@ -143,7 +143,12 @@ const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', '�
 const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ', 'χ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
-const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ', 'U', 'O', 'Q', 'V', 'J']);
+const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ', 'U', 'O', 'Q', 'V', 'J',
+  // objets des villes (réverbère, cabine, drapeaux, lanternes, étals, scooter, vélos, vache, tuk-tuk, terrasse,
+  // métro, panneaux de l'aéroport, cactus, chameau, serpent, feu de camp)
+  'l', 'b', 'j', 'e', 'v', 'g', 'n', 't', 'y', 'c', 'p', 'a', 'd', '$', '!', '>', '<', '*', 'H', 'z', '&']);
+// Eau des villes : rivière, et ce qui la couvre (ponts, lotus) — posée comme un étang Rouge Feu.
+const RIVER_CODES = new Set(['G', 'I', 'r', 'k']);
 
 // Sol Rouge Feu d'une case : 'grass' | 'sand' | 'sea' | 'path' | 'pier', ou null (sol procédural).
 // `buildingFloor(x, y)` : vrai sous un bâtiment Rouge Feu.
@@ -158,7 +163,8 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
   if (code === 'ɔ') return 'cobble';
   if (code === 'ɐ') return 'concrete';
   if (code === '=') return 'pier';
-  if (code === '~') return 'pond';
+  if (code === '~' || RIVER_CODES.has(code)) return 'pond';
+  if (['R', 'W', 'D'].includes(code)) return groundUnderBuilding(x, y, at, buildingFloor);
   if (!ON_NEIGHBOURS.has(code)) return null;
   if (code === 'B') return boatOnPond(x, y, at) ? 'pond' : 'sea';
   const counts = {};
@@ -170,6 +176,24 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
   }
   const best = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
   return best === 'sea' ? 'sand' : best ?? null;
+}
+
+// Sol sous un bâtiment dessiné par le code (visible dans ses interstices) : dans chaque direction, le premier
+// sol hors du bâtiment ; on garde le plus fréquent (herbe par défaut).
+function groundUnderBuilding(x, y, at, buildingFloor) {
+  const votes = {};
+  for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
+    for (let d = 1; d < 12; d++) {
+      const n = at(x + dx * d, y + dy * d);
+      if (n === undefined) break;
+      if (['R', 'W', 'D'].includes(n)) continue;
+      const kind = frlgGroundOf(x + dx * d, y + dy * d, at, buildingFloor);
+      if (kind) votes[kind] = (votes[kind] ?? 0) + 1;
+      break;
+    }
+  }
+  const best = Object.keys(votes).sort((a, b) => votes[b] - votes[a])[0] ?? 'grass';
+  return best === 'sea' ? 'sand' : best === 'pier' ? 'grass' : best;
 }
 
 // Bateau : sur la mer, sauf si l'une de ses cases touche un étang ('~').
@@ -255,7 +279,8 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
     const other = (dx, dy) => {
       const n = at(x + dx, y + dy);
       if (n === undefined || n === code || ['R', 'W', 'D'].includes(n) || buildingFloor(x + dx, y + dy)) return false;
-      return groundAt(dx, dy) !== ground;
+      const g = groundAt(dx, dy);
+      return g !== 'cobble' && g !== 'concrete';        // pas de liseré entre pavés et dalles
     };
     blit(ctx, textures, borderTile(ground === 'cobble' ? COBBLE_ON_GRASS : CONCRETE_ON_GRASS, other), px, py);
   } else if (ground === 'pond') {
@@ -272,7 +297,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
 }
 
 // Codes entièrement dessinés par les couches Rouge Feu (le dessin procédural les ignore).
-const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ', '~', 'F', 'ʬ', 'ʭ', 'ɔ', 'ɐ', 'ɟ', 'ɺ']);
+const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ', '~', 'F', 'ʬ', 'ʭ', 'ɔ', 'ɐ', 'ɟ', 'ɺ', 'G']);
 
 export function isFrlgOnly(code) {
   return FRLG_ONLY.has(code);

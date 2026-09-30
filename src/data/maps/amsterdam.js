@@ -6,9 +6,9 @@ import { FLAGS } from '../story.js';
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['G', 'A', 'C'].includes(edge)) return edge;
+    if (['G', 'ɐ', 'ɔ'].includes(edge)) return edge;
   }
-  return 'C';
+  return 'ɔ';
 }
 
 const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
@@ -19,32 +19,32 @@ export const amsterdamMap = {
   id: 'amsterdam',
   name: 'Amsterdam',
   grid: parseGrid([
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0  arbres : bord de l'écran
-    'CCRRRRRRRRRCCRRRRRRRRRCRRRRRRCCC', // 1  maisons de canal, CORNING
-    'CCRRRRRRRRRTCRRRRRRRRRCRRRRRRTCC', // 2
-    'CCWWWWWWWWWCCWWWWWWWWWCWWWWWWCTC', // 3
-    'CCWDWWDWWDWCCWWWWDWWWWCWDWWDWCCC', // 4  portes (maison commune : 2e à gauche)
-    'CcCCCCCCCCCccCCCCCCCeCcCCCCCCccC', // 5  vélos, drapeau
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 6  rue (vers l'aéroport)
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
-    'C<TCCCCCCCTCCCTCCCCCTCCCCCCCTC>C', // 8  quai arboré  panneaux aéroport
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0  arbres : bord de l'écran
+    'ɔɔRRRRRRRRRɔɔRRRRRRRRRɔRRRRRRɔɔɔ', // 1  maisons de canal, CORNING
+    'ɔɔRRRRRRRRRƚɔRRRRRRRRRɔRRRRRRƚɔɔ', // 2
+    'ɔɔWWWWWWWWWɔɔWWWWWWWWWɔWWWWWWɔƚɔ', // 3
+    'ɔɔWDWWDWWDWɔɔWWWWDWWWWɔWDWWDWɔɔɔ', // 4  portes (maison commune : 2e à gauche)
+    'ɔcɔɔɔɔɔɔɔɔɔccɔɔɔɔɔɔɔeɔcɔɔɔɔɔɔccɔ', // 5  vélos, drapeau
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  rue (vers l'aéroport)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
+    'ɔ<ƚɔɔɔɔɔɔɔƚɔɔɔƚɔɔɔɔɔƚɔɔɔɔɔɔɔƚɔ>ɔ', // 8  quai arboré  panneaux aéroport
     'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 9  premier canal et ses ponts
     'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 10
-    'CCTCCCCCCCTCCCTCCCCCTCCCCCCCTCCC', // 11
-    'CCCRRRRRCRRRRRRCCCh.T.RRR.h.hh.C', // 12 coffee shop, maisons, moulin et tulipes
-    'CCCRRRRRCRRRRRRCCC.h..RRR..h..eC', // 13
-    'CCCWWWWWCWWWWWWCCC..h.WWW...h..C', // 14
-    'CCCWDWWWCWDWWDWCCC.h..WWW.h..h.C', // 15 portes (coffee shop : à gauche)
-    'CCcCCCCCCCCCCCCCccCCCCCCCCCCCCCC', // 16
+    'ɔɔɔɔɔɔɔɔɔɔƚɔɔɔɔɔɔɔɔɔƚɔɔɔɔɔɔɔƚɔɔɔ', // 11
+    'ɔɔɔRRRRRɔRRRRRRɔɔɔh.ƚ.RRR.h.hh.ɔ', // 12 coffee shop, maisons, moulin et tulipes
+    'ɔɔɔRRRRRɔRRRRRRɔɔɔ.h..RRR..h..eɔ', // 13
+    'ɔɔɔWWWWWɔWWWWWWɔɔɔ..h.WWW...h..ɔ', // 14
+    'ɔɔɔWDWWWɔWDWWDWɔɔɔ.h..WWW.h..h.ɔ', // 15 portes (coffee shop : à gauche)
+    'ɔɔcɔɔɔɔɔɔɔɔɔɔɔɔɔccɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
     'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 17 deuxième canal
     'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 18
-    'CCCTCCCCCCCTCCCTCCCCTCCCCCCCCTCC', // 19
-    'CCRRRRRRRRRCRRRRRRCT...h....h.TC', // 20 maisons de canal, parc aux tulipes
-    'CCRRRRRRRRRCRRRRRRC.h...h.T....C', // 21
-    'CCWWWWWWWWWCWWWWWWC..h.....h...C', // 22
-    'CCWDWWDWWDWCWDWWDWC...h..T....hC', // 23
-    'CCCCCCCCCCCccCCCCCCCCCCCCCCCCCCC', // 24
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 25 arbres : bord de l'écran
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƚɔɔɔɔƚɔɔɔɔɔɔɔɔƚɔɔ', // 19
+    'ɔɔRRRRRRRRRɔRRRRRRɔƚ...h....h.ƚɔ', // 20 maisons de canal, parc aux tulipes
+    'ɔɔRRRRRRRRRɔRRRRRRɔ.h...h.ƚ....ɔ', // 21
+    'ɔɔWWWWWWWWWɔWWWWWWɔ..h.....h...ɔ', // 22
+    'ɔɔWDWWDWWDWɔWDWWDWɔ...h..ƚ....hɔ', // 23
+    'ɔɔɔɔɔɔɔɔɔɔɔccɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 24
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 25 arbres : bord de l'écran
   ]),
   doors: [
     { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
@@ -120,6 +120,6 @@ export const amsterdamMap = {
   // Panneaux « Aéroport » à côté des sorties.
   objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
   triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'T', borderSkip: ['G', 'A'] },
+  surroundings: { outside, border: 'ƚ', borderSkip: ['G', 'ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

@@ -5,9 +5,9 @@ import { toAirport, airportSign } from './airportLinks.js';
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['A', 'C'].includes(edge)) return edge;
+    if (['ɐ', 'ɔ'].includes(edge)) return edge;
   }
-  return 'C';
+  return 'ɔ';
 }
 
 const NOT_HOME = ["[Texte provisoire] Personne ne répond..."];
@@ -18,55 +18,55 @@ export const hullMap = {
   id: 'hull',
   name: 'Hull',
   grid: parseGrid([
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0  arbres : bord de l'écran
-    'CCRRRRRCRRRRRCRRRRRCRRRRRC....TC', // 1  maisons mitoyennes, pub
-    'CCRRRRRCRRRRRCRRRRRCRRRRRC.T...C', // 2
-    'CCWWWWWCWWWWWCWWWWWCWWWWWC...T.C', // 3
-    'CCWWDWWCWWDWWCWDWWWCWWDWWC.....C', // 4  portes
-    'ClCCCCCbCCCCClCCCCCbCCCCClCCCClC', // 5  réverbères, cabines
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 6  grande rue (vers l'aéroport)
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
-    'C<CCCClCCCCCCCCCCClCCCCCCCCClC>C', // 8  panneaux aéroport
-    'CAqqqA..T...T.RRR..............C', // 9  arrêt de bus, Big Ben
-    'CAqqqA........RRR.T.RRRRRRR...fC', // 10 château
-    'CCCRRRRRRRRR..RRR...RRRRRRR.T..C', // 11 université
-    'CCCRRRRRRRRR.TRRR...RRRRRRRf...C', // 12
-    'CCCWWWWWWWWW..WWW.j.WWWWWWW..T.C', // 13
-    'CCCWWWWDWWWW..WWW...WWWDWWW....C', // 14 portes de l'université et du château
-    'CCbCCCCCCCCClCCCCCCClCCCCCCCCbCC', // 15
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC', // 16 rue sud
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC', // 17
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 18
-    'CCRRRRRCRRRRRCRRRRRC.T....f..T.C', // 19 maisons, deuxième pub, parc
-    'CCRRRRRCRRRRRCRRRRRC..f.T......C', // 20
-    'CCWWWWWCWWWWWCWWWWWC......j.f.TC', // 21
-    'CCWWDWWCWWDWWCWDWWWC..T....T...C', // 22 portes
-    'CCCCCCCCCCCCCCCCCCCC.....f.....C', // 23
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 24
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 25 arbres : bord de l'écran
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0  arbres : bord de l'écran
+    'ɔɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔ....ƚɔ', // 1  maisons mitoyennes, pub
+    'ɔɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔ.ƚ...ɔ', // 2
+    'ɔɔWWWWWɔWWWWWɔWWWWWɔWWWWWɔ...ƚ.ɔ', // 3
+    'ɔɔWDWWWɔWDWWWɔWDWWWɔWDWWWɔ.....ɔ', // 4  portes
+    'ɔlɔɔɔɔɔbɔɔɔɔɔlɔɔɔɔɔbɔɔɔɔɔlɔɔɔɔlɔ', // 5  réverbères, cabines
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  grande rue (vers l'aéroport)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
+    'ɔ<ɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔlɔ>ɔ', // 8  panneaux aéroport
+    'ɔɐqqqɐ..ƚ...ƚ.RRR..............ɔ', // 9  arrêt de bus, Big Ben
+    'ɔɐqqqɐ........RRR.ƚ.RRRRRRR...fɔ', // 10 château
+    'ɔɔɔRRRRRRRRR..RRR...RRRRRRR.ƚ..ɔ', // 11 université
+    'ɔɔɔRRRRRRRRR.ƚRRR...RRRRRRRf...ɔ', // 12
+    'ɔɔɔWWWWWWWWW..WWW.j.WWWWWWW..ƚ.ɔ', // 13
+    'ɔɔɔWWWWDWWWW..WWW...WWWDWWW....ɔ', // 14 portes de l'université et du château
+    'ɔɔbɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔbɔɔ', // 15
+    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 16 rue sud
+    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 17
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 18
+    'ɔɔRRRRRɔRRRRRɔRRRRRɔ.ƚ....f..ƚ.ɔ', // 19 maisons, deuxième pub, parc
+    'ɔɔRRRRRɔRRRRRɔRRRRRɔ..f.ƚ......ɔ', // 20
+    'ɔɔWWWWWɔWWWWWɔWWWWWɔ......j.f.ƚɔ', // 21
+    'ɔɔWDWWWɔWDWWWɔWDWWWɔ..ƚ....ƚ...ɔ', // 22 portes
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.....f.....ɔ', // 23
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 24
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 25 arbres : bord de l'écran
   ]),
   doors: [
-    { x: 4,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 10, y: 4,  interior: 'hullHouse' },   // Romain et Paul
+    { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
+    { x: 9, y: 4,  interior: 'hullHouse' },   // Romain et Paul
     { x: 15, y: 4,  lockedDialogue: ["[Texte provisoire] The pub is closed. Revenez plus tard !"] },
-    { x: 22, y: 4,  lockedDialogue: NOT_HOME },
+    { x: 21, y: 4,  lockedDialogue: NOT_HOME },
     { x: 7,  y: 14, interior: 'hullUniversity' },
     { x: 23, y: 14, lockedDialogue: ['[Texte provisoire] Le château est fermé aux visiteurs.'] },
-    { x: 4,  y: 22, lockedDialogue: NOT_HOME },
-    { x: 10, y: 22, lockedDialogue: NOT_HOME },
+    { x: 3,  y: 22, lockedDialogue: NOT_HOME },
+    { x: 9, y: 22, lockedDialogue: NOT_HOME },
     { x: 15, y: 22, lockedDialogue: ["[Texte provisoire] The pub is closed. Revenez plus tard !"] },
   ],
   buildings: [
-    { type: 'terrace', x: 2,  y: 1, variant: 0 },
-    { type: 'terrace', x: 8,  y: 1, variant: 1 },
+    { type: 'house', x: 2, y: 1 },
+    { type: 'slateHouse', x: 8, y: 1 },
     { type: 'pub',     x: 14, y: 1 },
-    { type: 'terrace', x: 20, y: 1, variant: 2 },
+    { type: 'cottage', x: 20, y: 1 },
     { type: 'bus',     x: 2,  y: 9 },
     { type: 'university', x: 3, y: 11 },
     { type: 'bigBen',  x: 14, y: 9 },
     { type: 'castle',  x: 20, y: 10 },
-    { type: 'terrace', x: 2,  y: 19, variant: 3 },
-    { type: 'terrace', x: 8,  y: 19, variant: 1 },
+    { type: 'slateHouse', x: 2, y: 19 },
+    { type: 'house', x: 8, y: 19 },
     { type: 'pub',     x: 14, y: 19 },
   ],
   // Le bus rouge (arrêt à côté de l'université) : navette pour l'aéroport.
@@ -76,6 +76,6 @@ export const hullMap = {
   }))).concat([airportSign(1, 8, false), airportSign(30, 8, true)]),
   // Les deux bouts de la grande rue mènent à l'aéroport.
   triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'T', borderSkip: ['A'] },
+  surroundings: { outside, border: 'ƚ', borderSkip: ['ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

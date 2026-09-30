@@ -6,7 +6,7 @@ import { FLAGS, ITEMS } from '../story.js';
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['A', 'C'].includes(edge)) return edge;
+    if (['ɐ', 'ɔ'].includes(edge)) return edge;
   }
   return '.';
 }
@@ -21,30 +21,30 @@ export const hanoiMap = {
   name: 'Hanoï',
   grid: parseGrid([
     'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // 0  bambous : bord de l'écran
-    'CCRRRRRRRRRCCRRRRRCCRRRRRR.x...C', // 1  maisons-tubes, agence de voyage
-    'CCRRRRRRRRRYCRRRRRYCRRRRRR...Y.C', // 2
-    'CCWWWWWWWWWCCWWWWWCCWWWWWW.x...C', // 3
-    'CCWDWWDWWDWCCWDWWWCCWDWWDW....xC', // 4  portes (ta maison : 2e à gauche)
-    'CnCCCCCCCCCnCCCCCtCnCCCCCCnCyyCC', // 5  lanternes, stand, scooters
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 6  rue (vers l'aéroport)
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
-    'C<CCnCCCCCCCnCCCCCCCnCCCCCCCnC>C', // 8  panneaux aéroport
-    '.Y.............Y....RRRRR....x.C', // 9  lac Hoàn Kiếm, pagode
-    '..~~~~~r~~~~k~~.x.Y.RRRRR.....xC', // 10
-    '..~~k~~r~~RR~~~.....RRRRR..v...C', // 11 tour de la Tortue, drapeau
-    '..~~~~~r~~RR~~~..x..WWWWW......C', // 12
-    '..~k~k~r~~~~~~~.....WWDWW....x.C', // 13 porte de la pagode
-    '..~~~~~r~~k~~k~.x..n.....n.....C', // 14
-    '.Y.............Y............Y..C', // 15
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 16
-    'CCRRRRRRRRRCtCtCtCtCRRRRRRRRRCCC', // 17 maisons-tubes, marché
-    'CCRRRRRRRRRnCCCCCCCnRRRRRRRRRCCC', // 18
-    'CCWWWWWWWWWCCtCtCtCCWWWWWWWWWCCC', // 19
-    'CCWDWWDWWDWCCCCCCCCCWDWWDWWDWCCC', // 20
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCyCC', // 21
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC', // 22 rue sud
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC', // 23
-    'CCCCCCCCCCyCCCCCCCCCCCCCCCCCCCCC', // 24
+    'ɔɔRRRRRRRRRɔɔRRRRRɔɔRRRRRR.x...ɔ', // 1  maisons-tubes, agence de voyage
+    'ɔɔRRRRRRRRRYɔRRRRRYɔRRRRRR...Y.ɔ', // 2
+    'ɔɔWWWWWWWWWɔɔWWWWWɔɔWWWWWW.x...ɔ', // 3
+    'ɔɔWDWWDWWDWɔɔWDWWWɔɔWDWWDW....xɔ', // 4  portes (ta maison : 2e à gauche)
+    'ɔnɔɔɔɔɔɔɔɔɔnɔɔɔɔɔtɔnɔɔɔɔɔɔnɔyyɔɔ', // 5  lanternes, stand, scooters
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  rue (vers l'aéroport)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
+    'ɔ<ɔɔnɔɔɔɔɔɔɔnɔɔɔɔɔɔɔnɔɔɔɔɔɔɔnɔ>ɔ', // 8  panneaux aéroport
+    '.Y.............Y....RRRRR....x.ɔ', // 9  lac Hoàn Kiếm, pagode
+    '..~~~~~r~~~~k~~.x.Y.RRRRR.....xɔ', // 10
+    '..~~k~~r~~RR~~~.....RRRRR..v...ɔ', // 11 tour de la Tortue, drapeau
+    '..~~~~~r~~RR~~~..x..WWWWW......ɔ', // 12
+    '..~k~k~r~~~~~~~.....WWDWW....x.ɔ', // 13 porte de la pagode
+    '..~~~~~r~~k~~k~.x..n.....n.....ɔ', // 14
+    '.Y.............Y............Y..ɔ', // 15
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
+    'ɔɔRRRRRRRRRɔtɔtɔtɔtɔRRRRRRRRRɔɔɔ', // 17 maisons-tubes, marché
+    'ɔɔRRRRRRRRRnɔɔɔɔɔɔɔnRRRRRRRRRɔɔɔ', // 18
+    'ɔɔWWWWWWWWWɔɔtɔtɔtɔɔWWWWWWWWWɔɔɔ', // 19
+    'ɔɔWDWWDWWDWɔɔɔɔɔɔɔɔɔWDWWDWWDWɔɔɔ', // 20
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔyɔɔ', // 21
+    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 22 rue sud
+    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 23
+    'ɔɔɔɔɔɔɔɔɔɔyɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 24
     'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // 25 bambous : bord de l'écran
   ]),
   doors: [
@@ -139,6 +139,6 @@ export const hanoiMap = {
   // Panneaux « Aéroport » à côté des sorties.
   objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
   triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'x', borderSkip: ['A'] },
+  surroundings: { outside, border: 'x', borderSkip: ['ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

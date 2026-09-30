@@ -8,7 +8,7 @@ const HARSH = { name: 'Harsh', color: 0x8c3cb0 };
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['A', 'C'].includes(edge)) return edge;
+    if (['ɐ', 'ɔ'].includes(edge)) return edge;
   }
   return '.';
 }
@@ -23,14 +23,14 @@ export const newDelhiMap = {
   name: 'New Delhi',
   grid: parseGrid([
     'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 0  palmiers : bord de l'écran
-    'CCRRRRRRRRRCCRRRRRRRCCCRRRRRRCYC', // 1  havelis, palais moghol
-    'CCRRRRRRRRRYCRRRRRRRCYCRRRRRRCCC', // 2
-    'CCWWWWWWWWWCCWWWWWWWCCCWWWWWWYCC', // 3
-    'CCWDWWDWWDWCCWWWDWWWCCCWDWWDWCCC', // 4  portes
-    'CpCCCCCCCCCCpCCCCCCCaCiCCCCCCpCC', // 5  stands d'épices, vache sacrée
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 6  grande avenue (vers l'aéroport)
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
-    'C<CdCCCCCCaCCCCdCCCCCCCCCCCdCC>C', // 8  tuk-tuks  panneaux aéroport
+    'ɔɔRRRRRRRRRɔɔRRRRRRRɔɔɔRRRRRRɔYɔ', // 1  havelis, palais moghol
+    'ɔɔRRRRRRRRRYɔRRRRRRRɔYɔRRRRRRɔɔɔ', // 2
+    'ɔɔWWWWWWWWWɔɔWWWWWWWɔɔɔWWWWWWYɔɔ', // 3
+    'ɔɔWDWWDWWDWɔɔWWWDWWWɔɔɔWDWWDWɔɔɔ', // 4  portes
+    'ɔpɔɔɔɔɔɔɔɔɔɔpɔɔɔɔɔɔɔaɔiɔɔɔɔɔɔpɔɔ', // 5  stands d'épices, vache sacrée
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  grande avenue (vers l'aéroport)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
+    'ɔ<ɔdɔɔɔɔɔɔaɔɔɔɔdɔɔɔɔɔɔɔɔɔɔɔdɔɔ>ɔ', // 8  tuk-tuks  panneaux aéroport
     '.Y.RRRRR.Y.........Y.......Y....', // 9  pelouses : India Gate
     '...RRRRR.....RRR.....~k~~k....i.', // 10 statue de Bouddha, bassin aux lotus
     '...WWWWW...g.RRR.g...~~~k~......', // 11 drapeaux indiens
@@ -38,15 +38,15 @@ export const newDelhiMap = {
     '...WWWWW.Y.a.WWW................', // 13
     '..i.....i..........Y.i..i.a.i...', // 14 soucis
     '.Y.i......i.i...i.i...i.......Y.', // 15
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 16
-    'CCCRRRRRRRRRCpCpCpCCRRRRRRRRRCCC', // 17 université, marché aux épices, havelis
-    'CCCRRRRRRRRRCaCCCCCCRRRRRRRRRCCC', // 18
-    'CCCWWWWWWWWWCCpCpCpCWWWWWWWWWCCC', // 19
-    'CCCWWWWDWWWWCCCCCCCCWDWWDWWDWCCC', // 20 portes
-    'CCCCCCCCCCCCdCCCCCCCCCCCCCCCCdCC', // 21
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC', // 22 rue sud
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC', // 23
-    'CCCCCCCCCCCCCCCCCCCCaCCCCCCCCCCC', // 24
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
+    'ɔɔɔRRRRRRRRRɔpɔpɔpɔɔRRRRRRRRRɔɔɔ', // 17 université, marché aux épices, havelis
+    'ɔɔɔRRRRRRRRRɔaɔɔɔɔɔɔRRRRRRRRRɔɔɔ', // 18
+    'ɔɔɔWWWWWWWWWɔɔpɔpɔpɔWWWWWWWWWɔɔɔ', // 19
+    'ɔɔɔWWWWDWWWWɔɔɔɔɔɔɔɔWDWWDWWDWɔɔɔ', // 20 portes
+    'ɔɔɔɔɔɔɔɔɔɔɔɔdɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔdɔɔ', // 21
+    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 22 rue sud
+    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 23
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔaɔɔɔɔɔɔɔɔɔɔɔ', // 24
     'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 25 palmiers : bord de l'écran
   ]),
   doors: [
@@ -119,6 +119,6 @@ export const newDelhiMap = {
   // Panneaux « Aéroport » à côté des sorties.
   objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
   triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'Y', borderSkip: ['A'] },
+  surroundings: { outside, border: 'Y', borderSkip: ['ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };
