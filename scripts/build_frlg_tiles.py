@@ -16,6 +16,8 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   emerald-trees.png    deux arbres tropicaux d'Émeraude, sur sable puis sur herbe (voir tropical_trees) ;
   rs-objects.png       meubles de Rubis/Saphir (planche d'objets), fond blanc extérieur rendu transparent ;
   rs-berries.png       quatre plantes à baies fleuries (voir berry_plants) ;
+  rs-stairs.png        escaliers encastrés dans le mur de la maison de Bourg-en-Vol, qui monte puis qui descend
+                       (voir rs_stairs) ;
   frlg-props.png     planche de Hoeloe (arbre isolé, rocher, mer animée…), fond violet rendu transparent ;
   frlg-seven.png     carte de Seven Island (24 x 20 cases), sans le cadre ;
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent.
@@ -313,6 +315,32 @@ def town_map(sheet):
     return out
 
 
+# Escaliers de la maison du héros à Bourg-en-Vol (Rubis/Saphir) : cadre de bois encastré dans le mur,
+# 23 x 23 px, pieds des montants posés sur le parquet. Qui monte, puis qui descend (planche des intérieurs).
+RS_STAIRS = [(316, 50), (508, 50)]
+RS_STAIRS_W, RS_STAIRS_H = 23, 23
+RS_WALL = {(208, 208, 176), (176, 176, 160), (248, 248, 248)}
+RS_FLOOR = {(176, 160, 72), (200, 192, 88), (168, 136, 56), (144, 112, 40)}
+
+
+def rs_stairs():
+    sheet = Image.open(ROOT / 'assets-source' / 'rs' / 'backgrounds-interior_areas.png').convert('RGBA')
+    out = Image.new('RGBA', (RS_STAIRS_W * len(RS_STAIRS), RS_STAIRS_H), (0, 0, 0, 0))
+    for i, (x0, y0) in enumerate(RS_STAIRS):
+        im = sheet.crop((x0, y0, x0 + RS_STAIRS_W, y0 + RS_STAIRS_H))
+        px = im.load()
+        for y in range(RS_STAIRS_H):
+            for x in range(RS_STAIRS_W):
+                rgb = px[x, y][:3]
+                # Le mur autour du cadre (hors des montants) et le parquet sous le cadre disparaissent.
+                if rgb in RS_WALL and (x in (0, RS_STAIRS_W - 1) or y == 0 or y >= 21):
+                    px[x, y] = (0, 0, 0, 0)
+                elif y >= 21 and rgb in RS_FLOOR:
+                    px[x, y] = (0, 0, 0, 0)
+        out.paste(im, (i * RS_STAIRS_W, 0))
+    return out
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     rgba = lambda name: Image.open(SRC / name).convert('RGBA')
@@ -333,6 +361,7 @@ def main():
     emerald = Image.open(ROOT / 'assets-source' / 'emerald' / 'miscellaneous-exterior_tileset.png').convert('RGBA')
     gba_palette(tropical_trees(emerald)).save(OUT / 'emerald-trees.png')
     gba_palette(berry_plants()).save(OUT / 'rs-berries.png')
+    gba_palette(rs_stairs()).save(OUT / 'rs-stairs.png')
     gba_palette(center_items(rgba('maps__towns_buildings_etc._-three_island.png'))).save(OUT / 'frlg-center-items.png')
     seagallop = rgba('maps-seagallop_ferry.png')
     gba_palette(seagallop.crop((288, 24, 544, 216))).save(OUT / 'frlg-travel-sea.png')

@@ -10,7 +10,7 @@ const BOAT = {
   // Arrivée : au bord de l'étang de Saint-Ay, à côté de son bateau.
   warp: { map: 'saintAy', x: 11, y: 17, facing: 'left', ferry: true },   // traversée en ferry
 };
-const BOAT_POS = { x: 16, y: 27, w: 4, h: 2 };
+const BOAT_POS = { x: 17, y: 27, w: 4, h: 2 };   // une case d'eau entre le ponton et le ferry
 
 // Fort-de-France — île ronde de départ, bordée de plages, 34 x 33 cases : maison familiale et son jardin fleuri en
 // haut, allée de sable (3 cases, centrée sur la porte) jusqu'à la plage, puis ponton en bois (2 cases) jusqu'au ferry, cabane de pêche
@@ -52,8 +52,8 @@ export const fortDeFranceMap = {
     'wwwwwwwwsssssssssssssssssswwwwwwww', // 24
     'wwwwwøwwwwssss==sssssssswwwwwwwwww', // 25
     'wwwwwwwwwwwwww==wwwwwwwwwøwwwwwwww', // 26
-    'wwwwwwwwwwwwww==BBBBwwwwwwwwøwwwww', // 27
-    'wwwwwwwwwwwwww==BBBBwwwwwwwwwwwwww', // 28
+    'wwwwwwwwwwwwww==wBBBBwwwwwwwøwwwww', // 27
+    'wwwwwwwwwwwwww==wBBBBwwwwwwwwwwwww', // 28
     'wwwwwwwwwwwwww==wwwwwwwwwwwwwwwwww', // 29
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 30
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 31
@@ -82,10 +82,11 @@ export const fortDeFranceMap = {
         "Mémorial de l'Anse Caffard : en souvenir des captifs du naufrage de 1830, au large du Diamant.",
       ],
     })),
-    // Chaque case du bateau réagit quand on lui fait face (Entrée / Espace).
-    ...Array.from({ length: BOAT_POS.w * BOAT_POS.h }, (_, i) => ({
-      x: BOAT_POS.x + (i % BOAT_POS.w),
-      y: BOAT_POS.y + Math.floor(i / BOAT_POS.w),
+    // Chaque case du bateau réagit quand on lui fait face (Entrée / Espace), et aussi l'eau entre le ponton
+    // et le ferry, pour embarquer depuis le ponton.
+    ...Array.from({ length: (BOAT_POS.w + 1) * BOAT_POS.h }, (_, i) => ({
+      x: BOAT_POS.x - 1 + (i % (BOAT_POS.w + 1)),
+      y: BOAT_POS.y + Math.floor(i / (BOAT_POS.w + 1)),
       ...BOAT,
     })),
   ],

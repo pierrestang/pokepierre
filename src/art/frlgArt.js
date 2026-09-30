@@ -29,6 +29,7 @@ export const FRLG_SHEETS = {
   beachrock: 'frlg-beachrock',
   tropical: 'emerald-trees',
   berries: 'rs-berries',
+  rsStairs: 'rs-stairs',
   travelSea: 'frlg-travel-sea',
   ferryWake: 'frlg-ferry-wake',
   townMap: 'frlg-townmap',
@@ -486,10 +487,25 @@ export function drawFrlgInteriorGround(ctx, textures, x, y, at) {
 }
 
 // Codes d'intérieur entièrement dessinés par les couches Rouge Feu.
-export const FRLG_INTERIOR_ONLY = new Set(['X', 'o', 'm', 'E']);
+export const FRLG_INTERIOR_ONLY = new Set(['X', 'o', 'm', 'E', 'η', 'ξ']);
+
+// Escaliers de Rubis/Saphir (maison de Bourg-en-Vol), encastrés dans le mur au-dessus de leur case :
+// η monte, ξ descend. Cadre de 23 x 23 px, pieds des montants sur le parquet.
+const STAIRS_IN_WALL = {
+  η: { sheet: FRLG_SHEETS.rsStairs, sx: 0, sy: 0, w: 23, h: 23 },
+  ξ: { sheet: FRLG_SHEETS.rsStairs, sx: 23, sy: 0, w: 23, h: 23 },
+};
 
 // Couche 3 d'un intérieur : meubles, puis tapis de sortie sur chaque groupe de cases 'E' d'une rangée.
 export function drawFrlgInteriorDecor(ctx, textures, interior) {
+  const roomW = interior.grid[0].length * S;
+  interior.grid.forEach((row, y) => row.forEach((code, x) => {
+    const st = STAIRS_IN_WALL[code];
+    if (!st) return;
+    // Centré sur la case, sans dépasser les bords de la pièce ; bas du cadre 2 px sous le haut de la case.
+    const px = Math.max(0, Math.min(roomW - st.w, x * S + Math.round((S - st.w) / 2)));
+    blit(ctx, textures, st, px, y * S + 2 - st.h, st.w, st.h);
+  }));
   for (const { kind, x, y } of interior.decor ?? []) {
     const d = FRLG_DECOR[kind];
     if (d.sprite) {

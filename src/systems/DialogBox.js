@@ -11,6 +11,8 @@ import { sfx } from './audio.js';
 import { PORTRAITS } from '../art/spriteSheets.js';
 import { portraitOf } from '../data/characters.js';
 
+const SHOW_PORTRAITS = false;
+
 const CHAR_DELAY = 25; // ms par caractère
 // Les dimensions sont en « pixels Game Boy » (u = facteur d'agrandissement de l'écran de jeu).
 const HEIGHT = 46;
@@ -40,7 +42,8 @@ export class DialogBox {
     this.nameBg = scene.add.graphics();
     this.nameText = bitmapText(scene);
 
-    // Portrait en pied de la personne qui parle, debout sur le bord droit de la boîte.
+    // Portrait en pied de la personne qui parle, debout sur le bord droit de la boîte. Masqué pour l'instant
+    // (SHOW_PORTRAITS) : comme dans Rouge Feu, seuls le nom et le texte s'affichent.
     this.portrait = scene.add.image(0, 0, PORTRAITS, 'p0').setOrigin(1, 1).setVisible(false);
 
     this.arrow = scene.add.triangle(0, 0, 0, 0, 14, 0, 7, 9, 0xe04040);
@@ -167,7 +170,7 @@ export class DialogBox {
   }
 
   setSpeaker(speaker) {
-    const portrait = speaker ? portraitOf(speaker) : null;
+    const portrait = speaker && SHOW_PORTRAITS ? portraitOf(speaker) : null;
     this.portrait.setVisible(portrait !== null);
     if (portrait) this.portrait.setTexture(portrait.key, portrait.frame);
     this.speaker = speaker;
