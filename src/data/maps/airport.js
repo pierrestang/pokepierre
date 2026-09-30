@@ -13,7 +13,7 @@ const DESTINATIONS = [
     label: 'Hull (Angleterre)',
     ifItems: [ITEMS.diplomeAnglais.id],
     setFlags: [FLAGS.arriveeHull],
-    warp: { map: 'hull', x: 5, y: 8, facing: 'left' },
+    warp: { map: 'hull', x: 14, y: 34, facing: 'up' },
   },
   {
     label: 'Hanoï (Vietnam)',

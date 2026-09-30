@@ -1,111 +1,116 @@
 import { parseGrid } from './parseGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
-// Hors de la carte : la grande rue et les trottoirs se prolongent, sol de ville ailleurs.
+// Hors de la carte : Newland Avenue se prolonge vers le sud, trottoirs ailleurs.
 function outside(x, y, grid) {
-  if (y >= grid.length) return '~';                              // l'estuaire de la Humber
-  if (y >= 0) {
+  if (y >= grid.length && (x === 14 || x === 15)) return 'ɐ';
+  if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['ɐ', 'ɔ', '~'].includes(edge)) return edge;
+    if (['ɐ', 'ɔ'].includes(edge)) return edge;
   }
   return 'ɔ';
 }
 
-const NOT_HOME = ["[Texte provisoire] Personne ne répond..."];
+const NOT_HOME = ['Personne ne répond...'];
+const BAR_CLOSED = ["Le bar n'ouvre qu'en fin d'après-midi. Reviens ce soir !"];
 
-// Hull (Kingston upon Hull) — ville portuaire du Yorkshire sur l'estuaire de la Humber, 32 x 30 cases, façon
-// Rouge Feu : en haut, maisons mitoyennes et pub, cabines téléphoniques crème (propres à Hull) ; la grande rue
-// (vers l'aéroport) ; au centre, l'arrêt du bus local bleu et crème, l'université, Queen's Gardens (bassin et
-// monument à William Wilberforce) et le Guildhall à colonnes ; en bas, la vieille ville (vieux pub), The Deep
-// (l'aquarium) sur le quai, puis la Humber : Victoria Pier et le ferry de nuit pour Rotterdam.
-// Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = dalles, ~ = estuaire, = = ponton, B = ferry, b = cabine
-// téléphonique, j = Union Jack, l = réverbère, q = bus, S = panneau, f = fleurs, ƚ = petit arbre)
+// Hull — le quartier de l'université et de Newland Avenue, façon Rouge Feu, 30 x 36 cases : en haut, le campus
+// (université, jardin et bassin derrière, deux terrains de football, bibliothèque Brynmor Jones, The Asylum, la
+// boîte du syndicat étudiant) ; Newland Avenue descend tout droit du campus jusqu'au bas de l'écran, bordée de
+// maisons mitoyennes, de bars et de colocations d'étudiants (dont celle de Romain et Paul) ; à l'entrée de la
+// rue, le pont ferroviaire en briques où est peint « NEWLAND AVENUE », puis l'arrêt du bus vers l'aéroport.
+// Légende : voir src/data/tiles.js (ɐ = chaussée, ɔ = trottoir, ʕ = remblai du pont, F = barrière, ~ = bassin,
+// f = fleurs, ƚ = petit arbre, l = réverbère, q = bus, S = panneau, R / W / D = toit, mur, porte)
 export const hullMap = {
   id: 'hull',
   name: 'Hull',
   grid: parseGrid([
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0
-    'ƚƚRRRRRƚRRRRRƚRRRRRƚRRRRRƚRRRRRƚ', // 1
-    'ƚƚRRRRRƚRRRRRƚRRRRRƚRRRRRƚRRRRRƚ', // 2
-    'ƚƚWWWWWƚWWWWWƚWWWWWƚWWWWWƚWWWWWƚ', // 3
-    'ɔɔWDWWWɔWDWWWɔWDWWWɔWDWWWɔWDWWWɔ', // 4
-    'ɔlɔɔɔɔbɔɔɔɔɔlɔɔɔɔɔbɔɔɔɔɔlɔɔɔɔɔɔɔ', // 5
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
-    'ɔ<ɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔ>ɔ', // 8
-    'ɔɐqqqɐɔɔɔɔɔɔɔƚ.RR.jƚRRRRRRRRRRRɔ', // 9
-    'ɔɐqqqɐɔɔɔɔɔɔɔ..RRS..RRRRRRRRRRRɔ', // 10
-    'ɔɔɔRRRRRRRRRɔf.....fRRRRRRRRRRRɔ', // 11
-    'ɔɔɔRRRRRRRRRɔf~~~~~fWWWWWWWWWWWɔ', // 12
-    'ɔɔɔWWWWWWWWWɔf~~~~~fWWWWWWWWWWWɔ', // 13
-    'ɔɔɔWWWWDWWWWɔf~~~~~fWWWWWWWWWWWɔ', // 14
-    'ɔɔbɔɔɔɔɔɔɔɔɔlf.....fɔfffWWWfffɔɔ', // 15
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔƚ.....ƚɔfffWDWfffɔɔ', // 16
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 17
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 18
-    'ɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔlɔɔ', // 19
-    'ɔɔRRRRRɔRRRRRɔRRRRRɔɔɔɔɔRRRRRRɔɔ', // 20
-    'ɔɔRRRRRɔRRRRRɔRRRRRɔɔjɔɔRRRRRRɔɔ', // 21
-    'ɔɔWWWWWɔWWWWWɔWWWWWɔbɔɔɔWWWWWWɔɔ', // 22
-    'ɔɔWDWWWɔWDWWWɔWDWWWɔɔɔɔɔWDWWWWɔɔ', // 23
-    'ɔɔSɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔ', // 24
-    '~~~~~~~~~~==~~~~~~~~~~~~~~~~~~~~', // 25
-    '~~~~~~~~~~==~BBBB~~~~~~~~~~~~~~~', // 26
-    '~~~~~~~~~~==~BBBB~~~~~~~~~~~~~~~', // 27
-    '~~~~~~~~~~==~~~~~~~~~~~~~~~~~~~~', // 28
-    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 29
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0
+    'ƚFFFFFFFFFffffffffffFFFFFFFFFƚ', // 1
+    'ƚFRRRRRRRFƚ.~~~~~~.ƚFRRRRRRRFƚ', // 2
+    'ƚFRRRRRRRFƚ.~~~~~~.ƚFRRRRRRRFƚ', // 3
+    'ƚFRRRRRRRFff......ffFRRRRRRRFƚ', // 4
+    'ƚFRRRRRRRFRRRRRRRRR.FRRRRRRRFƚ', // 5
+    'ƚFRRRRRRRFRRRRRRRRR.FRRRRRRRFƚ', // 6
+    'ƚFRRRRRRRFWWWWWWWWW.FRRRRRRRFƚ', // 7
+    'ƚFFFFFFFFFWWWWDWWWW.FFFFFFFFFƚ', // 8
+    'ƚRRRRRRRɔɔɔɔSɔɔɔɔɔɔɔɔɔRRRRRɔɔƚ', // 9
+    'ƚRRRRRRRɔlɔɔɔɔɔɔɔɔɔɔlɔRRRRRɔɔƚ', // 10
+    'ƚWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWɔɔƚ', // 11
+    'ƚWWWDWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔWDWWWɔɔƚ', // 12
+    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 13
+    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 14
+    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 15
+    'ƚWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƚ', // 16
+    'ƚWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƚ', // 17
+    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 18
+    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 19
+    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 20
+    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 21
+    'ƚWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƚ', // 22
+    'ƚWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƚ', // 23
+    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 24
+    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 25
+    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 26
+    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 27
+    'ƚWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƚ', // 28
+    'ƚWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƚ', // 29
+    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 30
+    'ƚʕʕʕʕʕʕʕʕʕʕʕʕɔɐɐɔʕʕʕʕʕʕʕʕʕʕʕʕƚ', // 31
+    'ƚʕʕʕʕʕʕʕʕʕʕʕʕɔɐɐɔʕʕʕʕʕʕʕʕʕʕʕʕƚ', // 32
+    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔqqqɔɔɔɔɔɔɔƚ', // 33
+    'ƚɔɔɔɔɔɔɔɔɔɔɔ<ɔɐɐɔɔɔqqqɔɔɔɔɔɔɔƚ', // 34
+    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 35
   ]),
   doors: [
-    { x: 3, y: 4, lockedDialogue: NOT_HOME },
-    { x: 9, y: 4, interior: 'hullHouse' },   // Romain et Paul
-    { x: 15, y: 4, lockedDialogue: ["The pub is closed. Revenez plus tard !"] },
-    { x: 21, y: 4, lockedDialogue: NOT_HOME },
-    { x: 27, y: 4, lockedDialogue: NOT_HOME },
-    { x: 7, y: 14, interior: 'hullUniversity' },
-    { x: 25, y: 16, lockedDialogue: ["Le Guildhall, la mairie de Hull. Les bureaux sont fermés aujourd'hui."] },
-    { x: 3, y: 23, lockedDialogue: NOT_HOME },
-    { x: 9, y: 23, lockedDialogue: NOT_HOME },
-    { x: 15, y: 23, lockedDialogue: ["Ye Olde White Harte, le plus vieux pub de la ville. Fermé pour l'instant."] },
-    { x: 25, y: 23, lockedDialogue: ["The Deep, l'aquarium de Hull. Les requins dorment : reviens demain !"] },
+    { x: 14, y: 8, interior: 'hullUniversity' },
+    { x: 4, y: 12, lockedDialogue: ['La bibliothèque Brynmor Jones. Silence, on révise !'] },
+    { x: 23, y: 12, lockedDialogue: ["The Asylum, la boîte de l'université. Ça ouvre à 22 h !"] },
+    { x: 2, y: 17, lockedDialogue: NOT_HOME },
+    { x: 8, y: 17, lockedDialogue: BAR_CLOSED },
+    { x: 19, y: 17, lockedDialogue: ['Un café de Newland Avenue. Fermé pour la journée.'] },
+    { x: 25, y: 17, lockedDialogue: NOT_HOME },
+    { x: 2, y: 23, interior: 'hullHouse' },   // la colocation de Romain et Paul
+    { x: 8, y: 23, lockedDialogue: ["Une colocation d'étudiants. Ça sent les pâtes et le café froid."] },
+    { x: 19, y: 23, lockedDialogue: BAR_CLOSED },
+    { x: 25, y: 23, lockedDialogue: ["Une colocation. Quelqu'un joue de la guitare à l'étage."] },
+    { x: 2, y: 29, lockedDialogue: NOT_HOME },
+    { x: 8, y: 29, lockedDialogue: NOT_HOME },
+    { x: 19, y: 29, lockedDialogue: NOT_HOME },
+    { x: 25, y: 29, lockedDialogue: NOT_HOME },
   ],
   buildings: [
-    { type: 'house', x: 2, y: 1 },
-    { type: 'slateHouse', x: 8, y: 1 },
-    { type: 'pub', x: 14, y: 1 },
-    { type: 'cottage', x: 20, y: 1 },
-    { type: 'slateHouse', x: 26, y: 1 },
-    { type: 'bus', x: 2, y: 9, variant: 'hull' },
-    { type: 'university', x: 3, y: 11 },
-    { type: 'wilberforce', x: 15, y: 9 },
-    { type: 'museum', x: 20, y: 9 },
-    { type: 'slateHouse', x: 2, y: 20 },
-    { type: 'house', x: 8, y: 20 },
-    { type: 'pub', x: 14, y: 20 },
-    { type: 'theDeep', x: 24, y: 20 },
-    { type: 'ferry', x: 13, y: 26 },
+    { type: 'footballPitch', x: 2, y: 2, w: 7, h: 6 },
+    { type: 'footballPitch', x: 21, y: 2, w: 7, h: 6 },
+    { type: 'university', x: 10, y: 5 },
+    { type: 'lab', x: 1, y: 9 },
+    { type: 'asylum', x: 22, y: 9 },
+    { type: 'house', x: 1, y: 14 },
+    { type: 'pub', x: 7, y: 14 },
+    { type: 'school', x: 18, y: 14 },
+    { type: 'slateHouse', x: 24, y: 14 },
+    { type: 'slateHouse', x: 1, y: 20 },
+    { type: 'house', x: 7, y: 20 },
+    { type: 'pub', x: 18, y: 20 },
+    { type: 'cottage', x: 24, y: 20 },
+    { type: 'greenHouse', x: 1, y: 26 },
+    { type: 'house', x: 7, y: 26 },
+    { type: 'slateHouse', x: 18, y: 26 },
+    { type: 'house', x: 24, y: 26 },
+    { type: 'bus', x: 19, y: 33, variant: 'hull' },
   ],
-  // Le bus local (arrêt à côté de l'université) : navette pour l'aéroport.
-  objects: [2, 3, 4].flatMap((x) => [9, 10].map((y) => ({
+  // Le tablier du pont ferroviaire, au-dessus de la rue (on passe dessous).
+  decals: [{ kind: 'railBridge', x: 12, y: 31, w: 6, above: true }],
+  // Le bus local, à l'entrée de Newland Avenue : navette pour l'aéroport.
+  objects: [19, 20, 21].flatMap((x) => [33, 34].map((y) => ({
     ...toAirport(x, y),
     readyDialogue: ["Tu prends le bus pour l'aéroport."],
   }))).concat([
-    airportSign(1, 8, false),
-    airportSign(30, 8, true),
-    { x: 17, y: 10, dialogue: ["Queen's Gardens."] },
-    ...[15, 16].map((x) => ({
-      x, y: 10,
-      dialogue: [
-        'Le monument à William Wilberforce, né à Hull en 1759.',
-        "Il a consacré sa vie à faire abolir la traite des esclaves dans l'Empire britannique.",
-      ],
-    })),
-    { x: 2, y: 24, dialogue: ["Ouest : le pont de la Humber, l'un des plus longs ponts suspendus du monde."] },
-    ...[12, 13, 14, 15, 16].flatMap((x) => [26, 27].map((y) => ({
-      x, y, dialogue: ['Le ferry de nuit pour Rotterdam, amarré au bout de Victoria Pier.'],
-    }))),
+    airportSign(12, 34, false),
+    { x: 12, y: 9, dialogue: ['Université de Hull. Au fond, le jardin et son bassin.'] },
   ]),
-  // Les deux bouts de la grande rue mènent à l'aéroport.
-  triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'ƚ', borderSkip: ['ɐ', '~'] },
-  spawn: { x: 1, y: 6, facing: 'right' },
+  // Le bas de Newland Avenue mène à l'aéroport.
+  triggers: [toAirport(14, 35), toAirport(15, 35)],
+  surroundings: { outside, border: 'ƚ', borderSkip: ['ɐ'] },
+  spawn: { x: 14, y: 34, facing: 'up' },
 };

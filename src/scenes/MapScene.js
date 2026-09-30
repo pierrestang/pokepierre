@@ -228,7 +228,8 @@ export class MapScene extends Phaser.Scene {
     });
     for (const data of wantedDecals) {
       if (this.decals.some((d) => d.data === data)) continue;
-      const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);
+      // `above` : au-dessus des personnages (ex. tablier d'un pont sous lequel on passe).
+      const graphics = this.add.graphics().setDepth(data.above ? 45 : 10 + ((data.y + 1) * TILE_SIZE) / 10000);
       drawDecal(graphics, data.kind, data.x * TILE_SIZE, data.y * TILE_SIZE, data);
       this.decals.push({ data, graphics });
     }

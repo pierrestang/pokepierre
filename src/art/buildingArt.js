@@ -358,9 +358,12 @@ const FONT = {
   T: ['111', '.1.', '.1.', '.1.', '.1.'],
   A: ['.1.', '1.1', '111', '1.1', '1.1'],
   Y: ['1.1', '1.1', '.1.', '.1.', '.1.'],
+  M: ['1...1', '11.11', '1.1.1', '1...1', '1...1'],
+  W: ['1...1', '1...1', '1.1.1', '11.11', '1...1'],
+  V: ['1.1', '1.1', '1.1', '1.1', '.1.'],
 };
 
-function pixelText(g, text, x, y, scale, color) {
+export function pixelText(g, text, x, y, scale, color) {
   let cx = x;
   for (const ch of text) {
     const glyph = FONT[ch] ?? ['...'];
@@ -692,6 +695,54 @@ function drawTheDeep(g, ox, oy) {
   rect(g, 0x9cc0e0, ox + 19, oy + H - 15, 10, 15);
   rect(g, K, ox + 24, oy + H - 15, 1, 15);
   pixelText(g, 'THE DEEP', ox + 40, oy + H - 11, 1, 0xf0f0f0);
+}
+
+// Terrain de football (emprise w x h cases, vu de dessus) : pelouse rayée, lignes blanches, rond central,
+// surfaces de réparation et buts aux deux bouts (à gauche et à droite).
+function drawFootballPitch(g, ox, oy, { w = 8, h = 6 } = {}) {
+  const W = w * 16;
+  const H = h * 16;
+  rect(g, 0x2c6c2c, ox, oy, W, H);
+  for (let x = 0; x < W; x += 16) rect(g, (x / 16) % 2 ? 0x48a040 : 0x58b048, ox + x, oy + 1, 16, H - 2);
+  const L = 0xf0f0f0;
+  const m = 5;
+  rect(g, L, ox + m, oy + m, W - 2 * m, 1); rect(g, L, ox + m, oy + H - m - 1, W - 2 * m, 1);   // lignes de touche
+  rect(g, L, ox + m, oy + m, 1, H - 2 * m); rect(g, L, ox + W - m - 1, oy + m, 1, H - 2 * m);   // lignes de but
+  rect(g, L, ox + W / 2, oy + m, 1, H - 2 * m);                                                // ligne médiane
+  for (let a = 0; a < 24; a++) {                                                               // rond central
+    const t = (a / 24) * Math.PI * 2;
+    rect(g, L, ox + W / 2 + Math.round(Math.cos(t) * 10), oy + H / 2 + Math.round(Math.sin(t) * 10), 1, 1);
+  }
+  for (const side of [0, 1]) {                                                                 // surfaces et buts
+    const x0 = side ? ox + W - m - 1 - 16 : ox + m;
+    rect(g, L, x0, oy + H / 2 - 16, 17, 1); rect(g, L, x0, oy + H / 2 + 15, 17, 1);
+    rect(g, L, side ? x0 : x0 + 16, oy + H / 2 - 16, 1, 32);
+    const gx = side ? ox + W - m : ox + m - 3;
+    rect(g, 0x303038, gx, oy + H / 2 - 7, 3, 14);
+    rect(g, 0xf8f8f8, gx + (side ? 0 : 2), oy + H / 2 - 6, 1, 12);
+  }
+}
+
+// The Asylum, la boîte du syndicat étudiant de l'université de Hull (5x4, porte en (1,3)) : bâtiment sombre,
+// enseigne violette lumineuse, affiches de concerts.
+function drawAsylum(g, ox, oy) {
+  const K = 0x201828;
+  rect(g, 0x000000, ox + 2, oy + 62, 78, 2);
+  rect(g, K, ox, oy + 6, 80, 58);                                      // toit plat
+  rect(g, 0x4c4458, ox + 1, oy + 7, 78, 22);
+  for (let x = 4; x < 78; x += 8) rect(g, 0x5c546c, ox + x, oy + 9, 4, 18);
+  rect(g, K, ox, oy + 29, 80, 2);
+  rect(g, 0x302838, ox + 1, oy + 31, 78, 32);                          // façade
+  rect(g, 0x9030c0, ox + 30, oy + 34, 46, 11);                         // enseigne
+  rect(g, 0xd070f0, ox + 31, oy + 35, 44, 1);
+  pixelText(g, 'ASYLUM', ox + 36, oy + 37, 1, 0xf8e8ff);
+  for (const [px, c] of [[34, 0xe8c040], [50, 0x40c0e0], [64, 0xe05060]]) {   // affiches
+    rect(g, c, ox + px, oy + 49, 9, 12);
+    rect(g, 0xf8f8f8, ox + px + 2, oy + 51, 5, 2);
+  }
+  rect(g, K, ox + 17, oy + 46, 14, 18);                                // porte (case locale 1,3)
+  rect(g, 0x5c3c7c, ox + 18, oy + 47, 12, 17);
+  rect(g, 0xc090e0, ox + 28, oy + 55, 1, 2);
 }
 
 // Monument à William Wilberforce (2x2) : colonne dorique sur un socle, statue au sommet.
@@ -1827,6 +1878,8 @@ const BUILDINGS = {
   bigBen: drawBigBen,
   bus: drawBus,
   theDeep: drawTheDeep,
+  footballPitch: drawFootballPitch,
+  asylum: drawAsylum,
   wilberforce: drawWilberforce,
   tubeHouse: drawTubeHouse,
   travelAgency: drawTravelAgency,

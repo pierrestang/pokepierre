@@ -95,6 +95,7 @@ export const TILES = {
   'ʀ': { name: 'tas de planches', color: 0xb08050, solid: true },
   'ɔ': { name: 'pavés (Rouge Feu)', color: 0xc8c8c8, solid: false },
   'ɟ': { name: 'butte rocheuse', color: 0xa07860, solid: true },
+  'ʕ': { name: 'remblai du pont (briques)', color: 0x9c4830, solid: true },
   'ɺ': { name: 'butte rocheuse (sommet, escalier)', color: 0x70c8a0, solid: false },
   'ɐ': { name: 'dalles (Rouge Feu)', color: 0xd0d4d0, solid: false },
   'ɓ': { name: "bitte d'amarrage", color: 0x806040, solid: true },

@@ -1,5 +1,6 @@
 import { TILE_SIZE as S } from '../data/tiles.js';
 import { rect, sprite, hash } from './pixel.js';
+import { pixelText } from './buildingArt.js';
 import { mod2, inFullTreeBlock, inForest } from '../data/treeBlocks.js';
 
 // Dessin procédural de chaque tuile (16x16), dans l'esprit de Rouge Feu.
@@ -1720,6 +1721,21 @@ const DECALS = {
   rope(g, px, py) {
     drawRope(g, px, py);
   },
+  // Tablier du pont ferroviaire de Newland Avenue, au-dessus de la rue : poutre d'acier bleu avec le nom de la
+  // rue peint dessus, rails sur le dessus. (x, y) : case en haut à gauche ; `w` cases de large.
+  railBridge(g, px, py, { w = 6 } = {}) {
+    const W = w * S;
+    rect(g, 0x1c2c48, px, py - 6, W, 30);
+    rect(g, 0x2c4c7c, px, py - 5, W, 22);
+    rect(g, 0x5c7cac, px, py - 5, W, 1);
+    for (let x = 4; x < W; x += 12) rect(g, 0x243c64, px + x, py - 4, 2, 20);          // rivets et montants
+    rect(g, 0x6c6c6c, px, py - 10, W, 4);                                                // ballast et rails
+    rect(g, 0xb0b0b0, px, py - 9, W, 1);
+    rect(g, 0xb0b0b0, px, py - 7, W, 1);
+    rect(g, 0xf0f0e8, px + 6, py + 2, W - 12, 9);                                       // bandeau peint
+    pixelText(g, 'NEWLAND AVENUE', px + Math.round((W - 61) / 2), py + 4, 1, 0x1c2c48);
+    rect(g, 0x000000, px, py + 24, W, 1);
+  },
   // Fanny, emmaillotée dans une couverture rose, dans les bras de Maman (lit de l'hôpital).
   baby(g, px, py) {
     rect(g, 0x302830, px + 4, py + 4, 9, 8);
@@ -1836,6 +1852,18 @@ export function drawRope(g, px, py) {
   ROPE.forEach((row, ry) => [...row].forEach((c, rx) => {
     if (c !== '.') rect(g, ROPE_COLORS[c], px + rx, py + 4 + ry, 1, 1);
   }));
+}
+
+// Remblai en briques du pont ferroviaire de Newland Avenue (Hull) : briques rouges, couronnement de pierre.
+function railEmbankment(g, px, py, x, y, at) {
+  rect(g, 0x5c2418, px, py, S, S);
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 3; c++) {
+      const bx = px + c * 6 - (r % 2 ? 3 : 0);
+      rect(g, r % 2 ? 0xa04830 : 0xb05438, Math.max(px, bx) + 1, py + r * 4 + 1, 4, 2);
+    }
+  }
+  if (at(x, y - 1) !== 'ʕ') { rect(g, 0x9c9c94, px, py, S, 3); rect(g, 0xc8c8c0, px, py, S, 1); }
 }
 
 // Caisse « À DONNER » : caisse vide avec son étiquette de papier (texte griffonné au feutre rouge).
@@ -2412,6 +2440,7 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'χ': return fishCrate(g, px, py, x, y);
     case 'ʁ': return giveCrate(g, px, py, x, y);
     case 'ʀ': return planksPile(g, px, py);
+    case 'ʕ': return railEmbankment(g, px, py, x, y, at);
     case 'ɓ': return bollard(g, px, py);
     case 'ĉ': return cliff2(g, px, py, x, y, at);
     case 'ŝ': return stairs(g, px, py, x, y, at);
