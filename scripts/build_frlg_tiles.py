@@ -7,6 +7,11 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   frlg-ferry.png     ferry des îles Sevii détouré (voir ferry) ;
   frlg-pier.png      ponton (bord gauche, milieu, bord droit) sans l'eau sur ses côtés (voir pier) ;
   frlg-stairs.png    escalier du petit plateau en pierre blanche (voir white_stairs) ;
+  frlg-searock.png   rocher dans la mer, sans l'eau autour (voir sea_rock) ;
+  frlg-rooms.png     trois pièces d'intérieur (11 x 9 cases) côte à côte (voir ROOMS) ;
+  frlg-travel-sea.png  mer de la traversée en ferry (256 x 192, répétable) ;
+  frlg-ferry-wake.png  ferry avec son sillage, pour la traversée (voir ferry_wake) ;
+  frlg-townmap.png     carte du voyage : mer rayée, point de ville, tête de Red (voir town_map) ;
   frlg-props.png     planche de Hoeloe (arbre isolé, rocher, mer animée…), fond violet rendu transparent ;
   frlg-seven.png     carte de Seven Island (24 x 20 cases), sans le cadre ;
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent.
@@ -106,6 +111,45 @@ def pier(seven):
     return out
 
 
+def sea_rock(seven):
+    """Rocher dans la mer de Seven Island (16 x 16 en 41, 279) sans l'eau autour : la mer animée passe
+    dessous (voir src/art/frlgArt.js)."""
+    sea = set(seven.crop((0, 14 * 16, 32, 16 * 16)).getdata())
+    rock = seven.crop((41, 279, 57, 295))
+    rock.putdata([(0, 0, 0, 0) if p in sea else p for p in rock.getdata()])
+    return rock
+
+
+# Pièces d'intérieur Rouge Feu (11 x 9 cases chacune), rangées côte à côte dans frlg-rooms.png :
+# 0 = maison de Three Island (cuisine, frigo, étagères, table), 1 = maison du dresseur de Seven Island
+# (bibliothèques, placards jaunes), 2 = maison inutilisée de Seven Island (fenêtres à rideaux, panneau).
+ROOMS = [
+    ('maps__towns_buildings_etc._-three_island.png', (400, 376)),
+    ('maps__towns_buildings_etc._-seven_island.png', (648, 24)),
+    ('maps__towns_buildings_etc._-seven_island.png', (848, 192)),
+]
+ROOM_W, ROOM_H = 11 * 16, 9 * 16
+
+
+def rooms(rgba):
+    out = Image.new('RGBA', (ROOM_W * len(ROOMS), ROOM_H), (0, 0, 0, 0))
+    for i, (name, (x, y)) in enumerate(ROOMS):
+        out.paste(rgba(name).crop((x, y, x + ROOM_W, y + ROOM_H)), (i * ROOM_W, 0))
+    out = gba_palette(out)
+    # Les plantes de la pièce 0 sont dans la colonne du bord, au parquet plus sombre : partout où l'on voit
+    # ce parquet sombre (couleurs de la case vide 0, 5), on remet le parquet normal (case 8, 4 de la pièce 1)
+    # au même endroit, pour que les plantes se posent n'importe où dans une pièce.
+    tile = lambda room, c, r: out.crop((room * ROOM_W + c * 16, r * 16, room * ROOM_W + c * 16 + 16, r * 16 + 16))
+    dark = set(tile(0, 0, 5).getdata())
+    floor = tile(1, 8, 4).load()
+    px = out.load()
+    for y in range(16, 5 * 16):
+        for x in range(16):
+            if px[x, y] in dark:
+                px[x, y] = floor[x, y % 16]
+    return out
+
+
 def ferry(sheet):
     """Ferry des îles Sevii (écran d'exemple « Heading to », proue à droite), détouré : l'eau autour
     (ses teintes bleues, relevées hors du ferry) est enlevée par remplissage depuis les bords, puis
@@ -130,7 +174,41 @@ def ferry(sheet):
         first = next((x for x in range(w) if dark(px[x, y])), w)
         for x in range(first):
             px[x, y] = (0, 0, 0, 0)
-    # Garde le plus grand morceau (le ferry) : reflets et gouttes isolés enlevés.
+    keep_largest(im)                    # reflets et gouttes isolés enlevés
+    im = im.crop(im.getbbox())
+    # Pointe d'écume restée collée à gauche de la coque.
+    px = im.load()
+    for y in range(im.height):
+        for x in range(4):
+            if px[x, y][3] and sum(px[x, y][:3]) > 600:
+                px[x, y] = (0, 0, 0, 0)
+    return im.crop(im.getbbox())
+
+
+def ferry_wake(sheet):
+    """Ferry avec son sillage (écran d'exemple « Heading to », proue à droite), pour la traversée : l'eau
+    (ses teintes bleues) est enlevée par remplissage depuis les bords, reflets isolés enlevés."""
+    blue = {p for x in range(560, 800) for y in range(50, 160) for p in [sheet.getpixel((x, y))] if p[2] - p[0] > 60}
+    im = sheet.crop((552, 64, 722, 136))
+    px = im.load()
+    w, h = im.size
+    queue = deque([(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)])
+    seen = set()
+    while queue:
+        x, y = queue.popleft()
+        if (x, y) in seen or not (0 <= x < w and 0 <= y < h) or px[x, y] not in blue:
+            continue
+        seen.add((x, y))
+        px[x, y] = (0, 0, 0, 0)
+        queue.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
+    keep_largest(im)
+    return im.crop(im.getbbox())
+
+
+def keep_largest(im):
+    """Ne garde que le plus grand morceau opaque de l'image (enlève les reflets et gouttes isolés)."""
+    px = im.load()
+    w, h = im.size
     seen, parts = set(), []
     for y in range(h):
         for x in range(w):
@@ -148,14 +226,17 @@ def ferry(sheet):
     for part in sorted(parts, key=len)[:-1]:
         for p in part:
             px[p] = (0, 0, 0, 0)
-    im = im.crop(im.getbbox())
-    # Pointe d'écume restée collée à gauche de la coque.
-    px = im.load()
-    for y in range(im.height):
-        for x in range(4):
-            if px[x, y][3] and sum(px[x, y][:3]) > 600:
-                px[x, y] = (0, 0, 0, 0)
-    return im.crop(im.getbbox())
+
+
+def town_map(sheet):
+    """Éléments de la carte de Rouge Feu pour la carte du voyage, côte à côte : mer rayée (16 x 16),
+    point de ville (8 x 8), tête de Red (16 x 16, fond orange rendu transparent)."""
+    out = Image.new('RGBA', (40, 16), (0, 0, 0, 0))
+    out.paste(sheet.crop((274, 1104, 290, 1120)), (0, 0))
+    out.paste(sheet.crop((538, 98, 546, 106)), (16, 0))
+    head = clear_color(sheet.crop((732, 42, 748, 58)), (255, 127, 39, 255))
+    out.paste(head, (24, 0))
+    return out
 
 
 def main():
@@ -170,8 +251,14 @@ def main():
     seven = gba_palette(rgba('maps__towns_buildings_etc._-seven_island.png').crop((8, 24, 392, 344)))
     seven.save(OUT / 'frlg-seven.png')
     pier(seven).save(OUT / 'frlg-pier.png')
+    sea_rock(seven).save(OUT / 'frlg-searock.png')
     gba_palette(clear_outside(rgba('tilesets-buildings.png'), (255, 255, 255, 255))).save(OUT / 'frlg-buildings.png')
     gba_palette(ferry(rgba('maps-seagallop_ferry.png'))).save(OUT / 'frlg-ferry.png')
+    rooms(rgba).save(OUT / 'frlg-rooms.png')
+    seagallop = rgba('maps-seagallop_ferry.png')
+    gba_palette(seagallop.crop((288, 24, 544, 216))).save(OUT / 'frlg-travel-sea.png')
+    gba_palette(ferry_wake(seagallop)).save(OUT / 'frlg-ferry-wake.png')
+    gba_palette(town_map(rgba('miscellaneous-town_map.png'))).save(OUT / 'frlg-townmap.png')
     print('ok ->', OUT.relative_to(ROOT))
 
 

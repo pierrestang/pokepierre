@@ -5,15 +5,15 @@ import { FLAGS, ITEMS } from '../story.js';
 const BOAT = {
   requiresSouvenirs: ['souvenir-maman', 'souvenir-papa', 'souvenir-manon'],
   dialogue: ["Tu n'es pas encore prêt à partir."],
-  readyDialogue: ['Tu as réuni les souvenirs de ta famille.', 'Tu embarques pour Saint-Ay !'],
+  readyDialogue: ['Tu as réuni les souvenirs de ta famille.', 'Tu embarques sur le ferry pour Saint-Ay !'],
   setFlags: [FLAGS.departFortDeFrance],
   // Arrivée : au bord de l'étang de Saint-Ay, à côté de son bateau.
-  warp: { map: 'saintAy', x: 11, y: 17, facing: 'left' },
+  warp: { map: 'saintAy', x: 11, y: 17, facing: 'left', ferry: true },   // traversée en ferry
 };
-const BOAT_POS = { x: 13, y: 25, w: 4, h: 2 };
+const BOAT_POS = { x: 14, y: 25, w: 4, h: 2 };
 
 // Fort-de-France — île ronde de départ, bordée de larges plages, 30 x 31 cases : maison familiale et son jardin fleuri en
-// haut, allée pavée de la porte jusqu'au bord de la pelouse, puis ponton en bois (2 cases) jusqu'au ferry, cabane de pêche
+// haut, allée de sable (3 cases, centrée sur la porte) jusqu'à la plage, puis ponton en bois (2 cases) jusqu'au ferry, cabane de pêche
 // à droite, trois grands sapins isolés (on peut passer derrière) et deux grands arbres feuillus (dont un à gauche
 // de la maison), hautes herbes aux formes arrondies,
 // buissons et fleurs, rochers dans la mer, drapeau de la Martinique à droite de la maison ; en bas à gauche,
@@ -32,27 +32,27 @@ export const fortDeFranceMap = {
     'wwwwwwssss..RRRRR...sssswwwøww', // 4
     'wwwwwsssŦŦŦ.RRRRR.f.ssssswwwww', // 5
     'wwwwssssŦŦŦ.WWWWWƒ.f.ssssswwww', // 6
-    'wwwwssssŦŦŦ.WDWWWɸ......sswwww', // 7
-    'wwwssss.ŦŦŦ..ççM........ssswww', // 8
-    'wwwsss...f.ƒfçç.fƒ......ssswww', // 9
-    'wwwsssTT.....çç..ƀ......ssswww', // 10
-    'wwsss.TT.f.S.çç...ƀ..RRRRsssww', // 11
-    'wwsss.ĥĥĥ....çç...TT.RRRRsssww', // 12
-    'wwss.ĥĥĥĥ....çç...TT.WWWWsssww', // 13
-    'wøss.ɱɱɱɱ..f.çç.ŦŦŦ..WDWWsssww', // 14
-    'wwws.ɱɱɱɱ....çç.ŦŦŦf....ssswww', // 15
-    'wwws.ɱɲɲɱ.TT.çç.ŦŦŦ.ƀƒ.sssswww', // 16
-    'wwws.ɱɲɲɱ.TT.çç.ŦŦŦĥĥĥssssswww', // 17
-    'wwws.......f.çç.f.ĥĥĥĥsssswwøw', // 18
+    'wwwwssssŦŦŦ.WDWWWɸ....f.sswwww', // 7
+    'wwwssss.ŦŦŦ.çççM....TT..ssswww', // 8
+    'wwwsss...f.ƒççç.fƒƀ.TT..ssswww', // 9
+    'wwwsssTT....ççç..ƀ.f....ssswww', // 10
+    'wwsss.TT.f.Sççç...ƀ..RRRRsssww', // 11
+    'wwsss.ĥĥĥ...ççç...TT.RRRRsssww', // 12
+    'wwss.ĥĥĥĥ...ççç...TT.WWWWsssww', // 13
+    'wøss.ɱɱɱɱ..fççç.ŦŦŦ..WDWWsssww', // 14
+    'wwws.ɱɱɱɱ...ççç.ŦŦŦf....ssswww', // 15
+    'wwws.ɱɲɲɱ.TTççç.ŦŦŦ.ƀƒ.sssswww', // 16
+    'wwws.ɱɲɲɱ.TTççç.ŦŦŦĥĥĥssssswww', // 17
+    'wwws.......fççç.f.ĥĥĥĥsssswwøw', // 18
     'wwwssssssssssssssssĥĥssssswwww', // 19
-    'wwwwwssssʂsssssssssŕssssswwwww', // 20
-    'wwwwwwssssŕsssssssɕsɕssswwwwww', // 21
+    'wwwwwssssssssssssssŕssssswwwww', // 20
+    'wwwwwwssssŕssssssssssssswwwwww', // 21
     'wwwwwwwwsssssssssssssswwwwwwww', // 22
-    'wwwwwøwwwws==sswwwwwwwwwwwwwww', // 23
-    'wwwwwwwwwww==wwwwwwwwøwwwwwwww', // 24
-    'wwwwwwwwwww==BBBBwwwwwwwøwwwww', // 25
-    'wwwwwwwwwww==BBBBwwwwwwwwwwwww', // 26
-    'wwwwwwwwwww==wwwwwwwwwwwwwwwww', // 27
+    'wwwwwøwwwwss==sswwwwwwwwwwwwww', // 23
+    'wwwwwwwwwwww==wwwwwwwøwwwwwwww', // 24
+    'wwwwwwwwwwww==BBBBwwwwwwøwwwww', // 25
+    'wwwwwwwwwwww==BBBBwwwwwwwwwwww', // 26
+    'wwwwwwwwwwww==wwwwwwwwwwwwwwww', // 27
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 28
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 29
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 30
@@ -68,7 +68,7 @@ export const fortDeFranceMap = {
   ],
   objects: [
     { x: 11, y: 11, dialogue: ['Fort-de-France — Martinique. Bienvenue sur l\'île !'] },
-    { x: 15, y: 8, dialogue: ['[Texte provisoire] La boîte aux lettres de la famille.'] },
+    { x: 15, y: 8, dialogue: ['La boîte aux lettres de la famille.', "Rien aujourd'hui… Peut-être une carte postale de Saint-Ay, un jour ?"] },
     { x: 17, y: 7, dialogue: ['Le drapeau rouge, vert et noir de la Martinique flotte au vent.'] },
     // Mémorial de l'Anse Caffard (Cap 110) : six statues de pierre blanche tournées vers la mer, en trois
     // rangées (une, deux, trois), au fond d'un petit plateau rocheux herbeux de 4 x 4 cases ; on monte
@@ -88,10 +88,24 @@ export const fortDeFranceMap = {
     })),
   ],
   npcs: [
+    // Habitants de l'île (sans rôle dans l'histoire).
     {
-      id: 'pecheur', name: 'Pêcheur', x: 13, y: 23, facing: 'down', still: true,
-      look: { skin: 0xc89060, hair: 0x302420, top: 0xf0d050, bottom: 0x3c4c6c, accessory: 'cap', capColor: 0x2c6cb0 },
-      dialogue: ['[Texte provisoire] Ça mord bien ce matin ! Le bateau pour Saint-Ay attend juste à côté.'],
+      id: 'promeneuse', name: 'Promeneuse', x: 9, y: 15, facing: 'left',
+      dialogue: [
+        'Je viens souvent ici, devant les statues.',
+        'Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés.',
+      ],
+    },
+    {
+      id: 'gamin', name: 'Gamin', x: 19, y: 21, facing: 'down',
+      dialogue: [
+        "J'ai vu des poissons sauter près des rochers !",
+        'Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ?',
+      ],
+    },
+    {
+      id: 'pecheur', name: 'Pêcheur', x: 14, y: 23, facing: 'down', still: true,
+      dialogue: ["Ça mord bien ce matin ! Tu vois ce ferry ? C'est lui qui t'emmènera à Saint-Ay.", 'Mais pas avant d\'avoir dit au revoir à ta famille, hein !'],
     },
   ],
   // Coquillage caché dans les hautes herbes, trouvé une seule fois.

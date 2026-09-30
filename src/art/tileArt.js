@@ -1208,20 +1208,6 @@ function tallGrass(g, px, py, x, y, at) {
   }
 }
 
-// Touffes de la case (x, y) qui passent devant un personnage qui s'y tient (comme dans Pokémon) :
-// les 10 rangées du bas de la case, sol transparent, dessinées en (0, 0).
-export function drawTallGrassCover(g, x, y, at) {
-  const tall = (dx, dy) => at(x + dx, y + dy) === 'ĥ';
-  const [up, down, left, right] = [tall(0, -1), tall(0, 1), tall(-1, 0), tall(1, 0)];
-  TALL_GRASS.forEach((row, ly) => {
-    if (ly < 6) return;
-    for (let lx = 0; lx < S; lx++) {
-      const c = row[lx];
-      if (c !== '.' && !tuftSkipped(lx, ly, up, down, left, right)) rect(g, tuftColor(c, lx, ly, x, y), lx, ly - 6, 1, 1);
-    }
-  });
-}
-
 // Buisson rond (façon Pokémon), contour sombre, reflets clairs.
 function bush(g, px, py, x, y, at) {
   grass(g, px, py, x, y, at);
@@ -1834,6 +1820,7 @@ export function tallFrames(kind) {
 }
 
 function floor(g, px, py, x, y = 0) {
+  if (groundProvided) return;                                        // parquet Rouge Feu déjà posé
   // Lames en diagonale, alternées d'une case à l'autre : effet de chevrons.
   rect(g, 0xe8c890, px, py, S, S);
   const flip = (x + y) % 2 === 1;

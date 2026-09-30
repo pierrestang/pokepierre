@@ -169,7 +169,7 @@ export class DialogBox {
   setSpeaker(speaker) {
     const portrait = speaker ? portraitOf(speaker) : null;
     this.portrait.setVisible(portrait !== null);
-    if (portrait !== null) this.portrait.setFrame(`p${portrait}`);
+    if (portrait) this.portrait.setTexture(portrait.key, portrait.frame);
     this.speaker = speaker;
     this.nameBg.clear();
     this.nameText.setText(speaker ? frlgText(this.scene, speaker) : '');

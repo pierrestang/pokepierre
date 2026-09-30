@@ -2,7 +2,8 @@
 // uniquement), préparées par scripts/build_frlg_tiles.py dans public/assets/tiles/.
 //
 // Le rendu d'une carte se fait en trois couches (voir systems/tileRenderer.js) :
-//   1. drawFrlgGround : le sol Rouge Feu (herbe, sable, plage, mer, chemin, ponton) ;
+//   1. drawFrlgGround : le sol Rouge Feu (herbe, sable, plage, chemin, ponton ; la mer est une couche
+//      animée sous la carte, voir addSeaLayer) ;
 //   2. le dessin procédural (art/tileArt.js) pour tout ce qui n'a pas d'équivalent Rouge Feu
 //      (palmiers, boîte aux lettres, décors des autres pays…), sans son propre sol là où la couche 1 en a posé ;
 //   3. drawFrlgOverlay : objets Rouge Feu posés sur le sol (hautes herbes, fleurs, buissons, panneaux,
@@ -22,6 +23,11 @@ export const FRLG_SHEETS = {
   ferry: 'frlg-ferry',
   pier: 'frlg-pier',
   stairs: 'frlg-stairs',
+  searock: 'frlg-searock',
+  rooms: 'frlg-rooms',
+  travelSea: 'frlg-travel-sea',
+  ferryWake: 'frlg-ferry-wake',
+  townMap: 'frlg-townmap',
 };
 
 export function preloadFrlg(scene) {
@@ -68,11 +74,10 @@ const PLATEAU = {
   bl: O(19, 17), br: O(22, 17),
   stairs: [0, 1].map((i) => ({ sheet: FRLG_SHEETS.stairs, sx: i * S, sy: 0 })),   // escalier blanc
 };
-const SEA_ROCK = { sheet: FRLG_SHEETS.seven, sx: 41, sy: 279 };
+const SEA_ROCK = { sheet: FRLG_SHEETS.searock, sx: 0, sy: 0 };   // sans l'eau autour : la mer animée passe dessous
 // Ponton (sans l'eau de ses côtés : le sol dessous reste visible).
 const PIER_TILE = (i) => ({ sheet: FRLG_SHEETS.pier, sx: i * S, sy: 0 });
 const PIER = { left: PIER_TILE(0), mid: PIER_TILE(1), right: PIER_TILE(2) };
-const seaTile = (x, y) => SEVEN(mod2(x), 14 + mod2(y));   // motif de vagues sur 2 x 2 cases
 
 // Grand arbre isolé (32 x 45 px) de la planche de Hoeloe : 2 cases de large, dépasse de 13 px au-dessus.
 export const FRLG_TREE = { sheet: FRLG_SHEETS.props, sx: 95, sy: 33, w: 32, h: 45 };
@@ -168,12 +173,12 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
   const py = y * S;
   const groundAt = (dx, dy) => (at(x + dx, y + dy) === undefined ? ground : frlgGroundOf(x + dx, y + dy, at, buildingFloor));
 
+  // La mer n'est pas dessinée ici : c'est une couche animée sous la carte (voir addSeaLayer).
   if (ground === 'grass') blit(ctx, textures, GRASS[hash(x, y) % GRASS.length], px, py);
-  else if (ground === 'sea') blit(ctx, textures, seaTile(x, y), px, py);
   else if (ground === 'pier') {
-    // Sous le ponton : du sable là où il est bordé de terre, la mer ailleurs (visible sur ses bords).
+    // Sous le ponton : du sable là où il est bordé de terre, la mer (animée) ailleurs.
     const onLand = [groundAt(-1, 0), groundAt(1, 0)].some((g) => ['sand', 'path', 'grass'].includes(g));
-    blit(ctx, textures, onLand ? SAND_ON_GRASS.fill : seaTile(x, y), px, py);
+    if (onLand) blit(ctx, textures, SAND_ON_GRASS.fill, px, py);
     const left = at(x - 1, y) !== '=';
     const right = at(x + 1, y) !== '=';
     blit(ctx, textures, left ? PIER.left : right ? PIER.right : PIER.mid, px, py);
@@ -185,8 +190,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
     const orth = (test) => [[0, -1], [0, 1], [-1, 0], [1, 0]].some(([dx, dy]) => test(dx, dy));
     const diag = (test) => [[-1, -1], [1, -1], [-1, 1], [1, 1]].some(([dx, dy]) => test(dx, dy));
     if (orth(isSea) || diag(isSea)) {
-      blit(ctx, textures, seaTile(x, y), px, py);
-      blit(ctx, textures, borderTile(SAND_ON_SEA, isSea), px, py);
+      blit(ctx, textures, borderTile(SAND_ON_SEA, isSea), px, py);   // partie transparente : la mer animée
       const rim = borderTile(GRASS_RIMS, isGrass);   // la plage touche aussi l'herbe : liseré par-dessus
       if (rim) blit(ctx, textures, rim, px, py);
     } else {
@@ -204,7 +208,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
 }
 
 // Codes entièrement dessinés par les couches Rouge Feu (le dessin procédural les ignore).
-const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ']);
+const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M']);
 
 export function isFrlgOnly(code) {
   return FRLG_ONLY.has(code);
@@ -222,6 +226,7 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
     case 'ƀ': return put(BUSH);
     case 'S': return put(SIGN);
     case 'ŕ': return put(BEACH_ROCK);
+    case 'M': return drawPixels(ctx, MAILBOX, MAILBOX_COLORS, px + 2, py + S - MAILBOX.length);
     case 'ø': return put(SEA_ROCK);
     case 'ł': return put(LOGS);
     case 'ɱ':
@@ -249,6 +254,33 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
     }
     default:
   }
+}
+
+// Boîte aux lettres (12 x 14 px, calée en bas de sa case) aux couleurs de Rouge Feu : caisson blanc à
+// fente, petit drapeau rouge, poteau, ombre au pied.
+const MAILBOX = [
+  '..########..',
+  '.#wwwwwwww#r',
+  '#wwwwwwwwwo#r',
+  '#ww######wo#r',
+  '#wwwwwwwwwo#',
+  '#wwwwwwwwwo#',
+  '#oooooooooo#',
+  '.##########.',
+  '.....#p.....',
+  '.....#p.....',
+  '.....#p.....',
+  '....####....',
+  '...ssssss...',
+];
+const MAILBOX_COLORS = { '#': '#485060', w: '#f8f8f8', o: '#b8c0d0', r: '#e04040', p: '#a07848', s: 'rgba(0,0,0,0.2)' };
+
+function drawPixels(ctx, rows, colors, px, py) {
+  rows.forEach((row, y) => [...row].forEach((c, x) => {
+    if (!colors[c]) return;
+    ctx.fillStyle = colors[c];
+    ctx.fillRect(px + x, py + y, 1, 1);
+  }));
 }
 
 // Bâtiment Rouge Feu : image à part (texture `frlg-building-<type>`), triée en profondeur comme les
@@ -290,4 +322,106 @@ export function frlgTree(code, x, y, at) {
 
 export function drawFrlgTree(ctx, textures, px, py) {
   blit(ctx, textures, FRLG_TREE, px, py, FRLG_TREE.w, FRLG_TREE.h);
+}
+
+// ---------- Mer animée ----------
+
+// La mer de Seven Island (motif de vagues de 32 x 32) est une couche sous la carte, qui glisse
+// doucement pixel par pixel ; la carte la laisse voir partout où il y a de l'eau (mer, écume de la
+// plage, sous le ponton, autour des rochers et du ferry).
+export function addSeaLayer(scene, width, height, margin = 40 * S) {
+  const key = 'frlg-sea';
+  if (!scene.textures.exists(key)) {
+    const tex = scene.textures.createCanvas(key, 2 * S, 2 * S);
+    for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) blit(tex.getContext(), scene.textures, SEVEN(x, 14 + y), x * S, y * S);
+    tex.refresh();
+  }
+  const layer = scene.add.tileSprite(-margin, -margin, width + 2 * margin, height + 2 * margin, key)
+    .setOrigin(0).setDepth(-2);
+  let t = 0;
+  scene.time.addEvent({
+    delay: 200,
+    loop: true,
+    callback: () => {
+      t++;
+      layer.tilePositionX = t % (2 * S);
+      layer.tilePositionY = Math.floor(t / 2) % (2 * S);
+    },
+  });
+  return layer;
+}
+
+// ---------- Hautes herbes ----------
+
+// Bas de la tuile de hautes herbes (10 rangées du bas), posé devant le personnage qui s'y tient : comme
+// dans Rouge Feu, ses jambes disparaissent dans les feuilles. Renvoie la clé de la texture.
+export const GRASS_COVER_TOP = 6;
+export function tallGrassCoverTexture(scene) {
+  const key = 'frlg-grass-cover';
+  if (!scene.textures.exists(key)) {
+    const tex = scene.textures.createCanvas(key, S, S - GRASS_COVER_TOP);
+    const src = scene.textures.get(FRLG_SHEETS.outdoor).getSourceImage();
+    tex.getContext().drawImage(src, TALL_GRASS.sx, TALL_GRASS.sy + GRASS_COVER_TOP, S, S - GRASS_COVER_TOP, 0, 0, S, S - GRASS_COVER_TOP);
+    tex.refresh();
+  }
+  return key;
+}
+
+// ---------- Intérieurs Rouge Feu ----------
+
+// Intérieur « Rouge Feu » (`frlg: true` dans ses données, voir data/maps/interiors.js) : deux rangées de mur
+// en haut de la pièce, parquet partout ailleurs, noir autour ; les meubles (`decor`) sont des blocs repris
+// tels quels des pièces de frlg-rooms.png, le tapis de sortie est centré sur les cases 'E'.
+// Les cases de meubles sont des 'm' (bloquantes) dans la grille ; ce qui n'a pas d'équivalent Rouge Feu
+// (lit, télé, ordinateur, escalier, cannes à pêche…) reste dessiné dans le code, sur le parquet.
+const ROOM = (room, c, r) => ({ sheet: FRLG_SHEETS.rooms, sx: room * 11 * S + c * S, sy: r * S });
+const WALL_TOP = ROOM(1, 8, 0);
+const WALL = ROOM(1, 8, 1);
+const FLOOR_UNDER_WALL = ROOM(1, 8, 2);
+const FLOOR = ROOM(1, 8, 4);
+const EXIT_MAT = { sheet: FRLG_SHEETS.rooms, sx: 59, sy: 116, w: 26, h: 16 };
+
+// Meubles : pièce, colonne, rangée, largeur, hauteur (en cases) dans frlg-rooms.png.
+export const FRLG_DECOR = {
+  plant: [0, 0, 3, 1, 2],          // plante en pot (au milieu de la pièce)
+  blueShelf: [0, 1, 1, 1, 2],      // étagère bleue
+  glassCabinet: [0, 2, 1, 2, 2],   // vitrine et vase
+  painting: [0, 4, 0, 1, 2],       // tableau au mur
+  kitchen: [0, 8, 1, 2, 2],        // évier et cuisinière
+  fridge: [0, 10, 1, 1, 2],        // frigo
+  table: [0, 4, 4, 4, 2],          // table et quatre chaises
+  bookshelf: [1, 0, 0, 2, 3],      // bibliothèque
+  cabinet: [1, 3, 1, 1, 2],        // placard jaune
+  window: [2, 4, 0, 2, 2],         // fenêtre à rideaux
+  notice: [2, 9, 0, 1, 2],         // panneau d'affichage
+};
+
+// Couche 1 d'un intérieur : mur (deux rangées du haut), noir (murs du bas et des côtés), parquet.
+export function drawFrlgInteriorGround(ctx, textures, x, y, at) {
+  const px = x * S;
+  const py = y * S;
+  if (at(x, y) === 'X') {
+    if (y <= 1) return blit(ctx, textures, y === 0 ? WALL_TOP : WALL, px, py);
+    ctx.fillStyle = '#000000';
+    return ctx.fillRect(px, py, S, S);
+  }
+  return blit(ctx, textures, at(x, y - 1) === 'X' && y === 2 ? FLOOR_UNDER_WALL : FLOOR, px, py);
+}
+
+// Codes d'intérieur entièrement dessinés par les couches Rouge Feu.
+export const FRLG_INTERIOR_ONLY = new Set(['X', 'o', 'm', 'E']);
+
+// Couche 3 d'un intérieur : meubles, puis tapis de sortie sur chaque groupe de cases 'E' d'une rangée.
+export function drawFrlgInteriorDecor(ctx, textures, interior) {
+  for (const { kind, x, y } of interior.decor ?? []) {
+    const [room, c, r, w, h] = FRLG_DECOR[kind];
+    blit(ctx, textures, ROOM(room, c, r), x * S, y * S, w * S, h * S);
+  }
+  interior.grid.forEach((row, y) => row.forEach((code, x) => {
+    if (code !== 'E' || row[x - 1] === 'E') return;
+    let n = 1;
+    while (row[x + n] === 'E') n++;
+    const cx = x * S + (n * S) / 2;
+    blit(ctx, textures, EXIT_MAT, Math.round(cx - EXIT_MAT.w / 2), y * S, EXIT_MAT.w, EXIT_MAT.h);
+  }));
 }

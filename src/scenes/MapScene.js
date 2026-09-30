@@ -11,13 +11,14 @@ import { lookOf } from '../data/characters.js';
 import { interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
+import { visitedFlag } from '../systems/RegionMap.js';
 import { items } from '../systems/items.js';
 import { savePosition } from '../systems/save.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
 import {
-  GrassCovers, InteractHint, stepEffect, footprint, startFallingLeaves, startSeaShimmer, startShoreFoam,
-  startSeagulls, startCrabs, startJumpingFish, lightWindows, applyTimeOfDay,
+  GrassCovers, InteractHint, stepEffect, footprint, startFallingLeaves, startSeaShimmer,
+  startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay,
 } from '../systems/effects.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 
@@ -53,28 +54,28 @@ export class MapScene extends Phaser.Scene {
     this.grid = grid;
     this.transitioning = false;
     renderMap(this, map);
+    if (this.scene.key === 'Overworld') flags.add(visitedFlag(map.id));    // pour la carte du voyage
     this.canopy = canopyTiles(grid);
     this.startWaterSparkles();
     this.grassCovers = new GrassCovers(this, map);
     const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
-    startSeaShimmer(this, map, seaAround);
+    startSeaShimmer(this, map, false);      // reflets des étangs et rivières (la mer est animée, voir addSeaLayer)
     // Musique du lieu et ressac près de la mer.
     playMusic(this.scene.key === 'Interior' ? 'home' : 'island');
     const hasSea = seaAround || grid.some((row) => row.includes('w'));
     setSeaAmbience(hasSea);
-    // Vie de l'île : écume qui bouge, mouettes, crabe, poissons, fenêtres éclairées le soir.
-    startShoreFoam(this, map);
+    // Vie de l'île : mouettes, poissons, fenêtres éclairées le soir.
     if (hasSea) {
       startSeagulls(this, map);
       startJumpingFish(this, map);
     }
-    startCrabs(this, map);
     if (this.scene.key === 'Overworld') lightWindows(this, map, this.game);
     this.hint = new InteractHint(this);
     this.startIdleNpcs();
     startFallingLeaves(this, map);
+    // Autour de la carte : la mer animée (voir renderMap) ou un décor répété.
     const fillTile = map.surroundings ?? this.surroundingTile;
-    this.surroundings = fillTile ? createSurroundings(this, map, fillTile) : null;
+    this.surroundings = fillTile && fillTile !== 'w' ? createSurroundings(this, map, fillTile) : null;
 
     this.npcs = [];
     this.props = [];
@@ -127,7 +128,7 @@ export class MapScene extends Phaser.Scene {
   startWaterSparkles() {
     const water = [];
     this.grid.forEach((row, y) => row.forEach((c, x) => {
-      if (['w', '~', 'G'].includes(c)) water.push([x, y]);
+      if (['~', 'G'].includes(c)) water.push([x, y]);
     }));
     if (!water.length) return;
     const pool = Array.from({ length: 16 }, () => this.add.rectangle(0, 0, 3, 1, 0xffffff).setAlpha(0).setDepth(1));
@@ -334,8 +335,10 @@ export class MapScene extends Phaser.Scene {
 
   // Voyage : { map, x, y, facing } vers une carte extérieure, ou { interior, x, y, facing }
   // vers un autre intérieur de la même ville (ex. étages d'un immeuble par l'ascenseur).
-  travel({ map, interior, ...spawn }) {
+  // `ferry: true` : on passe d'abord par la traversée en ferry (voir FerryScene).
+  travel({ map, interior, ferry, ...spawn }) {
     if (interior) this.goTo('Interior', { interior, fromMap: this.fromMap ?? this.map.id, spawn });
+    else if (ferry) this.goTo('Ferry', { next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
     else this.goTo('Overworld', { mapId: map, spawn });
   }
 

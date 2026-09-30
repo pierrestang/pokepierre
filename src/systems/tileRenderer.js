@@ -3,7 +3,8 @@ import { drawTile, drawTall, tallObject, drawTallKind, tallFrames, setGroundProv
 import { drawBuilding } from '../art/buildingArt.js';
 import {
   drawFrlgGround, drawFrlgOverlay, addFrlgBuilding, frlgBuildingFloor, isFrlgOnly,
-  frlgTree, drawFrlgTree, FRLG_BUILDINGS, FRLG_TREE, FRLG_SHEETS,
+  frlgTree, drawFrlgTree, FRLG_BUILDINGS, FRLG_TREE, FRLG_SHEETS, addSeaLayer,
+  drawFrlgInteriorGround, drawFrlgInteriorDecor, FRLG_INTERIOR_ONLY,
 } from '../art/frlgArt.js';
 import { inFullTreeBlock } from '../data/treeBlocks.js';
 
@@ -19,9 +20,14 @@ export function renderMap(scene, map) {
     bakeRegion(scene, key, { x0: 0, y0: 0, w: grid[0].length, h: grid.length }, (x, y) => grid[y]?.[x], {
       buildings: map.buildings ?? [],
       buildingGround: map.buildingGround,
+      interior: map.frlg ? map : null,
     });
   }
   const image = scene.add.image(0, 0, key).setOrigin(0).setDepth(0);
+  // Mer animée sous la carte, dès qu'il y a de la mer sur la carte ou autour.
+  if (map.surroundings === 'w' || grid.some((row) => row.includes('w'))) {
+    addSeaLayer(scene, grid[0].length * S, grid.length * S);
+  }
   (map.buildings ?? []).forEach((b) => addFrlgBuilding(scene, b));
   addTallObjects(scene, map);
   addBoats(scene, map);
@@ -31,7 +37,8 @@ export function renderMap(scene, map) {
 // Cuit les cases [x0, x0 + w[ x [y0, y0 + h[ dans la texture `key` (coin haut-gauche = case x0, y0).
 // `skip(x, y)` : cases laissées transparentes ; `inlineTrees` : arbres et palmiers dessinés dans la
 // texture (décor autour des cartes) plutôt qu'en objets triés en profondeur.
-function bakeRegion(scene, key, { x0, y0, w, h }, at, { buildings = [], buildingGround, skip = () => false, inlineTrees = false } = {}) {
+// `interior` : un intérieur Rouge Feu (murs, parquet, meubles de frlg-rooms.png, voir art/frlgArt.js).
+function bakeRegion(scene, key, { x0, y0, w, h }, at, { buildings = [], buildingGround, skip = () => false, inlineTrees = false, interior = null } = {}) {
   const textures = scene.textures;
   const floor = frlgBuildingFloor(buildings);
   const tex = textures.createCanvas(key, w * S, h * S);
@@ -43,14 +50,19 @@ function bakeRegion(scene, key, { x0, y0, w, h }, at, { buildings = [], building
 
   // 1. Sol Rouge Feu
   const provided = new Set();
-  for (const [x, y] of cells) if (drawFrlgGround(ctx, textures, x, y, at, floor)) provided.add(`${x},${y}`);
+  for (const [x, y] of cells) {
+    if (interior) {
+      drawFrlgInteriorGround(ctx, textures, x, y, at);
+      provided.add(`${x},${y}`);
+    } else if (drawFrlgGround(ctx, textures, x, y, at, floor)) provided.add(`${x},${y}`);
+  }
 
   // 2. Dessin procédural (sans son sol là où Rouge Feu en a posé un)
   const g = scene.make.graphics({}, false);
   g.translateCanvas(-x0 * S, -y0 * S);
   for (const [x, y] of cells) {
     const code = at(x, y);
-    if (isFrlgOnly(code) || floor(x, y)) continue;
+    if (interior ? FRLG_INTERIOR_ONLY.has(code) : isFrlgOnly(code) || floor(x, y)) continue;
     const drawn = buildingGround && ['R', 'W', 'D'].includes(code) ? buildingGround : code;
     setGroundProvided(provided.has(`${x},${y}`));
     drawTile(g, drawn, x, y, at, getTile(drawn).color);
@@ -60,7 +72,8 @@ function bakeRegion(scene, key, { x0, y0, w, h }, at, { buildings = [], building
   stamp(scene, g, ctx, x0, y0, w, h);
 
   // 3. Objets Rouge Feu (les bâtiments Rouge Feu sont des images à part, voir renderMap)
-  for (const [x, y] of cells) drawFrlgOverlay(ctx, textures, x, y, at);
+  if (interior) drawFrlgInteriorDecor(ctx, textures, interior);
+  else for (const [x, y] of cells) drawFrlgOverlay(ctx, textures, x, y, at);
 
   if (inlineTrees) {
     const tall = scene.make.graphics({}, false);

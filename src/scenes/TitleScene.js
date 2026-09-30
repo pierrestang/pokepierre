@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import { MAPS, START_MAP } from '../data/maps/index.js';
-import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
+import { renderMap } from '../systems/tileRenderer.js';
 import { startSeaShimmer, startFallingLeaves } from '../systems/effects.js';
 import { FONT } from '../systems/screen.js';
+import { FRLG_FONT, frlgText } from '../systems/frlgFont.js';
 import { FLAGS } from '../data/story.js';
 import { flags } from '../systems/flags.js';
 import { hasSave, loadPosition, eraseSave } from '../systems/save.js';
@@ -25,9 +26,8 @@ export class TitleScene extends Phaser.Scene {
     const map = MAPS[START_MAP];
     this.cameras.main.setBackgroundColor(0x4078e0);
     renderMap(this, map);
-    // Autour de l'île, la même mer qu'en jeu (assez large pour tout l'écran et le travelling).
-    if (map.surroundings) createSurroundings(this, map, map.surroundings).resize(this.scale.width, this.scale.height);
-    startSeaShimmer(this, map, true);
+    // Autour de l'île, la même mer animée qu'en jeu (ajoutée par renderMap).
+    startSeaShimmer(this, map, false);
     startFallingLeaves(this, map);
     const background = [...this.children.list];
 
@@ -105,8 +105,9 @@ export class TitleScene extends Phaser.Scene {
     this.options = options;
     this.selected = selected;
     this.creatingMenu = true;                                          // textes d'interface (voir create)
+    // Options dans la police de Rouge Feu, comme les menus du jeu.
     this.optionTexts = options.map((o) =>
-      this.add.text(0, 0, o.label, { fontFamily: FONT, fontSize: '30px' }).setOrigin(0.5),
+      this.add.bitmapText(0, 0, FRLG_FONT, frlgText(this, o.label)).setOrigin(0.5),
     );
     this.creatingMenu = false;
     this.cameras.main.ignore(this.optionTexts);
@@ -133,7 +134,8 @@ export class TitleScene extends Phaser.Scene {
     this.title.setPosition(cx, height * 0.24);
     this.subtitle.setPosition(cx, height * 0.24 + 80);
 
-    const lineH = 52;
+    const scale = height < 600 ? 2 : 3;
+    const lineH = 17 * scale;
     const top = height * 0.52;
     const panelW = Math.min(width - 32, 480);
     const panelH = this.options.length * lineH + 36;
@@ -146,9 +148,10 @@ export class TitleScene extends Phaser.Scene {
     this.optionTexts.forEach((t, i) => {
       const o = this.options[i];
       const isSelected = i === this.selected;
-      t.setPosition(cx, top + i * lineH + lineH / 2 - 2);
-      t.setText(isSelected ? `▶ ${o.label}` : o.label);
-      t.setColor(o.header ? '#6878a8' : o.disabled ? '#b0b0b0' : isSelected ? '#d04040' : '#404c68');
+      t.setScale(scale).setPosition(cx, top + i * lineH + lineH / 2);
+      t.setText(frlgText(this, isSelected ? `▶ ${o.label}` : o.label));
+      t.setAlpha(o.disabled ? 0.45 : 1);
+      if (o.header) t.setTint(0x8098d8);
     });
     this.hint.setPosition(cx, top + panelH + 30);
   }

@@ -3,9 +3,11 @@ import { FRLG_FONT, LINE_HEIGHT, frlgText } from './frlgFont.js';
 import { souvenirs } from './souvenirs.js';
 import { items } from './items.js';
 import { sfx, options, setMusicEnabled, setSfxEnabled } from './audio.js';
+import { RegionMap } from './RegionMap.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu.
-// Souvenirs, Objets, Sauvegarder, Options (musique, sons), Quitter la partie (retour à l'écran titre), Fermer.
+// Carte (du voyage), Souvenirs, Objets, Sauvegarder, Options (musique, sons), Quitter la partie (retour à
+// l'écran titre), Fermer.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
 const FRAME = 0x6888a8;
@@ -21,6 +23,7 @@ export class StartMenu {
     this.bg = scene.add.graphics().setDepth(110);
     this.texts = [];
     this.container = scene.add.container(0, 0, [this.bg]).setDepth(110).setVisible(false);
+    this.regionMap = new RegionMap(scene);
     scene.input.keyboard.on('keydown', (e) => this.onKey(e));
     const onResize = () => this.isOpen && this.render();
     scene.scale.on('resize', onResize);
@@ -37,10 +40,11 @@ export class StartMenu {
       return [
         { label: `MUSIQUE : ${options.music ? 'OUI' : 'NON'}`, action: () => { setMusicEnabled(!options.music); this.render(); } },
         { label: `SONS : ${options.sfx ? 'OUI' : 'NON'}`, action: () => { setSfxEnabled(!options.sfx); this.render(); } },
-        { label: 'RETOUR', action: () => this.showPage('main', 3) },
+        { label: 'RETOUR', action: () => this.showPage('main', 4) },
       ];
     }
     return [
+      { label: 'CARTE', action: () => this.showMap() },
       { label: 'SOUVENIRS', action: () => this.showInDialog(this.souvenirPages()) },
       { label: 'OBJETS', action: () => this.showInDialog(this.itemPages()) },
       { label: 'SAUVEGARDER', action: () => this.save() },
@@ -78,6 +82,13 @@ export class StartMenu {
     this.page = page;
     this.index = index;
     this.render();
+  }
+
+  // Carte du voyage, par-dessus le jeu ; le menu reste « ouvert » (le joueur ne bouge pas) jusqu'à sa fermeture.
+  showMap() {
+    const map = this.mapScene();
+    this.container.setVisible(false);
+    this.regionMap.open(map?.fromMap ?? map?.map.id);
   }
 
   async showInDialog(pages) {
@@ -137,10 +148,14 @@ export class StartMenu {
       if (e.key === 'Escape') this.open();
       return;
     }
+    if (this.regionMap.isOpen) {
+      if (this.regionMap.onKey(e)) this.close();
+      return;
+    }
     const n = this.entries().length;
     if (e.key === 'Escape') {
       sfx('select');
-      if (this.page === 'options') return this.showPage('main', 3);
+      if (this.page === 'options') return this.showPage('main', 4);
       return this.close();
     }
     if (e.key === 'ArrowUp') this.index = (this.index - 1 + n) % n;

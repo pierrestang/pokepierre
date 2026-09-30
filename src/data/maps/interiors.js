@@ -27,34 +27,44 @@ const HOME_FDF = { unlessFlags: [FLAGS.departFortDeFrance] };
 
 // Intérieurs des bâtiments. `spawn` = position d'arrivée (juste au-dessus du tapis).
 export const interiors = {
-  // Fort-de-France — la maison familiale.
-  // Textes provisoires, à réécrire.
+  // Fort-de-France — la maison familiale, façon Rouge Feu (`frlg`, voir art/frlgArt.js) : mur de deux
+  // rangées en haut, meubles de la planche (`decor`, cases 'm' bloquantes) ; télé et escalier dessinés dans
+  // le code. Textes provisoires, à réécrire.
   ffHouse: {
     name: 'Maison familiale',
-    // Salon : télé contre le mur, tapis, canapé face à la télé (vu de dos) ; coin cuisine, table ;
-    // escalier vers la chambre (η).
+    frlg: true,
+    // Étagère, vitrine, télé, cuisine, frigo et escalier contre le mur ; table au milieu ; plantes.
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XmτmλoκκφoηX',
-      'XooooooooooX',
-      'XoρρρooooooX',
-      'XoρρρoommoπX',
-      'XπςςςoommooX',
-      'XoooooooooλX',
-      'XooooEEooooX',
-      'XXXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'mmmoτoommmη',
+      'ooooooooooo',
+      'mooommmmooo',
+      'mooommmmooo',
+      'oooooooooom',
+      'ooooEEoooom',
     ]),
-    spawn: { x: 5, y: 6, facing: 'up' },
+    decor: [
+      { kind: 'blueShelf', x: 0, y: 1 },
+      { kind: 'glassCabinet', x: 1, y: 1 },
+      { kind: 'window', x: 5, y: 0 },
+      { kind: 'kitchen', x: 7, y: 1 },
+      { kind: 'fridge', x: 9, y: 1 },
+      { kind: 'plant', x: 0, y: 4 },
+      { kind: 'table', x: 4, y: 4 },
+      { kind: 'plant', x: 10, y: 6 },
+    ],
+    spawn: { x: 4, y: 6, facing: 'up' },
     triggers: [
-      { x: 10, y: 1, warp: { interior: 'ffHouseUp', x: 8, y: 2, facing: 'down' } },
+      { x: 10, y: 2, warp: { interior: 'ffHouseUp', x: 8, y: 3, facing: 'down' } },
     ],
     objects: [
-      { x: 2, y: 1, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
-      { x: 8, y: 1, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
+      { x: 4, y: 2, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
+      { x: 9, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
     ],
     npcs: [
       {
-        id: 'maman', name: 'Maman', x: 7, y: 2, facing: 'down', color: 0xe86fa0,
+        id: 'maman', name: 'Maman', x: 7, y: 3, facing: 'down', color: 0xe86fa0,
         ...HOME_FDF,
         dialogue: [
           '[Maman - texte provisoire] Bonjour ! Ceci est le premier dialogue de Maman.',
@@ -64,7 +74,7 @@ export const interiors = {
         souvenir: { id: 'souvenir-maman', name: 'Souvenir de Maman' },
       },
       {
-        id: 'papa', name: 'Papa', x: 9, y: 4, facing: 'left', color: 0x3f6fd8,
+        id: 'papa', name: 'Papa', x: 9, y: 5, facing: 'left', color: 0x3f6fd8,
         ...HOME_FDF,
         dialogue: [
           '[Papa - texte provisoire] Salut ! Ceci est le premier dialogue de Papa.',
@@ -74,7 +84,7 @@ export const interiors = {
         souvenir: { id: 'souvenir-papa', name: 'Souvenir de Papa' },
       },
       {
-        id: 'manon', name: 'Manon', x: 3, y: 3, facing: 'up', color: 0xf0a030,
+        id: 'manon', name: 'Manon', x: 2, y: 6, facing: 'up', color: 0xf0a030,
         ...HOME_FDF,
         dialogue: [
           '[Manon - texte provisoire] Coucou ! Ceci est le premier dialogue de Manon.',
@@ -86,47 +96,61 @@ export const interiors = {
     ],
   },
 
-  // Fort-de-France — la chambre de Pierre, à l'étage (invisible de l'extérieur). Escalier : ξ.
+  // Fort-de-France — la chambre de Pierre, à l'étage (invisible de l'extérieur), façon Rouge Feu :
+  // lit, bureau et ordinateur (dessinés dans le code), bibliothèque, fenêtre, plantes. Escalier : ξ.
   ffHouseUp: {
     name: 'Chambre de Pierre',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XLλδuomoξX',
-      'XLoooooooX',
-      'XooρρρoooX',
-      'XπoρρρooπX',
-      'XooooooooX',
-      'XXXXXXXXXX',
+      'XXXXXXXXX',
+      'XXXXXXXXX',
+      'Lδuommooξ',
+      'Loooooooo',
+      'mooooooom',
+      'mooooooom',
     ]),
-    spawn: { x: 8, y: 2, facing: 'down' },
+    decor: [
+      { kind: 'bookshelf', x: 4, y: 0 },
+      { kind: 'window', x: 6, y: 0 },
+      { kind: 'painting', x: 2, y: 0 },
+      { kind: 'plant', x: 0, y: 4 },
+      { kind: 'plant', x: 8, y: 4 },
+    ],
+    spawn: { x: 8, y: 3, facing: 'down' },
     triggers: [
-      { x: 8, y: 1, warp: { interior: 'ffHouse', x: 10, y: 2, facing: 'down' } },
+      { x: 8, y: 2, warp: { interior: 'ffHouse', x: 10, y: 3, facing: 'down' } },
     ],
     objects: [
-      { x: 1, y: 1, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
-      { x: 3, y: 1, dialogue: ['[Texte provisoire] Ton bureau, couvert de cartes du monde.'] },
-      { x: 4, y: 1, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
+      { x: 0, y: 2, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
+      { x: 1, y: 2, dialogue: ['[Texte provisoire] Ton bureau, couvert de cartes du monde.'] },
+      { x: 2, y: 2, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
     ],
   },
 
-  // Fort-de-France — la cabane de pêche de Papa : cannes, caisses de poissons, étagère.
+  // Fort-de-France — la cabane de pêche de Papa, façon Rouge Feu : cannes, caisses de poissons (dessinées
+  // dans le code), fenêtre, panneau, plante.
   ffHut: {
     name: 'Cabane de pêche',
+    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXX',
-      'XψψmoχχoX',
-      'XoooooooX',
-      'XoooooooX',
-      'XχooooπoX',
-      'XoooEoooX',
-      'XXXXXXXXX',
+      'XXXXXXX',
+      'XXXXXXX',
+      'ψψoχχoo',
+      'oooooom',
+      'χooooom',
+      'oooEooo',
     ]),
-    spawn: { x: 4, y: 4, facing: 'up' },
+    decor: [
+      { kind: 'window', x: 1, y: 0 },
+      { kind: 'notice', x: 4, y: 0 },
+      { kind: 'plant', x: 6, y: 3 },
+    ],
+    spawn: { x: 3, y: 4, facing: 'up' },
     objects: [
-      { x: 1, y: 1, dialogue: ['[Texte provisoire] Les cannes à pêche de Papa, bien alignées.'] },
-      { x: 2, y: 1, dialogue: ['[Texte provisoire] Les cannes à pêche de Papa, bien alignées.'] },
-      { x: 5, y: 1, dialogue: ['[Texte provisoire] Des poissons pêchés ce matin. Ça sent la mer !'] },
-      { x: 6, y: 1, dialogue: ['[Texte provisoire] Des poissons pêchés ce matin. Ça sent la mer !'] },
+      { x: 0, y: 2, dialogue: ['[Texte provisoire] Les cannes à pêche de Papa, bien alignées.'] },
+      { x: 1, y: 2, dialogue: ['[Texte provisoire] Les cannes à pêche de Papa, bien alignées.'] },
+      { x: 3, y: 2, dialogue: ['[Texte provisoire] Des poissons pêchés ce matin. Ça sent la mer !'] },
+      { x: 4, y: 2, dialogue: ['[Texte provisoire] Des poissons pêchés ce matin. Ça sent la mer !'] },
     ],
   },
 

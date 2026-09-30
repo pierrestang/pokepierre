@@ -4,6 +4,7 @@ import { TitleScene } from './scenes/TitleScene.js';
 import { OverworldScene } from './scenes/OverworldScene.js';
 import { InteriorScene } from './scenes/InteriorScene.js';
 import { UIScene } from './scenes/UIScene.js';
+import { FerryScene } from './scenes/FerryScene.js';
 import { souvenirs } from './systems/souvenirs.js';
 import { flags } from './systems/flags.js';
 import { items } from './systems/items.js';
@@ -27,7 +28,7 @@ const game = new Phaser.Game({
   backgroundColor: '#000000',
   pixelArt: true,
   // UIScene en dernier : elle s'affiche par-dessus les scènes de jeu.
-  scene: [BootScene, TitleScene, OverworldScene, InteriorScene, UIScene],
+  scene: [BootScene, TitleScene, OverworldScene, InteriorScene, FerryScene, UIScene],
 });
 
 // Accès console en dev (tests manuels) : window.game, game.souvenirs, game.flags, game.items,

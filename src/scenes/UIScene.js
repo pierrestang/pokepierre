@@ -2,36 +2,37 @@ import Phaser from 'phaser';
 import { DialogBox } from '../systems/DialogBox.js';
 import { souvenirs, souvenirEvents } from '../systems/souvenirs.js';
 import { items, itemEvents } from '../systems/items.js';
-import { gameView, FONT } from '../systems/screen.js';
+import { gameView } from '../systems/screen.js';
+import { FRLG_FONT, frlgText } from '../systems/frlgFont.js';
 import { StartMenu } from '../systems/StartMenu.js';
 import { TouchControls, isTouchDevice } from '../systems/TouchControls.js';
 
 // Étiquette en haut à gauche de l'écran de jeu, façon panneau de lieu de Rouge Feu (cadre bleu-gris,
-// fond blanc). Comme dans le jeu, elle descend quand sa valeur change puis remonte au bout de 2,5 s.
+// fond blanc, police de Rouge Feu). Comme dans le jeu, elle descend quand sa valeur change puis remonte au bout de 2,5 s.
 // `row` : rang de l'étiquette. Renvoie set(value, show = true).
 function createLabel(scene, row) {
   const bg = scene.add.graphics();
-  const text = scene.add.text(0, 0, '', { fontFamily: FONT, color: '#404c68', fontStyle: 'bold' });
+  const text = scene.add.bitmapText(0, 0, FRLG_FONT, '');
   const label = scene.add.container(0, 0, [bg, text]).setDepth(90).setVisible(false);
   let hideTimer = null;
   const draw = () => {
     const v = gameView(scene.scale);
     const u = v.zoom;
     const x = v.x + 2 * u;
-    const y = v.y + 2 * u + row * 11 * u;
-    text.setFontSize(5 * u).setPosition(x + 4 * u, y + 2 * u);
+    const y = v.y + 2 * u + row * 17 * u;
+    text.setScale(u).setPosition(x + 5 * u, y + u);
     bg.clear();
-    bg.fillStyle(0x6888a8, 1).fillRoundedRect(x, y, text.width + 8 * u, 10 * u, 1.5 * u);
-    bg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + u, y + u, text.width + 6 * u, 8 * u, u);
+    bg.fillStyle(0x6888a8, 1).fillRoundedRect(x, y, text.width + 10 * u, 16 * u, 2 * u);
+    bg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + u, y + u, text.width + 8 * u, 14 * u, 1.5 * u);
     return { v, y };
   };
   scene.scale.on('resize', draw);
   scene.events.once('shutdown', () => scene.scale.off('resize', draw));
   return (value, show = true) => {
-    text.setText(value);
+    text.setText(frlgText(scene, value ?? ''));
     const { v, y } = draw();
     if (!show || !value) return;
-    const hidden = -(y - v.y + 12 * v.zoom);                          // hors de l'écran de jeu, au-dessus
+    const hidden = -(y - v.y + 18 * v.zoom);                          // hors de l'écran de jeu, au-dessus
     scene.tweens.killTweensOf(label);
     hideTimer?.remove();
     label.setVisible(true).setY(hidden);

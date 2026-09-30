@@ -18,6 +18,8 @@
 //   26 vieux sage, 32 randonneur, 39 agent en uniforme, 40-41 Team Rocket, 50 cuisinier, 51 capitaine.
 
 export const PORTRAITS = 'townsfolk-portraits';
+// Portraits des dresseurs d'Émeraude (scripts/extract_emerald_trainers.py) : images `e{colonne},{rangée}`.
+export const EMERALD_PORTRAITS = 'emerald-portraits';
 export const PORTRAIT_SIZE = 64;
 
 export const SHEETS = {
@@ -33,6 +35,7 @@ export function preloadSpriteSheets(scene) {
   const base = `${import.meta.env.BASE_URL}assets/characters/`;
   for (const sheet of Object.values(SHEETS)) scene.load.image(sheet.key, base + sheet.file);
   scene.load.image(PORTRAITS, `${base}TownsPeople2_Trainers.png`);
+  scene.load.image(EMERALD_PORTRAITS, `${base}emerald-trainers.png`);
 }
 
 // Nomme les images de chaque planche (voir plus haut) et les portraits `p{n}`.
@@ -49,6 +52,11 @@ export function registerSpriteSheets(scene) {
       });
     });
     portraits.add(`p${i}`, 0, (i % 4) * PORTRAIT_SIZE, Math.floor(i / 4) * PORTRAIT_SIZE, PORTRAIT_SIZE, PORTRAIT_SIZE);
+  }
+
+  const emerald = scene.textures.get(EMERALD_PORTRAITS);
+  for (let c = 0; c < 10; c++) {
+    for (let r = 0; r < 11; r++) emerald.add(`e${c},${r}`, 0, 1 + 65 * c, 1 + 65 * r, PORTRAIT_SIZE, PORTRAIT_SIZE);
   }
 
   const f = SHEETS.f;

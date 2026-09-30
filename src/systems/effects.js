@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { TILE_SIZE } from '../data/tiles.js';
-import { drawTallGrassCover } from '../art/tileArt.js';
+import { tallGrassCoverTexture, GRASS_COVER_TOP } from '../art/frlgArt.js';
 import { sfx } from './audio.js';
 
 // Effets « modernes » de l'extérieur, dans une esthétique 2D rétro :
@@ -8,7 +8,7 @@ import { sfx } from './audio.js';
 // sous les pas, vaguelettes qui défilent sur la mer, lumière selon l'heure de la journée.
 
 const S = TILE_SIZE;
-const WATER = ['w', '~', 'G'];
+const WATER = ['~', 'G'];   // étangs et rivières (la mer est une couche animée, voir art/frlgArt.js)
 
 // ---------- Hautes herbes ----------
 
@@ -24,15 +24,9 @@ export class GrassCovers {
   cover(x, y) {
     const id = `${x},${y}`;
     if (!this.covers.has(id)) {
-      const key = `grass-cover-${this.map.id}-${id}`;
-      if (!this.scene.textures.exists(key)) {
-        const g = this.scene.make.graphics({}, false);
-        drawTallGrassCover(g, x, y, this.at);
-        g.generateTexture(key, S, 10);
-        g.destroy();
-      }
-      // Juste devant un personnage debout sur cette case (profondeur 10 + y / 10000, joueur + 0.001).
-      const image = this.scene.add.image(x * S, y * S + 6, key).setOrigin(0).setVisible(false)
+      // Bas de la tuile Rouge Feu des hautes herbes, juste devant un personnage debout sur cette case
+      // (profondeur 10 + y / 10000, joueur + 0.001).
+      const image = this.scene.add.image(x * S, y * S + GRASS_COVER_TOP, tallGrassCoverTexture(this.scene)).setOrigin(0).setVisible(false)
         .setDepth(10 + (y * S + S / 2) / 10000 + 0.002);
       this.covers.set(id, image);
     }
@@ -57,8 +51,8 @@ export class GrassCovers {
     sfx('rustle');
     const image = this.cover(x, y);
     this.scene.tweens.killTweensOf(image);
-    image.setScale(1, 1).setY(y * S + 6);
-    this.scene.tweens.add({ targets: image, scaleY: 0.8, y: y * S + 8, duration: 90, yoyo: true, ease: 'Sine.easeOut' });
+    image.setScale(1, 1).setY(y * S + GRASS_COVER_TOP);
+    this.scene.tweens.add({ targets: image, scaleY: 0.8, y: y * S + GRASS_COVER_TOP + 2, duration: 90, yoyo: true, ease: 'Sine.easeOut' });
     burst(this.scene, x * S + S / 2, y * S + 10, [0x9ce07c, 0x5cb45c, 0xb0ec8c], 4, 7);
   }
 }
@@ -231,40 +225,6 @@ export function startSeagulls(scene, map) {
   scene.time.delayedCall(1500, fly);
 }
 
-// Un crabe qui se promène de côté sur le sable.
-export function startCrabs(scene, map) {
-  const spots = [];
-  map.grid.forEach((row, y) => row.forEach((c, x) => {
-    if (c === 's' && row[x - 1] === 's' && row[x + 1] === 's') spots.push([x, y]);
-  }));
-  if (!spots.length) return;
-  for (const key of ['crab-0', 'crab-1']) {
-    ensureTexture(scene, key, 9, 6, (g) => {
-      const k = 0x802018;
-      const open = key.endsWith('0');
-      px(g, k, 1, 1, 7, 4);
-      px(g, 0xe84830, 2, 2, 5, 2);
-      px(g, 0xf87850, 3, 2, 2, 1);
-      px(g, k, 0, open ? 0 : 1, 2, 2);                                  // pinces
-      px(g, k, 7, open ? 0 : 1, 2, 2);
-      px(g, 0x181818, 3, 1); px(g, 0x181818, 5, 1);                     // yeux
-      px(g, k, 1, 5); px(g, k, 3, 5); px(g, k, 5, 5); px(g, k, 7, 5);   // pattes
-    });
-  }
-  const [cx, cy] = Phaser.Utils.Array.GetRandom(spots);
-  const crab = scene.add.image(cx * S + 8, cy * S + 10, 'crab-0').setDepth(10 + (cy * S + 10) / 10000);
-  let frame = 0;
-  scene.time.addEvent({ delay: 260, loop: true, callback: () => crab.setTexture(`crab-${(frame = 1 - frame)}`) });
-  const wander = () => {
-    const dx = Phaser.Math.Between(-12, 12);
-    scene.tweens.add({
-      targets: crab, x: Phaser.Math.Clamp(crab.x + dx, cx * S - 8, cx * S + 24), duration: 1400, ease: 'Linear',
-      onComplete: () => scene.time.delayedCall(Phaser.Math.Between(800, 2500), wander),
-    });
-  };
-  wander();
-}
-
 // Un poisson saute hors de l'eau de temps en temps, avec des ronds dans l'eau.
 export function startJumpingFish(scene, map) {
   const sea = [];
@@ -300,41 +260,6 @@ export function startJumpingFish(scene, map) {
       scene.tweens.add({ targets: fish, angle: dir * 60, duration: 600 });
     },
   });
-}
-
-// Écume du rivage : une deuxième image de l'écume, en alternance avec celle de la carte (le bord bouge).
-export function startShoreFoam(scene, map) {
-  const at = (x, y) => map.grid[y]?.[x];
-  const land = (x, y) => { const n = at(x, y); return n !== undefined && !['w', '~', '=', 'B', 'ø'].includes(n); };
-  const edges = { top: [0, -1], bottom: [0, 1], left: [-1, 0], right: [1, 0] };
-  for (const side of Object.keys(edges)) {
-    ensureTexture(scene, `foam-${side}`, S, S, (g) => {
-      const horizontal = side === 'top' || side === 'bottom';
-      const inner = side === 'top' || side === 'left' ? 0 : S - 4;
-      for (let i = 0; i < S; i++) {
-        const wave = (i % 5 === 0 ? 1 : 0) + (i % 7 === 3 ? 1 : 0);
-        const depth = 3 + wave;
-        const x = horizontal ? i : side === 'left' ? 0 : S - depth;
-        const y = horizontal ? (side === 'top' ? 0 : S - depth) : i;
-        g.fillStyle(0xf8fcff, 1);
-        g.fillRect(x, y, horizontal ? 1 : depth, horizontal ? depth : 1);
-      }
-      g.fillStyle(0xc8e0f8, 1);
-      for (let i = 2; i < S; i += 5) {
-        if (horizontal) g.fillRect(i, inner === 0 ? 5 : S - 6, 1, 1);
-        else g.fillRect(inner === 0 ? 5 : S - 6, i, 1, 1);
-      }
-    });
-  }
-  const overlays = [];
-  map.grid.forEach((row, y) => row.forEach((c, x) => {
-    if (c !== 'w') return;
-    for (const [side, [dx, dy]] of Object.entries(edges)) {
-      if (land(x + dx, y + dy)) overlays.push(scene.add.image(x * S, y * S, `foam-${side}`).setOrigin(0).setDepth(1.5).setVisible(false));
-    }
-  }));
-  if (!overlays.length) return;
-  scene.time.addEvent({ delay: 650, loop: true, callback: () => overlays.forEach((o) => o.setVisible(!o.visible)) });
 }
 
 // Traces de pas dans le sable, qui s'effacent peu à peu.
