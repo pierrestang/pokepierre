@@ -102,12 +102,12 @@ export const interiors = {
   ffHouseUp: {
     name: 'Chambre de Pierre',
     frlg: true,
-    // Tout contre le mur du fond : lit, bureau (livres), ordinateur, plantes, escalier qui descend.
+    // Tout contre le mur du fond : lit, bureau avec ordinateur, plantes, escalier qui descend.
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
-      'mmmmmmmmξ',
-      'mmoommooo',
+      'mmmmommoξ',
+      'mmmmooooo',
       'ooooooooo',
       'ooooooooo',
     ]),
@@ -115,20 +115,17 @@ export const interiors = {
       { kind: 'painting', x: 0, y: 0 },
       { kind: 'window', x: 5, y: 0 },
       { kind: 'bed', x: 0, y: 2 },
-      { kind: 'bookDesk', x: 2, y: 2 },
-      { kind: 'computerDesk', x: 4, y: 2 },
+      { kind: 'computerDesk', x: 2, y: 2 },
+      { kind: 'pottedPlant', x: 5, y: 2 },
       { kind: 'pottedPlant', x: 6, y: 2 },
-      { kind: 'pottedPlant', x: 7, y: 2 },
     ],
     spawn: { x: 8, y: 3, facing: 'down' },
     triggers: [{ x: 8, y: 2, warp: { interior: 'ffHouse', x: 10, y: 3, facing: 'down' } }],
     objects: [
       { x: 0, y: 3, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
       { x: 1, y: 3, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
-      { x: 2, y: 2, dialogue: ['[Texte provisoire] Ton bureau, couvert de livres et de cartes du monde.'] },
-      { x: 3, y: 2, dialogue: ['[Texte provisoire] Ton bureau, couvert de livres et de cartes du monde.'] },
-      { x: 4, y: 3, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
-      { x: 5, y: 3, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
+      { x: 2, y: 3, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
+      { x: 3, y: 3, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
     ],
   },
 

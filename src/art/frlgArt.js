@@ -470,7 +470,6 @@ export const FRLG_DECOR = {
   console: RS(486, 50, 13, 16, 1, 1),   // console et manette
   bed: RS(488, 79, 24, 32, 2, 2),       // lit
   computerDesk: RS(448, 74, 32, 39, 2, 2),   // bureau avec ordinateur et tabouret
-  bookDesk: RS(498, 128, 32, 22, 2, 1), // bureau avec des livres
   pottedPlant: RS(630, 50, 16, 15, 1, 1),   // petite plante en pot
 };
 
@@ -494,8 +493,12 @@ export function drawFrlgInteriorDecor(ctx, textures, interior) {
   for (const { kind, x, y } of interior.decor ?? []) {
     const d = FRLG_DECOR[kind];
     if (d.sprite) {
+      // Posé en bas de son emprise ; contre le mur du fond (rangée juste sous le mur), il remonte au besoin
+      // pour que son haut morde d'au moins 4 px sur la plinthe.
       const px = x * S + Math.round((d.w * S - d.pw) / 2);
-      blit(ctx, textures, d.sprite, px, (y + d.h) * S - d.ph, d.pw, d.ph);
+      const bottomAligned = (y + d.h) * S - d.ph;
+      const againstWall = interior.grid[y - 1]?.[x] === 'X';
+      blit(ctx, textures, d.sprite, px, againstWall ? Math.min(y * S - 4, bottomAligned) : bottomAligned, d.pw, d.ph);
     } else blit(ctx, textures, d.tile, x * S, y * S, d.w * S, d.h * S);
   }
   interior.grid.forEach((row, y) => row.forEach((code, x) => {
