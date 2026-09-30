@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { MAPS, START_MAP } from '../data/maps/index.js';
-import { renderMap } from '../systems/tileRenderer.js';
+import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { startSeaShimmer, startFallingLeaves } from '../systems/effects.js';
 import { FONT } from '../systems/screen.js';
 import { FLAGS } from '../data/story.js';
@@ -25,6 +25,8 @@ export class TitleScene extends Phaser.Scene {
     const map = MAPS[START_MAP];
     this.cameras.main.setBackgroundColor(0x4078e0);
     renderMap(this, map);
+    // Autour de l'île, la même mer qu'en jeu (assez large pour tout l'écran et le travelling).
+    if (map.surroundings) createSurroundings(this, map, map.surroundings).resize(this.scale.width, this.scale.height);
     startSeaShimmer(this, map, true);
     startFallingLeaves(this, map);
     const background = [...this.children.list];

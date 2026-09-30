@@ -3,7 +3,6 @@ import { TILE_SIZE, getTile } from '../data/tiles.js';
 import { FOLLOWERS } from '../data/story.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
-import { drawFlowerSway } from '../art/tileArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE } from '../systems/CharacterSprite.js';
@@ -56,7 +55,6 @@ export class MapScene extends Phaser.Scene {
     renderMap(this, map);
     this.canopy = canopyTiles(grid);
     this.startWaterSparkles();
-    this.startFlowerSway();
     this.grassCovers = new GrassCovers(this, map);
     const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
     startSeaShimmer(this, map, seaAround);
@@ -126,31 +124,6 @@ export class MapScene extends Phaser.Scene {
 
   // La carte entière est visible, aussi grande que possible dans la fenêtre.
   // Reflets animés sur l'eau (mer, étangs, rivières) : petits éclats qui apparaissent et s'effacent.
-  // Fleurs qui se balancent (comme dans Rouge Feu) : une deuxième image par parterre, affichée une
-  // demi-seconde sur deux par-dessus la carte.
-  startFlowerSway() {
-    const at = (x, y) => this.grid[y]?.[x];
-    const overlays = [];
-    this.grid.forEach((row, y) => row.forEach((c, x) => {
-      if (c !== 'f') return;
-      const key = `flower-${this.map.id}-${x}-${y}`;
-      if (!this.textures.exists(key)) {
-        const g = this.make.graphics({}, false);
-        g.translateCanvas(-x * TILE_SIZE, -y * TILE_SIZE);
-        drawFlowerSway(g, x, y, at);
-        g.generateTexture(key, TILE_SIZE, TILE_SIZE);
-        g.destroy();
-      }
-      overlays.push(this.add.image(x * TILE_SIZE, y * TILE_SIZE, key).setOrigin(0).setDepth(1).setVisible(false));
-    }));
-    if (!overlays.length) return;
-    this.time.addEvent({
-      delay: 500,
-      loop: true,
-      callback: () => overlays.forEach((o) => o.setVisible(!o.visible)),
-    });
-  }
-
   startWaterSparkles() {
     const water = [];
     this.grid.forEach((row, y) => row.forEach((c, x) => {

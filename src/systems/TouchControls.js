@@ -40,6 +40,7 @@ export class TouchControls {
     });
     this.layout();
     scene.scale.on('resize', this.layout, this);
+    scene.events.once('shutdown', () => scene.scale.off('resize', this.layout, this));
   }
 
   // Dans les bandes noires si elles sont assez larges, sinon par-dessus le bas de l'écran de jeu.

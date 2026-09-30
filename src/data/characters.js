@@ -1,54 +1,50 @@
-import { fullLook, lookFromColor } from '../art/characterArt.js';
+import { fullLook } from '../art/characterArt.js';
 
-// Apparence des personnages (voir art/characterArt.js pour les champs possibles).
+// Apparence des personnages : un sprite des planches fournies, `t{n}` (TownsPeople2, avec portrait)
+// ou `f{n}` (Rouge Feu / Vert Feuille, sans portrait). Voir art/spriteSheets.js pour la liste.
+// Le chat reste dessiné dans le code (voir art/characterArt.js).
 
-// Pierre : brun, veste bordeaux fermée (col de t-shirt blanc), pantalon bleu foncé, baskets blanches
-// à liseré rouge, sac à dos d'aventurier.
-export const PIERRE = {
-  skin: 0xf0c8a0,
-  hair: 0x4a2c18,
-  hairStyle: 'short',
-  top: 0x8c2438,
-  topStyle: 'closedJacket',
-  under: 0xf8f8f8,
-  bottom: 0x28345c,
-  bottomStyle: 'pants',
-  shoes: 0xf4f4f4,
-  backpack: 0x3c5c7c,
-};
+// Pierre : Red, le héros de Rouge Feu.
+export const PIERRE = { sprite: 'f0' };
 
-// Personnages principaux, par nom affiché.
+// Personnages par nom affiché.
 const BY_NAME = {
-  Maman:   { hair: 0x6c3c20, hairStyle: 'long', top: 0xe86fa0, topStyle: 'dress', bottom: 0xc84c80, bottomStyle: 'skirt' },
-  Papa:    { hair: 0x2c2420, top: 0x3f6fd8, bottom: 0x5c5c64, accessory: 'glasses' },
-  Manon:   { hair: 0x8c4c20, hairStyle: 'ponytail', top: 0xf0a030, bottom: 0x3c5c9c, bottomStyle: 'skirt' },
-  Jean:    { hair: 0x4a2c18, top: 0x3c7c5c, bottom: 0x3c4c6c },
-  Yanis:   { skin: 0xd8a070, hair: 0x201818, top: 0xe8c040, bottom: 0x3c3c4c },
-  Felix:   { hair: 0xd8b060, top: 0x9060d0, bottom: 0x3c3c4c },
-  Romain:  { hair: 0x6c4020, top: 0xc0602c, bottom: 0x2c3c5c },
-  Paul:    { hair: 0xc8a060, top: 0x3c8cb0, bottom: 0x4c4c54 },
-  Ousmane: { skin: 0x8c5c3c, hair: 0x181414, top: 0x2c8c5c, bottom: 0x2c2c34 },
-  Harsh:   { skin: 0xb07850, hair: 0x181414, top: 0x8c3cb0, bottom: 0xe8e0d0 },
-  Fanny:   { hair: 0xa86030, hairStyle: 'long', top: 0x40b0a0 },
-  'Hôtesse':   { hair: 0x2c2020, hairStyle: 'long', top: 0x2c5cb0, bottom: 0x2c3c6c, bottomStyle: 'skirt' },
-  Cuisinier:   { hair: 0x5c3c20, top: 0xf8f8f8, bottom: 0x303038, accessory: 'chefHat' },
-  Capitaine:   { hair: 0x3c3020, top: 0x5c6c3c, bottom: 0x4c5c34, accessory: 'cap', capColor: 0x3c4c2c },
-  'Vieux sage': { skin: 0xc89060, hair: 0xe8e8e8, hairStyle: 'long', top: 0xf0e8d8, bottom: 0xf0e8d8 },
-  Moine:       { skin: 0xc89060, hairStyle: 'bald', top: 0xe88820, bottom: 0xe88820 },
+  Pierre: 'f0',
+  // Famille
+  Maman: 't8', Papa: 't1', Manon: 't7',
+  // Amis
+  Jean: 't12', Felix: 'f2', Romain: 't3', Paul: 'f53', Yanis: 'f66', Ousmane: 'f72', Harsh: 'f71',
+  Tom: 'f56', 'Théo': 'f57', 'Léo': 'f55', Tanguy: 'f58', Thomas: 'f20', Hugues: 'f17', Geoffrey: 'f42',
+  'Benoît': 'f38', 'Étienne': 'f36', Joshua: 'f10', Laurent: 'f52',
+  Margot: 'f48', Val: 't10', Anna: 'f59', Fanny: 'f46',
+  // Métiers
+  'M. Bouly': 'f32', Directeur: 't3', Directrice: 'f54', Manager: 'f8', Responsable: 't13',
+  'Agent immobilier': 'f34', Vendeur: 'f16', Cuisinier: 'f50', 'Pêcheur': 't14', 'Vieux sage': 'f26',
+  Moine: 'f24', Capitaine: 'f39', Professor: 'f3', Professeur: 'f3', Professeure: 't10',
+  "Professeure d'anglais": 't9', 'Hôtesse': 'f12', 'Pèlerine': 'f29', Fan: 't5', Chanteur: 't12',
+  Guitariste: 'f35', Batteur: 'f60',
 };
 
-// Prénoms féminins sans apparence détaillée : cheveux longs par défaut.
-const LONG_HAIR = ['Margot', 'Val', 'Anna', 'Directrice', 'Professeure', "Professeure d'anglais", 'Pèlerine', 'Fan'];
+// Figurants sans attribution (ex. les diplômés, les touristes) : choisis d'après leur id et leur place.
+const EXTRAS = ['f9', 'f18', 'f19', 'f21', 'f23', 'f37', 'f53', 'f55', 'f56', 'f57', 'f59', 't0', 't5', 't12'];
 
-// Apparence d'un PNJ ou d'un suiveur : `look` explicite, sinon par nom, sinon d'après sa couleur.
+function hash(text) {
+  let h = 0;
+  for (const c of text) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return h;
+}
+
+// Apparence d'un PNJ ou d'un suiveur : par nom (ou par id), sinon un figurant.
 export function lookOf(data) {
-  if (data.look) return fullLook(data.look);
   if (data.id === 'chat') return fullLook({ kind: 'cat' });
-  const named = BY_NAME[data.name] ?? BY_NAME[capitalize(data.id)];
-  if (named) return fullLook({ ...named, accessory: data.hat ? 'mortarboard' : named.accessory ?? null });
-  const look = lookFromColor(data.color ?? 0x4c7cc8, { hat: data.hat });
-  if (LONG_HAIR.includes(data.name)) look.hairStyle = 'long';
-  return look;
+  const sprite = BY_NAME[data.name] ?? BY_NAME[capitalize(data.id)];
+  return { sprite: sprite ?? EXTRAS[hash(`${data.id}:${data.x},${data.y}`) % EXTRAS.length] };
+}
+
+// Portrait affiché dans les dialogues (index TownsPeople2), ou null si la personne n'en a pas.
+export function portraitOf(speaker) {
+  const sprite = BY_NAME[speaker];
+  return sprite?.startsWith('t') ? Number(sprite.slice(1)) : null;
 }
 
 function capitalize(id = '') {

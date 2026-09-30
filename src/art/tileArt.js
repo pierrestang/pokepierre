@@ -175,9 +175,12 @@ function flowerPatch(g, px, py, x, y, sway = 0) {
 }
 
 // Deuxième image d'un parterre de fleurs ('f'), fleurs penchées d'un pixel (animation dans MapScene).
-export function drawFlowerSway(g, x, y, at) {
-  grass(g, x * S, y * S, x, y, at);
-  flowerPatch(g, x * S, y * S, x, y, 1);
+
+// Sol déjà posé par la couche Rouge Feu (voir art/frlgArt.js) : les fonctions de sol (herbe, sable, mer)
+// ne dessinent rien, seuls les objets par-dessus sont dessinés.
+let groundProvided = false;
+export function setGroundProvided(provided) {
+  groundProvided = provided;
 }
 
 function path(g, px, py, x, y) {
@@ -188,6 +191,7 @@ function path(g, px, py, x, y) {
 }
 
 function grass(g, px, py, x, y, at, { edges = true } = {}) {
+  if (groundProvided) return;
   rect(g, C.grass, px, py, S, S);
   const h = hash(x, y, 1);
   // Petites touffes « ᵥᵥ » régulières, comme dans Rouge Feu : une case sur deux, en quinconce.
@@ -429,6 +433,7 @@ function objectGround(x, y, at) {
 }
 
 function smallObjectGround(g, px, py, x, y, at) {
+  if (groundProvided) return;
   const ground = objectGround(x, y, at);
   if (ground === 'grass') grass(g, px, py, x, y, at);
   else if (ground === 'sand') sand(g, px, py, x, y);
@@ -986,6 +991,75 @@ function elephant(g, px, py, x, y, at) {
 }
 
 // Drapeau thaï : rouge, blanc, bleu (large), blanc, rouge.
+// Drapeau de la Martinique : sol seulement, le mât et le drapeau sont un objet haut (voir TALL_KINDS).
+function martiniqueFlag(g, px, py, x, y, at) {
+  smallObjectGround(g, px, py, x, y, at);
+}
+
+// Mât du drapeau de la Martinique, haut comme la maison (image de 26 x 77, pied au bas de sa case), dessiné
+// comme les objets de Rouge Feu : contour sombre continu, lumière venant du haut à gauche, trois tons par
+// couleur (palette adoucie de la GBA), ombre ovale au sol. Mât fin à reflet, pommeau doré, socle de pierre.
+// Le drapeau (19 x 12 : triangle rouge au mât, bande verte en haut, noire en bas) flotte au vent : une vague
+// douce (±1 px) part du mât vers le bout ; `frame` (0 à 3) la fait avancer. Bosses éclairées, creux ombrés.
+const MQ_FLAG_W = 19;
+const MQ_FLAG_H = 12;
+export const MQ_FLAG_FRAMES = 4;
+const MQ_OUTLINE = 0x303038;
+const MQ_COLORS = {                                                  // creux, face, bosse
+  red: [0xb03030, 0xe04848, 0xf08878],
+  green: [0x287848, 0x48a860, 0x88d088],
+  black: [0x282830, 0x404048, 0x686870],
+};
+
+function tallMartiniqueFlag(g, px, py, frame = 0) {
+  const R = (c, x, y, w, h) => rect(g, c, px + x, py + y, w, h);
+  // Ombre ovale au sol, comme sous les objets du jeu.
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 1, py + 74, 10, 2);
+  g.fillRect(px + 2, py + 73, 8, 1);
+  // Socle de pierre (contour, dessus clair, face ombrée).
+  R(MQ_OUTLINE, 0, 67, 9, 8);
+  R(0xd8d8e0, 1, 68, 7, 2);
+  R(0xa8a8b8, 1, 70, 7, 4);
+  R(0xf0f0f8, 1, 68, 2, 1);
+  // Mât : contour, reflet blanc, ton moyen.
+  R(MQ_OUTLINE, 3, 4, 3, 64);
+  R(0xf0f0f8, 4, 4, 1, 63);
+  R(0xb8c0d0, 4, 40, 1, 27);                                         // plus sombre vers le bas
+  // Pommeau doré.
+  R(MQ_OUTLINE, 3, 0, 3, 1);
+  R(MQ_OUTLINE, 2, 1, 5, 3);
+  R(0xe0b030, 3, 1, 3, 3);
+  R(0xf8e080, 3, 1, 1, 2);
+  R(0xb07818, 5, 3, 1, 1);
+
+  const phase = (frame * Math.PI) / 2;
+  const fx = 6;
+  const fy = 6;
+  const half = (MQ_FLAG_H - 1) / 2;
+  let prev = 0;
+  for (let c = 0; c < MQ_FLAG_W; c++) {
+    const angle = c * 0.6 - phase;
+    const dy = c < 3 ? 0 : Math.round(Math.sin(angle));            // accroché au mât, ondule ensuite
+    const slope = c < 3 ? 0 : Math.cos(angle);
+    const tone = slope < -0.5 ? 0 : slope > 0.6 ? 2 : 1;            // creux, face, bosse
+    for (let r = 0; r < MQ_FLAG_H; r++) {
+      const tri = c < Math.round(10 * (1 - Math.abs(r - half) / half));   // pointe à mi-largeur
+      const part = tri ? 'red' : r < MQ_FLAG_H / 2 ? 'green' : 'black';
+      R(MQ_COLORS[part][tone], fx + c, fy + dy + r, 1, 1);
+    }
+    // Contour continu : haut, bas, et marche d'un pixel quand l'ondulation change.
+    R(MQ_OUTLINE, fx + c, fy + dy - 1, 1, 1);
+    R(MQ_OUTLINE, fx + c, fy + dy + MQ_FLAG_H, 1, 1);
+    if (dy !== prev) {
+      R(MQ_OUTLINE, fx + c, fy + Math.min(dy, prev) - 1, 1, 1);
+      R(MQ_OUTLINE, fx + c, fy + Math.max(dy, prev) + MQ_FLAG_H, 1, 1);
+    }
+    prev = dy;
+  }
+  R(MQ_OUTLINE, fx + MQ_FLAG_W, fy + prev, 1, MQ_FLAG_H);            // contour du bout
+}
+
 function thaiFlag(g, px, py, x, y, at) {
   smallObjectGround(g, px, py, x, y, at);
   rect(g, 0x9c9ca4, px + 3, py + 13, 5, 2);
@@ -1269,6 +1343,7 @@ function mailbox(g, px, py) {
 }
 
 function sand(g, px, py, x, y) {
+  if (groundProvided) return;
   rect(g, 0xf8e4a0, px, py, S, S);
   const h = hash(x, y, 3);
   const h2 = hash(x, y, 13);
@@ -1430,6 +1505,7 @@ function stairs(g, px, py, x, y, at) {
 
 // Eau de mer : bleu profond, vaguelettes en biais qui se raccordent d'une case à l'autre.
 function seaWater(g, px, py, x, y) {
+  if (groundProvided) return;
   rect(g, 0x4078e0, px, py, S, S);
   for (const [wx, wy] of [[0, 1], [8, 5], [0, 9], [8, 13]]) {
     const ox = (wx + (y % 2) * 4) % 16;
@@ -1456,6 +1532,7 @@ function seaRock(g, px, py, x, y) {
 
 // Mer : écume blanche là où l'eau touche la terre (pas le ponton).
 function sea(g, px, py, x, y, at) {
+  if (groundProvided) return;
   seaWater(g, px, py, x, y);
   const shore = (dx, dy) => {
     const n = at(x + dx, y + dy);
@@ -1567,6 +1644,48 @@ function fishCrate(g, px, py, x, y) {
 
 
 // Sol sous un palmier (le palmier lui-même est dessiné dans la passe des grands objets, drawTall).
+// Mémorial de l'Anse Caffard (Cap 110, Martinique) : six silhouettes de pierre blanche, tête baissée,
+// épaules voûtées, sur leur socle, vues de face (elles regardent la mer, vers le bas), en trois rangées
+// (trois derrière, deux au milieu, une devant). Elles se dressent sur le petit plateau rocheux Rouge Feu
+// des cases 'ɱ' / 'ɲ' (4 x 4, voir art/frlgArt.js : les statues sont au fond, sur les deux rangées du haut ;
+// la rangée d'herbe devant elles et l'escalier sont praticables) : c'est un objet haut (voir TALL_KINDS), ancré sur la case
+// en haut à gauche du plateau. Statue : 14 x 20 px.
+const CAP_STATUE = [
+  '.....kkkk.....',
+  '....kLLLLk....',
+  '...kLLLLLmk...',
+  '...kLLLLLmk...',
+  '...kLmLLmmk...',
+  '....kLLLmk....',
+  '..kkkmmmmkkk..',
+  '.kLLLkmmmkLLk.',
+  'kLLLLLkkkLLLmk',
+  'kLLLmLLLLLLmmk',
+  'kLLLmLLLLLmmmk',
+  '.kLLkLLLLkmmk.',
+  '.kLLkLLLLkmmk.',
+  '.kLLkLLLLkmmk.',
+  '.kLmkLLLLkmmk.',
+  '.kmmkLLLmkmmk.',
+  '.kkkkmmmmkkkk.',
+  'kddddddddddddk',
+  'kddddddddddddk',
+  '.kkkkkkkkkkkk.',
+];
+const CAP_STATUE_C = { k: 0x5c5850, L: 0xf0ece4, m: 0xc8c0b4, d: 0xa8a094 };
+// Position (coin haut-gauche) de chaque statue par rapport au coin du plateau, du fond vers l'avant.
+const CAP_LAYOUT = [[11, -4], [25, -4], [39, -4], [18, 4], [32, 4], [25, 12]];
+
+function capStatues(g, px, py) {
+  for (const [sx, sy] of CAP_LAYOUT) {
+    g.fillStyle(0x000000, 0.2);                                     // ombre au pied
+    g.fillRect(px + sx + 1, py + sy + 19, 14, 2);
+    CAP_STATUE.forEach((row, ry) => [...row].forEach((c, rx) => {
+      if (c !== '.') rect(g, CAP_STATUE_C[c], px + sx + rx, py + sy + ry, 1, 1);
+    }));
+  }
+}
+
 function palm(g, px, py, x, y, at) {
   const around = [at(x, y - 1), at(x, y + 1), at(x - 1, y), at(x + 1, y)];
   if (palmOnGrass(x, y, at)) grass(g, px, py, x, y, at);
@@ -1671,11 +1790,18 @@ const TALL_KINDS = {
   pine32: { left: 0, top: -12, w: 32, h: 45, base: 31, draw: (g, px, py) => pine(g, px, py + 31, 32) },
   pine16: { left: 0, top: -8, w: 16, h: 25, base: 15, draw: (g, px, py) => pine(g, px, py + 15, 16) },
   palm: { left: -10, top: -24, w: 36, h: 40, base: 15, draw: (g, px, py) => tallPalm(g, px, py) },
+  capStatues: { left: 0, top: -6, w: 64, h: 40, base: 31, draw: (g, px, py) => capStatues(g, px, py) },
+  mqFlag: { left: 3, top: -61, w: 26, h: 77, base: 15, frames: MQ_FLAG_FRAMES, draw: (g, px, py, frame) => tallMartiniqueFlag(g, px + 3, py - 60, frame) },
 };
 
 // Objet haut ancré sur la case (x, y), ou null : { kind, px, py } (coin haut-gauche de sa case / son bloc).
 function tallAnchor(code, x, y, at) {
   if (code === 'Y') return { kind: 'palm', px: x * S, py: y * S };
+  if (code === 'ɸ') return { kind: 'mqFlag', px: x * S, py: y * S };
+  if (code === 'ɱ') {
+    const plateau = (c) => c === 'ɱ' || c === 'ɲ';
+    return plateau(at(x - 1, y)) || plateau(at(x, y - 1)) ? null : { kind: 'capStatues', px: x * S, py: y * S };
+  }
   if (code !== 'T') return null;
   if (!inFullTreeBlock(x, y, at)) return { kind: 'pine16', px: x * S, py: y * S };
   // Grand sapin : ancré sur la dernière case de son bloc (en bas à droite).
@@ -1697,9 +1823,14 @@ export function tallObject(code, x, y, at) {
 }
 
 // Dessine un objet haut dans sa propre texture (coin haut-gauche en 0, 0).
-export function drawTallKind(g, kind) {
+export function drawTallKind(g, kind, frame = 0) {
   const k = TALL_KINDS[kind];
-  k.draw(g, -k.left, -k.top);
+  k.draw(g, -k.left, -k.top, frame);
+}
+
+// Nombre d'images d'un objet haut animé (1 s'il est fixe).
+export function tallFrames(kind) {
+  return TALL_KINDS[kind].frames ?? 1;
 }
 
 function floor(g, px, py, x, y = 0) {
@@ -2073,6 +2204,7 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'Ñ': return snowyPeak(g, px, py, x, y);
     case '¶': return prayerFlags(g, px, py, x, y, at);
     case 'ň': return nepalFlag(g, px, py, x, y, at);
+    case 'ɸ': return martiniqueFlag(g, px, py, x, y, at);
     case 'j': return unionJack(g, px, py, x, y, at);
     case 'l': return lamppost(g, px, py, x, y, at);
     case 'q': return rect(g, 0x6c7074, px, py, S, S);   // bus dessiné par-dessus (buildingArt)
