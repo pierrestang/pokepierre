@@ -7,7 +7,7 @@ import { sheetOf } from '../art/spriteSheets.js';
 // la mer défile vers la gauche et le ferry file vers la droite dans son sillage, en tanguant.
 // Au bout de quelques secondes, fondu au noir puis arrivée (`next` : { sceneKey, data }).
 // `deck: true` : la traversée commence sur le pont du ferry (départ de Fort-de-France) : la famille,
-// accoudée au bastingage, regarde l'île rapetisser, puis l'île disparaît à l'horizon.
+// accoudée au bastingage, regarde la mer vers l'île qu'elle quitte.
 const DURATION = 3600;
 const FADE_MS = 400;
 const BAND = 36;            // hauteur des bandes noires (en pixels de l'écran de jeu)
@@ -65,12 +65,11 @@ export class FerryScene extends Phaser.Scene {
     const say = (pages, speaker) => dialog.open(pages, { speaker });
     const wait = (ms) => new Promise((resolve) => this.time.delayedCall(ms, resolve));
 
-    // Ciel, mer qui s'éloigne vers le haut, île au loin.
+    // Ciel et mer qui s'éloigne vers le haut.
     this.add.rectangle(0, 0, SCREEN_W, SKY_H, 0xa8d8f8).setOrigin(0);
     this.add.rectangle(0, SKY_H - 3, SCREEN_W, 3, 0xd0ecf8).setOrigin(0);
     this.sea = this.add.tileSprite(0, SKY_H, SCREEN_W, SCREEN_H - SKY_H, FRLG_SHEETS.travelSea).setOrigin(0);
     this.seaSpeed = { x: 0, y: -0.6 };
-    const island = this.drawIsland(SCREEN_W / 2, 66);
     this.drawDeck();
     const family = Object.fromEntries(FAMILY.map((f) => {
       const image = this.add.image(f.x, DECK_Y + 16, sheetOf(f.sprite).key, `${f.sprite}-up-0`).setOrigin(0.5, 1).setDepth(2);
@@ -78,8 +77,6 @@ export class FerryScene extends Phaser.Scene {
     }));
     const face = (id, dir) => family[id].image.setFrame(`${family[id].sprite}-${dir}-0`);
 
-    // L'île rapetisse lentement pendant la conversation.
-    const drift = this.tweens.add({ targets: island, scale: 0.45, y: 42, duration: 14000, ease: 'Sine.easeOut' });
 
     cam.fadeIn(600);
     await wait(1200);
@@ -95,28 +92,9 @@ export class FerryScene extends Phaser.Scene {
     face('pierre', 'up');
     await say(['Tu emportes la joie de vivre de Maman, le pragmatisme de Papa et la complicité de Manon.']);
 
-    // L'île disparaît à l'horizon.
-    drift.stop();
-    this.tweens.add({ targets: island, scale: 0.08, y: SKY_H + 2, alpha: 0, duration: 2600, ease: 'Sine.easeIn' });
-    await wait(3000);
+    await wait(1500);
     cam.fadeOut(800);
     cam.once('camerafadeoutcomplete', () => this.scene.restart({ next: this.next }));
-  }
-
-  // L'île de Fort-de-France vue du large : plage, herbe, colline, maison au toit rouge, drapeau.
-  drawIsland(x, y) {
-    const g = this.add.graphics();
-    g.fillStyle(0x5890c8, 1).fillEllipse(0, 4, 164, 44);       // ombre dans l'eau
-    g.fillStyle(0xe8d090, 1).fillEllipse(0, 0, 150, 38);        // plage
-    g.fillStyle(0x60b048, 1).fillEllipse(0, -4, 126, 28);       // herbe
-    g.fillStyle(0x408838, 1).fillEllipse(-26, -10, 54, 18);     // colline
-    g.fillStyle(0x408838, 1).fillEllipse(34, -6, 30, 12);       // arbres
-    g.fillStyle(0xf0f0e8, 1).fillRect(-6, -14, 14, 8);          // maison
-    g.fillStyle(0xd05838, 1).fillRect(-8, -18, 18, 5);          // toit
-    g.fillStyle(0x484850, 1).fillRect(14, -26, 1, 18);          // mât
-    g.fillStyle(0xc02820, 1).fillRect(15, -26, 6, 4);           // drapeau
-    g.fillStyle(0xb09060, 1).fillRect(-3, 16, 5, 10);           // ponton
-    return this.add.container(x, y, [g]);
   }
 
   // Pont du ferry : bastingage blanc et plancher, au premier plan.
