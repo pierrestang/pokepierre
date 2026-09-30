@@ -1713,12 +1713,9 @@ const DECALS = {
   rodsOnRack(g, px, py, { count = 3 } = {}) {
     drawRackRods(g, px, py, count);
   },
-  // Vieille corde enroulée autour de la bitte d'amarrage (Saint-Ay).
+  // Vieille corde nouée à la bitte d'amarrage et enroulée à côté (Saint-Ay).
   rope(g, px, py) {
-    rect(g, 0x5c4020, px + 4, py + 7, 8, 5);
-    for (const [dy, c] of [[7, 0xc8a868], [9, 0xe0c890], [11, 0xb09050]]) rect(g, c, px + 5, py + dy, 6, 1);
-    rect(g, 0xc8a868, px + 11, py + 11, 3, 1);                        // bout qui pend
-    rect(g, 0xc8a868, px + 13, py + 12, 1, 3);
+    drawRope(g, px, py);
   },
   // Fanny, emmaillotée dans une couverture rose, dans les bras de Maman (lit de l'hôpital).
   baby(g, px, py) {
@@ -1791,25 +1788,51 @@ function planksPile(g, px, py) {
   pixelArt(g, PLANKS, px, py + 1);
 }
 
-// Bitte d'amarrage en bois au bord du lac (Saint-Ay) ; la corde est un décor à part (DECALS.rope).
+// Bitte d'amarrage en bois au bord du lac (Saint-Ay), poteau étroit sur la gauche de la case ; la corde
+// enroulée à côté est un décor à part (DECALS.rope), qui disparaît quand on l'emporte.
 const BOLLARD = [
-  '....kkkkkk....',
-  '...kWWWWWWk...',
-  '...kwwwwwwk...',
-  '....kWWWWk....',
-  '....kWwwWk....',
-  '....kWwwWk....',
-  '....kWwwWk....',
-  '....kWwwWk....',
-  '...kWWwwWWk...',
-  '...kDDDDDDk...',
-  '....kkkkkk....',
+  '.kkkk.',
+  'kWWWWk',
+  'kwwwwk',
+  '.kWwk.',
+  '.kWwk.',
+  '.kWwk.',
+  '.kWwk.',
+  '.kWwk.',
+  '.kWwk.',
+  '.kWwk.',
+  'kWWwwk',
+  'kDDDDk',
+  '.kkkk.',
 ];
 function bollard(g, px, py) {
   if (!groundProvided) grass(g, px, py, 0, 0);
   g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 4, py + 14, 8, 2);
-  pixelArt(g, BOLLARD, px + 1, py + 4);
+  g.fillRect(px + 2, py + 15, 5, 1);
+  pixelArt(g, BOLLARD, px + 1, py + 2);
+}
+
+// Vieille corde : nouée au poteau, puis enroulée en spirale sur l'herbe (brins clairs et sombres alternés).
+const ROPE_COLORS = { o: 0x543c24, L: 0xf0d8a0, M: 0xd0a868, N: 0x966e3c };
+const ROPE = [
+  '.oooo...........',
+  'oLMNMo..........',
+  '.oooMNo.oooooo..',
+  '.....oNoLMNLMLo.',
+  '.....oMLooooooMo',
+  '....oMoLNMLNLoNo',
+  '....oNoMooooMoMo',
+  '....oMoNLMNMooNo',
+  '....oNMoooooNMo.',
+  '.....oNMNMNMNo..',
+  '......ooooooo...',
+];
+export function drawRope(g, px, py) {
+  g.fillStyle(0x000000, 0.18);                                         // ombre du rouleau
+  g.fillRect(px + 5, py + 15, 10, 1);
+  ROPE.forEach((row, ry) => [...row].forEach((c, rx) => {
+    if (c !== '.') rect(g, ROPE_COLORS[c], px + rx, py + 4 + ry, 1, 1);
+  }));
 }
 
 // Caisse « À DONNER » : caisse vide avec son étiquette de papier (texte griffonné au feutre rouge).
