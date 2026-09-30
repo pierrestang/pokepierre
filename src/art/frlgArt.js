@@ -21,13 +21,14 @@ export const FRLG_SHEETS = {
   buildings: 'frlg-buildings',
   rims: 'frlg-rims',
   ferry: 'frlg-ferry',
-  pier: 'frlg-pier',
   stairs: 'frlg-stairs',
   searock: 'frlg-searock',
   rooms: 'frlg-rooms',
   centerItems: 'frlg-center-items',
+  rsObjects: 'rs-objects',
   beachrock: 'frlg-beachrock',
   tropical: 'emerald-trees',
+  berries: 'rs-berries',
   travelSea: 'frlg-travel-sea',
   ferryWake: 'frlg-ferry-wake',
   townMap: 'frlg-townmap',
@@ -78,9 +79,18 @@ const PLATEAU = {
   stairs: [0, 1].map((i) => ({ sheet: FRLG_SHEETS.stairs, sx: i * S, sy: 0 })),   // escalier blanc
 };
 const SEA_ROCK = { sheet: FRLG_SHEETS.searock, sx: 0, sy: 0 };   // sans l'eau autour : la mer animée passe dessous
-// Ponton (sans l'eau de ses côtés : le sol dessous reste visible).
-const PIER_TILE = (i) => ({ sheet: FRLG_SHEETS.pier, sx: i * S, sy: 0 });
-const PIER = { left: PIER_TILE(0), mid: PIER_TILE(1), right: PIER_TILE(2) };
+// Ponton en bois de Rouge Feu (quai de la planche d'extérieur, colonnes 9 à 13) : planches sur les cases
+// du ponton (marches au départ, côté plage), rambardes sur poteaux dans les cases voisines.
+const PIER = {
+  start: { left: O(10, 21), right: O(12, 21) },
+  mid: { left: O(10, 22), right: O(12, 22) },
+  end: { left: O(10, 23), right: O(12, 23) },
+};
+const PIER_RAIL = {
+  left: { start: O(9, 21), mid: O(9, 22), end: O(9, 23) },
+  right: { start: O(13, 21), mid: O(13, 22), end: O(13, 23) },
+};
+const pierPart = (y, at, x) => (at(x, y - 1) !== '=' ? 'start' : at(x, y + 1) !== '=' ? 'end' : 'mid');
 
 // Grand arbre isolé (32 x 45 px) de la planche de Hoeloe : 2 cases de large, dépasse de 13 px au-dessus.
 export const FRLG_TREE = { sheet: FRLG_SHEETS.props, sx: 95, sy: 33, w: 32, h: 45 };
@@ -95,7 +105,7 @@ export const FRLG_BUILDINGS = {
 
 // Cases posées sur l'herbe (le sable voisin reçoit un liseré d'herbe) : herbe, fleurs, buissons, arbres,
 // barrières, panneaux, plateau du mémorial…
-const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'h', 'i', 'x', 'F']);
+const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'h', 'i', 'x', 'F']);
 const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ', 'χ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
@@ -179,12 +189,8 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
   // La mer n'est pas dessinée ici : c'est une couche animée sous la carte (voir addSeaLayer).
   if (ground === 'grass') blit(ctx, textures, GRASS[hash(x, y) % GRASS.length], px, py);
   else if (ground === 'pier') {
-    // Sous le ponton : du sable là où il est bordé de terre, la mer (animée) ailleurs.
-    const onLand = [groundAt(-1, 0), groundAt(1, 0)].some((g) => ['sand', 'path', 'grass'].includes(g));
-    if (onLand) blit(ctx, textures, SAND_ON_GRASS.fill, px, py);
-    const left = at(x - 1, y) !== '=';
-    const right = at(x + 1, y) !== '=';
-    blit(ctx, textures, left ? PIER.left : right ? PIER.right : PIER.mid, px, py);
+    const part = PIER[pierPart(y, at, x)];
+    blit(ctx, textures, at(x - 1, y) === '=' ? part.right : part.left, px, py);
   } else if (ground === 'sand') {
     // Écume dès que la mer touche un côté ou un coin (avec le liseré d'herbe par-dessus si l'herbe touche
     // aussi), sinon bordure d'herbe.
@@ -211,7 +217,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
 }
 
 // Codes entièrement dessinés par les couches Rouge Feu (le dessin procédural les ignore).
-const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ']);
+const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ']);
 
 export function isFrlgOnly(code) {
   return FRLG_ONLY.has(code);
@@ -223,6 +229,11 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
   const px = x * S;
   const py = y * S;
   const put = (tile) => blit(ctx, textures, tile, px, py);
+  // Rambardes du ponton, posées dans les cases de part et d'autre.
+  if (code !== '=') {
+    if (at(x + 1, y) === '=' && at(x + 2, y) === '=') put(PIER_RAIL.left[pierPart(y, at, x + 1)]);
+    if (at(x - 1, y) === '=' && at(x - 2, y) === '=') put(PIER_RAIL.right[pierPart(y, at, x - 1)]);
+  }
   switch (code) {
     case 'ĥ': return put(TALL_GRASS);
     case 'f': return put(FLOWERS);
@@ -337,6 +348,20 @@ export function frlgTropicalTree(scene, code, x, y, at) {
   return { key, x: x * S, y: y * S, baseY: (y + 2) * S - 1 };
 }
 
+// Plante à baies fleurie de Rubis/Saphir (case 'ƨ', 16 x 32 px, dépasse vers le haut) : une des quatre
+// variantes selon la case. Renvoie { key, x, y, baseY } ou null.
+export function frlgBerryPlant(scene, code, x, y) {
+  if (code !== 'ƨ') return null;
+  const variant = hash(x, y) % 4;
+  const key = `rs-berry-${variant}`;
+  if (!scene.textures.exists(key)) {
+    const tex = scene.textures.createCanvas(key, S, 2 * S);
+    blit(tex.getContext(), scene.textures, { sheet: FRLG_SHEETS.berries, sx: variant * S, sy: 0 }, 0, 0, S, 2 * S);
+    tex.refresh();
+  }
+  return { key, x: x * S, y: (y - 1) * S, baseY: (y + 1) * S - 1 };
+}
+
 export function drawFrlgTree(ctx, textures, px, py) {
   blit(ctx, textures, FRLG_TREE, px, py, FRLG_TREE.w, FRLG_TREE.h);
 }
@@ -390,7 +415,7 @@ export function tallGrassCoverTexture(scene) {
 // en haut de la pièce, parquet partout ailleurs, noir autour ; les meubles (`decor`) sont des blocs repris
 // tels quels des pièces de frlg-rooms.png, le tapis de sortie est centré sur les cases 'E'.
 // Les cases de meubles sont des 'm' (bloquantes) dans la grille ; ce qui n'a pas d'équivalent Rouge Feu
-// (lit, escalier, cannes à pêche…) reste dessiné dans le code, sur le parquet.
+// (cannes à pêche, caisses de poissons…) reste dessiné dans le code, sur le parquet.
 const ROOM = (room, c, r) => ({ sheet: FRLG_SHEETS.rooms, sx: room * 11 * S + c * S, sy: r * S });
 const WALL_TOP = ROOM(1, 8, 0);
 const WALL = ROOM(1, 8, 1);
@@ -400,8 +425,11 @@ const EXIT_MAT = { sheet: FRLG_SHEETS.rooms, sx: 59, sy: 116, w: 26, h: 16 };
 
 // Meubles : { tile, w, h } (largeur et hauteur en cases). La plupart sont des blocs des pièces de
 // frlg-rooms.png (fond de mur et de parquet compris) ; l'ordinateur et la télé murale viennent du Centre
-// Pokémon (frlg-center-items.png, fond transparent).
+// Pokémon (frlg-center-items.png, fond transparent) ; lit, télé, bureaux et escaliers de Rubis/Saphir.
 const block = (room, c, r, w, h) => ({ tile: ROOM(room, c, r), w, h });
+// Meuble de Rubis/Saphir (rs-objects.png) : image de w x h px, centrée et posée en bas de son emprise
+// (fw x fh cases).
+const RS = (sx, sy, w, h, fw, fh) => ({ sprite: { sheet: FRLG_SHEETS.rsObjects, sx, sy }, pw: w, ph: h, w: fw, h: fh });
 const CENTER_ITEM = (sx, w, h) => ({ tile: { sheet: FRLG_SHEETS.centerItems, sx, sy: 0 }, w, h });
 export const FRLG_DECOR = {
   plant: block(0, 0, 3, 1, 2),          // plante en pot
@@ -418,6 +446,13 @@ export const FRLG_DECOR = {
   desk: block(3, 2, 1, 1, 2),           // bureau avec un globe
   computer: CENTER_ITEM(0, 1, 2),       // ordinateur
   tv: CENTER_ITEM(16, 2, 2),            // télé murale
+  crtTv: RS(558, 84, 16, 27, 1, 1),     // télé sur son meuble (Rubis/Saphir)
+  console: RS(486, 50, 13, 16, 1, 1),   // console et manette
+  bed: RS(488, 79, 24, 32, 2, 2),       // lit
+  computerDesk: RS(448, 74, 32, 39, 2, 2),   // bureau avec ordinateur et tabouret
+  bookDesk: RS(498, 128, 32, 22, 2, 1), // bureau avec des livres
+  stairsUp: RS(645, 130, 24, 22, 2, 1),     // escalier qui monte
+  stairsDown: RS(674, 131, 24, 22, 2, 1),   // escalier qui descend
 };
 
 // Couche 1 d'un intérieur : mur (deux rangées du haut), noir (murs du bas et des côtés), parquet.
@@ -433,13 +468,16 @@ export function drawFrlgInteriorGround(ctx, textures, x, y, at) {
 }
 
 // Codes d'intérieur entièrement dessinés par les couches Rouge Feu.
-export const FRLG_INTERIOR_ONLY = new Set(['X', 'o', 'm', 'E']);
+export const FRLG_INTERIOR_ONLY = new Set(['X', 'o', 'm', 'E', 'η', 'ξ']);   // escaliers : meubles `stairsUp` / `stairsDown`
 
 // Couche 3 d'un intérieur : meubles, puis tapis de sortie sur chaque groupe de cases 'E' d'une rangée.
 export function drawFrlgInteriorDecor(ctx, textures, interior) {
   for (const { kind, x, y } of interior.decor ?? []) {
-    const { tile, w, h } = FRLG_DECOR[kind];
-    blit(ctx, textures, tile, x * S, y * S, w * S, h * S);
+    const d = FRLG_DECOR[kind];
+    if (d.sprite) {
+      const px = x * S + Math.round((d.w * S - d.pw) / 2);
+      blit(ctx, textures, d.sprite, px, (y + d.h) * S - d.ph, d.pw, d.ph);
+    } else blit(ctx, textures, d.tile, x * S, y * S, d.w * S, d.h * S);
   }
   interior.grid.forEach((row, y) => row.forEach((code, x) => {
     if (code !== 'E' || row[x - 1] === 'E') return;

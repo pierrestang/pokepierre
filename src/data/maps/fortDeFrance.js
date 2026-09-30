@@ -10,66 +10,68 @@ const BOAT = {
   // Arrivée : au bord de l'étang de Saint-Ay, à côté de son bateau.
   warp: { map: 'saintAy', x: 11, y: 17, facing: 'left', ferry: true },   // traversée en ferry
 };
-const BOAT_POS = { x: 14, y: 25, w: 4, h: 2 };
+const BOAT_POS = { x: 16, y: 27, w: 4, h: 2 };
 
-// Fort-de-France — île ronde de départ, bordée de larges plages, 30 x 31 cases : maison familiale et son jardin fleuri en
+// Fort-de-France — île ronde de départ, bordée de plages, 34 x 33 cases : maison familiale et son jardin fleuri en
 // haut, allée de sable (3 cases, centrée sur la porte) jusqu'à la plage, puis ponton en bois (2 cases) jusqu'au ferry, cabane de pêche
-// à droite, trois grands sapins isolés (on peut passer derrière) deux grands arbres feuillus (dont un à gauche
+// à droite, deux grands sapins isolés (on peut passer derrière) deux grands arbres feuillus (dont un à gauche
 // de la maison) et des arbres tropicaux à racines, sur la plage et dans l'herbe, hautes herbes aux formes arrondies,
 // buissons et fleurs, rochers dans la mer, drapeau de la Martinique à droite de la maison ; en bas à gauche,
 // les six statues du mémorial de l'Anse Caffard (Cap 110), en trois rangées tournées vers la mer.
 // Légende : voir src/data/tiles.js (w = mer, s = sable, ĥ = hautes herbes, ƀ = buisson, ç = pavés,
 // ƒ = petites fleurs, ŕ = rocher, ø = rocher dans la mer, T = grand arbre, = = ponton, B = ferry,
-// ƫ = arbre tropical, ɱ / ɲ = plateau du mémorial de l'Anse Caffard (bloquant / praticable), Ŧ = grand arbre feuillu, ɸ = drapeau de la Martinique)
+// ƫ = arbre tropical, ƨ = plante à baies fleurie, ɱ / ɲ = plateau du mémorial de l'Anse Caffard (bloquant / praticable), Ŧ = grand arbre feuillu, ɸ = drapeau de la Martinique)
 export const fortDeFranceMap = {
   id: 'fortDeFrance',
   name: 'Fort-de-France',
   grid: parseGrid([
-    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 0
-    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 1
-    'wwwwwwwwwwsssssssssswwwwwwwwww', // 2
-    'wwøwwwwwssssssssssssƫƫwwwwwwww', // 3
-    'wwwwwwƫƫss..RRRRR...ƫƫsswwwøww', // 4
-    'wwwwwsƫƫŦŦŦ.RRRRR.f.ssssswwwww', // 5
-    'wwwwssssŦŦŦ.WWWWWƒ.f.ssssswwww', // 6
-    'wwwwssssŦŦŦ.WDWWWɸ....f.sswwww', // 7
-    'wwwssss.ŦŦŦ.çççM....TT..ssswww', // 8
-    'wwwsss...ƫƫƒççç.fƒƀ.TTƫƫssswww', // 9
-    'wwwsssTT.ƫƫ.ççç..ƀ.f..ƫƫssswww', // 10
-    'wwsss.TT.f.Sçççƫƫ.ƀ..RRRRsssww', // 11
-    'wwsss.ĥĥĥ...çççƫƫ.TT.RRRRsssww', // 12
-    'wwss.ĥĥĥĥ...ççç...TT.WWWWsssww', // 13
-    'wøss.ɱɱɱɱ..fççç.ŦŦŦ..WDWWsssww', // 14
-    'wwws.ɱɱɱɱ...ççç.ŦŦŦf....ƫƫswww', // 15
-    'wwws.ɱɲɲɱ.TTççç.ŦŦŦ.ƀƒ.sƫƫswww', // 16
-    'wwws.ɱɲɲɱ.TTççç.ŦŦŦĥĥĥssssswww', // 17
-    'wwws.......fççç.f.ĥĥĥĥsssswwøw', // 18
-    'wwwssssssssssssssssĥĥssssswwww', // 19
-    'wwwwwssƫƫssssssssssŕssssswwwww', // 20
-    'wwwwwwsƫƫsŕsssssssssƫƫsswwwwww', // 21
-    'wwwwwwwwssssssssssssƫƫwwwwwwww', // 22
-    'wwwwwøwwwwss==sswwwwwwwwwwwwww', // 23
-    'wwwwwwwwwwww==wwwwwwwøwwwwwwww', // 24
-    'wwwwwwwwwwww==BBBBwwwwwwøwwwww', // 25
-    'wwwwwwwwwwww==BBBBwwwwwwwwwwww', // 26
-    'wwwwwwwwwwww==wwwwwwwwwwwwwwww', // 27
-    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 28
-    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 29
-    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 30
+    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 0
+    'wwwwwwwwwwwwwwsssssswwwwwwwwwwwwww', // 1
+    'wwwwwwwwwwsssssssssssssswwwwwwwwww', // 2
+    'wwøwwwwwsssssss....ssssssswwwwwwww', // 3
+    'wwwwwwwssss...RRRRR....sssswwwwøww', // 4
+    'wwwwwsssŦŦŦ...RRRRR.f.ƫƫ.sssswwwww', // 5
+    'wwwwwsssŦŦŦ...WWWWWƒ.fƫƫ..ssswwwww', // 6
+    'wwwwsss.ŦŦŦ...WDWWWɸ......fssswwww', // 7
+    'wwwsss..ŦŦŦ...çççM..........ssswww', // 8
+    'wwwss.....ƨƒ..ççç.fƒƀ...ƨ....sswww', // 9
+    'wwsss.TT......ççç..ƀ.f.......sssww', // 10
+    'wwss..TT.f.S..ççç...ƀ....RRRR.ssww', // 11
+    'wwss..ĥĥĥ...ƨ.ççç...TT...RRRR.ssww', // 12
+    'wwss.ĥĥĥĥ.....ççç...TT...WWWW.ssww', // 13
+    'wøss.ɱɱɱɱ..f..ççç.ŦŦŦ....WDWW.ssww', // 14
+    'wwss.ɱɱɱɱ.....ççç.ŦŦŦf......ƫƫssww', // 15
+    'wwss.ɱɲɲɱ..ƨ..ççç.ŦŦŦ...ƀƒ..ƫƫssww', // 16
+    'wwss.ɱɲɲɱ.....ççç.ŦŦŦĥĥĥĥĥ.ƨ.sssww', // 17
+    'wwwss.........ççç....ĥĥĥĥĥƫƫ.sswww', // 18
+    'wwwsss...ƫƫ...ççç....ĥĥĥĥĥƫƫssswww', // 19
+    'wwwwsss..ƫƫf..ççç.f.ĥĥĥĥĥĥ.ssswwøw', // 20
+    'wwwwwsss..ƫƫƨ.ççç.ƨ..ĥĥĥĥ.ssswwwww', // 21
+    'wwwwwssss.ƫƫ..ççç..ƫƫ....sssswwwww', // 22
+    'wwwwwwwsssŕ...ççç..ƫƫ..sssswwwwwww', // 23
+    'wwwwwwwwsssssssssssssssssswwwwwwww', // 24
+    'wwwwwøwwwwssss==sssssssswwwwwwwwww', // 25
+    'wwwwwwwwwwwwww==wwwwwwwwwøwwwwwwww', // 26
+    'wwwwwwwwwwwwww==BBBBwwwwwwwwøwwwww', // 27
+    'wwwwwwwwwwwwww==BBBBwwwwwwwwwwwwww', // 28
+    'wwwwwwwwwwwwww==wwwwwwwwwwwwwwwwww', // 29
+    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 30
+    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 31
+    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 32
   ]),
   doors: [
-    { x: 13, y: 7, interior: 'ffHouse' },
-    { x: 22, y: 14, interior: 'ffHut' },
+    { x: 15, y: 7, interior: 'ffHouse' },
+    { x: 26, y: 14, interior: 'ffHut' },
   ],
   buildings: [
-    { type: 'house', x: 12, y: 4 },
-    { type: 'fishingHut', x: 21, y: 11 },
+    { type: 'house', x: 14, y: 4 },
+    { type: 'fishingHut', x: 25, y: 11 },
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
   objects: [
     { x: 11, y: 11, dialogue: ['Fort-de-France — Martinique. Bienvenue sur l\'île !'] },
-    { x: 15, y: 8, dialogue: ['La boîte aux lettres de la famille.', "Rien aujourd'hui… Peut-être une carte postale de Saint-Ay, un jour ?"] },
-    { x: 17, y: 7, dialogue: ['Le drapeau rouge, vert et noir de la Martinique flotte au vent.'] },
+    { x: 17, y: 8, dialogue: ['La boîte aux lettres de la famille.', "Rien aujourd'hui… Peut-être une carte postale de Saint-Ay, un jour ?"] },
+    { x: 19, y: 7, dialogue: ['Le drapeau rouge, vert et noir de la Martinique flotte au vent.'] },
     // Mémorial de l'Anse Caffard (Cap 110) : six statues de pierre blanche tournées vers la mer, en trois
     // rangées (une, deux, trois), au fond d'un petit plateau rocheux herbeux de 4 x 4 cases ; on monte
     // par l'escalier (blanc) jusqu'à l'herbe devant les statues.
@@ -97,14 +99,14 @@ export const fortDeFranceMap = {
       ],
     },
     {
-      id: 'gamin', name: 'Gamin', x: 19, y: 21, facing: 'down',
+      id: 'gamin', name: 'Gamin', x: 21, y: 23, facing: 'down',
       dialogue: [
         "J'ai vu des poissons sauter près des rochers !",
         'Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ?',
       ],
     },
     {
-      id: 'pecheur', name: 'Pêcheur', x: 14, y: 23, facing: 'down', still: true,
+      id: 'pecheur', name: 'Pêcheur', x: 16, y: 25, facing: 'down', still: true,
       dialogue: ["Ça mord bien ce matin ! Tu vois ce ferry ? C'est lui qui t'emmènera à Saint-Ay.", 'Mais pas avant d\'avoir dit au revoir à ta famille, hein !'],
     },
   ],
@@ -117,5 +119,5 @@ export const fortDeFranceMap = {
   ],
   // Autour de l'île, l'écran est rempli de mer.
   surroundings: 'w',
-  spawn: { x: 13, y: 10, facing: 'down' },
+  spawn: { x: 15, y: 10, facing: 'down' },
 };

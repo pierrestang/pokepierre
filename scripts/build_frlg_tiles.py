@@ -5,7 +5,6 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
                      première tuile en 1, 1) — copie telle quelle ;
   frlg-rims.png      liserés d'herbe seuls (bordures du chemin de sable sans le sable), voir grass_rims ;
   frlg-ferry.png     ferry des îles Sevii détouré (voir ferry) ;
-  frlg-pier.png      ponton (bord gauche, milieu, bord droit) sans l'eau sur ses côtés (voir pier) ;
   frlg-stairs.png    escalier du petit plateau en pierre blanche (voir white_stairs) ;
   frlg-searock.png   rocher dans la mer, sans l'eau autour (voir sea_rock) ;
   frlg-rooms.png     trois pièces d'intérieur (11 x 9 cases) côte à côte (voir ROOMS) ;
@@ -15,6 +14,8 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   frlg-beachrock.png   rocher de plage sans écume (voir beach_rock) ;
   frlg-center-items.png  ordinateur et télé murale du Centre Pokémon (voir center_items) ;
   emerald-trees.png    deux arbres tropicaux d'Émeraude, sur sable puis sur herbe (voir tropical_trees) ;
+  rs-objects.png       meubles de Rubis/Saphir (planche d'objets), fond blanc extérieur rendu transparent ;
+  rs-berries.png       quatre plantes à baies fleuries (voir berry_plants) ;
   frlg-props.png     planche de Hoeloe (arbre isolé, rocher, mer animée…), fond violet rendu transparent ;
   frlg-seven.png     carte de Seven Island (24 x 20 cases), sans le cadre ;
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent.
@@ -95,21 +96,6 @@ def white_stairs(outdoor):
     for i, c in enumerate((20, 21)):
         t = outdoor.crop((1 + 17 * c, 1 + 17 * 17, 17 + 17 * c, 17 + 17 * 17))
         t.putdata([white.get(p, p) for p in t.getdata()])
-        out.paste(t, (i * 16, 0))
-    return out
-
-
-def pier(seven):
-    """Ponton en bois de Seven Island (bord gauche, milieu, bord droit : cases 7, 8, 9 de la rangée 16)
-    aux bords couleur bois, sans l'eau sur ses côtés (teintes de la mer rendues transparentes) : posé sur la plage, il laisse
-    voir le sable dessous."""
-    sea = set(seven.crop((0, 14 * 16, 32, 16 * 16)).getdata())
-    # Bords bleu-gris (le ponton d'origine est posé dans l'eau) recolorés en bois foncé.
-    wood = {(64, 72, 104, 255): (112, 80, 48, 255), (120, 120, 128, 255): (144, 112, 64, 255)}
-    out = Image.new('RGBA', (48, 16), (0, 0, 0, 0))
-    for i, c in enumerate((7, 8, 9)):
-        t = seven.crop((c * 16, 16 * 16, c * 16 + 16, 17 * 16))
-        t.putdata([(0, 0, 0, 0) if p in sea else wood.get(p, p) for p in t.getdata()])
         out.paste(t, (i * 16, 0))
     return out
 
@@ -223,6 +209,20 @@ def tropical_trees(emerald):
     return out
 
 
+def berry_plants():
+    """Quatre plantes à baies arrivées à maturité (Rubis/Saphir, planche des arbres à baies, fond en damier
+    rendu transparent) : arbuste rose, pêcher, baies bleues, fleurs rouges ; 16 x 32 chacune, posées en bas."""
+    sheet = Image.open(ROOT / 'assets-source' / 'rs' / 'miscellaneous-berry_trees.png').convert('RGBA')
+    checker = {(142, 255, 146, 255), (255, 196, 222, 255)}
+    sheet.putdata([(0, 0, 0, 0) if p in checker else p for p in sheet.getdata()])
+    out = Image.new('RGBA', (64, 32), (0, 0, 0, 0))
+    for i, x in enumerate((160, 640, 736, 1024)):
+        plant = sheet.crop((x, 30, x + 16, 66))
+        plant = plant.crop(plant.getbbox())
+        out.paste(plant, (i * 16 + (16 - plant.width) // 2, 32 - plant.height))
+    return out
+
+
 def ferry(sheet):
     """Ferry des îles Sevii (écran d'exemple « Heading to », proue à droite), détouré : l'eau autour
     (ses teintes bleues, relevées hors du ferry) est enlevée par remplissage depuis les bords, puis
@@ -325,18 +325,20 @@ def main():
     beach_rock(props).save(OUT / 'frlg-beachrock.png')
     seven = gba_palette(rgba('maps__towns_buildings_etc._-seven_island.png').crop((8, 24, 392, 344)))
     seven.save(OUT / 'frlg-seven.png')
-    pier(seven).save(OUT / 'frlg-pier.png')
     sea_rock(seven).save(OUT / 'frlg-searock.png')
     gba_palette(clear_outside(rgba('tilesets-buildings.png'), (255, 255, 255, 255))).save(OUT / 'frlg-buildings.png')
     gba_palette(ferry(rgba('maps-seagallop_ferry.png'))).save(OUT / 'frlg-ferry.png')
     rooms(rgba).save(OUT / 'frlg-rooms.png')
     emerald = Image.open(ROOT / 'assets-source' / 'emerald' / 'miscellaneous-exterior_tileset.png').convert('RGBA')
     gba_palette(tropical_trees(emerald)).save(OUT / 'emerald-trees.png')
+    gba_palette(berry_plants()).save(OUT / 'rs-berries.png')
     gba_palette(center_items(rgba('maps__towns_buildings_etc._-three_island.png'))).save(OUT / 'frlg-center-items.png')
     seagallop = rgba('maps-seagallop_ferry.png')
     gba_palette(seagallop.crop((288, 24, 544, 216))).save(OUT / 'frlg-travel-sea.png')
     gba_palette(ferry_wake(seagallop)).save(OUT / 'frlg-ferry-wake.png')
     gba_palette(town_map(rgba('miscellaneous-town_map.png'))).save(OUT / 'frlg-townmap.png')
+    rs_objects = Image.open(ROOT / 'assets-source' / 'rs' / 'backgrounds-objects.png').convert('RGBA')
+    gba_palette(clear_outside(rs_objects, (255, 255, 255, 255))).save(OUT / 'rs-objects.png')
     print('ok ->', OUT.relative_to(ROOT))
 
 

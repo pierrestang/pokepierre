@@ -3,7 +3,7 @@ import { drawTile, drawTall, tallObject, drawTallKind, tallFrames, setGroundProv
 import { drawBuilding } from '../art/buildingArt.js';
 import {
   drawFrlgGround, drawFrlgOverlay, addFrlgBuilding, frlgBuildingFloor, isFrlgOnly,
-  frlgTree, drawFrlgTree, FRLG_BUILDINGS, FRLG_TREE, FRLG_SHEETS, addSeaLayer, frlgTropicalTree,
+  frlgTree, drawFrlgTree, FRLG_BUILDINGS, FRLG_TREE, FRLG_SHEETS, addSeaLayer, frlgTropicalTree, frlgBerryPlant,
   drawFrlgInteriorGround, drawFrlgInteriorDecor, FRLG_INTERIOR_ONLY,
 } from '../art/frlgArt.js';
 import { inFullTreeBlock } from '../data/treeBlocks.js';
@@ -129,7 +129,7 @@ function addTallObjects(scene, map) {
   const { grid } = map;
   const at = (x, y) => grid[y]?.[x];
   grid.forEach((row, y) => row.forEach((code, x) => {
-    const tropical = frlgTropicalTree(scene, code, x, y, at);
+    const tropical = frlgTropicalTree(scene, code, x, y, at) ?? frlgBerryPlant(scene, code, x, y);
     if (tropical) {
       scene.add.image(tropical.x, tropical.y, tropical.key).setOrigin(0).setDepth(10 + tropical.baseY / 10000);
       return;

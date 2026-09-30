@@ -37,7 +37,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmmoooommmη',
+      'mmmmmommmηη',
       'ooooooooooo',
       'mooommmmooo',
       'mooommmmooo',
@@ -47,21 +47,22 @@ export const interiors = {
     decor: [
       { kind: 'blueShelf', x: 0, y: 1 },
       { kind: 'glassCabinet', x: 1, y: 1 },
-      { kind: 'tv', x: 3, y: 0 },
-      { kind: 'window', x: 5, y: 0 },
-      { kind: 'kitchen', x: 7, y: 1 },
-      { kind: 'fridge', x: 9, y: 1 },
+      { kind: 'crtTv', x: 3, y: 2 },
+      { kind: 'console', x: 4, y: 2 },
+      { kind: 'window', x: 4, y: 0 },
+      { kind: 'kitchen', x: 6, y: 1 },
+      { kind: 'fridge', x: 8, y: 1 },
+      { kind: 'stairsUp', x: 9, y: 2 },
       { kind: 'plant', x: 0, y: 4 },
       { kind: 'table', x: 4, y: 4 },
       { kind: 'plant', x: 10, y: 6 },
     ],
     spawn: { x: 4, y: 6, facing: 'up' },
-    triggers: [
-      { x: 10, y: 2, warp: { interior: 'ffHouseUp', x: 8, y: 3, facing: 'down' } },
-    ],
+    triggers: [9, 10].map((x) => ({ x, y: 2, warp: { interior: 'ffHouseUp', x: 7, y: 3, facing: 'down' } })),
     objects: [
-      ...[3, 4].map((x) => ({ x, y: 1, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] })),
-      { x: 9, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
+      { x: 3, y: 2, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
+      { x: 4, y: 2, dialogue: ['[Texte provisoire] La console de Manon. Elle a encore battu ton record…'] },
+      { x: 8, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
     ],
     npcs: [
       {
@@ -97,36 +98,39 @@ export const interiors = {
     ],
   },
 
-  // Fort-de-France — la chambre de Pierre, à l'étage (invisible de l'extérieur), façon Rouge Feu :
-  // lit (dessiné dans le code), bureau au globe, ordinateur, bibliothèque, fenêtre, plantes. Escalier : ξ.
+  // Fort-de-France — la chambre de Pierre, à l'étage (invisible de l'extérieur), façon Rouge Feu avec des
+  // meubles de Rubis/Saphir. Escalier : ξ.
   ffHouseUp: {
     name: 'Chambre de Pierre',
     frlg: true,
+    // Lit, bureau (livres), ordinateur, escalier qui descend ; fenêtre, tableau, plantes.
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
-      'Lmmommooξ',
-      'Loooooooo',
+      'mmmmmmoξξ',
+      'mmoommooo',
       'mooooooom',
       'mooooooom',
     ]),
     decor: [
-      { kind: 'desk', x: 1, y: 1 },
-      { kind: 'computer', x: 2, y: 1 },
-      { kind: 'bookshelf', x: 4, y: 0 },
-      { kind: 'window', x: 6, y: 0 },
-      { kind: 'painting', x: 3, y: 0 },
+      { kind: 'painting', x: 0, y: 0 },
+      { kind: 'window', x: 5, y: 0 },
+      { kind: 'bed', x: 0, y: 2 },
+      { kind: 'bookDesk', x: 2, y: 2 },
+      { kind: 'computerDesk', x: 4, y: 2 },
+      { kind: 'stairsDown', x: 7, y: 2 },
       { kind: 'plant', x: 0, y: 4 },
       { kind: 'plant', x: 8, y: 4 },
     ],
-    spawn: { x: 8, y: 3, facing: 'down' },
-    triggers: [
-      { x: 8, y: 2, warp: { interior: 'ffHouse', x: 10, y: 3, facing: 'down' } },
-    ],
+    spawn: { x: 7, y: 3, facing: 'down' },
+    triggers: [7, 8].map((x) => ({ x, y: 2, warp: { interior: 'ffHouse', x: 9, y: 3, facing: 'down' } })),
     objects: [
-      { x: 0, y: 2, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
-      { x: 1, y: 2, dialogue: ['[Texte provisoire] Ton bureau, avec ton globe et tes cartes du monde.'] },
-      { x: 2, y: 2, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
+      { x: 0, y: 3, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
+      { x: 1, y: 3, dialogue: ['[Texte provisoire] Ton lit. Il est tout juste fait.'] },
+      { x: 2, y: 2, dialogue: ['[Texte provisoire] Ton bureau, couvert de livres et de cartes du monde.'] },
+      { x: 3, y: 2, dialogue: ['[Texte provisoire] Ton bureau, couvert de livres et de cartes du monde.'] },
+      { x: 4, y: 3, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
+      { x: 5, y: 3, dialogue: ["[Texte provisoire] Ton ordinateur. Pas le temps de jouer, l'aventure t'attend !"] },
     ],
   },
 

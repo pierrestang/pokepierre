@@ -56,7 +56,7 @@ export const saintAyMap = {
     x: BOAT_POS.x + (i % BOAT_POS.w),
     y: BOAT_POS.y + Math.floor(i / BOAT_POS.w),
     readyDialogue: ['Tu reprends le bateau pour Fort-de-France.'],
-    warp: { map: 'fortDeFrance', x: 13, y: 23, facing: 'up' },
+    warp: { map: 'fortDeFrance', x: 15, y: 25, facing: 'up' },
   })),
   // Felix attend à la sortie de l'hôpital ; après son invitation, il te suit jusqu'à chez lui.
   npcs: [
