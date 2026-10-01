@@ -34,6 +34,7 @@ export const FRLG_SHEETS = {
   travelSea: 'frlg-travel-sea',
   ferryWake: 'frlg-ferry-wake',
   townMap: 'frlg-townmap',
+  car: 'frlg-car',
 };
 
 export function preloadFrlg(scene) {
@@ -470,6 +471,48 @@ export function frlgBerryPlant(scene, code, x, y) {
 
 export function drawFrlgTree(ctx, textures, px, py) {
   blit(ctx, textures, FRLG_TREE, px, py, FRLG_TREE.w, FRLG_TREE.h);
+}
+
+// ---------- Voiture de la famille ----------
+
+// Voiture bleue vue de côté (frlg-car.png : vers la gauche, puis vers la droite), 42 x 30 px.
+export const FAMILY_CAR = { sheet: FRLG_SHEETS.car, w: 42, h: 30 };
+export function familyCarImage(scene, x, y, facing = 'right') {
+  const tex = scene.textures.get(FAMILY_CAR.sheet);
+  if (!tex.has('right')) {
+    tex.add('left', 0, 0, 0, FAMILY_CAR.w, FAMILY_CAR.h);
+    tex.add('right', 0, FAMILY_CAR.w, 0, FAMILY_CAR.w, FAMILY_CAR.h);
+  }
+  return scene.add.image(x, y, FAMILY_CAR.sheet, facing);
+}
+
+// Bande de campagne du trajet en voiture (répétable horizontalement, ROAD_STRIP_W px de large) : rangée de
+// grands arbres, fleurs, barrière blanche, route de terre bordée d'herbe, buissons et champ de blé.
+export const ROAD_STRIP_W = 256;
+export const ROAD_TOP = 80;       // haut de la route dans la bande (3 cases : bord, milieu, bord)
+export function roadStripTexture(scene, height) {
+  const key = 'travel-road';
+  if (scene.textures.exists(key)) return key;
+  const tex = scene.textures.createCanvas(key, ROAD_STRIP_W, height);
+  const ctx = tex.getContext();
+  const textures = scene.textures;
+  const cols = ROAD_STRIP_W / S;
+  for (let y = 0; y < height; y += S) {
+    for (let c = 0; c < cols; c++) blit(ctx, textures, GRASS[(c * 7 + y) % GRASS.length], c * S, y);
+  }
+  for (let x = 0; x < ROAD_STRIP_W; x += 32) drawFrlgTree(ctx, textures, x, 2);
+  for (let c = 0; c < cols; c++) {
+    if (c % 4 === 1 || c % 4 === 2) blit(ctx, textures, FLOWERS, c * S, 48);
+    blit(ctx, textures, FENCE.h, c * S, 64);
+    blit(ctx, textures, SAND_ON_GRASS.top, c * S, ROAD_TOP);
+    blit(ctx, textures, SAND_ON_GRASS.fill, c * S, ROAD_TOP + S);
+    blit(ctx, textures, SAND_ON_GRASS.bottom, c * S, ROAD_TOP + 2 * S);
+    if (c % 5 === 3) blit(ctx, textures, BUSH, c * S, 128);
+    if (c % 5 === 0) blit(ctx, textures, SMALL_TREE, c * S, 128);
+    for (let y = 144; y < height; y += S) blit(ctx, textures, WHEAT, c * S, y);
+  }
+  tex.refresh();
+  return key;
 }
 
 // ---------- Mer animée ----------

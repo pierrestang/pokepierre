@@ -21,7 +21,10 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
                        (voir rs_stairs) ;
   frlg-props.png     planche de Hoeloe (arbre isolé, rocher, mer animée…), fond violet rendu transparent ;
   frlg-seven.png     carte de Seven Island (24 x 20 cases), sans le cadre ;
-  frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent.
+  frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent ;
+  frlg-car.png       voiture bleue de la famille, vue de côté (vers la gauche, puis vers la droite), réduite de
+                     moitié (voir family_car). Planche « FRLG Tilesets - Cars » de pinkscales (DeviantArt), dans
+                     assets-source/fan/ : libre pour un projet de fan non commercial, avec crédit à pinkscales.
 Toutes les couleurs sont ramenées à la même conversion GBA (voir gba_palette).
 
 Usage : python3 scripts/build_frlg_tiles.py
@@ -370,6 +373,25 @@ def fields(outdoor):
     return out
 
 
+# Voitures de pinkscales : 2 colonnes (vers la gauche, vers la droite) x 5 couleurs, cases de 96 x 64 px,
+# voiture de 84 x 60 px à partir de (4, 4). Dessinées pour des cases de 32 px : réduites de moitié (un pixel
+# sur deux, décalé de 1 pour garder les contours).
+CAR_W, CAR_H = 42, 30
+
+
+def family_car():
+    sheet = Image.open(ROOT / 'assets-source' / 'fan' / 'pinkscales-frlg-cars.png').convert('RGBA')
+    out = Image.new('RGBA', (2 * CAR_W, CAR_H), (0, 0, 0, 0))
+    blue = 4
+    for col in range(2):
+        car = sheet.crop((col * 96 + 4, blue * 64 + 4, col * 96 + 88, blue * 64 + 64))
+        px = car.load()
+        for y in range(CAR_H):
+            for x in range(CAR_W):
+                out.putpixel((col * CAR_W + x, y), px[2 * x + 1, 2 * y + 1])
+    return out
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     rgba = lambda name: Image.open(SRC / name).convert('RGBA')
@@ -399,6 +421,7 @@ def main():
     gba_palette(town_map(rgba('miscellaneous-town_map.png'))).save(OUT / 'frlg-townmap.png')
     rs_objects = Image.open(ROOT / 'assets-source' / 'rs' / 'backgrounds-objects.png').convert('RGBA')
     gba_palette(clear_outside(rs_objects, (255, 255, 255, 255))).save(OUT / 'rs-objects.png')
+    gba_palette(family_car()).save(OUT / 'frlg-car.png')
     print('ok ->', OUT.relative_to(ROOT))
 
 

@@ -129,18 +129,18 @@ export const CAR = [
     say: ['La voiture est chargée. Va d\'abord dire au revoir à tes cousins, à la cabane.'],
     end: true,
   },
+  { say: ['La voiture est chargée. Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
+  { drive: 'familyCar' },
   { black: true },
-  { wait: 600 },
-  { say: ['Route du nord. La voiture est chargée. Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
+  { wait: 400 },
   { speaker: 'Maman', say: ['Regarde bien Saint-Ay.'] },
   { speaker: 'Papa', say: ['Elle ne va pas bouger. On reviendra.'] },
   { say: ['Manon te montre son coquillage.'] },
   { speaker: 'Manon', say: ['Tu as toujours le tien ?'] },
   { say: ['Par la vitre arrière : le lac, l\'hôpital, puis la cabane des cousins qui disparaît derrière les arbres.'] },
   { say: ['Tu emportes : Grand frère et Cousins pour la vie.'] },
-  { say: ['Montépilloy.'] },
   { setFlag: FLAGS.arriveeMontepilloy },
-  { travel: { map: 'montepilloy', x: 14, y: 21, facing: 'up' } },
+  { travel: { map: 'montepilloy', x: 14, y: 21, facing: 'up', car: true } },
 ];
 
 // Positions des cousins autour de la cabane, selon l'emplacement choisi.

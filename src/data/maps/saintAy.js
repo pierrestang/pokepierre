@@ -75,9 +75,10 @@ export const saintAyMap = {
     { type: 'fishingHut', x: 17, y: 16 },
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
-  // La voiture chargée bloque la route du nord après l'annonce de Papa : on y monte pour partir.
+  // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir. Elle
+  // disparaît une fois le trajet fait.
   props: [
-    { type: 'familyCar', x: 14, y: 2, w: 2, h: 2, ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
+    { type: 'familyCar', x: 10, y: 6, w: 3, h: 2, facing: 'right', ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
   // Décors liés à l'histoire : la corde dans les hautes herbes (pendant le chantier), la cabane à l'emplacement choisi.
   decals: [

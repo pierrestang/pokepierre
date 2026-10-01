@@ -9,7 +9,7 @@ import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
 import { Followers } from '../systems/Followers.js';
 import { lookOf } from '../data/characters.js';
-import { bedAt } from '../art/frlgArt.js';
+import { bedAt, familyCarImage } from '../art/frlgArt.js';
 import { interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
@@ -220,6 +220,14 @@ export class MapScene extends Phaser.Scene {
     });
     for (const data of wantedProps) {
       if (this.props.some((p) => p.data === data)) continue;
+      // La voiture de la famille est une image (voir frlgArt.familyCarImage), posée au milieu du bas de son emprise.
+      if (data.type === 'familyCar') {
+        const bottom = (data.y + data.h) * TILE_SIZE - 1;
+        const graphics = familyCarImage(this, (data.x + data.w / 2) * TILE_SIZE, bottom, data.facing)
+          .setOrigin(0.5, 1).setDepth(10 + bottom / 10000);
+        this.props.push({ data, graphics });
+        continue;
+      }
       const graphics = this.add.graphics().setDepth(5);
       drawBuilding(graphics, data);
       this.props.push({ data, graphics });
@@ -285,6 +293,7 @@ export class MapScene extends Phaser.Scene {
   //   { walk: npcId, to: [x, y], lead?, block?, then? }  le PNJ marche jusqu'à la case (voir walkNpc)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
+  //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
   // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
   async runSteps(steps) {
     for (const step of steps) {
@@ -296,6 +305,7 @@ export class MapScene extends Phaser.Scene {
       if (step.wait) await this.wait(step.wait);
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
       if (step.approach) await this.approach(step.approach);
+      if (step.drive) await this.driveAway(step.drive);
       if (step.walk) {
         const walking = this.walkNpc(step.walk, step.to, { lead: step.lead, then: step.then });
         if (step.block) await walking;
@@ -333,6 +343,31 @@ export class MapScene extends Phaser.Scene {
       if (step.end) return true;
     }
     return false;
+  }
+
+  // Le joueur monte dans la voiture (prop de type `type`), qui démarre en tremblant puis file vers la droite
+  // en accélérant, avec des bouffées de fumée.
+  async driveAway(type) {
+    const car = this.props.find((p) => p.data.type === type)?.graphics;
+    if (!car) return;
+    this.player.sprite.setVisible(false);
+    sfx('door');
+    await this.wait(300);
+    sfx('engine');
+    this.tweens.add({ targets: car, y: car.y - 1, duration: 100, yoyo: true, repeat: -1, ease: 'Stepped' });
+    await this.wait(500);
+    const smoke = this.time.addEvent({
+      delay: 140,
+      loop: true,
+      callback: () => {
+        const puff = this.add.rectangle(car.x - 22, car.y - 5, 3, 3, 0xd8d8d0).setDepth(car.depth);
+        this.tweens.add({ targets: puff, x: puff.x - 14, y: puff.y - 6, scale: 2, alpha: 0, duration: 600, onComplete: () => puff.destroy() });
+      },
+    });
+    await new Promise((resolve) => this.tweens.add({
+      targets: car, x: car.x + 12 * TILE_SIZE, duration: 2200, ease: 'Quad.easeIn', onComplete: resolve,
+    }));
+    smoke.remove();
   }
 
   // Le PNJ s'avance vers le joueur (plus court chemin jusqu'à une case voisine), puis ils se font face.
@@ -698,9 +733,10 @@ export class MapScene extends Phaser.Scene {
   // vers un autre intérieur de la même ville (ex. étages d'un immeuble par l'ascenseur).
   // `ferry: true` : on passe d'abord par la traversée en ferry (voir FerryScene).
   // `deck: true` : la traversée commence par la scène sur le pont du ferry (départ de Fort-de-France).
-  travel({ map, interior, ferry, deck, ...spawn }) {
+  // `car: true` : on passe d'abord par le trajet en voiture (même écran de voyage, voir FerryScene).
+  travel({ map, interior, ferry, deck, car, ...spawn }) {
     if (interior) this.goTo('Interior', { interior, fromMap: this.fromMap ?? this.map.id, spawn });
-    else if (ferry) this.goTo('Ferry', { deck, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
+    else if (ferry || car) this.goTo('Ferry', { deck, road: car, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
     else this.goTo('Overworld', { mapId: map, spawn });
   }
 

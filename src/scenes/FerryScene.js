@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
-import { FRLG_SHEETS } from '../art/frlgArt.js';
+import { FRLG_SHEETS, familyCarImage, roadStripTexture, ROAD_TOP } from '../art/frlgArt.js';
 import { sheetOf } from '../art/spriteSheets.js';
 
 // Traversée en ferry, comme l'écran de voyage des îles Sevii dans Rouge Feu : entre deux bandes noires,
@@ -8,6 +8,8 @@ import { sheetOf } from '../art/spriteSheets.js';
 // Au bout de quelques secondes, fondu au noir puis arrivée (`next` : { sceneKey, data }).
 // `deck: true` : la traversée commence sur le pont du ferry (départ de Fort-de-France) : la famille,
 // accoudée au bastingage, regarde la mer vers l'île qu'elle quitte.
+// `road: true` : même écran de voyage, mais en voiture : la campagne défile vers la gauche, la voiture de la
+// famille roule vers la droite sur la route de terre, en vibrant, avec des bouffées de fumée.
 const DURATION = 3600;
 const FADE_MS = 400;
 const BAND = 36;            // hauteur des bandes noires (en pixels de l'écran de jeu)
@@ -30,8 +32,9 @@ export class FerryScene extends Phaser.Scene {
     super('Ferry');
   }
 
-  create({ next, deck }) {
+  create({ next, deck, road }) {
     this.next = next;
+    this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir de la scénette de départ
     const cam = this.cameras.main;
     cam.setBackgroundColor(0x000000);
     const fit = () => {
@@ -46,15 +49,38 @@ export class FerryScene extends Phaser.Scene {
 
     if (deck) return this.playDeck();
 
-    this.sea = this.add.tileSprite(0, BAND, SCREEN_W, SCREEN_H - 2 * BAND, FRLG_SHEETS.travelSea).setOrigin(0);
-    this.seaSpeed = { x: SPEED, y: 0 };
-    const ferry = this.add.image(SCREEN_W / 2 + 30, SCREEN_H / 2, FRLG_SHEETS.ferryWake);
-    this.tweens.add({ targets: ferry, y: ferry.y + 2, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    if (road) this.playRoad();
+    else {
+      this.sea = this.add.tileSprite(0, BAND, SCREEN_W, SCREEN_H - 2 * BAND, FRLG_SHEETS.travelSea).setOrigin(0);
+      this.seaSpeed = { x: SPEED, y: 0 };
+      const ferry = this.add.image(SCREEN_W / 2 + 30, SCREEN_H / 2, FRLG_SHEETS.ferryWake);
+      this.tweens.add({ targets: ferry, y: ferry.y + 2, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
 
     cam.fadeIn(FADE_MS);
     this.time.delayedCall(DURATION, () => {
       cam.fadeOut(FADE_MS);
       cam.once('camerafadeoutcomplete', () => this.scene.start(next.sceneKey, next.data));
+    });
+  }
+
+  // Trajet en voiture : la campagne défile, la voiture roule au milieu de la route.
+  playRoad() {
+    const h = SCREEN_H - 2 * BAND;
+    this.sea = this.add.tileSprite(0, BAND, SCREEN_W, h, roadStripTexture(this, h)).setOrigin(0);
+    this.seaSpeed = { x: SPEED + 1, y: 0 };
+    const x = SCREEN_W / 2 + 20;
+    const bottom = BAND + ROAD_TOP + 42;
+    const car = familyCarImage(this, x, bottom, 'right').setOrigin(0.5, 1).setDepth(2);
+    this.tweens.add({ targets: car, y: bottom - 1, duration: 120, yoyo: true, repeat: -1, ease: 'Stepped' });
+    // Bouffées de fumée au pot d'échappement, qui s'envolent vers l'arrière.
+    this.time.addEvent({
+      delay: 260,
+      loop: true,
+      callback: () => {
+        const puff = this.add.rectangle(x - 22, bottom - 6, 3, 3, 0xd8d8d0).setDepth(1);
+        this.tweens.add({ targets: puff, x: puff.x - 26, y: puff.y - 6, scale: 2, alpha: 0, duration: 700, onComplete: () => puff.destroy() });
+      },
     });
   }
 

@@ -346,6 +346,10 @@ const SFX = {
     for (let i = 0; i < 3; i++) tone(sfxBus, { duty: 0.5, f: 440 + i * 110, start: t + i * 0.07, dur: 0.05, vol: 0.08 });
   },
   // Hautes herbes froissées
+  // Moteur qui démarre : grondements sourds de plus en plus rapprochés.
+  engine: (t) => {
+    [0, 0.16, 0.3, 0.42, 0.52, 0.6, 0.67, 0.73].forEach((d) => noise(sfxBus, { start: t + d, dur: 0.07, vol: 0.12, filter: 'lowpass', cutoff: 260 }));
+  },
   rustle: (t) => noise(sfxBus, { start: t, dur: 0.09, vol: 0.09, filter: 'bandpass', cutoff: 3200 }),
   // Objet ou souvenir obtenu : petite fanfare
   item: (t) => {
