@@ -350,8 +350,9 @@ def rs_stairs():
 
 
 # Blé : les hautes herbes de Rouge Feu (colonne 7, rangée 0), vertes passées au doré.
+# Le fond d'herbe (112, 200, 160) reste vert : les épis dorés poussent sur l'herbe, sans bord net autour du champ.
 WHEAT_COLORS = {
-    (112, 200, 160): (232, 200, 96), (160, 224, 192): (248, 232, 152), (64, 176, 136): (208, 160, 64),
+    (160, 224, 192): (248, 232, 152), (64, 176, 136): (208, 160, 64),
     (56, 144, 48): (184, 128, 40), (56, 88, 16): (120, 80, 24), (24, 160, 104): (168, 112, 40),
 }
 

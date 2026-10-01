@@ -393,9 +393,9 @@ export const interiors = {
     events: [{ on: 'enter', ifFlags: [FLAGS.cabaneFinie], unlessSouvenirs: [ROLES.cousins.id], steps: CABANE_FETE }],
   },
 
-  // Saint-Ay — l'hôpital (toit orange), façon Rouge Feu : Maman vient d'accoucher de Fanny.
+  // Saint-Ay — la clinique (toit orange), façon Rouge Feu : Maman vient d'accoucher de Fanny.
   hospital: {
-    name: 'Hôpital',
+    name: 'Clinique',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXXXXXXX',

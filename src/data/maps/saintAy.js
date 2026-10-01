@@ -8,7 +8,7 @@ import {
 const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 
 // Saint-Ay (Loiret) — petit village de campagne, 30 x 24 cases, façon Rouge Feu : la route de Montépilloy
-// (nord-sud) croise la rue des maisons (chaumière de la famille, maison de Felix) et la rue de l'hôpital ;
+// (nord-sud) croise la rue des maisons (chaumière de la famille, maison de Felix) et la rue de la clinique ;
 // prés de hautes herbes et champs de blé (qu'on traverse) ; au sud, la grande ferme et sa cour aux poules
 // (planches gardées par les poules). À l'ouest, le lac (rives de terre) touche le bord de la carte : petit
 // ponton et ferry ; au sud du lac, des sapins où est perchée la cabane des cousins. Au sud-ouest, un coin de
@@ -29,25 +29,25 @@ export const saintAyMap = {
   grid: parseGrid([
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTT', // 1
-    'TTTTRRRRR.....ççSRRRRR......TT', // 2
-    'TTTTRRRRR.fff.çç.RRRRR..ʬʬʬ.TT', // 3
-    'TT..WWWWW.fff.çç.WWWWW..ʬʬʬ.TT', // 4
-    'TT..WDWWWMfff.ççMWDWWW..ʬʬʬ.TT', // 5
-    'TTççççççççççççççççççççç.ʬʬʬ.TT', // 6
-    'TTççççççççççççççççççççç.ʬʬʬ.TT', // 7
-    '~~~~~==~......çç............TT', // 8
-    'BBBB~==~..ĥĥĥ.çç.RRRRR......TT', // 9
+    'TTTTRRRRR.....ççSRRRRR.ʬʬʬʬʬTT', // 2
+    'TTTTRRRRR.fff.çç.RRRRR.ʬʬʬʬʬTT', // 3
+    'TT..WWWWW.fff.çç.WWWWW.ʬʬʬʬʬTT', // 4
+    'TT..WDWWWMfff.ççMWDWWW.ʬʬʬʬʬTT', // 5
+    'TTçççççççççççççççççççççʬʬʬʬʬTT', // 6
+    'TTçççççççççççççççççççççʬʬʬʬʬTT', // 7
+    '~~~~~==~......çç.......ʬʬʬʬʬTT', // 8
+    'BBBB~==~..ĥĥĥ.çç.RRRRR.ʬʬʬʬʬTT', // 9
     'BBBB~==~..ĥĥĥ.çç.RRRRR......TT', // 10
     '~~~~~==~..ĥĥĥ.çç.WWWWW..ĥĥĥ.TT', // 11
     '~~~~~~~~......ççSWWDWW..ĥĥĥ.TT', // 12
     '~~~~~~~~ççççççççççççççç.ĥĥĥ.TT', // 13
     '~~~~~~~~ççççççççççççççç.....TT', // 14
     '~~~~~~~~.....SççRRRRRRFFFFFFTT', // 15
-    'TTTTTTTT......ççRRRRRRF...ʀFTT', // 16
-    'TTTTTTTT..ʬʬʬ.ççWWWWWWF....FTT', // 17
-    'TTTT......ʬʬʬ.ççWDWWWWF....FTT', // 18
-    'TTTT......ʬʬʬ.çç...WWWF....FTT', // 19
-    'TTĥĥĥĥĥĥ..ʬʬʬ.çççççççç.....FTT', // 20
+    'TTTTTTTT.ʬʬʬʬʬççRRRRRRF...ʀFTT', // 16
+    'TTTTTTTT.ʬʬʬʬʬççWWWWWWF....FTT', // 17
+    'TTTT.....ʬʬʬʬʬççWDWWWWF....FTT', // 18
+    'TTTT.....ʬʬʬʬʬçç...WWWF....FTT', // 19
+    'TTĥĥĥĥĥĥ.ʬʬʬʬʬçççççççç.....FTT', // 20
     'TTĥĥĥĥĥĥ........ƚ....ƀFFFFFFTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 23
@@ -63,7 +63,7 @@ export const saintAyMap = {
     {
       x: 19, y: 12, interior: 'hospital',
       lock: { ifFlags: [FLAGS.familleSuit] },
-      lockedDialogue: ["L'hôpital de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
+      lockedDialogue: ["La clinique de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
     { x: 17, y: 18, lockedDialogue: ['La ferme. On entend les poules caqueter derrière la porte.'] },
     // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite).
@@ -95,7 +95,7 @@ export const saintAyMap = {
   objects: [
     { x: 16, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
     { x: 13, y: 15, dialogue: ['Saint-Ay, Loiret. Bienvenue au village !'] },
-    { x: 16, y: 12, dialogue: ['Hôpital de Saint-Ay.'] },
+    { x: 16, y: 12, dialogue: ['Clinique de Saint-Ay.'] },
     { x: 9, y: 5, dialogue: ['La boîte aux lettres de la famille.'] },
     { x: 16, y: 5, dialogue: ['La boîte aux lettres de Felix et de ses frères et sœur.'] },
     { x: 26, y: 16, script: PLANKS },
@@ -108,18 +108,18 @@ export const saintAyMap = {
     })),
   ],
   npcs: [
-    // Arrivée : Papa et Manon arrivent en courant (ils suivent ensuite Pierre jusqu'à l'hôpital).
+    // Arrivée : Papa et Manon arrivent en courant (ils suivent ensuite Pierre jusqu'à la clinique).
     {
       id: 'papa', name: 'Papa', x: 10, y: 7, facing: 'left', color: 0x3f6fd8,
       ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit],
-      dialogue: ["Maman est à l'hôpital. Suis-nous !"],
+      dialogue: ["Maman est à la clinique. Suis-nous !"],
     },
     {
       id: 'manon', name: 'Manon', x: 11, y: 6, facing: 'left', color: 0xf0a030,
       ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit],
       dialogue: ['Vite, viens avec nous !'],
     },
-    // En sortant de l'hôpital, Felix (ton cousin) vient à ta rencontre, puis te suit jusqu'à chez lui.
+    // En sortant de la clinique, Felix (ton cousin) vient à ta rencontre, puis te suit jusqu'à chez lui.
     {
       id: 'felix', name: 'Felix', x: 21, y: 13, facing: 'left', color: COUSIN_COLORS.felix,
       ifSouvenirs: [ROLES.grandFrere.id], unlessFlags: [FLAGS.felixInvite],
@@ -152,7 +152,7 @@ export const saintAyMap = {
   events: [
     // Arrivée après la traversée : écran noir, puis Papa et Manon te trouvent au bord du lac.
     { on: 'enter', ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.saArrivee], steps: ARRIVAL },
-    // En sortant de l'hôpital : Felix vient te parler, puis te suit.
+    // En sortant de la clinique : Felix vient te parler, puis te suit.
     {
       on: 'enter',
       ifSouvenirs: [ROLES.grandFrere.id],

@@ -13,7 +13,7 @@ export const FLAGS = {
   coquillageTrouve: 'coquillage-trouve',        // Fort-de-France : coquillage caché dans les hautes herbes
   saArrivee: 'sa-arrivee',                      // Saint-Ay : Papa et Manon t'ont retrouvé au bord du lac
   familleSuit: 'famille-suit',                  // Papa et Manon suivent le joueur
-  familleArrivee: 'famille-arrivee',            // arrivés à l'hôpital de Saint-Ay
+  familleArrivee: 'famille-arrivee',            // arrivés à la clinique de Saint-Ay
   felixInvite: 'felix-invite',                  // Felix (ton cousin) t'a invité chez lui
   maisonFelixVisitee: 'maison-felix-visitee',   // entré chez Felix
   planCabane: 'plan-cabane',                    // Saint-Ay : Felix a lancé le chantier de la cabane
@@ -130,7 +130,7 @@ export const ITEMS = {
 export const FOLLOWERS = [
   { id: 'papa',  color: 0x3f6fd8, ifFlags: [FLAGS.familleSuit], unlessFlags: [FLAGS.familleArrivee] },
   { id: 'manon', color: 0xf0a030, ifFlags: [FLAGS.familleSuit], unlessFlags: [FLAGS.familleArrivee] },
-  // Felix t'accompagne de la sortie de l'hôpital jusqu'à chez lui (maison 2).
+  // Felix t'accompagne de la sortie de la clinique jusqu'à chez lui (maison 2).
   { id: 'felix', color: 0x9060d0, ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.maisonFelixVisitee] },
   // Montépilloy : Manon t'accompagne de la maison jusqu'à l'école.
   { id: 'manon', color: 0xf0a030, ifFlags: [FLAGS.manonEcole], unlessFlags: [FLAGS.arriveeEcole] },

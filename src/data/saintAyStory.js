@@ -18,13 +18,13 @@ export const ARRIVAL = [
   { say: ['Saint-Ay, Loiret. Quelque temps plus tard…'] },
   { black: false },
   { approach: 'papa' },
-  { speaker: 'Papa', say: ['Te voilà enfin ! On te cherche partout.', 'Maman est à l\'hôpital. Le bébé est arrivé ! Suis-nous !'] },
+  { speaker: 'Papa', say: ['Te voilà enfin ! On te cherche partout.', 'Maman est à la clinique. Le bébé est arrivé ! Suis-nous !'] },
   { approach: 'manon' },
   { speaker: 'Manon', say: ['Vite, viens avec nous !'] },
   { setFlags: [FLAGS.saArrivee, FLAGS.familleSuit] },
 ];
 
-// L'hôpital — Grand frère : Maman vient d'accoucher de Fanny.
+// La clinique — Grand frère : Maman vient d'accoucher de Fanny.
 export const BIRTH = [
   { setFlag: FLAGS.familleArrivee },
   { speaker: 'Papa', say: ['Nous y sommes. Maman est là-bas.'] },
@@ -148,7 +148,7 @@ export const CAR = [
   { speaker: 'Papa', say: ['Elle ne va pas bouger. On reviendra.'] },
   { say: ['Manon te montre son coquillage.'] },
   { speaker: 'Manon', say: ['Tu as toujours le tien ?'] },
-  { say: ['Par la vitre arrière : le lac, l\'hôpital, puis la cabane des cousins qui disparaît derrière les arbres.'] },
+  { say: ['Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît derrière les arbres.'] },
   { say: ['Tu emportes : Grand frère et Cousins pour la vie.'] },
   { setFlag: FLAGS.arriveeMontepilloy },
   { travel: { map: 'montepilloy', x: 14, y: 21, facing: 'up', car: true } },
