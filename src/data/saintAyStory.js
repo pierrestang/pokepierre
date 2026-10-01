@@ -42,7 +42,7 @@ export const CABANE_PLAN = [
   { setFlag: FLAGS.maisonFelixVisitee },
   { approach: 'felix-maison' },
   { speaker: 'Felix', say: ['Bienvenue chez nous ! J\'ai un plan : on construit une cabane. Rien que pour nous.'] },
-  { speaker: 'Joshua', say: ['Il faut des planches. Il y en a plein à la ferme… mais il y a les poules.'] },
+  { speaker: 'Joshua', say: ['Il faut des planches. Il y en a plein dans l\'enclos à poules… mais il y a les poules.'] },
   { speaker: 'Yanis', say: ['Et une corde pour les tenir. J\'en ai vu une dans les hautes herbes, tout au sud-ouest.'] },
   { speaker: 'Felix', say: ['Moi, je dirige le chantier. On la perche dans les sapins, au sud du lac.'] },
   { say: ['Joshua et Yanis filent dehors.'] },
@@ -52,7 +52,7 @@ export const CABANE_PLAN = [
 // Felix dirige le chantier : tout réuni, la cabane est construite.
 export const FELIX_CHANTIER = [
   // Il manque encore des matériaux.
-  { unlessItems: [ITEMS.planches.id], speaker: 'Felix', say: ['Il nous faut encore les planches : Joshua t\'attend à la ferme.'] },
+  { unlessItems: [ITEMS.planches.id], speaker: 'Felix', say: ['Il nous faut encore les planches : Joshua t\'attend devant l\'enclos à poules.'] },
   { unlessItems: [ITEMS.corde.id], speaker: 'Felix', say: ['Et la corde : Yanis dit qu\'elle traîne dans les hautes herbes, au sud-ouest.'] },
   { unlessItems: [ITEMS.planches.id], end: true },
   { unlessItems: [ITEMS.corde.id], end: true },
@@ -92,7 +92,7 @@ export const CABANE_FETE = [
   { travel: { map: 'saintAy', x: CABANE_SPOT.x, y: CABANE_SPOT.y + 1, facing: 'down' } },
 ];
 
-// Missions : les planches de la ferme (gardées par les poules) et la vieille corde cachée dans les hautes
+// Missions : les planches de l'enclos à poules (gardées par les poules) et la vieille corde cachée dans les hautes
 // herbes du sud-ouest (elle n'apparaît qu'une fois le chantier lancé).
 export const PLANKS = [
   { unlessFlags: [FLAGS.planCabane], say: ['Un tas de planches. De quoi construire quelque chose…'], end: true },

@@ -17,7 +17,7 @@ export const FLAGS = {
   felixInvite: 'felix-invite',                  // Felix (ton cousin) t'a invité chez lui
   maisonFelixVisitee: 'maison-felix-visitee',   // entré chez Felix
   planCabane: 'plan-cabane',                    // Saint-Ay : Felix a lancé le chantier de la cabane
-  pouleEnfuie1: 'poule-enfuie-1',               // les poules de la ferme ont fui (tas de planches)
+  pouleEnfuie1: 'poule-enfuie-1',               // les poules de l'enclos ont fui (tas de planches)
   pouleEnfuie2: 'poule-enfuie-2',
   cabaneFinie: 'cabane-finie',                  // la cabane des cousins est construite
   annonceMutation: 'annonce-mutation',          // Papa a annoncé le départ pour Montépilloy

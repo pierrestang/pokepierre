@@ -10,7 +10,7 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // Saint-Ay (Loiret) — petit village de campagne, 30 x 24 cases, façon Rouge Feu : la route de Montépilloy
 // (nord-sud) croise la rue des maisons (chaumière de la famille, maison de Felix) et la rue de la clinique ;
 // prés de hautes herbes aux formes irrégulières ; au sud, la grande
-// ferme, son chemin tout droit jusque dans la cour aux poules (planches gardées par les poules). À l'ouest, le lac
+// cabane de jardin et le chemin tout droit jusque dans l'enclos à poules (planches gardées par les poules). À l'ouest, le lac
 // (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des cousins
 // posée sur deux sapins de la forêt (blocs de la grille), une rangée de sapins à sa droite. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
 // chantier de la cabane. Ceinture d'arbres ailleurs.
@@ -43,11 +43,11 @@ export const saintAyMap = {
     '~~~~~~~~..ĥĥ..ççSWWDWW..ĥĥĥĥTT', // 12
     '~~~~~~~~ççççççççççççççç..ĥĥĥTT', // 13
     '~~~~~~~~ççççççççççççççç..ĥĥ.TT', // 14
-    '~~~~~~~~.....SççRRRRRRFFFFFFTT', // 15
-    'TTTTTTTT...ĥĥ.ççRRRRRRF....FTT', // 16
-    'TTTTTTTT..ĥĥĥĥççWWWWWWF....FTT', // 17
-    'TTTTTTTT.ĥĥĥĥ.ççWDWWWWF....FTT', // 18
-    'TTTTTTTT..ĥĥĥĥçç...WWWF....FTT', // 19
+    '~~~~~~~~.....Sçç......FFFFFFTT', // 15
+    'TTTTTTTT...ĥĥ.çç...RRRF....FTT', // 16
+    'TTTTTTTT..ĥĥĥĥçç...RRRF....FTT', // 17
+    'TTTTTTTT.ĥĥĥĥ.çç...WWWF....FTT', // 18
+    'TTTTTTTT..ĥĥĥĥçç...WDWF....FTT', // 19
     'TTĥĥĥĥĥ....ĥĥ.çççççççççç...FTT', // 20
     'TTĥĥĥĥ.....................FTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
@@ -66,7 +66,7 @@ export const saintAyMap = {
       lock: { ifFlags: [FLAGS.familleSuit] },
       lockedDialogue: ["La clinique de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
-    { x: 17, y: 18, lockedDialogue: ['La ferme. On entend les poules caqueter derrière la porte.'] },
+    { x: 20, y: 19, lockedDialogue: ['La cabane de jardin. Des outils, des sacs de grain… On entend les poules juste à côté.'] },
     // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite).
     { ...CABANE_SPOT, interior: 'cabane', when: { ifFlags: [FLAGS.cabaneFinie] } },
   ],
@@ -75,12 +75,12 @@ export const saintAyMap = {
     { type: 'cottage', x: 4, y: 2 },
     { type: 'slateHouse', x: 17, y: 2 },
     { type: 'clinic', x: 17, y: 9 },
-    { type: 'farm', x: 16, y: 15 },
+    { type: 'shed', x: 19, y: 16 },
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
   // Obstacles qui dépendent de l'histoire.
   props: [
-    // Le tas de planches de la ferme, gardé par les poules ; il disparaît une fois les planches ramassées.
+    // Le tas de planches de l'enclos à poules, gardé par les poules ; il disparaît une fois les planches ramassées.
     {
       type: 'planks', x: 26, y: 16, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
       script: PLANKS,
@@ -130,13 +130,13 @@ export const saintAyMap = {
       ifSouvenirs: [ROLES.grandFrere.id], unlessFlags: [FLAGS.felixInvite],
       dialogue: ["Cousin ! Ça y est, on a emménagé ! La maison au toit d'ardoise, en haut à droite. Viens, les autres t'attendent !"],
     },
-    // Chantier de la cabane : Joshua à la ferme, Yanis près du lac.
+    // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis près du lac.
     {
       id: 'joshua', name: 'Joshua', x: 18, y: 19, facing: 'down', color: COUSIN_COLORS.joshua,
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.planches.id], speaker: 'Joshua', say: ['Avec ces planches, on va faire un vrai QG.'], end: true },
-        { speaker: 'Joshua', say: ['Les planches sont au fond de la cour… derrière les poules.'] },
+        { speaker: 'Joshua', say: ['Les planches sont au fond de l\'enclos à poules… derrière les poules.'] },
       ],
     },
     {
