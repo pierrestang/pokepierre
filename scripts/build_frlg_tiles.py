@@ -23,7 +23,7 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   frlg-seven.png     carte de Seven Island (24 x 20 cases), sans le cadre ;
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent ;
   rs-cabane.png      cabane perchée de Fortree City (Rubis/Saphir), détourée de la forêt, avec deux pilotis ;
-                     puis son intérieur (tronc, deux bancs), 128 x 96 px, à droite (voir cabane) ;
+                     puis son intérieur (tronc, deux bancs), 128 x 128 px, à droite (voir cabane) ;
   rs-bigtree.png     gros arbre feuillu de Fortree City (3 cases de large), détouré de la forêt, tronc prolongé
                      jusqu'au sol (voir big_tree) ;
   frlg-car.png       voiture bleue de la famille, vue de côté (vers la gauche, puis vers la droite), réduite de
@@ -466,9 +466,17 @@ def cabane():
                 o[px + dx, y] = c
         for dx in range(4):
             o[px + dx, h - 1] = dark
-    out = Image.new('RGBA', (w + 128, max(h, 96)), (0, 0, 0, 0))
+    # Intérieur agrandi de deux rangées de plancher devant les bancs (8 x 8 cases) : on circule mieux.
+    room = sheet.crop(CABANE_ROOM)
+    floor = room.crop((0, 64, 128, 80))
+    tall = Image.new('RGBA', (128, 128), (0, 0, 0, 0))
+    tall.paste(room.crop((0, 0, 128, 80)), (0, 0))
+    tall.paste(floor, (0, 80))
+    tall.paste(floor, (0, 96))
+    tall.paste(room.crop((0, 80, 128, 96)), (0, 112))
+    out = Image.new('RGBA', (w + 128, max(h, 128)), (0, 0, 0, 0))
     out.paste(hut, (0, 0))
-    out.paste(sheet.crop(CABANE_ROOM), (w, 0))
+    out.paste(tall, (w, 0))
     return out
 
 

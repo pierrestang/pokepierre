@@ -237,6 +237,25 @@ function borderTile(set, other) {
   return set.fill;
 }
 
+// Comme borderTile, mais quart de case par quart de case (8 x 8 px) : chaque quart prend la bordure de ses
+// deux côtés. Un chemin d'une seule case de large garde ainsi sa bordure des deux côtés, et ses bouts.
+function blitBorderQuadrants(ctx, textures, set, other, px, py) {
+  const H = S / 2;
+  for (const [qx, qy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) {
+    const dx = qx ? 1 : -1;
+    const dy = qy ? 1 : -1;
+    const v = other(0, dy);
+    const h = other(dx, 0);
+    let tile;
+    if (v && h) tile = set[`${qy ? 'b' : 't'}${qx ? 'r' : 'l'}`];
+    else if (v) tile = qy ? set.bottom : set.top;
+    else if (h) tile = qx ? set.right : set.left;
+    else if (other(dx, dy)) tile = set[`inner${qy ? 'B' : 'T'}${qx ? 'R' : 'L'}`];
+    else tile = set.fill;
+    ctx.drawImage(textures.get(tile.sheet).getSourceImage(), tile.sx + qx * H, tile.sy + qy * H, H, H, px + qx * H, py + qy * H, H, H);
+  }
+}
+
 function hash(x, y) {
   let h = (x * 374761393 + y * 668265263) >>> 0;
   h = ((h ^ (h >>> 13)) * 1274126177) >>> 0;
@@ -299,7 +318,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
       const n = at(x + dx, y + dy);
       return n !== undefined && !['ç', 'R', 'W', 'D', '=', 's'].includes(n) && !buildingFloor(x + dx, y + dy);
     };
-    blit(ctx, textures, borderTile(SAND_ON_GRASS, other), px, py);
+    blitBorderQuadrants(ctx, textures, SAND_ON_GRASS, other, px, py);
   }
   return true;
 }
@@ -537,10 +556,10 @@ export function roadStripTexture(scene, height) {
 // ---------- Cabane des cousins ----------
 
 // rs-cabane.png : la cabane perchée de Fortree City (64 x 91 px, l'échelle occupe les colonnes 32 à 47),
-// puis son intérieur (128 x 96 px, 8 x 6 cases : tronc au milieu, un banc de chaque côté).
+// puis son intérieur (128 x 128 px, 8 x 8 cases : tronc au milieu, un banc de chaque côté, plancher devant).
 const CABANE_FRAMES = {
   hut: [0, 0, 64, 91],
-  room: [64, 0, 128, 96],
+  room: [64, 0, 128, 128],
   // Dessus des deux bancs, redessinés par-dessus les cousins assis derrière (voir interiors.cabane).
   benchLeft: [64 + 10, 43, 37, 20],
   benchRight: [64 + 82, 43, 37, 20],

@@ -9,7 +9,7 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 
 // Saint-Ay (Loiret) — petit village de campagne, 34 x 28 cases, façon Rouge Feu, bâtiments resserrés autour
 // de la route de Montépilloy (nord-sud) : rue des maisons (chaumière de la famille et, à côté, l'enclos à
-// poules, ouvert vers le bas par une seule case ; planches gardées par les poules), rue du milieu (maison de
+// poules, ouvert vers le bas par une seule case au bout de la rue ; planches gardées par les poules), rue du milieu (maison de
 // Felix), et au sud la clinique sur la route du bas. Prés de hautes herbes aux formes irrégulières. À l'ouest, le lac
 // (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des cousins
 // posée sur deux sapins de la forêt. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde
@@ -35,14 +35,14 @@ export const saintAyMap = {
     'TT..fff..ĥĥĥ..çç.WWWWW.F...F.ĥĥ.TT', // 4
     'TT..fff...ĥ...ççMWDWWW.F...F..ĥĥTT', // 5
     'TTçççççççççççççççççççç.FFçFF..ĥ.TT', // 6
-    'TTçççççççççççççççççççç...ç......TT', // 7
-    '~~~~~==~..ĥĥ..çç.........ç......TT', // 8
-    'BBBB~==~.ĥĥĥĥ.çç.RRRRR...ç.ĥĥ...TT', // 9
-    'BBBB~==~ĥĥĥĥĥ.çç.RRRRR...çĥĥĥĥ..TT', // 10
-    '~~~~~==~.ĥĥĥ..çç.WWWWW...ç.ĥĥĥĥ.TT', // 11
-    '~~~~~~~~..ĥĥ..ççMWDWWW...ç..ĥĥ..TT', // 12
-    '~~~~~~~~çççççççççççççççççç......TT', // 13
-    '~~~~~~~~çççççççççççççççççç......TT', // 14
+    'TTçççççççççççççççççççççççç......TT', // 7
+    '~~~~~==~..ĥĥ..çç................TT', // 8
+    'BBBB~==~.ĥĥĥĥ.çç.RRRRR.....ĥĥ...TT', // 9
+    'BBBB~==~ĥĥĥĥĥ.çç.RRRRR....ĥĥĥĥ..TT', // 10
+    '~~~~~==~.ĥĥĥ..çç.WWWWW.....ĥĥĥĥ.TT', // 11
+    '~~~~~~~~..ĥĥ..ççMWDWWW......ĥĥ..TT', // 12
+    '~~~~~~~~ççççççççççççççç.........TT', // 13
+    '~~~~~~~~ççççççççççççççç.........TT', // 14
     '~~~~~~~~.....Sçç................TT', // 15
     'TTTTTTTT...ĥĥ.ççf..........ĥĥ...TT', // 16
     'TTTTTTTT..ĥĥĥĥççf.RRRRR...ĥĥĥĥ..TT', // 17
@@ -134,7 +134,7 @@ export const saintAyMap = {
     },
     // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis près du lac.
     {
-      id: 'joshua', name: 'Joshua', x: 24, y: 7, facing: 'right', color: COUSIN_COLORS.joshua,
+      id: 'joshua', name: 'Joshua', x: 26, y: 7, facing: 'left', color: COUSIN_COLORS.joshua,
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.planches.id], speaker: 'Joshua', say: ['Avec ces planches, on va faire un vrai QG.'], end: true },

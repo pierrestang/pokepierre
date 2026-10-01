@@ -374,9 +374,11 @@ export const interiors = {
       'XoommooX',   // places derrière les bancs
       'mmmmmmmm',   // bancs et pied du tronc
       'oooooooo',
+      'oooooooo',
+      'oooooooo',
       'oooEEooo',   // tapis de sortie (l'échelle)
     ]),
-    spawn: { x: 3, y: 4, facing: 'up' },
+    spawn: { x: 3, y: 6, facing: 'up' },
     objects: [
       { x: 1, y: 3, script: FELIX_AT_CABANE },
       { x: 5, y: 3, script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe.'] }] },
