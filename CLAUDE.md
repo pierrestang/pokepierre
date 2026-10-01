@@ -19,6 +19,8 @@ On commence par une seule ville jouable, puis on étend à une petite région.
   Décor : planches fournies dans assets-source/frlg/, préparées par scripts/build_frlg_tiles.py vers
   public/assets/tiles/ ; src/art/frlgArt.js dit quelles tuiles utiliser (sol, bordures automatiques,
   objets, bâtiments, arbres). Ce qui n'a pas d'équivalent Rouge Feu reste dessiné dans le code (src/art/).
+- Ressources de fans (assets-source/fan/) : voiture de la famille tirée de « FRLG Tilesets - Cars » de
+  pinkscales (DeviantArt), libre pour un projet de fan non commercial, avec crédit à pinkscales.
 - Écran : format GBA dézoomé, 360 x 240 px (22,5 x 15 cases), voir src/systems/screen.js.
 - Police des dialogues et du menu : police bitmap de Rouge Feu, extraite par scripts/extract_frlg_font.py
   vers public/assets/fonts/ (voir src/systems/frlgFont.js) ; deux lignes par page, pages coupées automatiquement.
