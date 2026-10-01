@@ -36,7 +36,6 @@ export const FRLG_SHEETS = {
   townMap: 'frlg-townmap',
   car: 'frlg-car',
   cabane: 'rs-cabane',
-  shed: 'frlg-shed',
   bigTree: 'rs-bigtree',
 };
 
@@ -132,9 +131,6 @@ export const FRLG_BUILDINGS = {
   slateHouse: { sx: 300, sy: 24, w: 80, h: 55, footH: 4 },   // toit d'ardoise, porte rouge
   blueHouse: { sx: 395, sy: 24, w: 96, h: 56, footH: 4 },    // toit bleu, 6 cases, porte en 3e colonne
   clinic: { sx: 421, sy: 343, w: 80, h: 72, footH: 4 },      // toit orange (pension), porte au milieu
-  // Cabane de jardin au toit orange (frlg-shed.png, 3 x 4 cases), porte au milieu ; son image laisse voir
-  // l'herbe sur ses bords : les chemins voisins gardent leur bordure (`pathBorders`).
-  shed: { sheet: FRLG_SHEETS.shed, sx: 0, sy: 0, w: 48, h: 64, footH: 4, pathBorders: true },
   // Montépilloy et Prytanée.
   school: { sx: 620, sy: 242, w: 80, h: 71, footH: 4 },      // auvent vert et jardinières (fan-club), porte en 2e colonne
   lab: { sx: 528, sy: 342, w: 112, h: 72, footH: 4 },       // labo du Prof. Chen : 7 cases, porte en 4e colonne
@@ -301,7 +297,6 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
     // Chemin de sable : continue sous les bâtiments, sur le ponton et dans le sable de la plage.
     const other = (dx, dy) => {
       const n = at(x + dx, y + dy);
-      if (buildingFloor.bordered?.(x + dx, y + dy)) return true;
       return n !== undefined && !['ç', 'R', 'W', 'D', '=', 's'].includes(n) && !buildingFloor(x + dx, y + dy);
     };
     blit(ctx, textures, borderTile(SAND_ON_GRASS, other), px, py);
@@ -440,10 +435,8 @@ export function addFrlgBuilding(scene, b) {
 // Cases couvertes par les bâtiments Rouge Feu d'une carte : fonction (x, y) -> booléen.
 // Seules les cases de bâtiment (R, W, D) de l'emprise comptent : une case d'herbe dans l'emprise garde son sol
 // et ses bordures.
-// La fonction renvoyée a `.bordered(x, y)` : vrai sous un bâtiment `pathBorders` (le chemin y garde sa bordure).
 export function frlgBuildingFloor(buildings = [], at = () => 'R') {
   const cells = new Set();
-  const bordered = new Set();
   for (const b of buildings) {
     const def = FRLG_BUILDINGS[b.type];
     if (!def) continue;
@@ -451,13 +444,10 @@ export function frlgBuildingFloor(buildings = [], at = () => 'R') {
       for (let dx = 0; dx < def.w / S; dx++) {
         if (!['R', 'W', 'D'].includes(at(b.x + dx, b.y + dy))) continue;
         cells.add(`${b.x + dx},${b.y + dy}`);
-        if (def.pathBorders) bordered.add(`${b.x + dx},${b.y + dy}`);
       }
     }
   }
-  const floor = (x, y) => cells.has(`${x},${y}`);
-  floor.bordered = (x, y) => bordered.has(`${x},${y}`);
-  return floor;
+  return (x, y) => cells.has(`${x},${y}`);
 }
 
 // Grand arbre Rouge Feu : ancré sur la case en bas à droite d'un bloc de 2 x 2 sapins.

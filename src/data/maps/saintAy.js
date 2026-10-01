@@ -7,13 +7,13 @@ import {
 // Le ferry (le même qu'à Fort-de-France), amarré à gauche du ponton du lac ; une case d'eau entre les deux.
 const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 
-// Saint-Ay (Loiret) — petit village de campagne, 30 x 24 cases, façon Rouge Feu : la route de Montépilloy
-// (nord-sud) croise la rue des maisons (chaumière de la famille, maison de Felix) et la rue de la clinique ;
-// prés de hautes herbes aux formes irrégulières ; au sud, la grande
-// cabane de jardin et le chemin tout droit jusque dans l'enclos à poules (planches gardées par les poules). À l'ouest, le lac
-// (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des cousins
-// posée sur deux sapins de la forêt (blocs de la grille), une rangée de sapins à sa droite. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
-// chantier de la cabane. Ceinture d'arbres ailleurs.
+// Saint-Ay (Loiret) — petit village de campagne, 34 x 28 cases, façon Rouge Feu : la route de Montépilloy
+// (nord-sud) traverse le village jusqu'à la route du bas ; rue des maisons (chaumière de la famille, maison de
+// Felix et, à côté, l'enclos à poules, ouvert vers le bas par une seule case ; planches gardées par les poules),
+// rue du milieu, et tout en bas à droite la clinique. Prés de hautes herbes aux formes irrégulières. À l'ouest,
+// le lac (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des
+// cousins posée sur deux sapins de la forêt. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille
+// corde pendant le chantier de la cabane. Ceinture d'arbres ailleurs.
 // Scénario : voir data/saintAyStory.js.
 // Légende : voir src/data/tiles.js (ç = chemin, F = barrière, ~ = lac,
 // B = ferry, = = ponton, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
@@ -28,30 +28,34 @@ export const saintAyMap = {
   id: 'saintAy',
   name: 'Saint-Ay',
   grid: parseGrid([
-    'TTTTTTTTTTTTTTççTTTTTTTTTTTTTT', // 0
-    'TTTTTTTTTTTTTTççTTTTTTTTTTTTTT', // 1
-    'TTTTRRRRR.....ççSRRRRR..ĥĥ..TT', // 2
-    'TTTTRRRRR.fff.çç.RRRRR.ĥĥĥĥ.TT', // 3
-    'TT..WWWWW.fff.çç.WWWWW..ĥĥĥĥTT', // 4
-    'TT..WDWWWMfff.ççMWDWWW...ĥĥĥTT', // 5
-    'TTççççççççççççççççççççç.ĥĥĥ.TT', // 6
-    'TTçççççççççççççççççççççĥĥĥ..TT', // 7
-    '~~~~~==~..ĥĥ..çç........ĥĥĥ.TT', // 8
-    'BBBB~==~.ĥĥĥĥ.çç.RRRRR....ĥ.TT', // 9
-    'BBBB~==~ĥĥĥĥĥ.çç.RRRRR..ĥĥ..TT', // 10
-    '~~~~~==~.ĥĥĥ..çç.WWWWW.ĥĥĥĥ.TT', // 11
-    '~~~~~~~~..ĥĥ..ççSWWDWW..ĥĥĥĥTT', // 12
-    '~~~~~~~~ççççççççççççççç..ĥĥĥTT', // 13
-    '~~~~~~~~ççççççççççççççç..ĥĥ.TT', // 14
-    '~~~~~~~~.....Sçç......FFFFFFTT', // 15
-    'TTTTTTTT...ĥĥ.çç...RRRF....FTT', // 16
-    'TTTTTTTT..ĥĥĥĥçç...RRRF....FTT', // 17
-    'TTTTTTTT.ĥĥĥĥ.çç...WWWF....FTT', // 18
-    'TTTTTTTT..ĥĥĥĥçç...WDWF....FTT', // 19
-    'TTĥĥĥĥĥ....ĥĥ.çççççççççç...FTT', // 20
-    'TTĥĥĥĥ.....................FTT', // 21
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 23
+    'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTT', // 0
+    'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTT', // 1
+    'TTTTRRRRR.....ççSRRRRR.FFFFFFF..TT', // 2
+    'TTTTRRRRR.fff.çç.RRRRR.F.....F.ĥTT', // 3
+    'TT..WWWWW.fff.çç.WWWWW.F.....FĥĥTT', // 4
+    'TT..WDWWWMfff.ççMWDWWW.F.....F.ĥTT', // 5
+    'TTçççççççççççççççççççççF.....F..TT', // 6
+    'TTçççççççççççççççççççççF.....F..TT', // 7
+    '~~~~~==~..ĥĥ..çç.......FFFçFFF..TT', // 8
+    'BBBB~==~.ĥĥĥĥ.çç...ĥĥ.....ç.....TT', // 9
+    'BBBB~==~ĥĥĥĥĥ.çç..ĥĥĥĥ....ç.....TT', // 10
+    '~~~~~==~.ĥĥĥ..çç.ĥĥĥĥ.....ç.....TT', // 11
+    '~~~~~~~~..ĥĥ..çç..ĥĥ......ç.....TT', // 12
+    '~~~~~~~~ççççççççççççççççççç.....TT', // 13
+    '~~~~~~~~ççççççççççççççççççç.....TT', // 14
+    '~~~~~~~~.....Sçç................TT', // 15
+    'TTTTTTTT...ĥĥ.çç....ĥĥ......ĥĥ..TT', // 16
+    'TTTTTTTT..ĥĥĥĥçç...ĥĥĥĥ....ĥĥĥĥ.TT', // 17
+    'TTTTTTTT.ĥĥĥĥ.çç..ĥĥĥĥĥ.....ĥĥĥ.TT', // 18
+    'TTTTTTTT..ĥĥĥĥçç...ĥĥĥ..........TT', // 19
+    'TTĥĥĥĥĥ....ĥĥ.çç....ĥĥ....RRRRR.TT', // 20
+    'TTĥĥĥĥ........ççfff.......RRRRR.TT', // 21
+    'TT.ĥĥĥĥ.......ççfff.......WWWWW.TT', // 22
+    'TTĥĥĥĥĥĥ......çç.........SWWDWW.TT', // 23
+    'TT.ĥĥĥ........ççççççççççççççççççTT', // 24
+    'TT..ĥĥ........ççççççççççççççççççTT', // 25
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 26
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 27
   ]),
   // Portes -> intérieur. Au retour, le joueur réapparaît sous la porte. Sans intérieur : porte fermée.
   doors: [
@@ -62,11 +66,10 @@ export const saintAyMap = {
       lockedDialogue: ['Personne ne répond.'],
     },
     {
-      x: 19, y: 12, interior: 'hospital',
+      x: 28, y: 23, interior: 'hospital',
       lock: { ifFlags: [FLAGS.familleSuit] },
       lockedDialogue: ["La clinique de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
-    { x: 20, y: 19, lockedDialogue: ['La cabane de jardin. Des outils, des sacs de grain… On entend les poules juste à côté.'] },
     // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite).
     { ...CABANE_SPOT, interior: 'cabane', when: { ifFlags: [FLAGS.cabaneFinie] } },
   ],
@@ -74,15 +77,14 @@ export const saintAyMap = {
   buildings: [
     { type: 'cottage', x: 4, y: 2 },
     { type: 'slateHouse', x: 17, y: 2 },
-    { type: 'clinic', x: 17, y: 9 },
-    { type: 'shed', x: 19, y: 16 },
+    { type: 'clinic', x: 26, y: 20 },
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
   // Obstacles qui dépendent de l'histoire.
   props: [
     // Le tas de planches de l'enclos à poules, gardé par les poules ; il disparaît une fois les planches ramassées.
     {
-      type: 'planks', x: 26, y: 16, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
+      type: 'planks', x: 28, y: 3, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
       script: PLANKS,
     },
     // La cabane des cousins, une fois construite, perchée dans les sapins au sud du lac.
@@ -101,7 +103,7 @@ export const saintAyMap = {
   objects: [
     { x: 16, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
     { x: 13, y: 15, dialogue: ['Saint-Ay, Loiret. Bienvenue au village !'] },
-    { x: 16, y: 12, dialogue: ['Clinique de Saint-Ay.'] },
+    { x: 25, y: 23, dialogue: ['Clinique de Saint-Ay.'] },
     { x: 9, y: 5, dialogue: ['La boîte aux lettres de la famille.'] },
     { x: 16, y: 5, dialogue: ['La boîte aux lettres de Felix et de ses frères et sœur.'] },
     { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: ROPE },
@@ -126,13 +128,13 @@ export const saintAyMap = {
     },
     // En sortant de la clinique, Felix (ton cousin) vient à ta rencontre, puis te suit jusqu'à chez lui.
     {
-      id: 'felix', name: 'Felix', x: 21, y: 13, facing: 'left', color: COUSIN_COLORS.felix,
+      id: 'felix', name: 'Felix', x: 24, y: 24, facing: 'right', color: COUSIN_COLORS.felix,
       ifSouvenirs: [ROLES.grandFrere.id], unlessFlags: [FLAGS.felixInvite],
       dialogue: ["Cousin ! Ça y est, on a emménagé ! La maison au toit d'ardoise, en haut à droite. Viens, les autres t'attendent !"],
     },
     // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis près du lac.
     {
-      id: 'joshua', name: 'Joshua', x: 18, y: 19, facing: 'down', color: COUSIN_COLORS.joshua,
+      id: 'joshua', name: 'Joshua', x: 25, y: 9, facing: 'right', color: COUSIN_COLORS.joshua,
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.planches.id], speaker: 'Joshua', say: ['Avec ces planches, on va faire un vrai QG.'], end: true },
@@ -147,12 +149,12 @@ export const saintAyMap = {
         { speaker: 'Yanis', say: ["J'ai vu une vieille corde dans les hautes herbes, tout au sud-ouest. Derrière le lac."] },
       ],
     },
-    // Les poules gardent le tas de planches ; effrayées, elles filent au fond de la cour.
-    { id: 'poule-1', name: 'Poule', x: 25, y: 16, facing: 'right', unlessFlags: [FLAGS.pouleEnfuie1], script: henScript(FLAGS.pouleEnfuie1) },
-    { id: 'poule-1b', name: 'Poule', x: 23, y: 18, facing: 'down', ifFlags: [FLAGS.pouleEnfuie1], dialogue: ['Cot… cot.'] },
-    { id: 'poule-2', name: 'Poule', x: 26, y: 17, facing: 'up', unlessFlags: [FLAGS.pouleEnfuie2], script: henScript(FLAGS.pouleEnfuie2) },
-    { id: 'poule-2b', name: 'Poule', x: 24, y: 20, facing: 'left', ifFlags: [FLAGS.pouleEnfuie2], dialogue: ['Cot… cot.'] },
-    { id: 'poule-3', name: 'Poule', x: 23, y: 16, facing: 'down', dialogue: ['Cot cot !'] },
+    // Les poules gardent le tas de planches (coin de l'enclos) ; effrayées, elles filent de l'autre côté.
+    { id: 'poule-1', name: 'Poule', x: 27, y: 3, facing: 'right', unlessFlags: [FLAGS.pouleEnfuie1], script: henScript(FLAGS.pouleEnfuie1) },
+    { id: 'poule-1b', name: 'Poule', x: 25, y: 6, facing: 'down', ifFlags: [FLAGS.pouleEnfuie1], dialogue: ['Cot… cot.'] },
+    { id: 'poule-2', name: 'Poule', x: 28, y: 4, facing: 'up', unlessFlags: [FLAGS.pouleEnfuie2], script: henScript(FLAGS.pouleEnfuie2) },
+    { id: 'poule-2b', name: 'Poule', x: 24, y: 5, facing: 'left', ifFlags: [FLAGS.pouleEnfuie2], dialogue: ['Cot… cot.'] },
+    { id: 'poule-3', name: 'Poule', x: 25, y: 4, facing: 'down', dialogue: ['Cot cot !'] },
   ],
   events: [
     // Arrivée après la traversée : écran noir, puis Papa et Manon te trouvent au bord du lac.

@@ -26,8 +26,6 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
                      puis son intérieur (tronc, deux bancs), 128 x 96 px, à droite (voir cabane) ;
   rs-bigtree.png     gros arbre feuillu de Fortree City (3 cases de large), détouré de la forêt, tronc prolongé
                      jusqu'au sol (voir big_tree) ;
-  frlg-shed.png      cabane de jardin au toit orange (3 x 4 cases) assemblée à partir de deux maisons de la
-                     planche de bâtiments de fabnt (tilesets-tileset_1.png), voir shed ;
   frlg-car.png       voiture bleue de la famille, vue de côté (vers la gauche, puis vers la droite), réduite de
                      moitié (voir family_car). Planche « FRLG Tilesets - Cars » de pinkscales (DeviantArt), dans
                      assets-source/fan/ : libre pour un projet de fan non commercial, avec crédit à pinkscales.
@@ -494,34 +492,6 @@ def components(o, w, h):
             yield comp
 
 
-# Cabane de jardin (Saint-Ay) : maisons au toit orange de tilesets-tileset_1.png (tuiles de 16 px séparées par
-# une ligne blanche : pas de 17 px). Colonnes : le bord gauche et la porte de la maison à jardinières, puis un
-# mur nu de la maison voisine, fermé par le bord droit de la première (sans sa fenêtre ni sa jardinière).
-FARM_X = [17, 34, 51, 68, 85]                 # colonnes de tuiles des deux maisons
-FARM_ROWS = [721, 738, 755, 772]              # maison à porte et jardinières
-PLAIN_ROWS = [806, 823, 840, 857]             # maison à deux fenêtres
-def shed():
-    sheet = Image.open(SRC / 'tilesets-tileset_1.png').convert('RGBA')
-    tile = (lambda sx, sy: sheet.crop((sx, sy, sx + 16, sy + 16)))
-    out = Image.new('RGBA', (48, 16 * len(FARM_ROWS)), (255, 255, 255, 255))
-    for r, (sy, plain) in enumerate(zip(FARM_ROWS, PLAIN_ROWS)):
-        out.paste(tile(FARM_X[0], sy), (0, 16 * r))
-        out.paste(tile(FARM_X[1], sy), (16, 16 * r))
-        out.paste(tile(FARM_X[2], plain), (32, 16 * r))
-        out.paste(tile(FARM_X[4], sy).crop((13, 0, 16, 16)), (45, 16 * r))     # bord droit
-    # Fond blanc de la planche rendu transparent depuis les bords (le blanc des fenêtres reste).
-    w, h = out.size
-    o = out.load()
-    todo = deque([(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)])
-    while todo:
-        x, y = todo.popleft()
-        if not (0 <= x < w and 0 <= y < h) or o[x, y] != (255, 255, 255, 255):
-            continue
-        o[x, y] = (0, 0, 0, 0)
-        todo.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
-    return out
-
-
 # Gros arbre feuillu de Fortree City (planche rs/backgrounds-fortree_city.png) : feuillage de 3 cases sur un
 # tronc d'une case. Détouré de la forêt comme la cabane ; dans la planche, le bas du tronc se perd dans la
 # forêt : il est prolongé de quelques rangées, avec des racines sombres et une ombre au sol.
@@ -611,7 +581,6 @@ def main():
     gba_palette(clear_outside(rs_objects, (255, 255, 255, 255))).save(OUT / 'rs-objects.png')
     gba_palette(family_car()).save(OUT / 'frlg-car.png')
     gba_palette(cabane()).save(OUT / 'rs-cabane.png')
-    gba_palette(shed()).save(OUT / 'frlg-shed.png')
     gba_palette(big_tree()).save(OUT / 'rs-bigtree.png')
     print('ok ->', OUT.relative_to(ROOT))
 
