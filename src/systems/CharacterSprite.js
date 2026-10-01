@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { TILE_SIZE } from '../data/tiles.js';
 import { characterTexture, lookFromColor } from '../art/characterArt.js';
 import { sheetOf } from '../art/spriteSheets.js';
+import { BED_LOWER } from '../art/frlgArt.js';
 
 export const DIRECTIONS = {
   up:    { dx: 0,  dy: -1 },
@@ -19,8 +20,9 @@ export function tileCenter(x, y) {
 // Personnage animé (joueur ou PNJ) posé sur sa case, la tête dépasse au-dessus.
 // `appearance` : `{ sprite: 't4' | 'f0' … }` (planches fournies, voir art/spriteSheets.js), une apparence
 // dessinée (voir art/characterArt.js, ex. le chat) ou une simple couleur de haut.
+// `bed` : { px, py, child? } : couché dans le lit dont l'image commence en (px, py) (voir frlgArt.bedAt).
 export class CharacterSprite extends Phaser.GameObjects.Container {
-  constructor(scene, x, y, appearance, facing = 'down', { hat = false } = {}) {
+  constructor(scene, x, y, appearance, facing = 'down', { hat = false, bed = null } = {}) {
     super(scene, ...tileCenter(x, y));
     if (appearance?.sprite) {
       // TownsPeople2 : pieds sur l'avant-dernière ligne de l'image ; Rouge Feu : sur la dernière.
@@ -37,10 +39,32 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     this.foot = 0;
     scene.add.existing(this);
     this.setFacing(facing);
+    if (bed) this.lieInBed(bed);
     this.updateDepth();
   }
 
+  // Couché sur le dos, la tête sur l'oreiller : le bas du lit est redessiné par-dessus le corps, avec la
+  // bosse du corps sous la couverture (plus courte pour un enfant).
+  lieInBed({ px, py, child = false }) {
+    this.setFacing('down');
+    this.inBed = true;
+    this.setPosition(px + 12, py);
+    this.image.setOrigin(0.5, 0).setPosition(0, -4);
+    const textures = this.scene.textures;
+    const frame = 'bed-lower';
+    if (!textures.get(BED_LOWER.sheet).has(frame)) {
+      textures.get(BED_LOWER.sheet).add(frame, 0, BED_LOWER.sx, BED_LOWER.sy, BED_LOWER.w, BED_LOWER.h);
+    }
+    this.add(this.scene.add.image(-12, 13, BED_LOWER.sheet, frame).setOrigin(0));
+    const bottom = child ? 21 : 25;
+    const g = this.scene.add.graphics();
+    g.fillStyle(0xa8a8f8).fillRect(-5, 16, 9, bottom - 16).fillRect(-4, bottom, 7, 1);
+    g.fillStyle(0x7078d8).fillRect(4, 17, 1, bottom - 17).fillRect(-4, bottom + 1, 7, 1).fillRect(3, bottom, 1, 1);
+    this.add(g);
+  }
+
   setFacing(dir) {
+    if (this.inBed) return;
     this.facing = dir;
     this.image.setFrame(`${this.prefix}${dir}-0`);
   }

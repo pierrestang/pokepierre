@@ -11,12 +11,16 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // (nord-sud) croise la rue des maisons (chaumière de la famille avec son grand arbre, maison de Felix) et la
 // rue de l'hôpital ; potager, champs de blé et de terre labourée clôturés de blanc ; au sud, la ferme et sa
 // cour (planches gardées par les poules). À l'ouest, le lac touche le bord de la carte : petit ponton, ferry,
-// bitte d'amarrage et sa vieille corde. Ceinture d'arbres ailleurs.
+// bitte d'amarrage. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
+// chantier de la cabane. Ceinture d'arbres ailleurs.
 // Scénario : voir data/saintAyStory.js.
 // Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, ʭ = terre labourée, F = barrière, ~ = lac,
 // B = ferry, = = ponton, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
 // S = panneau, M = boîte aux lettres, ʀ = tas de planches, ɓ = bitte d'amarrage, R / W / D = toit, mur,
 // porte des bâtiments)
+// La vieille corde : au fond du coin de hautes herbes du sud-ouest, seulement pendant le chantier de la cabane.
+const ROPE_SPOT = { x: 2, y: 20 };
+const ROPE_CONDITIONS = { ifFlags: [FLAGS.planCabane], unlessItems: [ITEMS.corde.id], unlessFlags: [FLAGS.cabaneFinie] };
 const COUSIN_COLORS = { felix: 0x9060d0, joshua: 0x20a0c0, yanis: 0xc0b040 };
 
 export const saintAyMap = {
@@ -75,9 +79,9 @@ export const saintAyMap = {
   props: [
     { type: 'familyCar', x: 14, y: 2, w: 2, h: 2, ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
-  // Décors liés à l'histoire : la corde sur la bitte d'amarrage, la cabane à l'emplacement choisi.
+  // Décors liés à l'histoire : la corde dans les hautes herbes (pendant le chantier), la cabane à l'emplacement choisi.
   decals: [
-    { kind: 'rope', x: 8, y: 8, unlessItems: [ITEMS.corde.id], unlessFlags: [FLAGS.cabaneFinie] },
+    { kind: 'rope', ...ROPE_SPOT, ...ROPE_CONDITIONS },
     ...Object.entries(CABANE_SPOTS).map(([flag, spot]) => ({
       kind: 'cabane', ...spot.decal, place: { [FLAGS.cabaneArbre]: 'arbre', [FLAGS.cabaneEtang]: 'etang', [FLAGS.cabaneChamp]: 'champ' }[flag],
       ifFlags: [flag],
@@ -90,7 +94,8 @@ export const saintAyMap = {
     { x: 9, y: 5, dialogue: ['La boîte aux lettres de la famille.'] },
     { x: 16, y: 5, dialogue: ['La boîte aux lettres de Felix et de ses frères et sœur.'] },
     { x: 26, y: 16, script: PLANKS },
-    { x: 8, y: 8, script: ROPE },
+    { x: 8, y: 8, dialogue: ["Une bitte d'amarrage en bois."] },
+    { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: ROPE },
     // Le ferry qui a amené la famille de Fort-de-France.
     ...Array.from({ length: (BOAT_POS.w + 1) * BOAT_POS.h }, (_, i) => ({
       x: BOAT_POS.x + (i % (BOAT_POS.w + 1)),
@@ -130,7 +135,7 @@ export const saintAyMap = {
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.corde.id], speaker: 'Yanis', say: ['Parfait. Ça tiendra… sûrement.'], end: true },
-        { speaker: 'Yanis', say: ["Il y avait une vieille corde près du ponton, j'en suis sûr."] },
+        { speaker: 'Yanis', say: ["J'ai vu une vieille corde dans les hautes herbes, tout au sud-ouest. Derrière le lac."] },
       ],
     },
     // Les poules gardent le tas de planches ; effrayées, elles filent au fond de la cour.
@@ -166,7 +171,11 @@ export const saintAyMap = {
       steps: [{ talk: 'felix' }, { setFlag: FLAGS.felixInvite }],
     },
   ],
-  // Route du nord : on part en voiture (voir la voiture de la famille).
-  triggers: [14, 15].map((x) => ({ x, y: 0, dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'] })),
+  triggers: [
+    // Route du nord : on part en voiture (voir la voiture de la famille).
+    ...[14, 15].map((x) => ({ x, y: 0, dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'] })),
+    // La corde se ramasse aussi en marchant dessus.
+    { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: ROPE },
+  ],
   spawn: { x: 5, y: 10, facing: 'left' },
 };

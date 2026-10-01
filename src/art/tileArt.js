@@ -1717,7 +1717,7 @@ const DECALS = {
   rodsOnRack(g, px, py, { count = 3 } = {}) {
     drawRackRods(g, px, py, count);
   },
-  // Vieille corde nouée à la bitte d'amarrage et enroulée à côté (Saint-Ay).
+  // Vieille corde enroulée, cachée dans les hautes herbes (Saint-Ay).
   rope(g, px, py) {
     drawRope(g, px, py);
   },
@@ -1778,15 +1778,6 @@ const DECALS = {
         rect(g, 0xf8e8ff, px + x * 8 + 2, py + y * 8 + 2, 2, 1);
       }
     }
-  },
-  // Fanny, emmaillotée dans une couverture rose, dans les bras de Maman (lit de l'hôpital).
-  baby(g, px, py) {
-    rect(g, 0x302830, px + 4, py + 4, 9, 8);
-    rect(g, 0xf0a0c0, px + 5, py + 5, 7, 6);
-    rect(g, 0xf8d0e0, px + 5, py + 5, 7, 1);
-    rect(g, 0xf0c8a0, px + 6, py + 6, 4, 3);                            // visage
-    rect(g, 0x302830, px + 7, py + 7, 1, 1);
-    rect(g, 0x302830, px + 9, py + 7, 1, 1);
   },
   // Cabane des cousins, selon l'emplacement choisi : dans le grand arbre, sur pilotis au bord du lac, ou
   // au milieu du champ de blé. (x, y) : case en bas à gauche d'un bloc de 2 x 2 cases.
@@ -1851,7 +1842,7 @@ function planksPile(g, px, py) {
 }
 
 // Bitte d'amarrage en bois au bord du lac (Saint-Ay), poteau étroit sur la gauche de la case ; la corde
-// enroulée à côté est un décor à part (DECALS.rope), qui disparaît quand on l'emporte.
+// est un décor à part (DECALS.rope), cachée dans les hautes herbes.
 const BOLLARD = [
   '.kkkk.',
   'kWWWWk',
@@ -1874,7 +1865,7 @@ function bollard(g, px, py) {
   pixelArt(g, BOLLARD, px + 1, py + 2);
 }
 
-// Vieille corde : nouée au poteau, puis enroulée en spirale sur l'herbe (brins clairs et sombres alternés).
+// Vieille corde enroulée en spirale sur l'herbe, un bout qui dépasse (brins clairs et sombres alternés).
 const ROPE_COLORS = { o: 0x543c24, L: 0xf0d8a0, M: 0xd0a868, N: 0x966e3c };
 const ROPE = [
   '.oooo...........',

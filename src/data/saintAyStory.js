@@ -25,7 +25,7 @@ export const ARRIVAL = [
 export const BIRTH = [
   { setFlag: FLAGS.familleArrivee },
   { speaker: 'Papa', say: ['Nous y sommes. Maman est là-bas.'] },
-  { say: ['Maman est allongée, un bébé dans les bras.'] },
+  { say: ['Maman est allongée dans son lit. Dans le lit d\'à côté, une petite tête rousse dépasse de la couverture.'] },
   { speaker: 'Maman', say: ['Te voilà ! Viens voir… Je te présente Fanny.'] },
   { speaker: 'Manon', say: ['Elle est toute petite… Elle me ressemble, non ?'] },
   { speaker: 'Papa', say: ['Elle ne pleure même pas. Elle a déjà tout compris.'] },
@@ -40,7 +40,7 @@ export const CABANE_PLAN = [
   { approach: 'felix-maison' },
   { speaker: 'Felix', say: ['Bienvenue chez nous ! J\'ai un plan : on construit une cabane. Rien que pour nous.'] },
   { speaker: 'Joshua', say: ['Il faut des planches. Il y en a plein à la ferme… mais il y a les poules.'] },
-  { speaker: 'Yanis', say: ['Et une corde pour les tenir. J\'en ai vu une près de l\'étang.'] },
+  { speaker: 'Yanis', say: ['Et une corde pour les tenir. J\'en ai vu une dans les hautes herbes, tout au sud-ouest.'] },
   { speaker: 'Felix', say: ['Moi, je dirige le chantier. Toi, tu choisis où on la met.'] },
   { say: ['Joshua et Yanis filent dehors.'] },
   { setFlag: FLAGS.planCabane },
@@ -62,7 +62,7 @@ export const FELIX_CHANTIER = [
   },
   // Il manque encore des matériaux.
   { unlessItems: [ITEMS.planches.id], speaker: 'Felix', say: ['Il nous faut encore les planches : Joshua t\'attend à la ferme.'] },
-  { unlessItems: [ITEMS.corde.id], speaker: 'Felix', say: ['Et la corde : Yanis cherche près de l\'étang.'] },
+  { unlessItems: [ITEMS.corde.id], speaker: 'Felix', say: ['Et la corde : Yanis dit qu\'elle traîne dans les hautes herbes, au sud-ouest.'] },
   { unlessItems: [ITEMS.planches.id], end: true },
   { unlessItems: [ITEMS.corde.id], end: true },
   // Tout est réuni : la cabane terminée.
@@ -81,7 +81,8 @@ export const FELIX_CHANTIER = [
   { black: false },
 ];
 
-// Missions : les planches de la ferme (gardées par les poules) et la vieille corde près du ponton.
+// Missions : les planches de la ferme (gardées par les poules) et la vieille corde cachée dans les hautes
+// herbes du sud-ouest (elle n'apparaît qu'une fois le chantier lancé).
 export const PLANKS = [
   { unlessFlags: [FLAGS.planCabane], say: ['Un tas de planches. De quoi construire quelque chose…'], end: true },
   { ifItems: [ITEMS.planches.id], say: ['Il reste plein de planches.'], end: true },
@@ -90,11 +91,7 @@ export const PLANKS = [
   { speaker: 'Joshua', say: ['Tu as survécu aux poules ? Respect.'] },
 ];
 export const ROPE = [
-  { unlessFlags: [FLAGS.planCabane], say: ['Une vieille corde, enroulée autour de la bitte d\'amarrage.'], end: true },
-  { ifItems: [ITEMS.corde.id], say: ['Une bitte d\'amarrage en bois.'], end: true },
-  { ifFlags: [FLAGS.cabaneFinie], say: ['Une bitte d\'amarrage en bois.'], end: true },
-  { give: ITEMS.corde, text: 'Tu trouves une vieille corde près du ponton.' },
-  { speaker: 'Yanis', say: ['Parfait. Ça tiendra… sûrement.'] },
+  { give: ITEMS.corde, text: 'Tu trouves une vieille corde, cachée dans les hautes herbes.' },
 ];
 // Une poule garde le tas de planches : elle s'enfuit quand on lui parle.
 export const henScript = (flag) => [

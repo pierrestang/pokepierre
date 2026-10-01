@@ -9,6 +9,7 @@ import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
 import { Followers } from '../systems/Followers.js';
 import { lookOf } from '../data/characters.js';
+import { bedAt } from '../art/frlgArt.js';
 import { interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
@@ -204,7 +205,9 @@ export class MapScene extends Phaser.Scene {
     });
     for (const data of wanted) {
       if (this.npcs.some((n) => n.data === data)) continue;
-      const sprite = new CharacterSprite(this, data.x, data.y, lookOf(data), data.facing);
+      // `inBed` : couché dans le lit de la case (intérieurs Rouge Feu), `child` pour un enfant.
+      const bed = data.inBed && bedAt(this.map, data.x, data.y);
+      const sprite = new CharacterSprite(this, data.x, data.y, lookOf(data), data.facing, { bed: bed && { ...bed, child: data.child } });
       this.npcs.push({ data, sprite });
     }
 

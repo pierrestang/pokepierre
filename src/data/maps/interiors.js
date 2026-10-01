@@ -385,27 +385,32 @@ export const interiors = {
       { kind: 'plant', x: 13, y: 6 },
     ],
     spawn: { x: 7, y: 7, facing: 'up' },
-    // Fanny, dans les bras de Maman.
-    decals: [{ kind: 'baby', x: 1, y: 3, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie] }],
     objects: [
-      { x: 1, y: 3, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie], dialogue: ['Fanny dort, son petit poing serré.'] },
+      { x: 1, y: 3, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie], dialogue: ['Maman se repose, les yeux mi-clos.'] },
+      { x: 4, y: 3, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie], dialogue: ['Fanny dort, son petit poing serré.'] },
       { x: 12, y: 2, dialogue: ['Un ordinateur. Des noms de bébés défilent à l\'écran.'] },
     ],
+    // Maman et Fanny sont couchées chacune dans un lit ; Papa et Manon entre les deux.
     npcs: [
       {
-        id: 'maman-hopital', name: 'Maman', x: 0, y: 3, facing: 'down', color: 0xe86fa0, still: true,
+        id: 'maman-hopital', name: 'Maman', x: 0, y: 3, facing: 'down', color: 0xe86fa0, still: true, inBed: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie],
         dialogue: ['Fanny dort. Va voir tes cousins, ils viennent d\'emménager au village.'],
       },
       {
-        id: 'papa-hopital', name: 'Papa', x: 3, y: 4, facing: 'left', color: 0x3f6fd8,
+        id: 'fanny-hopital', name: 'Fanny', x: 3, y: 3, facing: 'down', still: true, inBed: true, child: true,
+        ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie],
+        dialogue: ['Fanny ouvre un œil et attrape ton doigt.'],
+      },
+      {
+        id: 'papa-hopital', name: 'Papa', x: 2, y: 4, facing: 'up', color: 0x3f6fd8,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie],
         dialogue: ['Une petite sœur… Te voilà grand frère, maintenant.'],
       },
       {
-        id: 'manon-hopital', name: 'Manon', x: 4, y: 4, facing: 'left', color: 0xf0a030,
+        id: 'manon-hopital', name: 'Manon', x: 5, y: 4, facing: 'left', color: 0xf0a030,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.cabaneFinie],
-        dialogue: ['Je pourrai la porter, moi aussi ? Plus tard ? Bon…'],
+        dialogue: ['Je pourrai jouer avec elle, moi aussi ? Plus tard ? Bon…'],
       },
     ],
     // Papa et Manon arrivent avec toi : la naissance de Fanny.

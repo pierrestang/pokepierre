@@ -612,6 +612,26 @@ const STAIRS_IN_WALL = {
   ξ: { sheet: FRLG_SHEETS.rsStairs, sx: 23, sy: 0, w: 23, h: 23 },
 };
 
+// Coin haut-gauche (en pixels) d'un meuble de Rubis/Saphir : posé en bas de son emprise ; contre le mur du
+// fond (rangée juste sous le mur), il remonte au besoin pour que son haut morde d'au moins 4 px sur la plinthe.
+// `dx`, `dy` : décalage en pixels (ex. petit carton posé sur un bureau).
+export function decorSpritePosition(interior, { kind, x, y, dx = 0, dy = 0 }) {
+  const d = FRLG_DECOR[kind];
+  const px = x * S + Math.round((d.w * S - d.pw) / 2);
+  const bottomAligned = (y + d.h) * S - d.ph;
+  const againstWall = interior.grid[y - 1]?.[x] === 'X';
+  return { px: px + dx, py: (againstWall ? Math.min(y * S - 4, bottomAligned) : bottomAligned) + dy };
+}
+
+// Lit de l'intérieur sous la case (x, y) : coin haut-gauche de son image, en pixels (voir CharacterSprite, `bed`).
+export function bedAt(interior, x, y) {
+  const bed = (interior.decor ?? []).find((o) => o.kind === 'bed' && x >= o.x && x < o.x + 2 && y >= o.y && y < o.y + 2);
+  return bed && decorSpritePosition(interior, bed);
+}
+
+// Bas du lit (drap replié et couverture), redessiné par-dessus un personnage couché : image de rs-objects.png.
+export const BED_LOWER = { sheet: FRLG_SHEETS.rsObjects, sx: 488, sy: 79 + 13, w: 24, h: 16 };
+
 // Couche 3 d'un intérieur : meubles, puis tapis de sortie sur chaque groupe de cases 'E' d'une rangée.
 export function drawFrlgInteriorDecor(ctx, textures, interior) {
   ensureCartonTexture(textures);
@@ -623,17 +643,12 @@ export function drawFrlgInteriorDecor(ctx, textures, interior) {
     const px = Math.max(0, Math.min(roomW - st.w, x * S + Math.round((S - st.w) / 2)));
     blit(ctx, textures, st, px, y * S + 2 - st.h, st.w, st.h);
   }));
-  for (const { kind, x, y, dx = 0, dy = 0 } of interior.decor ?? []) {
-    const d = FRLG_DECOR[kind];
+  for (const item of interior.decor ?? []) {
+    const d = FRLG_DECOR[item.kind];
     if (d.sprite) {
-      // Posé en bas de son emprise ; contre le mur du fond (rangée juste sous le mur), il remonte au besoin
-      // pour que son haut morde d'au moins 4 px sur la plinthe.
-      const px = x * S + Math.round((d.w * S - d.pw) / 2);
-      const bottomAligned = (y + d.h) * S - d.ph;
-      const againstWall = interior.grid[y - 1]?.[x] === 'X';
-      // `dx`, `dy` : décalage en pixels (ex. petit carton posé sur un bureau).
-      blit(ctx, textures, d.sprite, px + dx, (againstWall ? Math.min(y * S - 4, bottomAligned) : bottomAligned) + dy, d.pw, d.ph);
-    } else blit(ctx, textures, d.tile, x * S, y * S, d.w * S, d.h * S);
+      const { px, py } = decorSpritePosition(interior, item);
+      blit(ctx, textures, d.sprite, px, py, d.pw, d.ph);
+    } else blit(ctx, textures, d.tile, item.x * S, item.y * S, d.w * S, d.h * S);
   }
   interior.grid.forEach((row, y) => row.forEach((code, x) => {
     if (code !== 'E' || row[x - 1] === 'E') return;
