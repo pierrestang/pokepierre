@@ -84,7 +84,9 @@ export const FELIX_CHANTIER = [
   { take: ITEMS.corde.id },
   { wait: 600 },
   { setFlag: FLAGS.cabaneFinie },
-  { travel: { interior: 'cabane', x: 2, y: 2, facing: 'down' } },
+  // Pierre arrive assis à sa place, derrière le banc (la scène le fait ressortir) : `cutscene` pour
+  // scripts/check_paths.js.
+  { travel: { interior: 'cabane', x: 2, y: 2, facing: 'down', cutscene: true } },
 ];
 
 // Dans la cabane toute neuve (rs-cabane.png, voir interiors.cabane) : les quatre cousins assis derrière les

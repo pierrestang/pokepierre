@@ -13,7 +13,7 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // cour (planches gardées par les poules). À l'ouest, le lac touche le bord de la carte : petit ponton, ferry,
 // bitte d'amarrage. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
 // chantier de la cabane. Ceinture d'arbres ailleurs. Une trouée dans la barrière sud du champ de blé mène
-// au pied de l'échelle de la cabane, si on l'y construit.
+// au pied de l'échelle de la cabane, si on l'y construit, et rejoint le chemin du sud.
 // Scénario : voir data/saintAyStory.js.
 // Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, ʭ = terre labourée, F = barrière, ~ = lac,
 // B = ferry, = = ponton, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
@@ -49,7 +49,7 @@ export const saintAyMap = {
     '~~~~~~~~.FʬʬʬFçç.WWWW.F....FTT', // 18
     '~~~~~~~~.FʬʬʬFçç.WDWW.F....FTT', // 19
     'TTĥĥĥĥĥĥ.Fʬ.ʬFçççççççç.....FTT', // 20
-    'TTĥĥĥĥĥĥ.FF.FF..ƚ....ƀFFFFFFTT', // 21
+    'TTĥĥĥĥĥĥ.FF.....ƚ....ƀFFFFFFTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 23
   ]),
@@ -86,7 +86,8 @@ export const saintAyMap = {
       type: 'cabane', x: x - 1, y: y - 3, w: 4, h: 3, ifFlags: [flag, FLAGS.cabaneFinie],
       dialogue: ['La cabane des cousins. On y monte par l\'échelle.'],
     })),
-    { type: 'familyCar', x: 10, y: 6, w: 3, h: 2, facing: 'right', ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
+    // Elle ne bloque que la rangée du bas de la route : on passe derrière elle.
+    { type: 'familyCar', x: 10, y: 7, w: 3, h: 1, facing: 'right', ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
   // Décor lié à l'histoire : la corde dans les hautes herbes (pendant le chantier).
   decals: [
