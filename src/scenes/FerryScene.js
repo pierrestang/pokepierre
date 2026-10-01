@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { FRLG_SHEETS, familyCarImage, roadStripTexture, ROAD_TOP } from '../art/frlgArt.js';
 import { sheetOf } from '../art/spriteSheets.js';
+import { lookOf } from '../data/characters.js';
 
 // Traversée en ferry, comme l'écran de voyage des îles Sevii dans Rouge Feu : entre deux bandes noires,
 // la mer défile vers la gauche et le ferry file vers la droite dans son sillage, en tanguant.
@@ -21,10 +22,10 @@ const RAIL_Y = 124;         // main courante du bastingage
 const DECK_Y = 134;         // début du plancher du pont
 // La famille, de dos, de gauche à droite (sprites : voir data/characters.js).
 const FAMILY = [
-  { id: 'maman', sprite: 't8', x: 138 },
-  { id: 'papa', sprite: 't1', x: 162 },
-  { id: 'pierre', sprite: 'f0', x: 194 },
-  { id: 'manon', sprite: 't7', x: 218 },
+  { id: 'maman', x: 138 },
+  { id: 'papa', x: 162 },
+  { id: 'pierre', x: 194 },
+  { id: 'manon', x: 218 },
 ];
 
 export class FerryScene extends Phaser.Scene {
@@ -97,7 +98,8 @@ export class FerryScene extends Phaser.Scene {
     this.sea = this.add.tileSprite(0, SKY_H, SCREEN_W, SCREEN_H - SKY_H, FRLG_SHEETS.travelSea).setOrigin(0);
     this.seaSpeed = { x: 0, y: -0.6 };
     this.drawDeck();
-    const family = Object.fromEntries(FAMILY.map((f) => {
+    const family = Object.fromEntries(FAMILY.map((member) => {
+      const f = { ...member, sprite: lookOf({ id: member.id }).sprite };
       const image = this.add.image(f.x, DECK_Y + 16, sheetOf(f.sprite).key, `${f.sprite}-up-0`).setOrigin(0.5, 1).setDepth(2);
       return [f.id, { ...f, image }];
     }));

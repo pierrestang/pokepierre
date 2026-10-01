@@ -4,17 +4,19 @@ import { souvenirs } from './souvenirs.js';
 import { items } from './items.js';
 import { sfx, options, setMusicEnabled, setSfxEnabled } from './audio.js';
 import { RegionMap } from './RegionMap.js';
+import { NpcLooks } from './NpcLooks.js';
 import { flags } from './flags.js';
 import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu.
-// Carte (du voyage), Souvenirs, Objets, Quêtes (aller au début de la quête d'une ville, pour tester), Sauvegarder,
+// Carte (du voyage), Souvenirs, Objets, Quêtes (aller au début de la quête d'une ville, pour tester), PNJ
+// (choisir l'apparence de chaque personnage), Sauvegarder,
 // Options (musique, sons), Quitter la partie (retour à l'écran titre), Fermer.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
 const FRAME = 0x6888a8;
-const MAIN = { quests: 3, options: 5 };      // place de ces entrées dans le menu principal
+const MAIN = { quests: 3, npcs: 4, options: 6 };      // place de ces entrées dans le menu principal
 const VISIBLE = 9;                           // lignes affichées à la fois (la liste des quêtes défile)
 const FRAME_LIGHT = 0xb8d0e8;
 
@@ -29,6 +31,7 @@ export class StartMenu {
     this.texts = [];
     this.container = scene.add.container(0, 0, [this.bg]).setDepth(110).setVisible(false);
     this.regionMap = new RegionMap(scene);
+    this.npcLooks = new NpcLooks(scene);
     scene.input.keyboard.on('keydown', (e) => this.onKey(e));
     const onResize = () => this.isOpen && this.render();
     scene.scale.on('resize', onResize);
@@ -59,6 +62,7 @@ export class StartMenu {
       { label: 'SOUVENIRS', action: () => this.showInDialog(this.souvenirPages()) },
       { label: 'OBJETS', action: () => this.showInDialog(this.itemPages()) },
       { label: 'QUÊTES', action: () => this.showPage('quests', 0) },
+      { label: 'PNJ', action: () => this.showNpcLooks() },
       { label: 'SAUVEGARDER', action: () => this.save() },
       { label: 'OPTIONS', action: () => this.showPage('options', 0) },
       { label: 'QUITTER LA PARTIE', action: () => this.quit() },
@@ -101,6 +105,21 @@ export class StartMenu {
     const map = this.mapScene();
     this.container.setVisible(false);
     this.regionMap.open(map?.fromMap ?? map?.map.id);
+  }
+
+  // Apparences des PNJ, par-dessus le jeu (comme la carte du voyage).
+  showNpcLooks() {
+    this.container.setVisible(false);
+    this.npcLooks.open();
+  }
+
+  // Panneau PNJ fermé : si une apparence a changé, la scène est relancée sur place pour l'appliquer.
+  afterNpcLooks() {
+    this.close();
+    const map = this.mapScene();
+    if (!this.npcLooks.changed || !map) return;
+    const { tileX: x, tileY: y, facing } = map.player;
+    map.scene.restart({ ...map.location().data, spawn: { x, y, facing } });
   }
 
   async showInDialog(pages) {
@@ -185,6 +204,10 @@ export class StartMenu {
     }
     if (this.regionMap.isOpen) {
       if (this.regionMap.onKey(e)) this.close();
+      return;
+    }
+    if (this.npcLooks.isOpen) {
+      if (this.npcLooks.onKey(e)) this.afterNpcLooks();
       return;
     }
     const n = this.entries().length;

@@ -1,5 +1,5 @@
 import { CharacterSprite, DIRECTIONS, tileCenter } from './CharacterSprite.js';
-import { PIERRE } from '../data/characters.js';
+import { pierreLook } from '../data/characters.js';
 import { sfx } from './audio.js';
 
 // Vitesse de marche façon Pokémon (≈ 220 ms par case), course en maintenant Maj.
@@ -23,7 +23,7 @@ export class Player {
     this.onStep = onStep;
     this.onMoveStart = onMoveStart;
 
-    this.sprite = new CharacterSprite(scene, x, y, PIERRE, facing);
+    this.sprite = new CharacterSprite(scene, x, y, pierreLook(), facing);
     this.sprite.updateDepth(0.001);
 
     this.cursors = scene.input.keyboard.createCursorKeys();

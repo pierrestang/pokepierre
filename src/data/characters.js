@@ -5,11 +5,36 @@ import { PORTRAITS, EMERALD_PORTRAITS } from '../art/spriteSheets.js';
 // ou `f{n}` (Rouge Feu / Vert Feuille, sans portrait). Voir art/spriteSheets.js pour la liste.
 // Le chat reste dessiné dans le code (voir art/characterArt.js).
 
-// Pierre : Red, le héros de Rouge Feu.
-export const PIERRE = { sprite: 'f0' };
+// Apparences choisies par le joueur (menu Start > PNJ), par nom affiché : { Maman: 't3', … }. Gardées dans
+// la sauvegarde (localStorage), elles passent avant les attributions ci-dessous.
+const LOOKS_KEY = 'pokepierre.looks';
+function loadLooks() {
+  try {
+    return JSON.parse(localStorage.getItem(LOOKS_KEY) ?? '{}');
+  } catch {
+    return {};
+  }
+}
+const chosen = loadLooks();
+export const lookChoices = {
+  get: (name) => chosen[name] ?? null,
+  // `sprite` null : retour à l'apparence par défaut.
+  set(name, sprite) {
+    if (sprite) chosen[name] = sprite;
+    else delete chosen[name];
+    try {
+      localStorage.setItem(LOOKS_KEY, JSON.stringify(chosen));
+    } catch {
+      // Stockage indisponible : le choix vaut pour cette session.
+    }
+  },
+};
+
+// Pierre : Red, le héros de Rouge Feu (sauf choix du joueur).
+export const pierreLook = () => ({ sprite: lookChoices.get('Pierre') ?? 'f0' });
 
 // Personnages par nom affiché.
-const BY_NAME = {
+export const BY_NAME = {
   Pierre: 'f0',
   // Famille
   Maman: 't8', Papa: 't1', Manon: 't7',
@@ -35,13 +60,22 @@ function hash(text) {
   return h;
 }
 
-// Apparence d'un PNJ ou d'un suiveur : par nom (ou par id), sinon un figurant.
+// Apparence d'un PNJ ou d'un suiveur : choix du joueur, sinon par nom (ou par id), sinon un figurant.
 export function lookOf(data) {
   if (data.id === 'chat') return fullLook({ kind: 'cat' });
   if (data.id?.startsWith('poule')) return fullLook({ kind: 'hen' });
-  const sprite = BY_NAME[data.name] ?? BY_NAME[capitalize(data.id)];
+  const name = data.name ?? capitalize(data.id);
+  const sprite = lookChoices.get(name) ?? BY_NAME[name] ?? BY_NAME[capitalize(data.id)];
   return { sprite: sprite ?? EXTRAS[hash(`${data.id}:${data.x},${data.y}`) % EXTRAS.length] };
 }
+
+// Sprite affiché pour un nom dans le menu PNJ : choix du joueur, attribution, sinon un figurant type.
+export function spriteForName(name) {
+  return lookChoices.get(name) ?? BY_NAME[name] ?? EXTRAS[hash(name) % EXTRAS.length];
+}
+
+// Sprite attribué par défaut (null pour un figurant).
+export const defaultSpriteOf = (name) => BY_NAME[name] ?? null;
 
 // Portraits venant d'ailleurs que TownsPeople2 : dresseurs d'Émeraude (`colonne,rangée`).
 const EMERALD_PORTRAIT_BY_NAME = {
@@ -50,8 +84,9 @@ const EMERALD_PORTRAIT_BY_NAME = {
 
 // Portrait affiché dans les dialogues : { key, frame } (texture et image), ou null si la personne n'en a pas.
 export function portraitOf(speaker) {
-  if (EMERALD_PORTRAIT_BY_NAME[speaker]) return { key: EMERALD_PORTRAITS, frame: `e${EMERALD_PORTRAIT_BY_NAME[speaker]}` };
-  const sprite = BY_NAME[speaker];
+  const choice = lookChoices.get(speaker);
+  if (!choice && EMERALD_PORTRAIT_BY_NAME[speaker]) return { key: EMERALD_PORTRAITS, frame: `e${EMERALD_PORTRAIT_BY_NAME[speaker]}` };
+  const sprite = choice ?? BY_NAME[speaker];
   return sprite?.startsWith('t') ? { key: PORTRAITS, frame: `p${sprite.slice(1)}` } : null;
 }
 
