@@ -37,4 +37,6 @@ On commence par une seule ville jouable, puis on étend à une petite région.
 ## Méthode de travail
 - Avancer par petits jalons jouables, un seul à la fois.
 - Toujours laisser le jeu dans un état testable dans le navigateur.
+- Après avoir touché une carte, un PNJ, un obstacle ou un voyage : `node scripts/check_paths.js` (aucun
+  blocage à aucune étape de l'histoire).
 - Demander avant d'ajouter une dépendance.
