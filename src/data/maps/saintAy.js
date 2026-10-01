@@ -34,16 +34,16 @@ export const saintAyMap = {
     'TTTTfff.ĥĥĥĥ..çç.RRRRR.FFFFF..TT', // 3
     'TT..fff..ĥĥĥ..çç.RRRRR.F...F..TT', // 4
     'TT..fff...ĥ...çç.WWWWW.F...F..TT', // 5
-    'TTççççççççççççççMWDWWW.F...F..TT', // 6
-    'TTçççççççççççççççççççç.FFçFF..TT', // 7
+    '....ççççççççççççMWDWWW.F...F..TT', // 6
+    '~~~~çççççççççççççççççç.FFçFF..TT', // 7
     '~~~~~==~..ĥĥ..çççççççççççç....TT', // 8
-    'BBBB~==~.ĥĥĥĥ.çç.RRRRR.....ĥĥ.TT', // 9
-    'BBBB~==~ĥĥĥĥĥ.çç.RRRRR....ĥĥĥ.TT', // 10
-    '~~~~~==~.ĥĥĥ..çç.WWWWW.....ĥĥ.TT', // 11
-    '~~~~~~~~..ĥĥ..ççMWDWWW......ĥ.TT', // 12
-    '~~~~~~~~ççççççççççççççç.......TT', // 13
-    '~~~~~~~~ççççççççççççççç.......TT', // 14
-    '~~~~~~~~.....Sçç..............TT', // 15
+    'BBBB~==~~ĥĥĥĥ.çç.RRRRR.....ĥĥ.TT', // 9
+    'BBBB~==~~ĥĥĥĥ.çç.RRRRR....ĥĥĥ.TT', // 10
+    '~~~~~==~~ĥĥĥ..çç.WWWWW.....ĥĥ.TT', // 11
+    '~~~~~~~~~.ĥĥ..ççMWDWWW......ĥ.TT', // 12
+    '~~~~~~~~~çççççççççççççç.......TT', // 13
+    '~~~~~~~~~çççççççççççççç.......TT', // 14
+    '~~~~~~~......Sçç..............TT', // 15
     'TTTTTTTT...ĥĥ.ççf..........ĥĥ.TT', // 16
     'TTTTTTTT..ĥĥĥĥççf.RRRRR...ĥĥĥ.TT', // 17
     'TTTTTTTT.ĥĥĥĥ.ççf.RRRRR..ĥĥĥĥ.TT', // 18
@@ -142,7 +142,7 @@ export const saintAyMap = {
       ],
     },
     {
-      id: 'yanis', name: 'Yanis', x: 3, y: 7, facing: 'right', color: COUSIN_COLORS.yanis,
+      id: 'yanis', name: 'Yanis', x: 4, y: 6, facing: 'right', color: COUSIN_COLORS.yanis,
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.corde.id], speaker: 'Yanis', say: ['Parfait. Ça tiendra… sûrement.'], end: true },
