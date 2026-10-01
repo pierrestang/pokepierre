@@ -240,6 +240,14 @@ export class MapScene extends Phaser.Scene {
         this.props.push({ data, graphics });
         continue;
       }
+      // Gros arbre feuillu (rs-bigtree.png, 3 cases de large) : l'emprise est son tronc, le feuillage dépasse
+      // au-dessus et de chaque côté (on passe derrière).
+      if (data.type === 'bigTree') {
+        const bottom = (data.y + 1) * TILE_SIZE;
+        const graphics = this.add.image((data.x - 1) * TILE_SIZE, bottom, FRLG_SHEETS.bigTree).setOrigin(0, 1).setDepth(10 + (bottom - 1) / 10000);
+        this.props.push({ data, graphics });
+        continue;
+      }
       // Tas de planches de la ferme (Saint-Ay) : disparaît une fois les planches ramassées.
       if (data.type === 'planks') {
         const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);

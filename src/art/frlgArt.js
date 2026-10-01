@@ -37,6 +37,7 @@ export const FRLG_SHEETS = {
   car: 'frlg-car',
   cabane: 'rs-cabane',
   farm: 'frlg-farm',
+  bigTree: 'rs-bigtree',
 };
 
 export function preloadFrlg(scene) {
@@ -161,7 +162,11 @@ const RIVER_CODES = new Set(['G', 'I', 'r', 'k']);
 export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
   const code = at(x, y);
   if (code === undefined) return null;
-  if (buildingFloor(x, y)) return 'grass';
+  // Sous un bâtiment : de l'herbe, sauf sur le pas d'une porte qui donne sur un chemin (visible sous le porche).
+  if (buildingFloor(x, y)) {
+    const below = code === 'D' && frlgGroundOf(x, y + 1, at, buildingFloor);
+    return ['path', 'cobble', 'concrete'].includes(below) ? below : 'grass';
+  }
   if (GRASS_CODES.has(code)) return 'grass';
   if (SAND_CODES.has(code)) return 'sand';
   if (SEA_CODES.has(code)) return 'sea';

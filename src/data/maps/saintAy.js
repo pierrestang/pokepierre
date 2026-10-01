@@ -49,7 +49,7 @@ export const saintAyMap = {
     'TTTTTTTT.ĥĥĥĥ.ççWDWWWWF....FTT', // 18
     'TTTTTTTT..ĥĥĥĥçç...WWWF....FTT', // 19
     'TTĥĥĥĥĥ....ĥĥ.çççççççççç...FTT', // 20
-    'TTĥĥĥĥ................FFFFFFTT', // 21
+    'TTĥĥĥĥ.....................FTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 23
   ]),

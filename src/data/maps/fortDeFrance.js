@@ -61,6 +61,10 @@ export const fortDeFranceMap = {
     { type: 'fishingHut', x: 25, y: 11 },
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
+  // Gros arbre feuillu de Fortree City près de la cabane du pêcheur : seul son tronc bloque.
+  props: [
+    { type: 'bigTree', x: 23, y: 14, w: 1, h: 1, dialogue: ['Un vieil arbre immense. Son ombre est bien fraîche.'] },
+  ],
   objects: [
     { x: 12, y: 12, dialogue: ['Fort-de-France — Martinique. Bienvenue sur l\'île !'] },
     { x: 17, y: 8, dialogue: ['La boîte aux lettres de la famille.', "Rien aujourd'hui… Peut-être une carte postale de Saint-Ay, un jour ?"] },

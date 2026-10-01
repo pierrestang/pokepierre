@@ -24,6 +24,8 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent ;
   rs-cabane.png      cabane perchée de Fortree City (Rubis/Saphir), détourée de la forêt, avec deux pilotis ;
                      puis son intérieur (tronc, deux bancs), 128 x 96 px, à droite (voir cabane) ;
+  rs-bigtree.png     gros arbre feuillu de Fortree City (3 cases de large), détouré de la forêt, tronc prolongé
+                     jusqu'au sol (voir big_tree) ;
   frlg-farm.png      grande ferme au toit orange (6 x 5 cases) assemblée à partir de deux maisons de la
                      planche de bâtiments de fabnt (tilesets-tileset_1.png), voir farm ;
   frlg-car.png       voiture bleue de la famille, vue de côté (vers la gauche, puis vers la droite), réduite de
@@ -522,6 +524,64 @@ def farm():
     return out
 
 
+# Gros arbre feuillu de Fortree City (planche rs/backgrounds-fortree_city.png) : feuillage de 3 cases sur un
+# tronc d'une case. Détouré de la forêt comme la cabane ; dans la planche, le bas du tronc se perd dans la
+# forêt : il est prolongé de quelques rangées, avec des racines sombres et une ombre au sol.
+BIG_TREE_BOX = (197, 109, 245, 150)           # du haut du feuillage jusqu'au bas du tronc intact
+
+
+def big_tree():
+    sheet = Image.open(ROOT / 'assets-source' / 'rs' / 'backgrounds-fortree_city.png').convert('RGBA')
+    src = sheet.load()
+    ox, oy = 5, 5
+    tiles = {}
+    for ty in range(4):
+        for tx in range(14, 20):
+            t = tuple(src[ox + tx * 16 + x, oy + ty * 16 + y] for y in range(16) for x in range(16))
+            tiles[t] = tiles.get(t, 0) + 1
+    forest = max(tiles, key=tiles.get)
+    x0, y0, x1, y1 = BIG_TREE_BOX
+    w, h = x1 - x0, y1 - y0
+    base = 6                                    # rangées ajoutées sous le tronc
+    tree = Image.new('RGBA', (w, h + base), (0, 0, 0, 0))
+    o = tree.load()
+    for y in range(h):
+        for x in range(w):
+            p = src[x0 + x, y0 + y]
+            if p != forest[((y0 + y - oy) % 16) * 16 + (x0 + x - ox) % 16]:
+                o[x, y] = p
+    keep = set(max(components(o, w, h), key=len))
+    for y in range(h):
+        for x in range(w):
+            if (x, y) not in keep:
+                o[x, y] = (0, 0, 0, 0)
+    outside = set()
+    todo = deque([(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)])
+    while todo:
+        x, y = todo.popleft()
+        if (x, y) in outside or not (0 <= x < w and 0 <= y < h) or o[x, y][3]:
+            continue
+        outside.add((x, y))
+        todo.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
+    for y in range(h):                          # trous dans le feuillage : rebouchés
+        for x in range(w):
+            if not o[x, y][3] and (x, y) not in outside:
+                o[x, y] = src[x0 + x, y0 + y]
+    trunk = [o[x, h - 1] for x in range(w)]     # dernière rangée intacte du tronc, répétée
+    dark = (48, 48, 72, 255)
+    for y in range(h, h + base):
+        for x in range(w):
+            if trunk[x][3]:
+                o[x, y] = trunk[x]
+    for x in range(w):                          # racines : contour sombre en bas, un peu évasé
+        if trunk[x][3]:
+            o[x, h + base - 1] = dark
+    for x in (min(x for x in range(w) if trunk[x][3]) - 1, max(x for x in range(w) if trunk[x][3]) + 1):
+        o[x, h + base - 1] = dark
+        o[x, h + base - 2] = dark
+    return tree
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     rgba = lambda name: Image.open(SRC / name).convert('RGBA')
@@ -554,6 +614,7 @@ def main():
     gba_palette(family_car()).save(OUT / 'frlg-car.png')
     gba_palette(cabane()).save(OUT / 'rs-cabane.png')
     gba_palette(farm()).save(OUT / 'frlg-farm.png')
+    gba_palette(big_tree()).save(OUT / 'rs-bigtree.png')
     print('ok ->', OUT.relative_to(ROOT))
 
 
