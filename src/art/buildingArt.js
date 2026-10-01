@@ -1,5 +1,5 @@
 import { TILE_SIZE as S } from '../data/tiles.js';
-import { rect } from './pixel.js';
+import { rect, sprite } from './pixel.js';
 
 // Bâtiments dessinés d'un bloc par-dessus leurs cases (R/W/D gardent la collision).
 // Taille en cases : maison 5x4, labo 7x4. La porte est en (1, 3) pour la maison, (3, 3) pour le labo.
@@ -1833,23 +1833,54 @@ function drawBarn(g, ox, oy) {
 }
 
 // Tracteur (obstacle 2x2) : vert, grandes roues arrière. `broken` : capot ouvert et fumée.
+// Tracteur vert vu de côté (34 x 30 px), façon Rouge Feu : contour sombre, cabine vitrée sur la grande roue
+// arrière crantée, garde-boue, capot à bande jaune et calandre, phare, pot d'échappement, petite roue avant.
+// En panne : fumée noire et grise qui sort du pot.
+const TRACTOR = [
+  '...kkkkkkkkkkkkkk.................',
+  '...kGGGGGGGGGGGGk.................',
+  '...kggggggggggggk.....kkk.........',
+  '...kggBBBBBBBBggk.....kkk.........',
+  '...kggBBBBBBBBggk.....kmk.........',
+  '...kggbbbbbbbbggk.....kmk.........',
+  '...kggbbbbbbbbggk.....kmk.........',
+  '...kggbbsssbbbggk.....kmk.........',
+  '...kggbbsssbbbggk.....kmk.........',
+  '...kggbbsssbbbggk.....kmk.........',
+  '..kkkkkkkkkkkkkkkkkkkkkkkkkkkkYk..',
+  'kGGGGGGGGGGGGGGGGGkGGGGGGGGGGkkk..',
+  'kgggggggggggggggggkGGGGGGGGGGyyk..',
+  'kkkkkkkkkkkkkkkkkkkggggggggggYYk..',
+  '..kktttttttttttkkyyyyyyyyyyygyyk..',
+  '..kTtttttttttttTkggggggggggggYYk..',
+  '.kttttttkkkttttttkgggggggggggyyk..',
+  '.kttttkkyyykkttttkdddddddkkkkkYk..',
+  'ktttttkyyyyyktttttkdddddktttttkk..',
+  'ktTttkyyyYyyykttTtkkkkkktttttttk..',
+  'kttttkyyYYYyykttttk...kTtttttttTk.',
+  'kttttkyyyYyyykttttk..kttttkkkttttk',
+  'ktttttkyyyyyktttttk..ktttkkykktttk',
+  '.kttttkkyyykkttttk...ktttkyYyktttk',
+  '.ktTttttkkkttttTtk...ktttkkykktttk',
+  '..ktttttttttttttk....kttttkkkttttk',
+  '..kktttttttttttkk.....kTtttttttTk.',
+  '...kkttTttttTtkk.......ktttttttk..',
+  '.....kktttttkk..........kttTttk...',
+  '.......kkkkk.............kkkkk....',
+];
+const TRACTOR_COLORS = {
+  k: 0x282c28, G: 0x78c860, g: 0x409838, d: 0x206028, y: 0xe8c040, Y: 0xf8e890,
+  b: 0x78a8d8, B: 0xc0e0f8, s: 0x304060, m: 0x606068, t: 0x38383c, T: 0x686870,
+};
 function drawTractor(g, ox, oy, { broken = false } = {}) {
-  rect(g, 0x000000, ox + 2, oy + 28, 28, 2);
-  rect(g, 0x202020, ox + 2, oy + 14, 12, 14);              // grande roue arrière
-  rect(g, 0x404040, ox + 4, oy + 16, 8, 10);
-  rect(g, 0xe8c040, ox + 6, oy + 19, 4, 4);
-  rect(g, 0x202020, ox + 22, oy + 20, 8, 8);               // petite roue avant
-  rect(g, 0xe8c040, ox + 24, oy + 22, 4, 4);
-  rect(g, 0x1c5c24, ox + 10, oy + 10, 20, 12);             // carrosserie
-  rect(g, 0x3c9c3c, ox + 11, oy + 11, 18, 9);
-  rect(g, 0x1c5c24, ox + 4, oy + 2, 12, 12);               // cabine
-  rect(g, 0x9cc8e0, ox + 6, oy + 4, 8, 6);
-  rect(g, 0x303030, ox + 24, oy + 4, 2, 7);                // pot d'échappement
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(ox + 1, oy + 30, 31, 2);                       // ombre
+  sprite(g, TRACTOR, TRACTOR_COLORS, ox - 1, oy + 2);
   if (broken) {
-    rect(g, 0x9c9ca4, ox + 18, oy + 6, 10, 5);             // capot relevé
-    rect(g, 0x9c9ca4, ox + 22, oy - 2, 6, 5);              // fumée
-    rect(g, 0xc8c8d0, ox + 25, oy - 7, 5, 5);
-    rect(g, 0xe0e0e8, ox + 22, oy - 11, 4, 4);
+    rect(g, 0x505058, ox + 21, oy - 1, 5, 4);                // fumée
+    rect(g, 0x9c9ca4, ox + 23, oy - 5, 6, 5);
+    rect(g, 0xc8c8d0, ox + 26, oy - 10, 5, 5);
+    rect(g, 0xe0e0e8, ox + 24, oy - 14, 4, 4);
   }
 }
 

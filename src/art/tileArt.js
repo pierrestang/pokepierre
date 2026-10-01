@@ -300,16 +300,33 @@ function well(g, px, py, x, y, at) {
   rect(g, 0xc8a070, px + 7, py + 6, 2, 4);              // seau
 }
 
+// Tonneau en bois vu de trois quarts : couvercle, douves claires et sombres, deux cerclages de fer.
+const BARREL = [
+  '....kkkkkkkk....',
+  '..kkDDDDDDDDkk..',
+  '.kDwWWWWWWWWwDk.',
+  '.kDWWwWWwWWwWDk.',
+  '.kDwWWWWWWWWwDk.',
+  '.kkDDDDDDDDDDkk.',
+  '.kHHHHHHHHHHHhk.',
+  'kLLWWWwWWwWWwDdk',
+  'kLLWWWwWWwWWwDdk',
+  'kLWWWWwWWwWWwDdk',
+  'kHHHHHHHHHHHHhhk',
+  'kLWWWWwWWwWWwDdk',
+  'kLWWWWwWWwWWwDdk',
+  '.kHHHHHHHHHHHhk.',
+  '.kkWWWwWWwWWDkk.',
+  '...kkkkkkkkkk...',
+];
+const BARREL_COLORS = {
+  k: 0x382818, D: 0x6c4020, w: 0x985c28, W: 0xb87838, L: 0xd8a060, d: 0x54341c, H: 0xb0b0b8, h: 0x707078,
+};
 function barrel(g, px, py, x, y, at) {
   grass(g, px, py, x, y, at);
-  rect(g, 0x4c2c14, px + 3, py + 2, 10, 13);
-  rect(g, 0x4c2c14, px + 2, py + 4, 12, 9);
-  rect(g, 0xa86c34, px + 4, py + 3, 8, 11);
-  rect(g, 0xa86c34, px + 3, py + 5, 10, 7);
-  rect(g, 0xc88c4c, px + 4, py + 3, 8, 2);
-  rect(g, 0x707078, px + 3, py + 6, 10, 1);             // cerclages
-  rect(g, 0x707078, px + 3, py + 11, 10, 1);
-  rect(g, 0x000000, px + 4, py + 15, 8, 1);
+  g.fillStyle(0x000000, 0.2);
+  g.fillRect(px + 2, py + 15, 13, 1);
+  sprite(g, BARREL, BARREL_COLORS, px, py);
 }
 
 // Mur d'enceinte en béton, barbelés côté intérieur.
