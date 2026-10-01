@@ -424,7 +424,8 @@ def cabane():
             p = src[x0 + x, y0 + y]
             if p != forest[((y0 + y - oy) % 16) * 16 + (x0 + x - ox) % 16]:
                 o[x, y] = p
-    bottom = max(y for y in range(h) if sum(1 for x in range(w) if o[x, y][3]) > 40)
+    # Bas de la plateforme : dernière rangée presque pleine (les touffes d'herbe dessous n'atteignent pas 50 px).
+    bottom = max(y for y in range(h) if sum(1 for x in range(w) if o[x, y][3]) > 50)
     palette = {o[x, y][:3] for y in range(bottom - 12, bottom + 1) for x in range(w) if o[x, y][3]}
     for y in range(bottom + 1, h):                          # sous la plateforme : l'échelle seule
         for x in range(w):
@@ -450,8 +451,8 @@ def cabane():
             if not o[x, y][3] and (x, y) not in outside:
                 o[x, y] = src[x0 + x, y0 + y]
     dark, wood, light = (72, 72, 88, 255), (168, 136, 64, 255), (216, 192, 96, 255)
-    for px in (5, 55):                                      # pilotis
-        for y in range(bottom + 1, h):
+    for px in (5, 55):                                      # pilotis, accrochés sous la plateforme
+        for y in range(bottom - 1, h):
             for dx, c in enumerate((dark, light, wood, dark)):
                 o[px + dx, y] = c
         for dx in range(4):

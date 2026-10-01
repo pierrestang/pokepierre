@@ -10,9 +10,9 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // Saint-Ay (Loiret) — petit village de campagne, 30 x 24 cases, façon Rouge Feu : la route de Montépilloy
 // (nord-sud) croise la rue des maisons (chaumière de la famille, maison de Felix) et la rue de la clinique ;
 // prés de hautes herbes aux formes irrégulières ; au sud, la grande
-// ferme, son chemin jusqu'au portail de la cour aux poules (planches gardées par les poules). À l'ouest, le lac
+// ferme, son chemin tout droit jusque dans la cour aux poules (planches gardées par les poules). À l'ouest, le lac
 // (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des cousins
-// posée sur quatre sapins. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
+// posée sur deux sapins. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
 // chantier de la cabane. Ceinture d'arbres ailleurs.
 // Scénario : voir data/saintAyStory.js.
 // Légende : voir src/data/tiles.js (ç = chemin, F = barrière, ~ = lac,
@@ -44,12 +44,12 @@ export const saintAyMap = {
     '~~~~~~~~ççççççççççççççç..ĥĥĥTT', // 13
     '~~~~~~~~ççççççççççççççç..ĥĥ.TT', // 14
     '~~~~~~~~.....SççRRRRRRFFFFFFTT', // 15
-    'TTTTTTTT...ĥĥ.ççRRRRRRF....FTT', // 16
-    'TTTTTTTT..ĥĥĥĥççWWWWWWF....FTT', // 17
-    'TTTT.....ĥĥĥĥ.ççWDWWWWF....FTT', // 18
-    'TTTT......ĥĥĥĥçç...WWWF....FTT', // 19
-    'TTĥĥĥĥĥ....ĥĥ.çççççççç.....FTT', // 20
-    'TTĥĥĥĥ........ççççççççFFFFFFTT', // 21
+    'TTTTTT.....ĥĥ.ççRRRRRRF....FTT', // 16
+    'TTTTTT....ĥĥĥĥççWWWWWWF....FTT', // 17
+    'TT.......ĥĥĥĥ.ççWDWWWWF....FTT', // 18
+    'TT........ĥĥĥĥçç...WWWF....FTT', // 19
+    'TTĥĥĥĥĥ....ĥĥ.çççççççççç...FTT', // 20
+    'TTĥĥĥĥ................FFFFFFTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 23
   ]),
@@ -85,8 +85,11 @@ export const saintAyMap = {
       type: 'planks', x: 26, y: 16, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
       script: PLANKS,
     },
-    // Sapin sous le bord droit de la cabane, collé à l'échelle (hors de la grille des sapins 2 x 2).
-    { type: 'tree', x: CABANE_SPOT.x + 1, y: CABANE_SPOT.y - 1, w: 2, h: 2 },
+    // Les deux sapins collés qui portent la cabane, chacun sous une moitié de la plateforme (hors de la grille
+    // des sapins 2 x 2, décalés d'une demi-case) ; l'échelle descend devant eux, entre les deux troncs. Seul le
+    // tronc bloque (une case).
+    { type: 'tree', x: CABANE_SPOT.x - 1, y: CABANE_SPOT.y, w: 1, h: 1, dx: -8 },
+    { type: 'tree', x: CABANE_SPOT.x + 1, y: CABANE_SPOT.y, w: 1, h: 1, dx: -8 },
     // La cabane des cousins, une fois construite, perchée dans les sapins au sud du lac.
     {
       type: 'cabane', x: CABANE_SPOT.x - 1, y: CABANE_SPOT.y - 3, w: 4, h: 3, ifFlags: [FLAGS.cabaneFinie],
