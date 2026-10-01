@@ -7,7 +7,7 @@ import {
 // Le ferry (le même qu'à Fort-de-France), amarré à gauche du ponton du lac ; une case d'eau entre les deux.
 const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 
-// Saint-Ay (Loiret) — petit village de campagne, 34 x 28 cases, façon Rouge Feu, bâtiments resserrés autour
+// Saint-Ay (Loiret) — petit village de campagne, 32 x 28 cases, façon Rouge Feu, bâtiments resserrés autour
 // de la route de Montépilloy (nord-sud) : rue des maisons (chaumière de la famille et, à côté, l'enclos à
 // poules, ouvert vers le bas par une seule case au bout de la rue ; planches gardées par les poules), rue du milieu (maison de
 // Felix), et au sud la clinique sur la route du bas. Prés de hautes herbes aux formes irrégulières. À l'ouest, le lac
@@ -28,34 +28,34 @@ export const saintAyMap = {
   id: 'saintAy',
   name: 'Saint-Ay',
   grid: parseGrid([
-    'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTT', // 0
-    'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTT', // 1
-    'TTTT.....ĥĥ...ççSRRRRR.FFFFF....TT', // 2
-    'TTTTfff.ĥĥĥĥ..çç.RRRRR.F...F..ĥ.TT', // 3
-    'TT..fff..ĥĥĥ..çç.WWWWW.F...F.ĥĥ.TT', // 4
-    'TT..fff...ĥ...ççMWDWWW.F...F..ĥĥTT', // 5
-    'TTçççççççççççççççççççç.FFçFF..ĥ.TT', // 6
-    'TTçççççççççççççççççççççççç......TT', // 7
-    '~~~~~==~..ĥĥ..çç................TT', // 8
-    'BBBB~==~.ĥĥĥĥ.çç.RRRRR.....ĥĥ...TT', // 9
-    'BBBB~==~ĥĥĥĥĥ.çç.RRRRR....ĥĥĥĥ..TT', // 10
-    '~~~~~==~.ĥĥĥ..çç.WWWWW.....ĥĥĥĥ.TT', // 11
-    '~~~~~~~~..ĥĥ..ççMWDWWW......ĥĥ..TT', // 12
-    '~~~~~~~~ççççççççççççççç.........TT', // 13
-    '~~~~~~~~ççççççççççççççç.........TT', // 14
-    '~~~~~~~~.....Sçç................TT', // 15
-    'TTTTTTTT...ĥĥ.ççf..........ĥĥ...TT', // 16
-    'TTTTTTTT..ĥĥĥĥççf.RRRRR...ĥĥĥĥ..TT', // 17
-    'TTTTTTTT.ĥĥĥĥ.ççf.RRRRR..ĥĥĥĥĥĥ.TT', // 18
-    'TTTTTTTT..ĥĥĥĥçç..WWWWW...ĥĥĥĥ..TT', // 19
-    'TTĥĥĥĥĥ....ĥĥ.çç.SWWDWW....ĥĥ...TT', // 20
-    'TTĥĥĥĥ........ççççççççç.........TT', // 21
-    'TT.ĥĥĥĥ.......ççççççççç.........TT', // 22
-    'TTĥĥĥĥĥ..ĥĥ.......ĥĥĥ...........TT', // 23
-    'TT.ĥĥĥ..ĥĥĥĥ.....ĥĥĥĥĥ..........TT', // 24
-    'TT..ĥĥ...ĥĥ.......ĥĥĥĥĥ.........TT', // 25
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 26
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 27
+    'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 0
+    'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 1
+    'TTTT.....ĥĥ...ççSRRRRR.FFFFF..TT', // 2
+    'TTTTfff.ĥĥĥĥ..çç.RRRRR.F...F..TT', // 3
+    'TT..fff..ĥĥĥ..çç.WWWWW.F...F..TT', // 4
+    'TT..fff...ĥ...ççMWDWWW.F...F..TT', // 5
+    'TTçççççççççççççççççççç.FFçFF..TT', // 6
+    'TTçççççççççççççççççççççççç....TT', // 7
+    '~~~~~==~..ĥĥ..çç..............TT', // 8
+    'BBBB~==~.ĥĥĥĥ.çç.RRRRR.....ĥĥ.TT', // 9
+    'BBBB~==~ĥĥĥĥĥ.çç.RRRRR....ĥĥĥ.TT', // 10
+    '~~~~~==~.ĥĥĥ..çç.WWWWW.....ĥĥ.TT', // 11
+    '~~~~~~~~..ĥĥ..ççMWDWWW......ĥ.TT', // 12
+    '~~~~~~~~ççççççççççççççç.......TT', // 13
+    '~~~~~~~~ççççççççççççççç.......TT', // 14
+    '~~~~~~~~.....Sçç..............TT', // 15
+    'TTTTTTTT...ĥĥ.ççf..........ĥĥ.TT', // 16
+    'TTTTTTTT..ĥĥĥĥççf.RRRRR...ĥĥĥ.TT', // 17
+    'TTTTTTTT.ĥĥĥĥ.ççf.RRRRR..ĥĥĥĥ.TT', // 18
+    'TTTTTTTT..ĥĥĥĥçç..WWWWW...ĥĥĥ.TT', // 19
+    'TTĥĥĥĥĥ....ĥĥ.çç.SWWDWW....ĥĥ.TT', // 20
+    'TTĥĥĥĥ........ççççççççç.......TT', // 21
+    'TT.ĥĥĥĥ.......ççççççççç.......TT', // 22
+    'TTĥĥĥĥĥ..ĥĥ.......ĥĥĥ.........TT', // 23
+    'TT.ĥĥĥ..ĥĥĥĥ.....ĥĥĥĥĥ........TT', // 24
+    'TT..ĥĥ...ĥĥ.......ĥĥĥĥĥ.......TT', // 25
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 26
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 27
   ]),
   // Portes -> intérieur. Au retour, le joueur réapparaît sous la porte. Sans intérieur : porte fermée.
   doors: [
