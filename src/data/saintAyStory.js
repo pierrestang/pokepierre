@@ -6,19 +6,10 @@ import { FLAGS, ITEMS, ROLES } from './story.js';
 // Scénettes partagées par la carte du village et les intérieurs (étapes : voir MapScene.runSteps).
 
 const HAS_ROLES = { ifSouvenirs: [ROLES.grandFrere.id, ROLES.cousins.id] };
-const CABANE_PLACES = [FLAGS.cabaneArbre, FLAGS.cabaneEtang, FLAGS.cabaneChamp];
-
-// Emplacements de la cabane (selon le choix) : pied de l'échelle (la case où l'on monte). La plateforme
-// bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2), l'image déborde d'une demi-case de chaque côté.
-export const CABANE_SPOTS = {
-  [FLAGS.cabaneArbre]: { x: 2, y: 5 },     // dans les arbres, à côté de la maison
-  [FLAGS.cabaneEtang]: { x: 4, y: 20 },    // sur pilotis au-dessus du lac, l'échelle sur la rive
-  [FLAGS.cabaneChamp]: { x: 11, y: 20 },   // au milieu du champ de blé, près de la ferme
-};
-function ladderFoot(flag) {
-  const { x, y } = CABANE_SPOTS[flag];
-  return { x, y: y + 1, facing: 'down' };
-}
+// La cabane des cousins : perchée dans les sapins au sud du lac. Pied de l'échelle (la case où l'on monte) ;
+// la plateforme bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2), l'image déborde d'une demi-case de
+// chaque côté.
+export const CABANE_SPOT = { x: 5, y: 19 };
 
 // Arrivée : ellipse après la traversée, Papa et Manon retrouvent Pierre au bord du lac.
 export const ARRIVAL = [
@@ -53,25 +44,13 @@ export const CABANE_PLAN = [
   { speaker: 'Felix', say: ['Bienvenue chez nous ! J\'ai un plan : on construit une cabane. Rien que pour nous.'] },
   { speaker: 'Joshua', say: ['Il faut des planches. Il y en a plein à la ferme… mais il y a les poules.'] },
   { speaker: 'Yanis', say: ['Et une corde pour les tenir. J\'en ai vu une dans les hautes herbes, tout au sud-ouest.'] },
-  { speaker: 'Felix', say: ['Moi, je dirige le chantier. Toi, tu choisis où on la met.'] },
+  { speaker: 'Felix', say: ['Moi, je dirige le chantier. On la perche dans les sapins, au sud du lac.'] },
   { say: ['Joshua et Yanis filent dehors.'] },
   { setFlag: FLAGS.planCabane },
 ];
 
-// Felix dirige le chantier : il propose trois emplacements, puis, tout réuni, la cabane est construite.
+// Felix dirige le chantier : tout réuni, la cabane est construite.
 export const FELIX_CHANTIER = [
-  // Emplacement pas encore choisi : Felix propose.
-  { unlessFlags: CABANE_PLACES, speaker: 'Felix', say: ['Pour la cabane, j\'ai trois idées. À toi de choisir !'] },
-  {
-    unlessFlags: CABANE_PLACES,
-    speaker: 'Felix',
-    choose: 'Où construit-on la cabane ?',
-    choices: [
-      { label: 'Le grand arbre', steps: [{ setFlag: FLAGS.cabaneArbre }, { speaker: 'Felix', say: ['Dans le grand arbre, à côté de ta maison. On verra tout le village !'] }] },
-      { label: 'Le bord du lac', steps: [{ setFlag: FLAGS.cabaneEtang }, { speaker: 'Felix', say: ['Au bord du lac, sur pilotis. Comme des pêcheurs !'] }] },
-      { label: 'Le champ de blé', steps: [{ setFlag: FLAGS.cabaneChamp }, { speaker: 'Felix', say: ['Au milieu du champ, près de la ferme. Personne ne nous trouvera.'] }] },
-    ],
-  },
   // Il manque encore des matériaux.
   { unlessItems: [ITEMS.planches.id], speaker: 'Felix', say: ['Il nous faut encore les planches : Joshua t\'attend à la ferme.'] },
   { unlessItems: [ITEMS.corde.id], speaker: 'Felix', say: ['Et la corde : Yanis dit qu\'elle traîne dans les hautes herbes, au sud-ouest.'] },
@@ -110,9 +89,7 @@ export const CABANE_FETE = [
   { quality: ROLES.cousins },
   { black: true },
   { wait: 400 },
-  { ifFlags: [FLAGS.cabaneArbre], travel: { map: 'saintAy', ...ladderFoot(FLAGS.cabaneArbre) } },
-  { ifFlags: [FLAGS.cabaneEtang], travel: { map: 'saintAy', ...ladderFoot(FLAGS.cabaneEtang) } },
-  { ifFlags: [FLAGS.cabaneChamp], travel: { map: 'saintAy', ...ladderFoot(FLAGS.cabaneChamp) } },
+  { travel: { map: 'saintAy', x: CABANE_SPOT.x, y: CABANE_SPOT.y + 1, facing: 'down' } },
 ];
 
 // Missions : les planches de la ferme (gardées par les poules) et la vieille corde cachée dans les hautes

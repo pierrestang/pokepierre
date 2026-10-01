@@ -1,23 +1,22 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS, ROLES } from '../story.js';
 import {
-  ARRIVAL, PLANKS, ROPE, CAR, henScript, CABANE_SPOTS,
+  ARRIVAL, PLANKS, ROPE, CAR, henScript, CABANE_SPOT,
 } from '../saintAyStory.js';
 
 // Le ferry (le même qu'à Fort-de-France), amarré à gauche du ponton du lac ; une case d'eau entre les deux.
 const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 
 // Saint-Ay (Loiret) — petit village de campagne, 30 x 24 cases, façon Rouge Feu : la route de Montépilloy
-// (nord-sud) croise la rue des maisons (chaumière de la famille avec son grand arbre, maison de Felix) et la
-// rue de l'hôpital ; potager, champs de blé et de terre labourée clôturés de blanc ; au sud, la ferme et sa
-// cour (planches gardées par les poules). À l'ouest, le lac touche le bord de la carte : petit ponton, ferry,
-// bitte d'amarrage. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
-// chantier de la cabane. Ceinture d'arbres ailleurs. Champs de blé sans barrière (on en fait le tour) ; si la
-// cabane y est construite, son échelle se pose sur le blé (voir les portes `when`).
+// (nord-sud) croise la rue des maisons (chaumière de la famille, maison de Felix) et la rue de l'hôpital ;
+// prés de hautes herbes et champs de blé (qu'on traverse) ; au sud, la grande ferme et sa cour aux poules
+// (planches gardées par les poules). À l'ouest, le lac (rives de terre) touche le bord de la carte : petit
+// ponton et ferry ; au sud du lac, des sapins où est perchée la cabane des cousins. Au sud-ouest, un coin de
+// hautes herbes caché où traîne la vieille corde pendant le chantier de la cabane. Ceinture d'arbres ailleurs.
 // Scénario : voir data/saintAyStory.js.
-// Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, ʭ = terre labourée, F = barrière, ~ = lac,
+// Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, F = barrière, ~ = lac,
 // B = ferry, = = ponton, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
-// S = panneau, M = boîte aux lettres, ʀ = tas de planches, ɓ = bitte d'amarrage, R / W / D = toit, mur,
+// S = panneau, M = boîte aux lettres, ʀ = tas de planches, R / W / D = toit, mur,
 // porte des bâtiments)
 // La vieille corde : au fond du coin de hautes herbes du sud-ouest, seulement pendant le chantier de la cabane.
 const ROPE_SPOT = { x: 2, y: 20 };
@@ -36,18 +35,18 @@ export const saintAyMap = {
     'TT..WDWWWMfff.ççMWDWWW..ʬʬʬ.TT', // 5
     'TTççççççççççççççççççççç.ʬʬʬ.TT', // 6
     'TTççççççççççççççççççççç.ʬʬʬ.TT', // 7
-    '~~~~~==~ɓFFFFFçç............TT', // 8
-    'BBBB~==~.FʭʭʭFçç.RRRRR.....ƚTT', // 9
-    'BBBB~==~.FʭʭʭFçç.RRRRR.FFFFFTT', // 10
-    '~~~~~==~.FʭʭʭFçç.WWWWW.FʭʭʭFTT', // 11
-    '~~~~~~~~.FFFFFççSWWDWW.FʭʭʭFTT', // 12
-    '~~~~~~~~çççççççççççççççFʭʭʭFTT', // 13
-    '~~~~~~~~çççççççççççççççFFFFFTT', // 14
-    '~~~~~~~~......ççS.....FFFFFFTT', // 15
-    '~~~~~~~~......çç.RRRR.F...ʀFTT', // 16
-    '~~~~~~~~..ʬʬʬ.çç.RRRR.F....FTT', // 17
-    '~~~~~~~~..ʬʬʬ.çç.WWWW.F....FTT', // 18
-    '~~~~~~~~..ʬʬʬ.çç.WDWW.F....FTT', // 19
+    '~~~~~==~......çç............TT', // 8
+    'BBBB~==~..ĥĥĥ.çç.RRRRR......TT', // 9
+    'BBBB~==~..ĥĥĥ.çç.RRRRR......TT', // 10
+    '~~~~~==~..ĥĥĥ.çç.WWWWW..ĥĥĥ.TT', // 11
+    '~~~~~~~~......ççSWWDWW..ĥĥĥ.TT', // 12
+    '~~~~~~~~ççççççççççççççç.ĥĥĥ.TT', // 13
+    '~~~~~~~~ççççççççççççççç.....TT', // 14
+    '~~~~~~~~.....SççRRRRRRFFFFFFTT', // 15
+    'TTTTTTTT......ççRRRRRRF...ʀFTT', // 16
+    'TTTTTTTT..ʬʬʬ.ççWWWWWWF....FTT', // 17
+    'TTTT......ʬʬʬ.ççWDWWWWF....FTT', // 18
+    'TTTT......ʬʬʬ.çç...WWWF....FTT', // 19
     'TTĥĥĥĥĥĥ..ʬʬʬ.çççççççç.....FTT', // 20
     'TTĥĥĥĥĥĥ........ƚ....ƀFFFFFFTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
@@ -66,27 +65,27 @@ export const saintAyMap = {
       lock: { ifFlags: [FLAGS.familleSuit] },
       lockedDialogue: ["L'hôpital de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
-    { x: 18, y: 19, lockedDialogue: ['La ferme. On entend les poules caqueter derrière la porte.'] },
+    { x: 17, y: 18, lockedDialogue: ['La ferme. On entend les poules caqueter derrière la porte.'] },
     // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite).
-    ...Object.entries(CABANE_SPOTS).map(([flag, { x, y }]) => ({ x, y, interior: 'cabane', when: { ifFlags: [flag, FLAGS.cabaneFinie] } })),
+    { ...CABANE_SPOT, interior: 'cabane', when: { ifFlags: [FLAGS.cabaneFinie] } },
   ],
   // Bâtiments (coin haut-gauche, en cases) ; la collision reste dans la grille.
   buildings: [
     { type: 'cottage', x: 4, y: 2 },
     { type: 'slateHouse', x: 17, y: 2 },
     { type: 'clinic', x: 17, y: 9 },
-    { type: 'fishingHut', x: 17, y: 16 },
+    { type: 'farm', x: 16, y: 15 },
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
-  // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir. Elle
-  // disparaît une fois le trajet fait.
+  // Obstacles qui dépendent de l'histoire.
   props: [
-    // La cabane des cousins, une fois construite, à l'emplacement choisi (voir saintAyStory.CABANE_SPOTS).
-    ...Object.entries(CABANE_SPOTS).map(([flag, { x, y }]) => ({
-      type: 'cabane', x: x - 1, y: y - 3, w: 4, h: 3, ifFlags: [flag, FLAGS.cabaneFinie],
+    // La cabane des cousins, une fois construite, perchée dans les sapins au sud du lac.
+    {
+      type: 'cabane', x: CABANE_SPOT.x - 1, y: CABANE_SPOT.y - 3, w: 4, h: 3, ifFlags: [FLAGS.cabaneFinie],
       dialogue: ['La cabane des cousins. On y monte par l\'échelle.'],
-    })),
-    // Elle ne bloque que la rangée du bas de la route : on passe derrière elle.
+    },
+    // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir. Elle
+    // disparaît une fois le trajet fait, et ne bloque que la rangée du bas de la route (on passe derrière).
     { type: 'familyCar', x: 10, y: 7, w: 3, h: 1, facing: 'right', ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
   // Décor lié à l'histoire : la corde dans les hautes herbes (pendant le chantier).
@@ -95,12 +94,11 @@ export const saintAyMap = {
   ],
   objects: [
     { x: 16, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
-    { x: 16, y: 15, dialogue: ['Saint-Ay, Loiret. Bienvenue au village !'] },
+    { x: 13, y: 15, dialogue: ['Saint-Ay, Loiret. Bienvenue au village !'] },
     { x: 16, y: 12, dialogue: ['Hôpital de Saint-Ay.'] },
     { x: 9, y: 5, dialogue: ['La boîte aux lettres de la famille.'] },
     { x: 16, y: 5, dialogue: ['La boîte aux lettres de Felix et de ses frères et sœur.'] },
     { x: 26, y: 16, script: PLANKS },
-    { x: 8, y: 8, dialogue: ["Une bitte d'amarrage en bois."] },
     { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: ROPE },
     // Le ferry qui a amené la famille de Fort-de-France.
     ...Array.from({ length: (BOAT_POS.w + 1) * BOAT_POS.h }, (_, i) => ({
@@ -129,7 +127,7 @@ export const saintAyMap = {
     },
     // Chantier de la cabane : Joshua à la ferme, Yanis près du lac.
     {
-      id: 'joshua', name: 'Joshua', x: 21, y: 19, facing: 'right', color: COUSIN_COLORS.joshua,
+      id: 'joshua', name: 'Joshua', x: 18, y: 19, facing: 'down', color: COUSIN_COLORS.joshua,
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.planches.id], speaker: 'Joshua', say: ['Avec ces planches, on va faire un vrai QG.'], end: true },

@@ -19,9 +19,6 @@ export const FLAGS = {
   planCabane: 'plan-cabane',                    // Saint-Ay : Felix a lancé le chantier de la cabane
   pouleEnfuie1: 'poule-enfuie-1',               // les poules de la ferme ont fui (tas de planches)
   pouleEnfuie2: 'poule-enfuie-2',
-  cabaneArbre: 'cabane-arbre',                  // emplacement choisi : le grand arbre
-  cabaneEtang: 'cabane-etang',                  //                      le bord du lac
-  cabaneChamp: 'cabane-champ',                  //                      le champ près de la ferme
   cabaneFinie: 'cabane-finie',                  // la cabane des cousins est construite
   annonceMutation: 'annonce-mutation',          // Papa a annoncé le départ pour Montépilloy
   adieuCousins: 'adieu-cousins',                // au revoir aux cousins à la cabane

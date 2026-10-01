@@ -1803,28 +1803,32 @@ export function drawDecal(g, kind, px, py, options) {
 }
 
 // Tas de planches de la ferme (Saint-Ay), posé sur l'herbe (sol Rouge Feu dessous).
+// Tas de planches de la ferme : quatre planches empilées en quinconce, veinées, bouts clairs (bois scié) à
+// droite, contour sombre, ombre au sol.
 const PLANKS = [
   '................',
-  '..kkkkkkkkkkkk..',
-  '.kWWWWWWWWWWWWk.',
-  '.kwwwwwwwwwwwwk.',
+  '...kkkkkkkkkkkk.',
+  '..kLLLLLLLLLLLEk',
+  '..kWWwWWWWwWWWEk',
+  '.kkkkkkkkkkkkkkk',
+  '.kLLLLLLLLLLLLEk',
+  '.kWWWWwWWWWWwWEk',
   'kkkkkkkkkkkkkkk.',
-  'kWWWWWWWWWWWWWk.',
-  'kwwwwwwwwwwwwwkk',
-  'kkkkkkkkkkkkkkWk',
-  '.kWWWWWWWWWWWkwk',
-  '.kwwwwwwwwwwwkkk',
-  'kkkkkkkkkkkkkkk.',
-  'kWWWWWWWWWWWWWWk',
-  'kwwwwwwwwwwwwwwk',
-  'kDDDDDDDDDDDDDDk',
-  '.kkkkkkkkkkkkkk.',
+  'kLLLLLLLLLLLLEk.',
+  'kWWwWWWWwWWWWEk.',
+  'kDDDDDDDDDDDDDk.',
+  '.kkkkkkkkkkkkkkk',
+  '.kLLLLLLLLLLLLEk',
+  '.kWWWwWWWWWwWWEk',
+  '.kDDDDDDDDDDDDDk',
+  '..kkkkkkkkkkkkk.',
 ];
+const PLANK_COLORS = { k: 0x3c2818, L: 0xe0b070, W: 0xc08850, w: 0x9c6838, D: 0x7c5028, E: 0xf0d8a8 };
 function planksPile(g, px, py) {
   if (!groundProvided) grass(g, px, py, 0, 0);
   g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 1, py + 15, 15, 1);
-  pixelArt(g, PLANKS, px, py + 1);
+  g.fillRect(px + 2, py + 15, 14, 1);
+  sprite(g, PLANKS, PLANK_COLORS, px, py);
 }
 
 // Bitte d'amarrage en bois au bord du lac (Saint-Ay), poteau étroit sur la gauche de la case ; la corde

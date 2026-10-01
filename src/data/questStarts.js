@@ -28,8 +28,8 @@ export const QUEST_STARTS = [
   { label: 'NÉPAL', maps: ['nepal'], upTo: FLAGS.parentsCorse, go: { map: 'nepal', x: 1, y: 12, facing: 'right' } },
 ];
 
-// Choix exclusifs : un seul drapeau du groupe (le premier) est levé.
-const EXCLUSIVE = [[FLAGS.cabaneArbre, FLAGS.cabaneEtang, FLAGS.cabaneChamp]];
+// Choix exclusifs de l'histoire : un seul drapeau de chaque groupe (le premier) est levé. Aucun pour l'instant.
+const EXCLUSIVE = [];
 
 // État de la partie au début de la quête `index` : { flags, souvenirs, items }.
 export function questState(index) {

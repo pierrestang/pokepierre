@@ -24,6 +24,8 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent ;
   rs-cabane.png      cabane perchée de Fortree City (Rubis/Saphir), détourée de la forêt, avec deux pilotis ;
                      puis son intérieur (tronc, deux bancs), 128 x 96 px, à droite (voir cabane) ;
+  frlg-farm.png      grande ferme au toit orange (6 x 5 cases) assemblée à partir de deux maisons de la
+                     planche de bâtiments de fabnt (tilesets-tileset_1.png), voir farm ;
   frlg-car.png       voiture bleue de la famille, vue de côté (vers la gauche, puis vers la droite), réduite de
                      moitié (voir family_car). Planche « FRLG Tilesets - Cars » de pinkscales (DeviantArt), dans
                      assets-source/fan/ : libre pour un projet de fan non commercial, avec crédit à pinkscales.
@@ -479,6 +481,36 @@ def components(o, w, h):
             yield comp
 
 
+# Grande ferme (Saint-Ay) : la maison au toit orange à porte et jardinières de tilesets-tileset_1.png
+# (tuiles de 16 px séparées par une ligne blanche : pas de 17 px), élargie d'une colonne de mur nu prise sur
+# la maison voisine à deux fenêtres. Colonnes : bord, porte, mur nu, jardinière, fenêtre, bord.
+FARM_X = [17, 34, 51, 68, 85]                 # colonnes de tuiles des deux maisons
+FARM_ROWS = [721, 738, 755, 772, 789]         # maison à porte (dernière rangée : bas des jardinières)
+PLAIN_ROWS = [806, 823, 840, 857, None]       # maison à deux fenêtres
+
+
+def farm():
+    sheet = Image.open(SRC / 'tilesets-tileset_1.png').convert('RGBA')
+    columns = [(FARM_X[0], FARM_ROWS), (FARM_X[1], FARM_ROWS), (FARM_X[2], PLAIN_ROWS),
+               (FARM_X[2], FARM_ROWS), (FARM_X[3], FARM_ROWS), (FARM_X[4], FARM_ROWS)]
+    out = Image.new('RGBA', (16 * len(columns), 16 * len(FARM_ROWS)), (255, 255, 255, 255))
+    for c, (sx, rows) in enumerate(columns):
+        for r, sy in enumerate(rows):
+            if sy is not None:
+                out.paste(sheet.crop((sx, sy, sx + 16, sy + 16)), (16 * c, 16 * r))
+    # Fond blanc de la planche rendu transparent depuis les bords (le blanc des fenêtres reste).
+    w, h = out.size
+    o = out.load()
+    todo = deque([(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)])
+    while todo:
+        x, y = todo.popleft()
+        if not (0 <= x < w and 0 <= y < h) or o[x, y] != (255, 255, 255, 255):
+            continue
+        o[x, y] = (0, 0, 0, 0)
+        todo.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
+    return out
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     rgba = lambda name: Image.open(SRC / name).convert('RGBA')
@@ -510,6 +542,7 @@ def main():
     gba_palette(clear_outside(rs_objects, (255, 255, 255, 255))).save(OUT / 'rs-objects.png')
     gba_palette(family_car()).save(OUT / 'frlg-car.png')
     gba_palette(cabane()).save(OUT / 'rs-cabane.png')
+    gba_palette(farm()).save(OUT / 'frlg-farm.png')
     print('ok ->', OUT.relative_to(ROOT))
 
 

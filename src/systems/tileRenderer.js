@@ -43,7 +43,7 @@ export function renderMap(scene, map) {
 // `interior` : un intérieur Rouge Feu (murs, parquet, meubles de frlg-rooms.png, voir art/frlgArt.js).
 function bakeRegion(scene, key, { x0, y0, w, h }, at, { buildings = [], buildingGround, skip = () => false, inlineTrees = false, interior = null } = {}) {
   const textures = scene.textures;
-  const floor = frlgBuildingFloor(buildings);
+  const floor = frlgBuildingFloor(buildings, at);
   const tex = textures.createCanvas(key, w * S, h * S);
   const ctx = tex.getContext();
   ctx.imageSmoothingEnabled = false;

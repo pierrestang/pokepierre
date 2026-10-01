@@ -36,6 +36,7 @@ export const FRLG_SHEETS = {
   townMap: 'frlg-townmap',
   car: 'frlg-car',
   cabane: 'rs-cabane',
+  farm: 'frlg-farm',
 };
 
 export function preloadFrlg(scene) {
@@ -130,6 +131,7 @@ export const FRLG_BUILDINGS = {
   slateHouse: { sx: 300, sy: 24, w: 80, h: 55, footH: 4 },   // toit d'ardoise, porte rouge
   blueHouse: { sx: 395, sy: 24, w: 96, h: 56, footH: 4 },    // toit bleu, 6 cases, porte en 3e colonne
   clinic: { sx: 421, sy: 343, w: 80, h: 72, footH: 4 },      // toit orange (pension), porte au milieu
+  farm: { sheet: FRLG_SHEETS.farm, sx: 0, sy: 0, w: 96, h: 80, footH: 5 },   // grande ferme au toit orange (frlg-farm.png), porte en 2e colonne
   // Montépilloy et Prytanée.
   school: { sx: 620, sy: 242, w: 80, h: 71, footH: 4 },      // auvent vert et jardinières (fan-club), porte en 2e colonne
   lab: { sx: 528, sy: 342, w: 112, h: 72, footH: 4 },       // labo du Prof. Chen : 7 cases, porte en 4e colonne
@@ -286,7 +288,8 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
     };
     blit(ctx, textures, borderTile(ground === 'cobble' ? COBBLE_ON_GRASS : CONCRETE_ON_GRASS, other), px, py);
   } else if (ground === 'pond') {
-    blit(ctx, textures, borderTile(POND, (dx, dy) => groundAt(dx, dy) !== 'pond'), px, py);
+    // Rive de terre sur chaque bord qui touche la terre ferme (le ponton est sur l'eau : pas de rive).
+    blit(ctx, textures, borderTile(POND, (dx, dy) => !['pond', 'pier'].includes(groundAt(dx, dy))), px, py);
   } else if (ground === 'path') {
     // Chemin de sable : continue sous les bâtiments, sur le ponton et dans le sable de la plage.
     const other = (dx, dy) => {
@@ -412,7 +415,7 @@ export function addFrlgBuilding(scene, b) {
   const key = `frlg-building-${b.type}`;
   if (!scene.textures.exists(key)) {
     const tex = scene.textures.createCanvas(key, def.w, def.h);
-    blit(tex.getContext(), scene.textures, { sheet: FRLG_SHEETS.buildings, sx: def.sx, sy: def.sy }, 0, 0, def.w, def.h);
+    blit(tex.getContext(), scene.textures, { sheet: def.sheet ?? FRLG_SHEETS.buildings, sx: def.sx, sy: def.sy }, 0, 0, def.w, def.h);
     tex.refresh();
   }
   const bottom = (b.y + def.footH) * S;
@@ -420,13 +423,17 @@ export function addFrlgBuilding(scene, b) {
 }
 
 // Cases couvertes par les bâtiments Rouge Feu d'une carte : fonction (x, y) -> booléen.
-export function frlgBuildingFloor(buildings = []) {
+// Seules les cases de bâtiment (R, W, D) de l'emprise comptent : une case d'herbe devant la façade (ex. à côté
+// des jardinières de la ferme) garde son sol et ses bordures.
+export function frlgBuildingFloor(buildings = [], at = () => 'R') {
   const cells = new Set();
   for (const b of buildings) {
     const def = FRLG_BUILDINGS[b.type];
     if (!def) continue;
     for (let dy = 0; dy < def.footH; dy++) {
-      for (let dx = 0; dx < def.w / S; dx++) cells.add(`${b.x + dx},${b.y + dy}`);
+      for (let dx = 0; dx < def.w / S; dx++) {
+        if (['R', 'W', 'D'].includes(at(b.x + dx, b.y + dy))) cells.add(`${b.x + dx},${b.y + dy}`);
+      }
     }
   }
   return (x, y) => cells.has(`${x},${y}`);
@@ -566,12 +573,13 @@ export function addSeaLayer(scene, width, height, margin = 40 * S) {
 // Bas de la tuile de hautes herbes (10 rangées du bas), posé devant le personnage qui s'y tient : comme
 // dans Rouge Feu, ses jambes disparaissent dans les feuilles. Renvoie la clé de la texture.
 export const GRASS_COVER_TOP = 6;
-export function tallGrassCoverTexture(scene) {
-  const key = 'frlg-grass-cover';
+export function tallGrassCoverTexture(scene, code = 'ĥ') {
+  const tile = code === 'ʬ' ? WHEAT : TALL_GRASS;
+  const key = code === 'ʬ' ? 'frlg-wheat-cover' : 'frlg-grass-cover';
   if (!scene.textures.exists(key)) {
     const tex = scene.textures.createCanvas(key, S, S - GRASS_COVER_TOP);
-    const src = scene.textures.get(FRLG_SHEETS.outdoor).getSourceImage();
-    tex.getContext().drawImage(src, TALL_GRASS.sx, TALL_GRASS.sy + GRASS_COVER_TOP, S, S - GRASS_COVER_TOP, 0, 0, S, S - GRASS_COVER_TOP);
+    const src = scene.textures.get(tile.sheet).getSourceImage();
+    tex.getContext().drawImage(src, tile.sx, tile.sy + GRASS_COVER_TOP, S, S - GRASS_COVER_TOP, 0, 0, S, S - GRASS_COVER_TOP);
     tex.refresh();
   }
   return key;

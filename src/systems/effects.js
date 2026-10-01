@@ -13,6 +13,9 @@ const WATER = ['~', 'G'];   // étangs et rivières (la mer est une couche anim�
 // ---------- Hautes herbes ----------
 
 // Touffes fixées à chaque case de hautes herbes, affichées devant le personnage qui s'y tient.
+// Plantes hautes qui cachent le bas des personnages : hautes herbes et blé.
+export const TALL_PLANTS = ['ĥ', 'ʬ'];
+
 export class GrassCovers {
   constructor(scene, map) {
     this.scene = scene;
@@ -24,9 +27,9 @@ export class GrassCovers {
   cover(x, y) {
     const id = `${x},${y}`;
     if (!this.covers.has(id)) {
-      // Bas de la tuile Rouge Feu des hautes herbes, juste devant un personnage debout sur cette case
-      // (profondeur 10 + y / 10000, joueur + 0.001).
-      const image = this.scene.add.image(x * S, y * S + GRASS_COVER_TOP, tallGrassCoverTexture(this.scene)).setOrigin(0).setVisible(false)
+      // Bas de la tuile Rouge Feu des hautes herbes (ou du blé), juste devant un personnage debout sur cette
+      // case (profondeur 10 + y / 10000, joueur + 0.001).
+      const image = this.scene.add.image(x * S, y * S + GRASS_COVER_TOP, tallGrassCoverTexture(this.scene, this.at(x, y))).setOrigin(0).setVisible(false)
         .setDepth(10 + (y * S + S / 2) / 10000 + 0.002);
       this.covers.set(id, image);
     }
@@ -38,7 +41,7 @@ export class GrassCovers {
     const shown = new Set();
     for (const sprite of sprites) {
       for (const { x, y } of sprite.tiles()) {
-        if (this.at(x, y) !== 'ĥ') continue;
+        if (!TALL_PLANTS.includes(this.at(x, y))) continue;
         shown.add(`${x},${y}`);
         this.cover(x, y).setVisible(true);
       }
@@ -53,7 +56,8 @@ export class GrassCovers {
     this.scene.tweens.killTweensOf(image);
     image.setScale(1, 1).setY(y * S + GRASS_COVER_TOP);
     this.scene.tweens.add({ targets: image, scaleY: 0.8, y: y * S + GRASS_COVER_TOP + 2, duration: 90, yoyo: true, ease: 'Sine.easeOut' });
-    burst(this.scene, x * S + S / 2, y * S + 10, [0x9ce07c, 0x5cb45c, 0xb0ec8c], 4, 7);
+    const colors = this.at(x, y) === 'ʬ' ? [0xf0d070, 0xd0a040, 0xf8e8a0] : [0x9ce07c, 0x5cb45c, 0xb0ec8c];
+    burst(this.scene, x * S + S / 2, y * S + 10, colors, 4, 7);
   }
 }
 

@@ -19,7 +19,7 @@ import { savePosition } from '../systems/save.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
 import {
-  GrassCovers, InteractHint, stepEffect, footprint, startFallingLeaves, startSeaShimmer,
+  GrassCovers, TALL_PLANTS, InteractHint, stepEffect, footprint, startFallingLeaves, startSeaShimmer,
   startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay,
 } from '../systems/effects.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
@@ -110,7 +110,7 @@ export class MapScene extends Phaser.Scene {
         this.followers.advance(x, y, duration);
         const code = this.grid[ny]?.[nx];
         if (this.grid[y]?.[x] === 's') footprint(this, x, y, this.player.facing);
-        if (code === 'ĥ') this.grassCovers.rustle(nx, ny);
+        if (TALL_PLANTS.includes(code)) this.grassCovers.rustle(nx, ny);
         else stepEffect(this, code, nx, ny);
       },
     });
