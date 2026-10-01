@@ -131,7 +131,9 @@ export const FRLG_BUILDINGS = {
   slateHouse: { sx: 300, sy: 24, w: 80, h: 55, footH: 4 },   // toit d'ardoise, porte rouge
   blueHouse: { sx: 395, sy: 24, w: 96, h: 56, footH: 4 },    // toit bleu, 6 cases, porte en 3e colonne
   clinic: { sx: 421, sy: 343, w: 80, h: 72, footH: 4 },      // toit orange (pension), porte au milieu
-  farm: { sheet: FRLG_SHEETS.farm, sx: 0, sy: 0, w: 96, h: 80, footH: 5 },   // grande ferme au toit orange (frlg-farm.png), porte en 2e colonne
+  // Grande ferme au toit orange (frlg-farm.png), porte en 2e colonne ; son image laisse voir l'herbe sur ses
+  // bords : les chemins voisins gardent leur bordure (`pathBorders`).
+  farm: { sheet: FRLG_SHEETS.farm, sx: 0, sy: 0, w: 96, h: 80, footH: 5, pathBorders: true },
   // Montépilloy et Prytanée.
   school: { sx: 620, sy: 242, w: 80, h: 71, footH: 4 },      // auvent vert et jardinières (fan-club), porte en 2e colonne
   lab: { sx: 528, sy: 342, w: 112, h: 72, footH: 4 },       // labo du Prof. Chen : 7 cases, porte en 4e colonne
@@ -294,6 +296,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
     // Chemin de sable : continue sous les bâtiments, sur le ponton et dans le sable de la plage.
     const other = (dx, dy) => {
       const n = at(x + dx, y + dy);
+      if (buildingFloor.bordered?.(x + dx, y + dy)) return true;
       return n !== undefined && !['ç', 'R', 'W', 'D', '=', 's'].includes(n) && !buildingFloor(x + dx, y + dy);
     };
     blit(ctx, textures, borderTile(SAND_ON_GRASS, other), px, py);
@@ -432,18 +435,24 @@ export function addFrlgBuilding(scene, b) {
 // Cases couvertes par les bâtiments Rouge Feu d'une carte : fonction (x, y) -> booléen.
 // Seules les cases de bâtiment (R, W, D) de l'emprise comptent : une case d'herbe devant la façade (ex. à côté
 // des jardinières de la ferme) garde son sol et ses bordures.
+// La fonction renvoyée a `.bordered(x, y)` : vrai sous un bâtiment `pathBorders` (le chemin y garde sa bordure).
 export function frlgBuildingFloor(buildings = [], at = () => 'R') {
   const cells = new Set();
+  const bordered = new Set();
   for (const b of buildings) {
     const def = FRLG_BUILDINGS[b.type];
     if (!def) continue;
     for (let dy = 0; dy < def.footH; dy++) {
       for (let dx = 0; dx < def.w / S; dx++) {
-        if (['R', 'W', 'D'].includes(at(b.x + dx, b.y + dy))) cells.add(`${b.x + dx},${b.y + dy}`);
+        if (!['R', 'W', 'D'].includes(at(b.x + dx, b.y + dy))) continue;
+        cells.add(`${b.x + dx},${b.y + dy}`);
+        if (def.pathBorders) bordered.add(`${b.x + dx},${b.y + dy}`);
       }
     }
   }
-  return (x, y) => cells.has(`${x},${y}`);
+  const floor = (x, y) => cells.has(`${x},${y}`);
+  floor.bordered = (x, y) => bordered.has(`${x},${y}`);
+  return floor;
 }
 
 // Grand arbre Rouge Feu : ancré sur la case en bas à droite d'un bloc de 2 x 2 sapins.
@@ -532,7 +541,7 @@ export function roadStripTexture(scene, height) {
 
 // ---------- Cabane des cousins ----------
 
-// rs-cabane.png : la cabane perchée de Fortree City (64 x 91 px, l'échelle occupe les colonnes 24 à 39),
+// rs-cabane.png : la cabane perchée de Fortree City (64 x 91 px, l'échelle occupe les colonnes 32 à 47),
 // puis son intérieur (128 x 96 px, 8 x 6 cases : tronc au milieu, un banc de chaque côté).
 const CABANE_FRAMES = {
   hut: [0, 0, 64, 91],
@@ -541,7 +550,7 @@ const CABANE_FRAMES = {
   benchLeft: [64 + 10, 43, 37, 20],
   benchRight: [64 + 82, 43, 37, 20],
 };
-export const CABANE_LADDER_X = 24;
+export const CABANE_LADDER_X = 32;
 export function cabaneFrame(scene, name) {
   const tex = scene.textures.get(FRLG_SHEETS.cabane);
   if (!tex.has(name)) tex.add(name, 0, ...CABANE_FRAMES[name]);

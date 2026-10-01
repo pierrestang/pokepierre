@@ -6,9 +6,9 @@ import { FLAGS, ITEMS, ROLES } from './story.js';
 // Scénettes partagées par la carte du village et les intérieurs (étapes : voir MapScene.runSteps).
 
 const HAS_ROLES = { ifSouvenirs: [ROLES.grandFrere.id, ROLES.cousins.id] };
-// La cabane des cousins : posée sur deux sapins au sud du lac. Pied de l'échelle (la case où l'on monte) ;
-// la plateforme bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2), l'image déborde d'une demi-case de
-// chaque côté.
+// La cabane des cousins : posée sur deux blocs de sapins de la forêt au sud du lac (cases 2 à 5, rangées 18
+// et 19). Pied de l'échelle : la case où l'on monte, devant le sapin de droite (praticable une fois la cabane
+// construite, voir les portes `when`) ; la plateforme bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2).
 export const CABANE_SPOT = { x: 4, y: 19 };
 
 // Arrivée : ellipse après la traversée, Papa et Manon retrouvent Pierre au bord du lac.

@@ -399,7 +399,7 @@ def family_car():
 
 # Cabane perchée de Fortree City (planche rs/backgrounds-fortree_city.png, carte calée sur (5, 5)) : feuillage,
 # cabane, plateforme de rondins et échelle, détourés en effaçant le motif de forêt qui se répète derrière ;
-# deux pilotis sous la plateforme. L'échelle occupe les colonnes 24 à 39 de l'image (une case). À droite,
+# deux pilotis sous la plateforme. L'échelle occupe les colonnes 32 à 47 de l'image (une case). À droite,
 # l'intérieur de la cabane (tronc au milieu, deux bancs).
 CABANE_BOX = (141, 22, 205, 113)
 CABANE_ROOM = (331, 734, 459, 830)
@@ -450,6 +450,15 @@ def cabane():
         for x in range(w):
             if not o[x, y][3] and (x, y) not in outside:
                 o[x, y] = src[x0 + x, y0 + y]
+    # Échelle décalée de 8 px vers la droite (colonnes 32 à 47) : la cabane posée sur deux sapins de la grille
+    # (blocs de 2 x 2 cases), l'échelle tombe sur une case entière. Sur la plateforme, le haut de l'échelle
+    # laisse place aux planches voisines.
+    before = hut.copy().load()
+    for y in range(bottom - 4, h):
+        for x in range(24, 32):
+            o[x, y] = before[x + 16, y] if y <= bottom else (0, 0, 0, 0)
+        for x in range(24, 40):
+            o[x + 8, y] = before[x, y]
     dark, wood, light = (72, 72, 88, 255), (168, 136, 64, 255), (216, 192, 96, 255)
     for px in (5, 55):                                      # pilotis, accrochés sous la plateforme
         for y in range(bottom - 1, h):
