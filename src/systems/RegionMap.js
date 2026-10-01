@@ -3,6 +3,7 @@ import { FRLG_FONT, frlgText } from './frlgFont.js';
 import { FRLG_SHEETS } from '../art/frlgArt.js';
 import { MAPS } from '../data/maps/index.js';
 import { flags } from './flags.js';
+import { visitedFlag } from '../data/story.js';
 import { sfx } from './audio.js';
 
 // Carte du voyage (menu Start > CARTE), dans le style de la carte de Rouge Feu : mer rayée, bandeaux bleus,
@@ -22,7 +23,7 @@ const ROUTE = 0xe7a500;       // orange des routes de Rouge Feu
 const ROUTE_LIGHT = 0xf8d870;
 const ROUTE_UNKNOWN = 0xc8d0e8;
 
-export const visitedFlag = (mapId) => `visite-${mapId}`;
+export { visitedFlag };
 
 // Position (pixels de l'écran de jeu) de l'étape i : trois rangées en serpentin.
 function stopPosition(i) {

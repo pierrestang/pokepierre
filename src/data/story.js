@@ -1,3 +1,6 @@
+// Ville visitée (pour la carte du voyage, voir systems/RegionMap.js) : drapeau levé en y entrant.
+export const visitedFlag = (mapId) => `visite-${mapId}`;
+
 // Drapeaux d'histoire utilisés dans les données (évite les fautes de frappe).
 export const FLAGS = {
   reveilFortDeFrance: 'reveil-fort-de-france', // Fort-de-France : réveil dans la chambre joué

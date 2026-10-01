@@ -12,8 +12,8 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // rue de l'hôpital ; potager, champs de blé et de terre labourée clôturés de blanc ; au sud, la ferme et sa
 // cour (planches gardées par les poules). À l'ouest, le lac touche le bord de la carte : petit ponton, ferry,
 // bitte d'amarrage. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
-// chantier de la cabane. Ceinture d'arbres ailleurs. Une trouée dans la barrière sud du champ de blé mène
-// au pied de l'échelle de la cabane, si on l'y construit, et rejoint le chemin du sud.
+// chantier de la cabane. Ceinture d'arbres ailleurs. Champs de blé sans barrière (on en fait le tour) ; si la
+// cabane y est construite, son échelle se pose sur le blé (voir les portes `when`).
 // Scénario : voir data/saintAyStory.js.
 // Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, ʭ = terre labourée, F = barrière, ~ = lac,
 // B = ferry, = = ponton, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
@@ -30,13 +30,13 @@ export const saintAyMap = {
   grid: parseGrid([
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTT', // 1
-    'TTTTRRRRR.....ççSRRRRR.FFFFFTT', // 2
-    'TTTTRRRRR.fff.çç.RRRRR.FʬʬʬFTT', // 3
-    'TT..WWWWW.fff.çç.WWWWW.FʬʬʬFTT', // 4
-    'TT..WDWWWMfff.ççMWDWWW.FʬʬʬFTT', // 5
-    'TTçççççççççççççççççççççFʬʬʬFTT', // 6
-    'TTçççççççççççççççççççççFʬʬʬFTT', // 7
-    '~~~~~==~ɓFFFFFçç.......FFFFFTT', // 8
+    'TTTTRRRRR.....ççSRRRRR......TT', // 2
+    'TTTTRRRRR.fff.çç.RRRRR..ʬʬʬ.TT', // 3
+    'TT..WWWWW.fff.çç.WWWWW..ʬʬʬ.TT', // 4
+    'TT..WDWWWMfff.ççMWDWWW..ʬʬʬ.TT', // 5
+    'TTççççççççççççççççççççç.ʬʬʬ.TT', // 6
+    'TTççççççççççççççççççççç.ʬʬʬ.TT', // 7
+    '~~~~~==~ɓFFFFFçç............TT', // 8
     'BBBB~==~.FʭʭʭFçç.RRRRR.....ƚTT', // 9
     'BBBB~==~.FʭʭʭFçç.RRRRR.FFFFFTT', // 10
     '~~~~~==~.FʭʭʭFçç.WWWWW.FʭʭʭFTT', // 11
@@ -44,12 +44,12 @@ export const saintAyMap = {
     '~~~~~~~~çççççççççççççççFʭʭʭFTT', // 13
     '~~~~~~~~çççççççççççççççFFFFFTT', // 14
     '~~~~~~~~......ççS.....FFFFFFTT', // 15
-    '~~~~~~~~.FFFFFçç.RRRR.F...ʀFTT', // 16
-    '~~~~~~~~.FʬʬʬFçç.RRRR.F....FTT', // 17
-    '~~~~~~~~.FʬʬʬFçç.WWWW.F....FTT', // 18
-    '~~~~~~~~.FʬʬʬFçç.WDWW.F....FTT', // 19
-    'TTĥĥĥĥĥĥ.Fʬ.ʬFçççççççç.....FTT', // 20
-    'TTĥĥĥĥĥĥ.FF.....ƚ....ƀFFFFFFTT', // 21
+    '~~~~~~~~......çç.RRRR.F...ʀFTT', // 16
+    '~~~~~~~~..ʬʬʬ.çç.RRRR.F....FTT', // 17
+    '~~~~~~~~..ʬʬʬ.çç.WWWW.F....FTT', // 18
+    '~~~~~~~~..ʬʬʬ.çç.WDWW.F....FTT', // 19
+    'TTĥĥĥĥĥĥ..ʬʬʬ.çççççççç.....FTT', // 20
+    'TTĥĥĥĥĥĥ........ƚ....ƀFFFFFFTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 23
   ]),

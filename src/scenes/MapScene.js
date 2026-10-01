@@ -104,7 +104,7 @@ export class MapScene extends Phaser.Scene {
     if (!spawnWalkable && map.spawn) spawn = map.spawn;
 
     this.player = new Player(this, spawn, {
-      isWalkable: (x, y) => tileWalkable(x, y) && !this.npcAt(x, y) && !this.propAt(x, y),
+      isWalkable: (x, y) => (tileWalkable(x, y) || this.openDoorAt(x, y)) && !this.npcAt(x, y) && !this.propAt(x, y),
       onStep: (x, y) => this.handleStep(x, y),
       onMoveStart: (x, y, nx, ny, duration) => {
         this.followers.advance(x, y, duration);
@@ -191,6 +191,11 @@ export class MapScene extends Phaser.Scene {
 
   propAt(x, y) {
     return this.props.find(({ data: p }) => x >= p.x && x < p.x + p.w && y >= p.y && y < p.y + p.h);
+  }
+
+  // Porte `when` ouverte (ex. l'échelle de la cabane, posée sur le blé) : praticable même sur une case pleine.
+  openDoorAt(x, y) {
+    return (this.map.doors ?? []).some((d) => d.when && d.x === x && d.y === y && meetsConditions(d.when));
   }
 
   npcAt(x, y) {

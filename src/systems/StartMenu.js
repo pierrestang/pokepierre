@@ -4,13 +4,18 @@ import { souvenirs } from './souvenirs.js';
 import { items } from './items.js';
 import { sfx, options, setMusicEnabled, setSfxEnabled } from './audio.js';
 import { RegionMap } from './RegionMap.js';
+import { flags } from './flags.js';
+import { eraseSave } from './save.js';
+import { QUEST_STARTS, questState } from '../data/questStarts.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu.
-// Carte (du voyage), Souvenirs, Objets, Sauvegarder, Options (musique, sons), Quitter la partie (retour à
-// l'écran titre), Fermer.
+// Carte (du voyage), Souvenirs, Objets, Quêtes (aller au début de la quête d'une ville, pour tester), Sauvegarder,
+// Options (musique, sons), Quitter la partie (retour à l'écran titre), Fermer.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
 const FRAME = 0x6888a8;
+const MAIN = { quests: 3, options: 5 };      // place de ces entrées dans le menu principal
+const VISIBLE = 9;                           // lignes affichées à la fois (la liste des quêtes défile)
 const FRAME_LIGHT = 0xb8d0e8;
 
 export class StartMenu {
@@ -40,13 +45,20 @@ export class StartMenu {
       return [
         { label: `MUSIQUE : ${options.music ? 'OUI' : 'NON'}`, action: () => { setMusicEnabled(!options.music); this.render(); } },
         { label: `SONS : ${options.sfx ? 'OUI' : 'NON'}`, action: () => { setSfxEnabled(!options.sfx); this.render(); } },
-        { label: 'RETOUR', action: () => this.showPage('main', 4) },
+        { label: 'RETOUR', action: () => this.showPage('main', MAIN.options) },
+      ];
+    }
+    if (this.page === 'quests') {
+      return [
+        ...QUEST_STARTS.map((q, i) => ({ label: q.label, action: () => this.goToQuest(i) })),
+        { label: 'RETOUR', action: () => this.showPage('main', MAIN.quests) },
       ];
     }
     return [
       { label: 'CARTE', action: () => this.showMap() },
       { label: 'SOUVENIRS', action: () => this.showInDialog(this.souvenirPages()) },
       { label: 'OBJETS', action: () => this.showInDialog(this.itemPages()) },
+      { label: 'QUÊTES', action: () => this.showPage('quests', 0) },
       { label: 'SAUVEGARDER', action: () => this.save() },
       { label: 'OPTIONS', action: () => this.showPage('options', 0) },
       { label: 'QUITTER LA PARTIE', action: () => this.quit() },
@@ -96,6 +108,24 @@ export class StartMenu {
     await this.dialog.open(pages);
   }
 
+  // Début de la quête d'une ville : la partie est remplacée par l'état de l'histoire à ce moment-là (voir
+  // data/questStarts.js), puis on y est transporté.
+  async goToQuest(i) {
+    this.close();
+    const quest = QUEST_STARTS[i];
+    const choice = await this.dialog.choose(`Aller au début de la quête : ${quest.label} ? Ta partie sera remplacée.`, ['ALLER', 'ANNULER']);
+    if (choice !== 0) return;
+    const state = questState(i);
+    eraseSave();
+    state.flags.forEach((f) => flags.add(f));
+    state.souvenirs.forEach((s) => souvenirs.add(s));
+    state.items.forEach((item) => items.add(item));
+    const { map: mapId, interior, fromMap, ...spawn } = quest.go;
+    const scene = this.mapScene();
+    if (interior) scene?.goTo('Interior', { interior, fromMap });
+    else scene?.goTo('Overworld', { mapId, spawn });
+  }
+
   async save() {
     this.close();
     this.mapScene()?.savePosition();
@@ -122,11 +152,16 @@ export class StartMenu {
   render() {
     const v = gameView(this.scene.scale);
     const u = v.zoom;
-    const list = this.entries();
+    const all = this.entries();
+    // Liste longue : fenêtre de VISIBLE lignes qui suit la sélection, flèches ↑ ↓ s'il y en a d'autres.
+    const first = Math.max(0, Math.min(this.index - Math.floor(VISIBLE / 2), all.length - VISIBLE));
+    const list = all.slice(first, first + VISIBLE);
     this.texts.forEach((t) => t.destroy());
-    this.texts = list.map((e, i) =>
-      this.scene.add.bitmapText(0, 0, FRLG_FONT, frlgText(this.scene, `${i === this.index ? '▶ ' : '   '}${e.label}`)).setScale(u),
-    );
+    this.texts = list.map((e, j) => {
+      const i = first + j;
+      const more = (j === 0 && first > 0) ? ' ↑' : (j === list.length - 1 && first + VISIBLE < all.length) ? ' ↓' : '';
+      return this.scene.add.bitmapText(0, 0, FRLG_FONT, frlgText(this.scene, `${i === this.index ? '▶ ' : '   '}${e.label}${more}`)).setScale(u);
+    });
     const lineH = LINE_HEIGHT * u;
     const w = Math.max(...this.texts.map((t) => t.width)) + 12 * u;
     const h = list.length * lineH + 6 * u;
@@ -155,7 +190,8 @@ export class StartMenu {
     const n = this.entries().length;
     if (e.key === 'Escape') {
       sfx('select');
-      if (this.page === 'options') return this.showPage('main', 4);
+      if (this.page === 'options') return this.showPage('main', MAIN.options);
+      if (this.page === 'quests') return this.showPage('main', MAIN.quests);
       return this.close();
     }
     if (e.key === 'ArrowUp') this.index = (this.index - 1 + n) % n;
