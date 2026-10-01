@@ -9,14 +9,15 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 
 // Saint-Ay (Loiret) — petit village de campagne, 30 x 24 cases, façon Rouge Feu : la route de Montépilloy
 // (nord-sud) croise la rue des maisons (chaumière de la famille, maison de Felix) et la rue de la clinique ;
-// prés de hautes herbes et champs de blé (qu'on traverse) ; au sud, la grande ferme et sa cour aux poules
-// (planches gardées par les poules). À l'ouest, le lac (rives de terre) touche le bord de la carte : petit
-// ponton et ferry ; au sud du lac, des sapins où est perchée la cabane des cousins. Au sud-ouest, un coin de
-// hautes herbes caché où traîne la vieille corde pendant le chantier de la cabane. Ceinture d'arbres ailleurs.
+// prés de hautes herbes aux formes irrégulières, champ de blé au nord-est (qu'on traverse) ; au sud, la grande
+// ferme, son chemin jusqu'au portail de la cour aux poules (planches gardées par les poules). À l'ouest, le lac
+// (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des cousins
+// posée sur quatre sapins. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
+// chantier de la cabane. Ceinture d'arbres ailleurs.
 // Scénario : voir data/saintAyStory.js.
 // Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, F = barrière, ~ = lac,
 // B = ferry, = = ponton, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
-// S = panneau, M = boîte aux lettres, ʀ = tas de planches, R / W / D = toit, mur,
+// S = panneau, M = boîte aux lettres, R / W / D = toit, mur,
 // porte des bâtiments)
 // La vieille corde : au fond du coin de hautes herbes du sud-ouest, seulement pendant le chantier de la cabane.
 const ROPE_SPOT = { x: 2, y: 20 };
@@ -35,20 +36,20 @@ export const saintAyMap = {
     'TT..WDWWWMfff.ççMWDWWW.ʬʬʬʬʬTT', // 5
     'TTçççççççççççççççççççççʬʬʬʬʬTT', // 6
     'TTçççççççççççççççççççççʬʬʬʬʬTT', // 7
-    '~~~~~==~......çç.......ʬʬʬʬʬTT', // 8
-    'BBBB~==~..ĥĥĥ.çç.RRRRR.ʬʬʬʬʬTT', // 9
-    'BBBB~==~..ĥĥĥ.çç.RRRRR......TT', // 10
-    '~~~~~==~..ĥĥĥ.çç.WWWWW..ĥĥĥ.TT', // 11
-    '~~~~~~~~......ççSWWDWW..ĥĥĥ.TT', // 12
-    '~~~~~~~~ççççççççççççççç.ĥĥĥ.TT', // 13
-    '~~~~~~~~ççççççççççççççç.....TT', // 14
+    '~~~~~==~..ĥĥ..çç.......ʬʬʬʬʬTT', // 8
+    'BBBB~==~.ĥĥĥĥ.çç.RRRRR.ʬʬʬʬʬTT', // 9
+    'BBBB~==~ĥĥĥĥĥ.çç.RRRRR..ĥĥ..TT', // 10
+    '~~~~~==~.ĥĥĥ..çç.WWWWW.ĥĥĥĥ.TT', // 11
+    '~~~~~~~~..ĥĥ..ççSWWDWW..ĥĥĥĥTT', // 12
+    '~~~~~~~~ççççççççççççççç..ĥĥĥTT', // 13
+    '~~~~~~~~ççççççççççççççç..ĥĥ.TT', // 14
     '~~~~~~~~.....SççRRRRRRFFFFFFTT', // 15
-    'TTTTTTTT.ʬʬʬʬʬççRRRRRRF...ʀFTT', // 16
-    'TTTTTTTT.ʬʬʬʬʬççWWWWWWF....FTT', // 17
-    'TTTT.....ʬʬʬʬʬççWDWWWWF....FTT', // 18
-    'TTTT.....ʬʬʬʬʬçç...WWWF....FTT', // 19
-    'TTĥĥĥĥĥĥ.ʬʬʬʬʬçççççççç.....FTT', // 20
-    'TTĥĥĥĥĥĥ........ƚ....ƀFFFFFFTT', // 21
+    'TTTTTTTT...ĥĥ.ççRRRRRRF....FTT', // 16
+    'TTTTTTTT..ĥĥĥĥççWWWWWWF....FTT', // 17
+    'TTTT..TT.ĥĥĥĥ.ççWDWWWWF....FTT', // 18
+    'TTTT..TT..ĥĥĥĥçç...WWWF....FTT', // 19
+    'TTĥĥĥĥĥ....ĥĥ.çççççççç.....FTT', // 20
+    'TTĥĥĥĥ........ççççççççFFFFFFTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 23
   ]),
@@ -79,6 +80,11 @@ export const saintAyMap = {
   ],
   // Obstacles qui dépendent de l'histoire.
   props: [
+    // Le tas de planches de la ferme, gardé par les poules ; il disparaît une fois les planches ramassées.
+    {
+      type: 'planks', x: 26, y: 16, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
+      script: PLANKS,
+    },
     // La cabane des cousins, une fois construite, perchée dans les sapins au sud du lac.
     {
       type: 'cabane', x: CABANE_SPOT.x - 1, y: CABANE_SPOT.y - 3, w: 4, h: 3, ifFlags: [FLAGS.cabaneFinie],
@@ -98,7 +104,6 @@ export const saintAyMap = {
     { x: 16, y: 12, dialogue: ['Clinique de Saint-Ay.'] },
     { x: 9, y: 5, dialogue: ['La boîte aux lettres de la famille.'] },
     { x: 16, y: 5, dialogue: ['La boîte aux lettres de Felix et de ses frères et sœur.'] },
-    { x: 26, y: 16, script: PLANKS },
     { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: ROPE },
     // Le ferry qui a amené la famille de Fort-de-France.
     ...Array.from({ length: (BOAT_POS.w + 1) * BOAT_POS.h }, (_, i) => ({

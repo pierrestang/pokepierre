@@ -3,7 +3,7 @@ import { TILE_SIZE, getTile } from '../data/tiles.js';
 import { FOLLOWERS } from '../data/story.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
-import { drawDecal } from '../art/tileArt.js';
+import { drawDecal, drawPlanksPile } from '../art/tileArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
@@ -237,6 +237,13 @@ export class MapScene extends Phaser.Scene {
         const bottom = (data.y + data.h + 1) * TILE_SIZE;
         const graphics = this.add.image((data.x + 1) * TILE_SIZE - CABANE_LADDER_X, bottom, FRLG_SHEETS.cabane, cabaneFrame(this, 'hut'))
           .setOrigin(0, 1).setDepth(10 + bottom / 10000);
+        this.props.push({ data, graphics });
+        continue;
+      }
+      // Tas de planches de la ferme (Saint-Ay) : disparaît une fois les planches ramassées.
+      if (data.type === 'planks') {
+        const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);
+        drawPlanksPile(graphics, data.x * TILE_SIZE, data.y * TILE_SIZE);
         this.props.push({ data, graphics });
         continue;
       }

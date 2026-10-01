@@ -1826,6 +1826,10 @@ const PLANKS = [
 const PLANK_COLORS = { k: 0x3c2818, L: 0xe0b070, W: 0xc08850, w: 0x9c6838, D: 0x7c5028, E: 0xf0d8a8 };
 function planksPile(g, px, py) {
   if (!groundProvided) grass(g, px, py, 0, 0);
+  drawPlanksPile(g, px, py);
+}
+// Le tas seul, sans sol (décor qui disparaît une fois les planches ramassées, voir MapScene).
+export function drawPlanksPile(g, px, py) {
   g.fillStyle(0x000000, 0.2);
   g.fillRect(px + 2, py + 15, 14, 1);
   sprite(g, PLANKS, PLANK_COLORS, px, py);

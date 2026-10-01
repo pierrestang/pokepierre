@@ -6,10 +6,10 @@ import { FLAGS, ITEMS, ROLES } from './story.js';
 // Scénettes partagées par la carte du village et les intérieurs (étapes : voir MapScene.runSteps).
 
 const HAS_ROLES = { ifSouvenirs: [ROLES.grandFrere.id, ROLES.cousins.id] };
-// La cabane des cousins : perchée dans les sapins au sud du lac. Pied de l'échelle (la case où l'on monte) ;
+// La cabane des cousins : posée sur quatre sapins au sud du lac. Pied de l'échelle (la case où l'on monte) ;
 // la plateforme bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2), l'image déborde d'une demi-case de
 // chaque côté.
-export const CABANE_SPOT = { x: 5, y: 19 };
+export const CABANE_SPOT = { x: 4, y: 19 };
 
 // Arrivée : ellipse après la traversée, Papa et Manon retrouvent Pierre au bord du lac.
 export const ARRIVAL = [
@@ -96,8 +96,6 @@ export const CABANE_FETE = [
 // herbes du sud-ouest (elle n'apparaît qu'une fois le chantier lancé).
 export const PLANKS = [
   { unlessFlags: [FLAGS.planCabane], say: ['Un tas de planches. De quoi construire quelque chose…'], end: true },
-  { ifItems: [ITEMS.planches.id], say: ['Il reste plein de planches.'], end: true },
-  { ifFlags: [FLAGS.cabaneFinie], say: ['Il reste plein de planches.'], end: true },
   { give: ITEMS.planches, text: 'Tu récupères des planches.' },
   { speaker: 'Joshua', say: ['Tu as survécu aux poules ? Respect.'] },
 ];
