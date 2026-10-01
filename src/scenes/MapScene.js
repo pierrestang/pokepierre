@@ -383,11 +383,13 @@ export class MapScene extends Phaser.Scene {
     return false;
   }
 
-  // Le joueur monte dans la voiture (prop de type `type`), qui démarre en tremblant puis file vers la droite
-  // en accélérant, avec des bouffées de fumée.
+  // Le joueur monte dans la voiture (prop de type `type`), qui démarre en tremblant puis file du côté où elle
+  // regarde en accélérant, avec des bouffées de fumée.
   async driveAway(type) {
-    const car = this.props.find((p) => p.data.type === type)?.graphics;
+    const prop = this.props.find((p) => p.data.type === type);
+    const car = prop?.graphics;
     if (!car) return;
+    const dir = prop.data.facing === 'left' ? -1 : 1;                 // elle part du côté où elle regarde
     this.player.sprite.setVisible(false);
     sfx('door');
     await this.wait(300);
@@ -398,12 +400,12 @@ export class MapScene extends Phaser.Scene {
       delay: 140,
       loop: true,
       callback: () => {
-        const puff = this.add.rectangle(car.x - 22, car.y - 5, 3, 3, 0xd8d8d0).setDepth(car.depth);
-        this.tweens.add({ targets: puff, x: puff.x - 14, y: puff.y - 6, scale: 2, alpha: 0, duration: 600, onComplete: () => puff.destroy() });
+        const puff = this.add.rectangle(car.x - dir * 22, car.y - 5, 3, 3, 0xd8d8d0).setDepth(car.depth);
+        this.tweens.add({ targets: puff, x: puff.x - dir * 14, y: puff.y - 6, scale: 2, alpha: 0, duration: 600, onComplete: () => puff.destroy() });
       },
     });
     await new Promise((resolve) => this.tweens.add({
-      targets: car, x: car.x + 12 * TILE_SIZE, duration: 2200, ease: 'Quad.easeIn', onComplete: resolve,
+      targets: car, x: car.x + dir * 12 * TILE_SIZE, duration: 2200, ease: 'Quad.easeIn', onComplete: resolve,
     }));
     smoke.remove();
   }
