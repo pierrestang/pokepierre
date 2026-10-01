@@ -1796,37 +1796,6 @@ const DECALS = {
       }
     }
   },
-  // Cabane des cousins, selon l'emplacement choisi : dans le grand arbre, sur pilotis au bord du lac, ou
-  // au milieu du champ de blé. (x, y) : case en bas à gauche d'un bloc de 2 x 2 cases.
-  cabane(g, px, py, { place = 'champ' } = {}) {
-    const ox = px;
-    const oy = py + S - 34;                                             // bas du dessin sur le bas de la case
-    const K = 0x383028;
-    if (place === 'arbre') {
-      rect(g, K, ox + 2, oy - 2, 28, 4);                                // plateforme dans les branches
-      rect(g, 0xa87040, ox + 3, oy - 1, 26, 2);
-      rect(g, 0xd8c890, ox + 26, oy + 2, 1, 22);                        // échelle de corde
-      rect(g, 0xd8c890, ox + 29, oy + 2, 1, 22);
-      for (let y = 4; y < 24; y += 4) rect(g, 0xa87040, ox + 26, oy + y, 4, 1);
-    } else if (place === 'etang') {
-      for (const x of [4, 12, 20, 26]) { rect(g, K, ox + x, oy + 22, 3, 12); rect(g, 0x806040, ox + x + 1, oy + 22, 1, 12); }   // pilotis
-      rect(g, K, ox + 1, oy + 20, 30, 4);                               // ponton
-      rect(g, 0xb08050, ox + 2, oy + 21, 28, 2);
-    }
-    const base = place === 'arbre' ? oy - 22 : oy;                      // la cabane
-    const top = place === 'etang' ? base - 2 : base + 4;
-    rect(g, K, ox + 4, top + 8, 24, 14);                                // murs en planches
-    rect(g, 0xc89058, ox + 5, top + 9, 22, 12);
-    for (let y = top + 12; y < top + 21; y += 3) rect(g, 0x9c6834, ox + 5, y, 22, 1);
-    rect(g, K, ox + 13, top + 13, 6, 9);                                // porte
-    rect(g, 0x5c3c20, ox + 14, top + 14, 4, 8);
-    rect(g, K, ox + 21, top + 11, 4, 4);                                // fenêtre
-    rect(g, 0x9cc8e8, ox + 22, top + 12, 2, 2);
-    for (let i = 0; i < 9; i++) rect(g, K, ox + 2 + i, top + 8 - i, 28 - 2 * i, 1);   // toit
-    for (let i = 1; i < 8; i++) rect(g, i % 2 ? 0xd84838 : 0xb83028, ox + 3 + i, top + 8 - i, 26 - 2 * i, 1);
-    rect(g, 0xf8f8f0, ox + 7, top + 16, 4, 3);                          // panneau « QG »
-    rect(g, 0xd83030, ox + 8, top + 17, 2, 1);
-  },
 };
 
 export function drawDecal(g, kind, px, py, options) {

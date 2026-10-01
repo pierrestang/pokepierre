@@ -35,6 +35,7 @@ export const FRLG_SHEETS = {
   ferryWake: 'frlg-ferry-wake',
   townMap: 'frlg-townmap',
   car: 'frlg-car',
+  cabane: 'rs-cabane',
 };
 
 export function preloadFrlg(scene) {
@@ -513,6 +514,24 @@ export function roadStripTexture(scene, height) {
   }
   tex.refresh();
   return key;
+}
+
+// ---------- Cabane des cousins ----------
+
+// rs-cabane.png : la cabane perchée de Fortree City (64 x 91 px, l'échelle occupe les colonnes 24 à 39),
+// puis son intérieur (128 x 96 px, 8 x 6 cases : tronc au milieu, un banc de chaque côté).
+const CABANE_FRAMES = {
+  hut: [0, 0, 64, 91],
+  room: [64, 0, 128, 96],
+  // Dessus des deux bancs, redessinés par-dessus les cousins assis derrière (voir interiors.cabane).
+  benchLeft: [64 + 10, 43, 37, 20],
+  benchRight: [64 + 82, 43, 37, 20],
+};
+export const CABANE_LADDER_X = 24;
+export function cabaneFrame(scene, name) {
+  const tex = scene.textures.get(FRLG_SHEETS.cabane);
+  if (!tex.has(name)) tex.add(name, 0, ...CABANE_FRAMES[name]);
+  return name;
 }
 
 // ---------- Mer animée ----------

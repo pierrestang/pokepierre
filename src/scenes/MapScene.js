@@ -9,7 +9,7 @@ import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
 import { Followers } from '../systems/Followers.js';
 import { lookOf } from '../data/characters.js';
-import { bedAt, familyCarImage } from '../art/frlgArt.js';
+import { bedAt, familyCarImage, cabaneFrame, CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
 import { interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
@@ -59,6 +59,11 @@ export class MapScene extends Phaser.Scene {
     this.events.once('shutdown', () => { this.leaving = true; });
     this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
     renderMap(this, map);
+    // Morceaux du décor redessinés par-dessus les personnages qui sont derrière (ex. bancs de la cabane) :
+    // { sheet, frame(scene), x, y, h } en pixels, triés en profondeur par leur bas.
+    for (const o of map.overlays ?? []) {
+      this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(10 + (o.y + o.h) / 10000);
+    }
     if (this.scene.key === 'Overworld') flags.add(visitedFlag(map.id));    // pour la carte du voyage
     this.canopy = canopyTiles(grid);
     this.startWaterSparkles();
@@ -221,6 +226,15 @@ export class MapScene extends Phaser.Scene {
     for (const data of wantedProps) {
       if (this.props.some((p) => p.data === data)) continue;
       // La voiture de la famille est une image (voir frlgArt.familyCarImage), posée au milieu du bas de son emprise.
+      // La cabane des cousins (voir frlgArt, rs-cabane.png) : l'emprise bloquante couvre la plateforme, l'échelle
+      // descend sur la case sous son 2e rang, où l'on monte (porte `when` de la carte).
+      if (data.type === 'cabane') {
+        const bottom = (data.y + data.h + 1) * TILE_SIZE;
+        const graphics = this.add.image((data.x + 1) * TILE_SIZE - CABANE_LADDER_X, bottom, FRLG_SHEETS.cabane, cabaneFrame(this, 'hut'))
+          .setOrigin(0, 1).setDepth(10 + bottom / 10000);
+        this.props.push({ data, graphics });
+        continue;
+      }
       if (data.type === 'familyCar') {
         const bottom = (data.y + data.h) * TILE_SIZE - 1;
         const graphics = familyCarImage(this, (data.x + data.w / 2) * TILE_SIZE, bottom, data.facing)
@@ -294,6 +308,8 @@ export class MapScene extends Phaser.Scene {
   //   { choose: question, speaker?, choices: [{ label, steps }] }
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
+  //   { hop: id | [ids], times? } : petits sauts sur place ('player' : Pierre)
+  //   { cheer: [ids] } : tous sautent ensemble, des notes et des cœurs s'envolent
   // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
   async runSteps(steps) {
     for (const step of steps) {
@@ -306,6 +322,8 @@ export class MapScene extends Phaser.Scene {
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
       if (step.approach) await this.approach(step.approach);
       if (step.drive) await this.driveAway(step.drive);
+      if (step.hop) await this.hop(step.hop, step.times);
+      if (step.cheer) await this.cheer(step.cheer);
       if (step.walk) {
         const walking = this.walkNpc(step.walk, step.to, { lead: step.lead, then: step.then });
         if (step.block) await walking;
@@ -594,20 +612,43 @@ export class MapScene extends Phaser.Scene {
     for (const [id, dir] of Object.entries(facing)) this.actorSprite(id)?.setFacing(dir);
   }
 
+  // Petits sauts sur place (un personnage qui parle avec entrain, ou la joie de toute la bande).
+  async hop(ids, times = 1) {
+    const sprites = [ids].flat().map((id) => this.actorSprite(id)).filter(Boolean);
+    for (let i = 0; i < times; i++) {
+      await Promise.all(sprites.map((sprite) => new Promise((resolve) => this.tweens.add({
+        targets: sprite.image, y: sprite.image.y - 4, duration: 110, yoyo: true, ease: 'Quad.easeOut', onComplete: resolve,
+      }))));
+    }
+  }
+
+  // Toute la bande saute de joie trois fois, des notes et des cœurs s'envolent au-dessus des têtes.
+  async cheer(ids) {
+    this.ensureMusicNote();
+    if (!this.textures.exists('heart')) {
+      const g = this.make.graphics({ x: 0, y: 0 }, false);
+      g.fillStyle(0x302030, 1).fillRect(1, 0, 2, 1).fillRect(4, 0, 2, 1).fillRect(0, 1, 7, 3).fillRect(1, 4, 5, 1).fillRect(2, 5, 3, 1).fillRect(3, 6, 1, 1);
+      g.fillStyle(0xf04868, 1).fillRect(1, 1, 2, 2).fillRect(4, 1, 2, 2).fillRect(1, 3, 5, 1).fillRect(2, 4, 3, 1).fillRect(3, 5, 1, 1);
+      g.fillStyle(0xf8b8c8, 1).fillRect(1, 1, 1, 1);
+      g.generateTexture('heart', 7, 7);
+      g.destroy();
+    }
+    const sprites = ids.map((id) => this.actorSprite(id)).filter(Boolean);
+    for (let beat = 0; beat < 3; beat++) {
+      sfx(beat === 2 ? 'confirm' : 'select');
+      sprites.forEach((sprite, i) => {
+        const icon = this.add.image(sprite.x + Phaser.Math.Between(-5, 5), sprite.y - 20, (i + beat) % 2 ? 'heart' : 'music-note').setDepth(50);
+        this.tweens.add({ targets: icon, y: icon.y - 16, alpha: 0, duration: 1000, onComplete: () => icon.destroy() });
+      });
+      await this.hop(ids);
+      await this.wait(120);
+    }
+  }
+
   // Moment léger : le PNJ et Pierre tournent sur eux-mêmes en rythme, des notes s'envolent au-dessus.
   async dance(id) {
     const dancers = [this.actorSprite(id), this.player.sprite].filter(Boolean);
-    if (!this.textures.exists('music-note')) {
-      const g = this.make.graphics({ x: 0, y: 0 }, false);
-      g.fillStyle(0x303048, 1);
-      g.fillRect(4, 0, 1, 6);
-      g.fillRect(5, 0, 2, 1);
-      g.fillRect(6, 1, 1, 1);
-      g.fillRect(2, 5, 3, 2);
-      g.fillRect(1, 6, 1, 1);
-      g.generateTexture('music-note', 7, 8);
-      g.destroy();
-    }
+    this.ensureMusicNote();
     const turns = ['down', 'left', 'up', 'right'];
     for (let beat = 0; beat < 12; beat++) {
       dancers.forEach((d, i) => d.setFacing(turns[(beat + i * 2) % 4]));
@@ -622,6 +663,19 @@ export class MapScene extends Phaser.Scene {
     dancers.forEach((d) => d.setFacing('down'));
     this.faceActors({ [id]: this.directionTo(this.npcs.find((n) => n.data.id === id)?.data ?? this.player, this.player) });
     this.player.sprite.setFacing(this.player.facing);
+  }
+
+  ensureMusicNote() {
+    if (this.textures.exists('music-note')) return;
+    const g = this.make.graphics({ x: 0, y: 0 }, false);
+    g.fillStyle(0x303048, 1);
+    g.fillRect(4, 0, 1, 6);
+    g.fillRect(5, 0, 2, 1);
+    g.fillRect(6, 1, 1, 1);
+    g.fillRect(2, 5, 3, 2);
+    g.fillRect(1, 6, 1, 1);
+    g.generateTexture('music-note', 7, 8);
+    g.destroy();
   }
 
   // Direction principale de `from` vers `to` (positions en cases).

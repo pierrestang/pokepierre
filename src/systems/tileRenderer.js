@@ -14,6 +14,9 @@ const S = TILE_SIZE;
 // Couches (voir art/frlgArt.js) : sol Rouge Feu, dessin procédural (art/tileArt.js) pour le reste,
 // objets Rouge Feu. Bâtiments Rouge Feu, arbres et objets hauts : images à part, triées en profondeur. Le reste du jeu n'appelle que renderMap(scene, map).
 export function renderMap(scene, map) {
+  // Pièce dessinée d'un seul tenant (`backdrop` : { sheet, frame }, ex. l'intérieur de la cabane) ; la grille
+  // ne sert alors qu'aux collisions.
+  if (map.backdrop) return scene.add.image(0, 0, map.backdrop.sheet, map.backdrop.frame(scene)).setOrigin(0).setDepth(0);
   const key = `map-${map.id}`;
   const { grid } = map;
   if (!scene.textures.exists(key)) {

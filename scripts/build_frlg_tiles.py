@@ -22,6 +22,8 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   frlg-props.png     planche de Hoeloe (arbre isolé, rocher, mer animée…), fond violet rendu transparent ;
   frlg-seven.png     carte de Seven Island (24 x 20 cases), sans le cadre ;
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent ;
+  rs-cabane.png      cabane perchée de Fortree City (Rubis/Saphir), détourée de la forêt, avec deux pilotis ;
+                     puis son intérieur (tronc, deux bancs), 128 x 96 px, à droite (voir cabane) ;
   frlg-car.png       voiture bleue de la famille, vue de côté (vers la gauche, puis vers la droite), réduite de
                      moitié (voir family_car). Planche « FRLG Tilesets - Cars » de pinkscales (DeviantArt), dans
                      assets-source/fan/ : libre pour un projet de fan non commercial, avec crédit à pinkscales.
@@ -392,6 +394,91 @@ def family_car():
     return out
 
 
+# Cabane perchée de Fortree City (planche rs/backgrounds-fortree_city.png, carte calée sur (5, 5)) : feuillage,
+# cabane, plateforme de rondins et échelle, détourés en effaçant le motif de forêt qui se répète derrière ;
+# deux pilotis sous la plateforme. L'échelle occupe les colonnes 24 à 39 de l'image (une case). À droite,
+# l'intérieur de la cabane (tronc au milieu, deux bancs).
+CABANE_BOX = (141, 22, 205, 113)
+CABANE_ROOM = (331, 734, 459, 830)
+
+
+def cabane():
+    sheet = Image.open(ROOT / 'assets-source' / 'rs' / 'backgrounds-fortree_city.png').convert('RGBA')
+    src = sheet.load()
+    ox, oy = 5, 5
+    tiles = {}
+    for ty in range(4):
+        for tx in range(14, 20):
+            t = tuple(src[ox + tx * 16 + x, oy + ty * 16 + y] for y in range(16) for x in range(16))
+            tiles[t] = tiles.get(t, 0) + 1
+    forest = max(tiles, key=tiles.get)                      # case de forêt la plus fréquente
+    x0, y0, x1, y1 = CABANE_BOX
+    w, h = x1 - x0, y1 - y0
+    hut = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    o = hut.load()
+    for y in range(h):
+        for x in range(w):
+            p = src[x0 + x, y0 + y]
+            if p != forest[((y0 + y - oy) % 16) * 16 + (x0 + x - ox) % 16]:
+                o[x, y] = p
+    bottom = max(y for y in range(h) if sum(1 for x in range(w) if o[x, y][3]) > 40)
+    palette = {o[x, y][:3] for y in range(bottom - 12, bottom + 1) for x in range(w) if o[x, y][3]}
+    for y in range(bottom + 1, h):                          # sous la plateforme : l'échelle seule
+        for x in range(w):
+            if not 24 <= x < 40 or o[x, y][:3] not in palette:
+                o[x, y] = (0, 0, 0, 0)
+    keep = set(max(components(o, w, h), key=len))          # sans les pixels isolés
+    for y in range(h):
+        for x in range(w):
+            if (x, y) not in keep:
+                o[x, y] = (0, 0, 0, 0)
+            elif y >= 60 and not 24 <= x < 40 and o[x, y][1] > o[x, y][0] + 20 and o[x, y][1] > o[x, y][2] + 20:
+                o[x, y] = (0, 0, 0, 0)                      # touffes d'herbe sous la plateforme
+    outside = set()
+    todo = deque([(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)])
+    while todo:
+        x, y = todo.popleft()
+        if (x, y) in outside or not (0 <= x < w and 0 <= y < h) or o[x, y][3]:
+            continue
+        outside.add((x, y))
+        todo.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
+    for y in range(60):                                     # trous dans le feuillage : rebouchés
+        for x in range(w):
+            if not o[x, y][3] and (x, y) not in outside:
+                o[x, y] = src[x0 + x, y0 + y]
+    dark, wood, light = (72, 72, 88, 255), (168, 136, 64, 255), (216, 192, 96, 255)
+    for px in (5, 55):                                      # pilotis
+        for y in range(bottom + 1, h):
+            for dx, c in enumerate((dark, light, wood, dark)):
+                o[px + dx, y] = c
+        for dx in range(4):
+            o[px + dx, h - 1] = dark
+    out = Image.new('RGBA', (w + 128, max(h, 96)), (0, 0, 0, 0))
+    out.paste(hut, (0, 0))
+    out.paste(sheet.crop(CABANE_ROOM), (w, 0))
+    return out
+
+
+def components(o, w, h):
+    seen = set()
+    for sy in range(h):
+        for sx in range(w):
+            if not o[sx, sy][3] or (sx, sy) in seen:
+                continue
+            comp, todo = [], deque([(sx, sy)])
+            seen.add((sx, sy))
+            while todo:
+                x, y = todo.popleft()
+                comp.append((x, y))
+                for dx in (-1, 0, 1):
+                    for dy in (-1, 0, 1):
+                        n = (x + dx, y + dy)
+                        if 0 <= n[0] < w and 0 <= n[1] < h and n not in seen and o[n][3]:
+                            seen.add(n)
+                            todo.append(n)
+            yield comp
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     rgba = lambda name: Image.open(SRC / name).convert('RGBA')
@@ -422,6 +509,7 @@ def main():
     rs_objects = Image.open(ROOT / 'assets-source' / 'rs' / 'backgrounds-objects.png').convert('RGBA')
     gba_palette(clear_outside(rs_objects, (255, 255, 255, 255))).save(OUT / 'rs-objects.png')
     gba_palette(family_car()).save(OUT / 'frlg-car.png')
+    gba_palette(cabane()).save(OUT / 'rs-cabane.png')
     print('ok ->', OUT.relative_to(ROOT))
 
 

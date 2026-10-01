@@ -1,8 +1,9 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS, QUALITIES, ROLES } from '../story.js';
 import {
-  BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT,
+  BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT, CABANE_FETE, FELIX_AT_CABANE,
 } from '../saintAyStory.js';
+import { FRLG_SHEETS, cabaneFrame } from '../../art/frlgArt.js';
 import {
   LEO_CALLED, OUSMANE_JOINS, LEO_PLAN, GIRLS_JOIN, PUB_A_BAR, PUB_B_TABLE, PUB_B_OTHER, ASYLUM_ENTER, ASYLUM_DANCE,
   LIBRARY, EXAM,
@@ -355,6 +356,41 @@ export const interiors = {
     ],
     // Felix, qui te suivait, arrive avec toi et expose son plan.
     events: [{ on: 'enter', unlessFlags: [FLAGS.maisonFelixVisitee], steps: CABANE_PLAN }],
+  },
+
+  // Saint-Ay — la cabane des cousins (intérieur d'une cabane de Fortree City, image d'un seul tenant) : murs
+  // de planches, tronc au milieu, un banc de chaque côté. Felix, Joshua et Yanis sont assis derrière les bancs
+  // (le dessus des bancs est redessiné par-dessus eux) ; on leur parle par-dessus le banc.
+  cabane: {
+    name: 'Cabane',
+    backdrop: { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'room') },
+    overlays: [
+      { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'benchLeft'), x: 10, y: 43, h: 20 },
+      { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'benchRight'), x: 82, y: 43, h: 20 },
+    ],
+    grid: parseGrid([
+      'XXXXXXXX',
+      'XXXmmXXX',   // murs, tronc
+      'XoommooX',   // places derrière les bancs
+      'mmmmmmmm',   // bancs et pied du tronc
+      'oooooooo',
+      'oooEEooo',   // tapis de sortie (l'échelle)
+    ]),
+    spawn: { x: 3, y: 4, facing: 'up' },
+    objects: [
+      { x: 1, y: 3, script: FELIX_AT_CABANE },
+      { x: 5, y: 3, script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe.'] }] },
+      { x: 6, y: 3, script: [{ speaker: 'Yanis', say: ['On a vraiment un mot de passe ?'] }] },
+      { x: 3, y: 2, dialogue: ['Le tronc du grand arbre traverse la cabane.'] },
+      { x: 4, y: 2, dialogue: ['Le tronc du grand arbre traverse la cabane.'] },
+    ],
+    npcs: [
+      { id: 'felix-cabane', name: 'Felix', x: 1, y: 2, facing: 'down', color: 0x9060d0, still: true, ifFlags: [FLAGS.cabaneFinie] },
+      { id: 'joshua-cabane', name: 'Joshua', x: 5, y: 2, facing: 'down', color: 0x20a0c0, still: true, ifFlags: [FLAGS.cabaneFinie] },
+      { id: 'yanis-cabane', name: 'Yanis', x: 6, y: 2, facing: 'down', color: 0xc0b040, still: true, ifFlags: [FLAGS.cabaneFinie] },
+    ],
+    // La cabane toute neuve : les quatre cousins s'y installent (une seule fois).
+    events: [{ on: 'enter', ifFlags: [FLAGS.cabaneFinie], unlessSouvenirs: [ROLES.cousins.id], steps: CABANE_FETE }],
   },
 
   // Saint-Ay — l'hôpital (toit orange), façon Rouge Feu : Maman vient d'accoucher de Fanny.

@@ -1,7 +1,7 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS, ROLES } from '../story.js';
 import {
-  ARRIVAL, PLANKS, ROPE, CAR, henScript, FELIX_AT_CABANE, CABANE_SPOTS,
+  ARRIVAL, PLANKS, ROPE, CAR, henScript, CABANE_SPOTS,
 } from '../saintAyStory.js';
 
 // Le ferry (le même qu'à Fort-de-France), amarré à gauche du ponton du lac ; une case d'eau entre les deux.
@@ -12,7 +12,8 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // rue de l'hôpital ; potager, champs de blé et de terre labourée clôturés de blanc ; au sud, la ferme et sa
 // cour (planches gardées par les poules). À l'ouest, le lac touche le bord de la carte : petit ponton, ferry,
 // bitte d'amarrage. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
-// chantier de la cabane. Ceinture d'arbres ailleurs.
+// chantier de la cabane. Ceinture d'arbres ailleurs. Une trouée dans la barrière sud du champ de blé mène
+// au pied de l'échelle de la cabane, si on l'y construit.
 // Scénario : voir data/saintAyStory.js.
 // Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, ʭ = terre labourée, F = barrière, ~ = lac,
 // B = ferry, = = ponton, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
@@ -47,8 +48,8 @@ export const saintAyMap = {
     '~~~~~~~~.FʬʬʬFçç.RRRR.F....FTT', // 17
     '~~~~~~~~.FʬʬʬFçç.WWWW.F....FTT', // 18
     '~~~~~~~~.FʬʬʬFçç.WDWW.F....FTT', // 19
-    'TTĥĥĥĥĥĥ.FʬʬʬFçççççççç.....FTT', // 20
-    'TTĥĥĥĥĥĥ.FFFFF..ƚ....ƀFFFFFFTT', // 21
+    'TTĥĥĥĥĥĥ.Fʬ.ʬFçççççççç.....FTT', // 20
+    'TTĥĥĥĥĥĥ.FF.FF..ƚ....ƀFFFFFFTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 23
   ]),
@@ -66,6 +67,8 @@ export const saintAyMap = {
       lockedDialogue: ["L'hôpital de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
     { x: 18, y: 19, lockedDialogue: ['La ferme. On entend les poules caqueter derrière la porte.'] },
+    // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite).
+    ...Object.entries(CABANE_SPOTS).map(([flag, { x, y }]) => ({ x, y, interior: 'cabane', when: { ifFlags: [flag, FLAGS.cabaneFinie] } })),
   ],
   // Bâtiments (coin haut-gauche, en cases) ; la collision reste dans la grille.
   buildings: [
@@ -78,15 +81,16 @@ export const saintAyMap = {
   // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir. Elle
   // disparaît une fois le trajet fait.
   props: [
+    // La cabane des cousins, une fois construite, à l'emplacement choisi (voir saintAyStory.CABANE_SPOTS).
+    ...Object.entries(CABANE_SPOTS).map(([flag, { x, y }]) => ({
+      type: 'cabane', x: x - 1, y: y - 3, w: 4, h: 3, ifFlags: [flag, FLAGS.cabaneFinie],
+      dialogue: ['La cabane des cousins. On y monte par l\'échelle.'],
+    })),
     { type: 'familyCar', x: 10, y: 6, w: 3, h: 2, facing: 'right', ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
-  // Décors liés à l'histoire : la corde dans les hautes herbes (pendant le chantier), la cabane à l'emplacement choisi.
+  // Décor lié à l'histoire : la corde dans les hautes herbes (pendant le chantier).
   decals: [
     { kind: 'rope', ...ROPE_SPOT, ...ROPE_CONDITIONS },
-    ...Object.entries(CABANE_SPOTS).map(([flag, spot]) => ({
-      kind: 'cabane', ...spot.decal, place: { [FLAGS.cabaneArbre]: 'arbre', [FLAGS.cabaneEtang]: 'etang', [FLAGS.cabaneChamp]: 'champ' }[flag],
-      ifFlags: [flag],
-    })),
   ],
   objects: [
     { x: 16, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
@@ -145,21 +149,6 @@ export const saintAyMap = {
     { id: 'poule-2', name: 'Poule', x: 26, y: 17, facing: 'up', unlessFlags: [FLAGS.pouleEnfuie2], script: henScript(FLAGS.pouleEnfuie2) },
     { id: 'poule-2b', name: 'Poule', x: 24, y: 20, facing: 'left', ifFlags: [FLAGS.pouleEnfuie2], dialogue: ['Cot… cot.'] },
     { id: 'poule-3', name: 'Poule', x: 23, y: 16, facing: 'down', dialogue: ['Cot cot !'] },
-    // Les cousins à la cabane, une fois construite (selon l'emplacement choisi).
-    ...Object.entries(CABANE_SPOTS).flatMap(([flag, spot]) => [
-      {
-        id: 'felix-cabane', name: 'Felix', x: spot.felix[0], y: spot.felix[1], facing: spot.felix[2], color: COUSIN_COLORS.felix,
-        ifFlags: [flag, FLAGS.cabaneFinie], script: FELIX_AT_CABANE,
-      },
-      {
-        id: 'joshua-cabane', name: 'Joshua', x: spot.joshua[0], y: spot.joshua[1], facing: spot.joshua[2], color: COUSIN_COLORS.joshua,
-        ifFlags: [flag, FLAGS.cabaneFinie], dialogue: ["Personne n'entre sans le mot de passe."],
-      },
-      {
-        id: 'yanis-cabane', name: 'Yanis', x: spot.yanis[0], y: spot.yanis[1], facing: spot.yanis[2], color: COUSIN_COLORS.yanis,
-        ifFlags: [flag, FLAGS.cabaneFinie], dialogue: ['On a vraiment un mot de passe ?'],
-      },
-    ]),
   ],
   events: [
     // Arrivée après la traversée : écran noir, puis Papa et Manon te trouvent au bord du lac.

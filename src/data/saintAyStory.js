@@ -8,6 +8,18 @@ import { FLAGS, ITEMS, ROLES } from './story.js';
 const HAS_ROLES = { ifSouvenirs: [ROLES.grandFrere.id, ROLES.cousins.id] };
 const CABANE_PLACES = [FLAGS.cabaneArbre, FLAGS.cabaneEtang, FLAGS.cabaneChamp];
 
+// Emplacements de la cabane (selon le choix) : pied de l'échelle (la case où l'on monte). La plateforme
+// bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2), l'image déborde d'une demi-case de chaque côté.
+export const CABANE_SPOTS = {
+  [FLAGS.cabaneArbre]: { x: 2, y: 5 },     // dans les arbres, à côté de la maison
+  [FLAGS.cabaneEtang]: { x: 4, y: 20 },    // sur pilotis au-dessus du lac, l'échelle sur la rive
+  [FLAGS.cabaneChamp]: { x: 11, y: 20 },   // au milieu du champ de blé, près de la ferme
+};
+function ladderFoot(flag) {
+  const { x, y } = CABANE_SPOTS[flag];
+  return { x, y: y + 1, facing: 'down' };
+}
+
 // Arrivée : ellipse après la traversée, Papa et Manon retrouvent Pierre au bord du lac.
 export const ARRIVAL = [
   { black: true },
@@ -65,20 +77,40 @@ export const FELIX_CHANTIER = [
   { unlessItems: [ITEMS.corde.id], speaker: 'Felix', say: ['Et la corde : Yanis dit qu\'elle traîne dans les hautes herbes, au sud-ouest.'] },
   { unlessItems: [ITEMS.planches.id], end: true },
   { unlessItems: [ITEMS.corde.id], end: true },
-  // Tout est réuni : la cabane terminée.
+  // Tout est réuni : la cabane est construite, puis les quatre cousins s'y installent (voir CABANE_FETE).
   { speaker: 'Felix', say: ['Tout est prêt ? Alors au travail !'] },
   { black: true },
   { take: ITEMS.planches.id },
   { take: ITEMS.corde.id },
   { wait: 600 },
-  { say: ['Les quatre cousins sont assis dans la cabane.'] },
-  { speaker: 'Felix', say: ['Voilà. Notre QG.'] },
-  { speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe.'] },
-  { speaker: 'Yanis', say: ['On a un mot de passe ?'] },
-  { speaker: 'Felix', say: ['Maintenant, oui.', 'Où que tu ailles après, cette cabane restera la nôtre. Cousins pour la vie.'] },
-  { quality: ROLES.cousins },
   { setFlag: FLAGS.cabaneFinie },
+  { travel: { interior: 'cabane', x: 2, y: 2, facing: 'down' } },
+];
+
+// Dans la cabane toute neuve (rs-cabane.png, voir interiors.cabane) : les quatre cousins assis derrière les
+// bancs, autour du tronc. Chacun parle en sautillant, puis toute la bande saute de joie. On ressort au pied
+// de l'échelle.
+export const CABANE_FETE = [
+  { black: true },
+  { wait: 500 },
   { black: false },
+  { say: ['La cabane est finie. Les quatre cousins s\'installent autour du tronc.'] },
+  { hop: 'felix-cabane' },
+  { speaker: 'Felix', say: ['Voilà. Notre QG.'] },
+  { hop: 'joshua-cabane' },
+  { speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe.'] },
+  { hop: 'yanis-cabane', times: 2 },
+  { speaker: 'Yanis', say: ['On a un mot de passe ?'] },
+  { face: { 'felix-cabane': 'right', player: 'left' } },
+  { speaker: 'Felix', say: ['Maintenant, oui.', 'Où que tu ailles après, cette cabane restera la nôtre. Cousins pour la vie.'] },
+  { face: { 'felix-cabane': 'down', player: 'down' } },
+  { cheer: ['felix-cabane', 'player', 'joshua-cabane', 'yanis-cabane'] },
+  { quality: ROLES.cousins },
+  { black: true },
+  { wait: 400 },
+  { ifFlags: [FLAGS.cabaneArbre], travel: { map: 'saintAy', ...ladderFoot(FLAGS.cabaneArbre) } },
+  { ifFlags: [FLAGS.cabaneEtang], travel: { map: 'saintAy', ...ladderFoot(FLAGS.cabaneEtang) } },
+  { ifFlags: [FLAGS.cabaneChamp], travel: { map: 'saintAy', ...ladderFoot(FLAGS.cabaneChamp) } },
 ];
 
 // Missions : les planches de la ferme (gardées par les poules) et la vieille corde cachée dans les hautes
@@ -101,7 +133,7 @@ export const henScript = (flag) => [
 
 // Les cousins à la cabane : avant l'annonce, puis l'adieu, puis après.
 export const FELIX_AT_CABANE = [
-  { ifFlags: [FLAGS.adieuCousins], speaker: 'Felix', say: ['La cabane t\'attendra. Allez, file, ta famille t\'attend sur la route du nord.'], end: true },
+  { ifFlags: [FLAGS.adieuCousins], speaker: 'Felix', say: ['La cabane t\'attendra. Allez, file, ta famille t\'attend à la voiture, devant ta maison.'], end: true },
   { unlessFlags: [FLAGS.annonceMutation], speaker: 'Felix', say: ['Notre QG ! Reviens quand tu veux.'], end: true },
   { speaker: 'Felix', say: ['Alors c\'est vrai, tu pars ?'] },
   { speaker: 'Joshua', say: ['Montépilloy, c\'est pas le bout du monde.'] },
@@ -122,7 +154,7 @@ export const ANNOUNCEMENT = [
 ];
 export const ANNOUNCEMENT_EVENT = { ...HAS_ROLES, unlessFlags: [FLAGS.annonceMutation] };
 
-// Le départ : la voiture chargée sur la route du nord.
+// Le départ : la voiture chargée devant la maison.
 export const CAR = [
   {
     unlessFlags: [FLAGS.adieuCousins],
@@ -143,9 +175,3 @@ export const CAR = [
   { travel: { map: 'montepilloy', x: 14, y: 21, facing: 'up', car: true } },
 ];
 
-// Positions des cousins autour de la cabane, selon l'emplacement choisi.
-export const CABANE_SPOTS = {
-  [FLAGS.cabaneArbre]: { decal: { x: 2, y: 3 }, felix: [3, 4, 'down'], joshua: [2, 4, 'down'], yanis: [2, 5, 'right'] },
-  [FLAGS.cabaneEtang]: { decal: { x: 6, y: 16 }, felix: [9, 15, 'left'], joshua: [11, 15, 'left'], yanis: [13, 15, 'left'] },
-  [FLAGS.cabaneChamp]: { decal: { x: 10, y: 19 }, felix: [10, 15, 'down'], joshua: [12, 15, 'down'], yanis: [13, 15, 'left'] },
-};
