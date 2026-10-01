@@ -30,7 +30,7 @@ export const saintAyMap = {
   grid: parseGrid([
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 1
-    'TTTT.....ĥĥ...ççS.............TT', // 2
+    'TTTT.....ĥĥ..Sçç..............TT', // 2
     'TTTTfff.ĥĥĥĥ..çç.RRRRR.FFFFF..TT', // 3
     'TT..fff..ĥĥĥ..çç.RRRRR.F...F..TT', // 4
     'TT..fff...ĥ...çç.WWWWW.F...F..TT', // 5
@@ -101,7 +101,7 @@ export const saintAyMap = {
     { kind: 'rope', ...ROPE_SPOT, ...ROPE_CONDITIONS },
   ],
   objects: [
-    { x: 16, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
+    { x: 13, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
     { x: 13, y: 15, dialogue: ['Saint-Ay, Loiret. Bienvenue au village !'] },
     { x: 17, y: 20, dialogue: ['Clinique de Saint-Ay.'] },
     { x: 16, y: 6, dialogue: ['La boîte aux lettres de la famille.'] },
