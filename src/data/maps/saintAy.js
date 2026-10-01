@@ -9,13 +9,13 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 
 // Saint-Ay (Loiret) — petit village de campagne, 30 x 24 cases, façon Rouge Feu : la route de Montépilloy
 // (nord-sud) croise la rue des maisons (chaumière de la famille, maison de Felix) et la rue de la clinique ;
-// prés de hautes herbes aux formes irrégulières, champ de blé au nord-est (qu'on traverse) ; au sud, la grande
+// prés de hautes herbes aux formes irrégulières ; au sud, la grande
 // ferme, son chemin jusqu'au portail de la cour aux poules (planches gardées par les poules). À l'ouest, le lac
 // (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des cousins
 // posée sur quatre sapins. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde pendant le
 // chantier de la cabane. Ceinture d'arbres ailleurs.
 // Scénario : voir data/saintAyStory.js.
-// Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, F = barrière, ~ = lac,
+// Légende : voir src/data/tiles.js (ç = chemin, F = barrière, ~ = lac,
 // B = ferry, = = ponton, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
 // S = panneau, M = boîte aux lettres, R / W / D = toit, mur,
 // porte des bâtiments)
@@ -30,14 +30,14 @@ export const saintAyMap = {
   grid: parseGrid([
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTT', // 1
-    'TTTTRRRRR.....ççSRRRRR.ʬʬʬʬʬTT', // 2
-    'TTTTRRRRR.fff.çç.RRRRR.ʬʬʬʬʬTT', // 3
-    'TT..WWWWW.fff.çç.WWWWW.ʬʬʬʬʬTT', // 4
-    'TT..WDWWWMfff.ççMWDWWW.ʬʬʬʬʬTT', // 5
-    'TTçççççççççççççççççççççʬʬʬʬʬTT', // 6
-    'TTçççççççççççççççççççççʬʬʬʬʬTT', // 7
-    '~~~~~==~..ĥĥ..çç.......ʬʬʬʬʬTT', // 8
-    'BBBB~==~.ĥĥĥĥ.çç.RRRRR.ʬʬʬʬʬTT', // 9
+    'TTTTRRRRR.....ççSRRRRR..ĥĥ..TT', // 2
+    'TTTTRRRRR.fff.çç.RRRRR.ĥĥĥĥ.TT', // 3
+    'TT..WWWWW.fff.çç.WWWWW..ĥĥĥĥTT', // 4
+    'TT..WDWWWMfff.ççMWDWWW...ĥĥĥTT', // 5
+    'TTççççççççççççççççççççç.ĥĥĥ.TT', // 6
+    'TTçççççççççççççççççççççĥĥĥ..TT', // 7
+    '~~~~~==~..ĥĥ..çç........ĥĥĥ.TT', // 8
+    'BBBB~==~.ĥĥĥĥ.çç.RRRRR....ĥ.TT', // 9
     'BBBB~==~ĥĥĥĥĥ.çç.RRRRR..ĥĥ..TT', // 10
     '~~~~~==~.ĥĥĥ..çç.WWWWW.ĥĥĥĥ.TT', // 11
     '~~~~~~~~..ĥĥ..ççSWWDWW..ĥĥĥĥTT', // 12
@@ -46,8 +46,8 @@ export const saintAyMap = {
     '~~~~~~~~.....SççRRRRRRFFFFFFTT', // 15
     'TTTTTTTT...ĥĥ.ççRRRRRRF....FTT', // 16
     'TTTTTTTT..ĥĥĥĥççWWWWWWF....FTT', // 17
-    'TTTT..TT.ĥĥĥĥ.ççWDWWWWF....FTT', // 18
-    'TTTT..TT..ĥĥĥĥçç...WWWF....FTT', // 19
+    'TTTT.....ĥĥĥĥ.ççWDWWWWF....FTT', // 18
+    'TTTT......ĥĥĥĥçç...WWWF....FTT', // 19
     'TTĥĥĥĥĥ....ĥĥ.çççççççç.....FTT', // 20
     'TTĥĥĥĥ........ççççççççFFFFFFTT', // 21
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 22
@@ -85,6 +85,8 @@ export const saintAyMap = {
       type: 'planks', x: 26, y: 16, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
       script: PLANKS,
     },
+    // Sapin sous le bord droit de la cabane, collé à l'échelle (hors de la grille des sapins 2 x 2).
+    { type: 'tree', x: CABANE_SPOT.x + 1, y: CABANE_SPOT.y - 1, w: 2, h: 2 },
     // La cabane des cousins, une fois construite, perchée dans les sapins au sud du lac.
     {
       type: 'cabane', x: CABANE_SPOT.x - 1, y: CABANE_SPOT.y - 3, w: 4, h: 3, ifFlags: [FLAGS.cabaneFinie],

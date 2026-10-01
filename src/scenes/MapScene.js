@@ -9,7 +9,7 @@ import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
 import { Followers } from '../systems/Followers.js';
 import { lookOf } from '../data/characters.js';
-import { bedAt, familyCarImage, cabaneFrame, CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
+import { bedAt, familyCarImage, cabaneFrame, CABANE_LADDER_X, FRLG_SHEETS, FRLG_TREE } from '../art/frlgArt.js';
 import { interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
@@ -237,6 +237,15 @@ export class MapScene extends Phaser.Scene {
         const bottom = (data.y + data.h + 1) * TILE_SIZE;
         const graphics = this.add.image((data.x + 1) * TILE_SIZE - CABANE_LADDER_X, bottom, FRLG_SHEETS.cabane, cabaneFrame(this, 'hut'))
           .setOrigin(0, 1).setDepth(10 + bottom / 10000);
+        this.props.push({ data, graphics });
+        continue;
+      }
+      // Grand sapin posé hors de la grille des sapins (emprise de 2 x 2 cases, feuillage qui dépasse au-dessus).
+      if (data.type === 'tree') {
+        const tex = this.textures.get(FRLG_TREE.sheet);
+        if (!tex.has('lone-tree')) tex.add('lone-tree', 0, FRLG_TREE.sx, FRLG_TREE.sy, FRLG_TREE.w, FRLG_TREE.h);
+        const bottom = (data.y + data.h) * TILE_SIZE;
+        const graphics = this.add.image(data.x * TILE_SIZE, bottom, FRLG_TREE.sheet, 'lone-tree').setOrigin(0, 1).setDepth(10 + (bottom - 1) / 10000);   // derrière une cabane posée dessus
         this.props.push({ data, graphics });
         continue;
       }
