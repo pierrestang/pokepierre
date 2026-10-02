@@ -366,16 +366,27 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
       const f = (dx, dy) => at(x + dx, y + dy) === 'F';
       const up = f(0, -1), down = f(0, 1), left = f(-1, 0), right = f(1, 0);
       // Côté vertical : aligné sur les coins. C'est le côté est d'un enclos si l'angle au bout de la barrière
-      // (en remontant, sinon en descendant) part vers la gauche.
+      // (en remontant, sinon en descendant) part vers la gauche. Un bout sans angle (au bord d'une ouverture) ne
+      // décide rien : c'est alors l'autre bout qui compte.
       const eastAt = (dy) => {
         let cy = y;
         while (at(x, cy + dy) === 'F') cy += dy;
-        if (cy === y) return null;
-        return at(x - 1, cy) === 'F' && at(x + 1, cy) !== 'F';
+        const toLeft = at(x - 1, cy) === 'F';
+        const toRight = at(x + 1, cy) === 'F';
+        if (cy === y || toLeft === toRight) return null;
+        return toLeft;
       };
-      const side = (eastAt(-1) ?? eastAt(1)) ? FENCE.right : FENCE.left;
-      if (down && !up) return put(right ? FENCE.tl : left ? FENCE.tr : side);
-      if (up && !down) return put(right ? FENCE.bl : left ? FENCE.br : side);
+      const east = eastAt(-1) ?? eastAt(1);
+      const side = east ? FENCE.right : FENCE.left;
+      // Bout d'un côté vertical (au bord d'une ouverture) : le rail, et un poteau de la barrière horizontale par
+      // dessus, centré sur le rail (poteau de droite de la pièce pour un côté est, de gauche pour un côté ouest).
+      const endPost = () => {
+        put(side);
+        const dx = east ? 9 : 1;
+        blit(ctx, textures, { sheet: FENCE.h.sheet, sx: FENCE.h.sx + dx, sy: FENCE.h.sy }, px + dx, py, 7, S);
+      };
+      if (down && !up) return right ? put(FENCE.tl) : left ? put(FENCE.tr) : endPost();
+      if (up && !down) return right ? put(FENCE.bl) : left ? put(FENCE.br) : endPost();
       if (up && down) return put(side);
       return put(FENCE.h);
     }

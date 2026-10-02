@@ -5,7 +5,7 @@ import { FLAGS, ITEMS } from '../story.js';
 // grand-rue nord-sud (Prytanée au nord, Saint-Ay au sud), la rue des maisons et la rue de l'école. Les maisons
 // bordent la grand-rue de chaque côté : la famille à gauche, la voisine à droite, l'école à droite en dessous. À
 // gauche, la ferme de M. Bouly, un enclos rectangulaire à clôture blanche ouvert à droite sur la grand-rue (deux
-// cases, panneau sur la clôture juste au-dessus) : la grange (toit orange de Rubis/Saphir, tonneaux à l'intérieur)
+// cases, panneau juste à l'intérieur, au-dessus de l'entrée) : la grange (toit orange de Rubis/Saphir, tonneaux à l'intérieur)
 // et le tracteur, le chemin de l'entrée devant la grange, puis le champ de blé. À droite, sous la rue de l'école,
 // la prairie aux hautes herbes, la mare et l'arbre où le chat de Jean se cache. Ceinture d'arbres.
 // Légende : voir src/data/tiles.js (ç = chemin de terre, ~ = mare, ʬ = blé, F = clôture, T = arbre (blocs de
@@ -17,10 +17,10 @@ export const montepilloyMap = {
   grid: parseGrid([
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 1
-    'TTTT..........ççS.........TT..TT', // 2
-    'TTTT....RRRRR.çç.RRRRR....TT..TT', // 3
-    'TT...ff.RRRRR.çç.RRRRR.ff...TTTT', // 4
-    'TT.ƀ.ff.WWWWW.çç.WWWWW.ff...TTTT', // 5
+    'TTTT..........ççS.............TT', // 2
+    'TTTT....RRRRR.çç.RRRRR........TT', // 3
+    'TT...ff.RRRRR.çç.RRRRR.ff.....TT', // 4
+    'TT.ƀ.ff.WWWWW.çç.WWWWW.ff.....TT', // 5
     'TT.....MWDWWW.çç.WDWWWM.......TT', // 6
     'TT....çççççççççççççççççç...ƀ..TT', // 7
     'TT....çççççççççççççççççç......TT', // 8
@@ -30,7 +30,7 @@ export const montepilloyMap = {
     'TTFRRRRRR....Fçç.WWWWW.f..ƀ...TT', // 12
     'TTFRRRRRR....Fçç.WDWWW........TT', // 13
     'TTFWWWWWW....Fçççççççççççççç..TT', // 14
-    'TTFWWWDWW....Sçççççççççççççç..TT', // 15
+    'TTFWWWDWW...SFçççççççççççççç..TT', // 15
     'TTF.çççççççççççç....ĥĥ.f..TTĥ.TT', // 16
     'TTF.çççççççççççç.f~~~~~~..TT.ĥTT', // 17
     'TTFʬʬʬʬʬʬʬʬʬʬFçç.f~~~~~~......TT', // 18
@@ -105,7 +105,7 @@ export const montepilloyMap = {
     { x: 16, y: 2, dialogue: ['Nord : route du Prytanée.'] },
     { x: 7, y: 6, dialogue: ['La boîte aux lettres de la famille.'] },
     { x: 22, y: 6, dialogue: ['La boîte aux lettres de la voisine.'] },
-    { x: 13, y: 15, dialogue: ['Ferme de M. Bouly.'] },
+    { x: 12, y: 15, dialogue: ['Ferme de M. Bouly.'] },
     // L'arbre où le chat est coincé (dans la prairie, au sud-est du village).
     {
       x: 26, y: 17,
