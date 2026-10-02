@@ -335,8 +335,12 @@ export class MapScene extends Phaser.Scene {
   //   { black: true | false }            écran noir immédiat / retour de l'image en fondu
   //   { sea: true | false }              bruit des vagues
   //   { face: { npcId | 'player': direction } }
-  //   { emote: npcId | 'player', kind }  bulle d'émotion au-dessus de la tête (voir art/uiIcons.js
-  //                                      EMOTE_FRAMES : surprise, question, heart, note, dots, happy, sad…)
+  //   { emote: npcId | 'player' | [x, y], kind }  bulle d'émotion au-dessus d'une tête ou d'une case (voir
+  //                                      art/uiIcons.js EMOTE_FRAMES : surprise, question, heart, note, dots…)
+  //   { sound: nom }                     bruitage (voir systems/audio.js, sfx)
+  //   { steps: [étapes] }                sous-scénette, jouée si les conditions de l'étape sont remplies
+  //   { quiz: { question, choices, answer, wrong?, speaker? } }  question reposée jusqu'à la bonne réponse ;
+  //                                      `wrong` : réplique par mauvaise réponse ({ réponse: [pages], default })
   //   { dance: npcId }                   le PNJ et Pierre dansent un instant, notes de musique
   //   { walk: npcId, to: [x, y], lead?, block?, then? }  le PNJ marche jusqu'à la case (voir walkNpc)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
@@ -352,6 +356,7 @@ export class MapScene extends Phaser.Scene {
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
       if (step.emote) await this.emote(step.emote, step.kind);
+      if (step.sound) sfx(step.sound);
       if (step.dance) await this.dance(step.dance);
       if (step.wait) await this.wait(step.wait);
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
@@ -370,6 +375,8 @@ export class MapScene extends Phaser.Scene {
           await this.talkTo(npc.data);
         }
       }
+      if (step.quiz) await this.quiz(step.quiz);
+      if (step.steps && await this.runSteps(step.steps)) return true;
       if (step.choose) {
         const index = await this.dialog.choose(step.choose, step.choices.map((c) => c.label), { speaker: step.speaker });
         if (await this.runSteps(step.choices[index]?.steps ?? [])) return true;
@@ -682,14 +689,21 @@ export class MapScene extends Phaser.Scene {
     }
   }
 
-  // Bulle d'émotion au-dessus de la tête d'un personnage ('player' : Pierre), façon HeartGold : elle apparaît
+  // Bulle d'émotion au-dessus de la tête d'un personnage ('player' : Pierre) ou d'une case [x, y], façon HeartGold : elle apparaît
   // d'un petit bond, ses deux images alternent, puis elle disparaît.
   async emote(id, kind = 'surprise') {
-    const sprite = this.actorSprite(id);
     const frames = EMOTE_FRAMES[kind];
-    if (!sprite || !frames) return;
-    const top = sprite.y + TILE_SIZE / 2 - sprite.image.displayHeight;
-    const bubble = this.add.image(sprite.x, top - 1, EMOTES, frames[0]).setOrigin(0.5, 1).setDepth(50).setScale(0.6);
+    let x;
+    let top;
+    if (Array.isArray(id)) {
+      [x, top] = [(id[0] + 0.5) * TILE_SIZE, id[1] * TILE_SIZE];       // au-dessus d'une case (ex. un tonneau)
+    } else {
+      const sprite = this.actorSprite(id);
+      if (!sprite) return;
+      [x, top] = [sprite.x, sprite.y + TILE_SIZE / 2 - sprite.image.displayHeight];
+    }
+    if (!frames) return;
+    const bubble = this.add.image(x, top - 1, EMOTES, frames[0]).setOrigin(0.5, 1).setDepth(50).setScale(0.6);
     sfx(kind === 'surprise' ? 'confirm' : 'select');
     this.tweens.add({ targets: bubble, scale: 1, duration: 120, ease: 'Back.easeOut' });
     for (let i = 1; i <= 4; i++) {
@@ -697,6 +711,16 @@ export class MapScene extends Phaser.Scene {
       bubble.setFrame(frames[i % 2]);
     }
     bubble.destroy();
+  }
+
+  // Question posée jusqu'à la bonne réponse (ex. l'outil que Jean réclame) ; chaque erreur a sa réplique.
+  async quiz({ question, choices, answer, wrong = {}, speaker }) {
+    for (;;) {
+      const choice = choices[await this.dialog.choose(question, choices, { speaker })];
+      if (choice === answer) return;
+      sfx('select');
+      await this.dialog.open(wrong[choice] ?? wrong.default ?? ['Non, pas ça !'], { speaker });
+    }
   }
 
   // Moment léger : le PNJ et Pierre tournent sur eux-mêmes en rythme, des notes s'envolent au-dessus.

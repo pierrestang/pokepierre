@@ -100,6 +100,7 @@ export const prytaneeMap = {
     ...[14, 15].map((x) => ({
       x,
       y: 23,
+      ifFlags: [FLAGS.arriveePrytanee],           // on n'y vient qu'en ayant quitté Montépilloy (car scolaire parti)
       readyDialogue: ['Tu prends la route de Montépilloy.'],
       warp: { map: 'montepilloy', x: 14, y: 1, facing: 'down' },
     })),

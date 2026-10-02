@@ -23,13 +23,17 @@ export const FLAGS = {
   annonceMutation: 'annonce-mutation',          // Papa a annoncé le départ pour Montépilloy
   adieuCousins: 'adieu-cousins',                // au revoir aux cousins à la cabane
   arriveeMontepilloy: 'arrivee-montepilloy',    // arrivé à Montépilloy (la famille y vit désormais)
-  manonEcole: 'manon-ecole',                    // Maman t'envoie à l'école, Manon t'accompagne
-  arriveeEcole: 'arrivee-ecole',                // arrivés à l'école
-  jeanQuetes: 'jean-quetes',                    // Montépilloy : Jean t'a demandé de l'aide (chat, tracteur)
-  chatTrouve: 'chat-trouve',                    // Montépilloy : le chat est tombé de l'arbre
-  boulyDemande: 'bouly-demande',                // M. Bouly t'a parlé de son tracteur en panne
-  pieceTrouvee: 'piece-trouvee',                // pièce de tracteur trouvée dans le tonneau
-  tracteurRepare: 'tracteur-repare',            // pièce rapportée : le tracteur est réparé
+  ellipseMontepilloy: 'ellipse-montepilloy',    // Montépilloy : « Quelques années plus tard… » joué
+  ecoleCm2: 'ecole-cm2',                        //   dernier jour de CM2 : entré à l'école
+  cacheCache: 'cache-cache',                    //   Margaux a lancé la dernière partie de cache-cache
+  trouveMargaux: 'trouve-margaux',              //   cache-cache : Margaux trouvée (bottes de foin de la ferme)
+  trouveEtienne: 'trouve-etienne',              //   cache-cache : Étienne trouvé (arbre de la prairie)
+  jeanQuetes: 'jean-quetes',                    //   Jean t'a demandé d'être son assistant (il te suit)
+  boulyDemande: 'bouly-demande',                //   M. Bouly t'a parlé de la pièce qui manque à son tracteur
+  pieceTrouvee: 'piece-trouvee',                //   pièce de tracteur trouvée dans le tonneau de la grange
+  tracteurRepare: 'tracteur-repare',            //   « Passe-moi la clé ! » réussi : le tracteur est réparé
+  septembre: 'septembre',                       //   ellipse jusqu'en septembre : la famille devant la maison
+  departCollege: 'depart-college',              //   le car scolaire attend à la sortie nord
   arriveePrytanee: 'arrivee-prytanee',          // arrivé au Prytanée
   capitaineAccueil: 'capitaine-accueil',        // le capitaine t'envoie au dortoir (bâtiment 1)
   dortoirVisite: 'dortoir-visite',              // affaires déposées au dortoir
@@ -96,11 +100,13 @@ export const QUALITIES = {
   complicite: { id: 'souvenir-manon', name: 'Complicité de Manon' },
 };
 
-// Rôles reçus à Saint-Ay (comptés comme des souvenirs).
+// Rôles et titres reçus (Saint-Ay, Hull, Montépilloy), comptés comme des souvenirs.
 export const ROLES = {
   grandFrere: { id: 'role-grand-frere', name: 'Grand frère' },
   cousins: { id: 'role-cousins', name: 'Cousins pour la vie' },
   bandeHull: { id: 'role-bande-hull', name: 'La bande de Hull' },
+  copainsMontepilloy: { id: 'role-copains-montepilloy', name: 'Les copains de Montépilloy' },
+  bricoleur: { id: 'role-bricoleur', name: 'Bricoleur' },
 };
 
 // Objets remis au joueur (voir systems/items.js).
@@ -133,8 +139,11 @@ export const FOLLOWERS = [
   { id: 'manon', color: 0xf0a030, ifFlags: [FLAGS.familleSuit], unlessFlags: [FLAGS.familleArrivee] },
   // Felix t'accompagne de la sortie de la clinique jusqu'à chez lui (maison 2).
   { id: 'felix', color: 0x9060d0, ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.maisonFelixVisitee] },
-  // Montépilloy : Manon t'accompagne de la maison jusqu'à l'école.
-  { id: 'manon', color: 0xf0a030, ifFlags: [FLAGS.manonEcole], unlessFlags: [FLAGS.arriveeEcole] },
+  // Montépilloy : Jean, ton assistant… ou plutôt toi le sien, jusqu'à la réparation du tracteur ; Margaux et
+  // Étienne, une fois trouvés au cache-cache, jusqu'à la fin de la partie.
+  { id: 'jean', color: 0x3c7c5c, ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.tracteurRepare] },
+  { id: 'margaux', color: 0xf08080, ifFlags: [FLAGS.trouveMargaux], unlessSouvenirs: ['role-copains-montepilloy'] },
+  { id: 'etienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], unlessSouvenirs: ['role-copains-montepilloy'] },
   // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },

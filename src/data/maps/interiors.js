@@ -3,6 +3,7 @@ import { FLAGS, ITEMS, QUALITIES, ROLES } from '../story.js';
 import {
   BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT, CABANE_FETE, FELIX_AT_CABANE,
 } from '../saintAyStory.js';
+import { MAMAN, PAPA, JEAN, LAST_DAY, BENOIT_HIDING, BARREL_MOVES } from '../montepilloyStory.js';
 import { FRLG_SHEETS, cabaneFrame, cabaneOverlay } from '../../art/frlgArt.js';
 import {
   LEO_CALLED, OUSMANE_JOINS, LEO_PLAN, GIRLS_JOIN, PUB_A_BAR, PUB_B_TABLE, PUB_B_OTHER, ASYLUM_ENTER, ASYLUM_DANCE,
@@ -486,12 +487,10 @@ export const interiors = {
     events: [{ on: 'enter', ifFlags: [FLAGS.familleSuit], unlessFlags: [FLAGS.familleArrivee], steps: BIRTH }],
   },
 
-  // Montépilloy — la maison de la famille : Maman annonce le premier jour d'école.
-  // Montépilloy — la maison de la famille, façon Rouge Feu : cuisine, télé, table, plantes.
   // Montépilloy — la grange de M. Bouly, façon Rouge Feu : établi (longue table de Rubis/Saphir) sous la
   // fenêtre, caisses de légumes, d'oranges et de tomates et une jarre du marché de Slateport (rs-crates.png),
-  // tonneaux (dessinés dans le code). La pièce de tracteur est au fond d'un des tonneaux (une fois que M. Bouly
-  // t'en a parlé).
+  // tonneaux (dessinés dans le code). La pièce de tracteur est au fond du tonneau du fond à droite (une fois que
+  // M. Bouly t'en a parlé) ; au cache-cache, Benoît se cache dans celui de gauche.
   boulyBarn: {
     name: 'Grange de M. Bouly',
     frlg: true,
@@ -523,21 +522,25 @@ export const interiors = {
       { x: 7, y: 5, dialogue: ['Une jarre de miel, bien fermée.'] },
       { x: 7, y: 2, dialogue: ['Un tonneau plein de grain.'] },
       { x: 8, y: 2, dialogue: ['Un tonneau plein de grain.'] },
+      BENOIT_HIDING,
       { x: 0, y: 4, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
       { x: 0, y: 5, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
-      // Le tonneau qui cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
-      { x: 8, y: 3, unlessFlags: [FLAGS.boulyDemande], dialogue: ['[Texte provisoire] Un vieux tonneau, plein de bric-à-brac.'] },
+      // Le tonneau du fond à droite cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
+      { x: 8, y: 3, unlessFlags: [FLAGS.boulyDemande], dialogue: ['Un vieux tonneau, plein de bric-à-brac.'] },
       {
         x: 8, y: 3,
         ifFlags: [FLAGS.boulyDemande],
-        dialogue: ['[Texte provisoire] Au fond du tonneau... une pièce de tracteur !'],
-        after: ['[Texte provisoire] Le tonneau est vide.'],
+        dialogue: ['Tu fouilles le bric-à-brac… Au fond du tonneau, une pièce de tracteur !'],
+        after: ['Il ne reste que du bric-à-brac.'],
         item: ITEMS.pieceTracteur,
         setFlag: FLAGS.pieceTrouvee,
       },
     ],
+    // Cache-cache : le tonneau de Benoît bouge tout seul, une fois Margaux et Étienne trouvés.
+    events: [BARREL_MOVES],
   },
 
+  // Montépilloy — la maison de la famille, façon Rouge Feu : cuisine, télé, table, plantes.
   montHouse: {
     name: 'Maison de Montépilloy',
     frlg: true,
@@ -563,52 +566,40 @@ export const interiors = {
       { kind: 'plant', x: 9, y: 5 },
     ],
     spawn: { x: 4, y: 6, facing: 'up' },
+    // Toute la famille : Papa, Maman, Manon, Fanny et Jean (le jour de septembre, Papa, Maman et Jean sont
+    // dehors, devant la maison). Scénario : voir data/montepilloyStory.js.
     npcs: [
       {
         id: 'maman-mont', name: 'Maman', x: 6, y: 3, facing: 'left', color: 0xe86fa0,
-        dialogue: ["[Maman - texte provisoire] Dépêche-toi, tu vas être en retard à l'école !"],
+        unlessFlags: [FLAGS.septembre], script: MAMAN,
       },
-      // Jean, ton frère : deux quêtes avant de partir pour le Prytanée.
+      {
+        id: 'papa-mont', name: 'Papa', x: 4, y: 3, facing: 'down', color: 0x3f6fd8,
+        unlessFlags: [FLAGS.septembre], script: PAPA,
+      },
+      {
+        id: 'manon-mont', name: 'Manon', x: 7, y: 4, facing: 'left', color: 0xf0a030,
+        dialogue: ['Le collège ? Tu verras, on s\'y fait vite. Et le car, c\'est le meilleur moment de la journée.'],
+      },
+      {
+        id: 'fanny-mont', name: 'Fanny', x: 8, y: 5, facing: 'left', color: 0xf0c0c0,
+        dialogue: ['Fanny fait rouler un petit tracteur en bois sur le parquet.'],
+      },
+      // Jean, ton petit frère : il t'emmène comme assistant pour réparer le tracteur de M. Bouly (il te suit).
       {
         id: 'jean', name: 'Jean', x: 2, y: 4, facing: 'right', color: 0x3c7c5c,
-        unlessFlags: [FLAGS.tracteurRepare],
-        dialogue: [
-          "[Jean - texte provisoire] Salut frérot ! J'ai besoin de toi pour deux choses.",
-          "Notre chat s'est encore sauvé : il doit être perché dans un arbre de la prairie, au sud-est du village.",
-          "Et M. Bouly, à la ferme, a des soucis avec son tracteur. Tu peux aller l'aider ?",
-        ],
-        after: ['[Jean - texte provisoire] Alors, tu as retrouvé le chat ? Et le tracteur de M. Bouly ?'],
-        setFlag: FLAGS.jeanQuetes,
+        unlessFlags: [FLAGS.jeanQuetes], script: JEAN,
       },
       {
         id: 'jean-fin', name: 'Jean', x: 2, y: 4, facing: 'right', color: 0x3c7c5c,
-        ifFlags: [FLAGS.tracteurRepare],
-        dialogue: ['[Jean - texte provisoire] Le tracteur de M. Bouly est réparé ? Génial !'],
-      },
-      {
-        id: 'manon', name: 'Manon', x: 7, y: 4, facing: 'left', color: 0xf0a030,
-        unlessFlags: [FLAGS.manonEcole],
-        dialogue: ["[Manon - texte provisoire] On va à l'école ensemble ?"],
-      },
-    ],
-    // En entrant : Maman annonce le premier jour d'école, Manon t'accompagne.
-    events: [
-      {
-        on: 'enter',
-        unlessFlags: [FLAGS.manonEcole],
-        steps: [
-          { approach: 'maman-mont' },
-          { speaker: 'Maman', say: ["[Maman - texte provisoire] Te voilà ! Aujourd'hui, c'est ton premier jour d'école.", 'Il faut y aller !'] },
-          { approach: 'manon' },
-          { speaker: 'Manon', say: ["[Manon - texte provisoire] Je t'accompagne, suis-moi !"] },
-          { setFlag: FLAGS.manonEcole },
-        ],
+        ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.septembre],
+        dialogue: ['M. Bouly m\'a laissé tenir le volant dans le champ ! Tu crois que j\'aurai un tracteur, un jour ?'],
       },
     ],
   },
 
-  // Montépilloy — l'école : Margot, Étienne et Benoît.
-  // Montépilloy — l'école, façon Rouge Feu : tableau vert, bureau du maître, deux rangées de pupitres.
+  // Montépilloy — l'école, façon Rouge Feu : tableau vert, bureau du maître, deux rangées de pupitres ; Margaux,
+  // Étienne et Benoît le dernier jour de CM2.
   school: {
     name: 'École',
     frlg: true,
@@ -634,42 +625,26 @@ export const interiors = {
       { kind: 'plant', x: 13, y: 7 },
     ],
     spawn: { x: 6, y: 7, facing: 'up' },
+    // Dernier jour de CM2 : les copains de classe, avant la dernière partie de cache-cache (voir
+    // data/montepilloyStory.js) ; ils sont partis se cacher une fois la partie lancée.
     npcs: [
       {
-        id: 'manon-ecole', name: 'Manon', x: 8, y: 7, facing: 'left', color: 0xf0a030,
-        ifFlags: [FLAGS.arriveeEcole],
-        dialogue: ['[Manon - texte provisoire] Va dire bonjour à tout le monde !'],
-      },
-      {
-        id: 'margot', name: 'Margot', x: 4, y: 3, facing: 'down', color: 0xf08080,
-        dialogue: ['[Margot - texte provisoire] Bonjour ! Ceci est le premier dialogue de Margot.'],
-        after: ['[Margot - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-margot', name: 'Souvenir de Margot' },
+        id: 'margaux', name: 'Margaux', x: 4, y: 3, facing: 'down', color: 0xf08080,
+        unlessFlags: [FLAGS.cacheCache],
+        dialogue: ['Dernier jour de CM2 ! À la sortie, on fait une partie de cache-cache. La dernière.'],
       },
       {
         id: 'etienne', name: 'Étienne', x: 9, y: 5, facing: 'left', color: 0x6080a0,
-        dialogue: ["[Étienne - texte provisoire] Salut ! Ceci est le premier dialogue d'Étienne."],
-        after: ['[Étienne - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-etienne', name: "Souvenir d'Étienne" },
+        unlessFlags: [FLAGS.cacheCache],
+        dialogue: ['L\'an prochain, c\'est le collège. Il paraît qu\'il y a un self, avec des frites tous les jours.'],
       },
       {
         id: 'benoit', name: 'Benoît', x: 3, y: 5, facing: 'up', color: 0xa07040,
-        dialogue: ['[Benoît - texte provisoire] Coucou ! Ceci est le premier dialogue de Benoît.'],
-        after: ['[Benoît - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-benoit', name: 'Souvenir de Benoît' },
+        unlessFlags: [FLAGS.cacheCache],
+        dialogue: ['Je connais une cachette que personne ne trouvera. Jamais.'],
       },
     ],
-    events: [
-      {
-        on: 'enter',
-        ifFlags: [FLAGS.manonEcole],
-        unlessFlags: [FLAGS.arriveeEcole],
-        steps: [
-          { setFlag: FLAGS.arriveeEcole },
-          { speaker: 'Manon', say: ["[Manon - texte provisoire] Voilà l'école ! Va rencontrer les autres élèves."] },
-        ],
-      },
-    ],
+    events: [{ on: 'enter', unlessFlags: [FLAGS.ecoleCm2], steps: LAST_DAY }],
   },
 
   // Prytanée — bâtiment 1 : ton dortoir. Tanguy et Geoffrey y sont.

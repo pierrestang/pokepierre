@@ -389,12 +389,15 @@ function drawUniversity(g, ox, oy) {
 }
 
 // Bus rouge à impériale, vu de dessus (3x2).
-function drawBus(g, ox, oy, { variant } = {}) {
-  // Bus rouge à impériale ; à Hull, bus local rouge d'un seul niveau, au toit crème.
-  const hull = variant === 'hull';
-  const dark = 0x701414;
-  const body = 0xc82828;
-  const light = 0xe84848;
+// Bus vu de dessus (3 x 2 cases), pare-brise à droite : rouge à impériale ; `variant` 'hull' : bus local rouge
+// d'un seul niveau au toit crème ; 'school' : car scolaire jaune au toit crème (Montépilloy).
+const BUS_COLORS = {
+  red: { dark: 0x701414, body: 0xc82828, light: 0xe84848, roof: 0xa82020 },
+  hull: { dark: 0x701414, body: 0xc82828, light: 0xe84848, roof: 0xece4c8 },
+  school: { dark: 0x8c6410, body: 0xe8b820, light: 0xf8d848, roof: 0xf0ead0 },
+};
+function drawBus(g, ox, oy, { variant = 'red' } = {}) {
+  const { dark, body, light, roof } = BUS_COLORS[variant];
   rect(g, 0x000000, ox + 3, oy + 8, 44, 20);
   rect(g, dark, ox + 2, oy + 6, 44, 20);
   rect(g, body, ox + 3, oy + 7, 42, 18);
@@ -403,7 +406,7 @@ function drawBus(g, ox, oy, { variant } = {}) {
     rect(g, 0x9cc0e0, ox + x, oy + 8, 5, 2);
     rect(g, 0x9cc0e0, ox + x, oy + 22, 5, 2);
   }
-  rect(g, hull ? 0xece4c8 : 0xa82020, ox + 10, oy + 12, 28, 8);   // toit (crème à Hull)
+  rect(g, roof, ox + 10, oy + 12, 28, 8);              // toit
   rect(g, 0x303030, ox + 44, oy + 10, 2, 12);          // pare-brise
   rect(g, 0xf8e088, ox + 45, oy + 8, 1, 2);
   rect(g, 0xf8e088, ox + 45, oy + 22, 1, 2);
