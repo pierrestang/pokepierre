@@ -1,42 +1,42 @@
 import { parseGrid } from './parseGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
-// Hors de la carte : routes de terre, plage et mer se prolongent ; forêt ailleurs.
+// Hors de la carte : la route, la plage et la mer se prolongent ; jungle ailleurs.
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['ē', 's', 'w'].includes(edge)) return edge;
+    if (['ç', 's', 'w'].includes(edge)) return edge;
   }
-  return y >= grid.length ? 'w' : '.';
+  return y >= grid.length ? 'w' : 'ƫ';
 }
 
-// Sri Lanka — terre rouge, plantations de thé, jungle, éléphants, stupa, un peu de côte, 32 x 26 cases.
-// Légende : voir src/data/tiles.js (ē = terre rouge, ♠ = théier, € = éléphant)
+// Sri Lanka — jungle, plantation de thé, éléphants, stupa, village de cases, plage, 32 x 26 cases.
+// Légende : voir src/data/tiles.js (ƫ = arbre tropical, ♠ = théier, € = éléphant, Y = palmier)
 export const sriLankaMap = {
   id: 'sriLanka',
   name: 'Sri Lanka',
   grid: parseGrid([
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0
-    'ƚ...............ēē.............ƚ', // 1
-    'ƚ.♠♠♠♠♠♠♠♠♠♠♠...ēēēēēēēēē...Y..ƚ', // 2
-    'ƚ...............ēēēRRRRRē.ƚ....ƚ', // 3
-    'ƚ.♠♠♠♠♠♠♠♠♠♠♠...ēēēRRRRRē....YYƚ', // 4
-    'ƚ...............ēēēRRRRRē.ƚ€...ƚ', // 5
-    'ƚ.♠♠♠♠♠♠♠♠♠♠♠...ēēēWWWWWē...ƚƚ.ƚ', // 6
-    'ƚ...............ēēēWWDWWēYƚ..ƚYƚ', // 7
-    'ƚ.♠♠♠♠♠♠♠♠♠♠♠...ēēēēēēēēēƚ€ƚ.YYƚ', // 8
-    'ƚ...............ēēēēēēēēēƚƚƚ...ƚ', // 9
-    'ƚ<..............ēē.......ƚƚƚYƚYƚ', // 10
-    'ēēēēēēēēēēēēēēēēēēēēēēēēēēēēēēēē', // 11
-    'ēēēēēēēēēēēēēēēēēēēēēēēēēēēēēēēē', // 12
-    'ƚ.ēēēēēēēēēēēēē.ēēYƚ......fƚ...ƚ', // 13
-    'ƚ.ēRRRēēRRRēēēē.ēēƚ.ƚ..f..ƚ..ƚƚƚ', // 14
-    'ƚ.ēWWWēēWWWēēēē.ēē.....Y...ƚ..fƚ', // 15
-    'ƚ.ēWDWēēWDWēēēē.ēēƚƚ..Y........ƚ', // 16
-    'ƚ.ēēēēYēēēēēēēē.ēē......YƚY..ƚƚƚ', // 17
-    'ƚ.ēēēēēēēēēē€ēē.ēē.ƚ.....ƚ....ƚƚ', // 18
-    'ƚ.ƚēēēēēēēēēēēē.ēēƚƚ..Yƚ.......ƚ', // 19
-    'ssssssssssssssssssssssssssssssss', // 20
+    'ƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫ', // 0  jungle
+    'ƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫƫ', // 1
+    'ƫƫ........................ƫƫ..ƫƫ', // 2
+    'ƫƫ.♠♠♠♠♠♠♠♠♠♠♠.....RRRRR..ƫƫ..ƫƫ', // 3  plantation de thé, temple (stupa)
+    'ƫƫ..............ƫƫfRRRRR......ƫƫ', // 4
+    'ƫƫ.♠♠♠♠♠♠♠♠♠♠♠..ƫƫ.RRRRR..€...ƫƫ', // 5
+    'ƫƫ.................WWWWW......ƫƫ', // 6
+    'ƫƫ.♠♠♠♠♠♠♠♠♠♠♠.....WWDWWƨ.....ƫƫ', // 7
+    'ƫƫ................ƨ.çç.....ƫƫ.ƫƫ', // 8
+    'ƫƫ<.................çç...f.ƫƫ.ƫƫ', // 9
+    'ççççççççççççççççççççççççççççççƫƫ', // 10  route (ouest : l'aéroport)
+    'ççççççççççççççççççççççççççççççƫƫ', // 11
+    'ƫƫ....çç....................ƨ.ƫƫ', // 12
+    'ƫƫƨ...çç....f...ƨ..........€..ƫƫ', // 13
+    'ƫƫ.RRRççRRR........ŦŦŦ..ƫƫ....ƫƫ', // 14  cases du village, grand arbre
+    'ƫƫ.WWWççWWW...ƫƫ...ŦŦŦ..ƫƫ....ƫƫ', // 15
+    'ƫƫ.WDWççWDW...ƫƫ...ŦŦŦ...ĥĥĥĥ.ƫƫ', // 16
+    'ƫƫ.ççççççççç.€.....ŦŦŦ...ĥĥĥĥ.ƫƫ', // 17
+    'ƫƫ.ççççççççç.....f.....ƨ.....fƫƫ', // 18
+    'ƫƫ............................ƫƫ', // 19
+    'sssYsssssYsssssYssssssYsssssYsss', // 20  plage
     'ssssssssssssssssssssssssssssssss', // 21
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 22
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 23
@@ -53,9 +53,9 @@ export const sriLankaMap = {
     { type: 'hut', x: 3, y: 14 },
     { type: 'hut', x: 8, y: 14 },
   ],
-  objects: [airportSign(1, 10, false)],
+  objects: [airportSign(2, 9, false)],
   // Ouest : la route mène à l'aéroport.
-  triggers: [toAirport(0, 11), toAirport(0, 12)],
-  surroundings: { outside, border: 'T', borderSkip: ['ē', 's', 'w'] },
-  spawn: { x: 1, y: 11, facing: 'right' },
+  triggers: [toAirport(0, 10), toAirport(0, 11)],
+  surroundings: { outside },
+  spawn: { x: 1, y: 10, facing: 'right' },
 };

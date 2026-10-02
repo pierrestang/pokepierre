@@ -23,7 +23,7 @@ export const QUEST_STARTS = [
   { label: 'PARIS', maps: ['paris'], upTo: FLAGS.arriveeParis, go: { map: 'paris', x: 1, y: 6, facing: 'right' } },
   { label: 'TOULON', maps: ['toulon', 'camino', 'corse'], upTo: FLAGS.arriveeToulon, go: { map: 'toulon', x: 1, y: 6, facing: 'right' } },
   { label: 'BALI', maps: ['bali'], upTo: FLAGS.parentsCorse, go: { map: 'bali', x: 15, y: 23, facing: 'up' } },
-  { label: 'SRI LANKA', maps: ['sriLanka'], upTo: FLAGS.parentsCorse, go: { map: 'sriLanka', x: 1, y: 11, facing: 'right' } },
+  { label: 'SRI LANKA', maps: ['sriLanka'], upTo: FLAGS.parentsCorse, go: { map: 'sriLanka', x: 1, y: 10, facing: 'right' } },
   { label: 'THAÏLANDE', maps: ['thailand'], upTo: FLAGS.parentsCorse, go: { map: 'thailand', x: 1, y: 6, facing: 'right' } },
   { label: 'NÉPAL', maps: ['nepal'], upTo: FLAGS.parentsCorse, go: { map: 'nepal', x: 1, y: 12, facing: 'right' } },
 ];

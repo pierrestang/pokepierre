@@ -44,7 +44,7 @@ const DESTINATIONS = [
   {
     label: 'Sri Lanka',
     ifItems: [ITEMS.objetMagiqueBali.id],
-    warp: { map: 'sriLanka', x: 1, y: 11, facing: 'right' },
+    warp: { map: 'sriLanka', x: 1, y: 10, facing: 'right' },
   },
   {
     label: 'Thaïlande',

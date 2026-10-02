@@ -188,6 +188,7 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
     if (kind) counts[kind] = (counts[kind] ?? 0) + 1;
   }
   const best = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+  if (!best && code === 'ƫ') return 'grass';                 // au milieu d'une jungle
   return best === 'sea' ? 'sand' : best ?? null;
 }
 
@@ -500,6 +501,24 @@ function sheetTexture(scene, key, sheet, sx, sy, w, h) {
 //   ƨ : plante à baies fleurie de Rubis/Saphir (16 x 32, dépasse vers le haut), baies bleues ou fleurs rouges ;
 //   Y : palmier des pays exotiques, le petit arbre de Rouge Feu sans son herbe, posé sur le sol de sa case.
 const BERRY_VARIANTS = [2, 3];
+// Arbres tropicaux ('ƫ') : un arbre par bloc de 2 x 2 cases. Une paire isolée commence où elle commence ; dans
+// une jungle (plus de 2 cases de large ou de haut), les blocs sont calés sur les coordonnées paires, comme les
+// sapins, pour que la carte et le décor autour se raccordent.
+function tropicalTreeAnchor(x, y, at) {
+  const start = (dx, dy) => {
+    let n = 0;
+    while (at(x - dx * (n + 1), y - dy * (n + 1)) === 'ƫ' && n < 64) n++;
+    return n;                                                   // cases d'arbres avant celle-ci
+  };
+  const end = (dx, dy) => {
+    let n = 0;
+    while (at(x + dx * (n + 1), y + dy * (n + 1)) === 'ƫ' && n < 64) n++;
+    return n;
+  };
+  const anchored = (before, after, coord) => (before + after + 1 > 2 ? mod2(coord) === 0 : before === 0);
+  return anchored(start(1, 0), end(1, 0), x) && anchored(start(0, 1), end(0, 1), y);
+}
+
 export function frlgTallImage(scene, code, x, y, at) {
   if (code === 'T') {
     if (!inFullTreeBlock(x, y, at) || mod2(x) !== 1 || mod2(y) !== 1) return null;
@@ -507,7 +526,7 @@ export function frlgTallImage(scene, code, x, y, at) {
     return { key, x: (x - 1) * S, y: (y + 1) * S - FRLG_TREE.h, baseY: (y + 1) * S - 1 };
   }
   if (code === 'ƫ') {
-    if (at(x - 1, y) === 'ƫ' || at(x, y - 1) === 'ƫ') return null;
+    if (!tropicalTreeAnchor(x, y, at)) return null;
     const sand = frlgGroundOf(x, y, at) === 'sand';
     const key = sheetTexture(scene, `emerald-tree-${sand ? 'sand' : 'grass'}`, FRLG_SHEETS.tropical, sand ? 0 : 2 * S, 0, 2 * S, 2 * S);
     return { key, x: x * S, y: y * S, baseY: (y + 2) * S - 1 };
