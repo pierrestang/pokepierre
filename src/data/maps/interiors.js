@@ -414,7 +414,7 @@ export const interiors = {
     events: [{ on: 'enter', ifFlags: [FLAGS.cabaneFinie], unlessSouvenirs: [ROLES.cousins.id], steps: CABANE_FETE }],
   },
 
-  // Saint-Ay — la clinique (toit orange), façon Rouge Feu : Maman vient d'accoucher de Fanny.
+  // Saint-Ay — la clinique (toit d'ardoise, porte rouge), façon Rouge Feu : Maman vient d'accoucher de Fanny.
   hospital: {
     name: 'Clinique',
     frlg: true,

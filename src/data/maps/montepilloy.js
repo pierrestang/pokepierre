@@ -4,7 +4,8 @@ import { FLAGS, ITEMS } from '../story.js';
 // Montépilloy (Oise) — village médiéval façon Rouge Feu, 30 x 24 cases : grand-rue pavée nord-sud (route du
 // Prytanée au nord, de Saint-Ay au sud), deux rues pavées et la place du puits ; la maison de la famille (toit
 // rouge) et celle de la voisine (toit vert) ; la butte rocheuse des ruines du château, avec son escalier ;
-// l'école (auvent vert) ; la ferme de M. Bouly (grange orange, tonneaux, tracteur, champ de blé) ; au sud, la
+// l'école (auvent vert) ; la ferme de M. Bouly (grand hangar au toit orange de Rubis/Saphir, tonneaux, tracteur,
+// champ de blé) ; au sud, la
 // prairie et l'arbre où le chat de Jean se cache. Ceinture d'arbres.
 // Légende : voir src/data/tiles.js (ɔ = pavés, U = puits, O = tonneau, ʬ = blé, F = barrière, ɟ / ɺ = butte
 // rocheuse (bloquante / praticable), T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
@@ -24,10 +25,10 @@ export const montepilloyMap = {
     'TT.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.TT', // 8
     'TT........ɔɔɔɔɔɔɔɔɔɔ........TT', // 9
     'TT.ɟɟɟɟ...ɔɔɔɔɔɔɔUɔɔ........TT', // 10
-    'TT.ɟɟɟɟ.RRRRRɔɔɔɔɔɔɔRRRR.OO.TT', // 11
-    'TT.ɟɺɺɟ.RRRRR.ɔɔ....RRRR..O.TT', // 12
-    'TT.ɟɺɺɟSWWWWW.ɔɔ..S.WWWW....TT', // 13
-    'TT......WDWWW.ɔɔ....WDWW....TT', // 14
+    'TT.ɟɟɟɟ.RRRRRɔɔɔɔɔɔRRRRRROO.TT', // 11
+    'TT.ɟɺɺɟ.RRRRR.ɔɔ...RRRRRR.O.TT', // 12
+    'TT.ɟɺɺɟSWWWWW.ɔɔ..SWWWWWW...TT', // 13
+    'TT......WDWWW.ɔɔ...WWWDWW...TT', // 14
     'TTƀɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.TT', // 15
     'TT.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.TT', // 16
     'TTƚ...........ɔɔ............TT', // 17
@@ -42,7 +43,7 @@ export const montepilloyMap = {
     { x: 5, y: 6, interior: 'montHouse' },
     // Maison de la voisine : fermée (pas d'intérieur pour l'instant).
     { x: 21, y: 6, lockedDialogue: ['Personne ne répond.'] },
-    { x: 21, y: 14, lockedDialogue: ['La grange de M. Bouly, pleine de foin.'] },
+    { x: 22, y: 14, lockedDialogue: ['La grange de M. Bouly, pleine de foin.'] },
     {
       x: 9, y: 14, interior: 'school',
       lock: { ifFlags: [FLAGS.manonEcole] },
@@ -53,17 +54,17 @@ export const montepilloyMap = {
     { type: 'house', x: 4, y: 3 },
     { type: 'greenHouse', x: 20, y: 3 },
     { type: 'school', x: 8, y: 11 },
-    { type: 'fishingHut', x: 20, y: 11 },
+    { type: 'boulyFarm', x: 19, y: 11 },
   ],
   // Le tracteur de M. Bouly : en panne, puis réparé.
   props: [
     {
-      type: 'tractor', x: 24, y: 13, w: 2, h: 2, broken: true,
+      type: 'tractor', x: 25, y: 13, w: 2, h: 2, broken: true,
       unlessFlags: [FLAGS.tracteurRepare],
       dialogue: ['[Texte provisoire] Le tracteur de M. Bouly. Il fume et refuse de démarrer.'],
     },
     {
-      type: 'tractor', x: 24, y: 13, w: 2, h: 2,
+      type: 'tractor', x: 25, y: 13, w: 2, h: 2,
       ifFlags: [FLAGS.tracteurRepare],
       dialogue: ['[Texte provisoire] Le tracteur de M. Bouly ronronne comme un chat !'],
     },
@@ -71,12 +72,12 @@ export const montepilloyMap = {
   npcs: [
     // Tant que Jean ne t'a rien demandé, M. Bouly se contente de te saluer.
     {
-      id: 'bouly-bonjour', name: 'M. Bouly', x: 24, y: 12, facing: 'down', color: 0x7c5c2c,
+      id: 'bouly-bonjour', name: 'M. Bouly', x: 27, y: 13, facing: 'left', color: 0x7c5c2c,
       unlessFlags: [FLAGS.jeanQuetes],
       dialogue: ['[M. Bouly - texte provisoire] Bonjour mon grand ! Belle journée pour la ferme, hein ?'],
     },
     {
-      id: 'bouly', name: 'M. Bouly', x: 24, y: 12, facing: 'down', color: 0x7c5c2c,
+      id: 'bouly', name: 'M. Bouly', x: 27, y: 13, facing: 'left', color: 0x7c5c2c,
       ifFlags: [FLAGS.jeanQuetes],
       dialogue: [
         "[M. Bouly - texte provisoire] Bonjour mon grand ! Mon tracteur est tombé en panne...",

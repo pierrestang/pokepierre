@@ -37,6 +37,7 @@ export const FRLG_SHEETS = {
   car: 'frlg-car',
   cabane: 'rs-cabane',
   bigTree: 'rs-bigtree',
+  farm: 'rs-farm',
 };
 
 export function preloadFrlg(scene) {
@@ -136,6 +137,9 @@ export const FRLG_BUILDINGS = {
   lab: { sx: 528, sy: 342, w: 112, h: 72, footH: 4 },       // labo du Prof. Chen : 7 cases, porte en 4e colonne
   mansion: { sx: 296, sy: 126, w: 112, h: 124, footH: 8 },   // grand immeuble vert : 7 x 8 cases, porte en 4e colonne
   museum: { sx: 136, sy: 338, w: 176, h: 120, footH: 8 },    // musée à colonnes : 11 x 8 cases, porche au milieu (porte en 6e colonne)
+  // Ferme de M. Bouly : gare du téléphérique du Mont Chimnée (Rubis/Saphir, scripts/extract_rs_buildings.py),
+  // 6 x 4 cases, grande porte en 4e colonne.
+  boulyFarm: { sheet: FRLG_SHEETS.farm, sx: 0, sy: 0, w: 96, h: 80, footH: 4 },
 };
 
 // ---------- Sol ----------

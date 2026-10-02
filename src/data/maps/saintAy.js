@@ -10,7 +10,7 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // Saint-Ay (Loiret) — petit village de campagne, 32 x 28 cases, façon Rouge Feu, bâtiments resserrés autour
 // de la route de Montépilloy (nord-sud) : rue des maisons (chaumière de la famille et, à côté, l'enclos à
 // poules, ouvert vers le bas par une seule case au bout de la rue ; planches gardées par les poules), rue du milieu (maison de
-// Felix), et au sud la clinique sur la route du bas. Prés de hautes herbes aux formes irrégulières. À l'ouest, le lac
+// Felix, chaumière comme celle de la famille), et au sud la clinique (toit d'ardoise) sur la route du bas. Prés de hautes herbes aux formes irrégulières. À l'ouest, le lac
 // (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des cousins
 // posée sur deux sapins de la forêt. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde
 // pendant le chantier de la cabane. Ceinture d'arbres ailleurs.
@@ -48,7 +48,7 @@ export const saintAyMap = {
     'TTTTTTTT..ĥĥĥĥççf.RRRRR...ĥĥĥ.TT', // 17
     'TTTTTTTT.ĥĥĥĥ.ççf.RRRRR..ĥĥĥĥ.TT', // 18
     'TTTTTTTT..ĥĥĥĥçç..WWWWW...ĥĥĥ.TT', // 19
-    'TTĥĥĥĥĥ....ĥĥ.çç.SWWDWW....ĥĥ.TT', // 20
+    'TTĥĥĥĥĥ....ĥĥ.çç.SWDWWW....ĥĥ.TT', // 20
     'TTĥĥĥĥ........ççççççççç.......TT', // 21
     'TT.ĥĥĥĥ.......ççççççççç.......TT', // 22
     'TTĥĥĥĥĥ..ĥĥ.......ĥĥĥ.........TT', // 23
@@ -66,7 +66,7 @@ export const saintAyMap = {
       lockedDialogue: ['Personne ne répond.'],
     },
     {
-      x: 20, y: 20, interior: 'hospital',
+      x: 19, y: 20, interior: 'hospital',
       lock: { ifFlags: [FLAGS.familleSuit] },
       lockedDialogue: ["La clinique de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
@@ -76,8 +76,8 @@ export const saintAyMap = {
   // Bâtiments (coin haut-gauche, en cases) ; la collision reste dans la grille.
   buildings: [
     { type: 'cottage', x: 17, y: 3 },
-    { type: 'slateHouse', x: 17, y: 9 },
-    { type: 'clinic', x: 18, y: 17 },
+    { type: 'cottage', x: 17, y: 9 },          // maison des cousins : même extérieur que celle de Pierre
+    { type: 'slateHouse', x: 18, y: 17 },      // la clinique : toit d'ardoise, porte rouge
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
   // Obstacles qui dépendent de l'histoire.

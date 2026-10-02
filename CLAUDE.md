@@ -32,7 +32,8 @@ On commence par une seule ville jouable, puis on étend à une petite région.
   Diamant/Perle (`d{n}`), Noir/Blanc (`n{n}`), champions d'Émeraude (`h{n}`), au choix dans Start > PNJ.
 - Interface (scripts/build_ds_ui.py -> public/assets/ui/, voir src/art/uiIcons.js) : icônes d'objets et bulles
   d'émotion de HeartGold/SoulSilver (sac, objet reçu, étape `emote` des scénettes), cartes postales de la carte
-  du voyage tirées des illustrations de lieux de Johto. Mont Chimnée (Rubis/Saphir) : pas encore utilisé.
+  du voyage tirées des illustrations de lieux de Johto. Mont Chimnée (Rubis/Saphir) : la gare du téléphérique sert
+  de ferme à M. Bouly (scripts/extract_rs_buildings.py).
 
 ## Structure
 - src/scenes/ : les scènes Phaser (ville, intérieurs, combat).
