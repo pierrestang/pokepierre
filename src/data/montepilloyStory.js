@@ -27,7 +27,7 @@ export const ELLIPSIS = [
 // À la maison : Maman accueille Pierre, que Manon a ramené.
 export const MAMAN_WELCOME = [
   { approach: 'maman-mont' },
-  { speaker: 'Maman', say: ['Te voilà ! Dernier jour d\'école primaire ! Après, le collège.'] },
+  { speaker: 'Maman', say: ['Te voilà ! Dernier jour d\'école primaire ! Après, le collège.', 'Dépêche-toi, tu vas être en retard !'] },
   { setFlag: FLAGS.mamanAccueil },
 ];
 

@@ -547,7 +547,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'mmmηooommm',   // escalier vers la chambre (étage)
+      'mmmooommoη',   // escalier vers la chambre (étage), contre le mur de droite
       'oooooooooo',
       'ooommmmooo',
       'moommmmoom',
@@ -558,16 +558,15 @@ export const interiors = {
       { kind: 'kitchen', x: 0, y: 1 },
       { kind: 'fridge', x: 2, y: 1 },
       { kind: 'window', x: 4, y: 0 },
+      { kind: 'blueShelf', x: 6, y: 1 },
       { kind: 'crtTv', x: 7, y: 2 },
-      { kind: 'blueShelf', x: 8, y: 1 },
-      { kind: 'pottedPlant', x: 9, y: 2 },
       { kind: 'table', x: 3, y: 4 },
       { kind: 'plant', x: 0, y: 5 },
       { kind: 'plant', x: 9, y: 5 },
     ],
     spawn: { x: 4, y: 6, facing: 'up' },
-    // Toute la famille : Papa, Maman, Manon, Fanny et Jean (le jour de septembre, Papa, Maman et Jean sont
-    // dehors, devant la maison). Scénario : voir data/montepilloyStory.js.
+    // Papa, Maman et Manon au salon ; Jean et Fanny sont à l'étage (le jour de septembre, Papa, Maman et Jean
+    // sont dehors, devant la maison). Scénario : voir data/montepilloyStory.js.
     npcs: [
       {
         id: 'maman-mont', name: 'Maman', x: 6, y: 3, facing: 'left', color: 0xe86fa0,
@@ -581,39 +580,25 @@ export const interiors = {
         id: 'manon-mont', name: 'Manon', x: 7, y: 4, facing: 'left', color: 0xf0a030,
         dialogue: ['Le collège ? Tu verras, on s\'y fait vite. Et le car, c\'est le meilleur moment de la journée.'],
       },
-      {
-        id: 'fanny-mont', name: 'Fanny', x: 8, y: 5, facing: 'left', color: 0xf0c0c0,
-        dialogue: ['Fanny fait rouler un petit tracteur en bois sur le parquet.'],
-      },
-      // Jean, ton petit frère : il t'emmène comme assistant pour réparer le tracteur de M. Bouly (il te suit).
-      {
-        id: 'jean', name: 'Jean', x: 2, y: 4, facing: 'right', color: 0x3c7c5c,
-        unlessFlags: [FLAGS.jeanQuetes], script: JEAN,
-      },
-      {
-        id: 'jean-fin', name: 'Jean', x: 2, y: 4, facing: 'right', color: 0x3c7c5c,
-        ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.septembre],
-        dialogue: ['M. Bouly m\'a laissé tenir le volant dans le champ ! Tu crois que j\'aurai un tracteur, un jour ?'],
-      },
     ],
     // Pierre arrive, ramené par Manon : Maman l'accueille.
     events: [{ on: 'enter', ifFlags: [FLAGS.manonMaison], unlessFlags: [FLAGS.mamanAccueil], steps: MAMAN_WELCOME }],
-    triggers: [{ x: 3, y: 2, warp: { interior: 'montHouseUp', x: 11, y: 3, facing: 'down' } }],
+    triggers: [{ x: 9, y: 2, warp: { interior: 'montHouseUp', x: 12, y: 3, facing: 'down' } }],
   },
 
   // Montépilloy — l'étage de la maison : la chambre des enfants, quatre lits côte à côte (Pierre, Manon, Jean,
-  // Fanny), escalier pour redescendre à droite.
+  // Fanny), escalier pour redescendre à droite. Jean et Fanny y jouent.
   montHouseUp: {
     name: 'Chambre des enfants',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmommommommξ',   // quatre lits, escalier vers le salon
-      'mmommommommo',
-      'oooooooooooo',
-      'mooooooooomm',   // plante, étagère
-      'oooooooooomm',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'mmommommommoξ',   // quatre lits, escalier vers le salon contre le mur de droite
+      'mmommommommoo',
+      'ooooooooooooo',
+      'mooooooooommo',   // plante, étagère
+      'oooooooooommo',
     ]),
     decor: [
       ...[0, 3, 6, 9].map((x) => ({ kind: 'bed', x, y: 2 })),
@@ -622,8 +607,24 @@ export const interiors = {
       { kind: 'pottedPlant', x: 0, y: 5 },
       { kind: 'shelf', x: 10, y: 5 },
     ],
-    spawn: { x: 11, y: 3, facing: 'down' },
-    triggers: [{ x: 11, y: 2, warp: { interior: 'montHouse', x: 3, y: 3, facing: 'down' } }],
+    spawn: { x: 12, y: 3, facing: 'down' },
+    triggers: [{ x: 12, y: 2, warp: { interior: 'montHouse', x: 9, y: 3, facing: 'down' } }],
+    npcs: [
+      {
+        id: 'fanny-mont', name: 'Fanny', x: 5, y: 5, facing: 'up', color: 0xf0c0c0,
+        dialogue: ['Fanny fait rouler un petit tracteur en bois sur le parquet.'],
+      },
+      // Jean, ton petit frère : il t'emmène comme assistant pour réparer le tracteur de M. Bouly (il te suit).
+      {
+        id: 'jean', name: 'Jean', x: 7, y: 5, facing: 'left', color: 0x3c7c5c,
+        unlessFlags: [FLAGS.jeanQuetes], script: JEAN,
+      },
+      {
+        id: 'jean-fin', name: 'Jean', x: 7, y: 5, facing: 'left', color: 0x3c7c5c,
+        ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.septembre],
+        dialogue: ['M. Bouly m\'a laissé tenir le volant dans le champ ! Tu crois que j\'aurai un tracteur, un jour ?'],
+      },
+    ],
     objects: [
       ...[0, 1].map((x) => ({ x, y: 3, dialogue: ['Ton lit, contre la fenêtre.'] })),
       ...[3, 4].map((x) => ({ x, y: 3, dialogue: ['Le lit de Manon, fait au carré.'] })),
