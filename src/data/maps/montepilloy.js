@@ -37,8 +37,8 @@ export const montepilloyMap = {
     'TTFʬʬʬʬʬʬʬʬʬʬFççĥ.~~~~~~f.ĥ...TT', // 19
     'TTFʬʬʬʬʬʬʬʬʬʬFçç..~~~~~~f...TTTT', // 20
     'TTFʬʬʬʬʬʬʬʬʬʬFçç..f...f..ĥ..TTTT', // 21
-    'TTFʬʬʬʬʬʬʬʬʬʬFççTT..ĥ...f.ĥ...TT', // 22
-    'TTFFFFFFFFFFFFççTT.ĥ.ĥ.ĥ.....ƀTT', // 23
+    'TTFʬʬʬʬʬʬʬʬʬʬFçç....ĥ...f.ĥ...TT', // 22
+    'TTFFFFFFFFFFFFçç...ĥ.ĥ.ĥ.....ƀTT', // 23
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 24
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 25
   ]),
