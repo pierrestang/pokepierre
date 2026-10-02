@@ -31,6 +31,7 @@ export const FLAGS = {
   cacheCache: 'cache-cache',                    //   Margaux a lancé la dernière partie de cache-cache
   trouveMargaux: 'trouve-margaux',              //   cache-cache : Margaux trouvée (bottes de foin de la ferme)
   trouveEtienne: 'trouve-etienne',              //   cache-cache : Étienne trouvé (arbre de la prairie)
+  trouveBenoit: 'trouve-benoit',                //   cache-cache : Benoît trouvé (tonneau de la grange)
   jeanQuetes: 'jean-quetes',                    //   Jean t'a demandé d'être son assistant (il te suit)
   boulyDemande: 'bouly-demande',                //   M. Bouly t'a parlé de la pièce qui manque à son tracteur
   pieceTrouvee: 'piece-trouvee',                //   pièce de tracteur trouvée dans le tonneau de la grange
@@ -148,6 +149,7 @@ export const FOLLOWERS = [
   { id: 'jean', color: 0x3c7c5c, ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.jeanTracteur] },
   { id: 'margaux', color: 0xf08080, ifFlags: [FLAGS.trouveMargaux], unlessSouvenirs: ['role-copains-montepilloy'] },
   { id: 'etienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], unlessSouvenirs: ['role-copains-montepilloy'] },
+  { id: 'benoit', color: 0xa07040, ifFlags: [FLAGS.trouveBenoit], unlessSouvenirs: ['role-copains-montepilloy'] },
   // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },

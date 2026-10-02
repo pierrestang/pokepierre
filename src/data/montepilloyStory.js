@@ -93,13 +93,25 @@ export const HIDE_AND_SEEK = [
   { black: false },
 ];
 
-// Margaux, derrière les bottes de foin de la ferme ; Étienne, dans l'arbre de la prairie à côté de la mare.
-// Une fois trouvés, ils suivent Pierre jusqu'à la fin de la partie.
+// Margaux, derrière les bottes de foin de la ferme ; Étienne, dans l'arbre de la prairie à côté de la mare ;
+// Benoît, dans un tonneau de la grange. Dans n'importe quel ordre : une fois trouvés, ils suivent Pierre, et le
+// dernier trouvé clôt la partie (voir GAME_OVER).
+const GAME_OVER = {
+  ifFlags: [FLAGS.trouveMargaux, FLAGS.trouveEtienne, FLAGS.trouveBenoit],
+  unlessSouvenirs: [ROLES.copainsMontepilloy.id],
+  steps: [
+    { speaker: 'Margaux', say: ['Alors on la refait l\'été prochain. Promis ?'] },
+    { quality: ROLES.copainsMontepilloy },
+    { say: ['Les copains retournent à l\'école récupérer leurs cartables.'] },
+  ],
+};
+
 export const FOUND_MARGAUX = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Margaux était accroupie derrière les bottes de foin.'] },
   { speaker: 'Margaux', say: ['Trouvée… L\'an prochain, au collège, on sera peut-être dans la même classe.'] },
   { setFlag: FLAGS.trouveMargaux },
+  GAME_OVER,
 ];
 
 export const FOUND_ETIENNE = [
@@ -107,11 +119,12 @@ export const FOUND_ETIENNE = [
   { say: ['Des feuilles tombent… Étienne est perché dans l\'arbre !'] },
   { speaker: 'Étienne', say: ['Perdu ! L\'an prochain, on ira au collège ensemble. Tu m\'attends le matin ?'] },
   { setFlag: FLAGS.trouveEtienne },
+  GAME_OVER,
 ];
 
-// Benoît, le dernier, dans un tonneau de la grange (à gauche, pas celui de la pièce du tracteur) : il ne se
-// trahit qu'une fois les deux autres trouvés.
-const BENOIT_LEFT = { ifFlags: [FLAGS.cacheCache, FLAGS.trouveMargaux, FLAGS.trouveEtienne], unlessSouvenirs: [ROLES.copainsMontepilloy.id] };
+// Benoît, dans le tonneau du fond à gauche de la grange (pas celui de la pièce du tracteur) : le tonneau bouge
+// quand on entre.
+const BENOIT_LEFT = { ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveBenoit] };
 export const BENOIT_BARREL = [0, 4];
 export const BARREL_MOVES = {
   on: 'enter',
@@ -124,9 +137,8 @@ export const BARREL_MOVES = {
 export const FOUND_BENOIT = [
   { emote: 'player', kind: 'surprise' },
   { speaker: 'Benoît', say: ['Tu m\'as trouvé… Bon, c\'était ma dernière partie avec vous. L\'an prochain, je ne serai pas au collège avec vous.'] },
-  { speaker: 'Margaux', say: ['Alors on la refait l\'été prochain. Promis ?'] },
-  { quality: ROLES.copainsMontepilloy },
-  { say: ['Les copains retournent à l\'école récupérer leurs cartables.'] },
+  { setFlag: FLAGS.trouveBenoit },
+  GAME_OVER,
 ];
 export const BENOIT_HIDING = { ...BENOIT_LEFT, x: BENOIT_BARREL[0], y: BENOIT_BARREL[1], script: FOUND_BENOIT };
 

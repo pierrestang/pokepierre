@@ -44,7 +44,7 @@ export const BY_NAME = {
   Jean: 't12', Felix: 'f2', Romain: 't3', Paul: 'f53', Yanis: 'f66', Ousmane: 'f72', Harsh: 'f71',
   Tom: 'f56', 'Théo': 'f57', 'Léo': 'f55', Tanguy: 'f58', Thomas: 'f20', Hugues: 'f17', Geoffrey: 'f42',
   'Benoît': 'f38', 'Étienne': 'f36', Joshua: 'f10', Laurent: 'f52',
-  Margaux: 'f48', Val: 't10', Anna: 'f59', Fanny: 'f46', Charlotte: 'f45', 'Anaïs': 'f47', Anais: 'f47',
+  Margaux: 'f48', Val: 't10', Anna: 'f59', Fanny: 'f18', Charlotte: 'f45', 'Anaïs': 'f47', Anais: 'f47',
   // Métiers
   'M. Bouly': 'f32', Directeur: 't3', Directrice: 'f54', Manager: 'f8', Responsable: 't13',
   'Agent immobilier': 'f34', Vendeur: 'f16', Cuisinier: 'f50', 'Pêcheur': 'f43', 'Vieux sage': 'f26',
@@ -54,7 +54,7 @@ export const BY_NAME = {
 };
 
 // Figurants sans attribution (ex. les diplômés, les touristes) : choisis d'après leur id et leur place.
-const EXTRAS = ['f9', 'f18', 'f19', 'f21', 'f23', 'f37', 'f53', 'f55', 'f56', 'f57', 'f59', 't0', 't5', 't12'];
+const EXTRAS = ['f9', 'f46', 'f19', 'f21', 'f23', 'f37', 'f53', 'f55', 'f56', 'f57', 'f59', 't0', 't5', 't12'];
 
 function hash(text) {
   let h = 0;

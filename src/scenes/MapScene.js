@@ -390,6 +390,7 @@ export class MapScene extends Phaser.Scene {
       if (step.quality && souvenirs.add(step.quality)) {
         sfx('item');
         await this.dialog.open([`Tu as reçu : ${step.quality.name}.`]);
+        this.refreshActors();                       // PNJ et suiveurs qui dépendent du titre
       }
       const raised = [step.setFlag, ...(step.setFlags ?? [])].filter(Boolean);
       if (raised.length) {
