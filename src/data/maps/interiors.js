@@ -10,6 +10,19 @@ import {
   LIBRARY, EXAM,
 } from '../hullStory.js';
 
+// Collège Bonsecours : la principale (provisoire, en attendant le scénario de la quête Bonsecours).
+const PRINCIPALE = [
+  { ifFlags: [FLAGS.bonsecoursFini], speaker: 'Principale', say: ['Bonne route jusqu\'au Prytanée, Pierre. Bonsecours sera toujours un peu chez toi.'], end: true },
+  {
+    speaker: 'Principale',
+    say: [
+      '[Quête Bonsecours — texte provisoire] Bienvenue au collège Bonsecours, Pierre.',
+      'Les années passent vite… Ton temps ici est terminé : le Prytanée t\'attend, au bout de la route.',
+    ],
+  },
+  { setFlag: FLAGS.bonsecoursFini },
+];
+
 // Cannes de la cabane de pêche : [icône, x, y, hauteur gardée] en pixels depuis le coin de la case (voir ffHut).
 const RACK_RODS = [['vieille-canne-petite', 8, -14, 23], ['super-canne-petite', 0, -14, 23], ['mega-canne-petite', -8, -14, 23]];
 const CRATE_RODS = [['super-canne-petite', -6, -17, 19], ['vieille-canne-petite', -1, -17, 19]];
@@ -593,6 +606,163 @@ export const interiors = {
     // Pierre arrive, ramené par Manon : Maman l'accueille.
     events: [{ on: 'enter', ifFlags: [FLAGS.manonMaison], unlessFlags: [FLAGS.mamanAccueil], steps: MAMAN_WELCOME }],
     triggers: [{ x: 9, y: 2, warp: { interior: 'montHouseUp', x: 12, y: 3, facing: 'down' } }],
+  },
+
+  // Collège Bonsecours (route de Bonsecours) — le hall : la principale derrière l'accueil, panneaux d'affichage,
+  // et deux escaliers encastrés vers les salles de classe (maths à gauche, français à droite) ; la salle de
+  // sciences est un étage plus haut, au-dessus de la salle de maths.
+  bonsecours: {
+    name: 'Collège Bonsecours',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXX',
+      'ηooooooooooooη', // escaliers : salle de maths (gauche), salle de français (droite)
+      'oooommmooooooo', // accueil
+      'oooooooooooooo',
+      'moooooooooooom',
+      'oooooooooooooo',
+      'moooooooooooom',
+      'moooooEEooooom',
+    ]),
+    decor: [
+      { kind: 'notice', x: 3, y: 0 },
+      { kind: 'window', x: 6, y: 0 },
+      { kind: 'notice', x: 10, y: 0 },
+      { kind: 'longTable', x: 4, y: 3 },
+      { kind: 'pottedPlant', x: 0, y: 5 },
+      { kind: 'pottedPlant', x: 13, y: 5 },
+      { kind: 'plant', x: 0, y: 7 },
+      { kind: 'plant', x: 13, y: 7 },
+    ],
+    spawn: { x: 6, y: 7, facing: 'up' },
+    triggers: [
+      { x: 0, y: 2, warp: { interior: 'bonsecoursMaths', x: 13, y: 3, facing: 'down' } },
+      { x: 13, y: 2, warp: { interior: 'bonsecoursFrancais', x: 13, y: 3, facing: 'down' } },
+    ],
+    objects: [
+      ...[4, 5, 6].map((x) => ({ x, y: 3, script: PRINCIPALE })),
+      { x: 3, y: 1, dialogue: ['Emploi du temps de 6e B : maths, français, sciences… et sport le vendredi.'] },
+      { x: 10, y: 1, dialogue: ['« Club de théâtre : inscriptions auprès de la principale. »'] },
+    ],
+    npcs: [
+      // La quête Bonsecours n'est pas encore écrite : la principale la clôt d'un mot, ce qui ouvre la route du
+      // Prytanée (voir maps/routeBonsecours.js). On lui parle par-dessus le comptoir d'accueil.
+      { id: 'principale', name: 'Principale', x: 5, y: 2, facing: 'down', color: 0x8c5ca8, script: PRINCIPALE },
+      {
+        id: 'surveillant', name: 'Surveillant', x: 9, y: 5, facing: 'left', color: 0x5c6c8c,
+        dialogue: ['On ne court pas dans les couloirs ! Les salles de classe sont en haut des escaliers.'],
+      },
+    ],
+  },
+
+  // Collège Bonsecours — salle de maths (escalier du hall à droite ; à gauche, l'escalier de la salle de sciences).
+  bonsecoursMaths: {
+    name: 'Salle de maths',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXX',
+      'ηooooommmooooξ', // bureau du professeur, escaliers
+      'oooooooooooooo',
+      'ommommommommoo', // pupitres
+      'oooooooooooooo',
+      'ommommommommoo',
+      'moooooooooooom',
+      'moooooooooooom',
+    ]),
+    decor: [
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'chalkboard', x: 5, y: 1 },
+      { kind: 'window', x: 10, y: 0 },
+      { kind: 'longTable', x: 5, y: 2 },
+      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'paperDesk' : 'schoolDesk', x, y: 4 })),
+      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'schoolDesk' : 'paperDesk', x, y: 6 })),
+      { kind: 'plant', x: 0, y: 7 },
+      { kind: 'plant', x: 13, y: 7 },
+    ],
+    spawn: { x: 13, y: 3, facing: 'down' },
+    triggers: [
+      { x: 13, y: 2, warp: { interior: 'bonsecours', x: 0, y: 3, facing: 'down' } },
+      { x: 0, y: 2, warp: { interior: 'bonsecoursSciences', x: 0, y: 3, facing: 'down' } },
+    ],
+    objects: [
+      { x: 5, y: 1, dialogue: ['Au tableau : « Le carré de l\'hypoténuse est égal à la somme des carrés des deux autres côtés. »'] },
+    ],
+    npcs: [
+      { id: 'prof-maths', name: 'Professeur', x: 9, y: 2, facing: 'down', color: 0x4c6c9c, dialogue: ['Sors ton compas, Pierre : aujourd\'hui, géométrie !'] },
+      { id: 'margaux-college', name: 'Margaux', x: 3, y: 5, facing: 'up', color: 0xf08080, dialogue: ['On est dans la même classe, comme promis ! Enfin… presque promis.'] },
+    ],
+  },
+
+  // Collège Bonsecours — salle de français (escalier du hall à droite).
+  bonsecoursFrancais: {
+    name: 'Salle de français',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXX',
+      'oooooommmooooξ', // bureau du professeur, escaliers
+      'oooooooooooooo',
+      'ommommommommoo', // pupitres
+      'oooooooooooooo',
+      'ommommommommoo',
+      'moooooooooooom',
+      'moooooooooooom',
+    ]),
+    decor: [
+      { kind: 'window', x: 1, y: 0 },
+      { kind: 'chalkboard', x: 5, y: 1 },
+      { kind: 'window', x: 10, y: 0 },
+      { kind: 'longTable', x: 5, y: 2 },
+      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'paperDesk' : 'schoolDesk', x, y: 4 })),
+      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'schoolDesk' : 'paperDesk', x, y: 6 })),
+      { kind: 'plant', x: 0, y: 7 },
+      { kind: 'plant', x: 13, y: 7 },
+    ],
+    spawn: { x: 13, y: 3, facing: 'down' },
+    triggers: [{ x: 13, y: 2, warp: { interior: 'bonsecours', x: 13, y: 3, facing: 'down' } }],
+    objects: [
+      { x: 5, y: 1, dialogue: ['Au tableau : « Rédaction : racontez votre plus beau souvenir de vacances. »'] },
+    ],
+    npcs: [
+      { id: 'prof-francais', name: 'Professeure', x: 9, y: 2, facing: 'down', color: 0xc06080, dialogue: ['Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit !'] },
+      { id: 'etienne-college', name: 'Étienne', x: 6, y: 5, facing: 'up', color: 0x6080a0, dialogue: ['Le car le matin, le self le midi… Le collège, c\'est la belle vie !'] },
+    ],
+  },
+
+  // Collège Bonsecours — salle de sciences, au-dessus de la salle de maths : paillasses et vitrine.
+  bonsecoursSciences: {
+    name: 'Salle de sciences',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXX',
+      'ξooooommmoooom', // bureau du professeur, vitrine
+      'oooooooooooooo',
+      'oommmooommmooo', // paillasses
+      'oooooooooooooo',
+      'oommmooommmooo',
+      'moooooooooooom',
+      'moooooooooooom',
+    ]),
+    decor: [
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'chalkboard', x: 5, y: 1 },
+      { kind: 'glassCabinet', x: 13, y: 1 },
+      { kind: 'longTable', x: 5, y: 2 },
+      ...[[2, 4], [8, 4], [2, 6], [8, 6]].map(([x, y]) => ({ kind: 'longTable', x, y })),
+      { kind: 'plant', x: 0, y: 7 },
+      { kind: 'plant', x: 13, y: 7 },
+    ],
+    spawn: { x: 0, y: 3, facing: 'down' },
+    triggers: [{ x: 0, y: 2, warp: { interior: 'bonsecoursMaths', x: 0, y: 3, facing: 'down' } }],
+    objects: [
+      { x: 13, y: 2, dialogue: ['La vitrine : un squelette en plastique, des bocaux et un vieux microscope.'] },
+    ],
+    npcs: [
+      { id: 'prof-sciences', name: 'Professeur de sciences', x: 9, y: 2, facing: 'down', color: 0x4c8c5c, dialogue: ['Aujourd\'hui, on observe des feuilles au microscope. Les feuilles des arbres de Bonsecours !'] },
+    ],
   },
 
   // Montépilloy — l'étage de la maison : la chambre des enfants, quatre lits côte à côte (Pierre, Manon, Jean,

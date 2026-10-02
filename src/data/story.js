@@ -38,7 +38,8 @@ export const FLAGS = {
   jeanTracteur: 'jean-tracteur',                //   Jean s'installe devant le tracteur pour le réparer
   tracteurRepare: 'tracteur-repare',            //   « Passe-moi la clé ! » réussi : le tracteur est réparé
   septembre: 'septembre',                       //   ellipse jusqu'en septembre : la famille devant la maison
-  departCollege: 'depart-college',              //   le car scolaire attend à la sortie nord
+  departCollege: 'depart-college',              //   Pierre part pour le collège Bonsecours (sortie nord)
+  bonsecoursFini: 'bonsecours-fini',            // quête Bonsecours finie : la route du Prytanée s'ouvre
   arriveePrytanee: 'arrivee-prytanee',          // arrivé au Prytanée
   capitaineAccueil: 'capitaine-accueil',        // le capitaine t'envoie au dortoir (bâtiment 1)
   dortoirVisite: 'dortoir-visite',              // affaires déposées au dortoir

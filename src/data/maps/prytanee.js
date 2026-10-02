@@ -6,7 +6,8 @@ const CAPTAIN = { name: 'Capitaine', color: 0x3c5c2c };
 // Prytanée (lycée militaire) — façon Rouge Feu, 30 x 24 cases, dans une enceinte de barrière blanche :
 // au nord, le dortoir (grand immeuble, bâtiment 1) et le bâtiment des cours (à colonnes, bâtiment 2) ; au
 // centre, la place d'armes dallée avec le mât du drapeau et des sacs de sable ; au sud, le poste de
-// commandement, une tranchée de sacs de sable et des caisses. Portail sud vers Montépilloy, nord vers Bordeaux.
+// commandement, une tranchée de sacs de sable et des caisses. Portail sud vers la route de Bonsecours (et
+// Montépilloy), nord vers Bordeaux.
 // Légende : voir src/data/tiles.js (ɐ = dalles, J = mât, Q = sacs de sable, V = caisse, F = barrière,
 // T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, S = panneau, R / W / D = toit, mur, porte)
 export const prytaneeMap = {
@@ -100,9 +101,9 @@ export const prytaneeMap = {
     ...[14, 15].map((x) => ({
       x,
       y: 23,
-      ifFlags: [FLAGS.arriveePrytanee],           // on n'y vient qu'en ayant quitté Montépilloy (car scolaire parti)
-      readyDialogue: ['Tu prends la route de Montépilloy.'],
-      warp: { map: 'montepilloy', x: 14, y: 1, facing: 'down' },
+      ifFlags: [FLAGS.arriveePrytanee],           // on n'y vient que par la route de Bonsecours
+      readyDialogue: ['Tu prends la route de Bonsecours.'],
+      warp: { map: 'routeBonsecours', x: 10, y: 1, facing: 'down' },
     })),
     // Portail nord : Bordeaux, une fois le baccalauréat obtenu.
     ...[24, 25].map((x) => ({

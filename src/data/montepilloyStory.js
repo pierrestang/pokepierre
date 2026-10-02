@@ -49,12 +49,11 @@ export const SEPTEMBER_MORNING = [
   { setFlag: FLAGS.departCollege },
 ];
 
-// La sortie nord : en septembre, Pierre part à pied pour le collège ; avant, ce qu'il reste à faire.
-// La suite de l'histoire (le Prytanée) n'est pas encore réécrite : la route y mène en attendant.
+// La sortie nord : en septembre, Pierre part à pied pour le collège Bonsecours (voir maps/routeBonsecours.js) ;
+// avant, ce qu'il reste à faire.
 export const NORTH_EXIT = [
   { ifFlags: [FLAGS.departCollege], say: ['Tu prends la route du collège, ton cartable sur le dos.'] },
-  { ifFlags: [FLAGS.departCollege], setFlag: FLAGS.arriveePrytanee },
-  { ifFlags: [FLAGS.departCollege], travel: { map: 'prytanee', x: 14, y: 21, facing: 'up' }, end: true },
+  { ifFlags: [FLAGS.departCollege], travel: { map: 'routeBonsecours', x: 10, y: 27, facing: 'up' }, end: true },
   {
     unlessSouvenirs: [ROLES.copainsMontepilloy.id],
     say: ['Les copains t\'attendent pour la dernière partie de cache-cache, à la sortie de l\'école.'],
