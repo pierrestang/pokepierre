@@ -1,4 +1,4 @@
-"""Logo du jeu : une Poké Ball en pixel art sur fond bleu, dessinée pixel par pixel sur une grille de 16 x 16,
+"""Logo du jeu : une Poké Ball en pixel art, en aplats (« flat », sans ombre ni reflet), sur fond bleu uni, dessinée pixel par pixel sur une grille de 16 x 16,
 puis agrandie sans lissage. Icône de l'onglet (favicon), de l'écran d'accueil (iPhone, Android) et du
 manifeste, vers public/.
 
@@ -12,37 +12,31 @@ OUT = ROOT / 'public'
 
 C = {
     '.': (0, 0, 0, 0),
-    'B': (56, 104, 216, 255),     # fond bleu
-    'b': (32, 64, 152, 255),      # bord du fond
-    'l': (96, 144, 240, 255),     # reflet du fond
+    'B': (56, 112, 224, 255),     # fond bleu
     'k': (24, 24, 32, 255),       # contour et bande noire
-    'R': (224, 48, 48, 255),      # rouge
-    'r': (160, 24, 40, 255),      # ombre du rouge
-    'h': (255, 152, 144, 255),    # reflet du rouge
+    'R': (232, 56, 56, 255),      # rouge
     'W': (248, 248, 248, 255),    # blanc
-    'g': (184, 192, 208, 255),    # ombre du blanc
 }
-# La Poké Ball (12 x 12), posée au centre du fond bleu (16 x 16, bord sombre, reflet en haut).
+# La Poké Ball (12 x 12), posée au centre du fond bleu uni (16 x 16).
 BALL = [
     '....kkkk....',
     '..kkRRRRkk..',
-    '.kRhhRRRRRk.',
-    '.kRhRRRRRrk.',
-    'kRRRkkkkRRrk',
+    '.kRRRRRRRRk.',
+    '.kRRRRRRRRk.',
+    'kRRRkkkkRRRk',
     'kkkkkWWkkkkk',
     'kkkkkWWkkkkk',
-    'kWWWkkkkWWgk',
-    '.kWWWWWWWgk.',
-    '.kWWWWWWggk.',
-    '..kkggggkk..',
+    'kWWWkkkkWWWk',
+    '.kWWWWWWWWk.',
+    '.kWWWWWWWWk.',
+    '..kkWWWWkk..',
     '....kkkk....',
 ]
 
 
 def grid():
-    rows = [['b'] * 16] + [['b'] + ['B'] * 14 + ['b'] for _ in range(14)] + [['b'] * 16]
-    rows[0][0] = rows[0][15] = rows[15][0] = rows[15][15] = '.'
-    rows[1][1:15] = ['l'] * 14
+    rows = [['B'] * 16 for _ in range(16)]
+    rows[0][0] = rows[0][15] = rows[15][0] = rows[15][15] = '.'          # coins arrondis
     for y, line in enumerate(BALL):
         for x, c in enumerate(line):
             if c != '.':
@@ -66,7 +60,7 @@ def main():
     logo(512).save(OUT / 'icon-512.png')
     # iPhone : pas de transparence (les coins seraient noirs), iOS arrondit lui-même.
     full = logo(180)
-    bg = Image.new('RGB', full.size, C['b'][:3])
+    bg = Image.new('RGB', full.size, C['B'][:3])
     bg.paste(full, (0, 0), full)
     bg.save(OUT / 'apple-touch-icon.png')
     print('ok -> public/favicon.png, favicon.ico, icon-192.png, icon-512.png, apple-touch-icon.png')

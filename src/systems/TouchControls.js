@@ -18,10 +18,8 @@ const KEYS = {
   start: { key: 'Escape', code: 'Escape', keyCode: 27 },
 };
 
-const COLORS = {
-  pad: 0x2a2d38, padEdge: 0x50566a, padPressed: 0x454b5e, arrow: 0xc8ccd8,
-  a: 0xc8385a, aPressed: 0xe0607c, b: 0x5a4a9c, bPressed: 0x7c6cc0, start: 0x3a3e4c, startPressed: 0x5a6074,
-};
+// Commandes sans couleur : gris foncé, liseré plus clair, plus clair encore quand on appuie.
+const COLORS = { pad: 0x2a2d38, padEdge: 0x50566a, padPressed: 0x4a5062, arrow: 0xc8ccd8 };
 
 function send(name, type) {
   window.dispatchEvent(new KeyboardEvent(type, { ...KEYS[name], bubbles: true }));
@@ -38,7 +36,7 @@ export class TouchControls {
     this.pointers = new Map();                    // doigt -> commande tenue ('up'…, 'a', 'b', 'start')
     this.held = new Set();                        // touches enfoncées (noms de KEYS)
     this.gfx = scene.add.graphics().setDepth(120);
-    this.labels = ['A', 'B', 'START'].map((t) => scene.add.text(0, 0, t, { fontFamily: FONT, color: '#ffffff', fontStyle: 'bold' })
+    this.labels = ['A', 'B', 'START'].map((t) => scene.add.text(0, 0, t, { fontFamily: FONT, color: '#c8ccd8', fontStyle: 'bold' })
       .setOrigin(0.5).setDepth(121));
 
     scene.input.on('pointerdown', (p) => this.onPointer(p, true));
@@ -85,23 +83,24 @@ export class TouchControls {
       this.b = { x: ax - r * 2.3, y: cy + r * 0.75, r };
       this.start = { x: width / 2, y: Math.min(bottom - 22, cy + R + 44), w: Math.max(72, R * 0.95), h: 26 };
     } else {
-      // Paysage : une bande de chaque côté de l'écran de jeu (sans l'encoche).
-      const leftBand = { x0: safe.left, x1: v.x };
-      const rightBand = { x0: v.x + v.w, x1: width - safe.right };
-      const band = Math.min(leftBand.x1 - leftBand.x0, rightBand.x1 - rightBand.x0);
-      const R = Math.min(band * 0.36, height * 0.22, 92);
-      const r = R * 0.48;
-      const cy = height * 0.58;
-      this.pad = { x: (leftBand.x0 + leftBand.x1) / 2, y: cy, R };
-      const cx = (rightBand.x0 + rightBand.x1) / 2;
-      this.a = { x: cx + r * 1.05, y: cy - r * 0.7, r };
-      this.b = { x: cx - r * 1.05, y: cy + r * 0.7, r };
-      this.start = { x: cx, y: Math.min(height - safe.bottom - 22, cy + R + 26), w: Math.max(68, R * 0.9), h: 26 };
+      // Paysage : l'écran de jeu prend toute la hauteur ; les commandes, dans les bandes de chaque côté (sans
+      // l'encoche), mordent sur ses bords si elles manquent de place.
+      const band = Math.min(v.x - safe.left, width - safe.right - v.x - v.w);
+      const R = Math.min(Math.max(band * 0.42, height * 0.15), height * 0.2, 92);
+      const r = R * 0.5;
+      const cy = height * 0.62;
+      const margin = 12;
+      this.pad = { x: safe.left + Math.max(margin + R, band / 2), y: cy, R };
+      const right = width - safe.right;
+      const cx = right - Math.max(margin + r * 2.2, band / 2);
+      this.a = { x: cx + r * 1.1, y: cy - r * 0.75, r };
+      this.b = { x: cx - r * 1.1, y: cy + r * 0.75, r };
+      this.start = { x: cx, y: Math.max(safe.top + 20, cy - R - 30), w: Math.max(64, R * 0.9), h: 24 };
     }
     // Pas assez de place autour de l'écran de jeu (fenêtre étroite) : les commandes passent dessus, en transparence.
-    const overlaps = this.pad.x - this.pad.R < v.x + v.w && this.pad.x + this.pad.R > v.x
-      && this.pad.y + this.pad.R > v.y && this.pad.y - this.pad.R < v.y + v.h;
-    this.alpha = overlaps ? 0.55 : 1;
+    const over = ({ x, y }, size) => x - size < v.x + v.w && x + size > v.x && y + size > v.y && y - size < v.y + v.h;
+    const overlaps = over(this.pad, this.pad.R) || over(this.a, this.a.r) || over(this.b, this.b.r);
+    this.alpha = overlaps ? 0.6 : 1;
     this.draw();
   }
 
@@ -146,17 +145,19 @@ export class TouchControls {
     const button = (c, color, down) => {
       const sink = down ? 3 : 0;
       g.fillStyle(0x000000, 0.4).fillCircle(c.x, c.y + 4, c.r);
+      g.fillStyle(COLORS.padEdge, 1).fillCircle(c.x, c.y + sink, c.r + 2);
       g.fillStyle(color, 1).fillCircle(c.x, c.y + sink, c.r);
-      if (!down) g.fillStyle(0xffffff, 0.18).fillCircle(c.x - c.r * 0.25, c.y - c.r * 0.3, c.r * 0.45);
-      g.lineStyle(2, 0x000000, 0.35).strokeCircle(c.x, c.y + sink, c.r);
+      if (!down) g.fillStyle(0xffffff, 0.06).fillCircle(c.x - c.r * 0.25, c.y - c.r * 0.3, c.r * 0.45);
     };
-    button(a, pressed('a') ? COLORS.aPressed : COLORS.a, pressed('a'));
-    button(b, pressed('b') ? COLORS.bPressed : COLORS.b, pressed('b'));
+    button(a, pressed('a') ? COLORS.padPressed : COLORS.pad, pressed('a'));
+    button(b, pressed('b') ? COLORS.padPressed : COLORS.pad, pressed('b'));
 
     // START : pilule, comme sur la console.
     const sDown = pressed('start');
     g.fillStyle(0x000000, 0.4).fillRoundedRect(start.x - start.w / 2, start.y - start.h / 2 + 3, start.w, start.h, start.h / 2);
-    g.fillStyle(sDown ? COLORS.startPressed : COLORS.start, 1)
+    g.fillStyle(COLORS.padEdge, 1)
+      .fillRoundedRect(start.x - start.w / 2 - 2, start.y - start.h / 2 - 2 + (sDown ? 2 : 0), start.w + 4, start.h + 4, start.h / 2 + 2);
+    g.fillStyle(sDown ? COLORS.padPressed : COLORS.pad, 1)
       .fillRoundedRect(start.x - start.w / 2, start.y - start.h / 2 + (sDown ? 2 : 0), start.w, start.h, start.h / 2);
 
     const [la, lb, ls] = this.labels;

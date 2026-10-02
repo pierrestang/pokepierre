@@ -41,7 +41,8 @@ On commence par une seule ville jouable, puis on étend à une petite région.
   du voyage tirées des illustrations de lieux de Johto. Mont Chimnée (Rubis/Saphir) : la gare du téléphérique sert
   de ferme à M. Bouly ; caisses du marché de Slateport dans la cabane de pêche (scripts/extract_rs_buildings.py).
 
-- Mobile (src/systems/TouchControls.js, src/systems/screen.js) : en portrait, l'écran de jeu en haut et les
+- Mobile (src/systems/TouchControls.js, src/systems/screen.js) : écran de jeu le plus grand possible (zoom non
+  entier) ; en portrait, en haut, toute la largeur, et les
   commandes dessous ; en paysage, les commandes de chaque côté. `?touch` dans l'adresse force l'affichage tactile
   sur ordinateur. Logo (Poké Ball sur fond bleu) et icônes d'écran d'accueil : scripts/build_icons.py.
 

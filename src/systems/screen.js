@@ -7,10 +7,10 @@ export const SCREEN_H = 240;
 // Téléphone ou tablette (écran tactile sans souris) : on garde de la place pour les commandes tactiles.
 // `?touch` dans l'adresse les force (essais sur ordinateur).
 export const touchScreen = window.matchMedia('(pointer: coarse)').matches || new URLSearchParams(location.search).has('touch');
-// En paysage, largeur minimale de chaque bande de commandes, à gauche et à droite de l'écran de jeu.
-export const CONTROL_BAND = 150;
+// En paysage, place minimale gardée de chaque côté pour les commandes (elles peuvent mordre sur l'écran de jeu).
+export const CONTROL_BAND = 70;
 // En portrait, part minimale de la hauteur laissée aux commandes, sous l'écran de jeu.
-const CONTROL_SHARE = 0.42;
+const CONTROL_SHARE = 0.4;
 
 // Marges de sécurité de l'écran (encoche, barre d'accueil), lues dans les variables CSS --safe-* (index.html).
 export function safeInsets() {
@@ -20,21 +20,27 @@ export function safeInsets() {
   return { top: read('--safe-top'), right: read('--safe-right'), bottom: read('--safe-bottom'), left: read('--safe-left') };
 }
 
-// Zone de l'écran de jeu dans la fenêtre : { x, y, w, h, zoom }. Sur un écran tactile : en portrait, en haut
-// (les commandes en dessous) ; en paysage, au centre, entre deux bandes pour les commandes.
+// Zone de l'écran de jeu dans la fenêtre : { x, y, w, h, zoom }. Sur ordinateur, agrandie d'un facteur entier
+// (pixels nets) et centrée. Sur un écran tactile, le plus grande possible (facteur non entier) : en portrait,
+// toute la largeur, en haut (les commandes en dessous) ; en paysage, toute la hauteur, au centre (les commandes
+// de chaque côté).
 export function gameView({ width, height }) {
-  let availW = width;
-  let availH = height;
-  const portrait = height > width;
-  const safe = safeInsets();
-  if (touchScreen && portrait) availH = (height - safe.top) * (1 - CONTROL_SHARE);
-  if (touchScreen && !portrait) availW = width - 2 * (CONTROL_BAND + Math.max(safe.left, safe.right));
-  const zoom = Math.max(1, Math.floor(Math.min(availW / SCREEN_W, availH / SCREEN_H)));
-  const w = SCREEN_W * zoom;
-  const h = SCREEN_H * zoom;
+  let zoom;
+  let y;
+  if (!touchScreen) {
+    zoom = Math.max(1, Math.floor(Math.min(width / SCREEN_W, height / SCREEN_H)));
+  } else {
+    const safe = safeInsets();
+    const portrait = height > width;
+    const availW = width - safe.left - safe.right - (portrait ? 0 : 2 * CONTROL_BAND);
+    const availH = portrait ? (height - safe.top) * (1 - CONTROL_SHARE) : height - safe.top - safe.bottom;
+    zoom = Math.floor(Math.min(availW / SCREEN_W, availH / SCREEN_H) * 100) / 100;
+    if (portrait) y = Math.round(safe.top);
+  }
+  const w = Math.round(SCREEN_W * zoom);
+  const h = Math.round(SCREEN_H * zoom);
   const x = Math.floor((width - w) / 2);
-  const y = touchScreen && portrait ? Math.round(safe.top + 8) : Math.floor((height - h) / 2);
-  return { zoom, w, h, x, y };
+  return { zoom, w, h, x, y: y ?? Math.floor((height - h) / 2) };
 }
 
 // Police des textes de l'interface (chargée dans index.html), avec repli sur une police à chasse fixe.
