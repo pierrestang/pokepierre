@@ -34,6 +34,7 @@ export const FLAGS = {
   jeanQuetes: 'jean-quetes',                    //   Jean t'a demandé d'être son assistant (il te suit)
   boulyDemande: 'bouly-demande',                //   M. Bouly t'a parlé de la pièce qui manque à son tracteur
   pieceTrouvee: 'piece-trouvee',                //   pièce de tracteur trouvée dans le tonneau de la grange
+  jeanTracteur: 'jean-tracteur',                //   Jean s'installe devant le tracteur pour le réparer
   tracteurRepare: 'tracteur-repare',            //   « Passe-moi la clé ! » réussi : le tracteur est réparé
   septembre: 'septembre',                       //   ellipse jusqu'en septembre : la famille devant la maison
   departCollege: 'depart-college',              //   le car scolaire attend à la sortie nord
@@ -144,7 +145,7 @@ export const FOLLOWERS = [
   { id: 'felix', color: 0x9060d0, ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.maisonFelixVisitee] },
   // Montépilloy : Jean, ton assistant… ou plutôt toi le sien, jusqu'à la réparation du tracteur ; Margaux et
   // Étienne, une fois trouvés au cache-cache, jusqu'à la fin de la partie.
-  { id: 'jean', color: 0x3c7c5c, ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.tracteurRepare] },
+  { id: 'jean', color: 0x3c7c5c, ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.jeanTracteur] },
   { id: 'margaux', color: 0xf08080, ifFlags: [FLAGS.trouveMargaux], unlessSouvenirs: ['role-copains-montepilloy'] },
   { id: 'etienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], unlessSouvenirs: ['role-copains-montepilloy'] },
   // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.

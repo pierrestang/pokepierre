@@ -578,7 +578,7 @@ export const interiors = {
       },
       {
         id: 'manon-mont', name: 'Manon', x: 7, y: 4, facing: 'left', color: 0xf0a030,
-        dialogue: ['Le collège ? Tu verras, on s\'y fait vite. Et le car, c\'est le meilleur moment de la journée.'],
+        dialogue: ['Le collège ? Tu verras, on s\'y fait vite. Et le matin, tu feras la route avec les copains.'],
       },
     ],
     // Pierre arrive, ramené par Manon : Maman l'accueille.
@@ -614,15 +614,11 @@ export const interiors = {
         id: 'fanny-mont', name: 'Fanny', x: 5, y: 5, facing: 'up', color: 0xf0c0c0,
         dialogue: ['Fanny fait rouler un petit tracteur en bois sur le parquet.'],
       },
-      // Jean, ton petit frère : il t'emmène comme assistant pour réparer le tracteur de M. Bouly (il te suit).
+      // Jean, ton petit frère : après le cache-cache, il t'emmène comme assistant pour réparer le tracteur de
+      // M. Bouly (il te suit).
       {
         id: 'jean', name: 'Jean', x: 7, y: 5, facing: 'left', color: 0x3c7c5c,
         unlessFlags: [FLAGS.jeanQuetes], script: JEAN,
-      },
-      {
-        id: 'jean-fin', name: 'Jean', x: 7, y: 5, facing: 'left', color: 0x3c7c5c,
-        ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.septembre],
-        dialogue: ['M. Bouly m\'a laissé tenir le volant dans le champ ! Tu crois que j\'aurai un tracteur, un jour ?'],
       },
     ],
     objects: [
@@ -680,6 +676,22 @@ export const interiors = {
         id: 'benoit', name: 'Benoît', x: 3, y: 5, facing: 'up', color: 0xa07040,
         unlessFlags: [FLAGS.cacheCache],
         dialogue: ['Je connais une cachette que personne ne trouvera. Jamais.'],
+      },
+      // La partie finie, les copains sont revenus à l'école chercher leurs cartables.
+      {
+        id: 'margaux-fin', name: 'Margaux', x: 4, y: 3, facing: 'down', color: 0xf08080,
+        ifSouvenirs: [ROLES.copainsMontepilloy.id], unlessFlags: [FLAGS.septembre],
+        dialogue: ['Promis, hein ? L\'été prochain, on refait une partie. Dans tout le village.'],
+      },
+      {
+        id: 'etienne-fin', name: 'Étienne', x: 9, y: 5, facing: 'left', color: 0x6080a0,
+        ifSouvenirs: [ROLES.copainsMontepilloy.id], unlessFlags: [FLAGS.septembre],
+        dialogue: ['Benoît dans un tonneau… Il fallait y penser !'],
+      },
+      {
+        id: 'benoit-fin', name: 'Benoît', x: 3, y: 5, facing: 'up', color: 0xa07040,
+        ifSouvenirs: [ROLES.copainsMontepilloy.id], unlessFlags: [FLAGS.septembre],
+        dialogue: ['Je sens encore le cidre… Ma mère va me tuer.'],
       },
     ],
     events: [{ on: 'enter', unlessFlags: [FLAGS.ecoleCm2], steps: LAST_DAY }],

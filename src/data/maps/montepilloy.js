@@ -1,7 +1,7 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS } from '../story.js';
 import {
-  ELLIPSIS, MANON_WALK, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, SCHOOL_BUS, NORTH_EXIT,
+  ELLIPSIS, MANON_WALK, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, NORTH_EXIT, JEAN_AT_TRACTOR,
 } from '../montepilloyStory.js';
 
 // Montépilloy (Oise) — village de campagne façon Rouge Feu, 32 x 26 cases. Chemins de terre de deux cases : la
@@ -70,12 +70,6 @@ export const montepilloyMap = {
       ifFlags: [FLAGS.tracteurRepare],
       dialogue: ['Le tracteur de M. Bouly ronronne.'],
     },
-    // En septembre, le car scolaire attend en haut de la grand-rue, entre les deux maisons.
-    {
-      type: 'bus', variant: 'school', x: 14, y: 2, w: 3, h: 2,
-      ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.arriveePrytanee],
-      script: SCHOOL_BUS,
-    },
   ],
   npcs: [
     // Tant que Jean ne t'a rien demandé, M. Bouly se contente de te saluer.
@@ -94,6 +88,13 @@ export const montepilloyMap = {
       ifFlags: [FLAGS.tracteurRepare],
       dialogue: ['Merci à vous deux ! Ton petit frère a de l\'or dans les mains.'],
     },
+    // Jean, devant le tracteur : il vient s'y placer pendant la réparation (voir REPAIR), quand il cesse de suivre
+    // Pierre.
+    {
+      id: 'jean', name: 'Jean', x: JEAN_AT_TRACTOR[0], y: JEAN_AT_TRACTOR[1], facing: 'up', color: 0x3c7c5c,
+      ifFlags: [FLAGS.jeanTracteur], unlessFlags: [FLAGS.septembre],
+      dialogue: ['Il tourne comme une horloge, maintenant.'],
+    },
     // Arrivée : Manon vient chercher Pierre au bord de la mare et le ramène à la maison (voir ELLIPSIS).
     {
       id: 'manon-arrivee', name: 'Manon', x: 16, y: 14, facing: 'down', color: 0xf0a030,
@@ -110,12 +111,12 @@ export const montepilloyMap = {
     {
       id: 'maman-septembre', name: 'Maman', x: 8, y: 8, facing: 'up', color: 0xe86fa0,
       ifFlags: [FLAGS.septembre],
-      dialogue: ['Allez, file ! Le car ne va pas t\'attendre.'],
+      dialogue: ['Allez, file ! Tu ne vas pas être en retard le premier jour.'],
     },
     {
       id: 'papa-septembre', name: 'Papa', x: 10, y: 8, facing: 'up', color: 0x3f6fd8,
       ifFlags: [FLAGS.septembre],
-      dialogue: ['Le car est en haut de la grand-rue.'],
+      dialogue: ['Le collège, c\'est tout droit, par la sortie nord.'],
     },
     {
       id: 'jean-septembre', name: 'Jean', x: 11, y: 7, facing: 'left', color: 0x3c7c5c,
@@ -150,7 +151,7 @@ export const montepilloyMap = {
     ...[[11, 21], [12, 21], [11, 22], [12, 22]].map(([x, y]) => ({
       x, y, ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveMargaux], script: FOUND_MARGAUX,
     })),
-    // Porte nord : ce qu'il reste à faire, puis, en septembre, le car scolaire qui attend juste à côté.
+    // Porte nord : ce qu'il reste à faire, puis, en septembre, la route du collège.
     ...[14, 15].map((x) => ({ x, y: 0, script: NORTH_EXIT })),
   ],
   spawn: { x: 14, y: 23, facing: 'up' },
