@@ -163,9 +163,10 @@ const RIVER_CODES = new Set(['G', 'I', 'r', 'k']);
 export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
   const code = at(x, y);
   if (code === undefined) return null;
-  // Sous un bâtiment : de l'herbe, sauf sur le pas d'une porte qui donne sur un chemin (visible sous le porche).
+  // Sous un bâtiment : de l'herbe, sauf sur sa rangée du bas quand elle est posée sur un chemin (le chemin passe
+  // alors sous toute la façade, porche compris, sans bout d'herbe à côté de la porte).
   if (buildingFloor(x, y)) {
-    const below = code === 'D' && frlgGroundOf(x, y + 1, at, buildingFloor);
+    const below = !buildingFloor(x, y + 1) && frlgGroundOf(x, y + 1, at, buildingFloor);
     return ['path', 'cobble', 'concrete'].includes(below) ? below : 'grass';
   }
   if (GRASS_CODES.has(code)) return 'grass';

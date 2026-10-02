@@ -4,7 +4,8 @@ uniquement), vers public/assets/tiles/ (voir FRLG_SHEETS, FRLG_BUILDINGS et FRLG
   rs-farm.png : la gare du téléphérique du Mont Chimnée (assets-source/gba/rs-mt-chimney.png), qui sert de
     ferme à M. Bouly (Montépilloy). Le sol de cendre autour devient transparent : on remplit depuis les bords
     tout ce qui a la teinte rosée de la cendre, le contour sombre du bâtiment arrête le remplissage. Image recadrée
-    sur le bâtiment (88 x 80 px), élargie à 96 px (6 cases) par du vide à droite.
+    sur le bâtiment (88 x 80 px), élargie à 96 px (6 cases) par du vide à gauche : le mur de droite tombe sur le
+    bord de l'emprise et touche ce qui est à côté (l'allée de la ferme).
 
   rs-crates.png : caisses en bois du marché de Slateport (assets-source/rs/backgrounds-slateport_city.png),
     15 x 16 px chacune, côte à côte : caisse vide, caisse de poissons (trois poissons argentés dessinés dedans),
@@ -103,7 +104,7 @@ def main():
                 px[x, y] = (0, 0, 0, 0)
     img = img.crop(img.getbbox())
     out = Image.new('RGBA', (96, img.height), (0, 0, 0, 0))
-    out.paste(img, (0, 0))
+    out.paste(img, (96 - img.width, 0))
     out.save(OUT)
     print('ok ->', OUT.relative_to(ROOT))
     build_crates()
