@@ -8,13 +8,27 @@ import { FLAGS, ITEMS, ROLES } from './story.js';
 
 const BOTH_TITLES = { ifSouvenirs: [ROLES.copainsMontepilloy.id, ROLES.bricoleur.id] };
 
-// Arrivée en voiture (fin de Saint-Ay), puis l'ellipse.
+// Arrivée en voiture (fin de Saint-Ay), puis l'ellipse : Pierre, face à la mare. Manon vient le chercher (Maman
+// le cherche) et rentre à la maison ; il la suit (elle l'attend s'il traîne).
+export const MONTEPILLOY_SPOTS = { pond: { x: 19, y: 16 }, houseDoor: [9, 7] };
+export const MANON_WALK = [{ walk: 'manon-arrivee', to: MONTEPILLOY_SPOTS.houseDoor, lead: true, then: [FLAGS.manonMaison] }];
 export const ELLIPSIS = [
   { black: true },
   { wait: 400 },
   { say: ['Montépilloy, Oise. Quelques années plus tard…'] },
   { setFlag: FLAGS.ellipseMontepilloy },
   { black: false },
+  { approach: 'manon-arrivee' },
+  { speaker: 'Manon', say: ['Ah, te voilà ! Maman te cherche partout. Viens, suis-moi !'] },
+  { setFlag: FLAGS.manonGuide },
+  ...MANON_WALK,
+];
+
+// À la maison : Maman accueille Pierre, que Manon a ramené.
+export const MAMAN_WELCOME = [
+  { approach: 'maman-mont' },
+  { speaker: 'Maman', say: ['Te voilà ! Dernier jour d\'école primaire ! Après, le collège.'] },
+  { setFlag: FLAGS.mamanAccueil },
 ];
 
 // Les deux titres obtenus : ellipse jusqu'en septembre, la famille devant la maison (voir SEPTEMBER_MORNING).

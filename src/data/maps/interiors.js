@@ -3,7 +3,7 @@ import { FLAGS, ITEMS, QUALITIES, ROLES } from '../story.js';
 import {
   BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT, CABANE_FETE, FELIX_AT_CABANE,
 } from '../saintAyStory.js';
-import { MAMAN, PAPA, JEAN, LAST_DAY, BENOIT_HIDING, BARREL_MOVES } from '../montepilloyStory.js';
+import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING, BARREL_MOVES } from '../montepilloyStory.js';
 import { FRLG_SHEETS, cabaneFrame, cabaneOverlay } from '../../art/frlgArt.js';
 import {
   LEO_CALLED, OUSMANE_JOINS, LEO_PLAN, GIRLS_JOIN, PUB_A_BAR, PUB_B_TABLE, PUB_B_OTHER, ASYLUM_ENTER, ASYLUM_DANCE,
@@ -596,6 +596,8 @@ export const interiors = {
         dialogue: ['M. Bouly m\'a laissé tenir le volant dans le champ ! Tu crois que j\'aurai un tracteur, un jour ?'],
       },
     ],
+    // Pierre arrive, ramené par Manon : Maman l'accueille.
+    events: [{ on: 'enter', ifFlags: [FLAGS.manonMaison], unlessFlags: [FLAGS.mamanAccueil], steps: MAMAN_WELCOME }],
   },
 
   // Montépilloy — l'école, façon Rouge Feu : tableau vert, bureau du maître, deux rangées de pupitres ; Margaux,

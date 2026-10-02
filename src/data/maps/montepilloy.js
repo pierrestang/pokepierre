@@ -1,7 +1,7 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS } from '../story.js';
 import {
-  ELLIPSIS, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, SCHOOL_BUS, NORTH_EXIT,
+  ELLIPSIS, MANON_WALK, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, SCHOOL_BUS, NORTH_EXIT,
 } from '../montepilloyStory.js';
 
 // Montépilloy (Oise) — village de campagne façon Rouge Feu, 32 x 26 cases. Chemins de terre de deux cases : la
@@ -94,6 +94,12 @@ export const montepilloyMap = {
       ifFlags: [FLAGS.tracteurRepare],
       dialogue: ['Merci à vous deux ! Ton petit frère a de l\'or dans les mains.'],
     },
+    // Arrivée : Manon vient chercher Pierre au bord de la mare et le ramène à la maison (voir ELLIPSIS).
+    {
+      id: 'manon-arrivee', name: 'Manon', x: 16, y: 14, facing: 'down', color: 0xf0a030,
+      ifFlags: [FLAGS.ellipseMontepilloy], unlessFlags: [FLAGS.manonMaison],
+      dialogue: ['Viens, Maman t\'attend à la maison !'],
+    },
     // À la sortie de l'école, Margaux lance le cache-cache (voir HIDE_AND_SEEK).
     {
       id: 'margaux-sortie', name: 'Margaux', x: 20, y: 14, facing: 'left', color: 0xf08080,
@@ -127,6 +133,7 @@ export const montepilloyMap = {
   ],
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveeMontepilloy], unlessFlags: [FLAGS.ellipseMontepilloy], steps: ELLIPSIS },
+    { on: 'enter', ifFlags: [FLAGS.manonGuide], unlessFlags: [FLAGS.manonMaison], steps: MANON_WALK },
     { on: 'enter', ifFlags: [FLAGS.ecoleCm2], unlessFlags: [FLAGS.cacheCache], steps: HIDE_AND_SEEK },
     { on: 'enter', ifFlags: [FLAGS.septembre], unlessFlags: [FLAGS.departCollege], steps: SEPTEMBER_MORNING },
   ],

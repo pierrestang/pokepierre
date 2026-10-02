@@ -24,6 +24,9 @@ export const FLAGS = {
   adieuCousins: 'adieu-cousins',                // au revoir aux cousins à la cabane
   arriveeMontepilloy: 'arrivee-montepilloy',    // arrivé à Montépilloy (la famille y vit désormais)
   ellipseMontepilloy: 'ellipse-montepilloy',    // Montépilloy : « Quelques années plus tard… » joué
+  manonGuide: 'manon-guide',                    //   Manon : « Maman te cherche » ; elle mène Pierre à la maison
+  manonMaison: 'manon-maison',                  //   Manon est rentrée à la maison
+  mamanAccueil: 'maman-accueil',                //   Maman a accueilli Pierre à la maison
   ecoleCm2: 'ecole-cm2',                        //   dernier jour de CM2 : entré à l'école
   cacheCache: 'cache-cache',                    //   Margaux a lancé la dernière partie de cache-cache
   trouveMargaux: 'trouve-margaux',              //   cache-cache : Margaux trouvée (bottes de foin de la ferme)

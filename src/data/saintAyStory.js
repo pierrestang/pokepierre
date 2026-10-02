@@ -1,4 +1,5 @@
 import { FLAGS, ITEMS, ROLES } from './story.js';
+import { MONTEPILLOY_SPOTS } from './montepilloyStory.js';
 
 // Scénario de Saint-Ay (voir le document « Saint-Ay ») : Pierre devient grand frère à la naissance de
 // Fanny, construit une cabane avec ses cousins (planches, corde, emplacement, dans n'importe quel ordre),
@@ -149,6 +150,6 @@ export const CAR = [
   { say: ['Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît derrière les arbres.'] },
   { say: ['Tu emportes : Grand frère et Cousins pour la vie.'] },
   { setFlag: FLAGS.arriveeMontepilloy },
-  { travel: { map: 'montepilloy', x: 14, y: 23, facing: 'up', car: true } },
+  { travel: { map: 'montepilloy', ...MONTEPILLOY_SPOTS.pond, facing: 'down', car: true } },
 ];
 
