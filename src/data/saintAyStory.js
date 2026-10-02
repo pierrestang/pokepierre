@@ -149,6 +149,6 @@ export const CAR = [
   { say: ['Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît derrière les arbres.'] },
   { say: ['Tu emportes : Grand frère et Cousins pour la vie.'] },
   { setFlag: FLAGS.arriveeMontepilloy },
-  { travel: { map: 'montepilloy', x: 14, y: 28, facing: 'up', car: true } },
+  { travel: { map: 'montepilloy', x: 14, y: 23, facing: 'up', car: true } },
 ];
 
