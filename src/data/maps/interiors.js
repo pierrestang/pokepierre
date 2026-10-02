@@ -314,8 +314,8 @@ export const interiors = {
         id: 'maman-maison', name: 'Maman', x: 7, y: 4, facing: 'left', color: 0xe86fa0,
         ifFlags: [FLAGS.cabaneFinie], still: true,
         script: [
-          { ifFlags: [FLAGS.annonceMutation], speaker: 'Maman', say: ['Fanny dort. On part dès que tu es prêt.'], end: true },
-          { speaker: 'Maman', say: ['Chut… Fanny vient de s\'endormir.'] },
+          { ifFlags: [FLAGS.annonceMutation], speaker: 'Maman', say: ['Les valises sont prêtes. On part dès que tu es prêt.'], end: true },
+          { speaker: 'Maman', say: ['Fanny a tellement grandi… Elle ne tient plus en place.'] },
         ],
       },
       {
@@ -323,7 +323,16 @@ export const interiors = {
         ifFlags: [FLAGS.cabaneFinie],
         script: [
           { ifFlags: [FLAGS.annonceMutation], speaker: 'Manon', say: ['Encore un déménagement…'], end: true },
-          { speaker: 'Manon', say: ['Tu as vu ? Fanny m\'a souri !'] },
+          { speaker: 'Manon', say: ['Fanny me suit partout, maintenant. Même dans ma chambre !'] },
+        ],
+      },
+      // Fanny a grandi depuis sa naissance à la clinique : elle joue dans le salon.
+      {
+        id: 'fanny-maison', name: 'Fanny', x: 6, y: 3, facing: 'down', color: 0xf0c0c0,
+        ifFlags: [FLAGS.cabaneFinie],
+        script: [
+          { ifFlags: [FLAGS.annonceMutation], speaker: 'Fanny', say: ['C\'est loin, Montépilloy ? Il y aura des poules ?'], end: true },
+          { speaker: 'Fanny', say: ['Pierre ! Tu joues à cache-cache avec moi ?'] },
         ],
       },
     ],

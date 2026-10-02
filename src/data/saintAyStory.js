@@ -88,6 +88,7 @@ export const CABANE_FETE = [
   { face: { 'felix-cabane': 'down', player: 'down' } },
   { cheer: ['felix-cabane', 'player', 'joshua-cabane', 'yanis-cabane'] },
   { quality: ROLES.cousins },
+  { speaker: 'Felix', say: ['Au fait, ton père est passé tout à l\'heure. Il t\'attend à la maison.'] },
   { black: true },
   { wait: 400 },
   { travel: { map: 'saintAy', x: CABANE_SPOT.x, y: CABANE_SPOT.y + 1, facing: 'down' } },
@@ -112,7 +113,7 @@ export const henScript = (flag) => [
 // Les cousins à la cabane : avant l'annonce, puis l'adieu, puis après.
 export const FELIX_AT_CABANE = [
   { ifFlags: [FLAGS.adieuCousins], speaker: 'Felix', say: ['La cabane t\'attendra. Allez, file, ta famille t\'attend à la voiture, devant ta maison.'], end: true },
-  { unlessFlags: [FLAGS.annonceMutation], speaker: 'Felix', say: ['Notre QG ! Reviens quand tu veux.'], end: true },
+  { unlessFlags: [FLAGS.annonceMutation], speaker: 'Felix', say: ['Notre QG ! Reviens quand tu veux.', 'Mais là, file : ton père t\'attend à la maison.'], end: true },
   { speaker: 'Felix', say: ['Alors c\'est vrai, tu pars ?'] },
   { speaker: 'Joshua', say: ['Montépilloy, c\'est pas le bout du monde.'] },
   { speaker: 'Yanis', say: ['C\'est où, Montépilloy ?'] },
@@ -122,10 +123,11 @@ export const FELIX_AT_CABANE = [
 
 // L'annonce, en rentrant à la maison au toit de chaume avec les deux rôles.
 export const ANNOUNCEMENT = [
-  { say: ['Papa est assis à la table, une lettre à la main. Maman berce Fanny.'] },
+  { say: ['Papa est assis à la table, une lettre à la main. Fanny a bien grandi : elle court partout dans le salon.'] },
   { speaker: 'Papa', say: ['J\'ai reçu ma nouvelle affectation.'] },
   { speaker: 'Manon', say: ['Encore ?'] },
   { speaker: 'Papa', say: ['L\'armée ne demande pas notre avis. On part pour Montépilloy.'] },
+  { speaker: 'Fanny', say: ['Je pourrai emmener mes poupées ?'] },
   { speaker: 'Maman', say: ['On y arrivera, comme à chaque fois. Tous ensemble.'] },
   { speaker: 'Papa', say: ['Et cette fois, pas de ferry. On prend la voiture.'] },
   { setFlag: FLAGS.annonceMutation },
