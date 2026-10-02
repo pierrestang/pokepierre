@@ -205,9 +205,13 @@ export class MapScene extends Phaser.Scene {
   }
 
   // (Re)crée les PNJ et suiveurs selon les drapeaux d'histoire.
-  // Un suiveur qui remplace un PNJ (même id) part de la position de celui-ci.
+  // Un suiveur qui remplace un PNJ (même id) part de la position de celui-ci ; à l'inverse, un PNJ qui remplace
+  // un suiveur (même id) apparaît là où était le suiveur (une scénette le fait ensuite marcher, voir walkNpc).
   refreshActors() {
     const wanted = (this.map.npcs ?? []).filter(meetsConditions);
+    const stillFollowing = new Set(FOLLOWERS.filter(meetsConditions).map((f) => f.id));
+    const followerAt = Object.fromEntries(this.followers.members.filter((m) => !stillFollowing.has(m.id))
+      .map((m) => [m.id, { x: m.x, y: m.y, facing: m.sprite.facing }]));
     const leftAt = {};
     this.npcs = this.npcs.filter((n) => {
       if (wanted.includes(n.data)) return true;
@@ -217,6 +221,11 @@ export class MapScene extends Phaser.Scene {
     });
     for (const data of wanted) {
       if (this.npcs.some((n) => n.data === data)) continue;
+      const from = followerAt[data.id];
+      if (from) {
+        data.home ??= { x: data.x, y: data.y, facing: data.facing };   // reprend sa place à la prochaine visite
+        Object.assign(data, from);
+      }
       // `inBed` : couché dans le lit de la case (intérieurs Rouge Feu), `child` pour un enfant.
       const bed = data.inBed && bedAt(this.map, data.x, data.y);
       const sprite = new CharacterSprite(this, data.x, data.y, lookOf(data), data.facing, { bed: bed && { ...bed, child: data.child } });
@@ -499,7 +508,9 @@ export class MapScene extends Phaser.Scene {
     const d = npc.data;
     const alive = () => !this.leaving && this.npcs.includes(npc);
     let stuck = 0;                                  // au bout d'une dizaine de secondes bloqué, on abandonne
-    while (alive() && (d.x !== tx || d.y !== ty) && stuck < 40) {
+    const besidePlayer = () => this.player.tileX === tx && this.player.tileY === ty
+      && Math.abs(d.x - tx) + Math.abs(d.y - ty) === 1;            // le joueur occupe la case visée : on s'arrête à côté
+    while (alive() && (d.x !== tx || d.y !== ty) && !besidePlayer() && stuck < 40) {
       // On contourne le joueur si possible ; sinon on attend qu'il se pousse.
       const path = this.pathTo(d, tx, ty, [this.player.tileX, this.player.tileY]) ?? this.pathTo(d, tx, ty);
       const far = () => Math.abs(this.player.tileX - d.x) + Math.abs(this.player.tileY - d.y) > 6;

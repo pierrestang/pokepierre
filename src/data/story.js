@@ -146,7 +146,7 @@ export const FOLLOWERS = [
   { id: 'felix', color: 0x9060d0, ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.maisonFelixVisitee] },
   // Montépilloy : Jean, ton assistant… ou plutôt toi le sien, jusqu'à la réparation du tracteur ; Margaux et
   // Étienne, une fois trouvés au cache-cache, jusqu'à la fin de la partie.
-  { id: 'jean', color: 0x3c7c5c, ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.jeanTracteur] },
+  { id: 'jean', color: 0x3c7c5c, ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.jeanTracteur, FLAGS.tracteurRepare] },
   { id: 'margaux', color: 0xf08080, ifFlags: [FLAGS.trouveMargaux], unlessSouvenirs: ['role-copains-montepilloy'] },
   { id: 'etienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], unlessSouvenirs: ['role-copains-montepilloy'] },
   { id: 'benoit', color: 0xa07040, ifFlags: [FLAGS.trouveBenoit], unlessSouvenirs: ['role-copains-montepilloy'] },

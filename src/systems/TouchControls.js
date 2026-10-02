@@ -223,7 +223,8 @@ export class TouchControls {
       // Toucher l'écran de jeu pendant un dialogue : comme A (page suivante).
       const v = gameView(this.scene.scale);
       const onGame = p.x >= v.x && p.x < v.x + v.w && p.y >= v.y && p.y < v.y + v.h;
-      if (onGame && this.scene.dialog?.isOpen && !this.scene.menu?.isOpen) {
+      // Pas pendant une question à choix : on choisit avec la croix et on valide avec A.
+      if (onGame && this.scene.dialog?.isOpen && !this.scene.dialog.choices && !this.scene.menu?.isOpen) {
         send('a', 'keydown');
         this.scene.time.delayedCall(60, () => send('a', 'keyup'));
       }
