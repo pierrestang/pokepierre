@@ -14,7 +14,7 @@ function outside(x, y, grid) {
 const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
 
 // Hanoï — capitale du Vietnam, 32 x 26 cases (comme Bordeaux et Hull).
-// Légende : voir src/data/tiles.js (x = bambous, n = lanterne, v = drapeau, k = lotus,
+// Légende : voir src/data/tiles.js (ƚ = petit arbre, n = lanterne, v = drapeau, k = lotus,
 // r = pont rouge, t = stand de rue, y = scooter, ~ = lac Hoàn Kiếm)
 export const hanoiMap = {
   id: 'hanoi',
