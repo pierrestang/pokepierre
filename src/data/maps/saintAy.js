@@ -35,8 +35,8 @@ export const saintAyMap = {
     'TT..fff..ĥĥĥ..çç.RRRRR.F...F..TT', // 4
     'TT..fff...ĥ...çç.WWWWW.F...F..TT', // 5
     '~~~.ççççççççççççMWDWWW.F...F..TT', // 6
-    '~~~~çççççççççççççççççç.FFçFF..TT', // 7
-    '~~~~~==~..ĥĥ..çççççççççççç....TT', // 8
+    '~~~~çççççççççççççççççççFFçFF..TT', // 7
+    '~~~~~==~..ĥĥ..çç......çççç....TT', // 8
     'BBBB~==~~ĥĥĥĥ.çç.RRRRR.....ĥĥ.TT', // 9
     'BBBB~==~~~ĥĥĥ.çç.RRRRR....ĥĥĥ.TT', // 10
     '~~~~~==~~~ĥĥ..çç.WWWWW.....ĥĥ.TT', // 11
@@ -94,7 +94,7 @@ export const saintAyMap = {
     },
     // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir. Elle
     // disparaît une fois le trajet fait, et ne bloque que la rangée du bas de la route (on passe derrière).
-    { type: 'familyCar', x: 19, y: 8, w: 3, h: 1, facing: 'left', ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
+    { type: 'familyCar', x: 19, y: 7, w: 3, h: 1, facing: 'left', ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
   // Décor lié à l'histoire : la corde dans les hautes herbes (pendant le chantier).
   decals: [
