@@ -7,8 +7,9 @@ import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
 
 // Menu Start > PNJ : tous les personnages avec leur sprite ; on peut donner à chacun n'importe quel sprite des
-// planches de personnages (TownsPeople2 `t{n}`, Rouge Feu `f{n}`, voir art/spriteSheets.js). Le choix est
-// gardé par nom (voir data/characters.js, lookChoices) et vaut pour tous les personnages de ce nom.
+// planches de personnages (TownsPeople2 `t{n}`, Rouge Feu `f{n}`, Diamant/Perle `d{n}`, Noir/Blanc `n{n}`,
+// Émeraude `h{n}`, voir art/spriteSheets.js). Le choix est gardé par nom (voir data/characters.js, lookChoices)
+// et vaut pour tous les personnages de ce nom.
 // Deux écrans, dans le style de la carte du voyage : la liste (deux colonnes), puis la grille des sprites.
 const BAR = 16;                                   // bandeaux du haut et du bas
 const LIST_ROWS = 8;                              // personnages par colonne
@@ -119,7 +120,8 @@ export class NpcLooks {
     const pages = Math.ceil(ALL_SPRITES.length / perPage);
     const current = spriteForName(this.picking);
     this.text(`APPARENCE : ${this.picking.toUpperCase()}`, 6, 1, 0xffffff);
-    this.text(`${ALL_SPRITES[this.cursor]}   ${page + 1} / ${pages}`, SCREEN_W - 80, 1, 0xffffff);
+    const id = ALL_SPRITES[this.cursor];
+    this.text(`${sheetOf(id).label} ${id.slice(1)}   ${page + 1}/${pages}`, SCREEN_W - 122, 1, 0xffffff);
     ALL_SPRITES.slice(page * perPage, (page + 1) * perPage).forEach((id, j) => {
       const i = page * perPage + j;
       const x = 12 + (j % GRID_COLS) * CELL_W;

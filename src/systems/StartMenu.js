@@ -5,12 +5,13 @@ import { items } from './items.js';
 import { sfx, options, setMusicEnabled, setSfxEnabled } from './audio.js';
 import { RegionMap } from './RegionMap.js';
 import { NpcLooks } from './NpcLooks.js';
+import { ItemBag } from './ItemBag.js';
 import { flags } from './flags.js';
 import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu.
-// Carte (du voyage), Souvenirs, Objets, Quêtes (aller au début de la quête d'une ville, pour tester), PNJ
+// Carte (du voyage), Souvenirs, Objets (le sac, avec les icônes), Quêtes (aller au début de la quête d'une ville, pour tester), PNJ
 // (choisir l'apparence de chaque personnage), Sauvegarder,
 // Options (musique, sons), Quitter la partie (retour à l'écran titre), Fermer.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
@@ -32,6 +33,7 @@ export class StartMenu {
     this.container = scene.add.container(0, 0, [this.bg]).setDepth(110).setVisible(false);
     this.regionMap = new RegionMap(scene);
     this.npcLooks = new NpcLooks(scene);
+    this.itemBag = new ItemBag(scene);
     scene.input.keyboard.on('keydown', (e) => this.onKey(e));
     const onResize = () => this.isOpen && this.render();
     scene.scale.on('resize', onResize);
@@ -60,7 +62,7 @@ export class StartMenu {
     return [
       { label: 'CARTE', action: () => this.showMap() },
       { label: 'SOUVENIRS', action: () => this.showInDialog(this.souvenirPages()) },
-      { label: 'OBJETS', action: () => this.showInDialog(this.itemPages()) },
+      { label: 'OBJETS', action: () => this.showItemBag() },
       { label: 'QUÊTES', action: () => this.showPage('quests', 0) },
       { label: 'PNJ', action: () => this.showNpcLooks() },
       { label: 'SAUVEGARDER', action: () => this.save() },
@@ -73,11 +75,6 @@ export class StartMenu {
   souvenirPages() {
     const list = souvenirs.list().map((s) => s.name);
     return list.length ? [`Souvenirs (${list.length}) : ${list.join(', ')}.`] : ["Tu n'as encore aucun souvenir."];
-  }
-
-  itemPages() {
-    const list = items.list().map((i) => i.name);
-    return list.length ? [`Tes objets : ${list.join(', ')}.`] : ["Tu n'as encore aucun objet."];
   }
 
   open() {
@@ -111,6 +108,21 @@ export class StartMenu {
   showNpcLooks() {
     this.container.setVisible(false);
     this.npcLooks.open();
+  }
+
+  // Sac ouvert directement en jeu (touche I) : le menu compte comme ouvert, le joueur ne bouge pas.
+  openItemBag() {
+    const map = this.mapScene();
+    if (!map || map.transitioning || map.player.moving || this.dialog.isOpen) return;
+    sfx('menu');
+    this.isOpen = true;
+    this.itemBag.open();
+  }
+
+  // Sac des objets, par-dessus le jeu (comme la carte du voyage).
+  showItemBag() {
+    this.container.setVisible(false);
+    this.itemBag.open();
   }
 
   // Panneau PNJ fermé : si une apparence a changé, la scène est relancée sur place pour l'appliquer.
@@ -204,6 +216,10 @@ export class StartMenu {
     }
     if (this.regionMap.isOpen) {
       if (this.regionMap.onKey(e)) this.close();
+      return;
+    }
+    if (this.itemBag.isOpen) {
+      if (this.itemBag.onKey(e)) this.close();
       return;
     }
     if (this.npcLooks.isOpen) {

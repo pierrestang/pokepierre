@@ -107,6 +107,7 @@ export const ROLES = {
 export const ITEMS = {
   coquillageNacre: { id: 'coquillage-nacre', name: 'Coquillage nacré' },
   canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
+  vieilleCanne: { id: 'vieille-canne', name: 'Vieille canne' },     // pour pêcher face à l'eau (facultatif)
   planches: { id: 'planches', name: 'Planches' },
   corde: { id: 'corde', name: 'Vieille corde' },
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },

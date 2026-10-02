@@ -5,10 +5,13 @@ import { MAPS } from '../data/maps/index.js';
 import { flags } from './flags.js';
 import { visitedFlag } from '../data/story.js';
 import { sfx } from './audio.js';
+import { POSTCARDS } from '../art/uiIcons.js';
 
 // Carte du voyage (menu Start > CARTE), dans le style de la carte de Rouge Feu : mer rayée, bandeaux bleus,
 // étapes reliées par des routes orange, point rouge pour chaque ville visitée (« ??? » sinon), tête de Red
-// sur la ville où l'on se trouve. Flèches gauche/droite (ou haut/bas) : choisir une étape ; Échap/Entrée : fermer.
+// sur la ville où l'on se trouve. Flèches gauche/droite (ou haut/bas) : choisir une étape ; Échap : fermer.
+// Entrée sur une ville visitée qui en a une : sa carte postale (illustrations de HeartGold/SoulSilver, voir
+// art/uiIcons.js) ; n'importe quelle touche la referme.
 // Une ville est « visitée » dès qu'on y est entré (drapeau `visite-<id>`, voir MapScene).
 
 // Étapes du voyage, dans l'ordre de l'histoire.
@@ -55,6 +58,7 @@ export class RegionMap {
   open(current) {
     this.current = current;
     this.index = Math.max(0, STOPS.indexOf(current));
+    this.postcard = false;
     this.isOpen = true;
     this.render();
   }
@@ -129,11 +133,37 @@ export class RegionMap {
     const id = STOPS[this.index];
     white(this.visited(id) ? (MAPS[id]?.name ?? id).toUpperCase() : '???').setPosition(X(6), Y(BAR + 1));
     white(`Étape ${this.index + 1} / ${STOPS.length}`).setPosition(X(SCREEN_W - 80), Y(BAR + 1));
-    white('← → : choisir    Échap : fermer').setPosition(X(6), Y(SCREEN_H - BAR + 1));
+    const hasCard = this.visited(id) && s.textures.get(POSTCARDS).has(id);
+    white(`← → : choisir    ${hasCard ? 'Entrée : carte postale    ' : ''}Échap : fermer`).setPosition(X(6), Y(SCREEN_H - BAR + 1));
+    if (this.postcard) {
+      // Carte postale : l'illustration au centre, bord blanc et ombre, le nom de la ville dessous.
+      const W = 256;
+      const H = 160;
+      const px = (SCREEN_W - W) / 2;
+      const py = (SCREEN_H - H) / 2 - 6;
+      g.fillStyle(0x000000, 0.55).fillRect(X(0), Y(0), SCREEN_W * u, SCREEN_H * u);
+      g.fillStyle(0x000000, 0.4).fillRect(X(px - 1), Y(py + 1), (W + 6) * u, (H + 18) * u);
+      g.fillStyle(0xf8f8f0, 1).fillRect(X(px - 4), Y(py - 4), (W + 8) * u, (H + 20) * u);
+      add(s.add.image(X(px), Y(py), POSTCARDS, id).setOrigin(0).setScale(u));
+      add(s.add.bitmapText(X(px), Y(py + H + 2), FRLG_FONT, frlgText(s, `Souvenir de ${MAPS[id]?.name ?? id}`)).setScale(u).setTintFill(0x303038));
+    }
   }
 
   // Touche pendant que la carte est ouverte. Renvoie vrai si la carte se ferme.
   onKey(e) {
+    if (this.postcard) {
+      sfx('select');
+      this.postcard = false;
+      this.render();
+      return false;
+    }
+    const id = STOPS[this.index];
+    if ((e.key === 'Enter' || e.key === ' ') && this.visited(id) && this.scene.textures.get(POSTCARDS).has(id)) {
+      sfx('confirm');
+      this.postcard = true;
+      this.render();
+      return false;
+    }
     if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
       sfx('select');
       this.close();

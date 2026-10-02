@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { preloadSpriteSheets, registerSpriteSheets } from '../art/spriteSheets.js';
 import { preloadFrlg } from '../art/frlgArt.js';
 import { preloadFrlgFont } from '../systems/frlgFont.js';
+import { preloadUiIcons } from '../art/uiIcons.js';
 
 // Point d'entrée : charge les images, puis affiche l'écran titre (qui lance ensuite l'interface et la partie).
 export class BootScene extends Phaser.Scene {
@@ -13,6 +14,7 @@ export class BootScene extends Phaser.Scene {
     preloadSpriteSheets(this);
     preloadFrlg(this);
     preloadFrlgFont(this);
+    preloadUiIcons(this);
   }
 
   create() {

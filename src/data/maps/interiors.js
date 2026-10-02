@@ -185,7 +185,7 @@ export const interiors = {
       { kind: 'rodsOnRack', x: 0, y: 2, count: 3, unlessFlags: [FLAGS.papaFait] },
       { kind: 'rodsOnRack', x: 0, y: 2, count: 1, ifFlags: [FLAGS.papaFait] },
       { kind: 'rodsInCrate', x: 0, y: 4, count: 2, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id] },
-      { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte] },
+      { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id] },
       { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifItems: [ITEMS.canneAPeche.id] },
     ],
     spawn: { x: 3, y: 4, facing: 'up' },
@@ -235,7 +235,26 @@ export const interiors = {
           { speaker: 'Papa', say: ['Tu vois. « À donner », ça veut dire à donner.'] },
         ],
       },
-      { x: 0, y: 4, ifFlags: [FLAGS.canneOfferte], dialogue: ['Il reste une canne à pêche dans la caisse « À DONNER ».'] },
+      // La canne qui reste, une fois l'autre offerte au pêcheur : Pierre peut la garder pour pêcher.
+      { x: 0, y: 4, ifItems: [ITEMS.vieilleCanne.id], dialogue: ['La caisse « À DONNER » est vide.'] },
+      {
+        x: 0, y: 4, ifFlags: [FLAGS.canneOfferte],
+        script: [
+          {
+            choose: 'Il reste une vieille canne à pêche dans la caisse « À DONNER ». Tu la prends ?',
+            choices: [
+              {
+                label: 'OUI',
+                steps: [
+                  { give: ITEMS.vieilleCanne, text: 'Tu prends la vieille canne. Elle pourra encore servir.' },
+                  { say: ["Face à l'eau, appuie sur Entrée pour lancer ta ligne."] },
+                ],
+              },
+              { label: 'NON', steps: [] },
+            ],
+          },
+        ],
+      },
       { x: 0, y: 4, ifItems: [ITEMS.canneAPeche.id], dialogue: ['Il reste une canne à pêche dans la caisse « À DONNER ».'] },
       { x: 0, y: 4, dialogue: ['Deux cannes à pêche dans la caisse « À DONNER ».'] },
     ],

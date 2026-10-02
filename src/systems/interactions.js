@@ -2,6 +2,7 @@ import { souvenirs } from './souvenirs.js';
 import { flags } from './flags.js';
 import { items } from './items.js';
 import { sfx } from './audio.js';
+import { itemIcon } from '../art/uiIcons.js';
 
 // Parler à un PNJ ou examiner un objet.
 // Cible : { name?, dialogue: [pages], after?: [pages], souvenir?: { id, name }, item?: { id, name }, setFlag? }
@@ -19,7 +20,7 @@ export async function interact(dialog, target) {
     await dialog.open(receive.dialogue, { speaker: target.name });
     items.remove(receive.item.id);
     sfx('confirm');
-    await dialog.open([`Tu as donné : ${receive.item.name}.`]);
+    await dialog.open([`Tu as donné : ${receive.item.name}.`], { icon: itemIcon(receive.item.id) });
     flags.add(receive.setFlag);
     return true;
   }
@@ -38,7 +39,7 @@ export async function interact(dialog, target) {
   // Objet remis une seule fois (même s'il a été donné depuis, si `setFlag` marque l'échange).
   if (item && !done && items.add(item)) {
     sfx('item');
-    await dialog.open([`Tu as obtenu : ${item.name} !`]);
+    await dialog.open([`Tu as obtenu : ${item.name} !`], { icon: itemIcon(item.id) });
   }
   if (setFlag && !flags.has(setFlag)) {
     flags.add(setFlag);

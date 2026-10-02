@@ -77,16 +77,11 @@ export class UIScene extends Phaser.Scene {
     renderItems(items.count(), false);
     itemEvents.on('change', renderItems);
 
-    // Touche I : liste des objets dans la boîte de dialogue.
+    // Touche I : le sac (objets avec leurs icônes), comme Start > OBJETS.
     this.input.keyboard.on('keydown', (e) => {
       if (e.key !== 'i' && e.key !== 'I') return;
       if (this.dialog.isOpen || this.menu.isOpen) return;
-      const names = items.list().map((i) => i.name);
-      const count = souvenirs.count();
-      this.dialog.open([
-        `Souvenirs : ${count}.`,
-        names.length ? `Tes objets : ${names.join(', ')}.` : "Tu n'as encore aucun objet.",
-      ]);
+      this.menu.openItemBag();
     });
 
     this.events.once('shutdown', () => {

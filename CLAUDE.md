@@ -28,6 +28,11 @@ On commence par une seule ville jouable, puis on étend à une petite région.
   src/art/spriteSheets.js) : TownsPeople2 (`t{n}`, avec portraits de dialogue) et PNJ de Rouge Feu
   (`f{n}`, extraits de assets-source/frlg-npcs.png par scripts/extract_frlg.py). Pierre = Red (`f0`).
   Attribution par nom dans src/data/characters.js. Le chat reste dessiné dans le code (src/art/characterArt.js).
+  Planches DS et Émeraude (assets-source/ds/, assets-source/gba/), extraites par scripts/extract_more_npcs.py :
+  Diamant/Perle (`d{n}`), Noir/Blanc (`n{n}`), champions d'Émeraude (`h{n}`), au choix dans Start > PNJ.
+- Interface (scripts/build_ds_ui.py -> public/assets/ui/, voir src/art/uiIcons.js) : icônes d'objets et bulles
+  d'émotion de HeartGold/SoulSilver (sac, objet reçu, étape `emote` des scénettes), cartes postales de la carte
+  du voyage tirées des illustrations de lieux de Johto. Mont Chimnée (Rubis/Saphir) : pas encore utilisé.
 
 ## Structure
 - src/scenes/ : les scènes Phaser (ville, intérieurs, combat).

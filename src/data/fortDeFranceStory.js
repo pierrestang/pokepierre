@@ -50,6 +50,7 @@ export const FISHER_AT_FERRY = [
   { ...READY_TO_LEAVE, setFlag: FLAGS.departFortDeFrance },
   { ...READY_TO_LEAVE, travel: DEPARTURE[2].travel },
   // Canne rapportée de la caisse « À DONNER ».
+  { ifItems: [ITEMS.canneAPeche.id], unlessFlags: [FLAGS.canneOfferte], emote: 'pecheur', kind: 'surprise' },
   {
     ifItems: [ITEMS.canneAPeche.id], unlessFlags: [FLAGS.canneOfferte], speaker: PECHEUR,
     say: [
@@ -57,6 +58,7 @@ export const FISHER_AT_FERRY = [
       "Merci, petit. Tu peux dire à ton père qu'il a bien fait de faire le tri.",
     ],
   },
+  { ifItems: [ITEMS.canneAPeche.id], unlessFlags: [FLAGS.canneOfferte], emote: 'pecheur', kind: 'heart' },
   { ifItems: [ITEMS.canneAPeche.id], unlessFlags: [FLAGS.canneOfferte], take: ITEMS.canneAPeche.id, setFlag: FLAGS.canneOfferte },
   { ...READY_TO_LEAVE, say: ['Allez, monte. Ta famille t\'attend.'], speaker: PECHEUR, end: true },
   // Canne cassée déjà montrée : il la montre encore.
@@ -90,15 +92,18 @@ export const FERRY = [
 // coquillage dans les hautes herbes de l'île.
 export const MANON = [
   { ifSouvenirs: [QUALITIES.complicite.id], speaker: 'Manon', say: ["Chut… c'est notre secret."], end: true },
+  { ifItems: [ITEMS.coquillageNacre.id], emote: 'manon', kind: 'surprise' },
   { ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon', say: ["Tu l'as trouvé !"] },
   { ifItems: [ITEMS.coquillageNacre.id], say: ['Manon sort de sa poche un deuxième coquillage, identique.'] },
   {
     ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon',
     say: ["Un pour toi, un pour moi. Comme ça, où qu'on aille, on garde un bout de l'île. Et c'est notre secret."],
   },
+  { ifItems: [ITEMS.coquillageNacre.id], emote: 'manon', kind: 'heart' },
   { ifItems: [ITEMS.coquillageNacre.id], quality: QUALITIES.complicite, end: true },
   { ifFlags: [FLAGS.manonDemande], speaker: 'Manon', say: ["C'est dans les hautes herbes. Trouve-le."], end: true },
   // Première fois, à la sortie de la maison.
+  { emote: 'player', kind: 'surprise' },
   { speaker: 'Manon', say: ['Psst. Viens.'] },
   {
     speaker: 'Manon',

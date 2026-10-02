@@ -1,6 +1,7 @@
 // Boîte de dialogue en bas de l'écran : texte affiché progressivement, page par page.
 // Entrée / Espace : termine la page en cours d'écriture, sinon passe à la suivante.
 // choose(question, options) : pose une question, liste de réponses (flèches haut/bas + Entrée).
+// open(pages, { icon }) : montre aussi l'icône d'un objet (voir art/uiIcons.js) dans un cadre au-dessus de la boîte.
 // Vit dans la UIScene (pas de zoom) ; les scènes de jeu l'ouvrent via open(pages) ou choose().
 // Texte dans la police de Rouge Feu (voir frlgFont.js), deux lignes par page comme dans le jeu : les pages
 // trop longues sont coupées automatiquement.
@@ -10,6 +11,7 @@ import { FRLG_FONT, LINE_HEIGHT, frlgText, wrapText } from './frlgFont.js';
 import { sfx } from './audio.js';
 import { PORTRAITS } from '../art/spriteSheets.js';
 import { portraitOf } from '../data/characters.js';
+import { ITEM_ICONS } from '../art/uiIcons.js';
 
 const SHOW_PORTRAITS = false;
 
@@ -46,11 +48,16 @@ export class DialogBox {
     // (SHOW_PORTRAITS) : comme dans Rouge Feu, seuls le nom et le texte s'affichent.
     this.portrait = scene.add.image(0, 0, PORTRAITS, 'p0').setOrigin(1, 1).setVisible(false);
 
+    // Icône de l'objet reçu, dans un petit cadre posé sur le bord haut de la boîte, à droite.
+    this.icon = null;
+    this.iconBg = scene.add.graphics();
+    this.iconImage = scene.add.image(0, 0, ITEM_ICONS).setVisible(false);
+
     this.arrow = scene.add.triangle(0, 0, 0, 0, 14, 0, 7, 9, 0xe04040);
     scene.tweens.add({ targets: this.arrow, alpha: 0.2, duration: 300, yoyo: true, repeat: -1 });
 
     this.container = scene.add
-      .container(0, 0, [this.portrait, this.box, this.text, this.nameBg, this.nameText, this.arrow])
+      .container(0, 0, [this.portrait, this.box, this.text, this.nameBg, this.nameText, this.iconBg, this.iconImage, this.arrow])
       .setDepth(100)
       .setVisible(false);
 
@@ -95,6 +102,7 @@ export class DialogBox {
     this.portrait.setScale(u).setPosition(x + w - 6 * u, y + 2 * u);
     this.arrow.setScale(u / 5).setPosition(x + w - 11 * u, y + H - 9 * u);
     this.setSpeaker(this.speaker);
+    this.setIcon(this.icon);
     if (this.choiceTexts?.length) this.showChoices();
   }
 
@@ -118,11 +126,12 @@ export class DialogBox {
   }
 
   // Ouvre le dialogue ; la promesse se résout quand la dernière page est fermée.
-  open(pages, { speaker } = {}) {
+  open(pages, { speaker, icon = null } = {}) {
     this.pages = this.paginate(Array.isArray(pages) ? pages : [pages]);
     this.pageIndex = 0;
     this.openedAt = performance.now();
     this.setSpeaker(speaker);
+    this.setIcon(icon);
     this.container.setVisible(true);
     this.showPage();
     return new Promise((resolve) => { this.resolve = resolve; });
@@ -184,6 +193,21 @@ export class DialogBox {
     const y = this.boxY - 14 * u;
     this.nameBg.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, 15 * u, 3 * u);
     this.nameBg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + u, y + u, w - 2 * u, 13 * u, 2.5 * u);
+  }
+
+  setIcon(icon) {
+    this.icon = icon;
+    this.iconBg.clear();
+    this.iconImage.setVisible(icon !== null);
+    if (!icon) return;
+    const u = this.u;
+    const size = 30 * u;
+    const x = this.boxX + this.boxW - size - 4 * u;
+    const y = this.boxY - size - 2 * u;
+    this.iconBg.fillStyle(FRAME, 1).fillRoundedRect(x, y, size, size, 3 * u);
+    this.iconBg.fillStyle(FRAME_LIGHT, 1).fillRoundedRect(x + u, y + u, size - 2 * u, size - 2 * u, 2.5 * u);
+    this.iconBg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 2 * u, y + 2 * u, size - 4 * u, size - 4 * u, 2 * u);
+    this.iconImage.setTexture(ITEM_ICONS, icon).setScale(u).setPosition(x + size / 2, y + size / 2);
   }
 
   showPage() {

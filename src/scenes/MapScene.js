@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { TILE_SIZE, getTile } from '../data/tiles.js';
-import { FOLLOWERS } from '../data/story.js';
+import { FOLLOWERS, ITEMS } from '../data/story.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
 import { drawDecal, drawPlanksPile } from '../art/tileArt.js';
@@ -15,6 +15,7 @@ import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
 import { visitedFlag } from '../systems/RegionMap.js';
 import { items } from '../systems/items.js';
+import { EMOTES, EMOTE_FRAMES, itemIcon } from '../art/uiIcons.js';
 import { savePosition } from '../systems/save.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
@@ -49,6 +50,13 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // cityName() (affiché en haut à gauche)
 // et peuvent définir
 // `surroundingTile` (tuile de remplissage par défaut).
+// Poissons qu'on peut remonter selon l'eau (mer, étang, rivière), voir fishingSteps.
+const WATER_CATCHES = {
+  w: ['un maquereau', 'une sardine', 'un petit bar', 'une dorade'],
+  '~': ['un gardon', 'une perche', 'une carpe', 'un poisson-chat'],
+  G: ['une truite', 'un gardon', 'un goujon'],
+};
+
 export class MapScene extends Phaser.Scene {
   setupMap(map, spawn) {
     const { grid } = map;
@@ -323,6 +331,8 @@ export class MapScene extends Phaser.Scene {
   //   { black: true | false }            écran noir immédiat / retour de l'image en fondu
   //   { sea: true | false }              bruit des vagues
   //   { face: { npcId | 'player': direction } }
+  //   { emote: npcId | 'player', kind }  bulle d'émotion au-dessus de la tête (voir art/uiIcons.js
+  //                                      EMOTE_FRAMES : surprise, question, heart, note, dots, happy, sad…)
   //   { dance: npcId }                   le PNJ et Pierre dansent un instant, notes de musique
   //   { walk: npcId, to: [x, y], lead?, block?, then? }  le PNJ marche jusqu'à la case (voir walkNpc)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
@@ -337,6 +347,7 @@ export class MapScene extends Phaser.Scene {
       if (step.black !== undefined) await this.setCurtain(step.black);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
+      if (step.emote) await this.emote(step.emote, step.kind);
       if (step.dance) await this.dance(step.dance);
       if (step.wait) await this.wait(step.wait);
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
@@ -362,7 +373,7 @@ export class MapScene extends Phaser.Scene {
       if (step.give && items.add(step.give)) {
         this.refreshActors();
         sfx('item');
-        await this.dialog.open([step.text ?? `Tu as reçu : ${step.give.name}.`]);
+        await this.dialog.open([step.text ?? `Tu as reçu : ${step.give.name}.`], { icon: itemIcon(step.give.id) });
       }
       if (step.take && items.remove(step.take)) this.refreshActors();
       if (step.quality && souvenirs.add(step.quality)) {
@@ -667,6 +678,23 @@ export class MapScene extends Phaser.Scene {
     }
   }
 
+  // Bulle d'émotion au-dessus de la tête d'un personnage ('player' : Pierre), façon HeartGold : elle apparaît
+  // d'un petit bond, ses deux images alternent, puis elle disparaît.
+  async emote(id, kind = 'surprise') {
+    const sprite = this.actorSprite(id);
+    const frames = EMOTE_FRAMES[kind];
+    if (!sprite || !frames) return;
+    const top = sprite.y + TILE_SIZE / 2 - sprite.image.displayHeight;
+    const bubble = this.add.image(sprite.x, top - 1, EMOTES, frames[0]).setOrigin(0.5, 1).setDepth(50).setScale(0.6);
+    sfx(kind === 'surprise' ? 'confirm' : 'select');
+    this.tweens.add({ targets: bubble, scale: 1, duration: 120, ease: 'Back.easeOut' });
+    for (let i = 1; i <= 4; i++) {
+      await this.wait(170);
+      bubble.setFrame(frames[i % 2]);
+    }
+    bubble.destroy();
+  }
+
   // Moment léger : le PNJ et Pierre tournent sur eux-mêmes en rythme, des notes s'envolent au-dessus.
   async dance(id) {
     const dancers = [this.actorSprite(id), this.player.sprite].filter(Boolean);
@@ -735,6 +763,24 @@ export class MapScene extends Phaser.Scene {
     const object = this.map.objects?.find((o) => o.x === x && o.y === y && (o.warp || meetsConditions(o)));
     if (object?.warp) this.runTrigger(object);
     else if (object) this.talkTo(object);
+    else if (items.has(ITEMS.vieilleCanne.id) && WATER_CATCHES[this.grid[y]?.[x]]) this.runScript(this.fishingSteps(this.grid[y][x]));
+  }
+
+  // Pêche avec la vieille canne, face à l'eau : Pierre attend (« … »), puis ça mord ou non. Les prises sont
+  // relâchées (rien ne s'ajoute au sac).
+  fishingSteps(code) {
+    const catches = WATER_CATCHES[code];
+    const steps = [
+      { say: ['Tu lances ta ligne…'] },
+      { emote: 'player', kind: 'dots' },
+    ];
+    if (Math.random() < 0.4) return [...steps, { say: ['Rien ne mord… Tu remballes ta ligne.'] }];
+    const fish = Math.random() < 0.1 ? 'une vieille botte' : Phaser.Utils.Array.GetRandom(catches);
+    return [
+      ...steps,
+      { emote: 'player', kind: 'surprise' },
+      { say: [`Ça mord ! Tu remontes ${fish} !`, fish === 'une vieille botte' ? 'Tu la poses sur la rive.' : `Tu ${fish.startsWith('une') ? 'la' : 'le'} relâches doucement.`] },
+    ];
   }
 
   // Parler à un PNJ / examiner un objet, puis poser sa question éventuelle (`ask`).
