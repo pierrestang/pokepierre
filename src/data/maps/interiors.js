@@ -547,7 +547,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'mmmoooommm',
+      'mmmηooommm',   // escalier vers la chambre (étage)
       'oooooooooo',
       'ooommmmooo',
       'moommmmoom',
@@ -598,6 +598,41 @@ export const interiors = {
     ],
     // Pierre arrive, ramené par Manon : Maman l'accueille.
     events: [{ on: 'enter', ifFlags: [FLAGS.manonMaison], unlessFlags: [FLAGS.mamanAccueil], steps: MAMAN_WELCOME }],
+    triggers: [{ x: 3, y: 2, warp: { interior: 'montHouseUp', x: 11, y: 3, facing: 'down' } }],
+  },
+
+  // Montépilloy — l'étage de la maison : la chambre des enfants, quatre lits côte à côte (Pierre, Manon, Jean,
+  // Fanny), escalier pour redescendre à droite.
+  montHouseUp: {
+    name: 'Chambre des enfants',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'mmommommommξ',   // quatre lits, escalier vers le salon
+      'mmommommommo',
+      'oooooooooooo',
+      'mooooooooomm',   // plante, étagère
+      'oooooooooomm',
+    ]),
+    decor: [
+      ...[0, 3, 6, 9].map((x) => ({ kind: 'bed', x, y: 2 })),
+      { kind: 'window', x: 2, y: 0 },
+      { kind: 'painting', x: 8, y: 0 },
+      { kind: 'pottedPlant', x: 0, y: 5 },
+      { kind: 'shelf', x: 10, y: 5 },
+    ],
+    spawn: { x: 11, y: 3, facing: 'down' },
+    triggers: [{ x: 11, y: 2, warp: { interior: 'montHouse', x: 3, y: 3, facing: 'down' } }],
+    objects: [
+      ...[0, 1].map((x) => ({ x, y: 3, dialogue: ['Ton lit, contre la fenêtre.'] })),
+      ...[3, 4].map((x) => ({ x, y: 3, dialogue: ['Le lit de Manon, fait au carré.'] })),
+      ...[6, 7].map((x) => ({ x, y: 3, dialogue: ['Le lit de Jean. Un tournevis dépasse de sous l\'oreiller.'] })),
+      ...[9, 10].map((x) => ({ x, y: 3, dialogue: ['Le lit de Fanny, plein de peluches.'] })),
+      { x: 0, y: 5, dialogue: ['Une petite plante verte.'] },
+      { x: 10, y: 5, dialogue: ['Des livres de classe, des BD et les jouets de Fanny.'] },
+      { x: 11, y: 5, dialogue: ['Des livres de classe, des BD et les jouets de Fanny.'] },
+    ],
   },
 
   // Montépilloy — l'école, façon Rouge Feu : tableau vert, bureau du maître, deux rangées de pupitres ; Margaux,
