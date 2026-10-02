@@ -5,9 +5,9 @@ import { toAirport, airportSign } from './airportLinks.js';
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['G', 'A', 'C'].includes(edge)) return edge;
+    if (['G', 'ɐ', 'ɔ'].includes(edge)) return edge;
   }
-  return 'C';
+  return 'ɔ';
 }
 
 const CLOSED = ['[Texte provisoire] Sawasdee ! Personne à la maison.'];
@@ -21,30 +21,30 @@ export const thailandMap = {
   name: 'Thaïlande',
   grid: parseGrid([
     'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0
-    'CCRRRRRRRRRCCCCCCCCCRRRRRRRRRCCC', // 1
-    'CCRRRRRRRRRCCCCCCCCCRRRRRRRRRCCC', // 2
-    'CCWWWWWWWWWCCCCCCCCCWWWWWWWWWCCC', // 3
-    'CCWDWWDWWDWCCCCCCCCCWDWWDWWDWCCC', // 4
-    'CdCCCCCCCCCCtCtCnCdCCCCCCCCCCCtC', // 5
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 6
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
-    'C<CCCCCCCCCCCCCCCCCCCCCCCCCCCC>C', // 8
-    'C.Y.......CCCRRRRRCCC.Y........C', // 9
-    'C...f...Y.CCCRRRRRCCC........Y.C', // 10
-    'C.........CCþRRRRRþCC.....€....C', // 11
-    'C....€....CCCWWWWWCCC..f....f..C', // 12
-    'C......f..CCCWWDWWCCC..........C', // 13
-    'C..Y......CCCCCCCCCCC....Y....YC', // 14
-    'C.........CCCCCCCCCCC..........C', // 15
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 16
+    'ɔɔRRRRRRRRRɔɔɔɔɔɔɔɔɔRRRRRRRRRɔɔɔ', // 1
+    'ɔɔRRRRRRRRRɔɔɔɔɔɔɔɔɔRRRRRRRRRɔɔɔ', // 2
+    'ɔɔWWWWWWWWWɔɔɔɔɔɔɔɔɔWWWWWWWWWɔɔɔ', // 3
+    'ɔɔWDWWDWWDWɔɔɔɔɔɔɔɔɔWDWWDWWDWɔɔɔ', // 4
+    'ɔdɔɔɔɔɔɔɔɔɔɔtɔtɔnɔdɔɔɔɔɔɔɔɔɔɔɔtɔ', // 5
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
+    'ɔ<ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ>ɔ', // 8
+    'ɔ.Y.......ɔɔɔRRRRRɔɔɔ.Y........ɔ', // 9
+    'ɔ...f...Y.ɔɔɔRRRRRɔɔɔ........Y.ɔ', // 10
+    'ɔ.........ɔɔþRRRRRþɔɔ.....€....ɔ', // 11
+    'ɔ....€....ɔɔɔWWWWWɔɔɔ..f....f..ɔ', // 12
+    'ɔ......f..ɔɔɔWWDWWɔɔɔ..........ɔ', // 13
+    'ɔ..Y......ɔɔɔɔɔɔɔɔɔɔɔ....Y....Yɔ', // 14
+    'ɔ.........ɔɔɔɔɔɔɔɔɔɔɔ..........ɔ', // 15
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 17
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 18
-    'CCCtCtCCCCCtCtCCCtCtCCCCCCCtCtCC', // 19
-    'CCRRRRRRRRRC.Y.....CRRRRRRRRRCCC', // 20
-    'CCRRRRRRRRRC....fY.CRRRRRRRRRCCC', // 21
-    'CCWWWWWWWWWC..f....CWWWWWWWWWCCC', // 22
-    'CCWDWWDWWDWC...Y...CWDWWDWWDWCCC', // 23
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 24
+    'ɔɔɔtɔtɔɔɔɔɔtɔtɔɔɔtɔtɔɔɔɔɔɔɔtɔtɔɔ', // 19
+    'ɔɔRRRRRRRRRɔ.Y.....ɔRRRRRRRRRɔɔɔ', // 20
+    'ɔɔRRRRRRRRRɔ....fY.ɔRRRRRRRRRɔɔɔ', // 21
+    'ɔɔWWWWWWWWWɔ..f....ɔWWWWWWWWWɔɔɔ', // 22
+    'ɔɔWDWWDWWDWɔ...Y...ɔWDWWDWWDWɔɔɔ', // 23
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 24
     'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 25
   ]),
   doors: [
@@ -57,6 +57,6 @@ export const thailandMap = {
   ],
   objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
   triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'T', borderSkip: ['G', 'A'] },
+  surroundings: { outside, border: 'T', borderSkip: ['G', 'ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

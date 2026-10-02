@@ -114,6 +114,6 @@ export const bordeauxMap = {
     },
   ],
   // Arbres seulement tout au bord de l'écran, sauf là où passent la rivière et les rues.
-  surroundings: { outside, border: 'ƚ', borderSkip: ['G', 'ɐ'] },
+  surroundings: { outside, border: 'ƀ', borderSkip: ['G', 'ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

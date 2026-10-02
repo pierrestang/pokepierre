@@ -120,6 +120,6 @@ export const amsterdamMap = {
   // Panneaux « Aéroport » à côté des sorties.
   objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
   triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'ƚ', borderSkip: ['G', 'ɐ'] },
+  surroundings: { outside, border: 'ƀ', borderSkip: ['G', 'ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

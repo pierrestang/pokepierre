@@ -132,6 +132,6 @@ export const parisMap = {
       warp: { map: 'toulon', x: 1, y: 6, facing: 'right' },
     })),
   ],
-  surroundings: { outside, border: 'ƚ', borderSkip: ['G', 'ɐ'] },
+  surroundings: { outside, border: 'ƀ', borderSkip: ['G', 'ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

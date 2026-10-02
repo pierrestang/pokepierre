@@ -6,9 +6,9 @@ import { toAirport, airportSign } from './airportLinks.js';
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['A', 'C', 's', 'w'].includes(edge)) return edge;
+    if (['ɐ', 'ɔ', 's', 'w'].includes(edge)) return edge;
   }
-  return y >= grid.length ? 'w' : 'C';
+  return y >= grid.length ? 'w' : 'ɔ';
 }
 
 const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
@@ -23,19 +23,19 @@ export const toulonMap = {
   name: 'Toulon',
   grid: parseGrid([
     'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  pins : bord de l'écran
-    'CCRRRRRCRRRRRCRRRRRCRRRRRCRRRRRC', // 1  maisons provençales (Yanis : 2e maison)
-    'CCRRRRRCRRRRRCRRRRRCRRRRRCRRRRRC', // 2
-    'CCWWWWWCWWWWWCWWWWWCWWWWWCWWWWWC', // 3
-    'CCWWDWWCWWDWWCWWDWWCWWDWWCWWDWWC', // 4  portes
-    'CYCCCCCYCCCCCYCCCCCYCCCCCYCCCClC', // 5  palmiers
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 6  boulevard (ouest : Paris, est : aéroport)
-    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
-    'CCCCCClCCCCCCCCCCClCCCCCCCCCCC>C', // 8
-    'CCYCCCCCCCCCYCCRRRRRCRRRRRC.Y..C', // 9  place du marché, maisons, jardin
-    'CCCCCCCCCCCCCCCRRRRRCRRRRRCf...C', // 10
-    'CCCtCtCCCtCtCCCWWWWWCWWWWWC...YC', // 11 étals du marché
-    'CCCCCCCCCCCCCCCWWDWWCWWDWWC..f.C', // 12
-    'CCCCCClCCCCClCCClCCCCClCCCCCCCCC', // 13 quai du port
+    'ɔɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔ', // 1  maisons provençales (Yanis : 2e maison)
+    'ɔɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔ', // 2
+    'ɔɔWWWWWɔWWWWWɔWWWWWɔWWWWWɔWWWWWɔ', // 3
+    'ɔɔWWDWWɔWWDWWɔWWDWWɔWWDWWɔWWDWWɔ', // 4  portes
+    'ɔYɔɔɔɔɔYɔɔɔɔɔYɔɔɔɔɔYɔɔɔɔɔYɔɔɔɔlɔ', // 5  palmiers
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  boulevard (ouest : Paris, est : aéroport)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
+    'ɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔ>ɔ', // 8
+    'ɔɔYɔɔɔɔɔɔɔɔɔYɔɔRRRRRɔRRRRRɔ.Y..ɔ', // 9  place du marché, maisons, jardin
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔRRRRRɔRRRRRɔf...ɔ', // 10
+    'ɔɔɔtɔtɔɔɔtɔtɔɔɔWWWWWɔWWWWWɔ...Yɔ', // 11 étals du marché
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWDWWɔWWDWWɔ..f.ɔ', // 12
+    'ɔɔɔɔɔɔlɔɔɔɔɔlɔɔɔlɔɔɔɔɔlɔɔɔɔɔɔɔɔɔ', // 13 quai du port
     'wwww=wwwww=BBBwwwwwsYsssYsssRRsY', // 14 port (pontons, bateaux), plage, phare
     'wwww=BBBww=BBBwwwwwsssssssssRRss', // 15
     'wwww=BBBww=wwwwwwwwsssssssssRRss', // 16
@@ -110,6 +110,6 @@ export const toulonMap = {
     toAirport(31, 6),
     toAirport(31, 7),
   ],
-  surroundings: { outside, border: 'T', borderSkip: ['A', 'w', 's', 'C'] },
+  surroundings: { outside, border: 'T', borderSkip: ['ɐ', 'w', 's', 'ɔ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };

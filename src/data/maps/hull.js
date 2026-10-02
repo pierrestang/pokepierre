@@ -208,6 +208,6 @@ export const hullMap = {
   night: { ...NIGHT, lights: [[9, 16, 0xffc060], [20, 22, 0xffc060], [25, 10, 0xd070ff], [14, 7, 0xffe0a0]] },
   dawn: DAWN_TIME,
   rain: {},
-  surroundings: { outside, border: 'ƚ', borderSkip: ['ɐ', '~'] },
+  surroundings: { outside, border: 'ƀ', borderSkip: ['ɐ', '~'] },
   spawn: { x: 1, y: 35, facing: 'right' },
 };
