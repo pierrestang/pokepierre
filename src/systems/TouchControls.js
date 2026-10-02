@@ -18,8 +18,13 @@ const KEYS = {
   start: { key: 'Escape', code: 'Escape', keyCode: 27 },
 };
 
-// Commandes sans couleur : gris foncé, liseré plus clair, plus clair encore quand on appuie.
-const COLORS = { pad: 0x2a2d38, padEdge: 0x50566a, padPressed: 0x4a5062, arrow: 0xc8ccd8 };
+// Commandes sans couleur, façon console : socles presque noirs, boutons gris en relief (liseré sombre, reflet
+// en haut), plus foncés et enfoncés quand on appuie.
+const COLORS = {
+  base: 0x15171d, baseEdge: 0x262a33,
+  key: 0x3a3f4b, keyTop: 0x4a505e, keyEdge: 0x0b0c10, keyDown: 0x2b2f38,
+  mark: 0xb4bac8, markDown: 0xe2e6ee,
+};
 
 function send(name, type) {
   window.dispatchEvent(new KeyboardEvent(type, { ...KEYS[name], bubbles: true }));
@@ -78,7 +83,7 @@ export class TouchControls {
       const cy = top + zone * 0.4;
       const side = Math.max(16, width * 0.06);
       this.pad = { x: side + R, y: cy, R };
-      const ax = width - side - r;
+      const ax = width - side - r * 1.4;                         // la capsule de A et B déborde du bouton
       this.a = { x: ax, y: cy - r * 0.75, r };
       this.b = { x: ax - r * 2.3, y: cy + r * 0.75, r };
       this.start = { x: width / 2, y: Math.min(bottom - 22, cy + R + 44), w: Math.max(72, R * 0.95), h: 26 };
@@ -90,9 +95,9 @@ export class TouchControls {
       const r = R * 0.5;
       const cy = height * 0.62;
       const margin = 12;
-      this.pad = { x: safe.left + Math.max(margin + R, band / 2), y: cy, R };
+      this.pad = { x: safe.left + Math.max(margin + R * 1.2, band / 2), y: cy, R };   // socle compris
       const right = width - safe.right;
-      const cx = right - Math.max(margin + r * 2.2, band / 2);
+      const cx = right - Math.max(margin + r * 2.5, band / 2);    // capsule de A et B comprise
       this.a = { x: cx + r * 1.1, y: cy - r * 0.75, r };
       this.b = { x: cx - r * 1.1, y: cy + r * 0.75, r };
       this.start = { x: cx, y: Math.max(safe.top + 20, cy - R - 30), w: Math.max(64, R * 0.9), h: 24 };
@@ -111,59 +116,83 @@ export class TouchControls {
     const touched = new Set(this.pointers.values());
     const pressed = (name) => touched.has(name);
 
-    // Croix : deux barres qui se croisent (ombre portée, liseré), flèches ; la branche enfoncée s'éclaircit.
-    const half = pad.R * 0.36;                                      // demi-largeur d'une branche
-    const tip = pad.R;
-    const cross = (grow, dy, color, alpha = 1) => {
-      g.fillStyle(color, alpha);
-      g.fillRoundedRect(pad.x - half - grow, pad.y - tip - grow + dy, (half + grow) * 2, (tip + grow) * 2, half * 0.35);
-      g.fillRoundedRect(pad.x - tip - grow, pad.y - half - grow + dy, (tip + grow) * 2, (half + grow) * 2, half * 0.35);
+    // Socles : un disque sous la croix, une capsule inclinée sous A et B.
+    g.fillStyle(COLORS.baseEdge, 1).fillCircle(pad.x, pad.y, pad.R * 1.2 + 2);
+    g.fillStyle(COLORS.base, 1).fillCircle(pad.x, pad.y, pad.R * 1.2);
+    const capsule = (r, color) => {
+      g.fillStyle(color, 1);
+      for (let i = 0; i <= 12; i++) {
+        const t = i / 12;
+        g.fillCircle(b.x + (a.x - b.x) * t, b.y + (a.y - b.y) * t, r);
+      }
     };
-    cross(0, 5, 0x000000, 0.4);
-    cross(2, 0, COLORS.padEdge);
-    cross(0, 0, COLORS.pad);
+    capsule(a.r * 1.38 + 2, COLORS.baseEdge);
+    capsule(a.r * 1.38, COLORS.base);
+
+    // Croix : contour sombre, dessus gris, reflet sur le haut de chaque branche, creux au centre.
+    const half = pad.R * 0.34;                                      // demi-largeur d'une branche
+    const tip = pad.R;
+    const corner = half * 0.3;
+    const cross = (grow, dy, color) => {
+      g.fillStyle(color, 1);
+      g.fillRoundedRect(pad.x - half - grow, pad.y - tip - grow + dy, (half + grow) * 2, (tip + grow) * 2, corner + grow);
+      g.fillRoundedRect(pad.x - tip - grow, pad.y - half - grow + dy, (tip + grow) * 2, (half + grow) * 2, corner + grow);
+    };
+    cross(2, 3, COLORS.keyEdge);
+    cross(0, 0, COLORS.key);
+    g.fillStyle(COLORS.keyTop, 1);
+    g.fillRoundedRect(pad.x - half + 2, pad.y - tip + 2, half * 2 - 4, half * 0.5, corner * 0.6);
+    g.fillRoundedRect(pad.x - tip + 2, pad.y - half + 2, tip - half - 2, half * 0.5, corner * 0.6);
+    g.fillRoundedRect(pad.x + half, pad.y - half + 2, tip - half - 2, half * 0.5, corner * 0.6);
     const dirs = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
     for (const [name, [dx, dy]] of Object.entries(dirs)) {
-      if (pressed(name)) {
-        g.fillStyle(COLORS.padPressed, 1);
-        if (dx) g.fillRoundedRect(dx > 0 ? pad.x + half : pad.x - tip, pad.y - half, tip - half, half * 2, half * 0.3);
-        else g.fillRoundedRect(pad.x - half, dy > 0 ? pad.y + half : pad.y - tip, half * 2, tip - half, half * 0.3);
+      const down = pressed(name);
+      if (down) {
+        g.fillStyle(COLORS.keyDown, 1);
+        if (dx) g.fillRoundedRect(dx > 0 ? pad.x + half * 0.6 : pad.x - tip, pad.y - half, tip - half * 0.6, half * 2, corner);
+        else g.fillRoundedRect(pad.x - half, dy > 0 ? pad.y + half * 0.6 : pad.y - tip, half * 2, tip - half * 0.6, corner);
       }
-      const mx = pad.x + dx * tip * 0.64;
-      const my = pad.y + dy * tip * 0.64;
-      const s = half * 0.42;
-      g.fillStyle(COLORS.arrow, pressed(name) ? 1 : 0.75);
+      const mx = pad.x + dx * tip * 0.66;
+      const my = pad.y + dy * tip * 0.66;
+      const s = half * 0.36;
+      g.fillStyle(down ? COLORS.markDown : COLORS.mark, down ? 1 : 0.7);
       g.fillTriangle(
         mx + dx * s, my + dy * s,
         mx - dx * s * 0.7 + dy * s, my - dy * s * 0.7 + dx * s,
         mx - dx * s * 0.7 - dy * s, my - dy * s * 0.7 - dx * s,
       );
     }
-    g.fillStyle(0x000000, 0.22).fillCircle(pad.x, pad.y, half * 0.55);
+    g.fillStyle(COLORS.keyEdge, 0.5).fillCircle(pad.x, pad.y + 1, half * 0.5);
+    g.fillStyle(COLORS.keyDown, 1).fillCircle(pad.x, pad.y, half * 0.45);
 
-    // A et B : boutons ronds en relief (ombre, reflet), enfoncés quand on les tient.
-    const button = (c, color, down) => {
-      const sink = down ? 3 : 0;
-      g.fillStyle(0x000000, 0.4).fillCircle(c.x, c.y + 4, c.r);
-      g.fillStyle(COLORS.padEdge, 1).fillCircle(c.x, c.y + sink, c.r + 2);
-      g.fillStyle(color, 1).fillCircle(c.x, c.y + sink, c.r);
-      if (!down) g.fillStyle(0xffffff, 0.06).fillCircle(c.x - c.r * 0.25, c.y - c.r * 0.3, c.r * 0.45);
+    // A et B : boutons ronds en relief, enfoncés quand on les tient.
+    const button = (c, down) => {
+      const sink = down ? 2 : 0;
+      g.fillStyle(COLORS.keyEdge, 1).fillCircle(c.x, c.y + 3, c.r + 1.5);
+      g.fillStyle(down ? COLORS.keyDown : COLORS.key, 1).fillCircle(c.x, c.y + sink, c.r);
+      if (!down) {
+        g.fillStyle(COLORS.keyTop, 1).fillCircle(c.x, c.y - c.r * 0.12, c.r * 0.86);
+        g.fillStyle(COLORS.key, 1).fillCircle(c.x, c.y + c.r * 0.1, c.r * 0.8);
+      }
     };
-    button(a, pressed('a') ? COLORS.padPressed : COLORS.pad, pressed('a'));
-    button(b, pressed('b') ? COLORS.padPressed : COLORS.pad, pressed('b'));
+    button(a, pressed('a'));
+    button(b, pressed('b'));
 
-    // START : pilule, comme sur la console.
+    // START : petit bouton ovale incliné, l'inscription en dessous, comme sur la console.
     const sDown = pressed('start');
-    g.fillStyle(0x000000, 0.4).fillRoundedRect(start.x - start.w / 2, start.y - start.h / 2 + 3, start.w, start.h, start.h / 2);
-    g.fillStyle(COLORS.padEdge, 1)
-      .fillRoundedRect(start.x - start.w / 2 - 2, start.y - start.h / 2 - 2 + (sDown ? 2 : 0), start.w + 4, start.h + 4, start.h / 2 + 2);
-    g.fillStyle(sDown ? COLORS.padPressed : COLORS.pad, 1)
-      .fillRoundedRect(start.x - start.w / 2, start.y - start.h / 2 + (sDown ? 2 : 0), start.w, start.h, start.h / 2);
+    const sw = start.w * 0.55;
+    const sh = start.h * 0.55;
+    g.fillStyle(COLORS.keyEdge, 1).fillRoundedRect(start.x - sw / 2 - 1.5, start.y - sh / 2 + 1, sw + 3, sh + 3, sh / 2 + 1.5);
+    g.fillStyle(sDown ? COLORS.keyDown : COLORS.key, 1)
+      .fillRoundedRect(start.x - sw / 2, start.y - sh / 2 + (sDown ? 1 : 0), sw, sh, sh / 2);
 
     const [la, lb, ls] = this.labels;
-    la.setPosition(a.x, a.y + (pressed('a') ? 3 : 0)).setFontSize(Math.round(a.r * 0.9)).setAlpha(this.alpha);
-    lb.setPosition(b.x, b.y + (pressed('b') ? 3 : 0)).setFontSize(Math.round(b.r * 0.9)).setAlpha(this.alpha);
-    ls.setPosition(start.x, start.y + (sDown ? 2 : 0)).setFontSize(13).setAlpha(this.alpha * 0.9);
+    const letter = (t, c, down) => t.setPosition(c.x, c.y + (down ? 2 : 0)).setFontSize(Math.round(c.r * 0.8))
+      .setColor(`#${(down ? COLORS.markDown : COLORS.mark).toString(16)}`).setAlpha(this.alpha * (down ? 1 : 0.85));
+    letter(la, a, pressed('a'));
+    letter(lb, b, pressed('b'));
+    ls.setPosition(start.x, start.y + sh / 2 + 10).setFontSize(11).setColor(`#${COLORS.mark.toString(16)}`)
+      .setAlpha(this.alpha * 0.75);
   }
 
   // Quelle commande se trouve sous le doigt ? `held` : la commande que ce doigt tient déjà (la croix garde le

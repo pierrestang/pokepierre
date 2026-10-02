@@ -56,6 +56,8 @@ function init() {
 
 // À appeler sur un geste du joueur (clavier, clic, toucher).
 export function unlockAudio() {
+  // iPhone : le son du jeu passe comme une musique (« lecture »), il n'est plus coupé par le mode silencieux.
+  if (navigator.audioSession && navigator.audioSession.type !== 'playback') navigator.audioSession.type = 'playback';
   const c = init();
   if (!c) return;
   // resume() est asynchrone : on attend que le son soit vraiment actif avant de lancer la musique
@@ -71,7 +73,13 @@ export function unlockAudio() {
   if (c.state === 'running') start();
   else c.resume().then(start);
 }
-['keydown', 'pointerdown', 'touchstart'].forEach((type) => window.addEventListener(type, unlockAudio, { passive: true }));
+// iPhone : le son ne se débloque qu'au relâcher du doigt (touchend, pointerup), pas au toucher.
+['keydown', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'click'].forEach((type) =>
+  window.addEventListener(type, unlockAudio, { passive: true }));
+// Retour dans le jeu (appli remise au premier plan, appel terminé) : le son, suspendu par le téléphone, reprend.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
+});
 
 export function setMusicEnabled(on) {
   options.music = on;
