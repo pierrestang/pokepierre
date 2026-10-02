@@ -2,57 +2,57 @@ import { parseGrid } from './parseGrid.js';
 import { FLAGS } from '../story.js';
 
 // Bornes du Chemin : coquille jaune, distance restante jusqu'à Saint-Jacques.
-const MARKERS = [[6, 10], [18, 11], [30, 9], [42, 7], [54, 8], [66, 11]];
+const MARKERS = [[6, 12], [18, 9], [30, 10], [47, 7], [54, 10], [68, 12]];
 const PILGRIM_LINES = [
   '[Pèlerin - texte provisoire] ¡Buen Camino ! Encore un bel effort.',
-  '[Pèlerine - texte provisoire] La vue sur les falaises est magnifique, non ?',
+  '[Pèlerine - texte provisoire] La vue sur la mer est magnifique, non ?',
   '[Pèlerin - texte provisoire] Saint-Jacques est tout près, courage !',
 ];
 
 // Chemin de Saint-Jacques — la côte nord de l'Espagne, 96 x 20 cases (environ trois écrans) :
-// mer et falaises au nord, plages, prés et forêts, villages, et la cathédrale au bout.
+// la mer et ses criques au nord, prés et forêts, deux villages, et la cathédrale au bout, sur sa place pavée.
 // Plus longue que l’écran : la caméra suit le joueur (comme sur toutes les cartes).
-// Légende : voir src/data/tiles.js (£ = falaise, § = borne du Chemin, P = chemin, q = bus)
+// Légende : voir src/data/tiles.js (§ = borne du Chemin, ç = chemin, ɔ = pavés, q = bus)
 export const caminoMap = {
   id: 'camino',
   name: 'Chemin de Saint-Jacques',
   grid: parseGrid([
-    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 0
-    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 1
-    'wwwwwwwwwwwwwwwssssssswwwwwwwwwwwwwwwwwwwwwwwssssssswwwwwwwwwwwwwwwwwwwsssssswwwwwwwwwwwwwwwwwww', // 2
-    '££££££££££££££sssssssss£££££££££££££££££££££sssssssss£££££££££££££££££ssssssss££££££££££££££££££', // 3
-    '..............sssssssss.....................sssssssss.................ssssssss..CCCCCCCCCCCCCCCC', // 4
-    '.f.ƀ..ƀ.ƀ.ƀƀ..ƀ......ƀ..fƀ...RRRRR....RR...........ƀ..f...RRRRR.......ƀ.......ƀ.CCCCRRRRRRRCCCCC', // 5
-    '...ff.....ƀ........ƀ......ƀ..RRRRR....RR.....ƀ....ƀƀ...f..RRRRR.................CCCCRRRRRRRCCCCC', // 6
-    '........ƀ.....f........fƀf...WWWWW........§.......f.......WWWWW...........ƀ.....CCCCRRRRRRRCCCCC', // 7
-    '...fƀ.ƀ.ƀ...f..f........f....WWDWW..PPPPPPPPPPPPP...f.§...WWDWW..........ƀ..ƀfƀ.CCCCRRRRRRRCCCCC', // 8
-    '..............ƀƀƀ..fƀ.........§PPPPPPPPPPPPPPPPPPPPPPPP...............f.........CCCCRRRRRRRCCCCC', // 9
-    'PPP...§..........ƀf........PPPPPPPPP............fPPPPPPPPPP............ƀ........CCCCCCCCCCCCCCCC', // 10
-    'PPPPPPPP..........§..PPPPPPPPPP.................ƀ......PPPPPPPPPP.§..........fPPCCCCCCCCCCCCCCCC', // 11
-    '...PPPPPPPPPPPPPPPPPPPPPPPP.........RRRRR.........f...f....PPPPPPPPPPPPPPPPPPPPPCCCCCCCCCCCqqqCC', // 12
-    'ƀƀ......PPPPPPPPPPPPP...............RRRRR..........ƀƀ............PPPPPPPPPPPPP..CCCCCCCCCCCqqqCC', // 13
-    '.....ƀ....f.............ƀƀ..........WWWWW.....ƀ......fƀ.........RR..............CCCCCCCCCCCCCCCC', // 14
-    'ƀ..ƀ.ƀ..........ƀ......f.ƀƀ.........WWDWW..........f..ƀ.........RR....f...f.ƀ...CCCCCCCCCCCCCCCC', // 15
-    '.ƀTT...ƀ.ƀƀf....ƀ..ƀƀ.TTƀ.ƀ...................ƀ...TTTTƀ...............TTƀ...TTTTCCCCCCCCCCCCCCCC', // 16
-    'ƀƀTTƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀTTƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀTTTTƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀTTƀƀƀƀTTTTƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 17
+    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 0  mer
+    'wwwwwwwwwwwwwwsssssswwwwwwwwwwwwwwwwwwwwwwwwsssssswwwwwwwwwwwwwwwwwwssssswwwwwwwwwwwwwwwwwwwwwww', // 1
+    'wwwwwwwwwwwwsssssssssswwwwwwwwwwwwwwwwwwwwsssssssssswwwwwwwwwwwwwwssssssssswwwwwwwwwwwwwwwwwwwww', // 2
+    'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', // 3  plage
+    '.............................RRRRR......RRRRR...................................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 4  premier village : deux maisons de pierre et un hórreo
+    '.ƀ......ĥĥĥĥĥ......ŕ....f....RRRRR......RRRRR.......f...................ĥĥĥĥĥĥ..ɔɔɔɔRRRRRRRɔɔɔɔɔ', // 5  cathédrale de Saint-Jacques
+    '...f....ĥĥĥĥĥ..f.............WWWWW..RR..WWWWWf........ŕ.....RRRRR.......ĥĥĥĥĥĥ..ɔɔɔɔRRRRRRRɔɔɔɔɔ', // 6  l'auberge des pèlerins
+    '....f...ĥĥĥĥĥ..........ƀ.....WDWWW..RR..WDWWW..§............RRRRR.......ĥĥĥĥĥĥ..ɔɔɔɔRRRRRRRɔɔɔɔɔ', // 7
+    '......ƀ.........ƀ.........çççççççççççççççççççççççççççççççç..WWWWW..RR...........ɔɔɔɔRRRRRRRɔɔɔɔɔ', // 8
+    '..................§.......çççççççççççççççççççççççççççççççç..WDWWW..RR.......ƀ...ɔɔɔɔRRRRRRRɔɔɔɔɔ', // 9
+    'çççççççççççççççççççççççççççç..§.......................§.ççççççççççççççççççççççççɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 10  le Chemin (entrée à l'ouest)
+    'çççççççççççççççççççççççççççç............................ççççççççççççççççççççççççɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 11
+    '......§..........................f..............ĥĥĥĥĥĥ..............§...........ɔɔɔɔɔɔɔɔɔɔɔqqqɔɔ', // 12  bus du retour
+    '...........f........ĥĥĥĥĥĥ..ŕ.....ƀ.............ĥĥĥĥĥĥ.......f.............f....ɔɔɔɔɔɔɔɔɔɔɔqqqɔɔ', // 13
+    '..TTTT....ƀ.........ĥĥĥĥĥĥ..........f.........TTTT........ƀ.......TTTT...ŕ....ƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 14
+    '..TTTT........................f........ƀ......TTTT............ƀ...TTTT..........ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 15
+    'TTTTTTTT..........TTTTTTTT..................TTTTTTTTTT..........TTTTTTTT........................', // 16  forêts
+    'TTTTTTTT..........TTTTTTTT..................TTTTTTTTTT..........TTTTTTTT........................', // 17
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 18
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 19
   ]),
   doors: [
-    { x: 31, y: 8,  lockedDialogue: ['[Texte provisoire] ¡Hola ! Une maison de pierre galicienne.'] },
-    { x: 38, y: 15, lockedDialogue: ['[Texte provisoire] Personne ne répond...'] },
-    { x: 60, y: 8,  lockedDialogue: ['[Texte provisoire] Une auberge de pèlerins, complète ce soir.'] },
+    { x: 30, y: 7, lockedDialogue: ['[Texte provisoire] ¡Hola ! Une maison de pierre galicienne.'] },
+    { x: 41, y: 7, lockedDialogue: ['[Texte provisoire] Personne ne répond...'] },
+    { x: 61, y: 9, lockedDialogue: ['[Texte provisoire] Une auberge de pèlerins, complète ce soir.'] },
   ],
   buildings: [
-    { type: 'stoneHouse', x: 29, y: 5, variant: 0 },
-    { type: 'stoneHouse', x: 36, y: 12, variant: 1 },
-    { type: 'horreo', x: 38, y: 5 },
-    { type: 'stoneHouse', x: 58, y: 5, variant: 2 },
-    { type: 'horreo', x: 64, y: 14 },
+    { type: 'slateHouse', x: 29, y: 4 },
+    { type: 'horreo', x: 36, y: 6 },
+    { type: 'house', x: 40, y: 4 },
+    { type: 'cottage', x: 60, y: 6 },
+    { type: 'horreo', x: 67, y: 8 },
     { type: 'santiagoCathedral', x: 84, y: 5 },
     { type: 'bus', x: 91, y: 12 },
   ],
-  npcs: [[24, 10], [50, 8], [73, 11]].map(([x, y], i) => ({
+  npcs: [[22, 11], [48, 9], [72, 10]].map(([x, y], i) => ({
     id: `pelerin-${i}`, name: i === 1 ? 'Pèlerine' : 'Pèlerin', x, y, facing: 'down',
     color: [0x8c5c2c, 0x2c6c8c, 0x6c3c7c][i],
     dialogue: [PILGRIM_LINES[i]],
@@ -76,6 +76,7 @@ export const caminoMap = {
       warp: { map: 'toulon', x: 10, y: 5, facing: 'down' },
     }))),
   ],
-  surroundings: 'T',
+  // Autour : la mer au nord, la forêt au sud.
+  surroundings: { outside: (x, y) => (y < 10 ? 'w' : 'T') },
   spawn: { x: 1, y: 10, facing: 'right' },
 };

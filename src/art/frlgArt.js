@@ -152,7 +152,9 @@ const SEA_CODES = new Set(['w', 'ø']);
 const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ', 'O', 'Q', 'V', 'J',
   // objets des villes (réverbère, cabine, drapeaux, lanternes, étals, scooter, vélos, vache, tuk-tuk, terrasse,
   // métro, panneaux de l'aéroport, cactus, chameau, serpent, feu de camp)
-  'l', 'b', 'e', 'v', 'g', 'n', 't', 'y', 'c', 'p', 'a', 'd', '$', '!', '>', '<', '*', 'H', 'z', '&']);
+  'l', 'b', 'e', 'v', 'g', 'n', 't', 'y', 'c', 'p', 'a', 'd', '$', '!', '>', '<', '*', 'H', 'z', '&',
+  // chèvre, éléphant, drapeaux (thaï, népalais, de prière), borne du Chemin
+  '¢', '€', 'þ', 'ň', '¶', '§']);
 // Eau des villes : rivière, et ce qui la couvre (ponts, lotus) — posée comme un étang Rouge Feu.
 const RIVER_CODES = new Set(['G', 'I', 'r', 'k']);
 
