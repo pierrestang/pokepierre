@@ -14,6 +14,7 @@ On commence par une seule ville jouable, puis on étend à une petite région.
 - Assets Nintendo (sprites, tilesets, musiques) : autorisés, légèrement modifiés, uniquement s'ils sont
   fournis par l'utilisateur (déposés dans le projet), pour un projet de fan non commercial. Le code est sur un
   dépôt GitHub public (github.com/pierrestang/pokepierre), choix de l'utilisateur, pour le partager avec des amis.
+  Jeu en ligne : https://pierrestang.github.io/pokepierre/ (`npm run deploy`, branche gh-pages).
   Sans fichier fourni, tout reste dessiné dans le code.
 - Le rendu des tuiles reste centralisé (src/systems/tileRenderer.js).
 - Objectif visuel : le look de Pokémon Rouge Feu / Vert Feuille, avec l'histoire de Poképierre (pas Kanto).
