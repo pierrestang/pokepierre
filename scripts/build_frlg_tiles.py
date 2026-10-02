@@ -1,6 +1,7 @@
 """Prépare les planches de décor Rouge Feu / Vert Feuille (assets-source/frlg/, fournies par
 l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles/ :
 
+  frlg-small-tree.png petit arbre de Rouge Feu sans son herbe (voir small_tree) ;
   frlg-outdoor.png   tuiles d'extérieur (16 x 16, une ligne transparente entre deux : pas de 17 px,
                      première tuile en 1, 1) — copie telle quelle ;
   frlg-rims.png      liserés d'herbe seuls (bordures du chemin de sable sans le sable), voir grass_rims ;
@@ -358,6 +359,26 @@ WHEAT_COLORS = {
 }
 
 
+def small_tree(outdoor):
+    """Petit arbre de Rouge Feu (case (8, 0) de la planche d'extérieur), sans son herbe : on efface depuis les
+    bords les couleurs des cases d'herbe (6, 0), (6, 1), (6, 2) et (7, 1). Posé ainsi sur n'importe quel sol
+    (sable, pavés…), il remplace les palmiers 'Y' des pays exotiques."""
+    tile = lambda c, r: outdoor.crop((1 + 17 * c, 1 + 17 * r, 17 + 17 * c, 17 + 17 * r)).convert('RGBA')
+    grass = {p for c, r in ((6, 0), (6, 1), (6, 2), (7, 1)) for p in tile(c, r).getdata()}
+    tree = tile(8, 0)
+    px = tree.load()
+    todo = deque([(x, y) for x in range(16) for y in (0, 15)] + [(x, y) for y in range(16) for x in (0, 15)])
+    seen = set()
+    while todo:
+        x, y = todo.popleft()
+        if (x, y) in seen or not (0 <= x < 16 and 0 <= y < 16) or px[x, y] not in grass:
+            continue
+        seen.add((x, y))
+        px[x, y] = (0, 0, 0, 0)
+        todo.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
+    return tree
+
+
 def fields(outdoor):
     out = Image.new('RGBA', (32, 16), (0, 0, 0, 0))
     wheat = outdoor.crop((1 + 17 * 7, 1, 1 + 17 * 7 + 16, 17)).convert('RGBA')
@@ -600,6 +621,7 @@ def main():
     outdoor = rgba('tilesets-tileset_2.png')
     outdoor.save(OUT / 'frlg-outdoor.png')
     grass_rims(outdoor).save(OUT / 'frlg-rims.png')
+    small_tree(outdoor).save(OUT / 'frlg-small-tree.png')
     white_stairs(outdoor).save(OUT / 'frlg-stairs.png')
     props = gba_palette(clear_color(rgba('tilesets-tileset.png'), (153, 51, 204, 255)))
     props.save(OUT / 'frlg-props.png')

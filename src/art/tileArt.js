@@ -46,76 +46,6 @@ function isGrassy(x, y, at) {
   return GRASSY.has(c);
 }
 
-// Sapin conique façon Rouge Feu, dessiné par étages superposés aux bords en dents de scie.
-// W = 32 (massif de 2x2 cases, 42 px de feuillage : dépasse de 12 px au-dessus du bloc)
-// ou 16 (arbre d'une case, 22 px de feuillage).
-const PINE = { k: 0x28582c, s: 0x2c6c34, d: 0x44903c, m: 0x6cb844, L: 0x9cd850, h: 0xd0f47c, t: 0x6c4828, T: 0x4c3018 };
-const pineCache = {};
-const PINE_H = { 32: 42, 16: 22 };
-function pineShape(W) {
-  if (pineCache[W]) return pineCache[W];
-  const f = W / 32;
-  const H = PINE_H[W];
-  const fy = (H - 1) / 30;
-  // [haut, bas, demi-largeur max] de chaque étage, du sommet vers le pied.
-  const tiers = [[0, 9, 5], [4, 16, 9.5], [9, 23, 13], [15, 30, 16]].map(([a, b, h]) => [a * fy, b * fy, h * f]);
-  const owner = [];                                                  // étage visible de chaque pixel (-1 : vide)
-  for (let y = 0; y < H; y++) {
-    owner.push([]);
-    for (let x = 0; x < W; x++) {
-      const dx = Math.abs(x + 0.5 - W / 2);
-      let o = -1;
-      tiers.forEach(([top, bottom, maxHalf], i) => {
-        if (o !== -1) return;
-        const tooth = [0, 1, 2, 1][Math.floor(dx) % 4] * fy * 1.2;  // bas de l'étage en dents de scie
-        if (y < top || y > bottom - tooth) return;
-        const hw = maxHalf * (y - top + 1.5) / (bottom - top + 1.5);
-        if (dx < hw) o = i;
-      });
-      owner[y].push(o);
-    }
-  }
-  pineCache[W] = owner;
-  return owner;
-}
-
-// Dessine un sapin dont le pied est en (px + W/2, baseY).
-function pine(g, px, baseY, W) {
-  const owner = pineShape(W);
-  const H = owner.length;
-  const top = baseY - H - 1;
-  g.fillStyle(0x1c5040, 0.35);                                        // ombre au sol
-  g.fillRect(px + W * 0.12, baseY - 3, W * 0.76, 4);
-  g.fillRect(px + W * 0.22, baseY + 1, W * 0.56, 1);
-  const tw = W === 32 ? 6 : 4;                                        // tronc, à peine visible sous l'arbre
-  rect(g, PINE.k, px + W / 2 - tw / 2 - 1, baseY - 4, tw + 2, 5);
-  rect(g, PINE.t, px + W / 2 - tw / 2, baseY - 4, tw, 4);
-  rect(g, PINE.T, px + W / 2, baseY - 4, tw / 2, 4);
-  const at = (x, y) => (y >= 0 && y < H && x >= 0 && x < W ? owner[y][x] : -1);
-  for (let y = 0; y < H; y++) {
-    for (let x = 0; x < W; x++) {
-      const o = at(x, y);
-      if (o < 0) continue;
-      const rel = (x + 0.5 - W / 2) / (W / 2);                        // -1 à gauche, +1 à droite
-      let c;
-      const edge = at(x - 1, y) < 0 || at(x + 1, y) < 0 || at(x, y - 1) < 0 || at(x, y + 1) < 0;
-      const skirt = at(x, y + 1) > o;                                 // bord de l'étage posé sur celui du dessous
-      if (edge) c = PINE.k;
-      else if (skirt) c = rel < -0.2 ? PINE.d : PINE.s;
-      else {
-        // Ombre sous l'étage du dessus : 2 px sombres juste sous son bord.
-        const underUpper = (at(x, y - 1) >= 0 && at(x, y - 1) < o) || (at(x, y - 2) >= 0 && at(x, y - 2) < o);
-        if (underUpper) c = rel < -0.3 ? PINE.m : PINE.d;
-        else if (rel < -0.45) c = (x + y) % 2 ? PINE.h : PINE.L;       // flanc éclairé, tramé
-        else if (rel < -0.1) c = (x + y) % 2 ? PINE.L : PINE.m;
-        else if (rel < 0.35) c = (x * 2 + y) % 5 === 0 ? PINE.L : PINE.m;
-        else c = (x + y) % 2 ? PINE.d : PINE.m;
-      }
-      rect(g, c, px + x, top + y, 1, 1);
-    }
-  }
-}
-
 // Sol de sous-bois (façon Rouge Feu) : vert-bleu sombre, petites touffes.
 function forestFloor(g, px, py, x, y) {
   rect(g, 0x4c9c78, px, py, S, S);
@@ -1823,7 +1753,6 @@ function railEmbankment(g, px, py, x, y, at) {
   if (at(x, y - 1) !== 'ʕ') { rect(g, 0x9c9c94, px, py, S, 3); rect(g, 0xc8c8c0, px, py, S, 1); }
 }
 
-// Sol sous un palmier (le palmier lui-même est dessiné dans la passe des grands objets, drawTall).
 // Mémorial de l'Anse Caffard (Cap 110, Martinique) : six silhouettes de pierre blanche, tête baissée,
 // épaules voûtées, sur leur socle, vues de face (elles regardent la mer, vers le bas), en trois rangées
 // (trois derrière, deux au milieu, une devant). Elles se dressent sur le petit plateau rocheux Rouge Feu
@@ -1866,6 +1795,8 @@ function capStatues(g, px, py) {
   }
 }
 
+// Sol sous un palmier 'Y' (l'arbre lui-même est le petit arbre de Rouge Feu, une image à part : voir
+// systems/tileRenderer.js).
 function palm(g, px, py, x, y, at) {
   const around = [at(x, y - 1), at(x, y + 1), at(x - 1, y), at(x + 1, y)];
   if (groundProvided) return;                                          // sol Rouge Feu déjà posé
@@ -1874,119 +1805,23 @@ function palm(g, px, py, x, y, at) {
   else sand(g, px, py, x, y);
 }
 
-// Grand palmier (36 x 40 px, pied au centre du bas de sa case) : tronc à écailles légèrement courbé,
-// onze palmes épaisses aux bords dentelés avec nervure claire.
-const PALM_C = { k: 0x1c4c28, d: 0x2c7c38, m: 0x48a848, L: 0x7cd05c, h: 0xc0f080, tk: 0x4c2c14, t1: 0xc89058, t2: 0x9c6834, t3: 0x6c4424 };
-const PALM_W = 36;
-const PALM_H = 40;
-let palmPixels = null;
-function palmSprite() {
-  if (palmPixels) return palmPixels;
-  const W = PALM_W;
-  const H = PALM_H;
-  const grid = Array.from({ length: H }, () => Array(W).fill(null));
-  const set = (x, y, c) => { if (x >= 0 && x < W && y >= 0 && y < H) grid[y][x] = c; };
-  const cx = 18;
-  const cy = 13;
-  // Tronc : du pied (17, 39) à la couronne, courbé vers la gauche au milieu ; écailles en chevrons.
-  for (let y = H - 1; y >= cy; y--) {
-    const t = (H - 1 - y) / (H - 1 - cy);
-    const mid = Math.round(17 - Math.sin(t * Math.PI) * 2.5 + t);
-    const w = t < 0.12 ? 6 : 5;
-    const ring = (H - 1 - y) % 4;
-    for (let dx = -1; dx <= w; dx++) {
-      const x = mid - Math.floor(w / 2) + dx;
-      let c;
-      if (dx === -1 || dx === w) c = 'tk';
-      else if (ring === 0) c = dx === Math.floor(w / 2) ? 't3' : 't2';  // bord d'écaille
-      else if (dx <= 1) c = 't1';
-      else if (dx >= w - 1) c = 't3';
-      else c = ring === 1 ? 't1' : 't2';
-      set(x, y, c);
-    }
-  }
-  // Palmes : [angle (degrés), longueur, courbure vers le bas]
-  // Palmes en arc : elles partent vers le haut puis retombent (angle négatif = vers le haut).
-  const leaves = [[-160, 16, 1.1], [-20, 16, 1.1], [-125, 13, 1.3], [-55, 13, 1.3], [-92, 9, 1.5], [170, 13, 0.7], [10, 13, 0.7], [135, 10, 0.6], [45, 10, 0.6]];
-  const leaf = Array.from({ length: H }, () => Array(W).fill(0));
-  const rib = Array.from({ length: H }, () => Array(W).fill(false));
-  for (const [deg, len, droop] of leaves) {
-    const a = (deg * Math.PI) / 180;
-    for (let t = 0; t <= 1; t += 0.015) {
-      const x = cx + Math.cos(a) * t * len;
-      const y = cy + Math.sin(a) * t * len + droop * t * t * len;
-      const r = 3.4 * Math.pow(Math.sin(Math.PI * Math.min(t * 1.15, 1)), 0.7) + 0.6;   // large au milieu, pointue au bout
-      for (let yy = Math.floor(y - r); yy <= Math.ceil(y + r); yy++) {
-        for (let xx = Math.floor(x - r); xx <= Math.ceil(x + r); xx++) {
-          if (xx < 0 || xx >= W || yy < 0 || yy >= H) continue;
-          if ((xx + 0.5 - x) ** 2 + (yy + 0.5 - y) ** 2 <= r * r) leaf[yy][xx] = 1;
-        }
-      }
-      if (t > 0.1 && t < 0.9) {
-        const rx = Math.round(x);
-        const ry = Math.round(y);
-        if (ry >= 0 && ry < H && rx >= 0 && rx < W) rib[ry][rx] = true;
-      }
-    }
-  }
-  // Bords dentelés : on creuse une encoche sur le bord inférieur des palmes, un pixel sur trois.
-  const on0 = (x, y) => y >= 0 && y < H && x >= 0 && x < W && leaf[y][x];
-  const notches = [];
-  for (let y = 0; y < H; y++) {
-    for (let x = 0; x < W; x++) {
-      if (on0(x, y) && !on0(x, y + 1) && !rib[y][x] && x % 3 === 0 && Math.abs(x - cx) > 8) notches.push([x, y]);
-    }
-  }
-  notches.forEach(([x, y]) => { leaf[y][x] = 0; });
-  const on = (x, y) => y >= 0 && y < H && x >= 0 && x < W && leaf[y][x];
-  for (let y = 0; y < H; y++) {
-    for (let x = 0; x < W; x++) {
-      if (!leaf[y][x]) continue;
-      if (!on(x - 1, y) || !on(x + 1, y) || !on(x, y - 1) || !on(x, y + 1)) set(x, y, 'k');
-      else if (rib[y][x]) set(x, y, 'h');
-      else if (!on(x, y - 2)) set(x, y, 'L');
-      else if (!on(x, y + 2)) set(x, y, 'd');
-      else set(x, y, (x + y) % 4 === 0 ? 'L' : 'm');
-    }
-  }
-  palmPixels = grid;
-  return grid;
-}
-
-function tallPalm(g, px, py) {
-  const grid = palmSprite();
-  const ox = px + S / 2 - PALM_W / 2;
-  const oy = py + S - grid.length;
-  g.fillStyle(0x000000, 0.18);                                      // ombre au pied
-  g.fillRect(px + 2, py + 13, 12, 3);
-  grid.forEach((row, y) => row.forEach((c, x) => { if (c) rect(g, PALM_C[c], ox + x, oy + y, 1, 1); }));
-}
-
-// Objets hauts (sapins, palmiers) : ils dépassent de leurs cases et passent devant les personnages qui
-// sont derrière eux. Sur les cartes, chacun est une image triée en profondeur (voir tallObject) ;
+// Objets hauts (statues, drapeau) : ils dépassent de leurs cases et passent devant les personnages qui
+// sont derrière eux. Les arbres viennent des planches Rouge Feu / Émeraude (voir art/frlgArt.js). Sur les cartes, chacun est une image triée en profondeur (voir tallObject) ;
 // dans le décor autour des cartes, ils sont dessinés directement avec drawTall.
 // Géométrie de chaque sorte, relative au coin haut-gauche de sa case (ou de son bloc) :
 // left / top : décalage de l'image, w / h : taille, base : y du pied (tri en profondeur).
 const TALL_KINDS = {
-  pine32: { left: 0, top: -12, w: 32, h: 45, base: 31, draw: (g, px, py) => pine(g, px, py + 31, 32) },
-  pine16: { left: 0, top: -8, w: 16, h: 25, base: 15, draw: (g, px, py) => pine(g, px, py + 15, 16) },
-  palm: { left: -10, top: -24, w: 36, h: 40, base: 15, draw: (g, px, py) => tallPalm(g, px, py) },
   capStatues: { left: 0, top: -6, w: 64, h: 40, base: 31, draw: (g, px, py) => capStatues(g, px, py) },
   mqFlag: { left: 3, top: -61, w: 26, h: 77, base: 15, frames: MQ_FLAG_FRAMES, draw: (g, px, py, frame) => tallMartiniqueFlag(g, px + 3, py - 60, frame) },
 };
 
 // Objet haut ancré sur la case (x, y), ou null : { kind, px, py } (coin haut-gauche de sa case / son bloc).
 function tallAnchor(code, x, y, at) {
-  if (code === 'Y') return { kind: 'palm', px: x * S, py: y * S };
   if (code === 'ɸ') return { kind: 'mqFlag', px: x * S, py: y * S };
   if (code === 'ɱ') {
     const plateau = (c) => c === 'ɱ' || c === 'ɲ';
     return plateau(at(x - 1, y)) || plateau(at(x, y - 1)) ? null : { kind: 'capStatues', px: x * S, py: y * S };
   }
-  if (code !== 'T') return null;
-  if (!inFullTreeBlock(x, y, at)) return { kind: 'pine16', px: x * S, py: y * S };
-  // Grand sapin : ancré sur la dernière case de son bloc (en bas à droite).
-  if (mod2(x) === 1 && mod2(y) === 1) return { kind: 'pine32', px: (x - 1) * S, py: (y - 1) * S };
   return null;
 }
 

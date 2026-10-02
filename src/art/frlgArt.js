@@ -39,6 +39,7 @@ export const FRLG_SHEETS = {
   bigTree: 'rs-bigtree',
   farm: 'rs-farm',
   crates: 'rs-crates',
+  smallTree: 'frlg-small-tree',
 };
 
 export function preloadFrlg(scene) {
@@ -512,6 +513,10 @@ export function frlgBerryPlant(scene, code, x, y) {
   }
   return { key, x: x * S, y: (y - 1) * S, baseY: (y + 1) * S - 1 };
 }
+
+// Petit arbre de Rouge Feu sans son herbe (frlg-small-tree.png) : les palmiers 'Y' des pays exotiques, posés sur
+// leur sol (sable, pavés, herbe…).
+export const FRLG_SMALL_TREE = { sheet: FRLG_SHEETS.smallTree, sx: 0, sy: 0 };
 
 export function drawFrlgTree(ctx, textures, px, py) {
   blit(ctx, textures, FRLG_TREE, px, py, FRLG_TREE.w, FRLG_TREE.h);

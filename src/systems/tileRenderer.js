@@ -3,7 +3,7 @@ import { drawTile, drawTall, tallObject, drawTallKind, tallFrames, setGroundProv
 import { drawBuilding } from '../art/buildingArt.js';
 import {
   drawFrlgGround, drawFrlgOverlay, addFrlgBuilding, frlgBuildingFloor, isFrlgOnly,
-  frlgTree, drawFrlgTree, FRLG_BUILDINGS, FRLG_TREE, FRLG_SHEETS, addSeaLayer, frlgTropicalTree, frlgBerryPlant,
+  frlgTree, drawFrlgTree, FRLG_BUILDINGS, FRLG_TREE, FRLG_SHEETS, FRLG_SMALL_TREE, addSeaLayer, frlgTropicalTree, frlgBerryPlant,
   drawFrlgInteriorGround, drawFrlgInteriorDecor, FRLG_INTERIOR_ONLY,
 } from '../art/frlgArt.js';
 import { inFullTreeBlock } from '../data/treeBlocks.js';
@@ -84,6 +84,7 @@ function bakeRegion(scene, key, { x0, y0, w, h }, at, { buildings = [], building
     for (const [x, y] of cells) {
       const tree = frlgTree(at(x, y), x, y, at);
       if (tree) drawFrlgTree(ctx, textures, tree.x, tree.y);
+      else if (at(x, y) === 'Y') ctx.drawImage(textures.get(FRLG_SMALL_TREE.sheet).getSourceImage(), x * S, y * S);
       else if (at(x, y) !== 'T' || !inFullTreeBlock(x, y, at)) drawTall(tall, at(x, y), x, y, at);
     }
     stamp(scene, tall, ctx, x0, y0, w, h);
@@ -148,8 +149,13 @@ function addTallObjects(scene, map) {
       scene.add.image(tree.x, tree.y, key).setOrigin(0).setDepth(10 + tree.baseY / 10000);
       return;
     }
+    // Palmier 'Y' : le petit arbre de Rouge Feu, posé sur le sol de sa case.
+    if (code === 'Y') {
+      scene.add.image(x * S, y * S, FRLG_SMALL_TREE.sheet).setOrigin(0).setDepth(10 + ((y + 1) * S - 1) / 10000);
+      return;
+    }
     const o = tallObject(code, x, y, at);
-    if (!o || o.kind === 'pine32') return;
+    if (!o) return;
     // Une texture par image ; un objet animé (drapeau au vent) change d'image régulièrement.
     const frames = tallFrames(o.kind);
     const keys = Array.from({ length: frames }, (_, f) => `tall-${o.kind}-${f}`);
