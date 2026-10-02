@@ -4,35 +4,15 @@ frlg-npcs.png : une ligne de 12 images de 16 x 32 par personnage (bas, haut, gau
 fond transparent, pieds sur la dernière ligne. Sur la planche : bas / haut / gauche sur une colonne (la droite en
 miroir), une colonne par personnage, ou trois pour ceux qui marchent (voir EMERALD_COLUMNS).
 
-Les planches DS (assets-source/ds/) ne sont plus utilisées pour les personnages.
-
 Usage : python3 scripts/extract_more_npcs.py
 """
 from pathlib import Path
 from PIL import Image, ImageOps
+from pixels import clear_color, pack_characters
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets-source'
-OUT = ROOT / 'public' / 'assets' / 'characters'
-DIRS = ('down', 'up', 'left', 'right')
-
-
-
-def transparent(img, bg):
-    img = img.convert('RGBA')
-    img.putdata([(0, 0, 0, 0) if p[:3] == bg else p for p in img.getdata()])
-    return img
-
-
-def write(rows, w, h, name):
-    """rows : une liste de 12 images (DIRS x debout, pas, pas) par personnage. Pieds calés en bas."""
-    out = Image.new('RGBA', (w * 12, h * len(rows)), (0, 0, 0, 0))
-    for k, frames in enumerate(rows):
-        bottom = max(f.getbbox()[3] for f in frames if f.getbbox())
-        for i, f in enumerate(frames):
-            out.paste(f, (i * w, k * h + h - bottom), f)
-    out.save(OUT / name)
-    print(f'{len(rows)} personnages -> {(OUT / name).relative_to(ROOT)}')
+OUT = ROOT / 'public' / 'assets' / 'characters' / 'emerald-npcs.png'
 
 
 # Colonnes de la planche d'Émeraude par personnage : une seule (debout), ou trois (pas, debout, pas).
@@ -46,7 +26,7 @@ def emerald_characters():
 
     def column(i):
         x = 1 + 17 * i
-        down, up, left = (transparent(im.crop((x, 1 + 33 * r, x + 16, 33 + 33 * r)), bg) for r in range(3))
+        down, up, left = (clear_color(im.crop((x, 1 + 33 * r, x + 16, 33 + 33 * r)).convert('RGBA'), bg) for r in range(3))
         return down, up, left, ImageOps.mirror(left)
 
     rows = []
@@ -59,7 +39,9 @@ def emerald_characters():
 
 
 def main():
-    write(emerald_characters(), 16, 32, 'emerald-npcs.png')
+    rows = emerald_characters()
+    pack_characters(rows, 16, 32).save(OUT)
+    print(f'{len(rows)} personnages -> {OUT.relative_to(ROOT)}')
 
 
 if __name__ == '__main__':

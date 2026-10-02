@@ -4,14 +4,6 @@ import { rect, sprite } from './pixel.js';
 // Bâtiments dessinés d'un bloc par-dessus leurs cases (R/W/D gardent la collision).
 // Taille en cases : maison 5x4, labo 7x4. La porte est en (1, 3) pour la maison, (3, 3) pour le labo.
 
-function window_(g, x, y, w, h) {
-  rect(g, 0x405080, x, y, w, h);
-  rect(g, 0x6090e0, x + 1, y + 1, w - 2, h - 2);
-  rect(g, 0x405080, x + Math.floor(w / 2), y + 1, 1, h - 2);
-  rect(g, 0xb0d0f8, x + 1, y + 1, 3, 1);
-  rect(g, 0xf0f0f8, x - 1, y + h, w + 2, 1);
-}
-
 function roundWindow(g, cx, cy) {
   const k = 0x405080;
   rect(g, k, cx - 4, cy - 3, 9, 7);
@@ -130,92 +122,6 @@ function drawLab(g, ox, oy) {
   rect(g, 0x90d8a0, ox + 50, oy + 45, 12, 1);
 }
 
-// Hôpital (même emprise que le labo : 7x4, porte en (3,3)) : toit bleu-gris, murs blancs, croix rouge.
-function redCross(g, cx, cy, size) {
-  const arm = Math.round(size / 3);
-  rect(g, 0xd83838, cx - arm / 2, cy - size / 2, arm, size);
-  rect(g, 0xd83838, cx - size / 2, cy - arm / 2, size, arm);
-}
-
-function drawHospital(g, ox, oy) {
-  // Toit
-  rect(g, 0x3c5068, ox, oy + 2, 112, 32);
-  rect(g, 0x7898b8, ox + 1, oy + 3, 110, 29);
-  for (let y = 9; y < 32; y += 6) rect(g, 0x6080a0, ox + 1, oy + y, 110, 1);
-  rect(g, 0xa8c0d8, ox + 1, oy + 3, 110, 1);
-  rect(g, 0x3c5068, ox, oy + 32, 112, 2);
-  // Grande croix sur le toit, dans un disque blanc
-  rect(g, 0xf8f8f8, ox + 46, oy + 6, 20, 22);
-  rect(g, 0xf8f8f8, ox + 44, oy + 8, 24, 18);
-  redCross(g, ox + 56, oy + 17, 14);
-
-  // Murs blancs
-  rect(g, 0x606878, ox + 2, oy + 34, 108, 30);
-  rect(g, 0xf4f4f8, ox + 3, oy + 34, 106, 27);
-  rect(g, 0xd0d4e0, ox + 3, oy + 34, 106, 2);
-  rect(g, 0xd83838, ox + 3, oy + 57, 106, 2);          // bandeau rouge
-  rect(g, 0xa8acb8, ox + 3, oy + 59, 106, 2);
-  for (const x of [10, 26, 74, 90]) window_(g, ox + x, oy + 39, 12, 9);
-
-  // Enseigne au-dessus de la porte
-  rect(g, 0xd83838, ox + 50, oy + 36, 12, 7);
-  redCross(g, ox + 56, oy + 39.5, 5);
-  rect(g, 0xf8f8f8, ox + 54, oy + 37, 4, 5);
-  redCross(g, ox + 56, oy + 39.5, 4);
-
-  // Porte vitrée (case locale 3,3)
-  rect(g, 0x506070, ox + 49, oy + 44, 14, 20);
-  rect(g, 0x9cd0f0, ox + 50, oy + 45, 12, 19);
-  rect(g, 0x506070, ox + 56, oy + 45, 1, 19);
-  rect(g, 0xd8f0ff, ox + 51, oy + 46, 2, 6);
-  rect(g, 0xd8f0ff, ox + 58, oy + 46, 2, 6);
-}
-
-// Maison médiévale à colombages (5x4, porte en (1,3)) : toit de tuiles brunes, murs crème à poutres.
-function drawMedievalHouse(g, ox, oy) {
-  // Toit
-  rect(g, 0x3c2014, ox, oy + 1, 80, 32);
-  rect(g, 0x8c4c2c, ox + 1, oy + 2, 78, 29);
-  for (let y = 5; y < 30; y += 4) {
-    rect(g, 0x6c3420, ox + 1, oy + y, 78, 1);
-    for (let x = (y % 8 ? 0 : 4); x < 78; x += 8) rect(g, 0x6c3420, ox + 1 + x, oy + y - 3, 1, 3);
-  }
-  rect(g, 0xac6c44, ox + 1, oy + 2, 78, 1);
-  rect(g, 0x4c2818, ox, oy + 31, 80, 2);
-  // Cheminée en pierre
-  rect(g, 0x4c4c54, ox + 60, oy, 9, 12);
-  rect(g, 0x9c9ca4, ox + 61, oy + 1, 7, 10);
-
-  // Murs crème + colombages
-  const beam = 0x4a3020;
-  rect(g, beam, ox + 2, oy + 33, 76, 31);
-  rect(g, 0xf0e6cc, ox + 3, oy + 34, 74, 27);
-  for (const x of [3, 34, 52, 75]) rect(g, beam, ox + x, oy + 34, 2, 27);
-  rect(g, beam, ox + 3, oy + 46, 74, 2);
-  for (let i = 0; i < 12; i++) {            // croix de Saint-André entre deux poteaux
-    rect(g, beam, ox + 37 + i, oy + 35 + i, 2, 1);
-    rect(g, beam, ox + 49 - i, oy + 35 + i, 2, 1);
-  }
-  rect(g, 0x5c5c64, ox + 3, oy + 59, 74, 2);  // soubassement en pierre
-
-  // Fenêtres à volets
-  for (const x of [56, 64]) {
-    rect(g, beam, x + ox, oy + 50, 8, 8);
-    rect(g, 0xd8b050, x + ox + 1, oy + 51, 6, 6);
-    rect(g, beam, x + ox + 4, oy + 51, 1, 6);
-  }
-  rect(g, 0x2c6c3c, ox + 54, oy + 50, 2, 8);
-  rect(g, 0x2c6c3c, ox + 72, oy + 50, 2, 8);
-
-  // Porte en bois cintrée (case locale 1,3)
-  rect(g, beam, ox + 18, oy + 47, 12, 17);
-  rect(g, beam, ox + 19, oy + 46, 10, 1);
-  rect(g, 0x8c5c2c, ox + 19, oy + 48, 10, 16);
-  rect(g, 0x6c4420, ox + 22, oy + 48, 1, 16);
-  rect(g, 0x6c4420, ox + 26, oy + 48, 1, 16);
-  rect(g, 0xd8b050, ox + 27, oy + 56, 1, 2);
-}
-
 // École médiévale (7x4, porte en (3,3)) : murs de pierre, toit d'ardoise, clocher au-dessus de la porte.
 function drawSchool(g, ox, oy) {
   // Toit d'ardoise
@@ -263,78 +169,6 @@ function drawSchool(g, ox, oy) {
   rect(g, 0x5c3418, ox + 49, oy + 50, 14, 1);
   rect(g, 0xd8b050, ox + 54, oy + 54, 1, 2);
   rect(g, 0xd8b050, ox + 58, oy + 54, 1, 2);
-}
-
-// Dortoir de caserne (7x4, porte en (3,3)) : toit en tôle ondulée kaki, murs de béton, rangée de fenêtres.
-function drawBarracks(g, ox, oy) {
-  // Toit en tôle
-  rect(g, 0x2c3420, ox, oy + 2, 112, 32);
-  rect(g, 0x6c7c4c, ox + 1, oy + 3, 110, 29);
-  for (let x = 3; x < 110; x += 4) rect(g, 0x5a6a3c, ox + x, oy + 3, 2, 29);
-  rect(g, 0x8c9c68, ox + 1, oy + 3, 110, 1);
-  rect(g, 0x2c3420, ox, oy + 32, 112, 2);
-  // Aérations sur le toit
-  for (const x of [20, 86]) {
-    rect(g, 0x3c3c40, ox + x, oy + 12, 8, 8);
-    rect(g, 0x9c9ca4, ox + x + 1, oy + 13, 6, 6);
-  }
-
-  // Murs en béton
-  rect(g, 0x5c5848, ox + 2, oy + 34, 108, 30);
-  rect(g, 0xd8ceb0, ox + 3, oy + 34, 106, 27);
-  rect(g, 0xb8ae90, ox + 3, oy + 34, 106, 2);
-  rect(g, 0x7c7460, ox + 3, oy + 57, 106, 4);
-  for (const x of [8, 20, 32, 68, 80, 92]) {
-    rect(g, 0x3c3c40, ox + x, oy + 40, 10, 8);
-    rect(g, 0x7898b8, ox + x + 1, oy + 41, 8, 6);
-    rect(g, 0x3c3c40, ox + x + 1, oy + 44, 8, 1);
-    rect(g, 0xb8d0e8, ox + x + 1, oy + 41, 2, 1);
-  }
-
-  // Porte métallique verte + plaque (case locale 3,3)
-  rect(g, 0x2c3420, ox + 49, oy + 44, 14, 20);
-  rect(g, 0x4c6c3c, ox + 50, oy + 45, 12, 19);
-  rect(g, 0x3c5830, ox + 56, oy + 45, 1, 19);
-  rect(g, 0xd8d0a0, ox + 58, oy + 54, 2, 1);
-  rect(g, 0xe8e0c0, ox + 51, oy + 37, 10, 5);
-  rect(g, 0x3c3c40, ox + 53, oy + 39, 6, 1);
-}
-
-// Poste de commandement (5x4, porte en (1,3)) : toit plat avec antenne, drapeau à la façade.
-function drawHeadquarters(g, ox, oy) {
-  rect(g, 0x3c3c40, ox, oy + 6, 80, 28);
-  rect(g, 0x8c9094, ox + 1, oy + 7, 78, 25);
-  rect(g, 0xa8acb0, ox + 1, oy + 7, 78, 1);
-  rect(g, 0x7c8084, ox + 4, oy + 10, 72, 19);
-  rect(g, 0x8c9094, ox + 5, oy + 11, 70, 17);
-  // Antenne radio
-  rect(g, 0x3c3c40, ox + 62, oy, 2, 20);
-  rect(g, 0x3c3c40, ox + 58, oy + 4, 10, 1);
-  rect(g, 0x3c3c40, ox + 59, oy + 9, 8, 1);
-  rect(g, 0xd83030, ox + 62, oy, 2, 2);
-  rect(g, 0x3c3c40, ox, oy + 32, 80, 2);
-
-  // Murs
-  rect(g, 0x5c5848, ox + 2, oy + 34, 76, 30);
-  rect(g, 0xe0d6b8, ox + 3, oy + 34, 74, 27);
-  rect(g, 0xc0b698, ox + 3, oy + 34, 74, 2);
-  rect(g, 0x7c7460, ox + 3, oy + 57, 74, 4);
-  for (const x of [40, 58]) {
-    rect(g, 0x3c3c40, x + ox, oy + 40, 12, 9);
-    rect(g, 0x7898b8, x + ox + 1, oy + 41, 10, 7);
-    rect(g, 0xb8d0e8, x + ox + 1, oy + 41, 3, 1);
-  }
-  // Drapeau en façade
-  rect(g, 0x505058, ox + 35, oy + 36, 1, 12);
-  rect(g, 0x2848a8, ox + 36, oy + 37, 2, 5);
-  rect(g, 0xf8f8f8, ox + 38, oy + 37, 2, 5);
-  rect(g, 0xd83030, ox + 40, oy + 37, 2, 5);
-
-  // Porte (case locale 1,3)
-  rect(g, 0x2c3420, ox + 18, oy + 45, 12, 19);
-  rect(g, 0x4c6c3c, ox + 19, oy + 46, 10, 18);
-  rect(g, 0x9cb8d0, ox + 21, oy + 48, 6, 5);
-  rect(g, 0xd8d0a0, ox + 27, oy + 56, 1, 2);
 }
 
 // Petite police pixel (5 de haut) pour les enseignes (lettres utilisées seulement).
@@ -486,41 +320,6 @@ function bricks(g, x, y, w, h, base = 0xa84830, joint = 0x7c3020) {
   }
 }
 
-// Fenêtre à guillotine anglaise, cadre blanc.
-function sashWindow(g, x, y) {
-  rect(g, 0xf4f4f0, x, y, 9, 11);
-  rect(g, 0x5878a8, x + 1, y + 1, 7, 9);
-  rect(g, 0xf4f4f0, x + 1, y + 5, 7, 1);
-  rect(g, 0xf4f4f0, x + 4, y + 1, 1, 9);
-  rect(g, 0x9cb8d8, x + 1, y + 1, 2, 1);
-}
-
-// Maison mitoyenne anglaise en briques (5x4, porte en (2,3)) ; `variant` change la couleur de la porte.
-const DOOR_COLORS = [0x1c1c24, 0xa82020, 0x1c3c8c, 0x1c5c3c];
-function drawTerrace(g, ox, oy, { variant = 0 } = {}) {
-  // Toit d'ardoise + cheminées
-  rect(g, 0x2c3038, ox, oy + 2, 80, 30);
-  rect(g, 0x505868, ox + 1, oy + 3, 78, 27);
-  for (let y = 7; y < 30; y += 4) rect(g, 0x3c4450, ox + 1, oy + y, 78, 1);
-  for (const x of [8, 64]) {
-    bricks(g, ox + x, oy, 10, 12);
-    rect(g, 0xc87850, ox + x + 2, oy - 1, 2, 2);
-    rect(g, 0xc87850, ox + x + 6, oy - 1, 2, 2);
-  }
-  rect(g, 0xe8e4dc, ox, oy + 30, 80, 2);
-  // Façade en briques
-  bricks(g, ox + 1, oy + 32, 78, 32);
-  rect(g, 0xe8e4dc, ox + 1, oy + 46, 78, 1);
-  for (const x of [8, 20, 52, 64]) sashWindow(g, ox + x, oy + 34);
-  for (const x of [10, 60]) sashWindow(g, ox + x, oy + 49);
-  // Porte colorée avec imposte (case locale 2,3)
-  rect(g, 0xe8e4dc, ox + 33, oy + 47, 14, 17);
-  rect(g, DOOR_COLORS[variant % DOOR_COLORS.length], ox + 35, oy + 50, 10, 14);
-  rect(g, 0xf8e088, ox + 36, oy + 48, 8, 2);
-  rect(g, 0xd8b050, ox + 43, oy + 57, 1, 1);
-  rect(g, 0xd8b050, ox + 39, oy + 53, 2, 1);
-}
-
 // Pub anglais (5x4, porte en (1,3)) : façade vert sombre, enseigne dorée « PUB », jardinières.
 function drawPub(g, ox, oy) {
   rect(g, 0x2c3038, ox, oy + 2, 80, 30);
@@ -587,70 +386,6 @@ function drawUniversity(g, ox, oy) {
   rect(g, 0x5c3418, ox + 65, oy + 49, 14, 15);
   rect(g, 0x5c3418, ox + 67, oy + 47, 10, 2);
   rect(g, 0x3c2410, ox + 72, oy + 49, 1, 15);
-}
-
-// Château (7x5, porte en (3,4)) : pierre grise, deux tours crénelées, Union Jack au sommet.
-function drawCastle(g, ox, oy) {
-  const stone = 0x9c9ca0;
-  const dark = 0x4c4c54;
-  const blocks = (x, y, w, h) => {
-    rect(g, dark, x, y, w, h);
-    rect(g, stone, x + 1, y + 1, w - 2, h - 2);
-    for (let r = 4; r < h - 1; r += 5) rect(g, 0x84848c, x + 1, y + r, w - 2, 1);
-    for (let r = 0; r < h - 1; r += 5) for (let c = ((r / 5) % 2) * 4 + 2; c < w - 1; c += 8) rect(g, 0x84848c, x + c, y + r, 1, 5);
-  };
-  // Donjon central
-  blocks(ox + 24, oy + 8, 64, 72);
-  for (let x = 24; x < 88; x += 8) rect(g, dark, ox + x, oy + 4, 5, 5);   // créneaux
-  // Tours
-  for (const tx of [0, 88]) {
-    blocks(ox + tx, oy, 24, 80);
-    for (let x = 0; x < 24; x += 6) rect(g, dark, ox + tx + x, oy - 3, 4, 4);
-    rect(g, dark, ox + tx + 9, oy + 20, 6, 10);        // meurtrières
-    rect(g, dark, ox + tx + 9, oy + 46, 6, 10);
-  }
-  // Drapeau britannique en haut
-  rect(g, 0x303038, ox + 55, oy - 8, 2, 16);
-  rect(g, 0x283c8c, ox + 57, oy - 8, 12, 8);
-  rect(g, 0xf8f8f8, ox + 57, oy - 5, 12, 2);
-  rect(g, 0xf8f8f8, ox + 62, oy - 8, 2, 8);
-  rect(g, 0xd02030, ox + 57, oy - 5, 12, 1);
-  rect(g, 0xd02030, ox + 62, oy - 8, 1, 8);
-  // Fenêtres
-  for (const x of [34, 70]) {
-    rect(g, dark, ox + x, oy + 26, 8, 12);
-    rect(g, 0x4c5c7c, ox + x + 1, oy + 27, 6, 10);
-  }
-  // Porte en arc avec herse (case locale 3,4)
-  rect(g, dark, ox + 46, oy + 58, 20, 22);
-  rect(g, dark, ox + 49, oy + 55, 14, 3);
-  rect(g, 0x5c3418, ox + 48, oy + 60, 16, 20);
-  for (let x = 50; x < 64; x += 4) rect(g, 0x303030, ox + x, oy + 60, 1, 20);
-  for (let y = 64; y < 80; y += 5) rect(g, 0x303030, ox + 48, oy + y, 16, 1);
-}
-
-// Tour de l'horloge façon Big Ben (3x6, sans porte) : tour de pierre dorée, cadran, flèche.
-function drawBigBen(g, ox, oy) {
-  const stone = 0xd8c088;
-  const shade = 0xa89060;
-  // Flèche
-  for (let i = 0; i < 12; i++) rect(g, 0x3c4450, ox + 24 - i, oy - 8 + i, i * 2 || 1, 1);
-  rect(g, 0xd8b050, ox + 23, oy - 12, 2, 4);
-  // Tour
-  rect(g, 0x6c5838, ox + 10, oy + 4, 28, 92);
-  rect(g, stone, ox + 11, oy + 5, 26, 90);
-  for (let y = 10; y < 95; y += 6) rect(g, shade, ox + 11, oy + y, 26, 1);
-  for (const x of [15, 23, 31]) rect(g, shade, ox + x, oy + 36, 1, 58);
-  // Cadran
-  rect(g, 0x6c5838, ox + 12, oy + 10, 24, 24);
-  rect(g, 0xd8b050, ox + 13, oy + 11, 22, 22);
-  rect(g, 0xf8f4e8, ox + 15, oy + 13, 18, 18);
-  rect(g, 0x202020, ox + 23, oy + 15, 2, 8);
-  rect(g, 0x202020, ox + 24, oy + 22, 6, 2);
-  for (const [x, y] of [[23, 13], [23, 29], [15, 21], [31, 21]]) rect(g, 0x202020, ox + x, oy + y, 2, 2);
-  // Base
-  rect(g, 0x6c5838, ox + 6, oy + 88, 36, 8);
-  rect(g, shade, ox + 7, oy + 89, 34, 6);
 }
 
 // Bus rouge à impériale, vu de dessus (3x2).
@@ -783,24 +518,6 @@ function drawAsylum(g, ox, oy) {
   rect(g, K, ox + 17, oy + 46, 14, 18);                                // porte (case locale 1,3)
   rect(g, 0x5c3c7c, ox + 18, oy + 47, 12, 17);
   rect(g, 0xc090e0, ox + 28, oy + 55, 1, 2);
-}
-
-// Monument à William Wilberforce (2x2) : colonne dorique sur un socle, statue au sommet.
-function drawWilberforce(g, ox, oy) {
-  const K = 0x4c4840;
-  rect(g, 0x000000, ox + 6, oy + 30, 22, 2);
-  rect(g, K, ox + 5, oy + 18, 22, 13);                                  // socle
-  rect(g, 0xd8d0b8, ox + 6, oy + 19, 20, 11);
-  rect(g, 0xb8b098, ox + 6, oy + 26, 20, 4);
-  rect(g, K, ox + 11, oy - 30, 10, 49);                                 // colonne
-  rect(g, 0xe0d8c0, ox + 12, oy - 29, 8, 47);
-  rect(g, 0xc0b8a0, ox + 17, oy - 29, 2, 47);
-  rect(g, K, ox + 9, oy - 33, 14, 4);                                   // chapiteau
-  rect(g, 0xd8d0b8, ox + 10, oy - 32, 12, 2);
-  rect(g, K, ox + 13, oy - 44, 6, 11);                                  // statue
-  rect(g, 0x9ca098, ox + 14, oy - 43, 4, 9);
-  rect(g, 0x9ca098, ox + 14, oy - 47, 4, 4);
-  rect(g, K, ox + 13, oy - 48, 6, 1);
 }
 
 // Maison-tube vietnamienne (3x4, porte en (1,3)) : étroite et haute, façade colorée,
@@ -1811,27 +1528,6 @@ function drawBoudhanath(g, ox, oy) {
   rect(g, gold, ox + 32, oy + 64, 16, 2);
 }
 
-// Grange de ferme (5x4, porte en (2,3)) : bois rouge, croisillons blancs, lucarne à foin.
-function drawBarn(g, ox, oy) {
-  rect(g, 0x3c3c40, ox, oy + 2, 80, 30);                  // toit de tôle
-  rect(g, 0x707478, ox + 1, oy + 3, 78, 27);
-  for (let x = 4; x < 78; x += 6) rect(g, 0x5c6064, ox + x, oy + 3, 2, 27);
-  rect(g, 0x3c3c40, ox, oy + 30, 80, 2);
-  rect(g, 0x5c1818, ox + 1, oy + 32, 78, 32);              // murs rouges
-  rect(g, 0xa83028, ox + 2, oy + 32, 76, 30);
-  for (let x = 6; x < 76; x += 6) rect(g, 0x8c2420, ox + x, oy + 32, 1, 30);
-  rect(g, 0xf4f0e8, ox + 32, oy + 34, 16, 8);              // lucarne à foin
-  rect(g, 0xe8c850, ox + 34, oy + 36, 12, 5);
-  rect(g, 0xf4f0e8, ox + 28, oy + 44, 24, 20);             // grande porte (case locale 2,3)
-  rect(g, 0x8c2420, ox + 30, oy + 46, 20, 18);
-  for (let i = 0; i < 18; i++) {                           // croisillons en X
-    rect(g, 0xf4f0e8, ox + 30 + Math.round(i * 20 / 18), oy + 46 + i, 1, 1);
-    rect(g, 0xf4f0e8, ox + 49 - Math.round(i * 20 / 18), oy + 46 + i, 1, 1);
-  }
-  rect(g, 0xe8c850, ox + 4, oy + 56, 12, 8);               // botte de foin
-  rect(g, 0xc8a038, ox + 4, oy + 59, 12, 1);
-}
-
 // Tracteur (obstacle 2 x 2) vert vu de côté (34 x 30 px), façon Rouge Feu : contour sombre, cabine vitrée sur la
 // grande roue arrière crantée, garde-boue, capot à bande jaune et calandre, phare, pot d'échappement, petite roue
 // avant.
@@ -1927,25 +1623,16 @@ function drawBoat(g, ox, oy) {
 const BUILDINGS = {
   house: drawHouse,
   lab: drawLab,
-  hospital: drawHospital,
-  medievalHouse: drawMedievalHouse,
   school: drawSchool,
-  barracks: drawBarracks,
-  headquarters: drawHeadquarters,
-  immeuble: drawImmeuble,
   agence: drawAgence,
   kedge: drawKedge,
-  terrace: drawTerrace,
   pub: drawPub,
   university: drawUniversity,
-  castle: drawCastle,
-  bigBen: drawBigBen,
   bus: drawBus,
   theDeep: drawTheDeep,
   footballPitch: drawFootballPitch,
   minster: drawMinster,
   asylum: drawAsylum,
-  wilberforce: drawWilberforce,
   tubeHouse: drawTubeHouse,
   travelAgency: drawTravelAgency,
   pagoda: drawPagoda,
@@ -1984,7 +1671,6 @@ const BUILDINGS = {
   stupa: drawStupa,
   wat: drawWat,
   boudhanath: drawBoudhanath,
-  barn: drawBarn,
   tractor: drawTractor,
   boat: drawBoat,
 };

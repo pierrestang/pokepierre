@@ -16,6 +16,7 @@ Usage : python3 scripts/extract_rs_buildings.py
 """
 from pathlib import Path
 from PIL import Image
+from pixels import clear_outside
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets-source' / 'gba' / 'rs-mt-chimney.png'
@@ -37,20 +38,9 @@ CRATE_W, CRATE_H = 15, 16
 
 
 def crate(im, x, y):
+    """Caisse détourée : le fond du marché, depuis les bords jusqu'au contour sombre, devient transparent."""
     c = im.crop((x, y, x + CRATE_W, y + CRATE_H)).convert('RGBA')
-    px = c.load()
-    dark = lambda p: sum(p[:3]) < 250
-    # Coins hors du contour (fond du marché) -> transparents : on remplit depuis les bords jusqu'au contour.
-    stack = [(i, j) for i in range(CRATE_W) for j in (0, CRATE_H - 1)] + [(i, j) for i in (0, CRATE_W - 1) for j in range(CRATE_H)]
-    seen = set()
-    while stack:
-        p = stack.pop()
-        if p in seen or not (0 <= p[0] < CRATE_W and 0 <= p[1] < CRATE_H) or dark(px[p]):
-            continue
-        seen.add(p)
-        px[p] = (0, 0, 0, 0)
-        stack += [(p[0] + 1, p[1]), (p[0] - 1, p[1]), (p[0], p[1] + 1), (p[0], p[1] - 1)]
-    return c
+    return clear_outside(c, lambda p: sum(p[:3]) >= 250)
 
 
 def build_crates():
@@ -82,21 +72,10 @@ def build_crates():
     print('ok ->', CRATES_OUT.relative_to(ROOT))
 
 
-def main():
-    img = Image.open(SRC).convert('RGBA').crop(BOX)
+def build_farm():
+    img = clear_outside(Image.open(SRC).convert('RGBA').crop(BOX), ash)
     px = img.load()
     W, H = img.size
-    stack = [(x, y) for x in range(W) for y in (0, H - 1)] + [(x, y) for x in (0, W - 1) for y in range(H)]
-    seen = set()
-    while stack:
-        p = stack.pop()
-        if p in seen or not (0 <= p[0] < W and 0 <= p[1] < H):
-            continue
-        seen.add(p)
-        if not ash(px[p]):
-            continue
-        px[p] = (0, 0, 0, 0)
-        stack += [(p[0] + 1, p[1]), (p[0] - 1, p[1]), (p[0], p[1] + 1), (p[0], p[1] - 1)]
     # Restes du décor qui touchent le bord : ombre de la barrière au-dessus, câble du téléphérique à droite.
     for x in range(W):
         for y in range(H):
@@ -107,6 +86,10 @@ def main():
     out.paste(img, (96 - img.width, 0))
     out.save(OUT)
     print('ok ->', OUT.relative_to(ROOT))
+
+
+def main():
+    build_farm()
     build_crates()
 
 

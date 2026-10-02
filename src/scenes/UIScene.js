@@ -44,7 +44,7 @@ function createLabel(scene, row) {
 }
 
 // Interface affichée par-dessus les scènes de jeu (sans zoom) :
-// nom de la ville, compteur de souvenirs, objets (touche I pour la liste), dialogues,
+// nom de la ville, compteur de souvenirs, objets (touche I pour le sac), dialogues,
 // menu Start (Échap) et commandes tactiles sur téléphone.
 // La ville vient du registre du jeu (`city`), mis à jour par les scènes de carte.
 export class UIScene extends Phaser.Scene {

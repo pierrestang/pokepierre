@@ -8,6 +8,7 @@ Usage : python3 scripts/extract_emerald_trainers.py
 """
 from pathlib import Path
 from PIL import Image
+from pixels import clear_color
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets-source' / 'emerald-trainers.png'
@@ -16,9 +17,7 @@ BACKGROUND = {(112, 192, 160, 255), (78, 99, 61, 255)}   # fond et lignes de la 
 
 
 def main():
-    im = Image.open(SRC).convert('RGBA')
-    im.putdata([(0, 0, 0, 0) if p in BACKGROUND else p for p in im.getdata()])
-    im.save(OUT)
+    clear_color(Image.open(SRC).convert('RGBA'), BACKGROUND).save(OUT)
     print('ok ->', OUT.relative_to(ROOT))
 
 

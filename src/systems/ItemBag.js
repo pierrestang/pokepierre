@@ -1,25 +1,15 @@
-import { gameView, SCREEN_W, SCREEN_H } from './screen.js';
-import { FRLG_FONT, frlgText } from './frlgFont.js';
+import { SCREEN_W, SCREEN_H } from './screen.js';
 import { sfx } from './audio.js';
 import { items } from './items.js';
 import { ITEM_ICONS, itemIcon } from '../art/uiIcons.js';
+import { FullScreenPanel, BAR } from './FullScreenPanel.js';
 
-// Menu Start > OBJETS : le sac, dans le style du panneau PNJ. Les objets en deux colonnes, chacun avec son
-// icône (voir art/uiIcons.js). Flèches : choisir ; Échap : fermer.
-const BAR = 16;
+// Menu Start > OBJETS (ou touche I) : le sac, dans le style du panneau PNJ. Les objets en deux colonnes, chacun
+// avec son icône (voir art/uiIcons.js). Flèches : choisir ; Échap : fermer.
 const ROWS = 5;                 // objets par colonne
 const ROW_H = 30;
 
-export class ItemBag {
-  constructor(scene) {
-    this.scene = scene;
-    this.isOpen = false;
-    this.objects = [];
-    const onResize = () => this.isOpen && this.render();
-    scene.scale.on('resize', onResize);
-    scene.events.once('shutdown', () => scene.scale.off('resize', onResize));
-  }
-
+export class ItemBag extends FullScreenPanel {
   open() {
     this.list = items.list();
     this.index = 0;
@@ -27,35 +17,12 @@ export class ItemBag {
     this.render();
   }
 
-  close() {
-    this.isOpen = false;
-    this.objects.forEach((o) => o.destroy());
-    this.objects = [];
-  }
-
-  add(o) {
-    this.objects.push(o.setDepth(120));
-    return o;
-  }
-
   render() {
-    this.objects.forEach((o) => o.destroy());
-    this.objects = [];
-    const s = this.scene;
-    const v = gameView(s.scale);
-    const u = v.zoom;
-    const X = (x) => v.x + x * u;
-    const Y = (y) => v.y + y * u;
-    const text = (t, x, y, color = 0x303038) => this.add(s.add.bitmapText(X(x), Y(y), FRLG_FONT, frlgText(s, t)).setScale(u).setTintFill(color));
-    const icon = (id, x, y, scale = 1) => {
-      const frame = itemIcon(id);
-      if (frame) this.add(s.add.image(X(x), Y(y), ITEM_ICONS, frame).setScale(u * scale));
-    };
-
+    this.begin();
+    const { scene: s, u, X, Y } = this;
+    const text = (t, x, y, color) => this.text(t, x, y, color);
     const g = this.add(s.add.graphics());
-    g.fillStyle(0xf8f8f0, 1).fillRect(X(0), Y(0), SCREEN_W * u, SCREEN_H * u);
-    g.fillStyle(0xe87830, 1).fillRect(X(0), Y(0), SCREEN_W * u, BAR * u);
-    g.fillStyle(0xe87830, 1).fillRect(X(0), Y(SCREEN_H - BAR), SCREEN_W * u, BAR * u);
+    this.drawBars(g, 0xe87830, 0xf8f8f0);
 
     const perPage = 2 * ROWS;
     const page = Math.floor(this.index / perPage);
@@ -75,7 +42,8 @@ export class ItemBag {
       if (i === this.index) {
         g.fillStyle(0xf8c890, 1).fillRoundedRect(X(x - 2), Y(y), (SCREEN_W / 2 - 8) * u, (ROW_H - 2) * u, 2 * u);
       }
-      icon(item.id, x + 14, y + (ROW_H - 2) / 2);
+      const frame = itemIcon(item.id);
+      if (frame) this.add(s.add.image(X(x + 14), Y(y + (ROW_H - 2) / 2), ITEM_ICONS, frame).setScale(u));
       text(item.name, x + 32, y + 8);
     });
   }

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { TILE_SIZE, getTile } from '../data/tiles.js';
-import { FOLLOWERS, ITEMS } from '../data/story.js';
+import { FOLLOWERS } from '../data/story.js';
+import { CATCHES, FISHING_ROD } from '../data/fishing.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
 import { drawDecal, drawPlanksPile } from '../art/tileArt.js';
@@ -15,7 +16,7 @@ import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
 import { visitedFlag } from '../systems/RegionMap.js';
 import { items } from '../systems/items.js';
-import { EMOTES, EMOTE_FRAMES, ITEM_ICONS, ROD_DECALS, itemIcon } from '../art/uiIcons.js';
+import { EMOTES, EMOTE_FRAMES, ITEM_ICONS } from '../art/uiIcons.js';
 import { savePosition } from '../systems/save.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
@@ -50,13 +51,6 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // cityName() (affiché en haut à gauche)
 // et peuvent définir
 // `surroundingTile` (tuile de remplissage par défaut).
-// Poissons qu'on peut remonter selon l'eau (mer, étang, rivière), voir fishingSteps.
-const WATER_CATCHES = {
-  w: ['un maquereau', 'une sardine', 'un petit bar', 'une dorade'],
-  '~': ['un gardon', 'une perche', 'une carpe', 'un poisson-chat'],
-  G: ['une truite', 'un gardon', 'un goujon'],
-};
-
 export class MapScene extends Phaser.Scene {
   setupMap(map, spawn) {
     const { grid } = map;
@@ -67,7 +61,7 @@ export class MapScene extends Phaser.Scene {
     this.events.once('shutdown', () => { this.leaving = true; });
     this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
     renderMap(this, map);
-    // Morceaux du décor redessinés par-dessus les personnages qui sont derrière (ex. bancs de la cabane) :
+    // Morceaux du décor redessinés par-dessus les personnages qui sont derrière (ex. tables de la cabane) :
     // { sheet, frame(scene), x, y, h } en pixels, triés en profondeur par leur bas.
     for (const o of map.overlays ?? []) {
       this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(10 + (o.y + o.h) / 10000);
@@ -275,7 +269,8 @@ export class MapScene extends Phaser.Scene {
       this.props.push({ data, graphics });
     }
 
-    // Décors qui changent avec l'histoire (ex. cannes dans la caisse « À DONNER ») : { kind, x, y, ...options }.
+    // Décors qui changent avec l'histoire : dessinés ({ kind, x, y, ...options }, voir art/tileArt.js drawDecal) ou
+    // en icônes d'objets ({ icons, x, y }, ex. cannes à pêche dans la caisse « À DONNER »).
     const wantedDecals = (this.map.decals ?? []).filter(meetsConditions);
     this.decals = this.decals.filter((d) => {
       if (wantedDecals.includes(d.data)) return true;
@@ -287,11 +282,10 @@ export class MapScene extends Phaser.Scene {
       // `above` : au-dessus des personnages (ex. tablier d'un pont sous lequel on passe).
       // `floor` : au sol, sous tout le monde (ex. piste de danse).
       const depth = data.above ? 45 : data.floor ? 1.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000;
-      const icons = ROD_DECALS[data.kind]?.(data);
-      if (icons) {
-        // Décor en images (cannes à pêche en icônes) : un conteneur posé sur la case.
+      if (data.icons) {
+        // Décor en icônes d'objets (ex. cannes à pêche) : [image, x, y, hauteur gardée], dans un conteneur.
         const graphics = this.add.container(data.x * TILE_SIZE, data.y * TILE_SIZE).setDepth(depth);
-        for (const [frame, dx, dy, keep] of icons) {
+        for (const [frame, dx, dy, keep] of data.icons) {
           graphics.add(this.add.image(dx, dy, ITEM_ICONS, frame).setOrigin(0).setCrop(0, 0, 32, keep));
         }
         this.decals.push({ data, graphics });
@@ -383,7 +377,7 @@ export class MapScene extends Phaser.Scene {
       if (step.give && items.add(step.give)) {
         this.refreshActors();
         sfx('item');
-        await this.dialog.open([step.text ?? `Tu as reçu : ${step.give.name}.`], { icon: itemIcon(step.give.id) });
+        await this.dialog.open([step.text ?? `Tu as reçu : ${step.give.name}.`], { item: step.give });
       }
       if (step.take && items.remove(step.take)) this.refreshActors();
       if (step.quality && souvenirs.add(step.quality)) {
@@ -773,13 +767,15 @@ export class MapScene extends Phaser.Scene {
     const object = this.map.objects?.find((o) => o.x === x && o.y === y && (o.warp || meetsConditions(o)));
     if (object?.warp) this.runTrigger(object);
     else if (object) this.talkTo(object);
-    else if (items.has(ITEMS.vieilleCanne.id) && WATER_CATCHES[this.grid[y]?.[x]]) this.runScript(this.fishingSteps(this.grid[y][x]));
+    else if (this.grid[y]?.[x] && getTile(this.grid[y][x]).water && items.has(FISHING_ROD)) {
+      this.runScript(this.fishingSteps(getTile(this.grid[y][x]).water));
+    }
   }
 
-  // Pêche avec la vieille canne, face à l'eau : Pierre attend (« … »), puis ça mord ou non. Les prises sont
+  // Pêche avec la canne (voir data/fishing.js), face à l'eau : Pierre attend (« … »), puis ça mord ou non. Les prises sont
   // relâchées (rien ne s'ajoute au sac).
-  fishingSteps(code) {
-    const catches = WATER_CATCHES[code];
+  fishingSteps(water) {
+    const catches = CATCHES[water];
     const steps = [
       { say: ['Tu lances ta ligne…'] },
       { emote: 'player', kind: 'dots' },

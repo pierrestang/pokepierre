@@ -1,5 +1,5 @@
 import { parseGrid } from './parseGrid.js';
-import { toAirport, airportSign } from './airportLinks.js';
+import { toAirport } from './airportLinks.js';
 import { FLAGS, ROLES } from '../story.js';
 import { ARRIVAL, OUSMANE_WALK, DAWN, HULL_SPOTS, NIGHT, DAWN_TIME } from '../hullStory.js';
 

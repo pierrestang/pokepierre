@@ -14,10 +14,10 @@ const C = {
 };
 
 // Cases considérées comme « pelouse » pour le liseré clair des zones d'herbe.
-const GRASSY = new Set(['.', 'f', 'ł', 'h', 'i', '♣', '≈', '♠', '¥', 'ĥ', 'ƀ', 'ƒ', 'F', 'S', 'M', 'R', 'W', 'D', 'O', 'Q', 'V', 'x']);
+const GRASSY = new Set(['.', 'f', 'h', 'i', '♣', '≈', '♠', 'ĥ', 'ƀ', 'ƒ', 'F', 'S', 'M', 'R', 'W', 'D', 'O', 'Q', 'V', 'x']);
 
 // Petits objets posés au sol (lanterne, drapeau, cabine…) : leur sol est celui de leurs voisins.
-const SMALL_OBJECTS = new Set(['b', 'j', 'l', 'n', 'v', 't', 'y', 'c', 'e', 'a', 'd', 'g', 'p', 'H', 'z', '*', '&', '$', '!', '>', '<', '§', '¢', '€', 'þ', '¶', 'ň', 'ŕ']);
+const SMALL_OBJECTS = new Set(['b', 'l', 'n', 'v', 't', 'y', 'c', 'e', 'a', 'd', 'g', 'p', 'H', 'z', '*', '&', '$', '!', '>', '<', '§', '¢', '€', 'þ', '¶', 'ň', 'ŕ']);
 
 function objectOnGrass(x, y, at) {
   const around = [at(x, y - 1), at(x, y + 1), at(x - 1, y), at(x + 1, y)].filter(Boolean);
@@ -83,7 +83,6 @@ function treeGround(g, px, py, x, y, at) {
   if (best === 'path') return path(g, px, py, x, y);
   grass(g, px, py, x, y, at, { edges: false });
 }
-
 
 // Parterre façon Rouge Feu : deux fleurs rouges à cœur jaune et leurs feuilles.
 const BLOOM = [
@@ -186,37 +185,6 @@ function cobble(g, px, py, x, y) {
   });
 }
 
-// Rempart : gros blocs de pierre, créneaux sur le bord tourné vers la ville.
-function rampart(g, px, py, x, y, at) {
-  rect(g, 0x5c5850, px, py, S, S);
-  for (let r = 0; r < 4; r++) {
-    const off = r % 2 ? 4 : 0;
-    for (let c = -1; c < 3; c++) {
-      const bx = c * 8 + off;
-      const x0 = Math.max(bx + 1, 0);
-      const x1 = Math.min(bx + 8, S);
-      if (x1 > x0) {
-        rect(g, 0x8c887c, px + x0, py + r * 4 + 1, x1 - x0, 3);
-        rect(g, 0xa8a498, px + x0, py + r * 4 + 1, x1 - x0, 1);
-      }
-    }
-  }
-  const inside = (dx, dy) => {
-    const n = at(x + dx, y + dy);
-    return n !== undefined && n !== 'K';
-  };
-  const merlons = (horizontal, pos) => {
-    for (let i = 0; i < S; i += 4) {
-      if (horizontal) rect(g, 0x3c3830, px + i, py + pos, 2, 2);
-      else rect(g, 0x3c3830, px + pos, py + i, 2, 2);
-    }
-  };
-  if (inside(0, 1)) merlons(true, S - 2);
-  if (inside(0, -1)) merlons(true, 0);
-  if (inside(1, 0)) merlons(false, S - 2);
-  if (inside(-1, 0)) merlons(false, 0);
-}
-
 // Tonneau en bois vu de trois quarts : couvercle, douves claires et sombres, deux cerclages de fer.
 const BARREL = [
   '....kkkkkkkk....',
@@ -246,34 +214,6 @@ function barrel(g, px, py, x, y, at) {
   sprite(g, BARREL, BARREL_COLORS, px, py);
 }
 
-// Mur d'enceinte en béton, barbelés côté intérieur.
-function barracksWall(g, px, py, x, y, at) {
-  rect(g, 0x8c8470, px, py, S, S);
-  for (let r = 0; r < 2; r++) {
-    for (let c = 0; c < 2; c++) {
-      const bx = c * 8 + (r ? 4 : 0);
-      rect(g, 0xbcb49c, px + (bx % S) + 1, py + r * 8 + 1, Math.min(7, S - (bx % S) - 1), 7);
-      rect(g, 0xd0c8b0, px + (bx % S) + 1, py + r * 8 + 1, Math.min(7, S - (bx % S) - 1), 1);
-    }
-  }
-  const inside = (dx, dy) => {
-    const n = at(x + dx, y + dy);
-    return n !== undefined && n !== 'Z';
-  };
-  // Barbelés : fil sombre en zigzag le long du bord intérieur
-  const wire = (horizontal, pos) => {
-    for (let i = 0; i < S; i++) {
-      const o = i % 4 < 2 ? 0 : 1;
-      if (horizontal) rect(g, 0x3c3c40, px + i, py + pos + o, 1, 1);
-      else rect(g, 0x3c3c40, px + pos + o, py + i, 1, 1);
-    }
-  };
-  if (inside(0, 1)) wire(true, S - 3);
-  if (inside(0, -1)) wire(true, 1);
-  if (inside(1, 0)) wire(false, S - 3);
-  if (inside(-1, 0)) wire(false, 1);
-}
-
 // Asphalte de la place d'armes, ligne blanche en bordure.
 function asphalt(g, px, py, x, y, at) {
   rect(g, 0x6c7074, px, py, S, S);
@@ -283,7 +223,7 @@ function asphalt(g, px, py, x, y, at) {
   const edge = (dx, dy) => {
     const n = at(x + dx, y + dy);
     // Pas de marquage au pied d'un bâtiment (avions, bus…) posé sur l'asphalte.
-    return n !== undefined && !['A', 'J', 'Z', 'R', 'W', 'D', 'q'].includes(n);
+    return n !== undefined && !['A', 'J', 'R', 'W', 'D', 'q'].includes(n);
   };
   if (edge(0, -1)) rect(g, 0xe8e8e0, px, py + 1, S, 1);
   if (edge(0, 1)) rect(g, 0xe8e8e0, px, py + S - 2, S, 1);
@@ -390,24 +330,6 @@ function phoneBooth(g, px, py, x, y, at) {
   rect(g, 0xb8d8f0, px + 5, py + 5, 6, 7);           // vitres
   for (const ly of [7, 9]) rect(g, 0xece4c8, px + 5, py + ly, 6, 1);
   rect(g, 0xece4c8, px + 7, py + 5, 1, 7);
-}
-
-// Mât avec l'Union Jack (drapeau britannique simplifié).
-function unionJack(g, px, py, x, y, at) {
-  smallObjectGround(g, px, py, x, y, at);
-  rect(g, 0x9c9ca4, px + 5, py + 13, 5, 2);
-  rect(g, 0x505058, px + 6, py + 1, 2, 13);
-  const fx = px + 8;
-  const fy = py + 1;
-  rect(g, 0x283c8c, fx, fy, 8, 6);
-  for (let i = 0; i < 6; i++) {                     // diagonales blanches
-    rect(g, 0xf8f8f8, fx + Math.round(i * 8 / 6), fy + i, 1, 1);
-    rect(g, 0xf8f8f8, fx + 7 - Math.round(i * 8 / 6), fy + i, 1, 1);
-  }
-  rect(g, 0xf8f8f8, fx, fy + 2, 8, 2);              // croix blanche
-  rect(g, 0xf8f8f8, fx + 3, fy, 2, 6);
-  rect(g, 0xd02030, fx, fy + 2, 8, 1);              // croix rouge
-  rect(g, 0xd02030, fx + 3, fy, 1, 6);
 }
 
 // Réverbère victorien noir.
@@ -1061,18 +983,6 @@ function nepalFlag(g, px, py, x, y, at) {
   rect(g, 0xf8f8f8, px + 7, py + 8, 2, 1);
 }
 
-// Champ de blé : terre brune et épis dorés en rangées.
-function wheat(g, px, py, x, y) {
-  rect(g, 0x8c6c3c, px, py, S, S);
-  for (let ly = 1; ly < S; ly += 5) {
-    for (let lx = (ly % 2) + 1; lx < S; lx += 3) {
-      rect(g, 0xc8a038, px + lx, py + ly + 1, 1, 3);         // tige
-      rect(g, 0xf0d060, px + lx, py + ly, 2, 2);             // épi
-    }
-  }
-  if ((x + y) % 3 === 0) rect(g, 0xf8e080, px + 6, py + 7, 2, 1);
-}
-
 // Hautes herbes (façon Pokémon) : deux rangées de brins par case, pointe claire, flanc éclairé à gauche,
 // pied sombre souligné d'un trait, rangées décalées.
 const TALL_GRASS = [
@@ -1187,14 +1097,6 @@ function smallFlowers(g, px, py, x, y, at) {
     rect(g, c, px + fx + 2, py + fy + 1, 1, 1);
     rect(g, 0xe88838, px + fx, py + fy + 1, 1, 1);
   });
-}
-
-function blackboard(g, px, py, x, y, at) {
-  innerWall(g, px, py, x, y, at);
-  rect(g, 0x6c4424, px, py + 2, S, 11);
-  rect(g, 0x2c4c3c, px, py + 3, S, 9);
-  if (hash(x, y, 6) % 2) rect(g, 0xe8e8e0, px + 3, py + 5, 7, 1);
-  rect(g, 0xe8e8e0, px + 2, py + 8, 10, 1);
 }
 
 // Barrière blanche façon Rouge Feu : poteau à chapeau arrondi, deux traverses, contour gris ardoise,
@@ -1316,117 +1218,6 @@ function pavement(g, px, py, x, y, at) {
   if (other(1, 0)) stones(false, S - 4);
 }
 
-// Barrière en rondins (poteaux ronds bruns), horizontale ou verticale selon les voisins.
-// Petite barrière de jardin en rondins : piquets ronds bas reliés par une traverse. Les piquets sont
-// alignés sur deux colonnes fixes (x 1 et 10 de la case) pour que les côtés tombent pile sur les coins.
-function logFence(g, px, py, x, y, at) {
-  grass(g, px, py, x, y, at);
-  const is = (dx, dy) => at(x + dx, y + dy) === 'ł';
-  const K = 0x3c2014;
-  const horizontal = is(-1, 0) || is(1, 0);
-  // Côté gauche ou droit d'un enclos : la clôture continue vers la droite ou vers la gauche au-dessus / en dessous.
-  const rightSide = is(-1, -1) || is(-1, 1);
-  const col = horizontal ? null : rightSide ? 10 : 1;
-  const post = (lx, ly) => {
-    g.fillStyle(0x000000, 0.18);
-    g.fillRect(px + lx + 1, py + ly + 8, 4, 1);
-    rect(g, K, px + lx, py + ly + 1, 5, 7);
-    rect(g, K, px + lx + 1, py + ly, 3, 1);
-    rect(g, 0x8c5030, px + lx + 1, py + ly + 2, 3, 5);
-    rect(g, 0xb07040, px + lx + 1, py + ly + 2, 1, 5);
-    rect(g, 0xe0b078, px + lx + 1, py + ly + 1, 3, 1);                // dessus du rondin
-  };
-  const vRail = (c, y0, y1) => {
-    rect(g, K, px + c + 1, py + y0, 3, y1 - y0);
-    rect(g, 0x9c6038, px + c + 2, py + y0, 1, y1 - y0);
-  };
-  if (horizontal) {
-    const x0 = is(-1, 0) ? 0 : 2;
-    const x1 = is(1, 0) ? S : 14;
-    rect(g, K, px + x0, py + 9, x1 - x0, 3);                          // traverse
-    rect(g, 0x9c6038, px + x0, py + 10, x1 - x0, 1);
-    // Coin d'enclos : la traverse repart vers le bas (ou le haut) sous le piquet du coin.
-    const cornerCol = is(-1, 0) && !is(1, 0) ? 10 : 1;
-    if (is(0, 1)) vRail(cornerCol, 11, S);
-    if (is(0, -1)) vRail(cornerCol, 0, 9);
-    post(1, 5);
-    post(10, 5);
-  } else {
-    vRail(col, is(0, -1) ? 0 : 6, is(0, 1) ? S : 12);
-    post(col, 5);
-  }
-}
-
-// Potager : terre retournée en sillons, rangées de salades et de carottes.
-function vegetablePatch(g, px, py, x, y) {
-  rect(g, 0x7c5030, px, py, S, S);
-  for (let ly = 1; ly < S; ly += 5) {
-    rect(g, 0x5c3820, px, py + ly + 3, S, 1);                         // creux du sillon
-    rect(g, 0x9c6c40, px, py + ly, S, 1);                             // crête
-  }
-  // Deux variétés : une rangée de carottes et une rangée de salades (ordre alterné d'une case à l'autre).
-  for (const ly of [2, 10]) {
-    const carrots = (ly === 2) === (x % 2 === 0);
-    for (const lx of [2, 9]) {
-      if (carrots) {
-        rect(g, 0xe87828, px + lx + 1, py + ly + 3, 2, 2);             // carotte
-        rect(g, 0x3c9c3c, px + lx, py + ly, 1, 3);                     // fanes
-        rect(g, 0x58b848, px + lx + 1, py + ly - 1, 2, 4);
-        rect(g, 0x3c9c3c, px + lx + 3, py + ly, 1, 3);
-      } else {
-        rect(g, 0x1c5028, px + lx, py + ly, 5, 5);                     // salade
-        rect(g, 0x68c050, px + lx + 1, py + ly, 3, 4);
-        rect(g, 0x98e070, px + lx + 1, py + ly + 1, 2, 2);
-        rect(g, 0x48a040, px + lx, py + ly + 2, 1, 2);
-        rect(g, 0x48a040, px + lx + 4, py + ly + 2, 1, 2);
-      }
-    }
-  }
-}
-
-// Falaise de roche brune (façon Rouge Feu) : arête herbeuse en haut, fissures, pied ombré.
-function cliff2(g, px, py, x, y, at) {
-  const isCliff = (dx, dy) => ['ĉ', 'ŝ'].includes(at(x + dx, y + dy));
-  // Roche en gros blocs arrondis (4 par case, rangées décalées) : contour sombre, reflet en haut à gauche.
-  rect(g, 0x5c3418, px, py, S, S);
-  const shift = (y % 2) * 4;
-  for (const [bx, by] of [[-8, 0], [0, 0], [8, 0], [-8, 8], [0, 8], [8, 8]]) {
-    const rx = bx + (by ? shift : 4 - shift);
-    const x0 = Math.max(rx, 0);
-    const x1 = Math.min(rx + 8, S);
-    if (x1 - x0 < 2) continue;
-    const r = (c, dx, dy, w, h) => {
-      const a = Math.max(rx + dx, x0);
-      const b = Math.min(rx + dx + w, x1);
-      if (b > a) rect(g, c, px + a, py + by + dy, b - a, h);
-    };
-    r(0xa86c3c, 1, 1, 6, 6);
-    r(0xa86c3c, 0, 2, 8, 4);
-    r(0xd09860, 1, 1, 4, 1);                                        // reflet
-    r(0xd09860, 1, 2, 1, 2);
-    r(0x7c4824, 2, 6, 5, 1);                                        // ombre du bas
-    r(0x7c4824, 6, 3, 1, 3);
-  }
-  if (!isCliff(0, -1)) {                                             // arête : herbe qui déborde
-    rect(g, C.grass, px, py, S, 3);
-    rect(g, 0x58a878, px, py + 3, S, 1);
-    rect(g, 0x5c3418, px, py + 4, S, 1);
-  }
-  if (!isCliff(0, 1)) { rect(g, 0x5c3418, px, py + S - 2, S, 2); }   // pied
-  if (!isCliff(-1, 0)) { rect(g, 0x70401c, px, py, 1, S); rect(g, 0xd8a070, px + 1, py + 4, 1, S - 6); }
-  if (!isCliff(1, 0)) { rect(g, 0x5c3418, px + S - 2, py, 2, S); }
-}
-
-// Escalier de pierre taillé dans la falaise.
-function stairs(g, px, py, x, y, at) {
-  rect(g, 0x70401c, px, py, S, S);
-  for (let ly = 0; ly < S; ly += 4) {
-    rect(g, 0xd8d0c0, px + 2, py + ly, S - 4, 3);
-    rect(g, 0xf0ece0, px + 2, py + ly, S - 4, 1);
-    rect(g, 0x9c9080, px + 2, py + ly + 3, S - 4, 1);
-  }
-}
-
 // Eau de mer : bleu profond, vaguelettes en biais qui se raccordent d'une case à l'autre.
 function seaWater(g, px, py, x, y) {
   if (groundProvided) return;
@@ -1492,61 +1283,11 @@ function pier(g, px, py, x, y, at) {
   }
 }
 
-// Étoile de mer et coquillage posés sur le sable.
-function starfish(g, px, py, x, y) {
-  sand(g, px, py, x, y);
-  const c = 0xf08850, k = 0xa84828;
-  rect(g, k, px + 6, py + 4, 3, 9);
-  rect(g, k, px + 3, py + 7, 9, 3);
-  rect(g, k, px + 4, py + 11, 2, 2);
-  rect(g, k, px + 9, py + 11, 2, 2);
-  rect(g, c, px + 7, py + 5, 1, 7);
-  rect(g, c, px + 4, py + 8, 7, 1);
-  rect(g, c, px + 5, py + 11, 1, 1);
-  rect(g, c, px + 9, py + 11, 1, 1);
-  rect(g, 0xf8c8a0, px + 7, py + 8, 1, 1);
-}
-
-function shell(g, px, py, x, y) {
-  sand(g, px, py, x, y);
-  const k = 0xb07868;
-  rect(g, k, px + 5, py + 6, 6, 5);
-  rect(g, k, px + 7, py + 11, 2, 1);
-  rect(g, 0xf8e0d0, px + 6, py + 7, 4, 3);
-  rect(g, 0xe8b8a8, px + 7, py + 7, 1, 3);
-  rect(g, 0xe8b8a8, px + 9, py + 7, 1, 3);
-  rect(g, 0xfff4ec, px + 6, py + 7, 1, 1);
-}
-
-// Parasol rayé planté dans le sable (la toile dépasse sur la case du dessus).
-function parasol(g, px, py, x, y) {
-  sand(g, px, py, x, y);
-  g.fillStyle(0x000000, 0.15);
-  g.fillEllipse(px + 9, py + 13, 18, 6);
-  rect(g, 0x8c7050, px + 7, py - 1, 2, 16);                           // mât
-  rect(g, 0x5c3c20, px - 1, py - 8, 18, 8);                           // toile
-  rect(g, 0x5c3c20, px + 1, py - 10, 14, 2);
-  for (let i = 0; i < 4; i++) rect(g, i % 2 ? 0xf8f8f8 : 0xe84848, px + i * 4, py - 9 + (i === 0 || i === 3 ? 2 : 0), 4, i === 0 || i === 3 ? 5 : 7);
-  rect(g, 0xffffff, px + 5, py - 9, 2, 1);
-}
-
-// Transat en toile bleue.
-function deckchair(g, px, py, x, y) {
-  sand(g, px, py, x, y);
-  g.fillStyle(0x000000, 0.15);
-  g.fillRect(px + 3, py + 14, 11, 2);
-  rect(g, 0x6c5030, px + 3, py + 2, 10, 13);
-  rect(g, 0x48a0d8, px + 4, py + 3, 8, 11);
-  for (let ly = 4; ly < 14; ly += 3) rect(g, 0xf8f8f8, px + 4, py + ly, 8, 1);
-  rect(g, 0x6c5030, px + 4, py + 8, 8, 1);                             // pliure du dossier
-}
-
-// Cabane de pêche : socle du râtelier contre le mur et épuisette (les cannes sont des icônes de HeartGold,
-// voir art/uiIcons.js ROD_DECALS ; les caisses viennent de Rubis/Saphir, voir frlgArt.js FRLG_DECOR).
+// Cabane de pêche : socle du râtelier contre le mur et épuisette (les cannes sont des icônes de HeartGold posées
+// en décor, voir interiors.ffHut ; les caisses viennent de Rubis/Saphir, voir frlgArt.js FRLG_DECOR).
 // Dessins au pixel près, contour sombre comme les meubles de Rouge Feu.
 const HUT_C = {
-  k: 0x383840, W: 0xc89058, w: 0x9c6834, D: 0x6c4424, d: 0x4c3018,
-  F: 0xb8d0e8, f: 0x6888b8, e: 0x202028, P: 0xf8f8f0, p: 0xc8c8c0, R: 0xd84838,
+  k: 0x383840, W: 0xc89058, w: 0x9c6834, D: 0x6c4424, d: 0x4c3018, P: 0xf8f8f0, p: 0xc8c8c0,
 };
 function pixelArt(g, rows, px, py) {
   rows.forEach((row, ry) => [...row].forEach((c, rx) => {
@@ -1564,7 +1305,7 @@ const NET_HEAD = [
   '..kkk..',
 ];
 
-// Râtelier : socle en bois percé, deux cannes (case de gauche) ou une canne et une épuisette (de droite).
+// Râtelier : socle en bois percé, sur ses deux cases ; l'épuisette est posée contre le mur sur celle de droite.
 const ROD_STAND = [
   '.kkkkkkkkkkkkkk.',
   'kWWWWWWWWWWWWWWk',
@@ -1683,39 +1424,11 @@ const PLANKS = [
   '..kkkkkkkkkkkkk.',
 ];
 const PLANK_COLORS = { k: 0x3c2818, L: 0xe0b070, W: 0xc08850, w: 0x9c6838, D: 0x7c5028, E: 0xf0d8a8 };
-function planksPile(g, px, py) {
-  if (!groundProvided) grass(g, px, py, 0, 0);
-  drawPlanksPile(g, px, py);
-}
 // Le tas seul, sans sol (décor qui disparaît une fois les planches ramassées, voir MapScene).
 export function drawPlanksPile(g, px, py) {
   g.fillStyle(0x000000, 0.2);
   g.fillRect(px + 2, py + 15, 14, 1);
   sprite(g, PLANKS, PLANK_COLORS, px, py);
-}
-
-// Bitte d'amarrage en bois au bord du lac (Saint-Ay), poteau étroit sur la gauche de la case ; la corde
-// est un décor à part (DECALS.rope), cachée dans les hautes herbes.
-const BOLLARD = [
-  '.kkkk.',
-  'kWWWWk',
-  'kwwwwk',
-  '.kWwk.',
-  '.kWwk.',
-  '.kWwk.',
-  '.kWwk.',
-  '.kWwk.',
-  '.kWwk.',
-  '.kWwk.',
-  'kWWwwk',
-  'kDDDDk',
-  '.kkkk.',
-];
-function bollard(g, px, py) {
-  if (!groundProvided) grass(g, px, py, 0, 0);
-  g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 2, py + 15, 5, 1);
-  pixelArt(g, BOLLARD, px + 1, py + 2);
 }
 
 // Vieille corde enroulée en spirale sur l'herbe, un bout qui dépasse (brins clairs et sombres alternés).
@@ -1805,9 +1518,10 @@ function palm(g, px, py, x, y, at) {
   else sand(g, px, py, x, y);
 }
 
-// Objets hauts (statues, drapeau) : ils dépassent de leurs cases et passent devant les personnages qui
-// sont derrière eux. Les arbres viennent des planches Rouge Feu / Émeraude (voir art/frlgArt.js). Sur les cartes, chacun est une image triée en profondeur (voir tallObject) ;
-// dans le décor autour des cartes, ils sont dessinés directement avec drawTall.
+// Objets hauts dessinés dans le code (statues, drapeau) : ils dépassent de leurs cases et passent devant les
+// personnages qui sont derrière eux. Sur les cartes, chacun est une image triée en profondeur (voir tallObject) ;
+// dans le décor autour des cartes, ils sont dessinés directement avec drawTall. Les arbres et plantes hautes
+// viennent des planches (voir art/frlgArt.js, frlgTallImage).
 // Géométrie de chaque sorte, relative au coin haut-gauche de sa case (ou de son bloc) :
 // left / top : décalage de l'image, w / h : taille, base : y du pied (tri en profondeur).
 const TALL_KINDS = {
@@ -1866,7 +1580,7 @@ function floor(g, px, py, x, y = 0) {
 // Mur intérieur façon Rouge Feu : le mur du fond montre son papier peint (lambris en bas, fenêtre de
 // temps en temps) ; les autres murs sont vus de dessus : bord sombre avec une arête claire côté pièce.
 function innerWall(g, px, py, x, y, at) {
-  const room = (dx, dy) => { const c = at(x + dx, y + dy); return c !== undefined && c !== 'X' && c !== 'N' && c !== '¤'; };
+  const room = (dx, dy) => { const c = at(x + dx, y + dy); return c !== undefined && c !== 'X' && c !== '¤'; };
   if (room(0, 1)) {
     rect(g, 0xf0e4b8, px, py, S, S);                                  // papier peint
     for (let lx = 1; lx < S; lx += 4) rect(g, 0xe4d4a0, px + lx, py + 1, 1, 8);
@@ -1875,7 +1589,7 @@ function innerWall(g, px, py, x, y, at) {
     rect(g, 0xd0a068, px, py + 9, S, 1);
     for (let lx = 3; lx < S; lx += 8) rect(g, 0x906038, px + lx, py + 10, 1, 4);
     rect(g, 0x604028, px, py + 14, S, 2);                             // plinthe
-    if (x % 4 === 2 && !['m', 'u', 'L', 'τ', 'κ', 'φ', 'η', 'ξ', 'λ', 'π', 'δ', 'ψ'].includes(at(x, y + 1))) {    // fenêtre
+    if (x % 4 === 2 && !['m', 'u', 'L', 'η', 'ξ', 'ψ'].includes(at(x, y + 1))) {    // fenêtre
       rect(g, 0x584838, px + 3, py + 1, 10, 8);
       rect(g, 0x88c0f0, px + 4, py + 2, 8, 6);
       rect(g, 0xd0e8f8, px + 4, py + 2, 8, 2);
@@ -1984,125 +1698,6 @@ function bed(g, px, py, x, y = 0, at = () => undefined) {
   }));
 }
 
-// Plante verte en pot (feuillage qui dépasse sur la case du dessus).
-function plant(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 3, py + 14, 10, 2);
-  rect(g, 0x6c3018, px + 4, py + 9, 8, 6);                          // pot
-  rect(g, 0xc86838, px + 5, py + 9, 6, 5);
-  rect(g, 0xe08850, px + 5, py + 9, 6, 1);
-  const K = 0x1c5028;
-  for (const [lx, ly, w, h] of [[2, -2, 5, 6], [9, -3, 5, 7], [5, -5, 6, 7], [1, 3, 5, 5], [10, 3, 5, 5], [5, 2, 6, 7]]) {
-    rect(g, K, px + lx, py + ly, w, h);
-    rect(g, 0x48a048, px + lx + 1, py + ly + 1, w - 2, h - 2);
-    rect(g, 0x78c860, px + lx + 1, py + ly + 1, w - 3, 1);
-  }
-}
-
-// Lampe sur pied (abat-jour clair, halo).
-function floorLamp(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  g.fillStyle(0xfff0b0, 0.18);                                       // halo
-  g.fillCircle(px + 8, py - 1, 8);
-  g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 4, py + 14, 8, 2);
-  rect(g, 0x303038, px + 5, py + 13, 6, 2);                          // socle
-  rect(g, 0x505060, px + 7, py + 1, 2, 12);                          // pied
-  rect(g, 0x6c5c40, px + 3, py - 6, 10, 8);                          // abat-jour
-  rect(g, 0xf8e8b0, px + 4, py - 5, 8, 6);
-  rect(g, 0xfff8e0, px + 4, py - 5, 3, 6);
-  rect(g, 0xd8c890, px + 4, py + 0, 8, 1);
-}
-
-// Bureau en bois avec lampe de bureau et livres.
-function desk(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  const K = 0x503018;
-  g.fillStyle(0x000000, 0.18);
-  g.fillRect(px + 1, py + 14, 15, 2);
-  rect(g, K, px, py + 1, S, 13);
-  rect(g, 0xc88850, px + 1, py + 2, 14, 5);                          // plateau
-  rect(g, 0xe0a870, px + 1, py + 2, 14, 1);
-  rect(g, 0x985c30, px + 1, py + 7, 14, 6);                          // façade
-  rect(g, 0xb87440, px + 2, py + 8, 6, 4);                           // tiroir
-  rect(g, 0xf0c848, px + 4, py + 10, 2, 1);
-  rect(g, 0xd84838, px + 10, py - 1, 2, 4);                          // livres
-  rect(g, 0x3868c8, px + 12, py, 2, 3);
-  rect(g, 0x48a048, px + 14, py - 1, 1, 4);
-  rect(g, 0x303038, px + 3, py - 1, 1, 4);                           // lampe de bureau
-  rect(g, 0x303038, px + 2, py - 3, 4, 2);
-  rect(g, 0xf8e070, px + 3, py - 1, 2, 1);
-}
-
-// Télévision sur un meuble bas, avec une console (clin d'œil à Rouge Feu).
-function tv(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  const K = 0x282830;
-  rect(g, 0x503018, px, py + 8, S, 8);                               // meuble
-  rect(g, 0xb07840, px + 1, py + 9, 14, 6);
-  rect(g, 0xc88850, px + 1, py + 9, 14, 1);
-  rect(g, K, px + 1, py - 4, 14, 13);                                // écran
-  rect(g, 0x606878, px + 2, py - 3, 12, 11);
-  rect(g, 0x3c5c90, px + 3, py - 2, 10, 8);
-  rect(g, 0x88b8f0, px + 4, py - 1, 3, 2);
-  rect(g, 0x9ca4b0, px + 5, py + 12, 6, 2);                          // console
-  rect(g, 0x4858a0, px + 6, py + 12, 2, 1);
-}
-
-// Canapé (se prolonge avec les cases voisines).
-function sofa(g, px, py, x, y, at) {
-  floor(g, px, py, x, y);
-  const K = 0x1c3c48;
-  const l = at(x - 1, y) === 'σ';
-  const r = at(x + 1, y) === 'σ';
-  g.fillStyle(0x000000, 0.18);
-  g.fillRect(px + 1, py + 14, 15, 2);
-  rect(g, K, px + (l ? 0 : 1), py + 1, S - (l ? 0 : 1) - (r ? 0 : 1), 14);
-  rect(g, 0x3c8c9c, px + (l ? 0 : 2), py + 2, S - (l ? 0 : 2) - (r ? 0 : 2), 6);   // dossier
-  rect(g, 0x5cacbc, px + (l ? 0 : 2), py + 2, S - (l ? 0 : 2) - (r ? 0 : 2), 1);
-  rect(g, 0x48a0b0, px + (l ? 0 : 2), py + 8, S - (l ? 0 : 2) - (r ? 0 : 2), 5);   // assise
-  rect(g, 0x70c0cc, px + 4, py + 9, 7, 2);                           // coussin
-  if (!l) rect(g, 0x2c7080, px + 1, py + 5, 2, 9);                   // accoudoirs
-  if (!r) rect(g, 0x2c7080, px + S - 3, py + 5, 2, 9);
-}
-
-// Canapé vu de dos (tourné vers le haut, face à la télé) : assise en haut, dossier haut en bas.
-function sofaBack(g, px, py, x, y, at) {
-  floor(g, px, py, x, y);
-  const K = 0x1c3c48;
-  const l = at(x - 1, y) === 'ς';
-  const r = at(x + 1, y) === 'ς';
-  const x0 = l ? 0 : 1;
-  const w = S - x0 - (r ? 0 : 1);
-  g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + x0, py + 15, w, 1);
-  rect(g, K, px + x0, py + 2, w, 13);
-  rect(g, 0x48a0b0, px + x0 + (l ? 0 : 1), py + 3, w - (l ? 0 : 1) - (r ? 0 : 1), 4);   // assise
-  rect(g, 0x70c0cc, px + x0 + (l ? 0 : 1), py + 3, w - (l ? 0 : 1) - (r ? 0 : 1), 1);
-  rect(g, 0x3c8c9c, px + x0 + (l ? 0 : 1), py + 7, w - (l ? 0 : 1) - (r ? 0 : 1), 7);   // dossier
-  rect(g, 0x5cacbc, px + x0 + (l ? 0 : 1), py + 7, w - (l ? 0 : 1) - (r ? 0 : 1), 1);
-  rect(g, 0x2c7080, px + x0 + (l ? 0 : 1), py + 11, w - (l ? 0 : 1) - (r ? 0 : 1), 1);   // coutures
-  if (!l) rect(g, 0x2c7080, px + 1, py + 2, 2, 12);                  // accoudoirs
-  if (!r) rect(g, 0x2c7080, px + S - 3, py + 2, 2, 12);
-}
-
-// Tapis à motif (on marche dessus), bordure là où il s'arrête.
-function rug(g, px, py, x, y, at) {
-  const is = (dx, dy) => at(x + dx, y + dy) === 'ρ';
-  rect(g, 0xc84848, px, py, S, S);
-  for (let i = 0; i < 4; i++) rect(g, 0xe07060, px + 4 + (i % 2) * 6, py + 3 + Math.floor(i / 2) * 7, 2, 2);
-  rect(g, 0xf0c060, px + 7, py + 7, 2, 2);
-  const border = (horizontal, pos) => {
-    if (horizontal) { rect(g, 0x882828, px, py + pos, S, 2); rect(g, 0xf0c060, px, py + pos + (pos ? -1 : 2), S, 1); }
-    else { rect(g, 0x882828, px + pos, py, 2, S); rect(g, 0xf0c060, px + pos + (pos ? -1 : 2), py, 1, S); }
-  };
-  if (!is(0, -1)) border(true, 0);
-  if (!is(0, 1)) border(true, S - 2);
-  if (!is(-1, 0)) border(false, 0);
-  if (!is(1, 0)) border(false, S - 2);
-}
-
 // Escalier : vers le haut (marches qui montent contre le mur) ou vers le bas (trémie sombre).
 // Escaliers façon Rouge Feu, sur une case contre le mur du fond.
 // Qui monte (16 x 48 px : la case et les deux rangées de mur au-dessus) : ouverture sombre dans le mur,
@@ -2142,37 +1737,6 @@ function stairsInside(g, px, py, x, y, up) {
   }
 }
 
-// Plan de travail de cuisine : évier ou plaques, selon la case.
-function counter(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  rect(g, 0x484858, px, py - 2, S, 17);
-  rect(g, 0xe8ecf0, px, py - 1, S, 7);                               // plan
-  rect(g, 0xffffff, px, py - 1, S, 1);
-  rect(g, 0xb8c0cc, px, py + 6, S, 8);                               // façade
-  rect(g, 0x9098a8, px + 7, py + 7, 1, 6);
-  if (x % 2) {
-    rect(g, 0x7888a0, px + 3, py + 1, 10, 4);                        // évier
-    rect(g, 0xa8c8e8, px + 4, py + 2, 8, 2);
-    rect(g, 0x9098a8, px + 7, py - 2, 2, 2);
-  } else {
-    for (const cx of [3, 9]) { rect(g, 0x303038, px + cx, py + 1, 4, 3); rect(g, 0xd84838, px + cx + 1, py + 2, 2, 1); }
-  }
-}
-
-// Réfrigérateur (dépasse sur le mur).
-function fridge(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 2, py + 15, 13, 1);
-  rect(g, 0x484858, px + 1, py - 9, 14, 24);
-  rect(g, 0xf0f4f8, px + 2, py - 8, 12, 22);
-  rect(g, 0xd0d8e0, px + 11, py - 8, 3, 22);
-  rect(g, 0x9098a8, px + 2, py - 1, 12, 1);
-  rect(g, 0x707888, px + 3, py - 5, 1, 3);                           // poignées
-  rect(g, 0x707888, px + 3, py + 2, 1, 4);
-  rect(g, 0xf06060, px + 7, py - 6, 2, 2);                           // aimant
-}
-
 function exitMat(g, px, py, x) {
   floor(g, px, py, x);
   rect(g, 0x882028, px + 1, py + 2, 14, 12);
@@ -2187,7 +1751,7 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'P': return path(g, px, py, x, y);
     case '.': return grass(g, px, py, x, y, at);
     case 'T':
-      return treeGround(g, px, py, x, y, at);            // le sapin est un objet haut (voir tallObject)
+      return treeGround(g, px, py, x, y, at);            // le sapin est une image à part (voir frlgTallImage)
     case '~': return water(g, px, py, x, y, at);
     case 'f': grass(g, px, py, x, y, at); return flowerPatch(g, px, py, x, y);
     case 'F': grass(g, px, py, x, y, at); return fence(g, px, py, x, y, at);
@@ -2197,18 +1761,8 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'w': return sea(g, px, py, x, y, at);
     case 'ø': return seaRock(g, px, py, x, y);
     case 'ç': return pavement(g, px, py, x, y, at);
-    case 'ł': return logFence(g, px, py, x, y, at);
-    case 'ν': return vegetablePatch(g, px, py, x, y);
-    case 'ʂ': return starfish(g, px, py, x, y);
-    case 'ɕ': return shell(g, px, py, x, y);
-    case 'ƥ': return parasol(g, px, py, x, y);
-    case 'ʈ': return deckchair(g, px, py, x, y);
     case 'ψ': return fishingRods(g, px, py, x, y);
-    case 'ʀ': return planksPile(g, px, py);
     case 'ʕ': return railEmbankment(g, px, py, x, y, at);
-    case 'ɓ': return bollard(g, px, py);
-    case 'ĉ': return cliff2(g, px, py, x, y, at);
-    case 'ŝ': return stairs(g, px, py, x, y, at);
     case '=': return pier(g, px, py, x, y, at);
     case 'Y': return palm(g, px, py, x, y, at);
     case 'B': // le bateau est dessiné par-dessus (buildingArt) ; eau d'étang ou de mer dessous
@@ -2217,10 +1771,7 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
         ? water(g, px, py, x, y, at)
         : sea(g, px, py, x, y, at);
     case 'C': return cobble(g, px, py, x, y);
-    case 'K': return rampart(g, px, py, x, y, at);
     case 'O': return barrel(g, px, py, x, y, at);
-    case 'N': return blackboard(g, px, py, x, y, at);
-    case 'Z': return barracksWall(g, px, py, x, y, at);
     case 'G': return river(g, px, py, x, y, at);
     case 'b': return phoneBooth(g, px, py, x, y, at);
     case 'x': return bamboo(g, px, py, x, y, at);
@@ -2265,7 +1816,6 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case '♠': return teaBush(g, px, py, x, y, at);
     case '€': return elephant(g, px, py, x, y, at);
     case 'þ': return thaiFlag(g, px, py, x, y, at);
-    case '¥': return wheat(g, px, py, x, y);
     case 'ĥ': return tallGrass(g, px, py, x, y, at);
     case 'ƀ': return bush(g, px, py, x, y, at);
     case 'ŕ': return beachRock(g, px, py, x, y, at);
@@ -2275,7 +1825,6 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case '¶': return prayerFlags(g, px, py, x, y, at);
     case 'ň': return nepalFlag(g, px, py, x, y, at);
     case 'ɸ': return martiniqueFlag(g, px, py, x, y, at);
-    case 'j': return unionJack(g, px, py, x, y, at);
     case 'l': return lamppost(g, px, py, x, y, at);
     case 'q': return rect(g, 0x6c7074, px, py, S, S);   // bus dessiné par-dessus (buildingArt)
     case 'I': return bridge(g, px, py, x, y, at);
@@ -2288,17 +1837,8 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'm': return furniture(g, px, py, x, y, at);
     case 'E': return exitMat(g, px, py, x);
     case 'L': return bed(g, px, py, x, y, at);
-    case 'π': return plant(g, px, py, x, y);
-    case 'λ': return floorLamp(g, px, py, x, y);
-    case 'δ': return desk(g, px, py, x, y);
-    case 'τ': return tv(g, px, py, x, y);
-    case 'σ': return sofa(g, px, py, x, y, at);
-    case 'ς': return sofaBack(g, px, py, x, y, at);
-    case 'ρ': return rug(g, px, py, x, y, at);
     case 'η': return stairsInside(g, px, py, x, y, true);
     case 'ξ': return stairsInside(g, px, py, x, y, false);
-    case 'κ': return counter(g, px, py, x, y);
-    case 'φ': return fridge(g, px, py, x, y);
     case 'R':
     case 'W':
     case 'D':

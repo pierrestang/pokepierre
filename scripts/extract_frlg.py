@@ -12,6 +12,7 @@ Usage : python3 scripts/extract_frlg.py
 """
 from pathlib import Path
 from PIL import Image
+from pixels import clear_color, pack_characters
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets-source' / 'frlg-npcs.png'
@@ -35,17 +36,13 @@ def main():
             rows.append((y, sum(1 for cx in XS if px[cx, y] in BG)))
 
     def cell(x, y):
-        c = im.crop((x, y, x + FW, y + FH))
-        c.putdata([(0, 0, 0, 0) if p in BG else p for p in c.getdata()])
-        return c
+        return clear_color(im.crop((x, y, x + FW, y + FH)), BG)
 
-    out = Image.new('RGBA', (FW * 12, FH * len(rows)), (0, 0, 0, 0))
-    for k, (y, n) in enumerate(rows):
-        frames = [cell(XS[d * 3 + c], y) for d in range(4) for c in STEP_ORDER] if n >= 12 else [cell(XS[f // 3], y) for f in range(12)]
-        # Pieds sur la dernière ligne : décale le personnage vers le bas d'après sa plus basse image.
-        bottom = max(f.getbbox()[3] for f in frames if f.getbbox())
-        for f, frame in enumerate(frames):
-            out.paste(frame, (f * FW, k * FH + FH - bottom), frame)
+    characters = [
+        [cell(XS[d * 3 + c], y) for d in range(4) for c in STEP_ORDER] if n >= 12 else [cell(XS[f // 3], y) for f in range(12)]
+        for y, n in rows
+    ]
+    out = pack_characters(characters, FW, FH)       # pieds calés sur la dernière ligne
     OUT.parent.mkdir(parents=True, exist_ok=True)
     out.save(OUT)
     print(f'{len(rows)} personnages -> {OUT.relative_to(ROOT)}')

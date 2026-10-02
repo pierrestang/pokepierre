@@ -3,10 +3,9 @@ import { drawTile, drawTall, tallObject, drawTallKind, tallFrames, setGroundProv
 import { drawBuilding } from '../art/buildingArt.js';
 import {
   drawFrlgGround, drawFrlgOverlay, addFrlgBuilding, frlgBuildingFloor, isFrlgOnly,
-  frlgTree, drawFrlgTree, FRLG_BUILDINGS, FRLG_TREE, FRLG_SHEETS, FRLG_SMALL_TREE, addSeaLayer, frlgTropicalTree, frlgBerryPlant,
-  drawFrlgInteriorGround, drawFrlgInteriorDecor, FRLG_INTERIOR_ONLY,
+  frlgTallImage, FRLG_BUILDINGS, FRLG_SHEETS, addSeaLayer, drawFrlgInteriorGround, drawFrlgInteriorDecor,
+  FRLG_INTERIOR_ONLY,
 } from '../art/frlgArt.js';
-import { inFullTreeBlock } from '../data/treeBlocks.js';
 
 const S = TILE_SIZE;
 
@@ -82,10 +81,9 @@ function bakeRegion(scene, key, { x0, y0, w, h }, at, { buildings = [], building
     const tall = scene.make.graphics({}, false);
     tall.translateCanvas(-x0 * S, -y0 * S);
     for (const [x, y] of cells) {
-      const tree = frlgTree(at(x, y), x, y, at);
-      if (tree) drawFrlgTree(ctx, textures, tree.x, tree.y);
-      else if (at(x, y) === 'Y') ctx.drawImage(textures.get(FRLG_SMALL_TREE.sheet).getSourceImage(), x * S, y * S);
-      else if (at(x, y) !== 'T' || !inFullTreeBlock(x, y, at)) drawTall(tall, at(x, y), x, y, at);
+      const image = frlgTallImage(scene, at(x, y), x, y, at);
+      if (image) ctx.drawImage(textures.get(image.key).getSourceImage(), image.x, image.y);
+      else drawTall(tall, at(x, y), x, y, at);
     }
     stamp(scene, tall, ctx, x0, y0, w, h);
   }
@@ -127,31 +125,15 @@ function addBoats(scene, map) {
   }
 }
 
-// Grands arbres Rouge Feu, sapins d'une case et palmiers : une image chacun, triée en profondeur comme
-// les personnages (depth 10 + y / 10000), pour qu'ils passent devant les personnages situés derrière eux.
+// Objets hauts (arbres et plantes des planches, statues, drapeau) : une image chacun, triée en profondeur
+// comme les personnages (depth 10 + y / 10000), pour qu'ils passent devant les personnages situés derrière eux.
 function addTallObjects(scene, map) {
   const { grid } = map;
   const at = (x, y) => grid[y]?.[x];
   grid.forEach((row, y) => row.forEach((code, x) => {
-    const tropical = frlgTropicalTree(scene, code, x, y, at) ?? frlgBerryPlant(scene, code, x, y);
-    if (tropical) {
-      scene.add.image(tropical.x, tropical.y, tropical.key).setOrigin(0).setDepth(10 + tropical.baseY / 10000);
-      return;
-    }
-    const tree = frlgTree(code, x, y, at);
-    if (tree) {
-      const key = 'tall-frlg-tree';
-      if (!scene.textures.exists(key)) {
-        const tex = scene.textures.createCanvas(key, FRLG_TREE.w, FRLG_TREE.h);
-        drawFrlgTree(tex.getContext(), scene.textures, 0, 0);
-        tex.refresh();
-      }
-      scene.add.image(tree.x, tree.y, key).setOrigin(0).setDepth(10 + tree.baseY / 10000);
-      return;
-    }
-    // Palmier 'Y' : le petit arbre de Rouge Feu, posé sur le sol de sa case.
-    if (code === 'Y') {
-      scene.add.image(x * S, y * S, FRLG_SMALL_TREE.sheet).setOrigin(0).setDepth(10 + ((y + 1) * S - 1) / 10000);
+    const plant = frlgTallImage(scene, code, x, y, at);
+    if (plant) {
+      scene.add.image(plant.x, plant.y, plant.key).setOrigin(0).setDepth(10 + plant.baseY / 10000);
       return;
     }
     const o = tallObject(code, x, y, at);

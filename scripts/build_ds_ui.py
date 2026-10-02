@@ -15,6 +15,7 @@ Usage : python3 scripts/build_ds_ui.py
 import json
 from pathlib import Path
 from PIL import Image
+from pixels import clear_color, clear_outside
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets-source' / 'ds'
@@ -87,19 +88,7 @@ SMALL_ROD = 14
 
 def cut_out(crop):
     """Blanc relié au bord de la case -> transparent."""
-    img = crop.convert('RGBA')
-    px = img.load()
-    W, H = img.size
-    stack = [(x, y) for x in range(W) for y in (0, H - 1)] + [(x, y) for x in (0, W - 1) for y in range(H)]
-    seen = set()
-    while stack:
-        p = stack.pop()
-        if p in seen or not (0 <= p[0] < W and 0 <= p[1] < H) or px[p][:3] != WHITE:
-            continue
-        seen.add(p)
-        px[p] = (0, 0, 0, 0)
-        stack += [(p[0] + 1, p[1]), (p[0] - 1, p[1]), (p[0], p[1] + 1), (p[0], p[1] - 1)]
-    return img
+    return clear_outside(crop.convert('RGBA'), WHITE)
 
 
 def build_icons():
@@ -132,8 +121,7 @@ def build_emotes():
     for r, y in enumerate(ys):
         for c, x in enumerate(xs):
             cell = im.crop((x, y, x + 15, y + 16))
-            cell.putdata([(0, 0, 0, 0) if p[:3] == (255, 128, 0) else p for p in cell.getdata()])
-            out.paste(cell, (c * 16, r * 16))
+            out.paste(clear_color(cell, (255, 128, 0)), (c * 16, r * 16))
     out.save(OUT / 'emotes.png')
     print('24 bulles -> public/assets/ui/emotes.png')
 

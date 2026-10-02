@@ -1,7 +1,7 @@
 // Boîte de dialogue en bas de l'écran : texte affiché progressivement, page par page.
 // Entrée / Espace : termine la page en cours d'écriture, sinon passe à la suivante.
 // choose(question, options) : pose une question, liste de réponses (flèches haut/bas + Entrée).
-// open(pages, { icon }) : montre aussi l'icône d'un objet (voir art/uiIcons.js) dans un cadre au-dessus de la boîte.
+// open(pages, { item }) : montre aussi l'icône de l'objet (voir art/uiIcons.js) dans un cadre au-dessus de la boîte.
 // Vit dans la UIScene (pas de zoom) ; les scènes de jeu l'ouvrent via open(pages) ou choose().
 // Texte dans la police de Rouge Feu (voir frlgFont.js), deux lignes par page comme dans le jeu : les pages
 // trop longues sont coupées automatiquement.
@@ -9,9 +9,10 @@
 import { gameView } from './screen.js';
 import { FRLG_FONT, LINE_HEIGHT, frlgText, wrapText } from './frlgFont.js';
 import { sfx } from './audio.js';
+import { drawFrame, FRAME, FRAME_LIGHT, FRAME_FILL } from './frame.js';
 import { PORTRAITS } from '../art/spriteSheets.js';
 import { portraitOf } from '../data/characters.js';
-import { ITEM_ICONS } from '../art/uiIcons.js';
+import { ITEM_ICONS, itemIcon } from '../art/uiIcons.js';
 
 const SHOW_PORTRAITS = false;
 
@@ -20,9 +21,6 @@ const CHAR_DELAY = 25; // ms par caractère
 const HEIGHT = 46;
 const LINES = 2;             // lignes par page
 const TEXT_LEFT = 9;         // marge du texte dans la boîte
-// Couleurs façon Rouge Feu : fond blanc, cadre bleu-gris arrondi.
-const FRAME = 0x6888a8;
-const FRAME_LIGHT = 0xb8d0e8;
 
 const bitmapText = (scene, text = '') => scene.add.bitmapText(0, 0, FRLG_FONT, text).setLineSpacing(0);
 
@@ -90,9 +88,7 @@ export class DialogBox {
     this.boxW = w;
 
     this.box.clear();
-    this.box.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, H, 4 * u);
-    this.box.fillStyle(FRAME_LIGHT, 1).fillRoundedRect(x + u, y + u, w - 2 * u, H - 2 * u, 3.5 * u);
-    this.box.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 2 * u, y + 2 * u, w - 4 * u, H - 4 * u, 3 * u);
+    drawFrame(this.box, x, y, w, H, u, 4);
     // Réglettes bleu clair sur les côtés, comme dans Rouge Feu
     this.box.fillStyle(FRAME_LIGHT, 1).fillRect(x + 4 * u, y + 7 * u, 1.5 * u, H - 14 * u);
     this.box.fillStyle(FRAME_LIGHT, 1).fillRect(x + w - 5.5 * u, y + 7 * u, 1.5 * u, H - 14 * u);
@@ -126,12 +122,12 @@ export class DialogBox {
   }
 
   // Ouvre le dialogue ; la promesse se résout quand la dernière page est fermée.
-  open(pages, { speaker, icon = null } = {}) {
+  open(pages, { speaker, item = null } = {}) {
     this.pages = this.paginate(Array.isArray(pages) ? pages : [pages]);
     this.pageIndex = 0;
     this.openedAt = performance.now();
     this.setSpeaker(speaker);
-    this.setIcon(icon);
+    this.setIcon(item ? itemIcon(item.id) : null);
     this.container.setVisible(true);
     this.showPage();
     return new Promise((resolve) => { this.resolve = resolve; });
@@ -156,9 +152,7 @@ export class DialogBox {
     const x = this.boxX + this.boxW - w;
     const y = this.boxY - h - 2 * u;
     this.choiceBox.clear().setVisible(true);
-    this.choiceBox.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, h, 3 * u);
-    this.choiceBox.fillStyle(FRAME_LIGHT, 1).fillRoundedRect(x + u, y + u, w - 2 * u, h - 2 * u, 2.5 * u);
-    this.choiceBox.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 2 * u, y + 2 * u, w - 4 * u, h - 4 * u, 2 * u);
+    drawFrame(this.choiceBox, x, y, w, h, u);
     texts.forEach((t, i) => t.setPosition(x + 5 * u, y + 3 * u + i * lineH));
     this.choiceTexts = texts;
     this.renderChoices();
@@ -192,7 +186,7 @@ export class DialogBox {
     const x = this.boxX + 3 * u;
     const y = this.boxY - 14 * u;
     this.nameBg.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, 15 * u, 3 * u);
-    this.nameBg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + u, y + u, w - 2 * u, 13 * u, 2.5 * u);
+    this.nameBg.fillStyle(FRAME_FILL, 1).fillRoundedRect(x + u, y + u, w - 2 * u, 13 * u, 2.5 * u);
   }
 
   setIcon(icon) {
@@ -204,9 +198,7 @@ export class DialogBox {
     const size = 30 * u;
     const x = this.boxX + this.boxW - size - 4 * u;
     const y = this.boxY - size - 2 * u;
-    this.iconBg.fillStyle(FRAME, 1).fillRoundedRect(x, y, size, size, 3 * u);
-    this.iconBg.fillStyle(FRAME_LIGHT, 1).fillRoundedRect(x + u, y + u, size - 2 * u, size - 2 * u, 2.5 * u);
-    this.iconBg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 2 * u, y + 2 * u, size - 4 * u, size - 4 * u, 2 * u);
+    drawFrame(this.iconBg, x, y, size, size, u);
     this.iconImage.setTexture(ITEM_ICONS, icon).setScale(u).setPosition(x + size / 2, y + size / 2);
   }
 

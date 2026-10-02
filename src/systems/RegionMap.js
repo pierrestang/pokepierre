@@ -1,11 +1,11 @@
-import { gameView, SCREEN_W, SCREEN_H } from './screen.js';
-import { FRLG_FONT, frlgText } from './frlgFont.js';
+import { SCREEN_W, SCREEN_H } from './screen.js';
 import { FRLG_SHEETS } from '../art/frlgArt.js';
 import { MAPS } from '../data/maps/index.js';
 import { flags } from './flags.js';
 import { visitedFlag } from '../data/story.js';
 import { sfx } from './audio.js';
 import { POSTCARDS } from '../art/uiIcons.js';
+import { FullScreenPanel, BAR } from './FullScreenPanel.js';
 
 // Carte du voyage (menu Start > CARTE), dans le style de la carte de Rouge Feu : mer rayée, bandeaux bleus,
 // étapes reliées par des routes orange, point rouge pour chaque ville visitée (« ??? » sinon), tête de Red
@@ -21,7 +21,6 @@ const STOPS = [
   'camino', 'corse', 'bali', 'sriLanka', 'thailand', 'nepal',
 ];
 const PER_ROW = 6;
-const BAR = 16;              // hauteur des bandeaux (en pixels de l'écran de jeu)
 const ROUTE = 0xe7a500;       // orange des routes de Rouge Feu
 const ROUTE_LIGHT = 0xf8d870;
 const ROUTE_UNKNOWN = 0xc8d0e8;
@@ -37,11 +36,9 @@ function stopPosition(i) {
   return { x: left + col * step, y: 2 * BAR + 30 + row * 58 };
 }
 
-export class RegionMap {
+export class RegionMap extends FullScreenPanel {
   constructor(scene) {
-    this.scene = scene;
-    this.isOpen = false;
-    this.objects = [];
+    super(scene);
     // Images de la planche de la carte (voir scripts/build_frlg_tiles.py, town_map).
     const tex = scene.textures.get(FRLG_SHEETS.townMap);
     if (!tex.has('sea')) {
@@ -49,9 +46,6 @@ export class RegionMap {
       tex.add('dot', 0, 16, 0, 8, 8);
       tex.add('head', 0, 24, 0, 16, 16);
     }
-    const onResize = () => this.isOpen && this.render();
-    scene.scale.on('resize', onResize);
-    scene.events.once('shutdown', () => scene.scale.off('resize', onResize));
   }
 
   // Ouvre la carte, curseur sur la ville `current` (id de carte).
@@ -63,32 +57,23 @@ export class RegionMap {
     this.render();
   }
 
-  close() {
-    this.isOpen = false;
-    this.clear();
-  }
-
-  clear() {
-    this.objects.forEach((o) => o.destroy());
-    this.objects = [];
-  }
-
   visited(id) {
     return id === this.current || flags.has(visitedFlag(id));
   }
 
+  // Une ville visitée peut avoir sa carte postale (voir art/uiIcons.js, POSTCARDS).
+  hasPostcard(id) {
+    return this.visited(id) && this.scene.textures.get(POSTCARDS).has(id);
+  }
+
   render() {
-    this.clear();
-    const s = this.scene;
-    const v = gameView(s.scale);
-    const u = v.zoom;
-    const X = (x) => v.x + x * u;
-    const Y = (y) => v.y + y * u;
-    const add = (o) => { this.objects.push(o.setDepth(120)); return o; };
-    const white = (text) => add(s.add.bitmapText(0, 0, FRLG_FONT, frlgText(s, text)).setScale(u).setTintFill(0xffffff));
+    this.begin();
+    const { scene: s, u, X, Y } = this;
+    const add = (o) => this.add(o);
+    const white = (text, x, y) => this.text(text, x, y, 0xffffff);
 
     // Mer rayée de la carte de Rouge Feu
-    add(s.add.tileSprite(v.x, v.y, SCREEN_W * u, SCREEN_H * u, FRLG_SHEETS.townMap, 'sea').setOrigin(0).setTileScale(u));
+    add(s.add.tileSprite(X(0), Y(0), SCREEN_W * u, SCREEN_H * u, FRLG_SHEETS.townMap, 'sea').setOrigin(0).setTileScale(u));
     const g = add(s.add.graphics());
 
     // Routes entre les étapes (pâles vers les villes pas encore visitées)
@@ -126,26 +111,26 @@ export class RegionMap {
     }
 
     // Bandeaux : titre en haut, nom de l'étape choisie, aide en bas
-    g.fillStyle(0x2070e8, 1).fillRect(X(0), Y(0), SCREEN_W * u, BAR * u);
-    g.fillStyle(0x2070e8, 1).fillRect(X(0), Y(SCREEN_H - BAR), SCREEN_W * u, BAR * u);
+    this.drawBars(g, 0x2070e8);
     g.fillStyle(0x305828, 0.85).fillRect(X(0), Y(BAR), SCREEN_W * u, BAR * u);
-    white('CARTE DU VOYAGE').setPosition(X(6), Y(1));
+    white('CARTE DU VOYAGE', 6, 1);
     const id = STOPS[this.index];
-    white(this.visited(id) ? (MAPS[id]?.name ?? id).toUpperCase() : '???').setPosition(X(6), Y(BAR + 1));
-    white(`Étape ${this.index + 1} / ${STOPS.length}`).setPosition(X(SCREEN_W - 80), Y(BAR + 1));
-    const hasCard = this.visited(id) && s.textures.get(POSTCARDS).has(id);
-    white(`← → : choisir    ${hasCard ? 'Entrée : carte postale    ' : ''}Échap : fermer`).setPosition(X(6), Y(SCREEN_H - BAR + 1));
+    white(this.visited(id) ? (MAPS[id]?.name ?? id).toUpperCase() : '???', 6, BAR + 1);
+    white(`Étape ${this.index + 1} / ${STOPS.length}`, SCREEN_W - 80, BAR + 1);
+    white(`← → : choisir    ${this.hasPostcard(id) ? 'Entrée : carte postale    ' : ''}Échap : fermer`, 6, SCREEN_H - BAR + 1);
     if (this.postcard) {
       // Carte postale : l'illustration au centre, bord blanc et ombre, le nom de la ville dessous.
       const W = 256;
       const H = 160;
       const px = (SCREEN_W - W) / 2;
       const py = (SCREEN_H - H) / 2 - 6;
-      g.fillStyle(0x000000, 0.55).fillRect(X(0), Y(0), SCREEN_W * u, SCREEN_H * u);
-      g.fillStyle(0x000000, 0.4).fillRect(X(px - 1), Y(py + 1), (W + 6) * u, (H + 18) * u);
-      g.fillStyle(0xf8f8f0, 1).fillRect(X(px - 4), Y(py - 4), (W + 8) * u, (H + 20) * u);
+      // Son propre fond, ajouté en dernier : il passe par-dessus les villes et le curseur.
+      const pg = add(s.add.graphics());
+      pg.fillStyle(0x000000, 0.55).fillRect(X(0), Y(0), SCREEN_W * u, SCREEN_H * u);
+      pg.fillStyle(0x000000, 0.4).fillRect(X(px - 1), Y(py + 1), (W + 6) * u, (H + 18) * u);
+      pg.fillStyle(0xf8f8f0, 1).fillRect(X(px - 4), Y(py - 4), (W + 8) * u, (H + 20) * u);
       add(s.add.image(X(px), Y(py), POSTCARDS, id).setOrigin(0).setScale(u));
-      add(s.add.bitmapText(X(px), Y(py + H + 2), FRLG_FONT, frlgText(s, `Souvenir de ${MAPS[id]?.name ?? id}`)).setScale(u).setTintFill(0x303038));
+      this.text(`Souvenir de ${MAPS[id]?.name ?? id}`, px, py + H + 2);
     }
   }
 
@@ -158,7 +143,7 @@ export class RegionMap {
       return false;
     }
     const id = STOPS[this.index];
-    if ((e.key === 'Enter' || e.key === ' ') && this.visited(id) && this.scene.textures.get(POSTCARDS).has(id)) {
+    if ((e.key === 'Enter' || e.key === ' ') && this.hasPostcard(id)) {
       sfx('confirm');
       this.postcard = true;
       this.render();

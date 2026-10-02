@@ -5,12 +5,12 @@
 //   1. drawFrlgGround : le sol Rouge Feu (herbe, sable, plage, chemin, ponton ; la mer est une couche
 //      animée sous la carte, voir addSeaLayer) ;
 //   2. le dessin procédural (art/tileArt.js) pour tout ce qui n'a pas d'équivalent Rouge Feu
-//      (palmiers, boîte aux lettres, décors des autres pays…), sans son propre sol là où la couche 1 en a posé ;
+//      (boîte aux lettres, décors des autres pays…), sans son propre sol là où la couche 1 en a posé ;
 //   3. drawFrlgOverlay : objets Rouge Feu posés sur le sol (hautes herbes, fleurs, buissons, panneaux,
 //      barrières, rochers) puis bâtiments Rouge Feu.
-// Les grands arbres sont des objets hauts à part, triés en profondeur (voir frlgTallTexture).
+// Les arbres et plantes hautes sont des images à part, triées en profondeur (voir frlgTallImage).
 
-import { inFullTreeBlock, inForest, mod2 } from '../data/treeBlocks.js';
+import { inFullTreeBlock, mod2 } from '../data/treeBlocks.js';
 
 const S = 16;
 
@@ -77,9 +77,8 @@ const FLOWERS = O(7, 2);
 const BUSH = O(7, 12);
 const SMALL_TREE = O(8, 0);    // petit arbre (celui qu'on coupe dans les jeux Pokémon)
 const SIGN = O(23, 3);
-// Champs de la campagne (frlg-fields.png) : blé doré, terre labourée à pousses.
+// Champ de blé de la campagne (frlg-fields.png).
 const WHEAT = { sheet: FRLG_SHEETS.fields, sx: 0, sy: 0 };
-const SOIL = { sheet: FRLG_SHEETS.fields, sx: 16, sy: 0 };
 // Étang bordé de terre (planche d'extérieur, bloc 3 x 3) : rectangulaire, sans coins intérieurs.
 const POND = {
   tl: O(10, 0), top: O(11, 0), tr: O(12, 0),
@@ -93,13 +92,13 @@ const FENCE = {
   left: O(6, 12), right: O(8, 12),
   bl: O(6, 13), br: O(8, 13),
 };
+// Poteaux de la lisse horizontale (FENCE.h) : x de celui de gauche et de celui de droite, largeur.
+const FENCE_POST = { west: 1, east: 9, w: 7 };
 const BEACH_ROCK = { sheet: FRLG_SHEETS.beachrock, sx: 0, sy: 0 };   // rocher gris sans écume, fond transparent
-// Barrière en rondins debout de la planche d'extérieur : deux rondins par case, rangées comme côtés.
-const LOGS = O(7, 17);
 // Petit plateau rocheux herbeux (bloc de cases 'ɱ', au moins 3 x 3) : bords de falaise, dessus en herbe,
 // escalier au bas (sauf dans les coins).
-// ɱ : falaise et statues (bloquant), ɲ : herbe du sommet et escalier ; ɟ / ɺ : même butte, sans statues
-const PLATEAU_CODES = ['ɱ', 'ɲ', 'ɟ', 'ɺ'];
+// ɱ : falaise et statues (bloquant), ɲ : herbe du sommet et escalier
+const PLATEAU_CODES = ['ɱ', 'ɲ'];
 const PLATEAU = {
   tl: O(19, 15), top: [O(20, 15), O(21, 15)], tr: O(22, 15),
   left: O(19, 16), grass: O(20, 16), right: O(22, 16),
@@ -122,7 +121,7 @@ const PIER_RAIL = {
 const pierPart = (y, at, x) => (at(x, y - 1) !== '=' ? 'start' : at(x, y + 1) !== '=' ? 'end' : 'mid');
 
 // Grand arbre isolé (32 x 45 px) de la planche de Hoeloe : 2 cases de large, dépasse de 13 px au-dessus.
-export const FRLG_TREE = { sheet: FRLG_SHEETS.props, sx: 95, sy: 33, w: 32, h: 45 };
+const FRLG_TREE = { sheet: FRLG_SHEETS.props, sx: 95, sy: 33, w: 32, h: 45 };
 
 // Bâtiments Rouge Feu : image entière, posée en bas de son emprise (footH cases de haut).
 export const FRLG_BUILDINGS = {
@@ -132,8 +131,6 @@ export const FRLG_BUILDINGS = {
   cottage: { sx: 24, sy: 22, w: 80, h: 64, footH: 4 },       // toit vert en chaume, jardinières fleuries
   greenHouse: { sx: 114, sy: 22, w: 80, h: 56, footH: 4 },   // petite maison au toit vert
   slateHouse: { sx: 300, sy: 24, w: 80, h: 55, footH: 4 },   // toit d'ardoise, porte rouge
-  blueHouse: { sx: 395, sy: 24, w: 96, h: 56, footH: 4 },    // toit bleu, 6 cases, porte en 3e colonne
-  clinic: { sx: 421, sy: 343, w: 80, h: 72, footH: 4 },      // toit orange (pension), porte au milieu
   // Montépilloy et Prytanée.
   school: { sx: 620, sy: 242, w: 80, h: 71, footH: 4 },      // auvent vert et jardinières (fan-club), porte en 2e colonne
   lab: { sx: 528, sy: 342, w: 112, h: 72, footH: 4 },       // labo du Prof. Chen : 7 cases, porte en 4e colonne
@@ -148,14 +145,14 @@ export const FRLG_BUILDINGS = {
 
 // Cases posées sur l'herbe (le sable voisin reçoit un liseré d'herbe) : herbe, fleurs, buissons, arbres,
 // barrières, panneaux, plateau du mémorial…
-const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F', 'ʬ', 'ʭ', 'ʀ', 'ɓ', 'ɟ', 'ɺ']);
-const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ']);
+const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F', 'ʬ']);
+const SAND_CODES = new Set(['s', 'ψ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
 const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ', 'O', 'Q', 'V', 'J',
   // objets des villes (réverbère, cabine, drapeaux, lanternes, étals, scooter, vélos, vache, tuk-tuk, terrasse,
   // métro, panneaux de l'aéroport, cactus, chameau, serpent, feu de camp)
-  'l', 'b', 'j', 'e', 'v', 'g', 'n', 't', 'y', 'c', 'p', 'a', 'd', '$', '!', '>', '<', '*', 'H', 'z', '&']);
+  'l', 'b', 'e', 'v', 'g', 'n', 't', 'y', 'c', 'p', 'a', 'd', '$', '!', '>', '<', '*', 'H', 'z', '&']);
 // Eau des villes : rivière, et ce qui la couvre (ponts, lotus) — posée comme un étang Rouge Feu.
 const RIVER_CODES = new Set(['G', 'I', 'r', 'k']);
 
@@ -331,7 +328,7 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
 }
 
 // Codes entièrement dessinés par les couches Rouge Feu (le dessin procédural les ignore).
-const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ł', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ', '~', 'F', 'ʬ', 'ʭ', 'ɔ', 'ɐ', 'ɟ', 'ɺ', 'G']);
+const FRLG_ONLY = new Set(['.', 's', 'w', 'ç', '=', 'ĥ', 'ƀ', 'f', 'S', 'ø', 'ŕ', 'T', 'ɱ', 'ɲ', 'Ŧ', 'M', 'ƫ', 'ƨ', 'ƚ', '~', 'F', 'ʬ', 'ɔ', 'ɐ', 'G']);
 
 export function isFrlgOnly(code) {
   return FRLG_ONLY.has(code);
@@ -361,7 +358,6 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
   switch (code) {
     case 'ĥ': return put(TALL_GRASS);
     case 'ʬ': return put(WHEAT);
-    case 'ʭ': return put(SOIL);
     case 'F': {
       const f = (dx, dy) => at(x + dx, y + dy) === 'F';
       const up = f(0, -1), down = f(0, 1), left = f(-1, 0), right = f(1, 0);
@@ -382,8 +378,8 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
       // dessus, centré sur le rail (poteau de droite de la pièce pour un côté est, de gauche pour un côté ouest).
       const endPost = () => {
         put(side);
-        const dx = east ? 9 : 1;
-        blit(ctx, textures, { sheet: FENCE.h.sheet, sx: FENCE.h.sx + dx, sy: FENCE.h.sy }, px + dx, py, 7, S);
+        const dx = east ? FENCE_POST.east : FENCE_POST.west;
+        blit(ctx, textures, { sheet: FENCE.h.sheet, sx: FENCE.h.sx + dx, sy: FENCE.h.sy }, px + dx, py, FENCE_POST.w, S);
       };
       if (down && !up) return right ? put(FENCE.tl) : left ? put(FENCE.tr) : endPost();
       if (up && !down) return right ? put(FENCE.bl) : left ? put(FENCE.br) : endPost();
@@ -397,11 +393,8 @@ export function drawFrlgOverlay(ctx, textures, x, y, at) {
     case 'ŕ': return put(BEACH_ROCK);
     case 'M': return drawPixels(ctx, MAILBOX, MAILBOX_COLORS, px + 2, py + S - MAILBOX.length);
     case 'ø': return put(SEA_ROCK);
-    case 'ł': return put(LOGS);
     case 'ɱ':
-    case 'ɲ':
-    case 'ɟ':
-    case 'ɺ': {
+    case 'ɲ': {
       // Position de la case dans son bloc : bords, coins, dessus en herbe, escalier au bas.
       const inBlock = (cx, cy) => PLATEAU_CODES.includes(at(cx, cy));
       let bx = x;
@@ -487,49 +480,46 @@ export function frlgBuildingFloor(buildings = [], at = () => 'R') {
   return (x, y) => cells.has(`${x},${y}`);
 }
 
-// Grand arbre Rouge Feu : ancré sur la case en bas à droite d'un bloc de 2 x 2 sapins.
-// Renvoie { x, y, w, h, baseY } (en pixels, coin haut-gauche de l'image) ou null.
-export function frlgTree(code, x, y, at) {
-  if (code !== 'T' || !inFullTreeBlock(x, y, at) || mod2(x) !== 1 || mod2(y) !== 1) return null;
-  const px = (x - 1) * S;
-  const py = (y - 1) * S;
-  return { x: px, y: py + 2 * S - FRLG_TREE.h, w: FRLG_TREE.w, h: FRLG_TREE.h, baseY: py + 2 * S - 1, forest: inForest(x, y, at) };
-}
-
-// Arbre tropical à racines d'Émeraude (bloc de 2 x 2 cases 'ƫ', 32 x 32 px) : ancré sur la case en haut à
-// gauche du bloc ; variante « sable » ou « herbe » selon le sol autour. Renvoie { key, x, y, baseY } ou null.
-export function frlgTropicalTree(scene, code, x, y, at) {
-  if (code !== 'ƫ' || at(x - 1, y) === 'ƫ' || at(x, y - 1) === 'ƫ') return null;
-  const sand = frlgGroundOf(x, y, at) === 'sand';
-  const key = `emerald-tree-${sand ? 'sand' : 'grass'}`;
+// Texture d'une image de la planche `sheet` (w x h px depuis sx, sy), créée une fois sous le nom `key`.
+function sheetTexture(scene, key, sheet, sx, sy, w, h) {
   if (!scene.textures.exists(key)) {
-    const tex = scene.textures.createCanvas(key, 2 * S, 2 * S);
-    blit(tex.getContext(), scene.textures, { sheet: FRLG_SHEETS.tropical, sx: sand ? 0 : 2 * S, sy: 0 }, 0, 0, 2 * S, 2 * S);
+    const tex = scene.textures.createCanvas(key, w, h);
+    blit(tex.getContext(), scene.textures, { sheet, sx, sy }, 0, 0, w, h);
     tex.refresh();
   }
-  return { key, x: x * S, y: y * S, baseY: (y + 2) * S - 1 };
+  return key;
 }
 
-// Plante à baies fleurie de Rubis/Saphir (case 'ƨ', 16 x 32 px, dépasse vers le haut) : baies bleues ou
-// fleurs rouges (variantes 2 et 3 de rs-berries.png) selon la case. Renvoie { key, x, y, baseY } ou null.
+// Objets hauts des planches (arbres, plantes) : une image à part, triée en profondeur comme les personnages
+// (voir systems/tileRenderer.js). Renvoie { key, x, y, baseY } (texture, coin haut-gauche et pied, en pixels)
+// pour la case qui porte l'image, ou null.
+//   T : grand sapin de Rouge Feu, ancré sur la case en bas à droite d'un bloc de 2 x 2 ;
+//   ƫ : arbre tropical à racines d'Émeraude (bloc de 2 x 2, ancré en haut à gauche), variante sable ou herbe ;
+//   ƨ : plante à baies fleurie de Rubis/Saphir (16 x 32, dépasse vers le haut), baies bleues ou fleurs rouges ;
+//   Y : palmier des pays exotiques, le petit arbre de Rouge Feu sans son herbe, posé sur le sol de sa case.
 const BERRY_VARIANTS = [2, 3];
-export function frlgBerryPlant(scene, code, x, y) {
-  if (code !== 'ƨ') return null;
-  const variant = BERRY_VARIANTS[hash(x, y) % BERRY_VARIANTS.length];
-  const key = `rs-berry-${variant}`;
-  if (!scene.textures.exists(key)) {
-    const tex = scene.textures.createCanvas(key, S, 2 * S);
-    blit(tex.getContext(), scene.textures, { sheet: FRLG_SHEETS.berries, sx: variant * S, sy: 0 }, 0, 0, S, 2 * S);
-    tex.refresh();
+export function frlgTallImage(scene, code, x, y, at) {
+  if (code === 'T') {
+    if (!inFullTreeBlock(x, y, at) || mod2(x) !== 1 || mod2(y) !== 1) return null;
+    const key = sheetTexture(scene, 'tall-frlg-tree', FRLG_TREE.sheet, FRLG_TREE.sx, FRLG_TREE.sy, FRLG_TREE.w, FRLG_TREE.h);
+    return { key, x: (x - 1) * S, y: (y + 1) * S - FRLG_TREE.h, baseY: (y + 1) * S - 1 };
   }
-  return { key, x: x * S, y: (y - 1) * S, baseY: (y + 1) * S - 1 };
+  if (code === 'ƫ') {
+    if (at(x - 1, y) === 'ƫ' || at(x, y - 1) === 'ƫ') return null;
+    const sand = frlgGroundOf(x, y, at) === 'sand';
+    const key = sheetTexture(scene, `emerald-tree-${sand ? 'sand' : 'grass'}`, FRLG_SHEETS.tropical, sand ? 0 : 2 * S, 0, 2 * S, 2 * S);
+    return { key, x: x * S, y: y * S, baseY: (y + 2) * S - 1 };
+  }
+  if (code === 'ƨ') {
+    const variant = BERRY_VARIANTS[hash(x, y) % BERRY_VARIANTS.length];
+    const key = sheetTexture(scene, `rs-berry-${variant}`, FRLG_SHEETS.berries, variant * S, 0, S, 2 * S);
+    return { key, x: x * S, y: (y - 1) * S, baseY: (y + 1) * S - 1 };
+  }
+  if (code === 'Y') return { key: FRLG_SHEETS.smallTree, x: x * S, y: y * S, baseY: (y + 1) * S - 1 };
+  return null;
 }
 
-// Petit arbre de Rouge Feu sans son herbe (frlg-small-tree.png) : les palmiers 'Y' des pays exotiques, posés sur
-// leur sol (sable, pavés, herbe…).
-export const FRLG_SMALL_TREE = { sheet: FRLG_SHEETS.smallTree, sx: 0, sy: 0 };
-
-export function drawFrlgTree(ctx, textures, px, py) {
+function drawFrlgTree(ctx, textures, px, py) {
   blit(ctx, textures, FRLG_TREE, px, py, FRLG_TREE.w, FRLG_TREE.h);
 }
 
@@ -592,6 +582,13 @@ export function cabaneFrame(scene, name) {
   const tex = scene.textures.get(FRLG_SHEETS.cabane);
   if (!tex.has(name)) tex.add(name, 0, ...CABANE_FRAMES[name]);
   return name;
+}
+
+// Morceau de l'intérieur de la cabane redessiné par-dessus les personnages (voir `overlays` dans MapScene), à sa
+// place dans la pièce.
+export function cabaneOverlay(name) {
+  const [sx, y, , h] = CABANE_FRAMES[name];
+  return { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, name), x: sx - CABANE_FRAMES.room[0], y, h };
 }
 
 // ---------- Mer animée ----------
@@ -672,9 +669,7 @@ export const FRLG_DECOR = {
   cabinet: block(1, 3, 1, 1, 2),        // placard jaune
   window: block(2, 4, 0, 2, 2),         // fenêtre à rideaux
   notice: block(2, 9, 0, 1, 2),         // panneau d'affichage
-  desk: block(3, 2, 1, 1, 2),           // bureau avec un globe
   computer: CENTER_ITEM(0, 1, 2),       // ordinateur
-  tv: CENTER_ITEM(16, 2, 2),            // télé murale
   crtTv: RS(558, 84, 16, 27, 1, 1),     // télé sur son meuble (Rubis/Saphir)
   console: RS(486, 50, 13, 16, 1, 1),   // console et manette
   bed: RS(488, 79, 24, 32, 2, 2),       // lit
@@ -688,7 +683,6 @@ export const FRLG_DECOR = {
   carton: { sprite: { sheet: 'frlg-carton', sx: 0, sy: 0 }, pw: 15, ph: 14, w: 1, h: 1 },        // carton de déménagement
   smallCarton: { sprite: { sheet: 'frlg-carton', sx: 15, sy: 0 }, pw: 11, ph: 9, w: 1, h: 1 },   // petit carton (sur un meuble)
   // Caisses en bois du marché de Slateport (rs-crates.png, scripts/extract_rs_buildings.py).
-  crate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 0, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },
   fishCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 15, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },
   giveCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 30, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },   // « À DONNER »
   greenCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 45, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },  // légumes verts

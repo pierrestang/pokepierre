@@ -1,6 +1,6 @@
-import { gameView, SCREEN_W, SCREEN_H } from './screen.js';
-import { FRLG_FONT, frlgText } from './frlgFont.js';
+import { SCREEN_W, SCREEN_H } from './screen.js';
 import { sfx } from './audio.js';
+import { FullScreenPanel, BAR } from './FullScreenPanel.js';
 import { SHEETS, sheetOf } from '../art/spriteSheets.js';
 import { BY_NAME, lookChoices, spriteForName, defaultSpriteOf } from '../data/characters.js';
 import { MAPS } from '../data/maps/index.js';
@@ -10,7 +10,6 @@ import { interiors } from '../data/maps/interiors.js';
 // planches de personnages (TownsPeople2 `t{n}`, Rouge Feu `f{n}`, Émeraude `h{n}`, voir art/spriteSheets.js). Le
 // choix est gardé par nom (voir data/characters.js, lookChoices) et vaut pour tous les personnages de ce nom.
 // Deux écrans, dans le style de la carte du voyage : la liste (deux colonnes), puis la grille des sprites.
-const BAR = 16;                                   // bandeaux du haut et du bas
 const LIST_ROWS = 8;                              // personnages par colonne
 const LIST_ROW_H = 26;
 const GRID_COLS = 12;
@@ -32,16 +31,7 @@ function characterNames() {
 // Tous les sprites des planches de personnages.
 const ALL_SPRITES = Object.entries(SHEETS).flatMap(([letter, sheet]) => Array.from({ length: sheet.count }, (_, i) => `${letter}${i}`));
 
-export class NpcLooks {
-  constructor(scene) {
-    this.scene = scene;
-    this.isOpen = false;
-    this.objects = [];
-    const onResize = () => this.isOpen && this.render();
-    scene.scale.on('resize', onResize);
-    scene.events.once('shutdown', () => scene.scale.off('resize', onResize));
-  }
-
+export class NpcLooks extends FullScreenPanel {
   open() {
     this.names = characterNames();
     this.index = 0;
@@ -51,39 +41,12 @@ export class NpcLooks {
     this.render();
   }
 
-  close() {
-    this.isOpen = false;
-    this.clear();
-  }
-
-  clear() {
-    this.objects.forEach((o) => o.destroy());
-    this.objects = [];
-  }
-
   render() {
-    this.clear();
-    const s = this.scene;
-    const v = gameView(s.scale);
-    const u = v.zoom;
-    this.X = (x) => v.x + x * u;
-    this.Y = (y) => v.y + y * u;
-    this.u = u;
-    const g = this.add(s.add.graphics());
-    g.fillStyle(0xf8f8f0, 1).fillRect(this.X(0), this.Y(0), SCREEN_W * u, SCREEN_H * u);
-    g.fillStyle(0x2070e8, 1).fillRect(this.X(0), this.Y(0), SCREEN_W * u, BAR * u);
-    g.fillStyle(0x2070e8, 1).fillRect(this.X(0), this.Y(SCREEN_H - BAR), SCREEN_W * u, BAR * u);
+    this.begin();
+    const g = this.add(this.scene.add.graphics());
+    this.drawBars(g, 0x2070e8, 0xf8f8f0);
     if (this.picking) this.renderGrid(g);
     else this.renderList(g);
-  }
-
-  add(o) {
-    this.objects.push(o.setDepth(120));
-    return o;
-  }
-
-  text(text, x, y, color = 0x303038) {
-    return this.add(this.scene.add.bitmapText(this.X(x), this.Y(y), FRLG_FONT, frlgText(this.scene, text)).setScale(this.u).setTintFill(color));
   }
 
   sprite(id, x, bottom) {

@@ -3,11 +3,16 @@ import { FLAGS, ITEMS, QUALITIES, ROLES } from '../story.js';
 import {
   BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT, CABANE_FETE, FELIX_AT_CABANE,
 } from '../saintAyStory.js';
-import { FRLG_SHEETS, cabaneFrame } from '../../art/frlgArt.js';
+import { FRLG_SHEETS, cabaneFrame, cabaneOverlay } from '../../art/frlgArt.js';
 import {
   LEO_CALLED, OUSMANE_JOINS, LEO_PLAN, GIRLS_JOIN, PUB_A_BAR, PUB_B_TABLE, PUB_B_OTHER, ASYLUM_ENTER, ASYLUM_DANCE,
   LIBRARY, EXAM,
 } from '../hullStory.js';
+
+// Cannes de la cabane de pêche : [icône, x, y, hauteur gardée] en pixels depuis le coin de la case (voir ffHut).
+const RACK_RODS = [['vieille-canne-petite', 8, -14, 23], ['super-canne-petite', 0, -14, 23], ['mega-canne-petite', -8, -14, 23]];
+const CRATE_RODS = [['super-canne-petite', -6, -17, 19], ['vieille-canne-petite', -1, -17, 19]];
+const OLD_ROD_IN_CRATE = [['vieille-canne-petite', -3, -17, 19]];
 
 // Ascenseur de l'entreprise parisienne (mêmes cases, en haut à droite, à chaque étage).
 const floor = (interior) => ({ interior, x: 10, y: 2, facing: 'down' });
@@ -182,14 +187,15 @@ export const interiors = {
       { kind: 'fishCrate', x: 4, y: 2 },
       { kind: 'giveCrate', x: 0, y: 4 },
     ],
-    // Cannes du râtelier (trois, puis celle que Papa garde) et cannes jetées dans la caisse « À DONNER »
-    // (deux, puis une fois que tu en as pris une).
+    // Cannes en petites icônes de HeartGold (voir MapScene, décors `icons`) : les trois du râtelier (Méga, Super,
+    // Vieille), puis la Méga Canne que Papa garde ; dans la caisse « À DONNER », la Super Canne (offerte au
+    // pêcheur) et la Vieille canne, puis la Vieille seule. Le bas des icônes est coupé (socle, bord de la caisse).
     decals: [
-      { kind: 'rodsOnRack', x: 0, y: 2, count: 3, unlessFlags: [FLAGS.papaFait] },
-      { kind: 'rodsOnRack', x: 0, y: 2, count: 1, ifFlags: [FLAGS.papaFait] },
-      { kind: 'rodsInCrate', x: 0, y: 4, count: 2, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id] },
-      { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id] },
-      { kind: 'rodsInCrate', x: 0, y: 4, count: 1, ifItems: [ITEMS.canneAPeche.id] },
+      { x: 0, y: 2, unlessFlags: [FLAGS.papaFait], icons: RACK_RODS },
+      { x: 0, y: 2, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -4, -14, 23]] },
+      { x: 0, y: 4, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id], icons: CRATE_RODS },
+      { x: 0, y: 4, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
+      { x: 0, y: 4, ifItems: [ITEMS.canneAPeche.id], icons: OLD_ROD_IN_CRATE },
     ],
     spawn: { x: 3, y: 4, facing: 'up' },
     npcs: [
@@ -387,10 +393,7 @@ export const interiors = {
   cabane: {
     name: 'Cabane',
     backdrop: { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'room') },
-    overlays: [
-      { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'tableLeft'), x: 2, y: 42, h: 16 },
-      { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'tableRight'), x: 78, y: 42, h: 16 },
-    ],
+    overlays: [cabaneOverlay('tableLeft'), cabaneOverlay('tableRight')],
     grid: parseGrid([
       'XXXXXXXX',
       'XXXXXXXX',   // mur du fond (tableau)

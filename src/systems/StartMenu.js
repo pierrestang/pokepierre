@@ -3,6 +3,7 @@ import { FRLG_FONT, LINE_HEIGHT, frlgText } from './frlgFont.js';
 import { souvenirs } from './souvenirs.js';
 import { items } from './items.js';
 import { sfx, options, setMusicEnabled, setSfxEnabled } from './audio.js';
+import { drawFrame } from './frame.js';
 import { RegionMap } from './RegionMap.js';
 import { NpcLooks } from './NpcLooks.js';
 import { ItemBag } from './ItemBag.js';
@@ -10,16 +11,14 @@ import { flags } from './flags.js';
 import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
 
-// Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu.
-// Carte (du voyage), Souvenirs, Objets (le sac, avec les icônes), Quêtes (aller au début de la quête d'une ville, pour tester), PNJ
-// (choisir l'apparence de chaque personnage), Sauvegarder,
-// Options (musique, sons), Quitter la partie (retour à l'écran titre), Fermer.
+// Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Carte (du voyage),
+// Souvenirs, Objets (le sac, avec les icônes), Quêtes (aller au début de la quête d'une ville, pour tester), PNJ
+// (choisir l'apparence de chaque personnage), Sauvegarder, Options (musique, sons), Quitter la partie (retour à
+// l'écran titre), Fermer.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
-const FRAME = 0x6888a8;
-const MAIN = { quests: 3, npcs: 4, options: 6 };      // place de ces entrées dans le menu principal
+const MAIN = { quests: 3, options: 6 };               // place de ces entrées dans le menu principal
 const VISIBLE = 9;                           // lignes affichées à la fois (la liste des quêtes défile)
-const FRAME_LIGHT = 0xb8d0e8;
 
 export class StartMenu {
   constructor(scene, dialog) {
@@ -35,7 +34,7 @@ export class StartMenu {
     this.npcLooks = new NpcLooks(scene);
     this.itemBag = new ItemBag(scene);
     scene.input.keyboard.on('keydown', (e) => this.onKey(e));
-    const onResize = () => this.isOpen && this.render();
+    const onResize = () => this.isOpen && !this.panel && this.render();   // un panneau se redessine lui-même
     scene.scale.on('resize', onResize);
     scene.events.once('shutdown', () => scene.scale.off('resize', onResize));
   }
@@ -60,11 +59,11 @@ export class StartMenu {
       ];
     }
     return [
-      { label: 'CARTE', action: () => this.showMap() },
+      { label: 'CARTE', action: () => this.showPanel(this.regionMap, () => this.close(), this.currentMapId()) },
       { label: 'SOUVENIRS', action: () => this.showInDialog(this.souvenirPages()) },
-      { label: 'OBJETS', action: () => this.showItemBag() },
+      { label: 'OBJETS', action: () => this.showPanel(this.itemBag, () => this.close()) },
       { label: 'QUÊTES', action: () => this.showPage('quests', 0) },
-      { label: 'PNJ', action: () => this.showNpcLooks() },
+      { label: 'PNJ', action: () => this.showPanel(this.npcLooks, () => this.afterNpcLooks()) },
       { label: 'SAUVEGARDER', action: () => this.save() },
       { label: 'OPTIONS', action: () => this.showPage('options', 0) },
       { label: 'QUITTER LA PARTIE', action: () => this.quit() },
@@ -77,16 +76,30 @@ export class StartMenu {
     return list.length ? [`Souvenirs (${list.length}) : ${list.join(', ')}.`] : ["Tu n'as encore aucun souvenir."];
   }
 
-  open() {
+  // Le menu ne s'ouvre qu'en jeu, le joueur à l'arrêt et sans dialogue en cours.
+  canOpen() {
     const map = this.mapScene();
-    if (!map || map.transitioning || map.player.moving || this.dialog.isOpen) return;
+    return Boolean(map && !map.transitioning && !map.player.moving && !this.dialog.isOpen);
+  }
+
+  open() {
+    if (!this.canOpen()) return;
     sfx('menu');
     this.isOpen = true;
     this.showPage('main', this.index);
   }
 
+  // Sac ouvert directement en jeu (touche I), sans passer par le menu.
+  openItemBag() {
+    if (!this.canOpen()) return;
+    sfx('menu');
+    this.isOpen = true;
+    this.showPanel(this.itemBag, () => this.close());
+  }
+
   close() {
     this.isOpen = false;
+    this.panel = null;
     this.closedAt = performance.now();
     this.container.setVisible(false);
   }
@@ -97,32 +110,18 @@ export class StartMenu {
     this.render();
   }
 
-  // Carte du voyage, par-dessus le jeu ; le menu reste « ouvert » (le joueur ne bouge pas) jusqu'à sa fermeture.
-  showMap() {
+  // Panneau plein écran par-dessus le jeu (carte du voyage, sac, apparences des PNJ) : le menu reste « ouvert »
+  // (le joueur ne bouge pas) ; les touches vont au panneau, et `onClose` est appelé quand il se ferme.
+  showPanel(panel, onClose, ...args) {
+    this.container.setVisible(false);
+    this.panel = { panel, onClose };
+    panel.open(...args);
+  }
+
+  // Ville affichée sur la carte du voyage : celle d'où l'on vient pour un intérieur, sinon la carte actuelle.
+  currentMapId() {
     const map = this.mapScene();
-    this.container.setVisible(false);
-    this.regionMap.open(map?.fromMap ?? map?.map.id);
-  }
-
-  // Apparences des PNJ, par-dessus le jeu (comme la carte du voyage).
-  showNpcLooks() {
-    this.container.setVisible(false);
-    this.npcLooks.open();
-  }
-
-  // Sac ouvert directement en jeu (touche I) : le menu compte comme ouvert, le joueur ne bouge pas.
-  openItemBag() {
-    const map = this.mapScene();
-    if (!map || map.transitioning || map.player.moving || this.dialog.isOpen) return;
-    sfx('menu');
-    this.isOpen = true;
-    this.itemBag.open();
-  }
-
-  // Sac des objets, par-dessus le jeu (comme la carte du voyage).
-  showItemBag() {
-    this.container.setVisible(false);
-    this.itemBag.open();
+    return map?.fromMap ?? map?.map.id;
   }
 
   // Panneau PNJ fermé : si une apparence a changé, la scène est relancée sur place pour l'appliquer.
@@ -199,9 +198,7 @@ export class StartMenu {
     const x = v.x + v.w - w - 2 * u;
     const y = v.y + 2 * u;
     this.bg.clear();
-    this.bg.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, h, 3 * u);
-    this.bg.fillStyle(FRAME_LIGHT, 1).fillRoundedRect(x + u, y + u, w - 2 * u, h - 2 * u, 2.5 * u);
-    this.bg.fillStyle(0xf8f8f8, 1).fillRoundedRect(x + 2 * u, y + 2 * u, w - 4 * u, h - 4 * u, 2 * u);
+    drawFrame(this.bg, x, y, w, h, u);
     this.texts.forEach((t, i) => {
       t.setPosition(x + 5 * u, y + 3 * u + i * lineH);
       this.container.add(t);
@@ -214,16 +211,8 @@ export class StartMenu {
       if (e.key === 'Escape') this.open();
       return;
     }
-    if (this.regionMap.isOpen) {
-      if (this.regionMap.onKey(e)) this.close();
-      return;
-    }
-    if (this.itemBag.isOpen) {
-      if (this.itemBag.onKey(e)) this.close();
-      return;
-    }
-    if (this.npcLooks.isOpen) {
-      if (this.npcLooks.onKey(e)) this.afterNpcLooks();
+    if (this.panel) {
+      if (this.panel.panel.onKey(e)) this.panel.onClose();
       return;
     }
     const n = this.entries().length;

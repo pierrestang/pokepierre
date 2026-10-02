@@ -38,16 +38,11 @@ Usage : python3 scripts/build_frlg_tiles.py
 from collections import deque
 from pathlib import Path
 from PIL import Image
+from pixels import clear_color, clear_outside
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets-source' / 'frlg'
 OUT = ROOT / 'public' / 'assets' / 'tiles'
-
-
-def clear_color(im, color):
-    """Rend transparents tous les pixels d'une couleur (fond uni)."""
-    im.putdata([(0, 0, 0, 0) if p == color else p for p in im.getdata()])
-    return im
 
 
 def gba_palette(im):
@@ -59,23 +54,6 @@ def gba_palette(im):
             return p
         return tuple(round(v * 31 / 255) * 8 for v in p[:3]) + (p[3],)
     im.putdata([fix(p) for p in im.getdata()])
-    return im
-
-
-def clear_outside(im, color):
-    """Rend transparents les pixels de `color` reliés au bord de l'image (fond autour des bâtiments),
-    sans toucher au blanc à l'intérieur des bâtiments (vitres, enseignes)."""
-    px = im.load()
-    w, h = im.size
-    queue = deque([(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)])
-    seen = set()
-    while queue:
-        x, y = queue.popleft()
-        if (x, y) in seen or not (0 <= x < w and 0 <= y < h) or px[x, y] != color:
-            continue
-        seen.add((x, y))
-        px[x, y] = (0, 0, 0, 0)
-        queue.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
     return im
 
 
@@ -156,18 +134,7 @@ def rooms(rgba):
 def cut_out(im, background):
     """Rend transparents les pixels des couleurs `background` reliés au bord de l'image, puis ne garde que
     le plus grand morceau (l'objet)."""
-    px = im.load()
-    w, h = im.size
-    queue = deque([(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)])
-    seen = set()
-    while queue:
-        x, y = queue.popleft()
-        if (x, y) in seen or not (0 <= x < w and 0 <= y < h) or px[x, y] not in background:
-            continue
-        seen.add((x, y))
-        px[x, y] = (0, 0, 0, 0)
-        queue.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
-    keep_largest(im)
+    keep_largest(clear_outside(im, set(background)))
     return im
 
 
@@ -365,18 +332,7 @@ def small_tree(outdoor):
     (sable, pavés…), il remplace les palmiers 'Y' des pays exotiques."""
     tile = lambda c, r: outdoor.crop((1 + 17 * c, 1 + 17 * r, 17 + 17 * c, 17 + 17 * r)).convert('RGBA')
     grass = {p for c, r in ((6, 0), (6, 1), (6, 2), (7, 1)) for p in tile(c, r).getdata()}
-    tree = tile(8, 0)
-    px = tree.load()
-    todo = deque([(x, y) for x in range(16) for y in (0, 15)] + [(x, y) for y in range(16) for x in (0, 15)])
-    seen = set()
-    while todo:
-        x, y = todo.popleft()
-        if (x, y) in seen or not (0 <= x < 16 and 0 <= y < 16) or px[x, y] not in grass:
-            continue
-        seen.add((x, y))
-        px[x, y] = (0, 0, 0, 0)
-        todo.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
-    return tree
+    return clear_outside(tile(8, 0), grass)
 
 
 def fields(outdoor):
