@@ -2,8 +2,9 @@ import { parseGrid } from './parseGrid.js';
 import { toAirport } from './airportLinks.js';
 
 // Bali — île tropicale (comme Fort-de-France, en plus grand et plus verdoyant), 32 x 26 cases :
-// plages, jungle de palmiers, rizières en terrasses, porte balinaise, cabane de plage, ponton.
-// Légende : voir src/data/tiles.js (≈ = rizière, Y = palmier, = = ponton)
+// plages bordées de palmiers, bosquets d'arbres tropicaux, rizières en terrasses, chemin du ponton à la porte
+// du temple, cabane de plage.
+// Légende : voir src/data/tiles.js (≈ = rizière, ƫ = arbre tropical, Ŧ = grand arbre, Y = palmier, = = ponton)
 export const baliMap = {
   id: 'bali',
   name: 'Bali',
@@ -12,38 +13,38 @@ export const baliMap = {
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 1
     'wwwwwwwwwwwwsssssssswwwwwwwwwwww', // 2
     'wwwwwwwwwsssssssssssssswwwwwwwww', // 3
-    'wwwwwwwssssY........ƚsssswwwwwww', // 4
-    'wwwwww≈≈≈≈≈≈≈≈ƚ.RRR..Yfssswwwwww', // 5
-    'wwwwws≈≈≈≈≈≈≈≈Y.WWW.ƚY.ƚssswwwww', // 6
-    'wwwwss..........WWW......ssswwww', // 7
-    'wwwwss≈≈≈≈≈≈≈≈......ƚYf.f.sswwww', // 8
-    'wwwssf≈≈≈≈≈≈≈≈........ƚ.YY.sswww', // 9
-    'wwwss...Yƚƚ.YYssss.ƚ...Yƚ..sswww', // 10
-    'wwwss.....f.ƚ.ssss....ƚ...Ysswww', // 11
-    'wwwssYYY.Y..Y.ssssƚ...Y....sswww', // 12
-    'wwwssY.Yssssssssssƚ...Y....sswww', // 13
-    'wwwssf...Y...fssss....Y....sswww', // 14
-    'wwwss.ƚY.ƚ....ssssssssssss.sswww', // 15
-    'wwwwss....ƚ...ssssff.Y.Yf.sswwww', // 16
-    'wwwwsss..Y..ƚfssssfƚ.Yssssssswww', // 17
-    'wwwwwsssƚ.....ssssƚ.Y.ssssssswww', // 18
-    'wwwwwwsssY.Y..ssssf...ssRRRsswww', // 19
-    'wwwwwwwssss...ssssƚ..sssWWWsswww', // 20
-    'wwwwwwwwwsssssssssssssssWDWsswww', // 21
-    'wwwwwwwwwwwwsssssssswwssssssswww', // 22
-    'wwwwwwwwwwwwwww==wwwwwwwwwwwwwww', // 23
+    'wwwwwwwsY..........f...Yswwwwwww', // 4
+    'wwwwwwss.......RRR......sswwwwww', // 5  porte du temple balinais
+    'wwwwwss≈≈≈≈≈≈ƨ.WWW.ƨ.....sswwwww', // 6  rizières en terrasses
+    'wwwwss.≈≈≈≈≈≈..WWW........Yswwww', // 7
+    'wwwwss.........ççç......ƫƫsswwww', // 8  chemin du ponton au temple, jungle
+    'wwwwsY.≈≈≈≈≈≈f.ççç..ƫƫ..ƫƫsswwww', // 9
+    'wwwwss.≈≈≈≈≈≈..ççç..ƫƫ....sswwww', // 10
+    'wwwwss........ƨççç....ƨ...sswwww', // 11
+    'wwwwss..ƫƫ.....ççç.....ƫƫ.Yswwww', // 12
+    'wwwwss..ƫƫ.....ççç.ŦŦŦ.ƫƫ.sswwww', // 13
+    'wwwwss.f....ƫƫ.ççç.ŦŦŦ....sswwww', // 14
+    'wwwwsY......ƫƫ.ççç.ŦŦŦ...fsswwww', // 15
+    'wwwwss..ĥĥĥĥ...ççç.ŦŦŦ....sswwww', // 16
+    'wwwwssƫƫĥĥĥĥ...ççç....RRR.sswwww', // 17  cabane de plage
+    'wwwwssƫƫ.....f.çççƨ...WWW.sswwww', // 18
+    'wwwwwss...ƨ....ççç....WDWsswwwww', // 19
+    'wwwwwwss.......çççççççççYswwwwww', // 20
+    'wwwwwwwwsssssssssssssssswwwwwwww', // 21
+    'wwwwwwwwwwwsssssssssswwwwwwwwwww', // 22
+    'wwwwwwwwwwwwwww==wwwwwwwwwwwwwww', // 23  ponton (retour à l'aéroport)
     'wwwwwwwwwwwwwww==wwwwwwwwwwwwwww', // 24
     'wwwwwwwwwwwwwww==wwwwwwwwwwwwwww', // 25
   ]),
   doors: [
-    { x: 25, y: 21, interior: 'baliCabane' },    // la cabane près de la mer
+    { x: 23, y: 19, interior: 'baliCabane' },    // la cabane près de la mer
   ],
   buildings: [
-    { type: 'baliGate', x: 16, y: 5 },
-    { type: 'beachHut', x: 24, y: 19 },
+    { type: 'baliGate', x: 15, y: 5 },
+    { type: 'beachHut', x: 22, y: 17 },
   ],
   objects: [
-    ...[16, 17, 18].map((x) => ({ x, y: 7, dialogue: ['[Texte provisoire] Une porte de temple balinaise, ornée d\'offrandes fleuries.'] })),
+    ...[15, 16, 17].map((x) => ({ x, y: 7, dialogue: ['[Texte provisoire] Une porte de temple balinaise, ornée d\'offrandes fleuries.'] })),
   ],
   // Bout du ponton : retour à l'aéroport.
   triggers: [toAirport(15, 25), toAirport(16, 25)],
