@@ -33,7 +33,7 @@ On commence par une seule ville jouable, puis on étend à une petite région.
 - Interface (scripts/build_ds_ui.py -> public/assets/ui/, voir src/art/uiIcons.js) : icônes d'objets et bulles
   d'émotion de HeartGold/SoulSilver (sac, objet reçu, étape `emote` des scénettes), cartes postales de la carte
   du voyage tirées des illustrations de lieux de Johto. Mont Chimnée (Rubis/Saphir) : la gare du téléphérique sert
-  de ferme à M. Bouly (scripts/extract_rs_buildings.py).
+  de ferme à M. Bouly ; caisses du marché de Slateport dans la cabane de pêche (scripts/extract_rs_buildings.py).
 
 ## Structure
 - src/scenes/ : les scènes Phaser (ville, intérieurs, combat).

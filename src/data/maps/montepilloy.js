@@ -5,12 +5,12 @@ import { FLAGS, ITEMS } from '../story.js';
 // du Prytanée au nord, de Saint-Ay au sud) et deux chemins de terre est-ouest ; la maison de la famille (toit
 // rouge) et celle de la voisine (toit vert) ; les ruines du château à l'ouest (donjon éventré, courtine percée
 // d'une brèche qu'on peut franchir) ; l'école (auvent vert) ; le puits et une petite mare au milieu du village ;
-// à l'est, la ferme de M. Bouly (hangar au toit orange de Rubis/Saphir, tonneaux, tracteur, barrière en rondins)
-// entourée de champs de blé et d'un champ labouré ; au sud-ouest, la prairie et l'arbre où le chat de Jean se
-// cache. Ceinture d'arbres.
-// Légende : voir src/data/tiles.js (ç = chemin de terre, U = puits, ~ = mare, O = tonneau, ʬ = blé, ʭ = terre
-// labourée, ł = barrière en rondins, T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes,
-// S = panneau, M = boîte aux lettres, R / W / D = toit, mur, porte des bâtiments ; les ruines sont des R / W)
+// à l'est, la ferme de M. Bouly (hangar au toit orange de Rubis/Saphir, tonneaux, tracteur) entourée de champs
+// de blé et d'une clôture blanche, ouverte sur le chemin ; au sud-ouest, la prairie aux hautes herbes éparses et
+// l'arbre où le chat de Jean se cache. Ceinture d'arbres.
+// Légende : voir src/data/tiles.js (ç = chemin de terre, U = puits, ~ = mare, O = tonneau, ʬ = blé, F = clôture,
+// T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes, S = panneau, M = boîte aux lettres,
+// R / W / D = toit, mur, porte des bâtiments ; les ruines sont des R / W)
 export const montepilloyMap = {
   id: 'montepilloy',
   name: 'Montépilloy',
@@ -23,20 +23,20 @@ export const montepilloyMap = {
     'TT..WWWWW.fff.çç.ff.WWWWW.....ʬʬʬʬTT', // 5
     'TT..WDWWWMfff.çç...MWDWWW.....ʬʬʬʬTT', // 6
     'TT.ççççççççççççççççççççççççç......TT', // 7
-    'TT............çç..................TT', // 8
-    'TTRR........U.çç~~~~...łłłłłł.ʬʬʬʬTT', // 9
-    'TTRR..R.......çç~~~~f.........ʬʬʬʬTT', // 10
-    'TTRRR.R.RRRRR.çç~~~~.RRRRRROO.ʬʬʬʬTT', // 11
-    'TTRRW.W.RRRRR.ççf..f.RRRRRR.O.ʬʬʬʬTT', // 12
-    'TT.....SWWWWW.çç.....WWWWWW...ʬʬʬʬTT', // 13
+    'TT............çç....FFFFFFFFFFFFFFTT', // 8
+    'TTRR........U.çç~~~~F.........ʬʬʬʬTT', // 9
+    'TTRR..R.......çç~~~~F.........ʬʬʬʬTT', // 10
+    'TTRRR.R.RRRRR.çç~~~~FRRRRRROO.ʬʬʬʬTT', // 11
+    'TTRRW.W.RRRRR.ççf..fFRRRRRR.O.ʬʬʬʬTT', // 12
+    'TT.....SWWWWW.çç....FWWWWWW...ʬʬʬʬTT', // 13
     'TT.R....WDWWW.çç....SWWWDWW...ʬʬʬʬTT', // 14
     'TT.ççççççççççççççççççççççççççç....TT', // 15
-    'TT............çç..............ʭʭʭʭTT', // 16
-    'TTƚ...........çç..ʬʬʬʬʬʬʬʬʬʬʬ.ʭʭʭʭTT', // 17
-    'TT..TT..ĥĥĥĥ..çç..ʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 18
-    'TT..TT..ĥĥĥĥ..ççƀ.ʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 19
-    'TT......ĥĥĥĥ..çç..ʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 20
-    'TT.ƀ...ƚ....ƚ.çç..ʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 21
+    'TT.ĥĥ....ĥ....çç.FFFF.........ʬʬʬʬTT', // 16
+    'TTƚĥ...ĥĥ.ĥĥ..çç.Fʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 17
+    'TT..TT.ĥ....ĥĥçç.Fʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 18
+    'TTĥ.TT..ĥĥ....ççƀFʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 19
+    'TTĥ.......ĥ.ĥ.çç.Fʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 20
+    'TT.ƀ..ĥƚ.ĥ.ĥƚ.çç.Fʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 21
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTTTT', // 23
   ]),

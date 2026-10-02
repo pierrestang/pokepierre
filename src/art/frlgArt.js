@@ -38,6 +38,7 @@ export const FRLG_SHEETS = {
   cabane: 'rs-cabane',
   bigTree: 'rs-bigtree',
   farm: 'rs-farm',
+  crates: 'rs-crates',
 };
 
 export function preloadFrlg(scene) {
@@ -147,7 +148,7 @@ export const FRLG_BUILDINGS = {
 // Cases posées sur l'herbe (le sable voisin reçoit un liseré d'herbe) : herbe, fleurs, buissons, arbres,
 // barrières, panneaux, plateau du mémorial…
 const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'ł', 'T', 'Ŧ', 'ɱ', 'ɲ', 'ν', 'ƨ', 'ƚ', 'h', 'i', 'x', 'F', 'ʬ', 'ʭ', 'ʀ', 'ɓ', 'ɟ', 'ɺ']);
-const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ', 'χ']);
+const SAND_CODES = new Set(['s', 'ʂ', 'ɕ', 'ƥ', 'ʈ', 'ψ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
 const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ', 'U', 'O', 'Q', 'V', 'J',
@@ -559,14 +560,10 @@ export function roadStripTexture(scene, height) {
 
 // ---------- Cabane des cousins ----------
 
-// rs-cabane.png : la cabane perchée de Fortree City (64 x 91 px, l'échelle occupe les colonnes 32 à 47),
-// puis son intérieur (128 x 128 px, 8 x 8 cases : tronc au milieu, un banc de chaque côté, plancher devant).
+// rs-cabane.png : la cabane perchée de Fortree City (64 x 91 px, l'échelle occupe les colonnes 32 à 47). Son
+// intérieur d'origine (à droite sur la planche) n'est plus utilisé : voir art/cabaneRoom.js.
 const CABANE_FRAMES = {
   hut: [0, 0, 64, 91],
-  room: [64, 0, 128, 128],
-  // Dessus des deux bancs, redessinés par-dessus les cousins assis derrière (voir interiors.cabane).
-  benchLeft: [64 + 10, 43, 37, 20],
-  benchRight: [64 + 82, 43, 37, 20],
 };
 export const CABANE_LADDER_X = 32;
 export function cabaneFrame(scene, name) {
@@ -625,7 +622,7 @@ export function tallGrassCoverTexture(scene, code = 'ĥ') {
 // en haut de la pièce, parquet partout ailleurs, noir autour ; les meubles (`decor`) sont des blocs repris
 // tels quels des pièces de frlg-rooms.png, le tapis de sortie est centré sur les cases 'E'.
 // Les cases de meubles sont des 'm' (bloquantes) dans la grille ; ce qui n'a pas d'équivalent Rouge Feu
-// (escaliers, cannes à pêche, caisses de poissons…) reste dessiné dans le code, sur le parquet.
+// (escaliers, râtelier de cannes à pêche…) reste dessiné dans le code, sur le parquet.
 const ROOM = (room, c, r) => ({ sheet: FRLG_SHEETS.rooms, sx: room * 11 * S + c * S, sy: r * S });
 const WALL_TOP = ROOM(1, 8, 0);
 const WALL = ROOM(1, 8, 1);
@@ -668,6 +665,10 @@ export const FRLG_DECOR = {
   shelf: RS(519, 80, 32, 31, 2, 2),        // étagère à livres
   carton: { sprite: { sheet: 'frlg-carton', sx: 0, sy: 0 }, pw: 15, ph: 14, w: 1, h: 1 },        // carton de déménagement
   smallCarton: { sprite: { sheet: 'frlg-carton', sx: 15, sy: 0 }, pw: 11, ph: 9, w: 1, h: 1 },   // petit carton (sur un meuble)
+  // Caisses en bois du marché de Slateport (rs-crates.png, scripts/extract_rs_buildings.py).
+  crate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 0, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },
+  fishCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 15, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },
+  giveCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 30, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },   // « À DONNER »
 };
 
 // Cartons de déménagement, dessinés au pixel près dans les couleurs du carton de Rouge Feu :

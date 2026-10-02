@@ -1624,7 +1624,8 @@ function deckchair(g, px, py, x, y) {
   rect(g, 0x6c5030, px + 4, py + 8, 8, 1);                             // pliure du dossier
 }
 
-// Cabane de pêche : râtelier de cannes à pêche contre le mur, caisses de poissons, caisse « À DONNER ».
+// Cabane de pêche : socle du râtelier contre le mur et épuisette (les cannes sont des icônes de HeartGold,
+// voir art/uiIcons.js ROD_DECALS ; les caisses viennent de Rubis/Saphir, voir frlgArt.js FRLG_DECOR).
 // Dessins au pixel près, contour sombre comme les meubles de Rouge Feu.
 const HUT_C = {
   k: 0x383840, W: 0xc89058, w: 0x9c6834, D: 0x6c4424, d: 0x4c3018,
@@ -1634,35 +1635,6 @@ function pixelArt(g, rows, px, py) {
   rows.forEach((row, ry) => [...row].forEach((c, rx) => {
     if (c !== '.') rect(g, HUT_C[c], px + rx, py + ry, 1, 1);
   }));
-}
-
-// Canne à pêche en bambou, contour sombre comme les objets de Rouge Feu : pied en (bx, by), `h` px de haut,
-// penchée d'un pixel tous les 6 px vers `lean` (1 : droite, -1 : gauche). Poignée rouge, moulinet, scion fin.
-export function fishingRod(g, bx, by, h, lean = 1) {
-  const K = 0x303038;
-  const xAt = (i) => bx + lean * Math.floor(i / 6);
-  const tip = 4;                                                       // scion : fin, sans contour
-  for (let i = 0; i < h - tip; i++) {                                  // contour
-    rect(g, K, xAt(i) - 1, by - i, 3, 1);
-  }
-  rect(g, K, xAt(0) - 1, by + 1, 3, 1);
-  for (let i = 0; i < h - tip; i++) {                                  // brin : bambou et ses nœuds
-    const c = i < 6 ? (i === 0 || i === 5 ? 0x802020 : 0xd04838) : (i - 6) % 5 === 4 ? 0x7c5028 : 0xc89050;
-    rect(g, c, xAt(i), by - i, 1, 1);
-  }
-  for (let i = h - tip; i < h; i++) rect(g, 0x585860, xAt(i), by - i, 1, 1);
-  const rx = xAt(8) - lean * 3 - (lean < 0 ? 1 : 0);                   // moulinet, sur le côté
-  rect(g, K, rx, by - 10, 3, 3);
-  rect(g, 0xd0d8e0, rx + 1, by - 9, 1, 1);
-}
-
-// Cannes du râtelier (au-dessus du socle, voir fishingRods) : trois, puis celle que Papa garde.
-const RACK_RODS = [[3, 26, 1], [9, 22, 1], [19, 24, 1]];
-export function drawRackRods(g, px, py, count) {
-  const base = py + 8;
-  for (const [bx, h, lean] of RACK_RODS.slice(0, count)) fishingRod(g, px + bx, base + 2, h, lean);
-  pixelArt(g, ROD_STAND, px, base);                                    // socle par-dessus les pieds des cannes
-  pixelArt(g, ROD_STAND, px + S, base);
 }
 
 // Tête d'épuisette : cercle et filet.
@@ -1691,7 +1663,7 @@ function fishingRods(g, px, py, x, y) {
   g.fillStyle(0x000000, 0.2);
   g.fillRect(px + 1, py + 15, 15, 1);
   const base = py + 8;
-  // Les cannes sont posées par-dessus, selon l'histoire (décor `rodsOnRack`).
+  // Les cannes sont posées par-dessus, selon l'histoire (décor `rodsOnRack`, voir ROD_DECALS).
   if (x % 2 === 1) {
     // Épuisette posée contre le mur : manche et filet.
     rect(g, 0x383840, px + 10, py - 13, 1, 23);
@@ -1701,39 +1673,9 @@ function fishingRods(g, px, py, x, y) {
   pixelArt(g, ROD_STAND, px, base);
 }
 
-// Caisse de poissons à claire-voie, vue de haut et de face : poissons argentés dans la caisse.
-const FISH_CRATE = [
-  '.kkkkkkkkkkkkkk.',
-  'kWWWWWWWWWWWWWWk',
-  'kWdFFFfedFFFFedk',
-  'kWdfFFFFdfFFFFdk',
-  'kWFFFFedFFFfddWk',
-  'kkkkkkkkkkkkkkkk',
-  'kWWWWWWWWWWWWWWk',
-  'kwwwwwwwwwwwwwwk',
-  'kdkdddddddddkddk',
-  'kWWWWWWWWWWWWWWk',
-  'kwwwwwwwwwwwwwwk',
-  'kDDDDDDDDDDDDDDk',
-  '.kkkkkkkkkkkkkk.',
-];
-function fishCrate(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 2, py + 15, 14, 1);
-  pixelArt(g, FISH_CRATE, px, py + 2);
-}
-
-// Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene) :
-// cannes à pêche qui dépassent de la caisse « À DONNER » (`count` : 1 ou 2), case (x, y) en pixels px, py.
+// Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene), case (x, y)
+// en pixels px, py. Les cannes à pêche sont des images à part (voir art/uiIcons.js ROD_DECALS).
 const DECALS = {
-  rodsInCrate(g, px, py, { count = 2 } = {}) {
-    const rods = [[5, 14, -1], [10, 17, 1]].slice(0, count);
-    for (const [bx, h, lean] of rods) fishingRod(g, px + bx, py + 6, h, lean);
-  },
-  rodsOnRack(g, px, py, { count = 3 } = {}) {
-    drawRackRods(g, px, py, count);
-  },
   // Vieille corde enroulée, cachée dans les hautes herbes (Saint-Ay).
   rope(g, px, py) {
     drawRope(g, px, py);
@@ -1893,31 +1835,6 @@ function railEmbankment(g, px, py, x, y, at) {
   }
   if (at(x, y - 1) !== 'ʕ') { rect(g, 0x9c9c94, px, py, S, 3); rect(g, 0xc8c8c0, px, py, S, 1); }
 }
-
-// Caisse « À DONNER » : caisse vide avec son étiquette de papier (texte griffonné au feutre rouge).
-const GIVE_CRATE = [
-  '.kkkkkkkkkkkkkk.',
-  'kWWWWWWWWWWWWWWk',
-  'kWddddddddddddWk',
-  'kWddddddddddddWk',
-  'kkkkkkkkkkkkkkkk',
-  'kWWWkkkkkkkkWWWk',
-  'kwwwkPPPPPPkwwwk',
-  'kdddkPRRpRPkdddk',
-  'kWWWkPpRRRPkWWWk',
-  'kwwwkPPPPPPkwwwk',
-  'kDDDkkkkkkkkDDDk',
-  'kDDDDDDDDDDDDDDk',
-  '.kkkkkkkkkkkkkk.',
-];
-function giveCrate(g, px, py, x, y) {
-  floor(g, px, py, x, y);
-  g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 2, py + 15, 14, 1);
-  pixelArt(g, GIVE_CRATE, px, py + 2);
-}
-
-
 
 // Sol sous un palmier (le palmier lui-même est dessiné dans la passe des grands objets, drawTall).
 // Mémorial de l'Anse Caffard (Cap 110, Martinique) : six silhouettes de pierre blanche, tête baissée,
@@ -2465,8 +2382,6 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case 'ƥ': return parasol(g, px, py, x, y);
     case 'ʈ': return deckchair(g, px, py, x, y);
     case 'ψ': return fishingRods(g, px, py, x, y);
-    case 'χ': return fishCrate(g, px, py, x, y);
-    case 'ʁ': return giveCrate(g, px, py, x, y);
     case 'ʀ': return planksPile(g, px, py);
     case 'ʕ': return railEmbankment(g, px, py, x, y, at);
     case 'ɓ': return bollard(g, px, py);

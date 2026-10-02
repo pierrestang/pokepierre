@@ -51,3 +51,17 @@ export function preloadUiIcons(scene) {
   scene.load.atlas(POSTCARDS, `${base}postcards.png`, `${base}postcards.json`);
   scene.load.spritesheet(EMOTES, `${base}emotes.png`, { frameWidth: 16, frameHeight: 16 });
 }
+
+// Cannes à pêche de la cabane de Papa (décors `rodsOnRack` et `rodsInCrate`, voir interiors.ffHut), en icônes
+// de 32 x 32 : [image, x, y, hauteur gardée] en pixels depuis le coin de la case du décor. Le bas des icônes est
+// coupé pour que les cannes entrent dans le socle du râtelier ou dans la caisse.
+//   Râtelier : les trois cannes (Méga, Super, Vieille), puis la Méga Canne que Papa garde.
+//   Caisse « À DONNER » : la Super Canne (celle qu'on offre au pêcheur) et la Vieille canne, puis la Vieille seule.
+export const ROD_DECALS = {
+  rodsOnRack: ({ count = 3 }) => (count === 3
+    ? [['vieille-canne', 7, -16, 26], ['super-canne', 1, -16, 26], ['mega-canne', -5, -16, 26]]
+    : [['mega-canne', -2, -16, 26]]),
+  rodsInCrate: ({ count = 2 }) => (count === 2
+    ? [['super-canne', -4, -17, 20], ['vieille-canne', 2, -17, 20]]
+    : [['vieille-canne', -1, -17, 20]]),
+};

@@ -3,7 +3,7 @@ import { FLAGS, ITEMS, QUALITIES, ROLES } from '../story.js';
 import {
   BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT, CABANE_FETE, FELIX_AT_CABANE,
 } from '../saintAyStory.js';
-import { FRLG_SHEETS, cabaneFrame } from '../../art/frlgArt.js';
+import { CABANE_ROOM, CABANE_TABLE, TABLE_Y, TABLE_H, ensureCabaneTextures } from '../../art/cabaneRoom.js';
 import {
   LEO_CALLED, OUSMANE_JOINS, LEO_PLAN, GIRLS_JOIN, PUB_A_BAR, PUB_B_TABLE, PUB_B_OTHER, ASYLUM_ENTER, ASYLUM_DANCE,
   LIBRARY, EXAM,
@@ -169,15 +169,18 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXX',
       'XXXXXXX',
-      'ψψoχχoo',
+      'ψψommoo',
       'oooooom',
-      'ʁooooom',
+      'mooooom',
       'oooEooo',
     ]),
     decor: [
       { kind: 'window', x: 2, y: 0 },
       { kind: 'notice', x: 4, y: 0 },
       { kind: 'plant', x: 6, y: 3 },
+      { kind: 'fishCrate', x: 3, y: 2 },
+      { kind: 'fishCrate', x: 4, y: 2 },
+      { kind: 'giveCrate', x: 0, y: 4 },
     ],
     // Cannes du râtelier (trois, puis celle que Papa garde) et cannes jetées dans la caisse « À DONNER »
     // (deux, puis une fois que tu en as pris une).
@@ -377,33 +380,34 @@ export const interiors = {
     events: [{ on: 'enter', unlessFlags: [FLAGS.maisonFelixVisitee], steps: CABANE_PLAN }],
   },
 
-  // Saint-Ay — la cabane des cousins (intérieur d'une cabane de Fortree City, image d'un seul tenant) : murs
-  // de planches, tronc au milieu, un banc de chaque côté. Felix, Joshua et Yanis sont assis derrière les bancs
-  // (le dessus des bancs est redessiné par-dessus eux) ; on leur parle par-dessus le banc.
+  // Saint-Ay — la cabane des cousins (dessinée dans le code, voir art/cabaneRoom.js) : mur de planches avec
+  // fenêtre, fanions et plan punaisé, coffre au trésor ; Felix, Joshua et Yanis assis sur des coussins derrière
+  // une table basse en planches (la table est redessinée par-dessus eux) ; on leur parle par-dessus la table.
   cabane: {
     name: 'Cabane',
-    backdrop: { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'room') },
+    backdrop: { sheet: CABANE_ROOM, frame: (scene) => { ensureCabaneTextures(scene); return '__BASE'; } },
     overlays: [
-      { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'benchLeft'), x: 10, y: 43, h: 20 },
-      { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'benchRight'), x: 82, y: 43, h: 20 },
+      { sheet: CABANE_TABLE, frame: (scene) => { ensureCabaneTextures(scene); return '__BASE'; }, x: 0, y: TABLE_Y, h: TABLE_H },
     ],
     grid: parseGrid([
       'XXXXXXXX',
-      'XXXmmXXX',   // murs, tronc
-      'XoommooX',   // places derrière les bancs
-      'mmmmmmmm',   // bancs et pied du tronc
+      'XXXXXXXX',   // mur du fond (fenêtre, fanions, plan)
+      'XoommooX',   // coussins derrière la table, coffre au milieu
+      'mmmmmmmm',   // table basse
+      'ooooooom',   // caisse de BD
       'oooooooo',
       'oooooooo',
-      'oooooooo',
-      'oooEEooo',   // tapis de sortie (l'échelle)
+      'oooEEooo',   // trappe de l'échelle (sortie)
     ]),
     spawn: { x: 3, y: 6, facing: 'up' },
     objects: [
       { x: 1, y: 3, script: FELIX_AT_CABANE },
       { x: 5, y: 3, script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe.'] }] },
       { x: 6, y: 3, script: [{ speaker: 'Yanis', say: ['On a vraiment un mot de passe ?'] }] },
-      { x: 3, y: 2, dialogue: ['Le tronc du grand arbre traverse la cabane.'] },
-      { x: 4, y: 2, dialogue: ['Le tronc du grand arbre traverse la cabane.'] },
+      ...[2, 3, 4].map((x) => ({ x, y: 3, dialogue: ['Sur la table : un jeu de cartes, une lampe de poche et le plan de la cabane.'] })),
+      { x: 0, y: 3, dialogue: ['La table du QG : une grande planche posée sur deux caisses.'] },
+      { x: 7, y: 3, dialogue: ['La table du QG : une grande planche posée sur deux caisses.'] },
+      { x: 7, y: 4, dialogue: ['Une caisse pleine de BD, cornées à force d\'être lues.'] },
     ],
     npcs: [
       { id: 'felix-cabane', name: 'Felix', x: 1, y: 2, facing: 'down', color: 0x9060d0, still: true, ifFlags: [FLAGS.cabaneFinie] },

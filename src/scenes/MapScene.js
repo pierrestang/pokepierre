@@ -15,7 +15,7 @@ import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
 import { visitedFlag } from '../systems/RegionMap.js';
 import { items } from '../systems/items.js';
-import { EMOTES, EMOTE_FRAMES, itemIcon } from '../art/uiIcons.js';
+import { EMOTES, EMOTE_FRAMES, ITEM_ICONS, ROD_DECALS, itemIcon } from '../art/uiIcons.js';
 import { savePosition } from '../systems/save.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
@@ -287,6 +287,16 @@ export class MapScene extends Phaser.Scene {
       // `above` : au-dessus des personnages (ex. tablier d'un pont sous lequel on passe).
       // `floor` : au sol, sous tout le monde (ex. piste de danse).
       const depth = data.above ? 45 : data.floor ? 1.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000;
+      const icons = ROD_DECALS[data.kind]?.(data);
+      if (icons) {
+        // Décor en images (cannes à pêche en icônes) : un conteneur posé sur la case.
+        const graphics = this.add.container(data.x * TILE_SIZE, data.y * TILE_SIZE).setDepth(depth);
+        for (const [frame, dx, dy, keep] of icons) {
+          graphics.add(this.add.image(dx, dy, ITEM_ICONS, frame).setOrigin(0).setCrop(0, 0, 32, keep));
+        }
+        this.decals.push({ data, graphics });
+        continue;
+      }
       const graphics = this.add.graphics().setDepth(depth);
       drawDecal(graphics, data.kind, data.x * TILE_SIZE, data.y * TILE_SIZE, data);
       this.decals.push({ data, graphics });
