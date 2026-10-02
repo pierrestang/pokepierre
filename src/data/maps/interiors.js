@@ -485,6 +485,56 @@ export const interiors = {
 
   // Montépilloy — la maison de la famille : Maman annonce le premier jour d'école.
   // Montépilloy — la maison de la famille, façon Rouge Feu : cuisine, télé, table, plantes.
+  // Montépilloy — la grange de M. Bouly, façon Rouge Feu : établi (longue table de Rubis/Saphir) sous la
+  // fenêtre, caisses de légumes, d'oranges et de tomates et une jarre du marché de Slateport (rs-crates.png),
+  // tonneaux (dessinés dans le code). La pièce de tracteur est au fond d'un des tonneaux (une fois que M. Bouly
+  // t'en a parlé).
+  boulyBarn: {
+    name: 'Grange de M. Bouly',
+    frlg: true,
+    grid: parseGrid([
+      'XXXXXXXXX',
+      'XXXXXXXXX',
+      'mmmoommOO',   // établi, caisses, tonneaux
+      'ooooooooO',
+      'Ooooooooo',
+      'Oooooommo',   // caisse de tomates, jarre
+      'ooooooooo',
+      'ooooEoooo',
+    ]),
+    decor: [
+      { kind: 'window', x: 3, y: 0 },
+      { kind: 'notice', x: 6, y: 0 },
+      { kind: 'longTable', x: 0, y: 2 },
+      { kind: 'greenCrate', x: 5, y: 2 },
+      { kind: 'orangeCrate', x: 6, y: 2 },
+      { kind: 'tomatoCrate', x: 6, y: 5 },
+      { kind: 'jar', x: 7, y: 5 },
+    ],
+    spawn: { x: 4, y: 6, facing: 'up' },
+    objects: [
+      ...[0, 1, 2].map((x) => ({ x, y: 2, dialogue: ["L'établi de M. Bouly : des outils, des boulons… pas la pièce qu'il lui faut."] })),
+      { x: 5, y: 2, dialogue: ['Une caisse de salades du potager.'] },
+      { x: 6, y: 2, dialogue: ["Une caisse d'oranges."] },
+      { x: 6, y: 5, dialogue: ['Une caisse de tomates bien mûres.'] },
+      { x: 7, y: 5, dialogue: ['Une jarre de miel, bien fermée.'] },
+      { x: 7, y: 2, dialogue: ['Un tonneau plein de grain.'] },
+      { x: 8, y: 2, dialogue: ['Un tonneau plein de grain.'] },
+      { x: 0, y: 4, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
+      { x: 0, y: 5, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
+      // Le tonneau qui cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
+      { x: 8, y: 3, unlessFlags: [FLAGS.boulyDemande], dialogue: ['[Texte provisoire] Un vieux tonneau, plein de bric-à-brac.'] },
+      {
+        x: 8, y: 3,
+        ifFlags: [FLAGS.boulyDemande],
+        dialogue: ['[Texte provisoire] Au fond du tonneau... une pièce de tracteur !'],
+        after: ['[Texte provisoire] Le tonneau est vide.'],
+        item: ITEMS.pieceTracteur,
+        setFlag: FLAGS.pieceTrouvee,
+      },
+    ],
+  },
+
   montHouse: {
     name: 'Maison de Montépilloy',
     frlg: true,

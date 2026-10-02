@@ -1832,10 +1832,9 @@ function drawBarn(g, ox, oy) {
   rect(g, 0xc8a038, ox + 4, oy + 59, 12, 1);
 }
 
-// Tracteur (obstacle 2x2) : vert, grandes roues arrière. `broken` : capot ouvert et fumée.
-// Tracteur vert vu de côté (34 x 30 px), façon Rouge Feu : contour sombre, cabine vitrée sur la grande roue
-// arrière crantée, garde-boue, capot à bande jaune et calandre, phare, pot d'échappement, petite roue avant.
-// En panne : fumée noire et grise qui sort du pot.
+// Tracteur (obstacle 2 x 2) vert vu de côté (34 x 30 px), façon Rouge Feu : contour sombre, cabine vitrée sur la
+// grande roue arrière crantée, garde-boue, capot à bande jaune et calandre, phare, pot d'échappement, petite roue
+// avant.
 const TRACTOR = [
   '...kkkkkkkkkkkkkk.................',
   '...kGGGGGGGGGGGGk.................',
@@ -1872,16 +1871,10 @@ const TRACTOR_COLORS = {
   k: 0x282c28, G: 0x78c860, g: 0x409838, d: 0x206028, y: 0xe8c040, Y: 0xf8e890,
   b: 0x78a8d8, B: 0xc0e0f8, s: 0x304060, m: 0x606068, t: 0x38383c, T: 0x686870,
 };
-function drawTractor(g, ox, oy, { broken = false } = {}) {
+function drawTractor(g, ox, oy) {
   g.fillStyle(0x000000, 0.2);
   g.fillRect(ox + 1, oy + 30, 31, 2);                       // ombre
   sprite(g, TRACTOR, TRACTOR_COLORS, ox - 1, oy + 2);
-  if (broken) {
-    rect(g, 0x505058, ox + 21, oy - 1, 5, 4);                // fumée
-    rect(g, 0x9c9ca4, ox + 23, oy - 5, 6, 5);
-    rect(g, 0xc8c8d0, ox + 26, oy - 10, 5, 5);
-    rect(g, 0xe0e0e8, ox + 24, oy - 14, 4, 4);
-  }
 }
 
 // Voilier vu de dessus, 3x2 cases, proue vers l'est, amarré contre le ponton (à l'ouest).

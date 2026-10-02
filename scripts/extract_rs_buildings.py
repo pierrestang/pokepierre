@@ -8,7 +8,8 @@ uniquement), vers public/assets/tiles/ (voir FRLG_SHEETS, FRLG_BUILDINGS et FRLG
 
   rs-crates.png : caisses en bois du marché de Slateport (assets-source/rs/backgrounds-slateport_city.png),
     15 x 16 px chacune, côte à côte : caisse vide, caisse de poissons (trois poissons argentés dessinés dedans),
-    caisse « À DONNER » (la vide, avec une étiquette blanche griffonnée de rouge).
+    caisse « À DONNER » (la vide, avec une étiquette blanche griffonnée de rouge), puis caisses de légumes verts,
+    d'oranges, de tomates et une jarre (voir PRODUCE).
 
 Usage : python3 scripts/extract_rs_buildings.py
 """
@@ -29,6 +30,8 @@ def ash(p):
 SLATEPORT = ROOT / 'assets-source' / 'rs' / 'backgrounds-slateport_city.png'
 CRATES_OUT = ROOT / 'public' / 'assets' / 'tiles' / 'rs-crates.png'
 EMPTY_CRATE = (103, 584)
+# Étal du marché : caisses de légumes verts, d'oranges, de tomates, et une jarre (pour la grange de M. Bouly).
+PRODUCE = [(87, 584), (87, 600), (71, 616), (72, 584)]
 CRATE_W, CRATE_H = 15, 16
 
 
@@ -70,8 +73,9 @@ def build_crates():
             gx[i, j] = (64, 48, 32, 255) if i in (4, 10) or j in (9, 13) else (248, 248, 240, 255)
     for i in range(6, 9):
         gx[i, 11] = (216, 56, 40, 255)
-    out = Image.new('RGBA', (CRATE_W * 3, CRATE_H), (0, 0, 0, 0))
-    for k, c in enumerate((empty, fish, give)):
+    produce = [crate(im, *pos) for pos in PRODUCE]
+    out = Image.new('RGBA', (CRATE_W * (3 + len(produce)), CRATE_H), (0, 0, 0, 0))
+    for k, c in enumerate((empty, fish, give, *produce)):
         out.paste(c, (k * CRATE_W, 0))
     out.save(CRATES_OUT)
     print('ok ->', CRATES_OUT.relative_to(ROOT))

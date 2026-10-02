@@ -674,6 +674,10 @@ export const FRLG_DECOR = {
   crate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 0, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },
   fishCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 15, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },
   giveCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 30, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },   // « À DONNER »
+  greenCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 45, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },  // légumes verts
+  orangeCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 60, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 }, // oranges
+  tomatoCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 75, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 }, // tomates
+  jar: { sprite: { sheet: FRLG_SHEETS.crates, sx: 90, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },         // jarre
 };
 
 // Cartons de déménagement, dessinés au pixel près dans les couleurs du carton de Rouge Feu :

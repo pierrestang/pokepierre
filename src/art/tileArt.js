@@ -310,7 +310,7 @@ const BARREL_COLORS = {
   k: 0x382818, D: 0x6c4020, w: 0x985c28, W: 0xb87838, L: 0xd8a060, d: 0x54341c, H: 0xb0b0b8, h: 0x707078,
 };
 function barrel(g, px, py, x, y, at) {
-  grass(g, px, py, x, y, at);
+  if (!groundProvided) grass(g, px, py, x, y, at);
   g.fillStyle(0x000000, 0.2);
   g.fillRect(px + 2, py + 15, 13, 1);
   sprite(g, BARREL, BARREL_COLORS, px, py);
