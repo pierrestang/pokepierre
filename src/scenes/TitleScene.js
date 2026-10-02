@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { MAPS, START_MAP } from '../data/maps/index.js';
 import { renderMap } from '../systems/tileRenderer.js';
 import { startSeaShimmer, startFallingLeaves } from '../systems/effects.js';
-import { FONT } from '../systems/screen.js';
+import { FONT, touchScreen } from '../systems/screen.js';
 import { FRLG_FONT, frlgText } from '../systems/frlgFont.js';
 import { FLAGS } from '../data/story.js';
 import { flags } from '../systems/flags.js';
@@ -43,7 +43,7 @@ export class TitleScene extends Phaser.Scene {
     }).setOrigin(0.5);
     this.panel = this.add.graphics();
     this.optionTexts = [];
-    this.hint = this.add.text(0, 0, '↑ ↓ pour choisir · Entrée pour valider', {
+    this.hint = this.add.text(0, 0, touchScreen ? 'Touche une option pour la choisir' : '↑ ↓ pour choisir · Entrée pour valider', {
       fontFamily: FONT, fontSize: '18px', color: '#ffffff', stroke: '#2c3858', strokeThickness: 4,
     }).setOrigin(0.5);
     this.tweens.add({ targets: this.hint, alpha: 0.35, duration: 700, yoyo: true, repeat: -1 });
@@ -131,10 +131,12 @@ export class TitleScene extends Phaser.Scene {
     const cx = width / 2;
     this.shade.clear();
     this.shade.fillStyle(0x10182c, 0.35).fillRect(0, 0, width, height);
-    this.title.setPosition(cx, height * 0.24);
-    this.subtitle.setPosition(cx, height * 0.24 + 80);
+    // Titre à la largeur de l'écran (téléphone en portrait).
+    const titleSize = Math.min(96, Math.floor(width * 0.16), Math.floor(height * 0.17));
+    this.title.setFontSize(titleSize).setStroke('#2c3858', titleSize / 8).setPosition(cx, height * 0.24);
+    this.subtitle.setFontSize(Math.min(26, Math.floor(width * 0.058))).setPosition(cx, height * 0.24 + titleSize * 0.83);
 
-    const scale = height < 600 ? 2 : 3;
+    const scale = height < 600 || width < 380 ? 2 : 3;
     const lineH = 17 * scale;
     const top = height * 0.52;
     const panelW = Math.min(width - 32, 480);
