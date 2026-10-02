@@ -20,21 +20,21 @@ export const hanoiMap = {
   id: 'hanoi',
   name: 'Hanoï',
   grid: parseGrid([
-    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // 0  bambous : bord de l'écran
-    'ɔɔRRRRRRRRRɔɔRRRRRɔɔRRRRRR.x...ɔ', // 1  maisons-tubes, agence de voyage
-    'ɔɔRRRRRRRRRYɔRRRRRYɔRRRRRR...Y.ɔ', // 2
-    'ɔɔWWWWWWWWWɔɔWWWWWɔɔWWWWWW.x...ɔ', // 3
-    'ɔɔWDWWDWWDWɔɔWDWWWɔɔWDWWDW....xɔ', // 4  portes (ta maison : 2e à gauche)
-    'ɔnɔɔɔɔɔɔɔɔɔnɔɔɔɔɔtɔnɔɔɔɔɔɔnɔyyɔɔ', // 5  lanternes, stand, scooters
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  buissons : bord de l'écran
+    'ɔɔRRRRRRRRRɔɔRRRRRɔɔRRRRRR.ƫƫ..ɔ', // 1  maisons-tubes, agence de voyage
+    'ɔɔRRRRRRRRRYɔRRRRRYɔRRRRRR.ƫƫ.Yɔ', // 2
+    'ɔɔWWWWWWWWWɔɔWWWWWɔɔWWWWWWf...fɔ', // 3
+    'ɔɔWDWWDWWDWɔɔWDWWWɔɔWDWWDW..f..ɔ', // 4  portes (ta maison : 2e à gauche)
+    'ɔnɔɔɔɔɔɔɔɔɔnɔɔɔɔɔtɔnɔɔɔɔɔɔnɔɔɔɔɔ', // 5  lanternes, stand, scooters
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  rue (vers l'aéroport)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
     'ɔ<ɔɔnɔɔɔɔɔɔɔnɔɔɔɔɔɔɔnɔɔɔɔɔɔɔnɔ>ɔ', // 8  panneaux aéroport
-    '.Y.............Y....RRRRR....x.ɔ', // 9  lac Hoàn Kiếm, pagode
-    '..~~~~~r~~~~k~~.x.Y.RRRRR.....xɔ', // 10
+    '.Y.............Y....RRRRR....ƚ.ɔ', // 9  lac Hoàn Kiếm, pagode
+    '..~~~~~r~~~~k~~.ƚ.Y.RRRRR.....ƚɔ', // 10
     '..~~k~~r~~RR~~~.....RRRRR..v...ɔ', // 11 tour de la Tortue, drapeau
-    '..~~~~~r~~RR~~~..x..WWWWW......ɔ', // 12
-    '..~k~k~r~~~~~~~.....WWDWW....x.ɔ', // 13 porte de la pagode
-    '..~~~~~r~~k~~k~.x..n.....n.....ɔ', // 14
+    '..~~~~~r~~RR~~~..ƚ..WWWWW......ɔ', // 12
+    '..~k~k~r~~~~~~~.....WWDWW....ƚ.ɔ', // 13 porte de la pagode
+    '..~~~~~r~~k~~k~.ƚ..n.....n.....ɔ', // 14
     '.Y.............Y............Y..ɔ', // 15
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
     'ɔɔRRRRRRRRRɔtɔtɔtɔtɔRRRRRRRRRɔɔɔ', // 17 maisons-tubes, marché
@@ -45,7 +45,7 @@ export const hanoiMap = {
     'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 22 rue sud
     'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 23
     'ɔɔɔɔɔɔɔɔɔɔyɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 24
-    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // 25 bambous : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 25 buissons : bord de l'écran
   ]),
   doors: [
     { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
@@ -139,6 +139,6 @@ export const hanoiMap = {
   // Panneaux « Aéroport » à côté des sorties.
   objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
   triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'x', borderSkip: ['ɐ'] },
+  surroundings: { outside, border: 'ƀ', borderSkip: ['ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };
