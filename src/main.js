@@ -31,6 +31,18 @@ const game = new Phaser.Game({
   scene: [BootScene, TitleScene, OverworldScene, InteriorScene, FerryScene, UIScene],
 });
 
+// Téléphone tourné : le navigateur annonce le changement avant d'avoir la nouvelle taille de l'écran (iPhone),
+// et la page peut rester décalée. On la remet en place et on recalcule le cadrage, plusieurs fois le temps que
+// la rotation se termine.
+function refit() {
+  window.scrollTo(0, 0);
+  game.scale.refresh();
+}
+const refitSoon = () => [0, 100, 300, 600, 1000].forEach((ms) => setTimeout(refit, ms));
+window.addEventListener('orientationchange', refitSoon);
+screen.orientation?.addEventListener?.('change', refitSoon);
+window.visualViewport?.addEventListener('resize', refitSoon);
+
 // Accès console en dev (tests manuels) : window.game, game.souvenirs, game.flags, game.items,
 // game.resetSave() pour effacer la sauvegarde (retour à l'écran titre).
 if (import.meta.env.DEV) {

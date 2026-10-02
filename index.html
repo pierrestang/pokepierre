@@ -26,10 +26,12 @@
         --safe-bottom: env(safe-area-inset-bottom, 0px); --safe-left: env(safe-area-inset-left, 0px);
       }
       html, body { margin: 0; height: 100%; background: #000; overflow: hidden; overscroll-behavior: none; }
+      /* Page fixée à l'écran : pas de décalage qui reste après une rotation du téléphone. */
+      body { position: fixed; inset: 0; }
       /* Au doigt : ni défilement, ni zoom, ni sélection, ni menu d'appui long. */
       body { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
         -webkit-tap-highlight-color: transparent; }
-      #game { width: 100vw; height: 100vh; height: 100dvh; }
+      #game { position: absolute; inset: 0; width: 100%; height: 100%; }
       canvas { image-rendering: pixelated; }
     </style>
   </head>
