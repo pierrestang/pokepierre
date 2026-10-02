@@ -560,10 +560,15 @@ export function roadStripTexture(scene, height) {
 
 // ---------- Cabane des cousins ----------
 
-// rs-cabane.png : la cabane perchée de Fortree City (64 x 91 px, l'échelle occupe les colonnes 32 à 47). Son
-// intérieur d'origine (à droite sur la planche) n'est plus utilisé : voir art/cabaneRoom.js.
+// rs-cabane.png : la cabane perchée de Fortree City (64 x 91 px, l'échelle occupe les colonnes 32 à 47), puis
+// son intérieur (128 x 128 px, 8 x 8 cases) : la pièce de Fortree sans tronc, meublée d'objets de Rubis/Saphir
+// (voir scripts/build_frlg_tiles.py, CABANE_FURNITURE).
 const CABANE_FRAMES = {
   hut: [0, 0, 64, 91],
+  room: [64, 0, 128, 128],
+  // Les deux longues tables, redessinées par-dessus les cousins assis derrière (voir interiors.cabane).
+  tableLeft: [64 + 2, 42, 48, 16],
+  tableRight: [64 + 78, 42, 48, 16],
 };
 export const CABANE_LADDER_X = 32;
 export function cabaneFrame(scene, name) {

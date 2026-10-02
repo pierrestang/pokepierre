@@ -3,7 +3,7 @@ import { FLAGS, ITEMS, QUALITIES, ROLES } from '../story.js';
 import {
   BIRTH, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT, CABANE_FETE, FELIX_AT_CABANE,
 } from '../saintAyStory.js';
-import { CABANE_ROOM, CABANE_TABLE, TABLE_Y, TABLE_H, ensureCabaneTextures } from '../../art/cabaneRoom.js';
+import { FRLG_SHEETS, cabaneFrame } from '../../art/frlgArt.js';
 import {
   LEO_CALLED, OUSMANE_JOINS, LEO_PLAN, GIRLS_JOIN, PUB_A_BAR, PUB_B_TABLE, PUB_B_OTHER, ASYLUM_ENTER, ASYLUM_DANCE,
   LIBRARY, EXAM,
@@ -380,34 +380,39 @@ export const interiors = {
     events: [{ on: 'enter', unlessFlags: [FLAGS.maisonFelixVisitee], steps: CABANE_PLAN }],
   },
 
-  // Saint-Ay — la cabane des cousins (dessinée dans le code, voir art/cabaneRoom.js) : mur de planches avec
-  // fenêtre, fanions et plan punaisé, coffre au trésor ; Felix, Joshua et Yanis assis sur des coussins derrière
-  // une table basse en planches (la table est redessinée par-dessus eux) ; on leur parle par-dessus la table.
+  // Saint-Ay — la cabane des cousins : la pièce de Fortree City sans son tronc, meublée d'objets de Rubis/Saphir
+  // (image d'un seul tenant, voir frlgArt.js CABANE_FRAMES) : commode et plante contre le mur, tableau, deux longues
+  // tables en bois avec des peluches entre elles, tapis, coussins. Felix, Joshua et Yanis sont assis derrière les
+  // tables (redessinées par-dessus eux) ; on leur parle par-dessus la table.
   cabane: {
     name: 'Cabane',
-    backdrop: { sheet: CABANE_ROOM, frame: (scene) => { ensureCabaneTextures(scene); return '__BASE'; } },
+    backdrop: { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'room') },
     overlays: [
-      { sheet: CABANE_TABLE, frame: (scene) => { ensureCabaneTextures(scene); return '__BASE'; }, x: 0, y: TABLE_Y, h: TABLE_H },
+      { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'tableLeft'), x: 2, y: 42, h: 16 },
+      { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'tableRight'), x: 78, y: 42, h: 16 },
     ],
     grid: parseGrid([
       'XXXXXXXX',
-      'XXXXXXXX',   // mur du fond (fenêtre, fanions, plan)
-      'XoommooX',   // coussins derrière la table, coffre au milieu
-      'mmmmmmmm',   // table basse
-      'ooooooom',   // caisse de BD
+      'XXXXXXXX',   // mur du fond (tableau)
+      'XoommooX',   // places derrière les tables ; commode et plante au milieu
+      'mmmmmmmm',   // tables et peluches
       'oooooooo',
+      'moooooom',   // coussins
       'oooooooo',
-      'oooEEooo',   // trappe de l'échelle (sortie)
+      'oooEEooo',   // tapis de sortie (l'échelle)
     ]),
     spawn: { x: 3, y: 6, facing: 'up' },
     objects: [
       { x: 1, y: 3, script: FELIX_AT_CABANE },
       { x: 5, y: 3, script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe.'] }] },
       { x: 6, y: 3, script: [{ speaker: 'Yanis', say: ['On a vraiment un mot de passe ?'] }] },
-      ...[2, 3, 4].map((x) => ({ x, y: 3, dialogue: ['Sur la table : un jeu de cartes, une lampe de poche et le plan de la cabane.'] })),
-      { x: 0, y: 3, dialogue: ['La table du QG : une grande planche posée sur deux caisses.'] },
-      { x: 7, y: 3, dialogue: ['La table du QG : une grande planche posée sur deux caisses.'] },
-      { x: 7, y: 4, dialogue: ['Une caisse pleine de BD, cornées à force d\'être lues.'] },
+      { x: 0, y: 3, dialogue: ['La table du QG des cousins.'] },
+      { x: 2, y: 3, dialogue: ['La table du QG des cousins.'] },
+      { x: 7, y: 3, dialogue: ['La table du QG des cousins.'] },
+      { x: 3, y: 3, dialogue: ['Des peluches de Pokémon, alignées entre les deux tables.'] },
+      { x: 4, y: 3, dialogue: ['Des peluches de Pokémon, alignées entre les deux tables.'] },
+      { x: 0, y: 5, dialogue: ['Un coussin moelleux.'] },
+      { x: 7, y: 5, dialogue: ['Un coussin moelleux.'] },
     ],
     npcs: [
       { id: 'felix-cabane', name: 'Felix', x: 1, y: 2, facing: 'down', color: 0x9060d0, still: true, ifFlags: [FLAGS.cabaneFinie] },
@@ -516,7 +521,7 @@ export const interiors = {
         unlessFlags: [FLAGS.tracteurRepare],
         dialogue: [
           "[Jean - texte provisoire] Salut frérot ! J'ai besoin de toi pour deux choses.",
-          "Notre chat s'est encore sauvé : il doit être perché dans un arbre de la prairie, au sud.",
+          "Notre chat s'est encore sauvé : il doit être perché dans un arbre de la prairie, à l'ouest du village.",
           "Et M. Bouly, à la ferme, a des soucis avec son tracteur. Tu peux aller l'aider ?",
         ],
         after: ['[Jean - texte provisoire] Alors, tu as retrouvé le chat ? Et le tracteur de M. Bouly ?'],

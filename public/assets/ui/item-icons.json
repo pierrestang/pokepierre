@@ -159,6 +159,30 @@
     "w": 32,
     "h": 32
    }
+  },
+  "vieille-canne-petite": {
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "super-canne-petite": {
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "mega-canne-petite": {
+   "frame": {
+    "x": 704,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
   }
  },
  "meta": {

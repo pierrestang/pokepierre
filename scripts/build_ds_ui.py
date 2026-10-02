@@ -4,7 +4,7 @@ personnel uniquement) vers public/assets/ui/.
   item-icons.png + item-icons.json : atlas Phaser des icônes choisies (ICONS ci-dessous), une case de 32 x 32
     par icône, fond transparent. Source : assets-source/ds/hgss-items.png, icônes sur fond blanc ; chacune est
     repérée par sa boîte sur la planche, puis détourée (le blanc relié au bord devient transparent, le
-    blanc à l'intérieur de l'icône reste).
+    blanc à l'intérieur de l'icône reste). Les trois cannes existent aussi en petit (`<nom>-petite`, 14 x 14).
   emotes.png : les 24 bulles d'émotion (3 rangées de 8, 16 x 16 px chacune), fond orange rendu transparent.
     Source : assets-source/ds/hgss-emotions.png. Les bulles vont par deux (deux images d'une animation).
   postcards.png + postcards.json : cartes postales de la carte du voyage, une image de 256 x 160 par ville
@@ -81,6 +81,10 @@ def build_postcards():
     print(f'{len(frames)} cartes postales -> public/assets/ui/postcards.png')
 
 
+SMALL_RODS = ['vieille-canne', 'super-canne', 'mega-canne']
+SMALL_ROD = 14
+
+
 def cut_out(crop):
     """Blanc relié au bord de la case -> transparent."""
     img = crop.convert('RGBA')
@@ -100,13 +104,21 @@ def cut_out(crop):
 
 def build_icons():
     im = Image.open(SRC / 'hgss-items.png').convert('RGB')
-    atlas = Image.new('RGBA', (CELL * len(ICONS), CELL), (0, 0, 0, 0))
+    atlas = Image.new('RGBA', (CELL * (len(ICONS) + len(SMALL_RODS)), CELL), (0, 0, 0, 0))
     frames = {}
     for i, (name, (x, y, w, h)) in enumerate(ICONS.items()):
         icon = cut_out(im.crop((x - 1, y - 1, x + w + 1, y + h + 1)))
         w, h = icon.size
         atlas.paste(icon, (i * CELL + (CELL - w) // 2, (CELL - h) // 2), icon)
         frames[name] = {'frame': {'x': i * CELL, 'y': 0, 'w': CELL, 'h': CELL}}
+    # Petites cannes (14 x 14, au centre de leur case) : les cannes posées dans la cabane de pêche.
+    for k, name in enumerate(SMALL_RODS):
+        i = len(ICONS) + k
+        x, y, w, h = ICONS[name]
+        icon = cut_out(im.crop((x - 1, y - 1, x + w + 1, y + h + 1)))
+        icon = icon.crop(icon.getbbox()).resize((SMALL_ROD, SMALL_ROD), Image.NEAREST)
+        atlas.paste(icon, (i * CELL + (CELL - SMALL_ROD) // 2, (CELL - SMALL_ROD) // 2), icon)
+        frames[f'{name}-petite'] = {'frame': {'x': i * CELL, 'y': 0, 'w': CELL, 'h': CELL}}
     atlas.save(OUT / 'item-icons.png')
     (OUT / 'item-icons.json').write_text(json.dumps({'frames': frames, 'meta': {'image': 'item-icons.png'}}, indent=1))
     print(f'{len(frames)} icônes -> public/assets/ui/item-icons.png')

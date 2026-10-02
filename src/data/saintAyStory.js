@@ -68,14 +68,14 @@ export const FELIX_CHANTIER = [
   { travel: { interior: 'cabane', x: 2, y: 2, facing: 'down', cutscene: true } },
 ];
 
-// Dans la cabane toute neuve (voir interiors.cabane) : les quatre cousins assis sur leurs coussins, autour de la
-// table basse. Chacun parle en sautillant, puis toute la bande saute de joie. On ressort au pied
+// Dans la cabane toute neuve (voir interiors.cabane) : les quatre cousins assis derrière les deux longues
+// tables. Chacun parle en sautillant, puis toute la bande saute de joie. On ressort au pied
 // de l'échelle.
 export const CABANE_FETE = [
   { black: true },
   { wait: 500 },
   { black: false },
-  { say: ['La cabane est finie. Les quatre cousins s\'installent autour de la table.'] },
+  { say: ['La cabane est finie. Les quatre cousins s\'installent au QG.'] },
   { hop: 'felix-cabane' },
   { speaker: 'Felix', say: ['Voilà. Notre QG.'] },
   { hop: 'joshua-cabane' },

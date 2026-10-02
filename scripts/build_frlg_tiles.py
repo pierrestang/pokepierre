@@ -23,7 +23,8 @@ l'utilisateur, usage personnel uniquement) pour le jeu, dans public/assets/tiles
   frlg-seven.png     carte de Seven Island (24 x 20 cases), sans le cadre ;
   frlg-buildings.png bâtiments entiers, fond blanc extérieur rendu transparent ;
   rs-cabane.png      cabane perchée de Fortree City (Rubis/Saphir), détourée de la forêt, avec deux pilotis ;
-                     puis son intérieur (tronc, deux bancs), 128 x 128 px, à droite (voir cabane) ;
+                     puis son intérieur, 128 x 128 px, à droite : la pièce de Fortree sans le tronc ni les
+                     bancs, meublée d'objets de Rubis/Saphir (voir cabane, CABANE_FURNITURE) ;
   rs-bigtree.png     gros arbre feuillu de Fortree City (3 cases de large), détouré de la forêt, tronc prolongé
                      jusqu'au sol (voir big_tree) ;
   frlg-car.png       voiture bleue de la famille, vue de côté (vers la gauche, puis vers la droite), réduite de
@@ -400,12 +401,45 @@ def family_car():
 # Cabane perchée de Fortree City (planche rs/backgrounds-fortree_city.png, carte calée sur (5, 5)) : feuillage,
 # cabane, plateforme de rondins et échelle, détourés en effaçant le motif de forêt qui se répète derrière ;
 # deux pilotis sous la plateforme. L'échelle occupe les colonnes 32 à 47 de l'image (une case). À droite,
-# l'intérieur de la cabane (tronc au milieu, deux bancs).
+# l'intérieur de la cabane, réaménagé (voir CABANE_FURNITURE).
 CABANE_BOX = (141, 22, 205, 113)
 CABANE_ROOM = (331, 734, 459, 830)
+# Meubles de la planche d'objets de Rubis/Saphir (rs/backgrounds-objects.png) posés dans la pièce :
+# (x, y, largeur, hauteur) sur la planche -> coin haut-gauche dans la pièce (128 x 128, cases de 16).
+# Les deux longues tables sont le QG des cousins : ils s'assoient derrière (rangée 2), elles sont redessinées
+# par-dessus eux (images `tableLeft` / `tableRight` dans src/art/frlgArt.js).
+CABANE_FURNITURE = [
+    ((579, 131, 16, 16), (88, 9)),      # tableau (paysage) au mur du fond
+    ((602, 119, 15, 28), (49, 20)),     # commode contre le mur (case 3, rangée 2)
+    ((517, 33, 10, 10), (51, 12)),      # Poké Ball posée sur la commode
+    ((630, 50, 16, 15), (64, 33)),      # plante en pot (case 4, rangée 2)
+    ((506, 50, 48, 16), (2, 42)),       # longue table en bois, à gauche (cases 0-2, rangée 3)
+    ((506, 50, 48, 16), (78, 42)),      # et à droite (cases 5-7)
+    ((599, 49, 25, 16), (52, 46)),      # peluches de Pokémon entre les tables (cases 3-4, rangée 3)
+    ((255, 114, 32, 16), (48, 82)),     # tapis rouge au milieu
+    ((46, 138, 14, 14), (5, 83)),       # coussin rose (case 0, rangée 5)
+    ((62, 138, 14, 14), (109, 83)),     # coussin jaune (case 7, rangée 5)
+]
 
 
-def cabane():
+def furnish_cabane(room, objects):
+    """Efface le tronc et les bancs de la pièce de Fortree (le mur et le plancher voisins recopiés par-dessus),
+    puis y pose les meubles de CABANE_FURNITURE."""
+    px = room.load()
+    before = room.copy().load()
+    for y in range(0, 36):                              # mur du fond : le pan de mur 32 px à gauche du tronc
+        for x in range(48, 80):
+            px[x, y] = before[x - 32, y]
+    for y in range(36, 64):                             # plancher : les lattes 32 px plus bas (même motif)
+        for x in range(8, 120):
+            px[x, y] = before[x, y + 32]
+    for (sx, sy, w, h), (x, y) in CABANE_FURNITURE:
+        piece = objects.crop((sx, sy, sx + w, sy + h))
+        room.alpha_composite(piece, (x, y))
+    return room
+
+
+def cabane(objects):
     sheet = Image.open(ROOT / 'assets-source' / 'rs' / 'backgrounds-fortree_city.png').convert('RGBA')
     src = sheet.load()
     ox, oy = 5, 5
@@ -474,6 +508,7 @@ def cabane():
     tall.paste(floor, (0, 80))
     tall.paste(floor, (0, 96))
     tall.paste(room.crop((0, 80, 128, 96)), (0, 112))
+    furnish_cabane(tall, objects)
     out = Image.new('RGBA', (w + 128, max(h, 128)), (0, 0, 0, 0))
     out.paste(hut, (0, 0))
     out.paste(tall, (w, 0))
@@ -588,7 +623,7 @@ def main():
     rs_objects = Image.open(ROOT / 'assets-source' / 'rs' / 'backgrounds-objects.png').convert('RGBA')
     gba_palette(clear_outside(rs_objects, (255, 255, 255, 255))).save(OUT / 'rs-objects.png')
     gba_palette(family_car()).save(OUT / 'frlg-car.png')
-    gba_palette(cabane()).save(OUT / 'rs-cabane.png')
+    gba_palette(cabane(clear_outside(rs_objects.copy(), (255, 255, 255, 255)))).save(OUT / 'rs-cabane.png')
     gba_palette(big_tree()).save(OUT / 'rs-bigtree.png')
     print('ok ->', OUT.relative_to(ROOT))
 

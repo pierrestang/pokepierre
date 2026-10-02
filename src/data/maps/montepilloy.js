@@ -3,14 +3,14 @@ import { FLAGS, ITEMS } from '../story.js';
 
 // Montépilloy (Oise) — village de campagne façon Rouge Feu, 36 x 24 cases : grand-rue en terre nord-sud (route
 // du Prytanée au nord, de Saint-Ay au sud) et deux chemins de terre est-ouest ; la maison de la famille (toit
-// rouge) et celle de la voisine (toit vert) ; les ruines du château à l'ouest (donjon éventré, courtine percée
-// d'une brèche qu'on peut franchir) ; l'école (auvent vert) ; le puits et une petite mare au milieu du village ;
-// à l'est, la ferme de M. Bouly (hangar au toit orange de Rubis/Saphir, tonneaux, tracteur) entourée de champs
-// de blé et d'une clôture blanche, ouverte sur le chemin ; au sud-ouest, la prairie aux hautes herbes éparses et
-// l'arbre où le chat de Jean se cache. Ceinture d'arbres.
+// rouge) et celle de la voisine (toit vert), un petit verger au nord-est ; à l'ouest, la prairie aux hautes
+// herbes et l'arbre où le chat de Jean se cache ; l'école (auvent vert) ; le puits et une petite mare au milieu
+// du village. Tout le bas du village est à la ferme de M. Bouly : à gauche le hangar (toit orange de
+// Rubis/Saphir), le tracteur et les tonneaux dans une cour à clôture blanche ; à droite un grand champ de blé
+// rectangulaire, clôturé. Ceinture d'arbres.
 // Légende : voir src/data/tiles.js (ç = chemin de terre, U = puits, ~ = mare, O = tonneau, ʬ = blé, F = clôture,
 // T = arbre, ƚ = petit arbre, ƀ = buisson, f = fleurs, ĥ = hautes herbes, S = panneau, M = boîte aux lettres,
-// R / W / D = toit, mur, porte des bâtiments ; les ruines sont des R / W)
+// R / W / D = toit, mur, porte des bâtiments)
 export const montepilloyMap = {
   id: 'montepilloy',
   name: 'Montépilloy',
@@ -18,25 +18,25 @@ export const montepilloyMap = {
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTTTT', // 1
     'TT.ƚ..........ççS.........ƚ.......TT', // 2
-    'TT..RRRRR.....çç....RRRRR.....ʬʬʬʬTT', // 3
-    'TT..RRRRR.fff.çç.ff.RRRRR.....ʬʬʬʬTT', // 4
-    'TT..WWWWW.fff.çç.ff.WWWWW.....ʬʬʬʬTT', // 5
-    'TT..WDWWWMfff.çç...MWDWWW.....ʬʬʬʬTT', // 6
+    'TT..RRRRR.....çç....RRRRR...ƚ..ƚ..TT', // 3
+    'TT..RRRRR.fff.çç.ff.RRRRR....ff...TT', // 4
+    'TT..WWWWW.fff.çç.ff.WWWWW....ƚf.ƚ.TT', // 5
+    'TT..WDWWWMfff.çç...MWDWWW.........TT', // 6
     'TT.ççççççççççççççççççççççççç......TT', // 7
-    'TT............çç....FFFFFFFFFFFFFFTT', // 8
-    'TTRR........U.çç~~~~F.........ʬʬʬʬTT', // 9
-    'TTRR..R.......çç~~~~F.........ʬʬʬʬTT', // 10
-    'TTRRR.R.RRRRR.çç~~~~FRRRRRROO.ʬʬʬʬTT', // 11
-    'TTRRW.W.RRRRR.ççf..fFRRRRRR.O.ʬʬʬʬTT', // 12
-    'TT.....SWWWWW.çç....FWWWWWW...ʬʬʬʬTT', // 13
-    'TT.R....WDWWW.çç....SWWWDWW...ʬʬʬʬTT', // 14
-    'TT.ççççççççççççççççççççççççççç....TT', // 15
-    'TT.ĥĥ....ĥ....çç.FFFF.........ʬʬʬʬTT', // 16
-    'TTƚĥ...ĥĥ.ĥĥ..çç.Fʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 17
-    'TT..TT.ĥ....ĥĥçç.Fʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 18
-    'TTĥ.TT..ĥĥ....ççƀFʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 19
-    'TTĥ.......ĥ.ĥ.çç.Fʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 20
-    'TT.ƀ..ĥƚ.ĥ.ĥƚ.çç.Fʬʬʬʬʬʬʬʬʬʬʬ.ʬʬʬʬTT', // 21
+    'TT............çç.................ƀTT', // 8
+    'TTĥ..fĥ.....U.çç~~~~....ff....ƚ...TT', // 9
+    'TTĥTT..ĥ......çç~~~~f..ƚ..ƚ......ƚTT', // 10
+    'TT.TT.ĥ.RRRRR.çç~~~~..............TT', // 11
+    'TTĥ....fRRRRR.ççf..f.f...ƚ.f.f.ƚ..TT', // 12
+    'TT...ĥ.ĥWWWWW.çç....ƀ.ƚ.....ƚ...f.TT', // 13
+    'TT.ĥ..ĥ.WDWWW.çç..................TT', // 14
+    'TT.çççççççççççççççççççççççççççççç.TT', // 15
+    'TTS......FF.FFççFFFFFFFF.FFFFFFFFFTT', // 16
+    'TT.RRRRRR...OOççFʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬTT', // 17
+    'TT.RRRRRR....OççFʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬTT', // 18
+    'TT.WWWWWW....FççFʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬTT', // 19
+    'TT.WWWDWW....FççFʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬTT', // 20
+    'TT...........FççFʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬʬTT', // 21
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTTTTTT', // 23
   ]),
@@ -44,7 +44,7 @@ export const montepilloyMap = {
     { x: 5, y: 6, interior: 'montHouse' },
     // Maison de la voisine : fermée (pas d'intérieur pour l'instant).
     { x: 21, y: 6, lockedDialogue: ['Personne ne répond.'] },
-    { x: 24, y: 14, lockedDialogue: ['La grange de M. Bouly, pleine de foin.'] },
+    { x: 6, y: 20, lockedDialogue: ['La grange de M. Bouly, pleine de foin.'] },
     {
       x: 9, y: 14, interior: 'school',
       lock: { ifFlags: [FLAGS.manonEcole] },
@@ -55,18 +55,17 @@ export const montepilloyMap = {
     { type: 'house', x: 4, y: 3 },
     { type: 'greenHouse', x: 20, y: 3 },
     { type: 'school', x: 8, y: 11 },
-    { type: 'castleRuin', x: 2, y: 9 },
-    { type: 'boulyFarm', x: 21, y: 11 },
+    { type: 'boulyFarm', x: 3, y: 17 },
   ],
   // Le tracteur de M. Bouly : en panne, puis réparé.
   props: [
     {
-      type: 'tractor', x: 27, y: 13, w: 2, h: 2, broken: true,
+      type: 'tractor', x: 10, y: 19, w: 2, h: 2, broken: true,
       unlessFlags: [FLAGS.tracteurRepare],
       dialogue: ['[Texte provisoire] Le tracteur de M. Bouly. Il fume et refuse de démarrer.'],
     },
     {
-      type: 'tractor', x: 27, y: 13, w: 2, h: 2,
+      type: 'tractor', x: 10, y: 19, w: 2, h: 2,
       ifFlags: [FLAGS.tracteurRepare],
       dialogue: ['[Texte provisoire] Le tracteur de M. Bouly ronronne comme un chat !'],
     },
@@ -74,12 +73,12 @@ export const montepilloyMap = {
   npcs: [
     // Tant que Jean ne t'a rien demandé, M. Bouly se contente de te saluer.
     {
-      id: 'bouly-bonjour', name: 'M. Bouly', x: 29, y: 13, facing: 'left', color: 0x7c5c2c,
+      id: 'bouly-bonjour', name: 'M. Bouly', x: 10, y: 17, facing: 'right', color: 0x7c5c2c,
       unlessFlags: [FLAGS.jeanQuetes],
       dialogue: ['[M. Bouly - texte provisoire] Bonjour mon grand ! Belle journée pour la ferme, hein ?'],
     },
     {
-      id: 'bouly', name: 'M. Bouly', x: 29, y: 13, facing: 'left', color: 0x7c5c2c,
+      id: 'bouly', name: 'M. Bouly', x: 10, y: 17, facing: 'right', color: 0x7c5c2c,
       ifFlags: [FLAGS.jeanQuetes],
       dialogue: [
         "[M. Bouly - texte provisoire] Bonjour mon grand ! Mon tracteur est tombé en panne...",
@@ -95,31 +94,26 @@ export const montepilloyMap = {
     },
     // Le chat de Jean, une fois tombé de son arbre.
     {
-      id: 'chat', name: 'Chat', x: 6, y: 20, facing: 'up', color: 0xe89030,
+      id: 'chat', name: 'Chat', x: 5, y: 12, facing: 'up', color: 0xe89030,
       ifFlags: [FLAGS.chatTrouve],
       dialogue: ['Miaou !'],
     },
   ],
   objects: [
     { x: 16, y: 2, dialogue: ['Nord : route du Prytanée.'] },
-    { x: 7, y: 13, dialogue: ['Ruines du château de Montépilloy. Le donjon veille sur le village depuis le Moyen Âge.'] },
-    { x: 2, y: 12, dialogue: ['Le donjon éventré. Le lierre grimpe entre les pierres.'] },
-    { x: 3, y: 12, dialogue: ['Le donjon éventré. Le lierre grimpe entre les pierres.'] },
-    { x: 3, y: 14, dialogue: ['Un bloc de pierre tombé de la muraille.'] },
-    { x: 20, y: 14, dialogue: ['Ferme de M. Bouly.'] },
     { x: 9, y: 6, dialogue: ['La boîte aux lettres de la famille.'] },
     { x: 19, y: 6, dialogue: ['La boîte aux lettres de la voisine.'] },
-    // L'arbre où le chat est coincé (dans la prairie, au sud-ouest).
+    // L'arbre où le chat est coincé (dans la prairie, à l'ouest du village).
     {
-      x: 5, y: 19,
+      x: 4, y: 11,
       dialogue: ["[Texte provisoire] Tu secoues l'arbre... Miaou ! Le chat tombe de l'arbre !"],
       after: ["[Texte provisoire] Il n'y a plus rien dans cet arbre."],
       setFlag: FLAGS.chatTrouve,
     },
     // Le tonneau qui cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
-    { x: 28, y: 12, unlessFlags: [FLAGS.boulyDemande], dialogue: ['[Texte provisoire] Un vieux tonneau de la ferme.'] },
+    { x: 13, y: 18, unlessFlags: [FLAGS.boulyDemande], dialogue: ['[Texte provisoire] Un vieux tonneau de la ferme.'] },
     {
-      x: 28, y: 12,
+      x: 13, y: 18,
       ifFlags: [FLAGS.boulyDemande],
       dialogue: ['[Texte provisoire] Au fond du tonneau... une pièce de tracteur !'],
       after: ['[Texte provisoire] Le tonneau est vide.'],

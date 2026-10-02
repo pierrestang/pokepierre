@@ -1931,106 +1931,6 @@ function drawBoat(g, ox, oy) {
   rect(g, 0xe8d8a8, ox, oy + 15, 5, 1);
 }
 
-// Ruines du château de Montépilloy (5 x 6 cases, en case locale) : donjon éventré à gauche (cases 0-1, rangées
-// 0-3), courtine écroulée (case 2) percée d'une brèche (case 3, praticable, éboulis au sol), tour d'angle
-// arasée (case 4), bloc tombé en (1, 5). Pierres de taille grises en assises décalées, sommets déchiquetés,
-// lierre, contour sombre. Le sol de la carte (herbe) reste visible partout ailleurs.
-function drawCastleRuin(g, ox, oy) {
-  const K = 0x3c3428;
-  const STONES = [0xd8d0b8, 0xc4b89c, 0xb4a888];
-  const MORTAR = 0x7c705c;
-  const IVY = [0x3c7c34, 0x5c9c44, 0x84c060];
-  const R = (c, x, y, w, h) => rect(g, c, ox + x, oy + y, w, h);
-  const noise = (x, y) => {
-    let h = (x * 73856093) ^ (y * 19349663);
-    h = Math.imul(h ^ (h >>> 13), 1274126177);
-    return ((h ^ (h >>> 16)) >>> 0) % 100;
-  };
-
-  // Mur de pierres de taille : colonnes [x0, x0 + w[, du sommet tops[i] (un par tranche de 4 px) jusqu'à `bottom`.
-  // Assises de 5 px, joints décalés d'une assise à l'autre, arête claire en haut de chaque pierre.
-  const wall = (x0, w, tops, bottom) => {
-    const topAt = (x) => tops[Math.min(tops.length - 1, Math.floor((x - x0) / 4))];
-    for (let x = x0; x < x0 + w; x++) {
-      const top = topAt(x);
-      for (let y = top; y < bottom; y++) {
-        const row = Math.floor(y / 5);
-        let c;
-        if (y % 5 === 4 || (x + (row % 2) * 5) % 10 === 9) c = MORTAR;
-        else if (y % 5 === 0) c = 0xe8e0cc;
-        else c = STONES[noise(Math.floor((x + (row % 2) * 5) / 10), row) % 3];
-        R(c, x, y, 1, 1);
-      }
-      R(K, x, top - 1, 1, 1);                                        // arête du sommet cassé
-      // Contour sur les côtés, et le long des marches du sommet (là où la colonne voisine est plus basse).
-      const left = x === x0 ? bottom : topAt(x - 1);
-      const right = x === x0 + w - 1 ? bottom : topAt(x + 1);
-      const edge = Math.max(left, right);
-      if (edge > top) R(K, x, top, 1, edge - top);
-    }
-    R(K, x0, bottom - 1, w, 1);
-    g.fillStyle(0x000000, 0.22);
-    g.fillRect(ox + x0 + 1, oy + bottom, w, 2);                       // ombre au sol
-  };
-
-  // Ouverture sombre dans la maçonnerie (fenêtre en arc, meurtrière).
-  const hole = (x, y, w, h) => {
-    R(K, x - 1, y, w + 2, h + 1);
-    R(K, x, y - 1, w, 1);
-    R(0x3a3226, x, y, w, h);
-    R(0x5a5040, x, y + h - 2, w, 2);                                  // appui éclairé
-  };
-
-  // Lierre : touffes de feuilles dans une zone.
-  const ivy = (x0, y0, w, h, density) => {
-    for (let y = y0; y < y0 + h; y++) {
-      for (let x = x0; x < x0 + w; x++) {
-        const n = noise(x * 3 + 7, y * 5 + 1);
-        if (n < density) R(IVY[n % 3], x, y, 1, 1);
-      }
-    }
-  };
-
-  // Donjon éventré : haut à gauche, effondré en biais vers la droite.
-  wall(0, 32, [3, 1, 1, 5, 9, 8, 15, 21], 64);
-  hole(11, 22, 9, 14);                                                // grande baie
-  R(K, 12, 21, 7, 1);
-  hole(25, 42, 2, 8);                                                 // meurtrières
-  hole(5, 44, 2, 8);
-  ivy(0, 34, 10, 29, 38);
-  ivy(22, 22, 8, 10, 22);
-
-  // Courtine, écroulée, et tour d'angle arasée.
-  wall(32, 16, [38, 36, 41, 46], 64);
-  ivy(33, 50, 14, 12, 20);
-  wall(64, 16, [18, 15, 21, 26], 64);
-  hole(70, 36, 2, 8);
-  ivy(68, 52, 11, 11, 26);
-
-  // Brèche : éboulis au pied du mur, on passe dessus.
-  const RUBBLE = [[50, 59, 5, 3], [56, 61, 4, 2], [60, 57, 3, 3], [53, 54, 3, 2], [47, 62, 3, 2]];
-  for (const [x, y, w, h] of RUBBLE) {
-    R(K, x - 1, y - 1, w + 2, h + 2);
-    R(STONES[(x + y) % 3], x, y, w, h);
-    R(0xe8e0cc, x, y, w, 1);
-  }
-
-  // Bloc tombé de la muraille, en (1, 5) ; deux cailloux dans l'herbe.
-  g.fillStyle(0x000000, 0.22);
-  g.fillRect(ox + 18, oy + 93, 13, 2);
-  R(K, 17, 83, 14, 11);
-  R(STONES[1], 18, 84, 12, 9);
-  R(0xe8e0cc, 18, 84, 12, 2);
-  R(MORTAR, 23, 86, 1, 7);
-  R(STONES[2], 18, 91, 12, 2);
-  R(K, 21, 79, 8, 5);
-  R(STONES[0], 22, 80, 6, 3);
-  for (const [x, y] of [[44, 74], [62, 70], [7, 76]]) {
-    R(K, x - 1, y - 1, 5, 4);
-    R(STONES[1], x, y, 3, 2);
-  }
-}
-
 const BUILDINGS = {
   house: drawHouse,
   lab: drawLab,
@@ -2046,7 +1946,6 @@ const BUILDINGS = {
   pub: drawPub,
   university: drawUniversity,
   castle: drawCastle,
-  castleRuin: drawCastleRuin,
   bigBen: drawBigBen,
   bus: drawBus,
   theDeep: drawTheDeep,
