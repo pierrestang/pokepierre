@@ -33,7 +33,7 @@ export const prytaneeMap = {
     'TTF..QQ.QQ.VV.ɐɐ...RRRRRRR.FTT', // 17
     'TTF..Q...Q.V..ɐɐ...WWWWWWW.FTT', // 18
     'TTF..QQQQQ....ɐɐ...WWWDWWW.FTT', // 19
-    'TTFƚ......V..ƚɐɐ.V........ƚFTT', // 20
+    'TTFƀ......V..ƀɐɐ.V........ƀFTT', // 20
     'TTFFFFFFFFFFFFɐɐFFFFFFFFFFFFTT', // 21
     'TTTTTTTTTTTTTTɐɐTTTTTTTTTTTTTT', // 22
     'TTTTTTTTTTTTTTɐɐTTTTTTTTTTTTTT', // 23

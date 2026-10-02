@@ -28,8 +28,10 @@ On commence par une seule ville jouable, puis on étend à une petite région.
   src/art/spriteSheets.js) : TownsPeople2 (`t{n}`, avec portraits de dialogue) et PNJ de Rouge Feu
   (`f{n}`, extraits de assets-source/frlg-npcs.png par scripts/extract_frlg.py). Pierre = Red (`f0`).
   Attribution par nom dans src/data/characters.js. Le chat reste dessiné dans le code (src/art/characterArt.js).
-  Planches DS et Émeraude (assets-source/ds/, assets-source/gba/), extraites par scripts/extract_more_npcs.py :
-  Diamant/Perle (`d{n}`), Noir/Blanc (`n{n}`), champions d'Émeraude (`h{n}`), au choix dans Start > PNJ.
+  Champions d'Émeraude (`h{n}`, assets-source/gba/, extraits par scripts/extract_more_npcs.py), au choix dans
+  Start > PNJ. Pas de sprites DS pour les personnages.
+- Arbres : grands sapins en blocs de 2 x 2 cases 'T' alignés sur la grille (jamais de sapin isolé) ; le petit
+  arbre 'ƚ' seulement sur les îles et dans les pays exotiques, des buissons 'ƀ' ailleurs.
 - Interface (scripts/build_ds_ui.py -> public/assets/ui/, voir src/art/uiIcons.js) : icônes d'objets et bulles
   d'émotion de HeartGold/SoulSilver (sac, objet reçu, étape `emote` des scénettes), cartes postales de la carte
   du voyage tirées des illustrations de lieux de Johto. Mont Chimnée (Rubis/Saphir) : la gare du téléphérique sert

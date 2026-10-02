@@ -7,9 +7,8 @@ import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
 
 // Menu Start > PNJ : tous les personnages avec leur sprite ; on peut donner à chacun n'importe quel sprite des
-// planches de personnages (TownsPeople2 `t{n}`, Rouge Feu `f{n}`, Diamant/Perle `d{n}`, Noir/Blanc `n{n}`,
-// Émeraude `h{n}`, voir art/spriteSheets.js). Le choix est gardé par nom (voir data/characters.js, lookChoices)
-// et vaut pour tous les personnages de ce nom.
+// planches de personnages (TownsPeople2 `t{n}`, Rouge Feu `f{n}`, Émeraude `h{n}`, voir art/spriteSheets.js). Le
+// choix est gardé par nom (voir data/characters.js, lookChoices) et vaut pour tous les personnages de ce nom.
 // Deux écrans, dans le style de la carte du voyage : la liste (deux colonnes), puis la grille des sprites.
 const BAR = 16;                                   // bandeaux du haut et du bas
 const LIST_ROWS = 8;                              // personnages par colonne

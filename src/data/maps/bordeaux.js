@@ -22,7 +22,7 @@ export const bordeauxMap = {
   id: 'bordeaux',
   name: 'Bordeaux',
   grid: parseGrid([
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0  arbres : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  arbres : bord de l'écran
     'ɔɔɔRRRRRɔɔRRRRRɔɔɔRRRRRRRRRRRRɔɔ', // 1  ton immeuble, l'agence, le stade
     'ɔɔɔRRRRRɔɔRRRRRɔɔɔRRRRRRRRRRRRɔɔ', // 2
     'ɔɔɔWWWWWɔɔWWWWWɔɔɔWWWWWWWWWWWWɔɔ', // 3
@@ -31,23 +31,23 @@ export const bordeauxMap = {
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  avenue (ouest : Prytanée, est : aéroport)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ>ɔ', // 8  panneaux aéroport
-    '..ƚ...ƚɔɔ.ƚ...ƚ...ƚ...ƚɔɔ.ƚ...ƚ.', // 9  quai arboré (herbe près de l'eau)
+    '..ƀ...ƀɔɔ.ƀ...ƀ...ƀ...ƀɔɔ.ƀ...ƀ.', // 9  quai arboré (herbe près de l'eau)
     '.......ɔɔ..............ɔɔ.......', // 10
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 11 quai
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 12 la Garonne et ses deux ponts
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 13
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 14
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 15 quai sud
-    '....ƚ..ɔɔ...ƚ...ƚ...ƚ..ɔɔ...ƚ...', // 16
+    '....ƀ..ɔɔ...ƀ...ƀ...ƀ..ɔɔ...ƀ...', // 16
     'ɔɔRRRRRɔɔɔɔRRRRRRRRRɔɔɔɔɔɔɔɔɔɔɔɔ', // 17 immeuble, KEDGE
     'ɔɔRRRRRɔɔɔɔRRRRRRRRRɔɔɔɔɔɔɔɔɔɔɔɔ', // 18
     'ɔɔWWWWWɔɔɔɔWWWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔ', // 19
     'ɔɔWDWWWɔɔɔɔWWWWDWWWWɔɔɔɔɔɔɔɔɔɔɔɔ', // 20 portes
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 21
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 21
     'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 22 rue sud (vers Paris, bloquée par une voiture en panne)
     'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 23
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 24
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 25 arbres : bord de l'écran
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 24
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 25 arbres : bord de l'écran
   ]),
   doors: [
     // Ton immeuble : il faut les clés de l'agence.

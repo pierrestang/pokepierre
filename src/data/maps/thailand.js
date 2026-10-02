@@ -20,7 +20,7 @@ export const thailandMap = {
   id: 'thailand',
   name: 'Thaïlande',
   grid: parseGrid([
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0
     'CCRRRRRRRRRCCCCCCCCCRRRRRRRRRCCC', // 1
     'CCRRRRRRRRRCCCCCCCCCRRRRRRRRRCCC', // 2
     'CCWWWWWWWWWCCCCCCCCCWWWWWWWWWCCC', // 3
@@ -45,7 +45,7 @@ export const thailandMap = {
     'CCWWWWWWWWWC..f....CWWWWWWWWWCCC', // 22
     'CCWDWWDWWDWC...Y...CWDWWDWWDWCCC', // 23
     'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC', // 24
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 25
+    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 25
   ]),
   doors: [
     { x: 15, y: 13, interior: 'watInterieur' },   // le wat : l'objet magique

@@ -521,7 +521,7 @@ export const interiors = {
         unlessFlags: [FLAGS.tracteurRepare],
         dialogue: [
           "[Jean - texte provisoire] Salut frérot ! J'ai besoin de toi pour deux choses.",
-          "Notre chat s'est encore sauvé : il doit être perché dans un arbre de la prairie, à l'ouest du village.",
+          "Notre chat s'est encore sauvé : il doit être perché dans un arbre de la prairie, au sud-ouest du village.",
           "Et M. Bouly, à la ferme, a des soucis avec son tracteur. Tu peux aller l'aider ?",
         ],
         after: ['[Jean - texte provisoire] Alors, tu as retrouvé le chat ? Et le tracteur de M. Bouly ?'],

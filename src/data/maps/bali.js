@@ -12,23 +12,23 @@ export const baliMap = {
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 1
     'wwwwwwwwwwwwsssssssswwwwwwwwwwww', // 2
     'wwwwwwwwwsssssssssssssswwwwwwwww', // 3
-    'wwwwwwwssssY........Tsssswwwwwww', // 4
-    'wwwwww≈≈≈≈≈≈≈≈T.RRR..Yfssswwwwww', // 5
-    'wwwwws≈≈≈≈≈≈≈≈Y.WWW.TY.Tssswwwww', // 6
+    'wwwwwwwssssY........ƚsssswwwwwww', // 4
+    'wwwwww≈≈≈≈≈≈≈≈ƚ.RRR..Yfssswwwwww', // 5
+    'wwwwws≈≈≈≈≈≈≈≈Y.WWW.ƚY.ƚssswwwww', // 6
     'wwwwss..........WWW......ssswwww', // 7
-    'wwwwss≈≈≈≈≈≈≈≈......TYf.f.sswwww', // 8
-    'wwwssf≈≈≈≈≈≈≈≈........T.YY.sswww', // 9
-    'wwwss...YTT.YYssss.T...YT..sswww', // 10
-    'wwwss.....f.T.ssss....T...Ysswww', // 11
-    'wwwssYYY.Y..Y.ssssT...Y....sswww', // 12
-    'wwwssY.YssssssssssT...Y....sswww', // 13
+    'wwwwss≈≈≈≈≈≈≈≈......ƚYf.f.sswwww', // 8
+    'wwwssf≈≈≈≈≈≈≈≈........ƚ.YY.sswww', // 9
+    'wwwss...Yƚƚ.YYssss.ƚ...Yƚ..sswww', // 10
+    'wwwss.....f.ƚ.ssss....ƚ...Ysswww', // 11
+    'wwwssYYY.Y..Y.ssssƚ...Y....sswww', // 12
+    'wwwssY.Yssssssssssƚ...Y....sswww', // 13
     'wwwssf...Y...fssss....Y....sswww', // 14
-    'wwwss.TY.T....ssssssssssss.sswww', // 15
-    'wwwwss....T...ssssff.Y.Yf.sswwww', // 16
-    'wwwwsss..Y..TfssssfT.Yssssssswww', // 17
-    'wwwwwsssT.....ssssT.Y.ssssssswww', // 18
+    'wwwss.ƚY.ƚ....ssssssssssss.sswww', // 15
+    'wwwwss....ƚ...ssssff.Y.Yf.sswwww', // 16
+    'wwwwsss..Y..ƚfssssfƚ.Yssssssswww', // 17
+    'wwwwwsssƚ.....ssssƚ.Y.ssssssswww', // 18
     'wwwwwwsssY.Y..ssssf...ssRRRsswww', // 19
-    'wwwwwwwssss...ssssT..sssWWWsswww', // 20
+    'wwwwwwwssss...ssssƚ..sssWWWsswww', // 20
     'wwwwwwwwwsssssssssssssssWDWsswww', // 21
     'wwwwwwwwwwwwsssssssswwssssssswww', // 22
     'wwwwwwwwwwwwwww==wwwwwwwwwwwwwww', // 23

@@ -31,49 +31,49 @@ export const hullMap = {
   id: 'hull',
   name: 'Hull',
   grid: parseGrid([
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0
-    'ƚFFFFFFFFFffffffffffFFFFFFFFFƚ', // 1
-    'ƚFRRRRRRRFƚ.~~~~~~.ƚFRRRRRRRFƚ', // 2
-    'ƚFRRRRRRRFƚ.~~~~~~.ƚFRRRRRRRFƚ', // 3
-    'ƚFRRRRRRRFff......ffFRRRRRRRFƚ', // 4
-    'ƚFRRRRRRRFRRRRRRRRR.FRRRRRRRFƚ', // 5
-    'ƚFRRRRRRRFRRRRRRRRR.FRRRRRRRFƚ', // 6
-    'ƚFRRRRRRRFWWWWWWWWW.FRRRRRRRFƚ', // 7
-    'ƚFFFFFFFFFWWWWDWWWW.FFFFFFFFFƚ', // 8
-    'ƚRRRRRRRɔɔɔɔSɔɔɔɔɔɔɔɔɔRRRRRɔɔƚ', // 9
-    'ƚRRRRRRRɔlɔɔɔɔɔɔɔɔɔɔlɔRRRRRɔɔƚ', // 10
-    'ƚWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWɔɔƚ', // 11
-    'ƚWWWDWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔWDWWWɔɔƚ', // 12
-    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 13
-    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 14
-    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 15
-    'ƚWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƚ', // 16
-    'ƚWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƚ', // 17
-    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 18
-    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 19
-    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 20
-    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 21
-    'ƚWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƚ', // 22
-    'ƚWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƚ', // 23
-    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 24
-    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 25
-    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 26
-    'ƚRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƚ', // 27
-    'ƚWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƚ', // 28
-    'ƚWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƚ', // 29
-    'ƚɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 30
-    'ƚʕʕʕʕʕʕʕʕʕʕʕʕɔɐɐɔʕʕʕʕʕʕʕʕʕʕʕʕƚ', // 31
-    'ƚʕʕʕʕʕʕʕʕʕʕʕʕɔɐɐɔʕʕʕʕʕʕʕʕʕʕʕʕƚ', // 32
-    'ƚɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔƚ', // 33
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0
+    'ƀFFFFFFFFFffffffffffFFFFFFFFFƀ', // 1
+    'ƀFRRRRRRRFƀ.~~~~~~.ƀFRRRRRRRFƀ', // 2
+    'ƀFRRRRRRRFƀ.~~~~~~.ƀFRRRRRRRFƀ', // 3
+    'ƀFRRRRRRRFff......ffFRRRRRRRFƀ', // 4
+    'ƀFRRRRRRRFRRRRRRRRR.FRRRRRRRFƀ', // 5
+    'ƀFRRRRRRRFRRRRRRRRR.FRRRRRRRFƀ', // 6
+    'ƀFRRRRRRRFWWWWWWWWW.FRRRRRRRFƀ', // 7
+    'ƀFFFFFFFFFWWWWDWWWW.FFFFFFFFFƀ', // 8
+    'ƀRRRRRRRɔɔɔɔSɔɔɔɔɔɔɔɔɔRRRRRɔɔƀ', // 9
+    'ƀRRRRRRRɔlɔɔɔɔɔɔɔɔɔɔlɔRRRRRɔɔƀ', // 10
+    'ƀWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWɔɔƀ', // 11
+    'ƀWWWDWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔWDWWWɔɔƀ', // 12
+    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 13
+    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 14
+    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 15
+    'ƀWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƀ', // 16
+    'ƀWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƀ', // 17
+    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 18
+    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 19
+    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 20
+    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 21
+    'ƀWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƀ', // 22
+    'ƀWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƀ', // 23
+    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 24
+    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 25
+    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 26
+    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 27
+    'ƀWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƀ', // 28
+    'ƀWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƀ', // 29
+    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 30
+    'ƀʕʕʕʕʕʕʕʕʕʕʕʕɔɐɐɔʕʕʕʕʕʕʕʕʕʕʕʕƀ', // 31
+    'ƀʕʕʕʕʕʕʕʕʕʕʕʕɔɐɐɔʕʕʕʕʕʕʕʕʕʕʕʕƀ', // 32
+    'ƀɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔƀ', // 33
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 34
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 35
-    'ƚɔɔɔɔɔɔɔɔbSɔɔɔɔɔɔɔɔbɔɔɔɔɔɔɔɔɔƚ', // 36
-    'ƚqqqɔRRRRRRR........ɔɔɔɔɔɔɔɔɔƚ', // 37
-    'ƚqqqɔRRRRRRR.ƚ....ƚ.ɔRRRRRRɔɔƚ', // 38
-    'ƚɔɔɔɔRRRRRRR..ffff..ɔRRRRRRɔɔƚ', // 39
-    'ƚɔɔɔɔWWWWWWW........ɔWWWWWWɔɔƚ', // 40
-    'ƚɔɔɔɔWWWDWWW.ƚ....ƚ.ɔWDWWWWɔlƚ', // 41
-    'ƚɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƚ', // 42
+    'ƀɔɔɔɔɔɔɔɔbSɔɔɔɔɔɔɔɔbɔɔɔɔɔɔɔɔɔƀ', // 36
+    'ƀqqqɔRRRRRRR........ɔɔɔɔɔɔɔɔɔƀ', // 37
+    'ƀqqqɔRRRRRRR.ƀ....ƀ.ɔRRRRRRɔɔƀ', // 38
+    'ƀɔɔɔɔRRRRRRR..ffff..ɔRRRRRRɔɔƀ', // 39
+    'ƀɔɔɔɔWWWWWWW........ɔWWWWWWɔɔƀ', // 40
+    'ƀɔɔɔɔWWWDWWW.ƀ....ƀ.ɔWDWWWWɔlƀ', // 41
+    'ƀɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 42
     '~~~~~~~~~~~~~~~==~~~~~~~~~~~~~', // 43
     '~~~~~~~~~~BBB~~==~~BBB~~~~~~~~', // 44
     '~~~~~~~~~~BBB~~==~~BBB~~~~~~~~', // 45

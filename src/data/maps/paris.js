@@ -20,7 +20,7 @@ export const parisMap = {
   id: 'paris',
   name: 'Paris',
   grid: parseGrid([
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0  arbres : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  arbres : bord de l'écran
     'ɔɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔ', // 1  immeubles haussmanniens, bistrot, café
     'ɔɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔ', // 2
     'ɔɔWWWWWɔWWWWWɔWWWWWɔWWWWWɔWWWWWɔ', // 3
@@ -29,31 +29,31 @@ export const parisMap = {
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  avenue (ouest : Bordeaux, est : aéroport)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
     'ɔɔɔlɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔlɔɔɔɔɔɔɔlɔ>ɔ', // 8  panneaux aéroport
-    'ɔɔRRRRRɔɔɔɔɔɔɔɔɔ.ƚ...RRRRR.RRRRɔ', // 9  Arc de Triomphe, Champ-de-Mars, tour Eiffel, l'entreprise
+    'ɔɔRRRRRɔɔɔɔɔɔɔɔɔ.ƀ...RRRRR.RRRRɔ', // 9  Arc de Triomphe, Champ-de-Mars, tour Eiffel, l'entreprise
     'ɔɔRRRRRɔɔɔɔɔɔɔɔɔ.....RRRRR.RRRRɔ', // 10
     'ɔɔWWWWWɔɔɔRRRRɔɔ..f..RRRRR.RRRRɔ', // 11 pyramide du Louvre
     'ɔɔWWWWWɔJɔWWWWɔɔ...f.WWWWW.WWWWɔ', // 12
     'ɔɔWWWWWɔɔɔWWWWɔɔ.....WWWWW.WDWWɔ', // 13 porte de l'entreprise
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƚ...WWWWW....ƚɔ', // 14
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀ...WWWWW....ƀɔ', // 14
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..f.J..f...f.f.ɔ', // 15
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16 quai
     'GGGGGGGIIGGGGGGGGGGGGGGGIIGGGGGG', // 17 la Seine et ses ponts
     'GGGGGGGIIGGGGGGGGGGGGGGGIIGGGGGG', // 18
-    'ɔɔɔƚɔɔɔɔɔɔɔɔƚɔɔɔƚɔɔɔƚɔɔɔɔɔɔɔɔƚɔɔ', // 19 quai arboré
-    'ɔɔRRRRRɔɔRRRRRRRɔRRRRRɔ.ƚ..f..ƚɔ', // 20 immeuble, Notre-Dame, café, square
-    'ɔɔRRRRRɔɔRRRRRRRɔRRRRRɔ.....ƚ..ɔ', // 21
+    'ɔɔɔƀɔɔɔɔɔɔɔɔƀɔɔɔƀɔɔɔƀɔɔɔɔɔɔɔɔƀɔɔ', // 19 quai arboré
+    'ɔɔRRRRRɔɔRRRRRRRɔRRRRRɔ.ƀ..f..ƀɔ', // 20 immeuble, Notre-Dame, café, square
+    'ɔɔRRRRRɔɔRRRRRRRɔRRRRRɔ.....ƀ..ɔ', // 21
     'ɔɔWWWWWɔɔWWWWWWWɔWWWWWɔ..f.....ɔ', // 22
-    'ɔɔWDWWWɔɔWWWDWWWɔWDWWWɔf..ƚ..f.ɔ', // 23 portes
+    'ɔɔWDWWWɔɔWWWDWWWɔWDWWWɔf..ƀ..f.ɔ', // 23 portes
     'ɔɔɔɔɔɔɔ!ɔɔɔɔɔɔɔlɔɔɔɔ$$ɔɔɔɔɔɔɔɔɔɔ', // 24
     'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 25 rue sud (est : Toulon)
     'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 26
-    'ɔɔɔƚɔɔɔɔƚɔɔɔɔɔɔɔɔɔɔɔɔɔɔƚɔɔɔɔƚɔɔɔ', // 27
-    'ɔ.ƚ.......ɔRRRRRRRRRRɔ..ƚ......ɔ', // 28 parc de Bercy, Accor Arena
-    'ɔ...f.ƚ...ɔRRRRRRRRRRɔ....f.ƚ..ɔ', // 29
-    'ɔf......ƚ.ɔWWWWWWWWWWɔ.f......ƚɔ', // 30
-    'ɔ..ƚ...f..ɔWWWWDWWWWWɔ...ƚ...f.ɔ', // 31 porte de Bercy
+    'ɔɔɔƀɔɔɔɔƀɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀɔɔɔɔƀɔɔɔ', // 27
+    'ɔ.ƀ.......ɔRRRRRRRRRRɔ..ƀ......ɔ', // 28 parc de Bercy, Accor Arena
+    'ɔ...f.ƀ...ɔRRRRRRRRRRɔ....f.ƀ..ɔ', // 29
+    'ɔf......ƀ.ɔWWWWWWWWWWɔ.f......ƀɔ', // 30
+    'ɔ..ƀ...f..ɔWWWWDWWWWWɔ...ƀ...f.ɔ', // 31 porte de Bercy
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 32
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 33 arbres : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 33 arbres : bord de l'écran
   ]),
   doors: [
     { x: 3,  y: 4,  lockedDialogue: NOT_HOME },

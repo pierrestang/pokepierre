@@ -19,32 +19,32 @@ export const amsterdamMap = {
   id: 'amsterdam',
   name: 'Amsterdam',
   grid: parseGrid([
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 0  arbres : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  arbres : bord de l'écran
     'ɔɔRRRRRRRRRɔɔRRRRRRRRRɔRRRRRRɔɔɔ', // 1  maisons de canal, CORNING
-    'ɔɔRRRRRRRRRƚɔRRRRRRRRRɔRRRRRRƚɔɔ', // 2
-    'ɔɔWWWWWWWWWɔɔWWWWWWWWWɔWWWWWWɔƚɔ', // 3
+    'ɔɔRRRRRRRRRƀɔRRRRRRRRRɔRRRRRRƀɔɔ', // 2
+    'ɔɔWWWWWWWWWɔɔWWWWWWWWWɔWWWWWWɔƀɔ', // 3
     'ɔɔWDWWDWWDWɔɔWWWWDWWWWɔWDWWDWɔɔɔ', // 4  portes (maison commune : 2e à gauche)
     'ɔcɔɔɔɔɔɔɔɔɔccɔɔɔɔɔɔɔeɔcɔɔɔɔɔɔccɔ', // 5  vélos, drapeau
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  rue (vers l'aéroport)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
-    'ɔ<ƚɔɔɔɔɔɔɔƚɔɔɔƚɔɔɔɔɔƚɔɔɔɔɔɔɔƚɔ>ɔ', // 8  quai arboré  panneaux aéroport
+    'ɔ<ƀɔɔɔɔɔɔɔƀɔɔɔƀɔɔɔɔɔƀɔɔɔɔɔɔɔƀɔ>ɔ', // 8  quai arboré  panneaux aéroport
     'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 9  premier canal et ses ponts
     'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 10
-    'ɔɔɔɔɔɔɔɔɔɔƚɔɔɔɔɔɔɔɔɔƚɔɔɔɔɔɔɔƚɔɔɔ', // 11
-    'ɔɔɔRRRRRɔRRRRRRɔɔɔh.ƚ.RRR.h.hh.ɔ', // 12 coffee shop, maisons, moulin et tulipes
+    'ɔɔɔɔɔɔɔɔɔɔƀɔɔɔɔɔɔɔɔɔƀɔɔɔɔɔɔɔƀɔɔɔ', // 11
+    'ɔɔɔRRRRRɔRRRRRRɔɔɔh.ƀ.RRR.h.hh.ɔ', // 12 coffee shop, maisons, moulin et tulipes
     'ɔɔɔRRRRRɔRRRRRRɔɔɔ.h..RRR..h..eɔ', // 13
     'ɔɔɔWWWWWɔWWWWWWɔɔɔ..h.WWW...h..ɔ', // 14
     'ɔɔɔWDWWWɔWDWWDWɔɔɔ.h..WWW.h..h.ɔ', // 15 portes (coffee shop : à gauche)
     'ɔɔcɔɔɔɔɔɔɔɔɔɔɔɔɔccɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
     'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 17 deuxième canal
     'GGGGGGIIGGGGGGGGGGGGGGGGIIGGGGGG', // 18
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƚɔɔɔɔƚɔɔɔɔɔɔɔɔƚɔɔ', // 19
-    'ɔɔRRRRRRRRRɔRRRRRRɔƚ...h....h.ƚɔ', // 20 maisons de canal, parc aux tulipes
-    'ɔɔRRRRRRRRRɔRRRRRRɔ.h...h.ƚ....ɔ', // 21
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀɔɔɔɔƀɔɔɔɔɔɔɔɔƀɔɔ', // 19
+    'ɔɔRRRRRRRRRɔRRRRRRɔƀ...h....h.ƀɔ', // 20 maisons de canal, parc aux tulipes
+    'ɔɔRRRRRRRRRɔRRRRRRɔ.h...h.ƀ....ɔ', // 21
     'ɔɔWWWWWWWWWɔWWWWWWɔ..h.....h...ɔ', // 22
-    'ɔɔWDWWDWWDWɔWDWWDWɔ...h..ƚ....hɔ', // 23
+    'ɔɔWDWWDWWDWɔWDWWDWɔ...h..ƀ....hɔ', // 23
     'ɔɔɔɔɔɔɔɔɔɔɔccɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 24
-    'ƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚƚ', // 25 arbres : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 25 arbres : bord de l'écran
   ]),
   doors: [
     { x: 3,  y: 4,  lockedDialogue: NOT_HOME },

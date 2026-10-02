@@ -17,12 +17,12 @@ const BOATS = [[5, 15], [11, 14], [11, 17]];
 const FERRY = 2; // le bateau du bas, au ponton de droite : ferry pour la Corse
 
 // Toulon — ville côtière : maisons provençales, port, plage, phare, 32 x 26 cases.
-// Légende : voir src/data/tiles.js (w = mer, s = sable, = = ponton, B = bateau, U = fontaine)
+// Légende : voir src/data/tiles.js (w = mer, s = sable, = = ponton, B = bateau)
 export const toulonMap = {
   id: 'toulon',
   name: 'Toulon',
   grid: parseGrid([
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0  pins : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  pins : bord de l'écran
     'CCRRRRRCRRRRRCRRRRRCRRRRRCRRRRRC', // 1  maisons provençales (Yanis : 2e maison)
     'CCRRRRRCRRRRRCRRRRRCRRRRRCRRRRRC', // 2
     'CCWWWWWCWWWWWCWWWWWCWWWWWCWWWWWC', // 3
@@ -32,7 +32,7 @@ export const toulonMap = {
     'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 7
     'CCCCCClCCCCCCCCCCClCCCCCCCCCCC>C', // 8
     'CCYCCCCCCCCCYCCRRRRRCRRRRRC.Y..C', // 9  place du marché, maisons, jardin
-    'CCCCCCCUCCCCCCCRRRRRCRRRRRCf...C', // 10 fontaine
+    'CCCCCCCCCCCCCCCRRRRRCRRRRRCf...C', // 10
     'CCCtCtCCCtCtCCCWWWWWCWWWWWC...YC', // 11 étals du marché
     'CCCCCCCCCCCCCCCWWDWWCWWDWWC..f.C', // 12
     'CCCCCClCCCCClCCClCCCCClCCCCCCCCC', // 13 quai du port

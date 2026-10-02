@@ -14,7 +14,7 @@ const C = {
 };
 
 // Cases considérées comme « pelouse » pour le liseré clair des zones d'herbe.
-const GRASSY = new Set(['.', 'f', 'ł', 'h', 'i', '♣', '≈', '♠', '¥', 'ĥ', 'ƀ', 'ƒ', 'F', 'S', 'M', 'R', 'W', 'D', 'U', 'O', 'Q', 'V', 'x']);
+const GRASSY = new Set(['.', 'f', 'ł', 'h', 'i', '♣', '≈', '♠', '¥', 'ĥ', 'ƀ', 'ƒ', 'F', 'S', 'M', 'R', 'W', 'D', 'O', 'Q', 'V', 'x']);
 
 // Petits objets posés au sol (lanterne, drapeau, cabine…) : leur sol est celui de leurs voisins.
 const SMALL_OBJECTS = new Set(['b', 'j', 'l', 'n', 'v', 't', 'y', 'c', 'e', 'a', 'd', 'g', 'p', 'H', 'z', '*', '&', '$', '!', '>', '<', '§', '¢', '€', 'þ', '¶', 'ň', 'ŕ']);
@@ -285,19 +285,6 @@ function rampart(g, px, py, x, y, at) {
   if (inside(0, -1)) merlons(true, 0);
   if (inside(1, 0)) merlons(false, S - 2);
   if (inside(-1, 0)) merlons(false, 0);
-}
-
-function well(g, px, py, x, y, at) {
-  grass(g, px, py, x, y, at);
-  rect(g, 0x4c4c54, px + 2, py + 2, 12, 12);
-  rect(g, 0x4c4c54, px + 1, py + 4, 14, 8);
-  rect(g, 0x9c9ca4, px + 3, py + 3, 10, 10);
-  rect(g, 0x9c9ca4, px + 2, py + 5, 12, 6);
-  rect(g, 0xc0c0c8, px + 3, py + 3, 10, 1);
-  rect(g, 0x2c5cb0, px + 5, py + 5, 6, 6);
-  rect(g, 0x5888d8, px + 5, py + 5, 3, 1);
-  rect(g, 0x6c4424, px + 1, py + 7, 14, 2);             // poutre du treuil
-  rect(g, 0xc8a070, px + 7, py + 6, 2, 4);              // seau
 }
 
 // Tonneau en bois vu de trois quarts : couvercle, douves claires et sombres, deux cerclages de fer.
@@ -2396,7 +2383,6 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
         : sea(g, px, py, x, y, at);
     case 'C': return cobble(g, px, py, x, y);
     case 'K': return rampart(g, px, py, x, y, at);
-    case 'U': return well(g, px, py, x, y, at);
     case 'O': return barrel(g, px, py, x, y, at);
     case 'N': return blackboard(g, px, py, x, y, at);
     case 'Z': return barracksWall(g, px, py, x, y, at);

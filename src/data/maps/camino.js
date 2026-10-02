@@ -22,19 +22,19 @@ export const caminoMap = {
     'wwwwwwwwwwwwwwwssssssswwwwwwwwwwwwwwwwwwwwwwwssssssswwwwwwwwwwwwwwwwwwwsssssswwwwwwwwwwwwwwwwwww', // 2
     '££££££££££££££sssssssss£££££££££££££££££££££sssssssss£££££££££££££££££ssssssss££££££££££££££££££', // 3
     '..............sssssssss.....................sssssssss.................ssssssss..CCCCCCCCCCCCCCCC', // 4
-    '.f.T..T.T.TT..T......T..fT...RRRRR....RR...........T..f...RRRRR.......T.......T.CCCCRRRRRRRCCCCC', // 5
-    '...ff.....T........T......T..RRRRR....RR.....T....TT...f..RRRRR.................CCCCRRRRRRRCCCCC', // 6
-    '........T.....f........fTf...WWWWW........§.......f.......WWWWW...........T.....CCCCRRRRRRRCCCCC', // 7
-    '...fT.T.T...f..f........f....WWDWW..PPPPPPPPPPPPP...f.§...WWDWW..........T..TfT.CCCCRRRRRRRCCCCC', // 8
-    '..............TTT..fT.........§PPPPPPPPPPPPPPPPPPPPPPPP...............f.........CCCCRRRRRRRCCCCC', // 9
-    'PPP...§..........Tf........PPPPPPPPP............fPPPPPPPPPP............T........CCCCCCCCCCCCCCCC', // 10
-    'PPPPPPPP..........§..PPPPPPPPPP.................T......PPPPPPPPPP.§..........fPPCCCCCCCCCCCCCCCC', // 11
+    '.f.ƀ..ƀ.ƀ.ƀƀ..ƀ......ƀ..fƀ...RRRRR....RR...........ƀ..f...RRRRR.......ƀ.......ƀ.CCCCRRRRRRRCCCCC', // 5
+    '...ff.....ƀ........ƀ......ƀ..RRRRR....RR.....ƀ....ƀƀ...f..RRRRR.................CCCCRRRRRRRCCCCC', // 6
+    '........ƀ.....f........fƀf...WWWWW........§.......f.......WWWWW...........ƀ.....CCCCRRRRRRRCCCCC', // 7
+    '...fƀ.ƀ.ƀ...f..f........f....WWDWW..PPPPPPPPPPPPP...f.§...WWDWW..........ƀ..ƀfƀ.CCCCRRRRRRRCCCCC', // 8
+    '..............ƀƀƀ..fƀ.........§PPPPPPPPPPPPPPPPPPPPPPPP...............f.........CCCCRRRRRRRCCCCC', // 9
+    'PPP...§..........ƀf........PPPPPPPPP............fPPPPPPPPPP............ƀ........CCCCCCCCCCCCCCCC', // 10
+    'PPPPPPPP..........§..PPPPPPPPPP.................ƀ......PPPPPPPPPP.§..........fPPCCCCCCCCCCCCCCCC', // 11
     '...PPPPPPPPPPPPPPPPPPPPPPPP.........RRRRR.........f...f....PPPPPPPPPPPPPPPPPPPPPCCCCCCCCCCCqqqCC', // 12
-    'TT......PPPPPPPPPPPPP...............RRRRR..........TT............PPPPPPPPPPPPP..CCCCCCCCCCCqqqCC', // 13
-    '.....T....f.............TT..........WWWWW.....T......fT.........RR..............CCCCCCCCCCCCCCCC', // 14
-    'T..T.T..........T......f.TT.........WWDWW..........f..T.........RR....f...f.T...CCCCCCCCCCCCCCCC', // 15
-    '.TTT...T.TTf....T..TT.TTT.T...................T...TTTTT...............TTT...TTTTCCCCCCCCCCCCCCCC', // 16
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 17
+    'ƀƀ......PPPPPPPPPPPPP...............RRRRR..........ƀƀ............PPPPPPPPPPPPP..CCCCCCCCCCCqqqCC', // 13
+    '.....ƀ....f.............ƀƀ..........WWWWW.....ƀ......fƀ.........RR..............CCCCCCCCCCCCCCCC', // 14
+    'ƀ..ƀ.ƀ..........ƀ......f.ƀƀ.........WWDWW..........f..ƀ.........RR....f...f.ƀ...CCCCCCCCCCCCCCCC', // 15
+    '.ƀTT...ƀ.ƀƀf....ƀ..ƀƀ.TTƀ.ƀ...................ƀ...TTTTƀ...............TTƀ...TTTTCCCCCCCCCCCCCCCC', // 16
+    'ƀƀTTƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀTTƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀTTTTƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀTTƀƀƀƀTTTTƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 17
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 18
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 19
   ]),

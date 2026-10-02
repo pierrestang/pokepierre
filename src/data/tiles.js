@@ -23,7 +23,6 @@ export const TILES = {
   'B': { name: 'bateau',        color: 0xf0f0f0, solid: true },
   'C': { name: 'pavés',         color: 0xa8a098, solid: false },
   'K': { name: 'rempart',       color: 0x7c7870, solid: true },
-  'U': { name: 'puits',         color: 0x8c8c94, solid: true },
   'O': { name: 'tonneau',       color: 0x8c5a2c, solid: true },
   'Z': { name: "mur d'enceinte", color: 0xb0a890, solid: true },
   'A': { name: 'asphalte',      color: 0x6c7074, solid: false },

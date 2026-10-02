@@ -1,16 +1,18 @@
 import { fullLook } from '../art/characterArt.js';
-import { PORTRAITS, EMERALD_PORTRAITS } from '../art/spriteSheets.js';
+import { PORTRAITS, EMERALD_PORTRAITS, SHEETS } from '../art/spriteSheets.js';
 
 // Apparence des personnages : un sprite des planches fournies, `t{n}` (TownsPeople2, avec portrait)
 // ou `f{n}` (Rouge Feu / Vert Feuille, sans portrait). Voir art/spriteSheets.js pour la liste.
 // Le chat reste dessiné dans le code (voir art/characterArt.js).
 
 // Apparences choisies par le joueur (menu Start > PNJ), par nom affiché : { Maman: 't3', … }. Gardées dans
-// la sauvegarde (localStorage), elles passent avant les attributions ci-dessous.
+// la sauvegarde (localStorage), elles passent avant les attributions ci-dessous. Un choix fait dans une planche
+// retirée depuis (ex. les sprites DS) est ignoré.
 const LOOKS_KEY = 'pokepierre.looks';
 function loadLooks() {
   try {
-    return JSON.parse(localStorage.getItem(LOOKS_KEY) ?? '{}');
+    const saved = JSON.parse(localStorage.getItem(LOOKS_KEY) ?? '{}');
+    return Object.fromEntries(Object.entries(saved).filter(([, sprite]) => SHEETS[sprite[0]]));
   } catch {
     return {};
   }

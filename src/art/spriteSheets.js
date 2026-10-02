@@ -17,10 +17,8 @@
 //   Quelques-uns : 0 Red, 1 Leaf, 2 Blue, 3 Prof. Chen, 12 infirmière, 16 vendeur, 24 et 38 chauves,
 //   26 vieux sage, 32 randonneur, 39 agent en uniforme, 40-41 Team Rocket, 50 cuisinier, 51 capitaine.
 //
-// Planches DS et Émeraude (scripts/extract_more_npcs.py), même format que Rouge Feu, en plus grand :
-//   d : dp-npcs.png, 89 personnages de Diamant/Perle en 32 x 32 (0-78 PNJ, 79-88 champions et Conseil 4).
-//   n : bw-npcs.png, 63 personnages de Noir/Blanc en 32 x 32.
-//   h : emerald-npcs.png, 15 champions et membres du Conseil 4 d'Émeraude en 16 x 32.
+// Émeraude (lettre h) : emerald-npcs.png (scripts/extract_more_npcs.py), même format que Rouge Feu, en 16 x 32 :
+//   15 champions et membres du Conseil 4.
 
 export const PORTRAITS = 'townsfolk-portraits';
 // Portraits des dresseurs d'Émeraude (scripts/extract_emerald_trainers.py) : images `e{colonne},{rangée}`.
@@ -30,8 +28,6 @@ export const PORTRAIT_SIZE = 64;
 export const SHEETS = {
   t: { key: 'townsfolk', file: 'TownsPeople2_Animations.png', w: 18, h: 26, count: 16, label: 'TownsPeople' },
   f: { key: 'frlg', file: 'frlg-npcs.png', w: 16, h: 24, count: 77, label: 'Rouge Feu' },
-  d: { key: 'dp-npcs', file: 'dp-npcs.png', w: 32, h: 32, count: 89, label: 'Diamant/Perle' },
-  n: { key: 'bw-npcs', file: 'bw-npcs.png', w: 32, h: 32, count: 63, label: 'Noir/Blanc' },
   h: { key: 'emerald-npcs', file: 'emerald-npcs.png', w: 16, h: 32, count: 15, label: 'Émeraude' },
 };
 
@@ -68,7 +64,7 @@ export function registerSpriteSheets(scene) {
   }
 
   // Planches au format Rouge Feu : une ligne de 12 images par personnage.
-  for (const letter of ['f', 'd', 'n', 'h']) {
+  for (const letter of ['f', 'h']) {
     const sheet = SHEETS[letter];
     const texture = scene.textures.get(sheet.key);
     for (let i = 0; i < sheet.count; i++) {
