@@ -40,6 +40,7 @@ export const FRLG_SHEETS = {
   farm: 'rs-farm',
   crates: 'rs-crates',
   smallTree: 'frlg-small-tree',
+  frontier: 'emerald-frontier',
 };
 
 export function preloadFrlg(scene) {
@@ -136,6 +137,17 @@ export const FRLG_BUILDINGS = {
   lab: { sx: 528, sy: 342, w: 112, h: 72, footH: 4 },       // labo du Prof. Chen : 7 cases, porte en 4e colonne
   mansion: { sx: 296, sy: 126, w: 112, h: 124, footH: 8 },   // grand immeuble vert : 7 x 8 cases, porte en 4e colonne
   museum: { sx: 136, sy: 338, w: 176, h: 120, footH: 8 },    // musée à colonnes : 11 x 8 cases, porche au milieu (porte en 6e colonne)
+  // Bâtiments encore libres de la planche : maisons (toits bleu, violet, à cheminée), Boutique, crèche.
+  blueHouse: { sx: 395, sy: 24, w: 96, h: 56, footH: 4 },    // toit bleu : 6 cases, porte en 5e colonne
+  purpleHouse: { sx: 579, sy: 25, w: 80, h: 56, footH: 4 },  // toit violet : porte en 3e colonne
+  chimneyHouse: { sx: 673, sy: 26, w: 64, h: 72, footH: 4 }, // toit-terrasse à cheminée : 4 cases, porte en 2e colonne
+  mart: { sx: 421, sy: 238, w: 64, h: 62, footH: 4 },        // Boutique : 4 cases, porte en 3e colonne
+  dayCare: { sx: 421, sy: 343, w: 80, h: 72, footH: 4 },     // crèche : porte en 3e colonne
+  // Zone de Combat d'Émeraude (scripts/extract_frontier.py) : petites maisons modernes de 3 cases (porte au
+  // milieu) et palais doré (11 x 7 cases, porte en 6e colonne).
+  frontierHouse: { sheet: FRLG_SHEETS.frontier, sx: 229, sy: 18, w: 48, h: 64, footH: 4 },
+  frontierShop: { sheet: FRLG_SHEETS.frontier, sx: 294, sy: 26, w: 48, h: 56, footH: 4 },
+  goldenPalace: { sheet: FRLG_SHEETS.frontier, sx: 281, sy: 361, w: 176, h: 112, footH: 7 },
   // Ferme de M. Bouly : gare du téléphérique du Mont Chimnée (Rubis/Saphir, scripts/extract_rs_buildings.py),
   // 6 x 4 cases, grande porte en 4e colonne.
   boulyFarm: { sheet: FRLG_SHEETS.farm, sx: 0, sy: 0, w: 96, h: 80, footH: 4 },
@@ -167,7 +179,9 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
   // alors sous toute la façade, porche compris, sans bout d'herbe à côté de la porte).
   if (buildingFloor(x, y)) {
     const below = !buildingFloor(x, y + 1) && frlgGroundOf(x, y + 1, at, buildingFloor);
-    return ['path', 'cobble', 'concrete'].includes(below) ? below : 'grass';
+    if (['path', 'cobble', 'concrete'].includes(below)) return below;
+    // Ailleurs, le sol le plus fréquent autour du bâtiment (pavés en ville, herbe à la campagne).
+    return groundUnderBuilding(x, y, at, buildingFloor);
   }
   if (GRASS_CODES.has(code)) return 'grass';
   if (SAND_CODES.has(code)) return 'sand';

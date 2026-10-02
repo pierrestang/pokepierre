@@ -21,23 +21,23 @@ export const hanoiMap = {
   name: 'Hanoï',
   grid: parseGrid([
     'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  buissons : bord de l'écran
-    'ɔɔRRRRRRRRRɔɔRRRRRɔɔRRRRRR.ƫƫ..ɔ', // 1  maisons-tubes, agence de voyage
-    'ɔɔRRRRRRRRRYɔRRRRRYɔRRRRRR.ƫƫ.Yɔ', // 2
-    'ɔɔWWWWWWWWWɔɔWWWWWɔɔWWWWWWf...fɔ', // 3
-    'ɔɔWDWWDWWDWɔɔWDWWWɔɔWDWWDW..f..ɔ', // 4  portes (ta maison : 2e à gauche)
+    'ɔɔRRRRRRRRRɔɔRRRRɔɔɔRRRRRR.ƫƫ..ɔ', // 1  maisons, Boutique (agence de voyage)
+    'ɔɔRRRRRRRRRYɔRRRRɔYɔRRRRRR.ƫƫ.Yɔ', // 2
+    'ɔɔWWWWWWWWWɔɔWWWWɔɔɔWWWWWWf...fɔ', // 3
+    'ɔɔWDWWDWWDWɔɔWWDWɔɔɔWDWWDW..f..ɔ', // 4  portes (ta maison : 2e à gauche)
     'ɔnɔɔɔɔɔɔɔɔɔnɔɔɔɔɔtɔnɔɔɔɔɔɔnɔɔɔɔɔ', // 5  lanternes, stand, scooters
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  rue (vers l'aéroport)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
     'ɔ<ɔɔnɔɔɔɔɔɔɔnɔɔɔɔɔɔɔnɔɔɔɔɔɔɔnɔ>ɔ', // 8  panneaux aéroport
-    '.Y.............Y....RRRRR....ƚ.ɔ', // 9  lac Hoàn Kiếm, pagode
-    '..~~~~~r~~~~k~~.ƚ.Y.RRRRR.....ƚɔ', // 10
-    '..~~k~~r~~RR~~~.....RRRRR..v...ɔ', // 11 tour de la Tortue, drapeau
-    '..~~~~~r~~RR~~~..ƚ..WWWWW......ɔ', // 12
-    '..~k~k~r~~~~~~~.....WWDWW....ƚ.ɔ', // 13 porte de la pagode
-    '..~~~~~r~~k~~k~.ƚ..n.....n.....ɔ', // 14
-    '.Y.............Y............Y..ɔ', // 15
+    '.Y.............Y..RRRRRRRRRRRf.ɔ', // 9  lac Hoàn Kiếm, temple (palais doré)
+    '..~~~~~r~~~~k~~.ƚ.RRRRRRRRRRR..ɔ', // 10
+    '..~~k~~r~~RR~~~...RRRRRRRRRRR.vɔ', // 11 tour de la Tortue, drapeau
+    '..~~~~~r~~RR~~~...RRRRRRRRRRR..ɔ', // 12
+    '..~k~k~r~~~~~~~...WWWWWWWWWWWƚ.ɔ', // 13
+    '..~~~~~r~~k~~k~.ƚ.WWWWWWWWWWW..ɔ', // 14
+    '.Y.............Y..WWWWWDWWWWW.fɔ', // 15 porte du temple
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
-    'ɔɔRRRRRRRRRɔtɔtɔtɔtɔRRRRRRRRRɔɔɔ', // 17 maisons-tubes, marché
+    'ɔɔRRRRRRRRRɔtɔtɔtɔtɔRRRRRRRRRɔɔɔ', // 17 maisons, marché
     'ɔɔRRRRRRRRRnɔɔɔɔɔɔɔnRRRRRRRRRɔɔɔ', // 18
     'ɔɔWWWWWWWWWɔɔtɔtɔtɔɔWWWWWWWWWɔɔɔ', // 19
     'ɔɔWDWWDWWDWɔɔɔɔɔɔɔɔɔWDWWDWWDWɔɔɔ', // 20
@@ -51,14 +51,14 @@ export const hanoiMap = {
     { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
     { x: 6,  y: 4,  interior: 'hanoiHome' },          // ta maison
     { x: 9,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 14, y: 4,  interior: 'travelAgency' },       // agence de voyage
+    { x: 15, y: 4,  interior: 'travelAgency' },       // agence de voyage
     { x: 21, y: 4,  lockedDialogue: NOT_HOME },
     { x: 24, y: 4,  lockedDialogue: NOT_HOME },
-    // La pagode (le temple) : on y entre en guidant les touristes.
+    // Le temple (palais doré) : on y entre en guidant les touristes.
     {
-      x: 22, y: 13, interior: 'temple',
+      x: 23, y: 15, interior: 'temple',
       lock: { ifFlags: [FLAGS.touristesSuivent] },
-      lockedDialogue: ['[Texte provisoire] La pagode est un lieu de recueillement.'],
+      lockedDialogue: ['[Texte provisoire] Le temple est un lieu de recueillement.'],
     },
     { x: 3,  y: 20, lockedDialogue: NOT_HOME },
     { x: 6,  y: 20, lockedDialogue: NOT_HOME },
@@ -68,48 +68,48 @@ export const hanoiMap = {
     { x: 27, y: 20, lockedDialogue: NOT_HOME },
   ],
   buildings: [
-    { type: 'tubeHouse', x: 2,  y: 1, variant: 0 },
-    { type: 'tubeHouse', x: 5,  y: 1, variant: 1 },
-    { type: 'tubeHouse', x: 8,  y: 1, variant: 2 },
-    { type: 'travelAgency', x: 13, y: 1 },
-    { type: 'tubeHouse', x: 20, y: 1, variant: 3 },
-    { type: 'tubeHouse', x: 23, y: 1, variant: 4 },
+    { type: 'frontierHouse', x: 2, y: 1 },
+    { type: 'frontierShop', x: 5, y: 1 },
+    { type: 'frontierHouse', x: 8, y: 1 },
+    { type: 'mart', x: 13, y: 1 },
+    { type: 'frontierShop', x: 20, y: 1 },
+    { type: 'frontierHouse', x: 23, y: 1 },
     { type: 'turtleTower', x: 10, y: 11 },
-    { type: 'pagoda', x: 20, y: 9 },
-    { type: 'tubeHouse', x: 2,  y: 17, variant: 2 },
-    { type: 'tubeHouse', x: 5,  y: 17, variant: 4 },
-    { type: 'tubeHouse', x: 8,  y: 17, variant: 0 },
-    { type: 'tubeHouse', x: 20, y: 17, variant: 1 },
-    { type: 'tubeHouse', x: 23, y: 17, variant: 3 },
-    { type: 'tubeHouse', x: 26, y: 17, variant: 2 },
+    { type: 'goldenPalace', x: 18, y: 9 },
+    { type: 'frontierShop', x: 2, y: 17 },
+    { type: 'frontierHouse', x: 5, y: 17 },
+    { type: 'frontierShop', x: 8, y: 17 },
+    { type: 'frontierHouse', x: 20, y: 17 },
+    { type: 'frontierShop', x: 23, y: 17 },
+    { type: 'frontierHouse', x: 26, y: 17 },
   ],
   npcs: [
     // Devant l'agence, après ton premier jour : deux touristes à guider jusqu'au temple.
     {
-      id: 'touriste-1', name: 'Anna', x: 15, y: 5, facing: 'left', color: 0xe0a0d0,
+      id: 'touriste-1', name: 'Anna', x: 14, y: 5, facing: 'right', color: 0xe0a0d0,
       ifFlags: [FLAGS.travailEtape1],
       unlessFlags: [FLAGS.touristesSuivent],
       dialogue: [
         "[Anna - texte provisoire] Bonjour ! Tu travailles à l'agence ?",
         'Tu pourrais nous emmener visiter le temple ?',
-        "D'accord ! Tu acceptes de les guider jusqu'à la pagode.",
+        "D'accord ! Tu acceptes de les guider jusqu'au temple.",
       ],
       setFlag: FLAGS.touristesSuivent,
     },
     {
-      id: 'touriste-2', name: 'Tom', x: 16, y: 5, facing: 'left', color: 0x80c0e0,
+      id: 'touriste-2', name: 'Tom', x: 13, y: 5, facing: 'right', color: 0x80c0e0,
       ifFlags: [FLAGS.travailEtape1],
       unlessFlags: [FLAGS.touristesSuivent],
       dialogue: ["[Tom - texte provisoire] On aimerait tellement voir le temple !"],
     },
-    // Après la visite, ils restent devant la pagode.
+    // Après la visite, ils restent de chaque côté du temple.
     {
-      id: 'touriste-1-merci', name: 'Anna', x: 21, y: 14, facing: 'right', color: 0xe0a0d0,
+      id: 'touriste-1-merci', name: 'Anna', x: 17, y: 15, facing: 'right', color: 0xe0a0d0,
       ifFlags: [FLAGS.visiteTerminee],
       dialogue: ['[Anna - texte provisoire] Merci encore pour la visite !'],
     },
     {
-      id: 'touriste-2-merci', name: 'Tom', x: 23, y: 14, facing: 'left', color: 0x80c0e0,
+      id: 'touriste-2-merci', name: 'Tom', x: 29, y: 15, facing: 'left', color: 0x80c0e0,
       ifFlags: [FLAGS.visiteTerminee],
       dialogue: ['[Tom - texte provisoire] Super visite, merci !'],
     },
