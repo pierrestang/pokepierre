@@ -354,7 +354,7 @@ export const interiors = {
     events: [{ on: 'enter', ...ANNOUNCEMENT_EVENT, ifFlags: [FLAGS.cabaneFinie], steps: ANNOUNCEMENT }],
   },
 
-  // Saint-Ay — la maison au toit d'ardoise : Felix, Joshua, Yanis et Val, les cousins, qui viennent
+  // Saint-Ay — la chaumière de la rue du milieu (même extérieur que celle de Pierre) : Felix, Joshua, Yanis et Val, les cousins, qui viennent
   // d'emménager. Felix y lance (puis dirige) le chantier de la cabane ; Val sculpte dans son atelier.
   felixHouse: {
     name: 'Maison de Felix',
@@ -379,6 +379,8 @@ export const interiors = {
       { kind: 'table', x: 3, y: 4 },
       { kind: 'plant', x: 0, y: 5 },
     ],
+    // Le cheval que Val sculpte, posé sur la table devant lui (art/tileArt.js DECALS.statue).
+    decals: [{ kind: 'statue', x: 5, y: 4, ifFlags: [FLAGS.felixInvite] }],
     spawn: { x: 5, y: 6, facing: 'up' },
     npcs: [
       {
@@ -387,10 +389,10 @@ export const interiors = {
         script: FELIX_CHANTIER,
       },
       {
-        id: 'val', name: 'Val', x: 8, y: 4, facing: 'left', color: 0x5cb85c, still: true,
+        id: 'val', name: 'Val', x: 7, y: 4, facing: 'left', color: 0x5cb85c, still: true,
         ifFlags: [FLAGS.felixInvite],
         script: [
-          { say: ['Val sculpte un cheval. Des copeaux partout.'] },
+          { say: ['Sur la table, Val sculpte une statue : un cheval en bois. Des copeaux partout.'] },
           { speaker: 'Val', say: ['Regarde, il commence à ressembler à quelque chose. La crinière, c\'est le plus dur.'] },
           { speaker: 'Val', say: ['Il me faudra encore quelques semaines. Il doit être parfait.'] },
         ],

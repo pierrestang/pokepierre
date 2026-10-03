@@ -33,7 +33,8 @@ export const BIRTH = [
   { speaker: 'Maman', say: ['Te voilà ! Viens voir… Je te présente Fanny.'] },
   { speaker: 'Manon', say: ['Elle est toute petite… Elle me ressemble, non ?'] },
   { speaker: 'Papa', say: ['Elle ne pleure même pas. Elle a déjà tout compris.'] },
-  { say: ['Tu t\'approches de Fanny. Elle attrape ton doigt.'] },
+  { goTo: [3, 4], facing: 'up' },                                   // devant le berceau de Fanny
+  { say: ['Tu te penches sur le berceau. Fanny attrape ton doigt.'] },
   { speaker: 'Maman', say: ['Tu vois ? Elle t\'a déjà choisi. À partir d\'aujourd\'hui, tu vas veiller sur elle.'] },
   { quality: ROLES.grandFrere },
 ];

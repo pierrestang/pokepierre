@@ -337,6 +337,7 @@ export class MapScene extends Phaser.Scene {
   //   { say: [pages], speaker? }         texte (avec le nom de la personne qui parle)
   //   { talk: npcId }                    le PNJ s'avance jusqu'au joueur, se tourne vers lui et dit son dialogue
   //   { approach: npcId }                le PNJ s'avance jusqu'au joueur et ils se font face
+  //   { goTo: [x, y], facing? }          Pierre marche jusqu'à la case (plus court chemin), puis se tourne
   //   { setFlag } / { setFlags: [] }     drapeaux d'histoire (les personnages sont mis à jour)
   //   { quality: { id, name } }          qualité reçue (compte comme un souvenir) : « Tu as reçu : X. »
   //   { give: item, text? }              objet reçu (message `text`, sinon « Tu as reçu : X. »)
@@ -370,6 +371,7 @@ export class MapScene extends Phaser.Scene {
       if (step.wait) await this.wait(step.wait);
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
       if (step.approach) await this.approach(step.approach);
+      if (step.goTo) await this.walkPlayer(step.goTo, step.facing);
       if (step.drive) await this.driveAway(step.drive);
       if (step.hop) await this.hop(step.hop, step.times);
       if (step.cheer) await this.cheer(step.cheer);
@@ -440,6 +442,30 @@ export class MapScene extends Phaser.Scene {
       targets: car, x: car.x + dir * 12 * TILE_SIZE, duration: 2200, ease: 'Quad.easeIn', onComplete: resolve,
     }));
     smoke.remove();
+  }
+
+  // Pierre marche jusqu'à la case [tx, ty] (plus court chemin, sans traverser les PNJ), puis regarde `facing`.
+  async walkPlayer([tx, ty], facing) {
+    const p = this.player;
+    const path = this.pathTo({ x: p.tileX, y: p.tileY }, tx, ty) ?? [];
+    for (const [x, y] of path) {
+      p.facing = this.directionTo({ x: p.tileX, y: p.tileY }, { x, y });
+      p.sprite.setFacing(p.facing);
+      this.followers.advance(p.tileX, p.tileY, WALK_DURATION);
+      p.sprite.walkStep(WALK_DURATION);
+      const [px, py] = tileCenter(x, y);
+      await new Promise((resolve) => this.tweens.add({
+        targets: p.sprite, x: px, y: py, duration: WALK_DURATION,
+        onUpdate: () => p.sprite.updateDepth(0.001), onComplete: resolve,
+      }));
+      p.tileX = x;
+      p.tileY = y;
+    }
+    if (facing) {
+      p.facing = facing;
+      p.sprite.setFacing(facing);
+    }
+    this.savePosition();
   }
 
   // Le PNJ s'avance vers le joueur (plus court chemin jusqu'à une case voisine), puis ils se font face.

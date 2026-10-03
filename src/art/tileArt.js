@@ -1331,6 +1331,26 @@ function fishingRods(g, px, py, x, y) {
   pixelArt(g, ROD_STAND, px, base);
 }
 
+// Statuette de cheval en bois (14 x 16), tournée vers la gauche, sur un socle.
+const HORSE_STATUE = [
+  '...kk.........',
+  '..kLLk........',
+  '.kLLMMk.......',
+  'kLMMDMk.......',
+  'kMMkkMMk......',
+  '.kk..kMMkkkkk.',
+  '.....kLLLLLLMk',
+  '.....kMMMMMMDk',
+  '.....kMkkkkMDk',
+  '.....kMk..kMk.',
+  '.....kDk..kDk.',
+  '....kkkkkkkkkk',
+  '....kPPPPPPPPk',
+  '....kQQQQQQQQk',
+  '....kkkkkkkkkk',
+];
+const HORSE_STATUE_C = { k: 0x5a3818, L: 0xe8b878, M: 0xc88c48, D: 0x966030, P: 0x8c6a50, Q: 0x6c4c34 };
+
 // Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene), case (x, y)
 // en pixels px, py. Les cannes à pêche sont des images à part (voir art/uiIcons.js ROD_DECALS).
 const DECALS = {
@@ -1375,6 +1395,16 @@ const DECALS = {
       if (x % 4 === 0 && y < deck) rect(g, 0xb0bccc, px + x, y + 1, 1, deck - y - 1);   // suspentes
     }
     rect(g, 0x506078, px, deck + 2, W, 1);
+  },
+  // Le cheval que Val sculpte (maison de Felix) : statuette en bois sur son socle, copeaux sur la table.
+  statue(g, px, py) {
+    HORSE_STATUE.forEach((row, ry) => [...row].forEach((c, rx) => {
+      if (c !== '.') rect(g, HORSE_STATUE_C[c], px + 2 + rx, py - 1 + ry, 1, 1);
+    }));
+    for (const [dx, dy] of [[-4, 12], [-8, 15], [5, 16], [12, 15]]) {             // copeaux
+      rect(g, 0xf0d098, px + dx, py + dy, 2, 1);
+      rect(g, 0xd8b070, px + dx + 1, py + dy + 1, 1, 1);
+    }
   },
   // Les pintes de la bande, posées sur une table du pub (sur deux cases).
   pints(g, px, py) {

@@ -130,7 +130,7 @@ export const saintAyMap = {
     {
       id: 'felix', name: 'Felix', x: 17, y: 21, facing: 'right', color: COUSIN_COLORS.felix,
       ifSouvenirs: [ROLES.grandFrere.id], unlessFlags: [FLAGS.felixInvite],
-      dialogue: ["Cousin ! Ça y est, on a emménagé ! La maison au toit d'ardoise, sur la rue du milieu. Viens, les autres t'attendent !"],
+      dialogue: ["Cousin ! Ça y est, on a emménagé ! La maison au toit de chaume, sur la rue du milieu, juste sous la vôtre. Viens, les autres t'attendent !"],
     },
     // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis près du lac.
     {
