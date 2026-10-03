@@ -37,7 +37,8 @@ On commence par une seule ville jouable, puis on étend à une petite région.
   les pays exotiques, des buissons 'ƀ' ailleurs ; les palmiers 'Y' sont le petit arbre sans son herbe
   (frlg-small-tree.png), posé sur le sol de la case.
 - Interface (scripts/build_ds_ui.py -> public/assets/ui/, voir src/art/uiIcons.js) : icônes d'objets et bulles
-  d'émotion de HeartGold/SoulSilver (sac, objet reçu, étape `emote` des scénettes), cartes postales de la carte
+  d'émotion de HeartGold/SoulSilver (sac, objet reçu, étape `emote` des scénettes ; bulles : uniquement « … » et « ! »,
+  en noir, sauf cas exceptionnel), cartes postales de la carte
   du voyage tirées des illustrations de lieux de Johto. Mont Chimnée (Rubis/Saphir) : la gare du téléphérique sert
   de ferme à M. Bouly ; caisses du marché de Slateport dans la cabane de pêche (scripts/extract_rs_buildings.py).
 

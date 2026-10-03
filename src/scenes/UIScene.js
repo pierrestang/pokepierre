@@ -73,7 +73,7 @@ export class UIScene extends Phaser.Scene {
     souvenirEvents.on('change', render);
 
     const setItems = createLabel(this, 2);
-    const renderItems = (count, show = true) => setItems(`Objets : ${count}  (I)`, show);
+    const renderItems = (count, show = true) => setItems(`Objets : ${count}`, show);
     renderItems(items.count(), false);
     itemEvents.on('change', renderItems);
 

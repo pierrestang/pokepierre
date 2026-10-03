@@ -1309,7 +1309,7 @@ const NET_HEAD = [
 const ROD_STAND = [
   '.kkkkkkkkkkkkkk.',
   'kWWWWWWWWWWWWWWk',
-  'kWdWWWWdWWWWdWWk',
+  'kWWdWWWWWWWdWWWk',
   'kkkkkkkkkkkkkkkk',
   'kwwwwwwwwwwwwwwk',
   'kwDwwwwwwwwwwDwk',

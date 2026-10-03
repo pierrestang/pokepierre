@@ -24,9 +24,10 @@ const PRINCIPALE = [
 ];
 
 // Cannes de la cabane de pêche : [icône, x, y, hauteur gardée] en pixels depuis le coin de la case (voir ffHut).
-const RACK_RODS = [['vieille-canne-petite', 8, -14, 23], ['super-canne-petite', 0, -14, 23], ['mega-canne-petite', -8, -14, 23]];
-const CRATE_RODS = [['super-canne-petite', -6, -17, 19], ['vieille-canne-petite', -1, -17, 19]];
-const OLD_ROD_IN_CRATE = [['vieille-canne-petite', -3, -17, 19]];
+// Cannes debout (gaule en x = 14 de l'image) : dans les trous du râtelier (x = 3, 11, 19), le manche caché par le socle.
+const RACK_RODS = [['mega-canne-petite', -11, -18, 26], ['super-canne-petite', -3, -18, 26], ['vieille-canne-petite', 5, -18, 26]];
+const CRATE_RODS = [['super-canne-petite', -10, -17, 19], ['vieille-canne-petite', -4, -17, 19]];
+const OLD_ROD_IN_CRATE = [['vieille-canne-petite', -7, -17, 19]];
 
 // Ascenseur de l'entreprise parisienne (mêmes cases, en haut à droite, à chaque étage).
 const floor = (interior) => ({ interior, x: 10, y: 2, facing: 'down' });
@@ -201,12 +202,12 @@ export const interiors = {
       { kind: 'fishCrate', x: 4, y: 2 },
       { kind: 'giveCrate', x: 0, y: 4 },
     ],
-    // Cannes en petites icônes de HeartGold (voir MapScene, décors `icons`) : les trois du râtelier (Méga, Super,
+    // Cannes debout aux couleurs de HeartGold (voir MapScene, décors `icons`) : les trois du râtelier (Méga, Super,
     // Vieille), puis la Méga Canne que Papa garde ; dans la caisse « À DONNER », la Super Canne (offerte au
-    // pêcheur) et la Vieille canne, puis la Vieille seule. Le bas des icônes est coupé (socle, bord de la caisse).
+    // pêcheur) et la Vieille canne, puis la Vieille seule. Le bas des cannes est coupé (socle, bord de la caisse).
     decals: [
       { x: 0, y: 2, unlessFlags: [FLAGS.papaFait], icons: RACK_RODS },
-      { x: 0, y: 2, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -4, -14, 23]] },
+      { x: 0, y: 2, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -3, -18, 26]] },
       { x: 0, y: 4, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id], icons: CRATE_RODS },
       { x: 0, y: 4, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
       { x: 0, y: 4, ifItems: [ITEMS.canneAPeche.id], icons: OLD_ROD_IN_CRATE },

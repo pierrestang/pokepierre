@@ -32,13 +32,14 @@ const ICON_OF_ITEM = {
 // Image de l'atlas pour un objet (null s'il n'a pas d'icône).
 export const itemIcon = (id) => ICON_OF_ITEM[id] ?? null;
 
-// Bulles : les deux images de l'animation de chaque émotion.
+// Bulles : les deux images de l'animation de chaque émotion. Dans l'histoire, seulement « … » (dots) et « ! »
+// (surprise), bulles blanches simples au signe noir (scripts/build_ds_ui.py) ; les autres restent pour un cas exceptionnel.
 export const EMOTE_FRAMES = {
   dots: [0, 1],        // « … »
   note: [2, 3],        // note de musique
   happy: [4, 5],
   grumpy: [6, 7],
-  surprise: [8, 9],    // « ! »
+  surprise: [22, 22],  // « ! » : bulle simple, signe fixe
   heart: [10, 11],
   question: [16, 17],  // « ? »
   dizzy: [18, 19],

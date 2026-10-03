@@ -83,7 +83,56 @@ def build_postcards():
 
 
 SMALL_RODS = ['vieille-canne', 'super-canne', 'mega-canne']
-SMALL_ROD = 14
+
+# Cannes debout de la cabane de pêche (râtelier, caisse « À DONNER »), aux couleurs des icônes de HeartGold :
+# gaule, moulinet, manche, et le fil qui pend de la pointe avec son bouchon. Gaule en colonne 2.
+ROD_STANDING = [
+    '..k.....',
+    '.kpk....',
+    '.kPkL...',
+    '.kPk.L..',
+    '.kpk.L..',
+    '.kPk.L..',
+    '.kPk.L..',
+    '.kpk.L..',
+    '.kPk.L..',
+    '.kPkkBk.',
+    '.kpkkBk.',
+    '.kPkkWk.',
+    '.kPk.k..',
+    '.kpk....',
+    '.kPk....',
+    '.kPk....',
+    'kkpk....',
+    'krRk....',
+    'kRRk....',
+    'kkHHk...',
+    '.kHhk...',
+    '.kHhk...',
+    '.kHhk...',
+    '.kHhk...',
+    '..kk....',
+]
+ROD_COLORS = {
+    'vieille-canne': {'P': (185, 142, 54), 'p': (220, 177, 93), 'H': (101, 54, 11), 'h': (142, 93, 5),
+                      'R': (93, 117, 126), 'r': (185, 212, 220)},
+    'super-canne': {'P': (168, 194, 54), 'p': (212, 238, 85), 'H': (69, 69, 126), 'h': (109, 109, 168),
+                    'R': (194, 77, 46), 'r': (238, 117, 85)},
+    'mega-canne': {'P': (134, 117, 117), 'p': (194, 185, 185), 'H': (69, 69, 126), 'h': (109, 109, 168),
+                   'R': (194, 77, 46), 'r': (69, 229, 69)},
+}
+ROD_COMMON = {'k': (39, 39, 39), 'L': (110, 110, 118), 'B': (194, 77, 46), 'W': (247, 247, 247)}
+ROD_TOP = 3                     # haut de la canne dans sa case de 32 x 32 ; gaule en x = 14
+
+
+def standing_rod(name):
+    colors = {**ROD_COMMON, **ROD_COLORS[name]}
+    rod = Image.new('RGBA', (len(ROD_STANDING[0]), len(ROD_STANDING)), (0, 0, 0, 0))
+    for y, row in enumerate(ROD_STANDING):
+        for x, c in enumerate(row):
+            if c != '.':
+                rod.putpixel((x, y), (*colors[c], 255))
+    return rod
 
 
 def cut_out(crop):
@@ -100,17 +149,45 @@ def build_icons():
         w, h = icon.size
         atlas.paste(icon, (i * CELL + (CELL - w) // 2, (CELL - h) // 2), icon)
         frames[name] = {'frame': {'x': i * CELL, 'y': 0, 'w': CELL, 'h': CELL}}
-    # Petites cannes (14 x 14, au centre de leur case) : les cannes posées dans la cabane de pêche.
+    # Cannes debout (gaule en x = 14, haut en y = ROD_TOP) : les cannes posées dans la cabane de pêche.
     for k, name in enumerate(SMALL_RODS):
         i = len(ICONS) + k
-        x, y, w, h = ICONS[name]
-        icon = cut_out(im.crop((x - 1, y - 1, x + w + 1, y + h + 1)))
-        icon = icon.crop(icon.getbbox()).resize((SMALL_ROD, SMALL_ROD), Image.NEAREST)
-        atlas.paste(icon, (i * CELL + (CELL - SMALL_ROD) // 2, (CELL - SMALL_ROD) // 2), icon)
+        rod = standing_rod(name)
+        atlas.paste(rod, (i * CELL + 12, ROD_TOP), rod)
         frames[f'{name}-petite'] = {'frame': {'x': i * CELL, 'y': 0, 'w': CELL, 'h': CELL}}
     atlas.save(OUT / 'item-icons.png')
     (OUT / 'item-icons.json').write_text(json.dumps({'frames': frames, 'meta': {'image': 'item-icons.png'}}, indent=1))
     print(f'{len(frames)} icônes -> public/assets/ui/item-icons.png')
+
+
+# Bulles du jeu, « … » et le « ! » de la bulle simple (case 22) : le signe est passé en noir, le contour de la bulle
+# ne change pas.
+BLACK_EMOTES = [0, 1, 22]
+SYMBOL_BLACK = (24, 24, 32, 255)
+
+
+def blacken_symbol(sheet, frame):
+    x0, y0 = (frame % 8) * 16, (frame // 8) * 16
+    px = sheet.load()
+
+    def transparent(x, y):
+        inside = x0 <= x < x0 + 16 and y0 <= y < y0 + 16
+        return not inside or px[x, y][3] == 0
+
+    for y in range(y0, y0 + 16):
+        for x in range(x0, x0 + 16):
+            r, g, b, a = px[x, y]
+            if a == 0:
+                continue
+            red = r > 200 and g < 200 and b < 200                       # « ! » rouge et son reflet rose
+            dot = (r, g, b) == (88, 88, 96) and not any(                # point gris, hors du contour de la bulle
+                transparent(x + dx, y + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1))
+            if (r, g, b) == (255, 255, 255):                            # blanc pur parasite : blanc de la bulle
+                px[x, y] = (248, 248, 248, 255)
+            if red or dot:
+                px[x, y] = SYMBOL_BLACK
+                if px[x + 1, y][:3] == (168, 168, 176):                 # ombre grise du point : noire aussi
+                    px[x + 1, y] = SYMBOL_BLACK
 
 
 def build_emotes():
@@ -122,6 +199,8 @@ def build_emotes():
         for c, x in enumerate(xs):
             cell = im.crop((x, y, x + 15, y + 16))
             out.paste(clear_color(cell, (255, 128, 0)), (c * 16, r * 16))
+    for frame in BLACK_EMOTES:
+        blacken_symbol(out, frame)
     out.save(OUT / 'emotes.png')
     print('24 bulles -> public/assets/ui/emotes.png')
 

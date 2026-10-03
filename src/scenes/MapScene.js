@@ -345,7 +345,7 @@ export class MapScene extends Phaser.Scene {
   //   { sea: true | false }              bruit des vagues
   //   { face: { npcId | 'player': direction } }
   //   { emote: npcId | 'player' | [x, y], kind }  bulle d'émotion au-dessus d'une tête ou d'une case (voir
-  //                                      art/uiIcons.js EMOTE_FRAMES : surprise, question, heart, note, dots…)
+  //                                      art/uiIcons.js EMOTE_FRAMES : 'dots' « … » ou 'surprise' « ! »)
   //   { sound: nom }                     bruitage (voir systems/audio.js, sfx)
   //   { steps: [étapes] }                sous-scénette, jouée si les conditions de l'étape sont remplies
   //   { quiz: { question, choices, answer, wrong?, speaker? } }  question reposée jusqu'à la bonne réponse ;
@@ -715,7 +715,9 @@ export class MapScene extends Phaser.Scene {
       [x, top] = [sprite.x, sprite.y + TILE_SIZE / 2 - sprite.image.displayHeight];
     }
     if (!frames) return;
-    const bubble = this.add.image(x, top - 1, EMOTES, frames[0]).setOrigin(0.5, 1).setDepth(50).setScale(0.6);
+    // La bulle simple du « ! » est plus étroite que sa case : centrée sur sa pointe.
+    const [ox, oy] = kind === 'surprise' ? [7 / 16, 15 / 16] : [0.5, 1];
+    const bubble = this.add.image(x, top - 1, EMOTES, frames[0]).setOrigin(ox, oy).setDepth(50).setScale(0.6);
     sfx(kind === 'surprise' ? 'confirm' : 'select');
     this.tweens.add({ targets: bubble, scale: 1, duration: 120, ease: 'Back.easeOut' });
     for (let i = 1; i <= 4; i++) {
