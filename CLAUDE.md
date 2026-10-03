@@ -36,6 +36,8 @@ On commence par une seule ville jouable, puis on étend à une petite région.
   2 x 2 cases 'T' alignés sur la grille (jamais de sapin isolé) ; le petit arbre 'ƚ' seulement sur les îles et dans
   les pays exotiques, des buissons 'ƀ' ailleurs ; les palmiers 'Y' sont le petit arbre sans son herbe
   (frlg-small-tree.png), posé sur le sol de la case.
+- Bateaux : uniquement des assets. Ferry de Rouge Feu ; voiliers (ports) et longs bateaux en bois (péniches) d'Émeraude,
+  extraits par scripts/extract_boats.py vers public/assets/tiles/emerald-boats.png (voir tileRenderer.js addBoats).
 - Interface (scripts/build_ds_ui.py -> public/assets/ui/, voir src/art/uiIcons.js) : icônes d'objets et bulles
   d'émotion de HeartGold/SoulSilver (sac, objet reçu, étape `emote` des scénettes ; bulles : uniquement « … » et « ! »,
   en noir, sauf cas exceptionnel), cartes postales de la carte

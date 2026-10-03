@@ -41,6 +41,7 @@ export const FRLG_SHEETS = {
   crates: 'rs-crates',
   smallTree: 'frlg-small-tree',
   frontier: 'emerald-frontier',
+  boats: 'emerald-boats',
 };
 
 export function preloadFrlg(scene) {

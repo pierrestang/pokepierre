@@ -13,7 +13,7 @@ function outside(x, y, grid) {
 
 const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
 
-// Amsterdam — canaux, péniches, moulin, vélos et parcs fleuris, 32 x 26 cases.
+// Amsterdam — canaux, péniches (longs bateaux en bois d'Émeraude, 6 x 2 cases), moulin, vélos et parcs fleuris, 32 x 26 cases.
 // Légende : voir src/data/tiles.js (G = canal, I = pont, c = vélos, f = fleurs, e = drapeau)
 export const amsterdamMap = {
   id: 'amsterdam',
@@ -72,13 +72,13 @@ export const amsterdamMap = {
     { type: 'chimneyHouse', x: 7, y: 1 },
     { type: 'lab', x: 14, y: 1 },                 // CORNING
     { type: 'blueHouse', x: 23, y: 1 },
-    { type: 'houseboat', x: 10, y: 10 },
-    { type: 'houseboat', x: 15, y: 9 },
+    { type: 'houseboat', x: 9, y: 9 },
+    { type: 'houseboat', x: 16, y: 9 },
     { type: 'school', x: 3, y: 12 },              // le coffee shop : auvent vert, jardinières
     { type: 'dayCare', x: 9, y: 12 },
     { type: 'windmill', x: 22, y: 12 },
-    { type: 'houseboat', x: 12, y: 18 },
-    { type: 'houseboat', x: 18, y: 17 },
+    { type: 'houseboat', x: 10, y: 17 },
+    { type: 'houseboat', x: 17, y: 17 },
     { type: 'house', x: 2, y: 20 },
     { type: 'slateHouse', x: 8, y: 20 },
     { type: 'greenHouse', x: 13, y: 20 },

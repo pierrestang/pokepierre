@@ -101,27 +101,29 @@ function stamp(scene, g, ctx, x0, y0, w, h) {
 }
 
 // Bateaux et ferry : une image à part, qui tangue doucement sur l'eau.
-const FLOATING = ['boat', 'ferry'];
+const FLOATING = ['boat', 'ferry', 'houseboat'];
+
+// Bateaux d'Émeraude (emerald-boats.png, scripts/extract_boats.py) : [image, x, y, w, h] dans la planche, et
+// décalage (px) depuis le coin de l'emprise. Voilier sur 3 x 2 cases (ports de Hull et de Toulon), long bateau en
+// bois sur 6 x 2 cases (péniches des canaux d'Amsterdam).
+const EMERALD_BOATS = {
+  boat: { frame: 'sailboat', sx: 0, w: 46, h: 37, dx: 1, dy: -3 },
+  houseboat: { frame: 'barge', sx: 56, w: 86, h: 31, dx: 5, dy: 1 },
+};
 
 function addBoats(scene, map) {
+  const bob = (image) => scene.tweens.add({ targets: image, y: image.y + 1, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   // Ferry des îles Sevii (Rouge Feu, 69 x 40) : sur une emprise de 4 x 2 cases, proue à droite.
   for (const b of (map.buildings ?? []).filter((d) => d.type === 'ferry')) {
-    const image = scene.add.image(b.x * TILE_SIZE - 2, b.y * TILE_SIZE - 6, FRLG_SHEETS.ferry).setOrigin(0)
-      .setDepth(10 + (b.y * TILE_SIZE + 30) / 10000);
-    scene.tweens.add({ targets: image, y: image.y + 1, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    bob(scene.add.image(b.x * TILE_SIZE - 2, b.y * TILE_SIZE - 6, FRLG_SHEETS.ferry).setOrigin(0)
+      .setDepth(10 + (b.y * TILE_SIZE + 30) / 10000));
   }
-  for (const b of (map.buildings ?? []).filter((d) => d.type === 'boat')) {
-    const key = 'building-boat';
-    if (!scene.textures.exists(key)) {
-      const g = scene.make.graphics({}, false);
-      g.translateCanvas(-b.x * TILE_SIZE + 4, -b.y * TILE_SIZE + 2);
-      drawBuilding(g, b);
-      g.generateTexture(key, 56, 36);
-      g.destroy();
-    }
-    const image = scene.add.image(b.x * TILE_SIZE - 4, b.y * TILE_SIZE - 2, key).setOrigin(0)
-      .setDepth(10 + (b.y * TILE_SIZE + 30) / 10000);
-    scene.tweens.add({ targets: image, y: image.y + 1, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+  const tex = scene.textures.get(FRLG_SHEETS.boats);
+  for (const b of (map.buildings ?? []).filter((d) => EMERALD_BOATS[d.type])) {
+    const { frame, sx, w, h, dx, dy } = EMERALD_BOATS[b.type];
+    if (!tex.has(frame)) tex.add(frame, 0, sx, 0, w, h);
+    bob(scene.add.image(b.x * TILE_SIZE + dx, b.y * TILE_SIZE + dy, FRLG_SHEETS.boats, frame).setOrigin(0)
+      .setDepth(10 + (b.y * TILE_SIZE + 30) / 10000));
   }
 }
 

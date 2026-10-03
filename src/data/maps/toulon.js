@@ -66,7 +66,8 @@ export const toulonMap = {
     { type: 'provencalHouse', x: 26, y: 1, variant: 4 },
     { type: 'provencalHouse', x: 15, y: 9, variant: 2 },
     { type: 'provencalHouse', x: 21, y: 9, variant: 0 },
-    ...BOATS.map(([x, y]) => ({ type: 'boat', x, y })),
+    // Voiliers d'Émeraude ; le ferry pour la Corse est celui de Rouge Feu.
+    ...BOATS.map(([x, y], i) => ({ type: i === FERRY ? 'ferry' : 'boat', x, y })),
     { type: 'lighthouse', x: 28, y: 14 },
   ],
   objects: [

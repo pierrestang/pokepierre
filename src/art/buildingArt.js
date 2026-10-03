@@ -388,10 +388,50 @@ function drawUniversity(g, ox, oy) {
   rect(g, 0x3c2410, ox + 72, oy + 49, 1, 15);
 }
 
+// Bus local de Hull, vu de trois quarts comme la voiture de la famille (48 x 25, sur ses 3x2 cases), tourné vers
+// la droite : toit crème et ses aérations, fenêtres, porte vitrée, pare-brise, bande crème, roues, phares.
+const HULL_BUS = [
+  '..kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk....',
+  '.kCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCk...',
+  'kCcccccccccccccccccccccccccccccccccccccccccCCk..',
+  'kCcccccccvvvvvcccccccccccccccvvvvvcccccccccCCk..',
+  'kCcccccccvVVVvcccccccccccccccvVVVvcccccccccCCk..',
+  'kCcccccccccccccccccccccccccccccccccccccccccCCk..',
+  'kdddddddddddddddddddddddddddddddddddddddddddddk.',
+  'kRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRkYYk',
+  'kRkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkRRRRRRRkGGk',
+  'kRkGgGGGkGgGGGkGgGGGkGgGGGkGgGGGkGGkRkkkkkRkGGGk',
+  'kRkGGgGGkGGgGGkGGgGGkGGgGGkGGgGGkGGkRkGGGkRkGgGk',
+  'kRkGGGgGkGGGgGkGGGgGkGGGgGkGGGgGkGGkRkGgGkRkGGgk',
+  'kRkGGGGGkGGGGGkGGGGGkGGGGGkGGGGGkGGkRkGGgkRkGGGk',
+  'kRkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkRkGGGkRkGGGk',
+  'kRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRkGGGkRkkkkk',
+  'kccccccccccccccccccccccccccccccccccccKGGGKcccccck',
+  'kddddddddddddddddddddddddddddddddddddkGGGkddddddk',
+  'kRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRkGGGkRRRRRWk',
+  'kRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRkkkkkRRRRRWk',
+  'kDDDDDkkkkkkkDDDDDDDDDDDDDDDDDDkkkkkkkDDDDDDDDDDk',
+  'kkkkkkTTTTTTTkkkkkkkkkkkkkkkkkkTTTTTTTkkkkkkkkkkk',
+  '.....kTTHHHTTk................kTTHHHTTk..........',
+  '.....kTTHhHTTk................kTTHhHTTk..........',
+  '......kTTTTTk..................kTTTTTk...........',
+  '.......kkkkk....................kkkkk............',
+];
+const HULL_BUS_C = {
+  k: 0x302020, K: 0x302020, C: 0xece4c8, c: 0xd8cca8, v: 0x968c78, V: 0xb8b098, d: 0x701414, R: 0xc82828,
+  D: 0x961c1c, G: 0x405070, g: 0xa0c8e8, T: 0x282830, H: 0x9696a0, h: 0xdcdce6, Y: 0xf8e088, W: 0xf8f0c8,
+};
+
 // Bus rouge à impériale, vu de dessus (3x2).
 function drawBus(g, ox, oy, { variant } = {}) {
   // Bus rouge à impériale ; à Hull, bus local rouge d'un seul niveau, au toit crème.
   const hull = variant === 'hull';
+  if (hull) {
+    HULL_BUS.forEach((row, y) => [...row].forEach((c, x) => {
+      if (c !== '.') rect(g, HULL_BUS_C[c], ox + x, oy + 6 + y, 1, 1);
+    }));
+    return;
+  }
   const dark = 0x701414;
   const body = 0xc82828;
   const light = 0xe84848;
@@ -751,17 +791,6 @@ function drawWindmill(g, ox, oy) {
     }
   }
   rect(g, 0x202020, cx - 2, cy - 2, 5, 5);
-}
-
-// Péniche (3x1, sur le canal) : coque sombre, cabine, pots de fleurs.
-function drawHouseboat(g, ox, oy) {
-  rect(g, 0x1c2830, ox + 1, oy + 2, 46, 13);
-  rect(g, 0x2c4c3c, ox + 2, oy + 3, 44, 11);
-  rect(g, 0x8c5c2c, ox + 8, oy + 4, 30, 8);
-  rect(g, 0xa87040, ox + 8, oy + 4, 30, 2);
-  for (const x of [11, 19, 27]) rect(g, 0x9cc0d8, ox + x, oy + 7, 5, 3);
-  rect(g, 0xe83848, ox + 40, oy + 5, 3, 3);
-  rect(g, 0xf8c830, ox + 4, oy + 6, 3, 3);
 }
 
 // Haveli (3x4, porte en (1,3)) : maison indienne colorée, fenêtres en arc,
@@ -1573,53 +1602,6 @@ function drawTractor(g, ox, oy) {
   sprite(g, TRACTOR, TRACTOR_COLORS, ox - 1, oy + 2);
 }
 
-// Voilier vu de dessus, 3x2 cases, proue vers l'est, amarré contre le ponton (à l'ouest).
-// Bateau à moteur (3 x 2 cases) façon ferry de Rouge Feu, vu de trois quarts : pont vu de dessus,
-// flanc blanc à bande bleue, cabine vitrée, proue pointue à droite.
-function drawBoat(g, ox, oy) {
-  const K = 0x283048;
-  const mid = 15;
-  const bow = (y) => 38 + Math.round(8 * (1 - Math.abs(y - mid) / 11));   // x de la proue à la rangée y
-  // Ombre et remous dans l'eau
-  g.fillStyle(0x1c3c8c, 0.45);
-  for (let y = 8; y <= 30; y++) g.fillRect(ox + 4, oy + y, bow(Math.min(y, 26)) - 4, 1);
-  for (let x = 0; x < 6; x += 2) rect(g, 0xd8ecfc, ox - 2 + x, oy + 28 + (x % 4 ? 1 : 0), 2, 1);
-  // Flanc (visible sous le pont)
-  for (let y = 18; y <= 28; y++) {
-    const r = bow(Math.min(y, 26)) - (y > 24 ? (y - 24) * 2 : 0);
-    rect(g, K, ox + 2, oy + y, r - 1, 1);
-    if (y < 28) rect(g, y === 22 || y === 23 ? 0x3058b8 : y > 25 ? 0xc8d0e0 : 0xf8f8f8, ox + 3, oy + y, r - 3, 1);
-  }
-  // Pont vu de dessus
-  for (let y = 4; y <= 19; y++) {
-    const r = bow(y);
-    rect(g, K, ox + 2, oy + y, r - 1, 1);
-    if (y > 4 && y < 19) rect(g, 0xe8dcc0, ox + 3, oy + y, r - 4, 1);
-  }
-  rect(g, 0xf8f0d8, ox + 3, oy + 5, 34, 1);
-  for (let x = 6; x < 40; x += 4) rect(g, 0xd0c4a0, ox + x, oy + 6, 1, 12);   // lattes
-  // Cabine
-  rect(g, K, ox + 8, oy + 3, 20, 15);
-  rect(g, 0xf8f8f8, ox + 9, oy + 4, 18, 13);
-  rect(g, 0xd0d8e8, ox + 9, oy + 4, 18, 3);                                  // toit
-  rect(g, 0xa8b4c8, ox + 9, oy + 7, 18, 1);
-  for (const wx of [11, 17, 23]) {                                           // hublots
-    rect(g, K, ox + wx - 1, oy + 9, 5, 5);
-    rect(g, 0x5890e8, ox + wx, oy + 10, 3, 3);
-    rect(g, 0xb8d8f8, ox + wx, oy + 10, 2, 1);
-  }
-  rect(g, 0x3058b8, ox + 9, oy + 15, 18, 2);                                 // bande bleue
-  // Bouée et bitte d'amarrage
-  rect(g, K, ox + 31, oy + 8, 7, 7);
-  rect(g, 0xf04838, ox + 32, oy + 9, 5, 5);
-  rect(g, 0xf8f8f8, ox + 32, oy + 11, 5, 1);
-  rect(g, 0xf8f8f8, ox + 34, oy + 9, 1, 5);
-  rect(g, 0xe8dcc0, ox + 34, oy + 11, 1, 1);
-  rect(g, K, ox + 4, oy + 14, 3, 3);
-  // Amarre vers le ponton
-  rect(g, 0xe8d8a8, ox, oy + 15, 5, 1);
-}
-
 const BUILDINGS = {
   house: drawHouse,
   lab: drawLab,
@@ -1641,7 +1623,6 @@ const BUILDINGS = {
   corning: drawCorning,
   coffeeShop: drawCoffeeShop,
   windmill: drawWindmill,
-  houseboat: drawHouseboat,
   haveli: drawHaveli,
   mughalPalace: drawMughalPalace,
   indiaGate: drawIndiaGate,
@@ -1672,7 +1653,6 @@ const BUILDINGS = {
   wat: drawWat,
   boudhanath: drawBoudhanath,
   tractor: drawTractor,
-  boat: drawBoat,
 };
 
 export function drawBuilding(g, building) {
