@@ -33,7 +33,7 @@ export const montepilloyMap = {
     'TTFRRRRRR....Fçç.WWWWW.f..ƀ...TT', // 12
     'TTFRRRRRR....Fçç.WDWWW........TT', // 13
     'TTFWWWWWW....Fçççççççççççççç..TT', // 14
-    'TTFWWWDWW...SFçççççççççççççç..TT', // 15
+    'TTFWWWDDW...SFçççççççççççççç..TT', // 15
     'TTF.çççççççççççç....ĥĥ.f..TTĥ.TT', // 16
     'TTF.çççççççççççç.f~~~~~~..TT.ĥTT', // 17
     'TTFʬʬʬʬʬʬʬʬʬʬFçç.f~~~~~~......TT', // 18
@@ -49,7 +49,9 @@ export const montepilloyMap = {
     { x: 9, y: 6, interior: 'montHouse' },
     // Maison de la voisine : fermée (pas d'intérieur pour l'instant).
     { x: 18, y: 6, lockedDialogue: ['Personne ne répond.'] },
+    // La grange : grande porte de deux cases.
     { x: 6, y: 15, interior: 'boulyBarn' },
+    { x: 7, y: 15, interior: 'boulyBarn' },
     { x: 18, y: 13, interior: 'school' },
   ],
   buildings: [
