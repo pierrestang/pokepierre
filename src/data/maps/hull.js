@@ -1,7 +1,7 @@
 import { parseGrid } from './parseGrid.js';
 import { toAirport } from './airportLinks.js';
 import { FLAGS, ROLES } from '../story.js';
-import { ARRIVAL, OUSMANE_WALK, DAWN, HULL_SPOTS, NIGHT, DAWN_TIME } from '../hullStory.js';
+import { ARRIVAL, OUSMANE_WALK, DAWN, NEXT_MORNING, HULL_SPOTS, NIGHT, DAWN_TIME } from '../hullStory.js';
 
 // Hors de la carte : Newland Avenue et la grande rue se prolongent, l'estuaire au sud, trottoirs ailleurs.
 function outside(x, y, grid) {
@@ -202,6 +202,7 @@ export const hullMap = {
       on: 'enter', ifFlags, unlessFlags, steps: [{ walk: `leo-${i}`, to, lead: true }],
     })),
     { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [BANDE], steps: DAWN },
+    { on: 'enter', ifSouvenirs: [BANDE], unlessFlags: [FLAGS.lendemainHull, FLAGS.revisions], steps: NEXT_MORNING },
   ],
   // La grande rue mène à l'aéroport par ses deux bouts.
   triggers: [toAirport(0, 34), toAirport(0, 35), toAirport(29, 34), toAirport(29, 35)],

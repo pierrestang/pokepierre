@@ -718,6 +718,24 @@ export const FRLG_DECOR = {
   shelf: RS(519, 80, 32, 31, 2, 2),        // étagère à livres
   carton: { sprite: { sheet: 'frlg-carton', sx: 0, sy: 0 }, pw: 15, ph: 14, w: 1, h: 1 },        // carton de déménagement
   smallCarton: { sprite: { sheet: 'frlg-carton', sx: 15, sy: 0 }, pw: 11, ph: 9, w: 1, h: 1 },   // petit carton (sur un meuble)
+  // Bar et boîte de nuit (Hull), dessinés dans le code faute d'équivalent Rouge Feu (texture 'frlg-bar', voir
+  // ensureBarTexture) : comptoir en bois (bouts gauche, droit et milieu), pompes à bière posées dessus, étagère à
+  // bouteilles fixée au mur (y = 1, au-dessus du barman), tabourets, table ronde, cible de fléchettes ; cabine de DJ
+  // (platines, table de mixage, ordinateur), enceintes, néons et boule à facettes.
+  barCounterL: { sprite: { sheet: 'frlg-bar', sx: 16, sy: 0 }, pw: 16, ph: 16, w: 1, h: 1 },
+  barCounter: { sprite: { sheet: 'frlg-bar', sx: 0, sy: 0 }, pw: 16, ph: 16, w: 1, h: 1 },
+  barCounterR: { sprite: { sheet: 'frlg-bar', sx: 32, sy: 0 }, pw: 16, ph: 16, w: 1, h: 1 },
+  beerTaps: { sprite: { sheet: 'frlg-bar', sx: 48, sy: 0 }, pw: 12, ph: 14, w: 1, h: 1 },
+  bottleShelf: { sprite: { sheet: 'frlg-bar', sx: 64, sy: 0 }, pw: 32, ph: 30, w: 2, h: 1 },
+  barStool: { sprite: { sheet: 'frlg-bar', sx: 96, sy: 0 }, pw: 10, ph: 11, w: 1, h: 1 },
+  pubTable: { sprite: { sheet: 'frlg-bar', sx: 112, sy: 0 }, pw: 16, ph: 18, w: 1, h: 1 },
+  pintPair: { sprite: { sheet: 'frlg-bar', sx: 112, sy: 18 }, pw: 10, ph: 6, w: 1, h: 1 },
+  dartboard: { sprite: { sheet: 'frlg-bar', sx: 128, sy: 0 }, pw: 14, ph: 14, w: 1, h: 2 },
+  djBooth: { sprite: { sheet: 'frlg-bar', sx: 144, sy: 0 }, pw: 48, ph: 24, w: 3, h: 1 },
+  speaker: { sprite: { sheet: 'frlg-bar', sx: 192, sy: 0 }, pw: 14, ph: 28, w: 1, h: 1 },
+  neonPink: { sprite: { sheet: 'frlg-bar', sx: 208, sy: 0 }, pw: 32, ph: 8, w: 2, h: 2 },
+  neonCyan: { sprite: { sheet: 'frlg-bar', sx: 208, sy: 8 }, pw: 32, ph: 8, w: 2, h: 2 },
+  discoBall: { sprite: { sheet: 'frlg-bar', sx: 240, sy: 0 }, pw: 10, ph: 14, w: 1, h: 1 },
   // Caisses en bois du marché de Slateport (rs-crates.png, scripts/extract_rs_buildings.py).
   fishCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 15, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },
   giveCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 30, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },   // « À DONNER »
@@ -726,6 +744,150 @@ export const FRLG_DECOR = {
   tomatoCrate: { sprite: { sheet: FRLG_SHEETS.crates, sx: 75, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 }, // tomates
   jar: { sprite: { sheet: FRLG_SHEETS.crates, sx: 90, sy: 0 }, pw: 15, ph: 16, w: 1, h: 1 },         // jarre
 };
+
+// Mobilier de bar et de boîte de nuit (voir FRLG_DECOR barCounter…), dessiné au pixel près dans les tons de
+// Rouge Feu : bois sombre, contours brun-noir, reflets clairs.
+function ensureBarTexture(textures) {
+  if (textures.exists('frlg-bar')) return;
+  const tex = textures.createCanvas('frlg-bar', 256, 32);
+  const ctx = tex.getContext();
+  const R = (c, x, y, w, h) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+  const disc = (cx, cy, r, c) => {
+    for (let y = Math.floor(cy - r); y <= cy + r; y++) {
+      for (let x = Math.floor(cx - r); x <= cx + r; x++) if ((x + 0.5 - cx) ** 2 + (y + 0.5 - cy) ** 2 <= r * r) R(c, x, y, 1, 1);
+    }
+  };
+  const K = '#382820';
+  const WOOD = { hi: '#f0c088', top: '#d89858', mid: '#a86838', dark: '#784828' };
+
+  // Comptoir : plateau verni, façade à panneaux, plinthe. Le bout gauche et le bout droit sont arrondis.
+  const counter = (ox, left, right) => {
+    R(K, ox, 0, 16, 16);
+    R(WOOD.top, ox, 1, 16, 4);
+    R(WOOD.hi, ox, 1, 16, 1);
+    R(WOOD.dark, ox, 6, 16, 1);
+    R(WOOD.mid, ox, 7, 16, 7);
+    R(WOOD.dark, ox + 7, 8, 1, 5);
+    R(WOOD.dark, ox + 15, 8, 1, 5);
+    R(WOOD.top, ox + 1, 8, 1, 5);
+    R(WOOD.top, ox + 9, 8, 1, 5);
+    R(K, ox, 14, 16, 2);
+    if (left) { R(K, ox, 1, 1, 14); ctx.clearRect(ox, 0, 1, 1); ctx.clearRect(ox, 15, 1, 1); }
+    if (right) { R(K, ox + 15, 1, 1, 14); ctx.clearRect(ox + 15, 0, 1, 1); ctx.clearRect(ox + 15, 15, 1, 1); }
+  };
+  counter(0, false, false);
+  counter(16, true, false);
+  counter(32, false, true);
+
+  // Pompes à bière : trois manches (rouge, or, vert) sur leur socle chromé, et l'égouttoir.
+  [[1, '#d04040'], [5, '#e0b030'], [9, '#40a050']].forEach(([x, c]) => {
+    R(K, 48 + x - 1, 0, 4, 11);
+    R(c, 48 + x, 1, 2, 3);
+    R('#f8f8f8', 48 + x, 1, 1, 1);
+    R('#303038', 48 + x, 4, 2, 6);
+    R('#c8c8d8', 48 + x - 1, 10, 4, 2);
+  });
+  R('#888898', 48, 12, 12, 2);
+  R(K, 48, 13, 12, 1);
+
+  // Étagère à bouteilles fixée au mur : cadre en bois, miroir, trois rangées de bouteilles.
+  R(K, 64, 0, 32, 30);
+  R(WOOD.dark, 65, 1, 30, 28);
+  R('#a0b8c8', 66, 2, 28, 25);
+  R('#c8dce8', 67, 3, 3, 22);
+  const BOTTLES = ['#408850', '#c08030', '#783818', '#d8e8f0', '#a03040', '#305890'];
+  [9, 17, 25].forEach((y, row) => {
+    for (let i = 0; i < 6; i++) {
+      const x = 67 + i * 4 + (row % 2);
+      const c = BOTTLES[(i + row * 2) % BOTTLES.length];
+      R(K, x - 1, y - 6, 4, 6);
+      R(c, x, y - 5, 2, 5);
+      R(c, x, y - 7, 1, 2);
+      R('#f8f8f8', x, y - 4, 1, 1);
+    }
+    R(WOOD.top, 66, y, 28, 2);
+    R(K, 66, y + 2, 28, 1);
+  });
+
+  // Tabouret de bar : assise rouge rembourrée, pied chromé, socle.
+  R(K, 96, 0, 10, 4);
+  R('#c03838', 97, 0, 8, 3);
+  R('#e86868', 98, 0, 6, 1);
+  R('#b8b8c8', 100, 4, 2, 5);
+  R(K, 98, 9, 6, 2);
+  R('#888898', 99, 9, 4, 1);
+
+  // Table ronde de pub : plateau en bois, pied central, socle.
+  R(K, 114, 2, 12, 1);
+  R(K, 113, 3, 14, 6);
+  R(K, 114, 9, 12, 1);
+  R(WOOD.top, 114, 3, 12, 5);
+  R(WOOD.hi, 115, 3, 10, 1);
+  R(WOOD.mid, 114, 8, 12, 1);
+  R(WOOD.dark, 119, 10, 2, 5);
+  R(K, 116, 15, 8, 2);
+  // Deux pintes (à poser sur une table) : verre, bière ambrée, mousse.
+  [[112, 18], [117, 18]].forEach(([x, y]) => {
+    R(K, x, y, 5, 6);
+    R('#d89830', x + 1, y + 2, 3, 3);
+    R('#f8f0e0', x + 1, y + 1, 3, 1);
+    R('#f0c060', x + 1, y + 2, 1, 3);
+  });
+
+  // Cible de fléchettes : anneaux noirs, crème, rouges et verts, et le centre.
+  disc(135, 7, 7, '#202020');
+  disc(135, 7, 6, '#f0e0c0');
+  disc(135, 7, 5, '#c03030');
+  disc(135, 7, 4, '#202020');
+  disc(135, 7, 3, '#40a050');
+  disc(135, 7, 2, '#f0e0c0');
+  disc(135, 7, 1, '#c03030');
+  R('#d8d0c0', 140, 4, 2, 1);                                   // une fléchette plantée
+
+  // Cabine de DJ : meuble à bandes lumineuses, deux platines, table de mixage, ordinateur allumé.
+  R(K, 144, 8, 48, 16);
+  R('#505060', 145, 9, 46, 4);
+  R('#303040', 145, 13, 46, 10);
+  R('#f050b0', 146, 15, 44, 1);
+  R('#40d0f0', 146, 19, 44, 1);
+  for (const cx of [153, 183]) {
+    disc(cx, 10.5, 4, '#202028');
+    disc(cx, 10.5, 2.5, '#606070');
+    R('#f05050', cx, 10, 1, 1);
+  }
+  R('#202028', 163, 9, 10, 4);
+  [164, 167, 170].forEach((x) => R('#e0e040', x, 10, 1, 1));
+  R(K, 164, 1, 9, 8);
+  R('#c0c0d0', 165, 2, 7, 6);
+  R('#80e8ff', 166, 3, 5, 4);
+
+  // Enceinte : caisse noire, tweeter et grand haut-parleur.
+  R(K, 192, 0, 14, 28);
+  R('#303038', 193, 1, 12, 26);
+  disc(199, 7, 3.5, '#686878');
+  disc(199, 7, 1.5, '#202028');
+  disc(199, 18, 5, '#686878');
+  disc(199, 18, 2.5, '#202028');
+  R('#484858', 194, 25, 10, 1);
+
+  // Néons (rose, puis cyan) : tube lumineux et son halo, deux fixations.
+  [[0, '#ff60c0', '#ffd0f0', '#ff60c060'], [8, '#40d8ff', '#d0f8ff', '#40d8ff60']].forEach(([y, c, hi, glow]) => {
+    R(glow, 208, y + 1, 32, 6);
+    R(c, 209, y + 3, 30, 2);
+    R(hi, 210, y + 3, 28, 1);
+    R('#606070', 212, y + 5, 2, 2);
+    R('#606070', 234, y + 5, 2, 2);
+  });
+
+  // Boule à facettes, suspendue à son fil.
+  R('#888898', 244, 0, 1, 4);
+  disc(245, 9, 5, '#606078');
+  for (let y = 5; y < 14; y++) for (let x = 241; x < 250; x++) {
+    if ((x + 0.5 - 245) ** 2 + (y + 0.5 - 9) ** 2 <= 16 && (x + y) % 2 === 0) R('#e0e0f8', x, y, 1, 1);
+  }
+  R('#ffffff', 243, 7, 1, 1);
+  tex.refresh();
+}
 
 // Cartons de déménagement, dessinés au pixel près dans les couleurs du carton de Rouge Feu :
 // grand carton (15 x 14) et petit carton scotché (11 x 9), côte à côte dans la texture 'frlg-carton'.
@@ -797,6 +959,7 @@ export const BED_LOWER = { sheet: FRLG_SHEETS.rsObjects, sx: 488, sy: 79 + 13, w
 // Couche 3 d'un intérieur : meubles, puis tapis de sortie sur chaque groupe de cases 'E' d'une rangée.
 export function drawFrlgInteriorDecor(ctx, textures, interior) {
   ensureCartonTexture(textures);
+  ensureBarTexture(textures);
   const roomW = interior.grid[0].length * S;
   interior.grid.forEach((row, y) => row.forEach((code, x) => {
     const st = STAIRS_IN_WALL[code];

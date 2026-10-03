@@ -1413,15 +1413,6 @@ const DECALS = {
       rect(g, 0xd8b070, px + dx + 1, py + dy + 1, 1, 1);
     }
   },
-  // Les pintes de la bande, posées sur une table du pub (sur deux cases).
-  pints(g, px, py) {
-    for (const [dx, dy] of [[4, 2], [11, 4], [19, 2], [25, 5]]) {
-      rect(g, 0x303038, px + dx - 1, py + dy - 1, 6, 10);
-      rect(g, 0xd89830, px + dx, py + dy + 2, 4, 6);               // bière
-      rect(g, 0xf8f0e0, px + dx, py + dy, 4, 2);                   // mousse
-      rect(g, 0xf0c060, px + dx, py + dy + 3, 1, 4);
-    }
-  },
   // Piste de danse de l'Asylum : dalles lumineuses de couleurs (w x h cases), posée au sol.
   danceFloor(g, px, py, { w = 4, h = 3 } = {}) {
     const colors = [0x9040d0, 0x3070e0, 0xe04090, 0x30b0c0];

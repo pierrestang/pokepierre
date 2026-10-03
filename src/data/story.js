@@ -56,6 +56,7 @@ export const FLAGS = {
   pinteCommandee: 'pinte-commandee',            //        premier pub : pinte commandée au bar
   tableTrouvee: 'table-trouvee',                //        deuxième pub : table de la bande retrouvée
   asylumFini: 'asylum-fini',                    //        dernière chanson à l'Asylum : sortie au petit matin
+  lendemainHull: 'lendemain-hull',              //        le lendemain matin, devant la coloc
   revisions: 'revisions',                       //        révisions à la bibliothèque (le lendemain)
   arriveeHanoi: 'arrivee-hanoi',                // arrivé à Hanoï (Vietnam)
   travailEtape1: 'travail-etape-1',             // nouveau travail à l'agence de voyage : étape 1

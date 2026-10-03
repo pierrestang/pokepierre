@@ -351,7 +351,8 @@ export class MapScene extends Phaser.Scene {
   //   { steps: [étapes] }                sous-scénette, jouée si les conditions de l'étape sont remplies
   //   { quiz: { question, choices, answer, wrong?, speaker? } }  question reposée jusqu'à la bonne réponse ;
   //                                      `wrong` : réplique par mauvaise réponse ({ réponse: [pages], default })
-  //   { dance: npcId }                   le PNJ et Pierre dansent un instant, notes de musique
+  //   { dance: npcId | [ids] }           le PNJ (ou plusieurs) et Pierre dansent un instant, notes de musique
+  //   { gather: [ids], area: [x, y, w, h] }  PNJ et suiveurs marchent jusqu'aux cases libres de la zone
   //   { walk: npcId, to: [x, y], lead?, block?, then? }  le PNJ marche jusqu'à la case (voir walkNpc)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
@@ -367,6 +368,7 @@ export class MapScene extends Phaser.Scene {
       if (step.face) this.faceActors(step.face);
       if (step.emote) await this.emote(step.emote, step.kind);
       if (step.sound) sfx(step.sound);
+      if (step.gather) await this.gather(step.gather, step.area);
       if (step.dance) await this.dance(step.dance);
       if (step.wait) await this.wait(step.wait);
       if (step.say) await this.dialog.open(step.say, { speaker: step.speaker });
@@ -700,7 +702,7 @@ export class MapScene extends Phaser.Scene {
 
   actorSprite(id) {
     if (id === 'player') return this.player.sprite;
-    return this.npcs.find((n) => n.data.id === id)?.sprite;
+    return this.npcs.find((n) => n.data.id === id)?.sprite ?? this.followers.members.find((m) => m.id === id)?.sprite;
   }
 
   faceActors(facing) {
@@ -778,7 +780,8 @@ export class MapScene extends Phaser.Scene {
 
   // Moment léger : le PNJ et Pierre tournent sur eux-mêmes en rythme, des notes s'envolent au-dessus.
   async dance(id) {
-    const dancers = [this.actorSprite(id), this.player.sprite].filter(Boolean);
+    const ids = [id].flat();
+    const dancers = [...ids.map((i) => this.actorSprite(i)), this.player.sprite].filter(Boolean);
     this.ensureMusicNote();
     const turns = ['down', 'left', 'up', 'right'];
     for (let beat = 0; beat < 12; beat++) {
@@ -792,8 +795,45 @@ export class MapScene extends Phaser.Scene {
       await this.wait(220);
     }
     dancers.forEach((d) => d.setFacing('down'));
-    this.faceActors({ [id]: this.directionTo(this.npcs.find((n) => n.data.id === id)?.data ?? this.player, this.player) });
+    if (ids.length === 1) this.faceActors({ [id]: this.directionTo(this.npcs.find((n) => n.data.id === id)?.data ?? this.player, this.player) });
     this.player.sprite.setFacing(this.player.facing);
+  }
+
+  // Les personnages `ids` (PNJ ou suiveurs) marchent ensemble jusqu'aux cases libres de la zone `area`
+  // [x, y, w, h] les plus proches (ex. toute la bande sur la piste de danse), puis regardent vers le bas.
+  async gather(ids, [ax, ay, aw, ah]) {
+    const taken = new Set([`${this.player.tileX},${this.player.tileY}`]);
+    const cells = [];
+    for (let y = ay; y < ay + ah; y++) for (let x = ax; x < ax + aw; x++) cells.push([x, y]);
+    const walks = ids.map((id) => {
+      const npc = this.npcs.find((n) => n.data.id === id);
+      const follower = this.followers.members.find((m) => m.id === id);
+      const from = npc?.data ?? follower;
+      if (!from) return null;
+      const free = cells.filter(([x, y]) => !taken.has(`${x},${y}`));
+      if (!free.length) return null;
+      const [tx, ty] = free.reduce((a, b) => (Math.abs(b[0] - from.x) + Math.abs(b[1] - from.y) < Math.abs(a[0] - from.x) + Math.abs(a[1] - from.y) ? b : a));
+      taken.add(`${tx},${ty}`);
+      return npc ? this.walkNpc(id, [tx, ty]) : this.walkFollower(follower, [tx, ty]);
+    });
+    await Promise.all(walks.filter(Boolean));
+    ids.forEach((id) => this.actorSprite(id)?.setFacing('down'));
+  }
+
+  // Un suiveur quitte la file un instant et marche jusqu'à la case [tx, ty] (il ne bloque personne).
+  async walkFollower(m, [tx, ty]) {
+    const path = this.pathTo({ x: m.x, y: m.y }, tx, ty) ?? [];
+    for (const [x, y] of path) {
+      m.sprite.setFacing(this.directionTo(m, { x, y }));
+      m.sprite.walkStep(WALK_DURATION);
+      const [px, py] = tileCenter(x, y);
+      await new Promise((resolve) => this.tweens.add({
+        targets: m.sprite, x: px, y: py, duration: WALK_DURATION,
+        onUpdate: () => m.sprite.updateDepth(), onComplete: resolve,
+      }));
+      m.x = x;
+      m.y = y;
+    }
   }
 
   ensureMusicNote() {

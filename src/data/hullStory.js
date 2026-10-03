@@ -101,9 +101,12 @@ export const ASYLUM_ENTER = [
   { speaker: 'Romain', say: ['Vous en avez mis du temps !'] },
   { speaker: 'Léo', say: ['Tout le monde sur la piste !'] },
 ];
+const BAND_ASYLUM = ['romain-asylum', 'paul-asylum', 'leo-asylum', 'ousmane', 'charlotte', 'anais'];
 export const ASYLUM_DANCE = [
-  { say: ['Tout le monde danse sur la piste.'] },
-  { dance: 'romain-asylum' },
+  { speaker: 'Léo', say: ['C\'est notre chanson ! Venez tous !'] },
+  { gather: BAND_ASYLUM, area: [4, 4, 4, 3] },
+  { say: ['Toute la bande danse sur la piste.'] },
+  { dance: BAND_ASYLUM },
   { say: ['La musique ralentit… Dernière chanson.'] },
   { black: true },
   { wait: 800 },
@@ -111,7 +114,8 @@ export const ASYLUM_DANCE = [
   { travel: { map: 'hull', x: HULL_SPOTS.asylumDoor[0], y: HULL_SPOTS.asylumDoor[1], facing: 'down' } },
 ];
 
-// La sortie, au petit matin : Léo part dans la mauvaise direction, puis « La bande de Hull ».
+// La sortie, au petit matin : Léo part dans la mauvaise direction, puis « La bande de Hull » ; Ousmane et Pierre
+// rentrent se coucher, et le lendemain matin Pierre est devant la coloc (voir NEXT_MORNING).
 export const DAWN = [
   { say: ['Ciel bleuté, les réverbères s\'éteignent. La bande est devant l\'Asylum.'] },
   { approach: 'leo-aube' },
@@ -121,7 +125,19 @@ export const DAWN = [
   { speaker: 'Charlotte', say: ['Au fait… les exams, c\'est dans trois jours.'] },
   { speaker: 'Anaïs', say: ['Ne dis pas ça maintenant.'] },
   { speaker: 'Léo', say: ['Demain, bibliothèque. Tout le monde.'] },
+  { speaker: 'Ousmane', say: ['Allez, on rentre se coucher.'] },
   { quality: ROLES.bandeHull },
+  { say: ['Ousmane et toi rentrez à la coloc.'] },
+  { black: true },
+  { wait: 700 },
+  { say: ['Le lendemain matin…'] },
+  { travel: { map: 'hull', x: HULL_SPOTS.colocDoor[0], y: HULL_SPOTS.colocDoor[1], facing: 'down' } },
+];
+
+// Le lendemain matin, devant la coloc : direction la bibliothèque.
+export const NEXT_MORNING = [
+  { say: ['Devant la coloc. Les révisions t\'attendent à la bibliothèque Brynmor Jones, en haut, sur le campus.'] },
+  { setFlag: FLAGS.lendemainHull },
 ];
 
 // Le lendemain, à la bibliothèque (retour en plein jour).

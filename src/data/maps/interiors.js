@@ -1281,42 +1281,61 @@ export const interiors = {
     events: [{ on: 'enter', ifFlags: [FLAGS.ousmaneSuit], unlessFlags: [FLAGS.amiesSuivent], steps: GIRLS_JOIN }],
   },
 
-  // Hull — premier pub de Newland Avenue : commander une pinte au bar (on parle au barman par-dessus le comptoir).
+  // Hull — premier pub de Newland Avenue : un vrai pub anglais. Long comptoir en bois et ses pompes à bière, étagères
+  // à bouteilles au mur derrière le barman, tabourets, tables rondes, cible de fléchettes (art/frlgArt.js, meubles de
+  // bar). On commande sa pinte en parlant au barman par-dessus le comptoir.
   hullPubA: {
     name: 'Pub',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'mmoooooomm',
-      'ooommmoooo',
+      'moooooooom',
+      'ommmmmmmoo',
+      'ommooommoo',
       'oooooooooo',
-      'mmommommoo',
-      'oooooooooo',
+      'mmmoooommm',
       'ooooEEoooo',
     ]),
     decor: [
-      { kind: 'blueShelf', x: 0, y: 1 },
-      { kind: 'glassCabinet', x: 1, y: 1 },
-      { kind: 'painting', x: 4, y: 0 },
-      { kind: 'glassCabinet', x: 8, y: 1 },
+      { kind: 'bottleShelf', x: 2, y: 1 },
+      { kind: 'bottleShelf', x: 5, y: 1 },
+      { kind: 'dartboard', x: 8, y: 0 },
+      { kind: 'pottedPlant', x: 0, y: 2 },
       { kind: 'cabinet', x: 9, y: 1 },
-      { kind: 'longTable', x: 3, y: 3 },
-      ...[0, 3, 6].map((x) => ({ kind: 'paperDesk', x, y: 5 })),
+      { kind: 'barCounterL', x: 1, y: 3 },
+      ...[2, 3, 4, 5, 6].map((x) => ({ kind: 'barCounter', x, y: 3 })),
+      { kind: 'barCounterR', x: 7, y: 3 },
+      { kind: 'beerTaps', x: 2, y: 3, dy: -9 },
+      { kind: 'beerTaps', x: 6, y: 3, dy: -9 },
+      { kind: 'pintPair', x: 1, y: 3, dy: -12 },
+      ...[1, 2, 6, 7].map((x) => ({ kind: 'barStool', x, y: 4 })),
+      // Tables rondes et leurs tabourets, de chaque côté de l'entrée.
+      { kind: 'barStool', x: 0, y: 6 }, { kind: 'pubTable', x: 1, y: 6 }, { kind: 'barStool', x: 2, y: 6 },
+      { kind: 'pintPair', x: 1, y: 6, dy: -14 },
+      { kind: 'barStool', x: 7, y: 6 }, { kind: 'pubTable', x: 8, y: 6 }, { kind: 'barStool', x: 9, y: 6 },
     ],
     spawn: { x: 4, y: 6, facing: 'up' },
-    objects: [3, 4, 5].map((x) => ({ x, y: 3, script: PUB_A_BAR })),
-    npcs: [{ id: 'barman-a', name: 'Barman', x: 4, y: 2, facing: 'down', still: true, dialogue: ['What can I get you?'] }],
+    objects: [
+      ...[3, 4, 5].map((x) => ({ x, y: 3, script: PUB_A_BAR })),
+      { x: 8, y: 2, dialogue: ['Une cible de fléchettes. Personne ne vise le centre à cette heure-ci.'] },
+      ...[[1, 6], [8, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une table ronde, quelques ronds de bière.'] })),
+    ],
+    npcs: [
+      { id: 'barman-a', name: 'Barman', x: 4, y: 2, facing: 'down', still: true, dialogue: ['What can I get you?'] },
+      { id: 'client-a1', name: 'Client', x: 1, y: 5, facing: 'up', dialogue: ['Cheers!'] },
+    ],
   },
 
-  // Hull — deuxième pub : retrouver la table de la bande, avec les verres.
+  // Hull — deuxième pub : comptoir et étagère à bouteilles au fond à gauche, tables rondes avec leurs tabourets ;
+  // retrouver la table de la bande, avec les verres (au fond à droite).
   hullPubB: {
     name: 'Pub',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'mmmoooommm',
+      'mmmoooooom',
       'oooooooooo',
       'mmommommoo',
       'oooooooooo',
@@ -1324,17 +1343,27 @@ export const interiors = {
       'ooooEEoooo',
     ]),
     decor: [
-      { kind: 'kitchen', x: 0, y: 1 },
-      { kind: 'fridge', x: 2, y: 1 },
-      { kind: 'window', x: 4, y: 0 },
-      { kind: 'glassCabinet', x: 7, y: 1 },
-      { kind: 'blueShelf', x: 8, y: 1 },
-      { kind: 'cabinet', x: 9, y: 1 },
-      ...[0, 3, 6].flatMap((x) => [4, 6].map((y) => ({ kind: 'paperDesk', x, y }))),
+      { kind: 'bottleShelf', x: 0, y: 1 },
+      { kind: 'barCounterL', x: 0, y: 2 },
+      { kind: 'barCounter', x: 1, y: 2 },
+      { kind: 'barCounterR', x: 2, y: 2 },
+      { kind: 'beerTaps', x: 1, y: 2, dy: -9 },
+      { kind: 'dartboard', x: 5, y: 0 },
+      { kind: 'neonPink', x: 7, y: 0, dy: -10 },
+      { kind: 'pottedPlant', x: 9, y: 2 },
+      // Tables : un tabouret à gauche, la table ronde à droite.
+      ...[0, 3, 6].flatMap((x) => [4, 6].flatMap((y) => [{ kind: 'barStool', x, y }, { kind: 'pubTable', x: x + 1, y }])),
+      { kind: 'pintPair', x: 1, y: 6, dy: -14 },
+      { kind: 'pintPair', x: 4, y: 4, dy: -14 },
+      // Les verres de la bande, sur la table du fond à droite.
+      { kind: 'pintPair', x: 7, y: 4, dx: -3, dy: -14 },
+      { kind: 'pintPair', x: 7, y: 4, dx: 4, dy: -13 },
     ],
-    // Les verres de la bande, sur la table du fond à droite.
-    decals: [{ kind: 'pints', x: 6, y: 4 }],
     spawn: { x: 4, y: 6, facing: 'up' },
+    npcs: [
+      { id: 'client-b1', name: 'Client', x: 1, y: 3, facing: 'up', dialogue: ['Another round, please!'] },
+      { id: 'client-b2', name: 'Cliente', x: 3, y: 5, facing: 'up', dialogue: ['Quiz night, c\'est jeudi. Tu viens ?'] },
+    ],
     objects: [
       ...[6, 7].map((x) => ({ x, y: 4, script: PUB_B_TABLE })),
       ...[[0, 4], [1, 4], [3, 4], [4, 4], [0, 6], [1, 6], [3, 6], [4, 6], [6, 6], [7, 6]].map(([x, y]) => ({ x, y, script: PUB_B_OTHER })),
@@ -1348,23 +1377,38 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXX',
       'XXXXXXXXXXXX',
-      'ooommmmmoooo',
+      'mmmmmmmmoooo',
+      'ommooooooomm',
       'oooooooooooo',
+      'oooooooooomm',
       'oooooooooooo',
-      'oooooooooooo',
-      'oooooooooooo',
-      'oooooooooooo',
+      'oooooooooomm',
       'oooooEEooooo',
     ]),
+    // Boîte de nuit : cabine de DJ entre deux enceintes au fond, néons au mur, boule à facettes au-dessus de la
+    // piste ; le bar à gauche (comptoir, bouteilles, tabourets), des tables hautes à droite. Lumière tamisée
+    // et halos colorés (night).
     decor: [
-      { kind: 'crtTv', x: 3, y: 2 },
-      { kind: 'longTable', x: 4, y: 2 },
-      { kind: 'crtTv', x: 7, y: 2 },
-      { kind: 'notice', x: 1, y: 0 },
-      { kind: 'notice', x: 10, y: 0 },
+      { kind: 'speaker', x: 3, y: 2 },
+      { kind: 'djBooth', x: 4, y: 2 },
+      { kind: 'speaker', x: 7, y: 2 },
+      { kind: 'neonPink', x: 3, y: 0, dy: -12 },
+      { kind: 'neonCyan', x: 6, y: 0, dy: -12 },
+      { kind: 'neonPink', x: 9, y: 0, dy: -8 },
+      { kind: 'bottleShelf', x: 0, y: 1 },
+      { kind: 'barCounterL', x: 0, y: 2 },
+      { kind: 'barCounter', x: 1, y: 2 },
+      { kind: 'barCounterR', x: 2, y: 2 },
+      { kind: 'beerTaps', x: 1, y: 2, dy: -9 },
+      { kind: 'barStool', x: 1, y: 3 },
+      { kind: 'barStool', x: 2, y: 3 },
+      ...[3, 5, 7].flatMap((y) => [{ kind: 'pubTable', x: 10, y }, { kind: 'barStool', x: 11, y }]),
+      { kind: 'pintPair', x: 10, y: 5, dy: -14 },
+      { kind: 'discoBall', x: 5, y: 3, dx: 8, dy: -6 },
     ],
     // La piste de danse (dalles lumineuses), où il faut rejoindre tout le monde.
     decals: [{ kind: 'danceFloor', x: 4, y: 4, w: 4, h: 3, floor: true }],
+    night: { lights: [[5, 3, 0xff60c0], [7, 4, 0x40d8ff], [4, 6, 0xa060ff], [7, 6, 0xff60c0], [4, 0, 0xff60c0], [7, 0, 0x40d8ff], [1, 2, 0xffc060], [10, 4, 0xa060ff]] },
     spawn: { x: 5, y: 7, facing: 'up' },
     npcs: [
       { id: 'romain-asylum', name: 'Romain', x: 2, y: 4, facing: 'right', ifFlags: [FLAGS.tableTrouvee], dialogue: ['Sur la piste, tout le monde !'] },
