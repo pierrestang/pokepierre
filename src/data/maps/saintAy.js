@@ -92,9 +92,10 @@ export const saintAyMap = {
       type: 'cabane', x: CABANE_SPOT.x - 1, y: CABANE_SPOT.y - 3, w: 4, h: 3, ifFlags: [FLAGS.cabaneFinie],
       dialogue: ['La cabane des cousins. On y monte par l\'échelle.'],
     },
-    // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir. Elle
-    // disparaît une fois le trajet fait, et ne bloque que la rangée du bas de la route (on passe derrière).
-    { type: 'familyCar', x: 19, y: 7, w: 3, h: 1, facing: 'left', ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
+    // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir, elle roule
+    // jusqu'à la route du nord et monte vers Montépilloy. Elle disparaît une fois le trajet fait, et ne bloque que
+    // la rangée du bas de la route (on passe derrière).
+    { type: 'familyCar', x: 19, y: 7, w: 3, h: 1, facing: 'left', turnUp: 15, ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
   // Décor lié à l'histoire : la corde dans les hautes herbes (pendant le chantier).
   decals: [
@@ -168,8 +169,14 @@ export const saintAyMap = {
     },
   ],
   triggers: [
-    // Route du nord : on part en voiture (voir la voiture de la famille).
-    ...[14, 15].map((x) => ({ x, y: 0, dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'] })),
+    // Route du nord : on part en voiture (voir la voiture de la famille) ; ensuite, la route de Montépilloy à pied.
+    ...[14, 15].map((x) => ({
+      x,
+      y: 0,
+      ifFlags: [FLAGS.arriveeMontepilloy],
+      dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'],
+      warp: { map: 'routeMontepilloy', x: 10, y: 28, facing: 'up' },
+    })),
     // La corde se ramasse aussi en marchant dessus.
     { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: ROPE },
   ],

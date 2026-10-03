@@ -5,7 +5,7 @@ import {
 } from '../montepilloyStory.js';
 
 // Montépilloy (Oise) — village de campagne façon Rouge Feu, 32 x 26 cases. Chemins de terre de deux cases : la
-// grand-rue nord-sud (le collège au nord, Saint-Ay au sud), la rue des maisons et la rue de l'école. Les maisons
+// grand-rue nord-sud (le collège au nord, la route de Saint-Ay au sud), la rue des maisons et la rue de l'école. Les maisons
 // bordent la grand-rue de chaque côté : la famille à gauche, la voisine à droite, l'école à droite en dessous. À
 // gauche, la ferme de M. Bouly, un enclos rectangulaire à clôture blanche ouvert à droite sur la grand-rue (deux
 // cases, panneau juste à l'intérieur) : la grange (toit orange de Rubis/Saphir, tonneaux à l'intérieur) et le
@@ -139,13 +139,8 @@ export const montepilloyMap = {
     { on: 'enter', ifFlags: [FLAGS.septembre], unlessFlags: [FLAGS.departCollege], steps: SEPTEMBER_MORNING },
   ],
   triggers: [
-    // Porte sud : retour vers Saint-Ay (arrivée à sa sortie nord).
-    ...[14, 15].map((x) => ({
-      x,
-      y: 25,
-      readyDialogue: ['Tu prends la route de Saint-Ay.'],
-      warp: { map: 'saintAy', x: 14, y: 1, facing: 'down' },
-    })),
+    // Porte sud : la route de Saint-Ay (voir maps/routeMontepilloy.js).
+    ...[14, 15].map((x) => ({ x, y: 25, warp: { map: 'routeMontepilloy', x: 10, y: 1, facing: 'down' } })),
     // Cache-cache : Margaux, derrière les bottes de foin, au fond du champ de la ferme (on tombe sur elle en y
     // entrant).
     ...[[11, 21], [12, 21], [11, 22], [12, 22]].map(([x, y]) => ({

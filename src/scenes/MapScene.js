@@ -418,29 +418,42 @@ export class MapScene extends Phaser.Scene {
   }
 
   // Le joueur monte dans la voiture (prop de type `type`), qui démarre en tremblant puis file du côté où elle
-  // regarde en accélérant, avec des bouffées de fumée.
+  // regarde en accélérant, avec des bouffées de fumée. `turnUp` (case x) : arrivée à cette colonne, elle tourne et
+  // part vers le haut de la carte, vue de dos.
   async driveAway(type) {
     const prop = this.props.find((p) => p.data.type === type);
     const car = prop?.graphics;
     if (!car) return;
     const dir = prop.data.facing === 'left' ? -1 : 1;                 // elle part du côté où elle regarde
+    const { turnUp } = prop.data;
     this.player.sprite.setVisible(false);
     sfx('door');
     await this.wait(300);
     sfx('engine');
-    this.tweens.add({ targets: car, y: car.y - 1, duration: 100, yoyo: true, repeat: -1, ease: 'Stepped' });
+    const shake = this.tweens.add({ targets: car, y: car.y - 1, duration: 100, yoyo: true, repeat: -1, ease: 'Stepped' });
     await this.wait(500);
+    let up = false;
     const smoke = this.time.addEvent({
       delay: 140,
       loop: true,
       callback: () => {
-        const puff = this.add.rectangle(car.x - dir * 22, car.y - 5, 3, 3, 0xd8d8d0).setDepth(car.depth);
-        this.tweens.add({ targets: puff, x: puff.x - dir * 14, y: puff.y - 6, scale: 2, alpha: 0, duration: 600, onComplete: () => puff.destroy() });
+        const [sx, sy, mx, my] = up ? [car.x + 6, car.y + 2, 4, 10] : [car.x - dir * 22, car.y - 5, -dir * 14, -6];
+        const puff = this.add.rectangle(sx, sy, 3, 3, 0xd8d8d0).setDepth(car.depth);
+        this.tweens.add({ targets: puff, x: puff.x + mx, y: puff.y + my, scale: 2, alpha: 0, duration: 600, onComplete: () => puff.destroy() });
       },
     });
-    await new Promise((resolve) => this.tweens.add({
-      targets: car, x: car.x + dir * 12 * TILE_SIZE, duration: 2200, ease: 'Quad.easeIn', onComplete: resolve,
+    const drive = (props, duration, ease) => new Promise((resolve) => this.tweens.add({
+      targets: car, ...props, duration, ease, onComplete: resolve,
     }));
+    if (turnUp === undefined) {
+      await drive({ x: car.x + dir * 12 * TILE_SIZE }, 2200, 'Quad.easeIn');
+    } else {
+      await drive({ x: turnUp * TILE_SIZE }, 900, 'Quad.easeIn');
+      shake.stop();
+      car.setFrame('back');
+      up = true;
+      await drive({ y: car.y - 12 * TILE_SIZE }, 1800, 'Quad.easeIn');
+    }
     smoke.remove();
   }
 

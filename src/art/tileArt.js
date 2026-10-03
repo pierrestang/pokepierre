@@ -1331,25 +1331,32 @@ function fishingRods(g, px, py, x, y) {
   pixelArt(g, ROD_STAND, px, base);
 }
 
-// Statuette de cheval en bois (14 x 16), tournée vers la gauche, sur un socle.
+// Statuette de cheval en bois (19 x 20), tournée vers la gauche (œil, crinière et queue plus sombres), sur un socle.
 const HORSE_STATUE = [
-  '...kk.........',
-  '..kLLk........',
-  '.kLLMMk.......',
-  'kLMMDMk.......',
-  'kMMkkMMk......',
-  '.kk..kMMkkkkk.',
-  '.....kLLLLLLMk',
-  '.....kMMMMMMDk',
-  '.....kMkkkkMDk',
-  '.....kMk..kMk.',
-  '.....kDk..kDk.',
-  '....kkkkkkkkkk',
-  '....kPPPPPPPPk',
-  '....kQQQQQQQQk',
-  '....kkkkkkkkkk',
+  '.....kk............',
+  '....kLk............',
+  '...kLMMk...........',
+  '..kLMeMNk..........',
+  '.kLMMMMNNk.........',
+  'kLMMMMMNNk.........',
+  'kMMkkMMMNNk........',
+  '.kk..kMMMNk........',
+  '.....kLMMMMkkkkk...',
+  '.....kLLMMMLLLLMkk.',
+  '.....kMMMMMMMMMDkNk',
+  '......kMMMMMMMDk.Nk',
+  '......kDMkkkkMDk.kk',
+  '......kMMk..kMDk...',
+  '......kMk...kMk....',
+  '......kDk...kDk....',
+  '....kkkkkkkkkkkkk..',
+  '....kPPPPPPPPPPPk..',
+  '....kQQQQQQQQQQQk..',
+  '....kkkkkkkkkkkkk..',
 ];
-const HORSE_STATUE_C = { k: 0x5a3818, L: 0xe8b878, M: 0xc88c48, D: 0x966030, P: 0x8c6a50, Q: 0x6c4c34 };
+const HORSE_STATUE_C = {
+  k: 0x5a3818, L: 0xe8b878, M: 0xc88c48, D: 0x966030, N: 0x704420, e: 0x3a2210, P: 0x8c6a50, Q: 0x6c4c34,
+};
 
 // Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene), case (x, y)
 // en pixels px, py. Les cannes à pêche sont des images à part (voir art/uiIcons.js ROD_DECALS).
@@ -1399,7 +1406,7 @@ const DECALS = {
   // Le cheval que Val sculpte (maison de Felix) : statuette en bois sur son socle, copeaux sur la table.
   statue(g, px, py) {
     HORSE_STATUE.forEach((row, ry) => [...row].forEach((c, rx) => {
-      if (c !== '.') rect(g, HORSE_STATUE_C[c], px + 2 + rx, py - 1 + ry, 1, 1);
+      if (c !== '.') rect(g, HORSE_STATUE_C[c], px - 3 + rx, py - 5 + ry, 1, 1);
     }));
     for (const [dx, dy] of [[-4, 12], [-8, 15], [5, 16], [12, 15]]) {             // copeaux
       rect(g, 0xf0d098, px + dx, py + dy, 2, 1);

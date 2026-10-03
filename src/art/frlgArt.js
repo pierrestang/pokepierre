@@ -560,13 +560,14 @@ function drawFrlgTree(ctx, textures, px, py) {
 
 // ---------- Voiture de la famille ----------
 
-// Voiture bleue vue de côté (frlg-car.png : vers la gauche, puis vers la droite), 42 x 30 px.
+// Voiture bleue (frlg-car.png, cases de 42 x 30 px) : vue de côté vers la gauche, vers la droite, puis de dos.
 export const FAMILY_CAR = { sheet: FRLG_SHEETS.car, w: 42, h: 30 };
 export function familyCarImage(scene, x, y, facing = 'right') {
   const tex = scene.textures.get(FAMILY_CAR.sheet);
   if (!tex.has('right')) {
     tex.add('left', 0, 0, 0, FAMILY_CAR.w, FAMILY_CAR.h);
     tex.add('right', 0, FAMILY_CAR.w, 0, FAMILY_CAR.w, FAMILY_CAR.h);
+    tex.add('back', 0, 2 * FAMILY_CAR.w, 0, FAMILY_CAR.w, FAMILY_CAR.h);
   }
   return scene.add.image(x, y, FAMILY_CAR.sheet, facing);
 }
@@ -705,8 +706,8 @@ export const FRLG_DECOR = {
   window: block(2, 4, 0, 2, 2),         // fenêtre à rideaux
   notice: block(2, 9, 0, 1, 2),         // panneau d'affichage
   computer: CENTER_ITEM(0, 1, 2),       // ordinateur
-  crtTv: RS(558, 84, 16, 27, 1, 1),     // télé sur son meuble (Rubis/Saphir)
-  console: RS(486, 50, 13, 16, 1, 1),   // console et manette
+  crtTv: { ...RS(558, 84, 16, 27, 1, 1), lift: 8 },     // télé sur son meuble (Rubis/Saphir)
+  console: { ...RS(486, 50, 13, 16, 1, 1), lift: 8 },   // console et manette
   bed: RS(488, 79, 24, 32, 2, 2),       // lit
   computerDesk: RS(448, 74, 32, 39, 2, 2),   // bureau avec ordinateur et tabouret
   pottedPlant: RS(630, 50, 16, 15, 1, 1),   // petite plante en pot
@@ -773,14 +774,15 @@ const STAIRS_IN_WALL = {
 };
 
 // Coin haut-gauche (en pixels) d'un meuble de Rubis/Saphir : posé en bas de son emprise ; contre le mur du
-// fond (rangée juste sous le mur), il remonte au besoin pour que son haut morde d'au moins 4 px sur la plinthe.
+// fond (rangée juste sous le mur), il remonte au besoin pour que son haut morde d'au moins 4 px sur la plinthe,
+// et encore de `lift` px pour les meubles bas posés au sol (télé, console), adossés au mur comme les autres.
 // `dx`, `dy` : décalage en pixels (ex. petit carton posé sur un bureau).
 export function decorSpritePosition(interior, { kind, x, y, dx = 0, dy = 0 }) {
   const d = FRLG_DECOR[kind];
   const px = x * S + Math.round((d.w * S - d.pw) / 2);
   const bottomAligned = (y + d.h) * S - d.ph;
   const againstWall = interior.grid[y - 1]?.[x] === 'X';
-  return { px: px + dx, py: (againstWall ? Math.min(y * S - 4, bottomAligned) : bottomAligned) + dy };
+  return { px: px + dx, py: (againstWall ? Math.min(y * S - 4, bottomAligned) - (d.lift ?? 0) : bottomAligned) + dy };
 }
 
 // Lit de l'intérieur sous la case (x, y) : coin haut-gauche de son image, en pixels (voir CharacterSprite, `bed`).
@@ -803,12 +805,18 @@ export function drawFrlgInteriorDecor(ctx, textures, interior) {
     const px = Math.max(0, Math.min(roomW - st.w, x * S + Math.round((S - st.w) / 2)));
     blit(ctx, textures, st, px, y * S + 2 - st.h, st.w, st.h);
   }));
-  for (const item of interior.decor ?? []) {
+  // Meubles en cases (fenêtres, étagères…) d'abord, puis les objets posés par-dessus (télé, console, plantes…),
+  // qui peuvent mordre sur le mur ou sur une fenêtre.
+  const decor = interior.decor ?? [];
+  for (const item of decor) {
     const d = FRLG_DECOR[item.kind];
-    if (d.sprite) {
-      const { px, py } = decorSpritePosition(interior, item);
-      blit(ctx, textures, d.sprite, px, py, d.pw, d.ph);
-    } else blit(ctx, textures, d.tile, item.x * S, item.y * S, d.w * S, d.h * S);
+    if (!d.sprite) blit(ctx, textures, d.tile, item.x * S, item.y * S, d.w * S, d.h * S);
+  }
+  for (const item of decor) {
+    const d = FRLG_DECOR[item.kind];
+    if (!d.sprite) continue;
+    const { px, py } = decorSpritePosition(interior, item);
+    blit(ctx, textures, d.sprite, px, py, d.pw, d.ph);
   }
   interior.grid.forEach((row, y) => row.forEach((code, x) => {
     if (code !== 'E' || row[x - 1] === 'E') return;

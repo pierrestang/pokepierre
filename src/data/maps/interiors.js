@@ -374,12 +374,12 @@ export const interiors = {
       { kind: 'glassCabinet', x: 1, y: 1 },
       { kind: 'crtTv', x: 4, y: 2 },
       { kind: 'console', x: 5, y: 2 },
-      { kind: 'window', x: 4, y: 0 },
+      { kind: 'window', x: 6, y: 0 },
       { kind: 'bookshelf', x: 8, y: 0 },
       { kind: 'table', x: 3, y: 4 },
       { kind: 'plant', x: 0, y: 5 },
     ],
-    // Le cheval que Val sculpte, posé sur la table devant lui (art/tileArt.js DECALS.statue).
+    // Le cheval que Val sculpte, posé sur la table juste devant lui (art/tileArt.js DECALS.statue).
     decals: [{ kind: 'statue', x: 5, y: 4, ifFlags: [FLAGS.felixInvite] }],
     spawn: { x: 5, y: 6, facing: 'up' },
     npcs: [
@@ -389,7 +389,7 @@ export const interiors = {
         script: FELIX_CHANTIER,
       },
       {
-        id: 'val', name: 'Val', x: 7, y: 4, facing: 'left', color: 0x5cb85c, still: true,
+        id: 'val', name: 'Val', x: 5, y: 3, facing: 'down', color: 0x5cb85c, still: true,
         ifFlags: [FLAGS.felixInvite],
         script: [
           { say: ['Sur la table, Val sculpte une statue : un cheval en bois. Des copeaux partout.'] },
@@ -403,7 +403,7 @@ export const interiors = {
         dialogue: ['Felix a un plan. Il a toujours un plan.'],
       },
       {
-        id: 'yanis', name: 'Yanis', x: 2, y: 3, facing: 'right', color: 0xc0b040,
+        id: 'yanis', name: 'Yanis', x: 1, y: 3, facing: 'right', color: 0xc0b040,
         ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.planCabane],
         dialogue: ['Salut, cousin !'],
       },

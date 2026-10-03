@@ -362,9 +362,47 @@ def fields(outdoor):
 CAR_W, CAR_H = 42, 30
 
 
+# Vue de dos (troisième case, dessinée ici aux couleurs de la voiture bleue, la planche n'ayant que des vues de
+# côté) : toit, lunette arrière, coffre et feux, pare-chocs, roues ; quand la voiture part vers le haut d'une carte.
+CAR_BACK = [
+    '...kkkkkkkkkkkkkkkkkkkk...',
+    '..kLLLLLLLLLLLLLLLLLLLLk..',
+    '.kLBBBBBBBBBBBBBBBBBBBBDk.',
+    '.kLBBBBBBBBBBBBBBBBBBBBDk.',
+    '.kLBBBBBBBBBBBBBBBBBBBBDk.',
+    '.kLBBBBBBBBBBBBBBBBBBBBDk.',
+    '.kLBBBBBBBBBBBBBBBBBBBBDk.',
+    '.kLBBBBBBBBBBBBBBBBBBBBDk.',
+    '.kLBBBBBBBBBBBBBBBBBBBBDk.',
+    '.kDDDDDDDDDDDDDDDDDDDDDDk.',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkk',
+    'kDWWWWWWWWWWWWWWWWWWWWWWDk',
+    'kDWVVWWWWWWWWWWWWWWWWWWWDk',
+    'kDWWVVWWWWWWWWWWWWWWWWWWDk',
+    'kDWWWWWWWWWWWWWWWWWWWWWWDk',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkk',
+    'kLBBBBBBBBBBBBBBBBBBBBBBDk',
+    'kRRrBBBBBBBBBBBBBBBBBBrRRk',
+    'kRRRBBBBBBBkkkkBBBBBBBRRRk',
+    'kBBBBBBBBBBkHHkBBBBBBBBBDk',
+    'kEEEEEEEEEEEEEEEEEEEEEEEEk',
+    'kGHHHHHHHHHHHHHHHHHHHHHHGk',
+    'kGGGGGGGGGGGGGGGGGGGGGGGGk',
+    'kkkkkkkkkkkkkkkkkkkkkkkkkk',
+    '.kTTTk..............kTTTk.',
+    '.kTTTk..............kTTTk.',
+    '..kkk................kkk..',
+]
+CAR_BACK_COLORS = {
+    'k': (64, 72, 104), 'B': (96, 160, 216), 'D': (72, 128, 192), 'E': (48, 96, 160), 'L': (152, 208, 248),
+    'W': (88, 88, 112), 'V': (144, 160, 176), 'G': (120, 120, 128), 'H': (200, 216, 232), 'T': (56, 56, 72),
+    'R': (208, 64, 56), 'r': (248, 144, 112),
+}
+
+
 def family_car():
     sheet = Image.open(ROOT / 'assets-source' / 'fan' / 'pinkscales-frlg-cars.png').convert('RGBA')
-    out = Image.new('RGBA', (2 * CAR_W, CAR_H), (0, 0, 0, 0))
+    out = Image.new('RGBA', (3 * CAR_W, CAR_H), (0, 0, 0, 0))
     blue = 4
     for col in range(2):
         car = sheet.crop((col * 96 + 4, blue * 64 + 4, col * 96 + 88, blue * 64 + 64))
@@ -372,6 +410,12 @@ def family_car():
         for y in range(CAR_H):
             for x in range(CAR_W):
                 out.putpixel((col * CAR_W + x, y), px[2 * x + 1, 2 * y + 1])
+    left = 2 * CAR_W + (CAR_W - len(CAR_BACK[0])) // 2
+    top = CAR_H - len(CAR_BACK)
+    for y, row in enumerate(CAR_BACK):
+        for x, c in enumerate(row):
+            if c != '.':
+                out.putpixel((left + x, top + y), CAR_BACK_COLORS[c] + (255,))
     return out
 
 
