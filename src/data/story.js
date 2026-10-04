@@ -25,6 +25,7 @@ export const FLAGS = {
   manonNouvelle: 'manon-nouvelle',              //   Manon : « Papa a une nouvelle à nous annoncer » ; elle rentre
   annonceMutation: 'annonce-mutation',          // Papa a annoncé le départ pour Montépilloy
   adieuCousins: 'adieu-cousins',                // au revoir aux cousins à la cabane
+  felixVoiture: 'felix-voiture',                // au départ, Felix accourt devant la voiture (« Le mot de passe… »)
   arriveeMontepilloy: 'arrivee-montepilloy',    // arrivé à Montépilloy (la famille y vit désormais)
   ellipseMontepilloy: 'ellipse-montepilloy',    // Montépilloy : « Quelques années plus tard… » joué
   mamanAccueil: 'maman-accueil',                //   Maman a accueilli Pierre à la maison
@@ -43,35 +44,54 @@ export const FLAGS = {
   departCollege: 'depart-college',              //   septembre : au revoir de la famille, départ à pied
   collegeOuverture: 'college-ouverture',        // Bonsecours : image d'accueil du premier jour de collège vue
   collegeArrivee: 'college-arrivee',            //   le surveillant t'a accueilli dans le hall (il est monté au couloir)
-  remiArrive: 'remi-arrive',                    //   au casier, Rémi arrive en courant par l'escalier
-  casierPartage: 'casier-partage',              //   l'embrouille du casier : Rémi et toi le partagez
-  remiEnClasse: 'remi-en-classe',              //   Rémi file en salle de maths (« ça va sonner »)
-  remiInvite: 'remi-invite',                    //   en classe, Rémi t'invite à aller parler à Camille
+  remiArrive: 'remi-arrive',                    //   au casier, Rémy arrive en courant par l'escalier
+  casierPartage: 'casier-partage',              //   l'embrouille du casier : Rémy et toi le partagez
+  remiEnClasse: 'remi-en-classe',              //   Rémy file en salle de maths (« ça va sonner »)
+  remiInvite: 'remi-invite',                    //   en classe, Rémy t'invite à aller parler à Camille
+  remyAutocollant: 'remy-autocollant',          //   le casier devenu QG : Rémy arrive par l'escalier (l'autocollant)
+  remyRepart: 'remy-repart',                    //     … et repart en classe
   finTroisieme: 'fin-troisieme',                //   ellipse : quatre ans plus tard, la fin de la troisième (le brevet)
   bonsecoursFini: 'bonsecours-fini',            // brevet reçu du prof : la route du Prytanée s'ouvre
   arriveePrytanee: 'arrivee-prytanee',          // arrivé au Prytanée
-  capitaineAccueil: 'capitaine-accueil',        // le capitaine t'envoie au dortoir (bâtiment 1)
-  dortoirVisite: 'dortoir-visite',              // affaires déposées au dortoir
-  capitaineCours: 'capitaine-cours',            // le capitaine t'envoie en cours (bâtiment 2)
+  prytaneeOuverture: 'prytanee-ouverture',      //   image d'accueil du Prytanée vue
+  capitaineParle: 'capitaine-parle',            //   le capitaine a parlé : préparer la chambre (le dortoir s'ouvre)
+  capitaineAccueil: 'capitaine-accueil',        //   le capitaine est reparti (arrivé à son poste, ou Pierre entré au dortoir)
+  litFait: 'lit-fait',                          //   dortoir : lit fait
+  armoireRangee: 'armoire-rangee',              //   dortoir : affaires rangées dans l'armoire
+  affairesPretes: 'affaires-pretes',            //   dortoir : affaires prêtes pour demain (bureau)
+  chambrePrete: 'chambre-prete',                //   les trois faits : le capitaine entre pour l'inspection
+  inspection: 'inspection',                     //   « Correct. » : Autonomie reçue, le capitaine repart
+  soirMur: 'soir-mur',                          //   « Le soir même… » : la nuit tombe sur le dortoir
+  murPropose: 'mur-propose',                    //   le soir : Tanguy et Geoffrey sortent faire le mur (la nuit tombe)
+  murReussi: 'mur-reussi',                      //   Pierre les a rejoints derrière le mur, sans se faire prendre
+  murMatin: 'mur-matin',                        //   au petit matin, au dortoir : « Personne a rien vu. »
+  ellipseBac: 'ellipse-bac',                    //   quelques années plus tard : les résultats du bac dans la cour
+  bacDescente: 'bac-descente',                  //   Tanguy et Geoffrey sont descendus de la chambre voir les résultats
   arriveeBordeaux: 'arrivee-bordeaux',          // arrivé à Bordeaux
-  appartementVisite: 'appartement-visite',      // affaires posées dans l'appartement (Ousmane rencontré)
+  bordeauxOuverture: 'bordeaux-ouverture',      //   image d'accueil de Bordeaux vue
+  ousmaneRencontre: 'ousmane-rencontre',        //   Ousmane rencontré devant l'immeuble : ils entrent (la coupure)
+  coupure: 'coupure',                          //   dans le noir : « On appelle quelqu'un ? » « Non. » (Pragmatisme)
+  coupureReparee: 'coupure-reparee',            //   compteur électrique relevé : la lumière revient (Indépendance)
+  preparatifs: 'preparatifs',                   //   Ousmane lance la soirée : enceinte chez Paulfit, gobelets chez Rémi
+  soiree: 'soiree',                             //   la soirée d'intégration, dans l'appartement
+  soireeFinie: 'soiree-finie',                  //   en sortant : « Quelques mois plus tard » (l'oral d'anglais)
+  remiKedge: 'remi-kedge',                      //   Rémi, devant KEDGE : « T'inquiète, c'est easy. »
   arriveeHull: 'arrivee-hull',                  // arrivé à Hull (Angleterre)
   hullAccueil: 'hull-accueil',                  // Hull : Ousmane t'a accueilli à l'arrêt de bus
   ousmaneRentre: 'ousmane-rentre',              //        Ousmane est rentré à la coloc (devant toi)
   leoAppel: 'leo-appel',                        //        Ousmane : « Léo a appelé, il a un plan »
   leoPlan: 'leo-plan',                          //        chez Léo : la soirée commence (la nuit tombe)
-  ousmaneSuit: 'ousmane-suit',                  //        Ousmane rejoint la file
-  amiesSuivent: 'amies-suivent',                //        Charlotte et Anaïs rejoignent la file
-  leoColoc: 'leo-coloc',                        //        Léo entre dans la coloc (chercher Ousmane)
-  leoColoc2: 'leo-coloc2',                      //        Léo entre chez Charlotte et Anaïs
-  leoPubA: 'leo-pub-a',                         //        Léo entre dans le premier pub
-  leoPubB: 'leo-pub-b',                         //        Léo entre dans le deuxième pub
-  leoAsylum: 'leo-asylum',                      //        Léo entre à l'Asylum
-  pinteCommandee: 'pinte-commandee',            //        premier pub : pinte commandée au bar
-  tableTrouvee: 'table-trouvee',                //        deuxième pub : table de la bande retrouvée
+  servieLeo: 'servie-leo',                      //        premier pub, la tournée : la commande de Léo servie
+  servieOusmane: 'servie-ousmane',              //          … d'Ousmane
+  servieCharlotte: 'servie-charlotte',          //          … de Charlotte
+  servieAnais: 'servie-anais',                  //          … d'Anaïs
+  tourneeServie: 'tournee-servie',              //        toute la tournée rapportée : on trinque, la bande file au pub d'en face
+  flechettesJouees: 'flechettes-jouees',        //        deuxième pub : partie de fléchettes jouée, direction l'Asylum
   asylumFini: 'asylum-fini',                    //        dernière chanson à l'Asylum : sortie au petit matin
-  lendemainHull: 'lendemain-hull',              //        le lendemain matin, devant la coloc
-  revisions: 'revisions',                       //        révisions à la bibliothèque (le lendemain)
+  lendemainHull: 'lendemain-hull',              //        rentré dormir : le lendemain, veille d'examen
+  revisions: 'revisions',                       //        révisions à la bibliothèque : « T'es prêt. »
+  jourResultats: 'jour-resultats',              //        le lendemain : les résultats affichés devant l'université
+  adieuxHull: 'adieux-hull',                    //        devant chez Léo, chacun part en échange (Pierre : Hanoï)
   arriveeHanoi: 'arrivee-hanoi',                // arrivé à Hanoï (Vietnam)
   travailEtape1: 'travail-etape-1',             // nouveau travail à l'agence de voyage : étape 1
   touristesSuivent: 'touristes-suivent',        // tu guides les deux touristes vers le temple
@@ -127,18 +147,21 @@ export const TRAITS = {
   loyaute: { id: 'role-copains-montepilloy', name: 'Loyauté', city: 'montepilloy' },
   ingeniosite: { id: 'role-bricoleur', name: 'Ingéniosité', city: 'montepilloy' },
   insouciance: { id: 'vertu-insouciance', name: 'Insouciance', city: 'routeBonsecours' },
-  bandeHull: { id: 'role-bande-hull', name: 'La bande de Hull', city: 'hull' },
+  autonomie: { id: 'vertu-autonomie', name: 'Autonomie', city: 'prytanee' },
+  independance: { id: 'vertu-independance', name: 'Indépendance', city: 'bordeaux' },
+  lacherPrise: { id: 'vertu-lacher-prise', name: 'Lâcher-prise', city: 'hull' },
 };
 const TRAIT_LIST = Object.values(TRAITS);
 export const traitById = (id) => TRAIT_LIST.find((t) => t.id === id) ?? null;
 export const traitsOfCity = (city) => TRAIT_LIST.filter((t) => t.city === city);
 export const TRAIT_CITIES = [...new Set(TRAIT_LIST.map((t) => t.city))];      // dans l'ordre de l'histoire
+// Encart du trajet vers la ville suivante : seulement les vertus reçues dans la ville qu'on quitte.
+export const carryText = (city) => `Tu emportes : ${traitsOfCity(city).map((t) => t.name).join(', ')}.`;
 
 // Objets remis au joueur (voir systems/items.js).
 export const ITEMS = {
   coquillageNacre: { id: 'coquillage-nacre', name: 'Coquillage nacré' },
   // Objets-souvenirs facultatifs, un par ville.
-  coquillagePlage: { id: 'coquillage-plage', name: 'Coquillage de la plage' },     // Fort-de-France : fouiller le sable
   galetLac: { id: 'galet-lac', name: 'Galet du lac' },                            // Saint-Ay : le vieux pêcheur méfiant
   canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
   vieilleCanne: { id: 'vieille-canne', name: 'Vieille canne' },     // pour pêcher face à l'eau (facultatif)
@@ -146,11 +169,13 @@ export const ITEMS = {
   corde: { id: 'corde', name: 'Vieille corde' },
   cuillere: { id: 'cuillere', name: 'Cuillère de Jean' },                     // Montépilloy : objet-souvenir (caisse à outils)
   brevet: { id: 'brevet', name: 'Diplôme du brevet' },                         // collège : remis par le prof
-  autocollant: { id: 'autocollant', name: 'Autocollant de Rémi' },             // collège : objet-souvenir (le casier)
+  autocollant: { id: 'autocollant', name: 'Autocollant de Rémy' },             // collège : objet-souvenir (le casier)
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },
   clesAppartement: { id: 'cles-appartement', name: "Clés de l'appartement" },
+  enceinte: { id: 'enceinte', name: 'Enceinte' },                              // Bordeaux : prêtée par Paulfit
+  gobelets: { id: 'gobelets', name: 'Gobelets' },                              // Bordeaux : prêtés par Rémi
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },
-  diplomeHull: { id: 'diplome-hull', name: 'Diplôme de Hull' },
+  diplomeHull: { id: 'diplome-hull', name: 'Diplôme d\'anglais de Hull' },
   objetChance: { id: 'objet-chance', name: 'Objet de chance' },
   marchandise: { id: 'marchandise', name: 'Marchandise' },
   billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },
@@ -179,10 +204,6 @@ export const FOLLOWERS = [
   // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
-  // Hull : la file de la soirée, qui s'allonge (Ousmane, puis Charlotte et Anaïs), jusqu'à la sortie de l'Asylum.
-  { id: 'ousmane', color: 0x3c6c9c, ifFlags: [FLAGS.ousmaneSuit], unlessSouvenirs: ['role-bande-hull'] },
-  { id: 'charlotte', color: 0xd05050, ifFlags: [FLAGS.amiesSuivent], unlessSouvenirs: ['role-bande-hull'] },
-  { id: 'anais', color: 0xe0c050, ifFlags: [FLAGS.amiesSuivent], unlessSouvenirs: ['role-bande-hull'] },
   // Chemin de Saint-Jacques : Yanis marche avec toi jusqu'à Saint-Jacques.
   { id: 'yanis', color: 0xc0b040, ifFlags: [FLAGS.caminoEnCours], unlessFlags: [FLAGS.caminoFini] },
 ];

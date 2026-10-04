@@ -72,7 +72,7 @@ export const routeBonsecoursMap = {
       dialogue: GUARD_LINES,
       readyDialogue: ['Ton brevet en poche, tu prends la route du Prytanée pour y candidater.'],
       setFlags: [FLAGS.arriveePrytanee],
-      warp: { map: 'prytanee', x: 14, y: 22, facing: 'up' },
+      warp: { map: 'prytanee', x: 16, y: 24, facing: 'up' },
     })),
   ],
   surroundings: 'T',

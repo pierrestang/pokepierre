@@ -1602,7 +1602,38 @@ function drawTractor(g, ox, oy) {
   sprite(g, TRACTOR, TRACTOR_COLORS, ox - 1, oy + 2);
 }
 
+// Grosse enceinte de soirée (appartement de Bordeaux), 1 case : caisse noire, deux haut-parleurs, diode bleue.
+function drawPartySpeaker(g, ox, oy) {
+  rect(g, 0x000000, ox + 2, oy + 15, 13, 1);                                 // ombre
+  rect(g, 0x18181c, ox + 2, oy - 6, 12, 21);
+  rect(g, 0x303038, ox + 3, oy - 5, 10, 19);
+  for (const [cy, r] of [[-1, 3], [8, 4]]) {
+    rect(g, 0x101014, ox + 8 - r, oy + cy - r + 1, r * 2, r * 2);
+    rect(g, 0x50505c, ox + 7, oy + cy, 2, 2);
+  }
+  rect(g, 0x40a0f0, ox + 11, oy - 4, 1, 1);
+}
+
+// Panneau des résultats du bac (Prytanée), 2 cases : tableau de liège sur deux pieds, « BAC » en tête, feuilles de
+// listes punaisées (des lignes de noms).
+function drawResultsBoard(g, ox, oy) {
+  g.fillStyle(0x000000, 0.2).fillRect(ox + 4, oy + 14, 24, 2);              // ombre
+  rect(g, 0x5c3c20, ox + 5, oy + 2, 2, 13);                                  // pieds
+  rect(g, 0x5c3c20, ox + 25, oy + 2, 2, 13);
+  rect(g, 0x4a2e18, ox + 1, oy - 14, 30, 19);                                // cadre
+  rect(g, 0xc8965a, ox + 2, oy - 13, 28, 17);                                // liège
+  rect(g, 0x1c2c5c, ox + 2, oy - 13, 28, 5);                                 // bandeau
+  pixelText(g, 'BAC', ox + 11, oy - 13, 1, 0xf8e070);
+  for (const [sx, w] of [[4, 7], [12, 8], [21, 7]]) {
+    rect(g, 0xf8f8f0, ox + sx, oy - 7, w, 10);                               // feuilles
+    for (let ly = 0; ly < 4; ly++) rect(g, 0x9098a8, ox + sx + 1, oy - 5 + ly * 2, w - 2 - (ly % 2), 1);
+    rect(g, 0xd03030, ox + sx + Math.floor(w / 2), oy - 8, 1, 1);             // punaise
+  }
+}
+
 const BUILDINGS = {
+  partySpeaker: drawPartySpeaker,
+  resultsBoard: drawResultsBoard,
   house: drawHouse,
   lab: drawLab,
   school: drawSchool,

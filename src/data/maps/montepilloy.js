@@ -128,7 +128,15 @@ export const montepilloyMap = {
   ],
   objects: [
     { x: 13, y: 2, dialogue: ['Nord : route du collège Bonsecours.'] },
-    { x: 7, y: 6, dialogue: ['La boîte aux lettres de la famille.'] },
+    // Une carte postale de Felix (Saint-Ay).
+    {
+      x: 7, y: 6,
+      dialogue: [
+        'Une carte postale ! Elle vient de Felix.',
+        '« Pierre, la cabane tient toujours. Yanis a oublié le mot de passe, pas nous.',
+        'Joshua veut changer les planches, on a dit non, c\'est les tiennes. Reviens vite. Felix. »',
+      ],
+    },
     { x: 22, y: 6, dialogue: ['La boîte aux lettres de la voisine.'] },
     { x: 12, y: 15, dialogue: ['Ferme de M. Bouly.'] },
     // Cache-cache : Étienne dans l'arbre de la prairie (Margaux, voir les passages).

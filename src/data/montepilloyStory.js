@@ -163,7 +163,7 @@ const REPAIR = [
   tool('Le marteau… non, le petit !', 'Le petit marteau'),
   { sound: 'engine' },
   { say: ['Le moteur tousse… puis repart !'] },
-  { speaker: 'Jean', say: ['À nous deux, on répare tout.'] },
+  { speaker: 'Jean', say: ['À nous deux, on répare tout.', 'Il sent le gasoil, c\'est trop bien.'] },
   { trait: TRAITS.ingeniosite },
   { speaker: 'M. Bouly', say: ['Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de tracteur !'] },
   { black: true },

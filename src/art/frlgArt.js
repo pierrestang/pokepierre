@@ -165,7 +165,7 @@ const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'T', 'Ŧ', '�
 const SAND_CODES = new Set(['s', 'ψ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
-const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ', 'O', 'Q', 'V', 'J',
+const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ʘ', 'ƫ', 'O', 'J',
   // objets des villes (réverbère, cabine, drapeaux, lanternes, étals, scooter, vélos, vache, tuk-tuk, terrasse,
   // métro, panneaux de l'aéroport, cactus, chameau, serpent, feu de camp)
   'l', 'b', 'e', 'v', 'g', 'n', 't', 'y', 'c', 'p', 'a', 'd', '$', '!', '>', '<', '*', 'H', 'z', '&',
@@ -186,6 +186,12 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
     if (['path', 'cobble', 'concrete'].includes(below)) return below;
     // Ailleurs, le sol le plus fréquent autour du bâtiment (pavés en ville, herbe à la campagne).
     return groundUnderBuilding(x, y, at, buildingFloor);
+  }
+  // Panneau planté sur des pavés ou des dalles : le même sol que ses voisins (sinon de l'herbe, comme d'habitude).
+  if (code === 'S') {
+    const paved = [[0, -1], [0, 1], [-1, 0], [1, 0]].map(([dx, dy]) => at(x + dx, y + dy))
+      .filter((n) => n === 'ɔ' || n === 'ɐ');
+    if (paved.length >= 2) return paved.filter((n) => n === 'ɔ').length * 2 >= paved.length ? 'cobble' : 'concrete';
   }
   if (GRASS_CODES.has(code)) return 'grass';
   if (SAND_CODES.has(code)) return 'sand';
@@ -325,11 +331,16 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
       blit(ctx, textures, borderTile(SAND_ON_GRASS, isGrass), px, py);
     }
   } else if (ground === 'cobble' || ground === 'concrete') {
-    // Pavés et dalles : continuent sous les bâtiments et les objets posés dessus.
+    // Pavés et dalles : continuent sous les objets posés dessus et sous les bâtiments des villes. Bordure contre l'herbe,
+    // et au pied d'un bâtiment posé sur l'herbe (ex. l'internat du Prytanée), sauf devant sa porte : le pavé y entre
+    // jusqu'au seuil.
     const code = ground === 'cobble' ? 'ɔ' : 'ɐ';
     const other = (dx, dy) => {
       const n = at(x + dx, y + dy);
-      if (n === undefined || n === code || ['R', 'W', 'D'].includes(n) || buildingFloor(x + dx, y + dy)) return false;
+      if (n === undefined || n === code || n === 'D') return false;
+      if (['R', 'W'].includes(n) || buildingFloor(x + dx, y + dy)) {
+        return groundUnderBuilding(x + dx, y + dy, at, buildingFloor) === 'grass';
+      }
       const g = groundAt(dx, dy);
       return g !== 'cobble' && g !== 'concrete';        // pas de liseré entre pavés et dalles
     };
@@ -727,6 +738,7 @@ export const FRLG_DECOR = {
   paperDesk: RS(539, 129, 32, 20, 2, 1),   // pupitre avec des copies
   longTable: RS(506, 50, 48, 16, 3, 1),    // longue table en bois (bureau du maître)
   shelf: RS(519, 80, 32, 31, 2, 2),        // étagère à livres
+  wardrobe: RS(602, 119, 15, 28, 1, 2),     // armoire en bois (portes en haut, tiroirs en bas)
   carton: { sprite: { sheet: 'frlg-carton', sx: 0, sy: 0 }, pw: 15, ph: 14, w: 1, h: 1 },        // carton de déménagement
   smallCarton: { sprite: { sheet: 'frlg-carton', sx: 15, sy: 0 }, pw: 11, ph: 9, w: 1, h: 1 },   // petit carton (sur un meuble)
   // Bar et boîte de nuit (Hull), dessinés dans le code faute d'équivalent Rouge Feu (texture 'frlg-bar', voir

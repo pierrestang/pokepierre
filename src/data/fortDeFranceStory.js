@@ -45,37 +45,56 @@ export const FISHER_AT_PIER_END = [
 ];
 
 // Le capitaine devant le ferry, sa canne cassée à la main (après la scène de Papa). Les étapes sont
-// testées dans l'ordre ; `end` arrête la scénette.
-// La canne de la caisse « À DONNER » rapportée ; la canne cassée déjà montrée (pas encore de canne à offrir).
-const ROD_BROUGHT = { ifItems: [ITEMS.canneAPeche.id], unlessFlags: [FLAGS.canneOfferte] };
-const ROD_SHOWN = {
-  ifFlags: [FLAGS.canneMontree], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id],
-};
-export const FISHER_AT_FERRY = [
-  ...DEPARTURE.map((step) => ({ ...READY_TO_LEAVE, ...step })),
-  // Canne rapportée de la caisse « À DONNER ».
-  { ...ROD_BROUGHT, emote: 'pecheur', kind: 'surprise' },
+// testées dans l'ordre ; `end` arrête la scénette. Il explique d'abord que le ferry ne part pas sans sa canne (même si
+// Pierre en a déjà une), puis demande si on a quelque chose pour lui : « Oui », il reçoit la canne et, la famille prête,
+// on embarque aussitôt.
+const HAS_ROD = { ifItems: [ITEMS.canneAPeche.id], unlessFlags: [FLAGS.canneOfferte] };
+const ROD_GIVEN = { ifFlags: [FLAGS.canneOfferte] };
+// Canne offerte mais famille pas encore prête : il rappelle ce qu'il reste à faire.
+const NOT_READY_YET = [
+  { ...ROD_GIVEN, speaker: CAPITAINE, say: ['On part dès que toute ta famille est prête.'] },
+  ...REMINDERS.map((step) => ({ ...step, ...ROD_GIVEN })),
+  { ...ROD_GIVEN, end: true },
+];
+const BOARD = DEPARTURE.map((step) => ({ ...READY_TO_LEAVE, ...step }));
+// « Oui » : la canne de la caisse « À DONNER ».
+const GIVE_ROD = [
+  { emote: 'pecheur', kind: 'surprise' },
   {
-    ...ROD_BROUGHT, speaker: CAPITAINE,
+    speaker: CAPITAINE,
     say: [
       "Pour moi ? Elle est encore mieux que l'ancienne !",
       "Merci, petit. Tu peux dire à ton père qu'il a bien fait de faire le tri.",
     ],
   },
-  { ...ROD_BROUGHT, take: ITEMS.canneAPeche.id, setFlag: FLAGS.canneOfferte },
-  { ...READY_TO_LEAVE, say: ['Allez, monte. Ta famille t\'attend.'], speaker: CAPITAINE, end: true },
-  // Canne cassée déjà montrée : il la montre encore.
-  { ...ROD_SHOWN, say: ['Le capitaine te montre sa canne, cassée en deux.'] },
-  { ...ROD_SHOWN, speaker: CAPITAINE, say: ['Pas de canne, pas de pêche… et pas de capitaine sans sa canne.'] },
-  // Première rencontre devant le ferry.
+  { take: ITEMS.canneAPeche.id, setFlag: FLAGS.canneOfferte },
+  ...BOARD,
+  ...NOT_READY_YET,
+];
+export const FISHER_AT_FERRY = [
+  ...BOARD,
+  ...NOT_READY_YET,
+  // La canne cassée : le ferry est bloqué.
   {
-    unlessFlags: [FLAGS.canneMontree, FLAGS.canneOfferte], speaker: CAPITAINE,
-    say: [
-      "Ah, te voilà… Regarde-moi ça. Trente ans qu'elle tenait. Elle a choisi aujourd'hui pour me lâcher.",
-      'Pas de canne, pas de pêche… et pas de capitaine sans sa canne.',
+    unlessFlags: [FLAGS.canneMontree], speaker: CAPITAINE,
+    say: ["Ah, te voilà… Regarde-moi ça. Trente ans qu'elle tenait. Elle a choisi aujourd'hui pour me lâcher."],
+  },
+  { ifFlags: [FLAGS.canneMontree], say: ['Le capitaine te montre sa canne, cassée en deux.'] },
+  { speaker: CAPITAINE, say: ['Pas de canne, pas de capitaine. Le ferry ne part pas sans moi.'] },
+  { setFlag: FLAGS.canneMontree },
+  // Avec la canne de la caisse : il demande, on choisit.
+  { ...HAS_ROD, speaker: CAPITAINE, say: ['Hm ? Tu as quelque chose pour moi ?'] },
+  {
+    ...HAS_ROD,
+    choose: 'Tu lui donnes la canne à pêche ?',
+    choices: [
+      { label: 'Oui', steps: GIVE_ROD },
+      { label: 'Non', steps: [{ speaker: CAPITAINE, say: ['Ah… Bon. Le ferry attendra, alors.'] }, { end: true }] },
     ],
   },
-  { unlessFlags: [FLAGS.canneOfferte], setFlag: FLAGS.canneMontree },
+  { ...HAS_ROD, end: true },
+  // Sans canne : il pousse Pierre à en chercher une.
+  { speaker: CAPITAINE, say: ["Ton père en a toute une collection, dans sa cabane de pêche. Il en aurait pas une en trop, des fois ?"] },
   ...REMINDERS,
 ];
 

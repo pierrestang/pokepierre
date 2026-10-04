@@ -64,6 +64,7 @@ POSTCARDS = {
     'montepilloy': (0, 5, 1),       # bois aux Chênes, l'après-midi : la campagne au soleil couchant
     'montepilloySeptembre': (0, 5, 0),   # bois aux Chênes, le matin : septembre, le premier jour de collège
     'routeBonsecours': (0, 6, 0),   # parc National, le matin : l'allée et la cour du collège
+    'prytanee': (0, 1, 0),          # tour Chétiflor, le matin : grand hall de bois, solennel (lycée militaire)
 }
 POSTCARD_X = ([69, 328, 587], [907, 1166, 1425])
 POSTCARD_W, POSTCARD_H = 256, 160

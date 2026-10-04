@@ -2,6 +2,7 @@ import { MapScene } from './MapScene.js';
 import { MAPS, START_MAP } from '../data/maps/index.js';
 import { meetsConditions } from '../systems/flags.js';
 import { sfx } from '../systems/audio.js';
+import { memo } from '../systems/memo.js';
 import { TILE_SIZE } from '../data/tiles.js';
 
 // Scène générique pour toutes les cartes extérieures (villes, routes).
@@ -37,7 +38,8 @@ export class OverworldScene extends MapScene {
     const door = (this.map.doors ?? []).find((d) => d.x === x && d.y === y && (d.when ? meetsConditions(d.when) : tile.door));
     if (!door) return;
     if (door.when) {
-      this.climbLadder(door.interior);
+      if (door.password) this.askPassword(door);
+      else this.climbLadder(door.interior);
       return;
     }
     // Porte verrouillée : { lock: { ifFlags?, unlessFlags? }, lockedDialogue } — ouverte si les conditions
@@ -48,6 +50,29 @@ export class OverworldScene extends MapScene {
       return;
     }
     this.enterDoor(x, y, door.interior);
+  }
+
+  // Porte gardée par un mot de passe (ex. le QG des cousins) : { key, fallback, title, max, speaker, hint } — le mot
+  // gardé dans memo sous `key` (sinon `fallback`) ; à chaque erreur, `speaker` dit non et on réessaie. Au bout de
+  // trois erreurs, `hint` souffle le mot (pour ne jamais rester bloqué au pied de l'échelle).
+  async askPassword(door) {
+    if (this.transitioning || this.scripting) return;
+    const { key, fallback, title, max, speaker, hint } = door.password;
+    const expected = String(memo.get(key) ?? fallback).trim().toUpperCase();
+    this.scripting = true;
+    this.player.frozen = true;
+    try {
+      for (let tries = 1; ; tries++) {
+        const word = await this.scene.get('UI').askWord({ title, max });
+        if (String(word).trim().toUpperCase() === expected) break;
+        sfx('bump');
+        await this.dialog.open(['Non, c\'est pas ça !'], { speaker });
+        if (tries % 3 === 0) await this.dialog.open([`Psst… c'est « ${expected} ».`], { speaker: hint });
+      }
+    } finally {
+      this.scripting = false;
+    }
+    this.climbLadder(door.interior);
   }
 
   // Pierre grimpe à l'échelle et disparaît sur la plateforme, puis fondu vers l'intérieur.

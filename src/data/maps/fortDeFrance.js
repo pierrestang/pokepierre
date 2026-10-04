@@ -74,12 +74,7 @@ export const fortDeFranceMap = {
     // par l'escalier (blanc) jusqu'à l'herbe devant les statues.
     ...Array.from({ length: 8 }, (_, i) => ({
       x: 5 + (i % 4), y: 14 + Math.floor(i / 4),
-      dialogue: [
-        'Des statues de pierre blanche, tête baissée, regardent vers le large.',
-        "Mémorial de l'Anse Caffard. En avril 1830, un navire négrier clandestin fit naufrage au large du Diamant.",
-        'Des captifs africains y périrent, enchaînés dans la cale.',
-        "Ces statues, tournées vers le golfe de Guinée, honorent leur mémoire et celle de toutes les victimes de l'esclavage.",
-      ],
+      dialogue: ["Mémorial de l'Anse Caffard. En mémoire des captifs morts en 1830 et des victimes de l'esclavage."],
     })),
     // Chaque case du bateau réagit quand on lui fait face (Entrée / Espace), et aussi l'eau entre le ponton
     // et le ferry, pour embarquer depuis le ponton.
@@ -102,7 +97,6 @@ export const fortDeFranceMap = {
       id: 'gamin', name: 'Gamin', x: 21, y: 23, facing: 'down',
       dialogue: [
         "J'ai vu des poissons sauter près des rochers !",
-        "Et sur la plage, à gauche du gros rocher, il y a un coquillage qui brille dans le sable. Je l'ai pas pris, il est trop beau.",
         'Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ?',
       ],
     },
@@ -150,13 +144,3 @@ fortDeFranceMap.triggers = [{
     { setFlag: FLAGS.coquillageTrouve },
   ],
 }];
-
-// Objet-souvenir facultatif : un coquillage dans le sable, à gauche du rocher de la plage (le gamin en parle).
-fortDeFranceMap.objects.push({
-  x: 8, y: 23, hidden: true, unlessItems: [ITEMS.coquillagePlage.id],
-  script: [
-    { sound: 'rustle' },
-    { say: ['Tu fouilles le sable au pied du rocher…'] },
-    { give: ITEMS.coquillagePlage, text: 'Tu trouves un petit coquillage rose et blanc ! Un souvenir de l\'île.' },
-  ],
-});

@@ -1,7 +1,9 @@
 import { parseGrid } from './parseGrid.js';
 import { toAirport } from './airportLinks.js';
-import { FLAGS, TRAITS } from '../story.js';
-import { ARRIVAL, OUSMANE_WALK, DAWN, NEXT_MORNING, HULL_SPOTS, NIGHT, DAWN_TIME, LEO_ROUTE } from '../hullStory.js';
+import { FLAGS, ITEMS, TRAITS } from '../story.js';
+import {
+  ARRIVAL, OUSMANE_WALK, DAWN, NEXT_DAY, RESULTS, FAREWELL, HULL_SPOTS, NIGHT, DAWN_TIME,
+} from '../hullStory.js';
 
 // Hors de la carte : Newland Avenue et la grande rue se prolongent, l'estuaire au sud, trottoirs ailleurs.
 function outside(x, y, grid) {
@@ -14,12 +16,14 @@ function outside(x, y, grid) {
 }
 
 const NOT_HOME = ["Ce n'est pas chez toi."];
-const BANDE = TRAITS.bandeHull.id;
+const LACHER_PRISE = TRAITS.lacherPrise.id;
+// Les adieux, devant chez Léo : une fois le diplôme en poche, jusqu'à ce que chacun ait annoncé son départ.
+const FAREWELL_TIME = { ifItems: [ITEMS.diplomeHull.id], unlessFlags: [FLAGS.adieuxHull] };
 
 // Hull (Angleterre), façon Rouge Feu, 30 x 48 cases. En haut, le campus (université, jardin et bassin derrière,
 // deux terrains de football, bibliothèque Brynmor Jones, The Asylum) ; Newland Avenue descend tout droit,
 // bordée de maisons mitoyennes, de pubs, d'un café et des colocations (Pierre et Ousmane, Charlotte et Anaïs,
-// Léo avec Romain et Paul) ; le pont ferroviaire en briques « NEWLAND AVENUE » ; la grande rue est-ouest (arrêt
+// Léo avec Romain et Prophecy) ; le pont ferroviaire en briques « NEWLAND AVENUE » ; la grande rue est-ouest (arrêt
 // du bus rouge à l'ouest, aéroport aux deux bouts, cabines crème) ; Hull Minster, un square et The Deep sur le
 // quai ; l'estuaire de la Humber, la marina et le pont de la Humber au loin. Il pleut (le jour) ; la ville passe
 // en nuit pendant la soirée de Léo, puis au petit matin à la sortie de l'Asylum.
@@ -84,39 +88,35 @@ export const hullMap = {
     { x: 14, y: 8, interior: 'hullUniversity' },
     {
       x: 4, y: 12, interior: 'hullLibrary',
-      lock: { ifSouvenirs: [BANDE] },
+      lock: { ifFlags: [FLAGS.lendemainHull] },
       lockedDialogue: ['La bibliothèque Brynmor Jones. Silence, on révise !'],
     },
     {
       x: 23, y: 12, interior: 'hullAsylum',
-      lock: { ifFlags: [FLAGS.tableTrouvee], unlessFlags: [FLAGS.asylumFini] },
+      lock: { ifFlags: [FLAGS.flechettesJouees], unlessFlags: [FLAGS.asylumFini] },
       lockedDialogue: ["The Asylum, la boîte de l'université. Ça ouvre à 22 h !"],
     },
     { x: 2, y: 17, lockedDialogue: NOT_HOME },
     {
       x: 8, y: 17, interior: 'hullPubA',
-      lock: { ifFlags: [FLAGS.amiesSuivent], unlessFlags: [FLAGS.asylumFini] },
+      lock: { ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.asylumFini] },
       lockedDialogue: ["The pub is closed. Le pub n'ouvre que le soir."],
     },
     { x: 19, y: 17, lockedDialogue: ['Un café de Newland Avenue. Fermé pour la journée.'] },
     {
-      x: 25, y: 17, interior: 'hullHouse',       // chez Léo, avec Romain et Paul
+      x: 25, y: 17, interior: 'hullHouse',       // chez Léo, avec Romain et Prophecy
       lock: { ifFlags: [FLAGS.leoAppel] },
-      lockedDialogue: ["La maison de Léo, Romain et Paul. Personne ne répond pour l'instant."],
+      lockedDialogue: ["La maison de Léo, Romain et Prophecy. Personne ne répond pour l'instant."],
     },
     {
       x: 2, y: 23, interior: 'hullColoc',        // la coloc de Pierre et Ousmane
       lock: { ifFlags: [FLAGS.hullAccueil] },
       lockedDialogue: NOT_HOME,
     },
-    {
-      x: 8, y: 23, interior: 'hullColoc2',       // la coloc de Charlotte et Anaïs
-      lock: { ifFlags: [FLAGS.leoPlan] },
-      lockedDialogue: ['La coloc de Charlotte et Anaïs. « On se prépare ! »'],
-    },
+    { x: 8, y: 23, lockedDialogue: ['La coloc de Charlotte et Anaïs. Personne ne répond.'] },
     {
       x: 19, y: 23, interior: 'hullPubB',
-      lock: { ifFlags: [FLAGS.pinteCommandee], unlessFlags: [FLAGS.asylumFini] },
+      lock: { ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.asylumFini] },
       lockedDialogue: ["The pub is closed. Le pub n'ouvre que le soir."],
     },
     { x: 25, y: 23, lockedDialogue: NOT_HOME },
@@ -160,6 +160,8 @@ export const hullMap = {
     ...toAirport(x, y),
     readyDialogue: ["Tu prends le bus rouge pour l'aéroport."],
   }))).concat([
+    // Le panneau de l'université : les résultats de l'examen, le jour venu.
+    { x: 12, y: 9, ifFlags: [FLAGS.jourResultats], unlessItems: [ITEMS.diplomeHull.id], script: RESULTS },
     { x: 12, y: 9, dialogue: ['Université de Hull. Au fond, le jardin et son bassin.'] },
     { x: 10, y: 36, dialogue: ['À Hull, les cabines sont crème. Allez savoir pourquoi.'] },
   ]),
@@ -168,30 +170,45 @@ export const hullMap = {
     {
       id: 'ousmane-arrivee', name: 'Ousmane', x: HULL_SPOTS.busStop[0], y: HULL_SPOTS.busStop[1], facing: 'left',
       ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.ousmaneRentre],
-      dialogue: ['Viens, je te montre la coloc. Suis-moi !'],
+      dialogue: ['Viens, je te montre la coloc.'],
     },
-    // Soirée : Léo mène la bande. Il attend devant l'étape d'avant, marche jusqu'à la porte de la suivante (voir
-    // LEO_ROUTE) et entre : on le retrouve à l'intérieur.
-    ...LEO_ROUTE.map(({ from: [x, y], ifFlags, unlessFlags, entered, hint }, i) => ({
-      id: `leo-${i}`, name: 'Léo', x, y, facing: 'down', ifFlags, unlessFlags: [...unlessFlags, entered],
-      dialogue: hint,
+    // Au petit matin, toute la bande devant l'Asylum.
+    ...[['leo-aube', 'Léo', 22, 13, 'right', 'Demain, bibliothèque. Tout le monde.'],
+      ['ousmane-aube', 'Ousmane', 21, 12, 'down', 'Allez, on rentre se coucher.'],
+      ['charlotte-aube', 'Charlotte', 20, 13, 'right', 'Les exams… on en reparle demain.'],
+      ['anais-aube', 'Anaïs', 27, 13, 'left', 'Je sens plus mes pieds.'],
+      ['romain-aube', 'Romain', 18, 13, 'right', 'Quelle nuit !'],
+      ['prophecy-aube', 'Prophecy', 19, 12, 'down', 'On refait ça quand ?']].map(([id, name, x, y, facing, line]) => ({
+      id, name, x, y, facing, ...DAWN_TIME, dialogue: [line],
     })),
-    // Au petit matin, devant l'Asylum.
+    // Le jour des résultats : Léo devant l'université.
     {
-      id: 'leo-aube', name: 'Léo', x: 22, y: 13, facing: 'right',
-      ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [BANDE],
-      dialogue: ['Demain, bibliothèque. Tout le monde.'],
+      id: 'leo-resultats', name: 'Léo', x: 13, y: 9, facing: 'left',
+      ifFlags: [FLAGS.jourResultats], unlessItems: [ITEMS.diplomeHull.id],
+      dialogue: ['Les résultats sont sur le panneau. Va voir !'],
+    },
+    // Les adieux, devant chez Léo : chacun part en échange (voir hullStory.js FAREWELL).
+    ...[['leo-adieux', 'Léo', 24, 18, 'down'], ['ousmane-adieux', 'Ousmane', 26, 18, 'down'],
+      ['charlotte-adieux', 'Charlotte', 22, 19, 'right'], ['anais-adieux', 'Anaïs', 21, 18, 'right'],
+      ['prophecy-adieux', 'Prophecy', 27, 19, 'left'], ['romain-adieux', 'Romain', 20, 19, 'right']].map(([id, name, x, y, facing]) => ({
+      id, name, x, y, facing, ...FAREWELL_TIME, script: FAREWELL,
+    })),
+    // Léo et Ousmane restent à Hull : ils gardent la maison.
+    {
+      id: 'leo-maison-garde', name: 'Léo', x: 24, y: 18, facing: 'down',
+      ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], dialogue: ['Hanoï, hein. Nous on garde la maison.'],
+    },
+    {
+      id: 'ousmane-maison-garde', name: 'Ousmane', x: 26, y: 18, facing: 'down',
+      ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], dialogue: ['Reviens avec des histoires.'],
     },
   ],
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.hullAccueil], steps: ARRIVAL },
     { on: 'enter', ifFlags: [FLAGS.hullAccueil], unlessFlags: [FLAGS.ousmaneRentre], steps: OUSMANE_WALK },
-    // Léo marche jusqu'à la porte de l'étape suivante de la soirée, la bande derrière lui, et entre.
-    ...LEO_ROUTE.map(({ ifFlags, unlessFlags, door, entered }, i) => ({
-      on: 'enter', ifFlags, unlessFlags: [...unlessFlags, entered], steps: [{ walk: `leo-${i}`, to: door, lead: true, then: [entered] }],
-    })),
-    { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [BANDE], steps: DAWN },
-    { on: 'enter', ifSouvenirs: [BANDE], unlessFlags: [FLAGS.lendemainHull, FLAGS.revisions], steps: NEXT_MORNING },
+    { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [LACHER_PRISE], steps: DAWN },
+    // En sortant de la bibliothèque : le lendemain, les résultats.
+    { on: 'enter', ifFlags: [FLAGS.revisions], unlessFlags: [FLAGS.jourResultats], steps: NEXT_DAY },
   ],
   // La grande rue mène à l'aéroport par ses deux bouts.
   triggers: [toAirport(0, 34), toAirport(0, 35), toAirport(29, 34), toAirport(29, 35)],

@@ -72,8 +72,12 @@ export const saintAyMap = {
       lock: { ifFlags: [FLAGS.saArrivee] },
       lockedDialogue: ["La clinique de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
-    // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite).
-    { ...CABANE_SPOT, interior: 'cabane', when: { ifFlags: [FLAGS.cabaneFinie] } },
+    // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite), en donnant
+    // chaque fois le mot de passe du QG (voir saintAyStory.js CABANE_FETE).
+    {
+      ...CABANE_SPOT, interior: 'cabane', when: { ifFlags: [FLAGS.cabaneFinie] },
+      password: { key: 'motDePasse', fallback: 'QG', title: 'MOT DE PASSE DU QG ?', max: 8, speaker: 'Joshua', hint: 'Felix' },
+    },
   ],
   // Bâtiments (coin haut-gauche, en cases) ; la collision reste dans la grille.
   buildings: [
@@ -103,7 +107,15 @@ export const saintAyMap = {
     { x: 13, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
     { x: 13, y: 15, dialogue: ['Saint-Ay, Loiret. Bienvenue au village !'] },
     { x: 17, y: 20, dialogue: ['Clinique de Saint-Ay.'] },
-    { x: 16, y: 6, dialogue: ['La boîte aux lettres de la famille.'] },
+    // Une carte postale du capitaine du ferry (Fort-de-France).
+    {
+      x: 16, y: 6,
+      dialogue: [
+        'Une carte postale ! Elle vient du capitaine du ferry.',
+        '« Petit Pierre, la canne tient bon, le poisson moins. Ta mère avait raison, l\'île est plus calme sans vous.',
+        'Reviens quand tu veux, le ferry connaît le chemin. Le capitaine. »',
+      ],
+    },
     { x: 16, y: 12, dialogue: ['La boîte aux lettres de Felix et de ses frères et sœur.'] },
     // Le ferry qui a amené la famille de Fort-de-France.
     ...Array.from({ length: (BOAT_POS.w + 1) * BOAT_POS.h }, (_, i) => ({
@@ -126,6 +138,12 @@ export const saintAyMap = {
     },
     // En sortant de la clinique, Felix (ton cousin) vient à ta rencontre et part devant, chez lui, où les cousins
     // t'attendent (voir CLINIC_EXIT).
+    {
+      // Au départ en voiture : Felix sort de chez lui en courant (voir saintAyStory.js CAR).
+      id: 'felix-voiture', name: 'Felix', x: 17, y: 13, facing: 'up', color: COUSIN_COLORS.felix,
+      ifFlags: [FLAGS.felixVoiture], unlessFlags: [FLAGS.arriveeMontepilloy],
+      dialogue: ['Le mot de passe, tu le gardes, hein ?'],
+    },
     {
       id: 'felix', name: 'Felix', x: 17, y: 21, facing: 'right', color: COUSIN_COLORS.felix,
       ifSouvenirs: [TRAITS.patience.id], unlessFlags: [FLAGS.felixInvite],

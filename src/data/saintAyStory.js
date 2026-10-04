@@ -1,4 +1,4 @@
-import { FLAGS, ITEMS, TRAITS } from './story.js';
+import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 import { MONTEPILLOY_SPOTS } from './montepilloyStory.js';
 
 // Scénario de Saint-Ay (voir le document « Scénarios Poké-Pierre — Fort-de-France & Saint-Ay ») : Pierre gagne
@@ -180,14 +180,23 @@ export const ANNOUNCEMENT = [
 ];
 export const ANNOUNCEMENT_EVENT = { ...HAS_TRAITS, unlessFlags: [FLAGS.annonceMutation] };
 
-// Le départ : la voiture chargée devant la maison.
+// Le départ : la voiture chargée devant la maison (tournée vers la gauche : le capot donne sur la case CAR_HOOD).
+export const CAR_HOOD = [18, 7];
 export const CAR = [
   {
     unlessFlags: [FLAGS.adieuCousins],
     say: ['La voiture est chargée. Va d\'abord dire au revoir à tes cousins, à la cabane.'],
     end: true,
   },
-  { say: ['La voiture est chargée. Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
+  { say: ['La voiture est chargée.'] },
+  // Felix accourt de chez lui et se plante devant le capot.
+  { setFlag: FLAGS.felixVoiture },
+  { walk: 'felix-voiture', to: CAR_HOOD, block: true },
+  { faceTo: 'felix-voiture' },
+  { speaker: 'Felix', say: ['Le mot de passe, tu le gardes, hein ?'] },
+  { walk: 'felix-voiture', to: [17, 8], block: true },          // il s'écarte pour laisser passer la voiture
+  { face: { 'felix-voiture': 'up' } },
+  { say: ['Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
   { drive: 'familyCar' },
   { black: true },
   { wait: 400 },
@@ -196,9 +205,8 @@ export const CAR = [
   { say: ['Manon te montre son coquillage.'] },
   { speaker: 'Manon', say: ['Tu as toujours le tien ?'] },
   { say: ['Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît derrière les arbres.'] },
-  { say: ['Tu emportes : Patience et Esprit d\'équipe.'] },
   { setFlag: FLAGS.arriveeMontepilloy },
-  { travel: { map: 'montepilloy', ...MONTEPILLOY_SPOTS.pond, facing: 'down', car: true } },
+  { travel: { map: 'montepilloy', ...MONTEPILLOY_SPOTS.pond, facing: 'down', car: true, carry: carryText('saintAy') } },
 ];
 
 

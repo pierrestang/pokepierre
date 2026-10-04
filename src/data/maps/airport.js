@@ -1,5 +1,7 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS, TOULON_QUESTS } from '../story.js';
+import { FLIGHT_TO_HULL } from '../bordeauxStory.js';
+import { FLIGHT_TO_HANOI } from '../hullStory.js';
 
 // L'aéroport (à Bordeaux) : la dame du guichet propose toutes les destinations déjà débloquées.
 // Une destination n'apparaît que si ses conditions sont remplies (ifFlags / ifItems / ifSouvenirs).
@@ -7,21 +9,15 @@ const DESTINATIONS = [
   { label: 'Fort-de-France (Martinique)', warp: { map: 'fortDeFrance', x: 15, y: 10, facing: 'down' } },
   { label: 'Saint-Ay', ifFlags: [FLAGS.departFortDeFrance], warp: { map: 'saintAy', x: 5, y: 10, facing: 'left' } },
   { label: 'Montépilloy', ifFlags: [FLAGS.arriveeMontepilloy], warp: { map: 'montepilloy', x: 14, y: 23, facing: 'up' } },
-  { label: 'Prytanée', ifFlags: [FLAGS.arriveePrytanee], warp: { map: 'prytanee', x: 14, y: 21, facing: 'up' } },
+  { label: 'Prytanée', ifFlags: [FLAGS.arriveePrytanee], warp: { map: 'prytanee', x: 16, y: 23, facing: 'up' } },
   { label: 'Bordeaux', warp: { map: 'bordeaux', x: 30, y: 6, facing: 'left' } },
-  {
-    label: 'Hull (Angleterre)',
-    ifItems: [ITEMS.diplomeAnglais.id],
-    setFlags: [FLAGS.arriveeHull],
-    warp: { map: 'hull', x: 1, y: 35, facing: 'right' },
-  },
-  {
-    label: 'Hanoï (Vietnam)',
-    ifItems: [ITEMS.diplomeHull.id],
-    ifSouvenirs: ['role-bande-hull'],
-    setFlags: [FLAGS.arriveeHanoi],
-    warp: { map: 'hanoi', x: 1, y: 6, facing: 'right' },
-  },
+  // Hull : le premier vol, avec le diplôme d'anglais, est gardé par Ousmane (voir bordeauxStory.js FLIGHT_TO_HULL) ;
+  // ensuite, un vol comme les autres.
+  { label: 'Hull (Angleterre)', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull], steps: FLIGHT_TO_HULL },
+  { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], warp: { map: 'hull', x: 1, y: 35, facing: 'right' } },
+  // Hanoï : le premier vol, après les adieux de Hull (personne au guichet), puis un vol comme les autres.
+  { label: 'Hanoï (Vietnam)', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
+  { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], warp: { map: 'hanoi', x: 1, y: 6, facing: 'right' } },
   {
     label: 'Amsterdam (Pays-Bas)',
     ifFlags: [FLAGS.travailTermine],
@@ -61,7 +57,7 @@ const DESTINATIONS = [
     ifItems: [ITEMS.objetMagiqueNepal.id],
     dialogue: ["[Texte provisoire] Ce vol n'est pas encore ouvert : la suite du voyage arrive bientôt !"],
   },
-  { label: 'Rester ici', dialogue: ['[Hôtesse - texte provisoire] Très bien, reviens me voir quand tu veux !'] },
+  { label: 'Rester ici', dialogue: ['Très bien, reviens me voir quand tu veux !'] },
 ];
 
 // Aéroport — 24 x 16 cases : tarmac et avions derrière la baie vitrée, terminal, guichet.
@@ -94,9 +90,15 @@ export const airportMap = {
     { type: 'plane', x: 15, y: 1 },
   ],
   npcs: [
+    // Ousmane attend devant le guichet le jour du départ pour Hull.
+    {
+      id: 'ousmane-aeroport', name: 'Ousmane', x: 13, y: 8, facing: 'left',
+      ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull],
+      dialogue: ['Le guichet, c\'est juste là. Prends ton billet pour Hull.'],
+    },
     {
       id: 'hotesse', name: 'Hôtesse', x: 11, y: 7, facing: 'down', color: 0x2c5cb0,
-      dialogue: ["[Hôtesse - texte provisoire] Bonjour ! Bienvenue à l'aéroport."],
+      dialogue: ["Bonjour ! Bienvenue à l'aéroport."],
       ask: { question: 'Où souhaites-tu partir ?', choices: DESTINATIONS },
     },
   ],

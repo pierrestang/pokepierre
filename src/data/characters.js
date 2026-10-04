@@ -41,13 +41,13 @@ export const BY_NAME = {
   // Famille
   Maman: 't8', Papa: 't1', Manon: 't7',
   // Amis
-  Jean: 't12', Felix: 'f2', Romain: 't3', Paul: 'f53', Yanis: 'f66', Ousmane: 'f72', Harsh: 'f71',
+  Jean: 't12', Felix: 'f2', Romain: 't3', Prophecy: 'f53', Yanis: 'f66', Ousmane: 'f15', Harsh: 'f71',
   Tom: 'f56', 'Théo': 'f57', 'Léo': 'f55', Tanguy: 'f58', Thomas: 'f20', Hugues: 'f17', Geoffrey: 'f42',
   'Benoît': 'f38', 'Étienne': 'f36', Joshua: 'f10', Laurent: 'f52',
-  Margaux: 'f48', 'Rémi': 'f21', Camille: 'f19', Val: 't10', Anna: 'f59', Fanny: 'f18', Charlotte: 'f45',
+  Margaux: 'f48', 'Rémy': 'f33', 'Rémi': 'f40', Paulfit: 'f44', Camille: 'f19', Val: 't10', Anna: 'f59', Fanny: 'f18', Charlotte: 'f45',
   'Anaïs': 'f47', Anais: 'f47',
   // Métiers
-  'M. Bouly': 'f32', Directeur: 't3', Directrice: 'f54', Principale: 'f54', Sentinelle: 'f39', Manager: 'f8', Responsable: 't13',
+  'M. Bouly': 'f32', Militaire: 'f31', Directeur: 't3', Directrice: 'f54', Principale: 'f54', Sentinelle: 'f39', Manager: 'f8', Responsable: 't13',
   'Agent immobilier': 'f34', Vendeur: 'f16', Cuisinier: 'f50', 'Capitaine du ferry': 'f43',
   'Vieux pêcheur': 'f26', 'Vieux sage': 'f26',
   Moine: 'f24', Capitaine: 'f39', Surveillant: 'f62', Professor: 'f3', Professeur: 'f3', Professeure: 't10',
@@ -64,10 +64,12 @@ function hash(text) {
   return h;
 }
 
-// Apparence d'un PNJ ou d'un suiveur : choix du joueur, sinon par nom (ou par id), sinon un figurant.
+// Apparence d'un PNJ ou d'un suiveur : `sprite` imposé (ex. des figurants garçons), sinon choix du joueur, sinon par nom
+// (ou par id), sinon un figurant.
 export function lookOf(data) {
   if (data.id === 'chat') return fullLook({ kind: 'cat' });
   if (data.id?.startsWith('poule')) return fullLook({ kind: 'hen' });
+  if (data.sprite) return { sprite: data.sprite };
   const name = data.name ?? capitalize(data.id);
   const sprite = lookChoices.get(name) ?? BY_NAME[name] ?? BY_NAME[capitalize(data.id)];
   return { sprite: sprite ?? EXTRAS[hash(`${data.id}:${data.x},${data.y}`) % EXTRAS.length] };

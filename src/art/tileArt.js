@@ -233,9 +233,9 @@ function asphalt(g, px, py, x, y, at) {
   if (edge(1, 0)) rect(g, 0xe8e8e0, px + S - 2, py, 1, S);
 }
 
-// Mât avec le drapeau tricolore, sur la place d'armes.
+// Mât avec le drapeau tricolore (Paris).
 function flagpole(g, px, py, x, y, at) {
-  // Sur la place d'armes : asphalte ; ailleurs : le sol des voisins (pavés, herbe…).
+  // Sur l'asphalte : asphalte ; ailleurs : le sol des voisins (pavés, herbe…).
   if (groundProvided) { /* sol Rouge Feu déjà posé */ }
   else if ([at(x - 1, y), at(x + 1, y), at(x, y - 1), at(x, y + 1)].includes('A')) asphalt(g, px, py, x, y, at);
   else smallObjectGround(g, px, py, x, y, at);
@@ -245,28 +245,6 @@ function flagpole(g, px, py, x, y, at) {
   rect(g, 0x2848a8, px + 9, py + 2, 2, 6);             // drapeau
   rect(g, 0xf8f8f8, px + 11, py + 2, 2, 6);
   rect(g, 0xd83030, px + 13, py + 2, 2, 6);
-}
-
-function sandbags(g, px, py, x, y, at) {
-  grass(g, px, py, x, y, at);
-  const bag = (bx, by) => {
-    rect(g, 0x7c6840, px + bx, py + by, 7, 4);
-    rect(g, 0xd0b884, px + bx + 1, py + by, 5, 3);
-    rect(g, 0xe0cc9c, px + bx + 1, py + by, 5, 1);
-  };
-  bag(0, 11); bag(5, 11); bag(10, 11);
-  bag(2, 7); bag(8, 7);
-  bag(5, 3);
-}
-
-function crate(g, px, py, x, y, at) {
-  grass(g, px, py, x, y, at);
-  rect(g, 0x2c3420, px + 1, py + 2, 14, 13);
-  rect(g, 0x5c6c3c, px + 2, py + 3, 12, 11);
-  rect(g, 0x7c8c54, px + 2, py + 3, 12, 1);
-  rect(g, 0x3c4828, px + 2, py + 8, 12, 1);
-  rect(g, 0xd8d0a0, px + 5, py + 5, 6, 2);             // marquage pochoir
-  rect(g, 0x000000, px + 2, py + 15, 12, 1);
 }
 
 // Rivière (la Garonne) : eau brun-vert, quai de pierre là où elle touche la terre.
@@ -871,9 +849,16 @@ const MQ_COLORS = {                                                  // creux, f
   red: [0xb03030, 0xe04848, 0xf08878],
   green: [0x287848, 0x48a860, 0x88d088],
   black: [0x282830, 0x404048, 0x686870],
+  blue: [0x203878, 0x3058b0, 0x7090d8],
+  white: [0xb8bcc8, 0xe8eaf0, 0xffffff],
 };
+// Couleur de chaque pixel du drapeau (colonne c depuis le mât, rangée r) : Martinique (triangle rouge, vert, noir) ;
+// France (même mât, même étoffe qui ondule : bleu, blanc, rouge en bandes verticales).
+const MQ_HALF = (MQ_FLAG_H - 1) / 2;
+const martiniquePart = (c, r) => (c < Math.round(10 * (1 - Math.abs(r - MQ_HALF) / MQ_HALF)) ? 'red' : r < MQ_FLAG_H / 2 ? 'green' : 'black');
+const frenchPart = (c) => (c < 6 ? 'blue' : c < 13 ? 'white' : 'red');
 
-function tallMartiniqueFlag(g, px, py, frame = 0) {
+function tallMartiniqueFlag(g, px, py, frame = 0, partOf = martiniquePart) {
   const R = (c, x, y, w, h) => rect(g, c, px + x, py + y, w, h);
   // Ombre ovale au sol, comme sous les objets du jeu.
   g.fillStyle(0x000000, 0.2);
@@ -898,18 +883,13 @@ function tallMartiniqueFlag(g, px, py, frame = 0) {
   const phase = (frame * Math.PI) / 2;
   const fx = 6;
   const fy = 6;
-  const half = (MQ_FLAG_H - 1) / 2;
   let prev = 0;
   for (let c = 0; c < MQ_FLAG_W; c++) {
     const angle = c * 0.6 - phase;
     const dy = c < 3 ? 0 : Math.round(Math.sin(angle));            // accroché au mât, ondule ensuite
     const slope = c < 3 ? 0 : Math.cos(angle);
     const tone = slope < -0.5 ? 0 : slope > 0.6 ? 2 : 1;            // creux, face, bosse
-    for (let r = 0; r < MQ_FLAG_H; r++) {
-      const tri = c < Math.round(10 * (1 - Math.abs(r - half) / half));   // pointe à mi-largeur
-      const part = tri ? 'red' : r < MQ_FLAG_H / 2 ? 'green' : 'black';
-      R(MQ_COLORS[part][tone], fx + c, fy + dy + r, 1, 1);
-    }
+    for (let r = 0; r < MQ_FLAG_H; r++) R(MQ_COLORS[partOf(c, r)][tone], fx + c, fy + dy + r, 1, 1);
     // Contour continu : haut, bas, et marche d'un pixel quand l'ondulation change.
     R(MQ_OUTLINE, fx + c, fy + dy - 1, 1, 1);
     R(MQ_OUTLINE, fx + c, fy + dy + MQ_FLAG_H, 1, 1);
@@ -1412,6 +1392,54 @@ const DECALS = {
       rect(g, 0xd8b070, px + dx + 1, py + dy + 1, 1, 1);
     }
   },
+  // Tableau électrique au mur (appartement de Bordeaux) : le compteur vert (écran allumé une fois le courant revenu),
+  // et dessous le tableau blanc, ses petits disjoncteurs et le gros disjoncteur général (levier rouge en bas : coupé).
+  meter(g, px, y0, { on = false } = {}) {
+    const py = y0 + 7;                                                         // sous la corniche du mur
+    rect(g, 0x485830, px + 4, py, 8, 8);                                       // compteur
+    rect(g, 0xb8d468, px + 5, py + 1, 6, 6);
+    rect(g, 0x1c241c, px + 6, py + 2, 4, 2);                                   // écran
+    if (on) rect(g, 0x88f088, px + 6, py + 2, 3, 1);
+    rect(g, on ? 0x58d058 : 0xd04040, px + 9, py + 5, 1, 1);                    // voyant
+    rect(g, 0x303030, px + 7, py + 8, 1, 2);                                   // câble
+    rect(g, 0x40444c, px + 1, py + 10, 14, 12);                                // tableau
+    rect(g, 0xeceef2, px + 2, py + 11, 12, 10);
+    rect(g, 0xa0a6b0, px + 2, py + 14, 12, 1);                                 // rail
+    for (const x of [3, 5, 7]) {                                               // petits disjoncteurs
+      rect(g, 0x303438, px + x, py + 12, 1, 5);
+      rect(g, 0xf8f8f8, px + x, py + (on ? 12 : 15), 1, 1);
+    }
+    rect(g, 0x303438, px + 9, py + 12, 4, 6);                                  // disjoncteur général
+    rect(g, 0xd83838, px + 10, py + (on ? 12 : 15), 2, 2);                       // levier
+    rect(g, 0x707880, px + 3, py + 19, 10, 1);                                 // étiquettes
+    rect(g, 0x000000, px + 2, py + 22, 12, 1);                                 // ombre au mur
+  },
+  // Haltères posés au sol (studio de Paulfit) : deux barres à disques.
+  dumbbells(g, px, py) {
+    for (const [dx, dy] of [[1, 5], [3, 11]]) {
+      rect(g, 0x000000, px + dx + 1, py + dy + 4, 12, 1);
+      rect(g, 0x9098a0, px + dx + 2, py + dy + 1, 8, 2);                      // barre
+      for (const ex of [0, 9]) {
+        rect(g, 0x202428, px + dx + ex, py + dy - 1, 3, 6);                    // disques
+        rect(g, 0x50585c, px + dx + ex + 1, py + dy, 1, 4);
+      }
+    }
+  },
+  // Drapeau américain au mur (appartement de Rémi) : rayures rouges et blanches, canton bleu étoilé.
+  usFlag(g, px, py) {
+    rect(g, 0x303030, px + 1, py + 2, 22, 14);
+    for (let i = 0; i < 6; i++) rect(g, i % 2 ? 0xf4f4f4 : 0xc83038, px + 2, py + 3 + i * 2, 20, 2);
+    rect(g, 0x283c88, px + 2, py + 3, 9, 6);
+    for (const [sx, sy] of [[3, 4], [6, 4], [9, 4], [4, 6], [7, 6], [3, 7], [6, 7], [9, 7]]) rect(g, 0xf4f4f4, px + sx, py + sy, 1, 1);
+  },
+  // Drapeau tricolore au mur (hall de l'internat du Prytanée) : bleu, blanc, rouge, sur une hampe dorée.
+  frFlag(g, px, y0) {
+    const py = y0 + 10;                                                      // au milieu du mur, comme le panneau
+    rect(g, 0xc8a040, px + 1, py + 1, 1, 15);                                // hampe
+    rect(g, 0xf0d070, px + 1, py, 1, 1);
+    rect(g, 0x303030, px + 2, py + 2, 20, 12);
+    for (const [i, c] of [[0, 0x283c98], [1, 0xf4f4f4], [2, 0xd03038]]) rect(g, c, px + 3 + i * 6, py + 3, 6, 10);
+  },
   // Piste de danse de l'Asylum : dalles lumineuses de couleurs (w x h cases), posée au sol.
   danceFloor(g, px, py, { w = 4, h = 3 } = {}) {
     const colors = [0x9040d0, 0x3070e0, 0xe04090, 0x30b0c0];
@@ -1560,11 +1588,13 @@ function palm(g, px, py, x, y, at) {
 const TALL_KINDS = {
   capStatues: { left: 0, top: -6, w: 64, h: 40, base: 31, draw: (g, px, py) => capStatues(g, px, py) },
   mqFlag: { left: 3, top: -61, w: 26, h: 77, base: 15, frames: MQ_FLAG_FRAMES, draw: (g, px, py, frame) => tallMartiniqueFlag(g, px + 3, py - 60, frame) },
+  frFlag: { left: 3, top: -61, w: 26, h: 77, base: 15, frames: MQ_FLAG_FRAMES, draw: (g, px, py, frame) => tallMartiniqueFlag(g, px + 3, py - 60, frame, frenchPart) },
 };
 
 // Objet haut ancré sur la case (x, y), ou null : { kind, px, py } (coin haut-gauche de sa case / son bloc).
 function tallAnchor(code, x, y, at) {
   if (code === 'ɸ') return { kind: 'mqFlag', px: x * S, py: y * S };
+  if (code === 'ʘ') return { kind: 'frFlag', px: x * S, py: y * S };
   if (code === 'ɱ') {
     const plateau = (c) => c === 'ɱ' || c === 'ɲ';
     return plateau(at(x - 1, y)) || plateau(at(x, y - 1)) ? null : { kind: 'capStatues', px: x * S, py: y * S };
@@ -1858,13 +1888,12 @@ export function drawTile(g, code, x, y, at, fallbackColor) {
     case '¶': return prayerFlags(g, px, py, x, y, at);
     case 'ň': return nepalFlag(g, px, py, x, y, at);
     case 'ɸ': return martiniqueFlag(g, px, py, x, y, at);
+    case 'ʘ': return martiniqueFlag(g, px, py, x, y, at);
+    case 'J': return flagpole(g, px, py, x, y, at);         // drapeau français : même mât (voir TALL_KINDS)
     case 'l': return lamppost(g, px, py, x, y, at);
     case 'q': return rect(g, 0x6c7074, px, py, S, S);   // bus dessiné par-dessus (buildingArt)
     case 'I': return bridge(g, px, py, x, y, at);
     case 'A': return asphalt(g, px, py, x, y, at);
-    case 'J': return flagpole(g, px, py, x, y, at);
-    case 'Q': return sandbags(g, px, py, x, y, at);
-    case 'V': return crate(g, px, py, x, y, at);
     case 'o': return floor(g, px, py, x, y);
     case 'X': return innerWall(g, px, py, x, y, at);
     case 'm': return furniture(g, px, py, x, y, at);

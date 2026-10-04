@@ -9,6 +9,8 @@ import { createWalkableCheck } from '../systems/collision.js';
 import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
 import { Followers } from '../systems/Followers.js';
+import { Patrols } from '../systems/Patrols.js';
+import { playDarts } from '../systems/Darts.js';
 import { lookOf } from '../data/characters.js';
 import { bedAt, familyCarImage, cabaneFrame, CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
 import { interact } from '../systems/interactions.js';
@@ -26,6 +28,7 @@ import {
   startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay,
 } from '../systems/effects.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
+import { CITY_MUSIC } from '../data/music.js';
 
 const FADE_MS = 150;
 const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`reply`)
@@ -48,6 +51,9 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 //             `talk` : le PNJ se tourne vers le joueur et dit son dialogue (+ souvenir éventuel).
 //             scénettes jouées automatiquement à l'arrivée sur la carte.
 //   surroundings: code de tuile qui remplit l'écran autour de la carte (sinon celui de la scène).
+//   music:    { song, volume?, ifFlags?, unlessFlags? } — musique du lieu à la place de celle par défaut
+//   dark:     { radius?, ifFlags?, unlessFlags? } — pièce dans le noir, halo autour de Pierre (updateDarkness)
+//   patrols:  { guards, caught, ifFlags?, unlessFlags? } — rondes de nuit avec cônes de lumière (systems/Patrols.js)
 // Les sous-classes implémentent onTileEntered(tile, x, y), location() (pour la sauvegarde),
 // cityName() (affiché en haut à gauche)
 // et peuvent définir
@@ -55,6 +61,10 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // Objets posés au sol, dessinés dans le code : le tas de planches de la ferme (Saint-Ay), la caisse à outils de Jean
 // (Montépilloy).
 const FLOOR_PROPS = { planks: drawPlanksPile, toolbox: drawToolbox };
+
+// Clés de conditions d'une étape (voir systems/flags.js meetsConditions).
+const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenirs', 'ifItems', 'unlessItems',
+  'requiresSouvenirs'];
 
 // Un PNJ déplacé pendant la visite (voir stepTo) reprend sa place de départ.
 function restoreHome(d) {
@@ -71,7 +81,13 @@ export class MapScene extends Phaser.Scene {
     this.leaving = false;
     this.actorsReady = false;                       // voir refreshActors (place des nouveaux suiveurs)
     this.emerged = {};                              // personnages sortis de leur cachette (voir emerge)
+    this.ambienceKey = undefined;                   // ambiance jour / nuit / petit matin (voir applyAmbience)
+    this.ambience = null;
     this.events.once('shutdown', () => { this.leaving = true; });
+    // Drapeaux `then` des PNJ encore en train de marcher (voir walkNpc) : posés si on quitte la carte avant leur arrivée
+    // (sinon ils réapparaîtraient à leur place de départ à la visite suivante).
+    this.pendingWalkFlags = new Set();
+    this.events.once('shutdown', () => this.pendingWalkFlags.forEach(flags.add));
     this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
     renderMap(this, map);
     // Morceaux du décor redessinés par-dessus les personnages qui sont derrière (ex. tables de la cabane) :
@@ -86,7 +102,9 @@ export class MapScene extends Phaser.Scene {
     const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
     startSeaShimmer(this, map, false);      // reflets des étangs et rivières (la mer est animée, voir addSeaLayer)
     // Musique du lieu et ressac près de la mer.
-    playMusic(this.scene.key === 'Interior' ? 'home' : 'island');
+    // Une musique par ville, la même dans ses intérieurs (voir data/music.js) ; `music` la remplace pour un lieu.
+    const music = map.music && meetsConditions(map.music) ? map.music : null;
+    playMusic(music?.song ?? CITY_MUSIC[this.fromMap ?? map.id] ?? 'island', music?.volume);
     const hasSea = seaAround || grid.some((row) => row.includes('w'));
     setSeaAmbience(hasSea);
     // Vie de l'île : mouettes, poissons, fenêtres éclairées le soir.
@@ -116,7 +134,8 @@ export class MapScene extends Phaser.Scene {
     if (!spawnWalkable && map.spawn) spawn = map.spawn;
 
     this.player = new Player(this, spawn, {
-      isWalkable: (x, y) => (tileWalkable(x, y) || this.openDoorAt(x, y)) && !this.npcAt(x, y) && !this.propAt(x, y),
+      isWalkable: (x, y) => (tileWalkable(x, y) || this.openDoorAt(x, y)) && !this.npcAt(x, y) && !this.propAt(x, y)
+        && !this.patrols?.occupies(x, y),
       onStep: (x, y) => this.handleStep(x, y),
       onMoveStart: (x, y, nx, ny, duration) => {
         this.followers.advance(x, y, duration);
@@ -150,6 +169,10 @@ export class MapScene extends Phaser.Scene {
     }
     cam.fadeIn(FADE_MS);
     this.applyAmbience(map);
+    // Pièce dans le noir (voir updateDarkness).
+    this.darkness = map.dark ? this.createDarkness(map.dark) : null;
+    // Rondes de nuit (voir systems/Patrols.js).
+    this.patrols = map.patrols && meetsConditions(map.patrols) ? new Patrols(this, map.patrols) : null;
     this.startIdleAnimations();
 
     this.runEnterEvents();
@@ -158,6 +181,8 @@ export class MapScene extends Phaser.Scene {
   // Vie des lieux (ex. les clients d'un pub), quand rien d'autre ne se passe :
   //   PNJ `fidget: true` : il se tourne de temps en temps (vers ses voisins), et trinque parfois d'un petit saut ;
   //   PNJ `pace: [[x, y], [x, y]]` : il va et vient entre ces deux cases (ex. le barman derrière son comptoir).
+  //   PNJ `route: [[x, y], …]` : il fait le tour de ces points, en boucle (ex. un militaire en ronde dans la cour), et
+  //   regarde un peu autour de lui à chaque point.
   startIdleAnimations() {
     const quiet = () => !this.scripting && !this.dialog?.isOpen && !this.menuOpen && !this.transitioning;
     const turns = ['down', 'left', 'right', 'up'];
@@ -179,6 +204,14 @@ export class MapScene extends Phaser.Scene {
             this.walkNpc(d.id, to).then(() => {
               npc.pacing = false;
               npc.sprite.setFacing('down');
+            });
+          }
+          if (d.route && !npc.pacing && Math.random() < 0.35) {
+            npc.pacing = true;
+            npc.routeAt = ((npc.routeAt ?? 0) + 1) % d.route.length;
+            this.walkNpc(d.id, d.route[npc.routeAt]).then(() => {
+              npc.pacing = false;
+              npc.sprite.setFacing(turns[Phaser.Math.Between(0, 3)]);
             });
           }
         }
@@ -266,6 +299,7 @@ export class MapScene extends Phaser.Scene {
   // Un suiveur qui remplace un PNJ (même id) part de la position de celui-ci ; à l'inverse, un PNJ qui remplace
   // un suiveur (même id) apparaît là où était le suiveur (une scénette le fait ensuite marcher, voir walkNpc).
   refreshActors() {
+    this.applyAmbience(this.map);
     const wanted = (this.map.npcs ?? []).filter(meetsConditions);
     const stillFollowing = new Set(FOLLOWERS.filter(meetsConditions).map((f) => f.id));
     const followerAt = Object.fromEntries(this.followers.members.filter((m) => !stillFollowing.has(m.id))
@@ -287,6 +321,7 @@ export class MapScene extends Phaser.Scene {
       // `inBed` : couché dans le lit de la case (intérieurs Rouge Feu), `child` pour un enfant.
       const bed = data.inBed && bedAt(this.map, data.x, data.y);
       const sprite = new CharacterSprite(this, data.x, data.y, lookOf(data), data.facing, { bed: bed && { ...bed, child: data.child } });
+      if (data.dancing) this.startDancing(sprite, data);
       this.npcs.push({ data, sprite });
     }
 
@@ -446,7 +481,7 @@ export class MapScene extends Phaser.Scene {
     this.scripting = true;
     this.player.frozen = true;
     try {
-      await this.runSteps(steps);
+      await this.runSteps(steps, true);
     } catch (error) {
       console.error('Scénette interrompue', error);
     } finally {
@@ -463,6 +498,7 @@ export class MapScene extends Phaser.Scene {
   //   { comeBeside: npcId }              le PNJ vient sur une case libre à côté du joueur (même s'il l'enferme le temps
   //                                      de la scène : la scénette doit le faire repartir), tourné vers lui
   //   { faceTo: npcId }                  le joueur et le PNJ se tournent l'un vers l'autre
+  //   { allFace: npcId }                 tout le monde dans la pièce (Pierre, PNJ, suiveurs) se tourne vers ce PNJ
   //   { goTo: [x, y], facing? }          Pierre marche jusqu'à la case (plus court chemin), puis se tourne
   //   { setFlag } / { setFlags: [] }     drapeaux d'histoire (les personnages sont mis à jour)
   //   { trait: TRAITS.x }                vertu reçue (voir data/story.js) : « Pierre a reçu la vertu X ! »
@@ -490,16 +526,39 @@ export class MapScene extends Phaser.Scene {
   //   { slide: 'pint', from: [x, y], to: [x, y] | 'player' }  un objet apparaît et glisse (ex. pinte sur le
   //                                      comptoir), jusqu'à la case devant Pierre avec 'player'
   //   { walk: npcId, to: [x, y], lead?, block?, then? }  le PNJ marche jusqu'à la case (voir walkNpc)
+  //   { walkAll: [[id, [x, y]], …] }    plusieurs PNJ marchent en même temps, chacun vers sa case ; on attend qu'ils
+  //                                      soient tous arrivés
   //   { walkLine: [ids], to: [x, y], block?, then? }  les PNJ marchent en file, l'un derrière l'autre (walkLine)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
   //   { hop: id | [ids], times? } : petits sauts sur place ('player' : Pierre)
   //   { cheer: [ids] } : tous sautent ensemble, des notes et des cœurs s'envolent
+  //   { darts: { opponent, win, lose } } : partie de fléchettes, trois lancers (systems/Darts.js), contre un adversaire
+  //                                      au score tiré au hasard ; gagnée ou perdue, la scénette continue
   // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
-  async runSteps(steps) {
-    for (const step of steps) {
+  //   Fin de scène : une marche bloquante (`block`) suivie seulement de drapeaux (setFlag) ne fait plus attendre le
+  //   joueur ; il reprend la main pendant que le PNJ s'en va, et ces drapeaux sont posés à son arrivée (voir walkNpc).
+  async runSteps(steps, tail = false) {
+    // Les étapes après `i` ne sont-elles que des drapeaux (ou rien) ? Renvoie alors ces drapeaux, sinon null.
+    const trailingFlags = (i) => {
+      const out = [];
+      for (const rest of steps.slice(i + 1)) {
+        const keys = Object.keys(rest).filter((k) => !CONDITION_KEYS.includes(k) && k !== 'end');
+        if (keys.some((k) => k !== 'setFlag' && k !== 'setFlags')) return null;
+        if (meetsConditions(rest)) out.push(...[rest.setFlag, ...(rest.setFlags ?? [])].filter(Boolean));
+      }
+      return out;
+    };
+    for (const [i, step] of steps.entries()) {
       if (!meetsConditions(step)) continue;
+      const atTail = tail ? trailingFlags(i) : null;
+      if (atTail && step.block && (step.walk || step.walkLine)) {
+        const then = [...(step.then ?? []), ...atTail];
+        if (step.walk) this.walkNpc(step.walk, step.to, { lead: step.lead, then });
+        else this.walkLine(step.walkLine, step.to, { then });
+        return steps.slice(i + 1).some((rest) => rest.end && meetsConditions(rest));
+      }
       if (step.black !== undefined) await this.setCurtain(step.black);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
@@ -511,6 +570,7 @@ export class MapScene extends Phaser.Scene {
         await this.slideItem(step.slide, step.from, step.to === 'player' ? [x, y] : step.to);
       }
       if (step.dance) await this.dance(step.dance);
+      if (step.darts) await this.dartsGame(step.darts);
       if (step.wait) await this.wait(step.wait);
       if (step.opening) await this.playOpening(step.opening);
       if (step.emerge) await this.emerge(step.emerge);
@@ -524,6 +584,7 @@ export class MapScene extends Phaser.Scene {
         const npc = this.npcById(step.faceTo);
         if (npc) this.faceEachOther(npc.sprite, npc.data);
       }
+      if (step.allFace) this.allFace(step.allFace);
       if (step.goTo) await this.walkPlayer(step.goTo, step.facing);
       if (step.drive) await this.driveAway(step.drive);
       if (step.hop) await this.hop(step.hop, step.times);
@@ -532,6 +593,7 @@ export class MapScene extends Phaser.Scene {
         const walking = this.walkNpc(step.walk, step.to, { lead: step.lead, then: step.then });
         if (step.block) await walking;
       }
+      if (step.walkAll) await Promise.all(step.walkAll.map(([id, to]) => this.walkNpc(id, to)));
       if (step.walkLine) {
         const walking = this.walkLine(step.walkLine, step.to, { then: step.then });
         if (step.block) await walking;
@@ -544,10 +606,10 @@ export class MapScene extends Phaser.Scene {
         }
       }
       if (step.quiz) await this.quiz(step.quiz);
-      if (step.steps && await this.runSteps(step.steps)) return true;
+      if (step.steps && await this.runSteps(step.steps, Boolean(tail && (step.end || trailingFlags(i))))) return true;
       if (step.choose) {
         const index = await this.dialog.choose(step.choose, step.choices.map((c) => c.label), { speaker: step.speaker });
-        if (await this.runSteps(step.choices[index]?.steps ?? [])) return true;
+        if (await this.runSteps(step.choices[index]?.steps ?? [], Boolean(tail && trailingFlags(i)))) return true;
       }
       if (step.give && items.add(step.give)) {
         this.refreshActors();
@@ -710,6 +772,7 @@ export class MapScene extends Phaser.Scene {
   async walkNpc(id, [tx, ty], { lead = false, then = [] } = {}) {
     const npc = this.npcById(id);
     if (!npc) return;
+    then.forEach((f) => this.pendingWalkFlags.add(f));
     const d = npc.data;
     const alive = () => !this.leaving && this.npcs.includes(npc);
     let stuck = 0;                                  // au bout d'une dizaine de secondes bloqué, on abandonne
@@ -734,6 +797,7 @@ export class MapScene extends Phaser.Scene {
       await this.stepTo(npc.sprite, d, [x, y]);
     }
     if (!alive()) return;
+    then.forEach((f) => this.pendingWalkFlags.delete(f));
     d.facing = npc.sprite.facing;
     if (then.length) {
       then.forEach(flags.add);
@@ -747,6 +811,7 @@ export class MapScene extends Phaser.Scene {
   async walkLine(ids, [tx, ty], { then = [] } = {}) {
     const line = ids.map((id) => this.npcById(id)).filter(Boolean);
     if (!line.length) return;
+    then.forEach((f) => this.pendingWalkFlags.add(f));
     const alive = () => !this.leaving && line.every((n) => this.npcs.includes(n));
     const step = (npc, xy) => this.stepTo(npc.sprite, npc.data, xy);
     const near = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
@@ -779,6 +844,7 @@ export class MapScene extends Phaser.Scene {
       await Promise.all(line.map((n, i) => step(n, i === 0 ? next : [before[i - 1].x, before[i - 1].y])));
     }
     if (!alive()) return;
+    then.forEach((f) => this.pendingWalkFlags.delete(f));
     line.forEach((n) => { n.data.facing = n.sprite.facing; });
     if (then.length) {
       then.forEach(flags.add);
@@ -830,16 +896,24 @@ export class MapScene extends Phaser.Scene {
   // Ambiance de la carte, selon l'histoire : nuit (filtre sombre, halos des réverbères et des enseignes),
   // petit matin bleuté, ou pluie. map.night / map.dawn / map.rain : conditions (ifFlags…) ; map.night.lights :
   // halos en plus des réverbères ('l'), [x, y, couleur].
+  // Recalculée quand l'histoire avance (voir refreshActors) : une scénette qui fait tomber la nuit ou se lever le jour
+  // change l'ambiance tout de suite, sans ressortir de la pièce.
   applyAmbience(map) {
     const on = (spec) => spec && meetsConditions(spec);
     const night = on(map.night);
     const dawn = !night && on(map.dawn);
+    const key = night ? 'night' : dawn ? 'dawn' : 'day';
+    if (key === this.ambienceKey) return;
+    const first = this.ambienceKey === undefined;
+    this.ambienceKey = key;
+    this.ambience?.destroy();
+    this.ambience = this.add.container(0, 0).setDepth(40);
     const W = this.grid[0].length * TILE_SIZE;
     const H = this.grid.length * TILE_SIZE;
     const M = 40 * TILE_SIZE;
     if (night || dawn) {
-      this.add.rectangle(-M, -M, W + 2 * M, H + 2 * M, night ? 0x0c1030 : 0x5070b0, night ? 0.58 : 0.28)
-        .setOrigin(0).setDepth(40);
+      this.ambience.add(this.add.rectangle(-M, -M, W + 2 * M, H + 2 * M, night ? 0x0c1030 : 0x5070b0, night ? 0.58 : 0.28)
+        .setOrigin(0));
     }
     if (night) {
       const lamps = [];
@@ -848,12 +922,34 @@ export class MapScene extends Phaser.Scene {
       for (const [x, y, color] of [...lamps, ...(map.night.lights ?? [])]) {
         const cx = x * TILE_SIZE + 8;
         const cy = y * TILE_SIZE + 4;
-        const glow = this.add.container(0, 0).setDepth(41);
+        const glow = this.add.container(0, 0);
         for (const [w, a] of [[46, 0.1], [30, 0.14], [16, 0.22]]) glow.add(this.add.ellipse(cx, cy, w, w * 0.8, color, a));
+        this.ambience.add(glow);
         this.tweens.add({ targets: glow, alpha: 0.7, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       }
+      // map.night.doorLamps : une petite applique au-dessus de chaque porte ('D'), qui éclaire le seuil.
+      if (map.night.doorLamps) {
+        this.grid.forEach((row, y) => row.forEach((c, x) => { if (c === 'D') this.addDoorLamp(x, y); }));
+      }
     }
-    if (!night && !dawn && on(map.rain)) this.startRain();
+    if (first && !night && !dawn && on(map.rain)) this.startRain();
+  }
+
+  // Applique au-dessus d'une porte, la nuit : le boîtier (sur le mur, au-dessus de la porte), un petit halo chaud
+  // autour, et une flaque de lumière sur le seuil. Lumière additive : elle éclaire le voile de la nuit au lieu de le
+  // teinter.
+  addDoorLamp(x, y) {
+    const cx = x * TILE_SIZE + 8;
+    const top = y * TILE_SIZE - 5;                     // sur le mur, juste au-dessus du chambranle
+    const lamp = this.add.container(0, 0);
+    const add = (o) => lamp.add(o.setBlendMode(Phaser.BlendModes.ADD));
+    add(this.add.ellipse(cx, (y + 1) * TILE_SIZE + 3, 22, 9, 0xffc860, 0.16));         // le seuil éclairé
+    add(this.add.ellipse(cx, (y + 1) * TILE_SIZE + 2, 12, 5, 0xffd890, 0.16));
+    for (const [w, a] of [[18, 0.12], [10, 0.2]]) add(this.add.ellipse(cx, top + 1, w, w * 0.75, 0xffd070, a));
+    lamp.add(this.add.rectangle(cx, top - 1, 4, 1, 0x403020));                              // le boîtier
+    lamp.add(this.add.rectangle(cx, top + 1, 4, 3, 0xfff0b0));
+    this.ambience.add(lamp);
+    this.tweens.add({ targets: lamp, alpha: 0.82, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
 
   // Pluie fine : traits clairs qui tombent en biais sur tout l'écran.
@@ -1174,7 +1270,8 @@ export class MapScene extends Phaser.Scene {
     if (target.ask) await this.runAsk(target.ask, target.name);
   }
 
-  // ask : { question, ifFlags?, unlessFlags?, choices: [{ label, reply?, dialogue?, setFlags?, warp?, ifFlags?, ifItems?, ifSouvenirs? }] }
+  // ask : { question, ifFlags?, unlessFlags?, choices: [{ label, reply?, dialogue?, setFlags?, warp?, steps?, ifFlags?, ifItems?, ifSouvenirs? }] }
+  //   `steps` : une scénette (ex. le départ en avion, avec le gardien du départ).
   //   `reply` : réplique du joueur (affichée avec son nom), puis `dialogue` : réponse du personnage.
   // Seules les réponses dont les conditions sont remplies sont proposées.
   async runAsk(ask, speaker) {
@@ -1191,6 +1288,7 @@ export class MapScene extends Phaser.Scene {
       this.refreshActors();
     }
     if (choice.warp) this.travel(choice.warp);
+    if (choice.steps) await this.runScript(choice.steps);
   }
 
   // Sauvegarde où se trouve le joueur (appelé à l'arrivée et à chaque pas).
@@ -1239,9 +1337,13 @@ export class MapScene extends Phaser.Scene {
   // `ferry: true` : on passe d'abord par la traversée en ferry (voir FerryScene).
   // `deck: true` : la traversée commence par la scène sur le pont du ferry (départ de Fort-de-France).
   // `car: true` : on passe d'abord par le trajet en voiture (même écran de voyage, voir FerryScene).
-  travel({ map, interior, ferry, deck, car, ...spawn }) {
+  // `carry` : encart affiché à la fin du trajet (ex. « Tu emportes : … », voir FerryScene).
+  // `plane: true` : en avion (même écran de voyage).
+  travel({ map, interior, ferry, deck, car, plane, carry, ...spawn }) {
     if (interior) this.goTo('Interior', { interior, fromMap: this.fromMap ?? this.map.id, spawn });
-    else if (ferry || car) this.goTo('Ferry', { deck, road: car, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
+    else if (ferry || car || plane) {
+      this.goTo('Ferry', { deck, road: car, plane, carry, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
+    }
     else this.goTo('Overworld', { mapId: map, spawn });
   }
 
@@ -1256,14 +1358,128 @@ export class MapScene extends Phaser.Scene {
   onTileEntered() {}
 
   update() {
+    this.updateDarkness();
     this.updateCovers();
     this.updateHint();
+    if (this.patrols) {
+      const busy = this.scripting || this.transitioning || this.dialog?.isOpen || this.menuOpen;
+      const guard = this.patrols.update(busy);
+      if (guard) this.caughtBy(guard);
+    }
     // Pendant un dialogue le joueur ne bouge pas, et on oublie les flèches appuyées.
     if (this.dialog?.isOpen || this.menuOpen) {
       this.player.queued = null;
       return;
     }
     this.player.update();
+  }
+
+  // Partie de fléchettes : trois lancers de Pierre, puis le score de l'adversaire (au hasard) et sa réaction.
+  async dartsGame({ opponent, win, lose }) {
+    const throws = await playDarts(this.scene.get('UI'));
+    const total = throws.reduce((n, t) => n + t.points, 0);
+    const theirs = 10 + Math.floor(Math.random() * 90);
+    await this.dialog.open([`Tes lancers : ${throws.map((t) => t.label.replace(/[.!…]+$/, '')).join(', ')}. Total : ${total} points.`]);
+    await this.dialog.open([`${theirs} points pour moi.`, ...(total > theirs ? win : lose)], { speaker: opponent });
+  }
+
+  // Pièce dans le noir, façon grotte sans Flash : tout est noir sauf un halo autour de Pierre. map.dark : { radius?,
+  // ifFlags?, unlessFlags? } ; dès que ses conditions ne sont plus remplies (ex. le courant revient), le noir se dissipe.
+  createDarkness(spec) {
+    const W = SCREEN_W * 3;
+    const H = SCREEN_H * 3;
+    const key = `darkness-${spec.radius ?? 36}`;
+    if (!this.textures.exists(key)) {
+      const tex = this.textures.createCanvas(key, W, H);
+      const ctx = tex.getContext();
+      ctx.fillStyle = 'rgba(4, 4, 10, 0.94)';
+      ctx.fillRect(0, 0, W, H);
+      const r = spec.radius ?? 36;
+      const hole = ctx.createRadialGradient(W / 2, H / 2, r * 0.45, W / 2, H / 2, r);
+      hole.addColorStop(0, 'rgba(0, 0, 0, 1)');
+      hole.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = hole;
+      ctx.fillRect(0, 0, W, H);
+      tex.refresh();
+    }
+    const image = this.add.image(0, 0, key).setDepth(40);
+    image.setVisible(meetsConditions(spec));
+    return { spec, image, on: image.visible };
+  }
+
+  updateDarkness() {
+    const dark = this.darkness;
+    if (!dark) return;
+    dark.image.setPosition(this.player.sprite.x, this.player.sprite.y);
+    const on = meetsConditions(dark.spec);
+    if (on === dark.on) return;
+    dark.on = on;
+    if (on) dark.image.setVisible(true).setAlpha(1);
+    else this.tweens.add({ targets: dark.image, alpha: 0, duration: 600, onComplete: () => dark.image.setVisible(false) });
+  }
+
+  // PNJ qui dansent en continu (`dancing: true`, ex. la soirée de Bordeaux) : petits sauts, et ils changent de côté
+  // de temps en temps ; chacun à son rythme.
+  startDancing(sprite, data) {
+    const seed = [...data.id].reduce((n, c) => n + c.charCodeAt(0), 0);
+    this.tweens.add({
+      targets: sprite.image, y: sprite.image.y - 2, duration: 160 + (seed % 5) * 20, yoyo: true, repeat: -1,
+      delay: (seed * 37) % 400, ease: 'Sine.easeOut',
+    });
+    const dirs = ['down', 'left', 'down', 'right'];
+    this.time.addEvent({
+      delay: 700 + (seed % 7) * 90, loop: true,
+      callback: () => { if (!this.scripting) sprite.setFacing(dirs[Math.floor(Math.random() * dirs.length)]); },
+    });
+  }
+
+  // Tout le monde se tourne vers le PNJ `id` (ex. le prof qui interpelle la classe) : vers le haut ou le bas s'il est
+  // devant ou derrière (comme une classe face au tableau), sur le côté seulement s'il est sur la même rangée.
+  allFace(id) {
+    const target = this.npcById(id);
+    if (!target) return;
+    const to = target.data;
+    const turn = (sprite, from) => {
+      if (from.y !== to.y) sprite.setFacing(to.y < from.y ? 'up' : 'down');
+      else if (from.x !== to.x) sprite.setFacing(to.x < from.x ? 'left' : 'right');
+    };
+    for (const npc of this.npcs) {
+      if (npc === target) continue;
+      turn(npc.sprite, npc.data);
+      npc.data.facing = npc.sprite.facing;
+    }
+    for (const m of this.followers.members) turn(m.sprite, m);
+    const p = this.player;
+    turn(p.sprite, { x: p.tileX, y: p.tileY });
+    p.facing = p.sprite.facing;
+  }
+
+  // Pris dans le cône d'une ronde : le militaire l'interpelle, fondu, et Pierre se retrouve au point de départ
+  // (`caught.back`), sans autre pénalité.
+  async caughtBy(guard) {
+    if (this.scripting || this.transitioning) return;
+    const { speaker, say, back } = this.patrols.spec.caught;
+    this.scripting = true;
+    this.player.frozen = true;
+    this.player.queued = null;
+    try {
+      await this.emote([guard.x, guard.y], 'surprise');
+      await this.dialog.open(say, { speaker });
+      await this.setCurtain(true);
+      const sprite = this.player.sprite;
+      this.player.tileX = back.x;
+      this.player.tileY = back.y;
+      this.player.facing = back.facing;
+      sprite.setPosition(...tileCenter(back.x, back.y));
+      sprite.setFacing(back.facing);
+      sprite.updateDepth(0.001);
+      this.savePosition();
+      await this.setCurtain(false);
+    } finally {
+      this.scripting = false;
+      if (!this.transitioning) this.player.frozen = false;
+    }
   }
 
   // Bulle « ! » au-dessus du personnage ou de l'objet que le joueur regarde (s'il peut lui parler).

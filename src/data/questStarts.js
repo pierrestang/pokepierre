@@ -13,7 +13,7 @@ export const QUEST_STARTS = [
   { label: 'SAINT-AY', maps: ['saintAy'], upTo: FLAGS.coquillageTrouve, go: { map: 'saintAy', x: 5, y: 10, facing: 'left' } },
   { label: 'MONTÉPILLOY', maps: ['montepilloy'], upTo: FLAGS.arriveeMontepilloy, go: { map: 'montepilloy', x: 19, y: 16, facing: 'down' } },
   { label: 'COLLÈGE', maps: ['routeBonsecours'], upTo: FLAGS.departCollege, go: { map: 'routeBonsecours', x: 10, y: 27, facing: 'up' } },
-  { label: 'PRYTANÉE', maps: ['prytanee'], upTo: FLAGS.arriveePrytanee, go: { map: 'prytanee', x: 14, y: 21, facing: 'up' } },
+  { label: 'PRYTANÉE', maps: ['prytanee'], upTo: FLAGS.arriveePrytanee, go: { map: 'prytanee', x: 16, y: 23, facing: 'up' } },
   { label: 'BORDEAUX', maps: ['bordeaux'], upTo: FLAGS.arriveeBordeaux, go: { map: 'bordeaux', x: 1, y: 6, facing: 'right' } },
   { label: 'HULL', maps: ['hull'], upTo: FLAGS.arriveeHull, go: { map: 'hull', x: 1, y: 35, facing: 'right' } },
   { label: 'HANOÏ', maps: ['hanoi'], upTo: FLAGS.arriveeHanoi, go: { map: 'hanoi', x: 1, y: 6, facing: 'right' } },

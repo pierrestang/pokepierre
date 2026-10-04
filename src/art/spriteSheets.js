@@ -66,7 +66,7 @@ export function registerSpriteSheets(scene) {
   // Planches au format Rouge Feu : une ligne de 12 images par personnage.
   for (const letter of ['f', 'h']) {
     const sheet = SHEETS[letter];
-    const texture = scene.textures.get(sheet.key);
+    const texture = withWalkFrames(scene, sheet);
     for (let i = 0; i < sheet.count; i++) {
       DIRS.forEach((dir, d) => {
         for (let step = 0; step < 3; step++) {
@@ -80,4 +80,52 @@ export function registerSpriteSheets(scene) {
 // Texture et hauteur d'image d'un personnage (`t4`, `f0`…).
 export function sheetOf(id) {
   return SHEETS[id[0]];
+}
+
+// Certains personnages des planches n'ont qu'une image par direction (les « pas » sont identiques à l'image debout) :
+// ils glisseraient sans bouger les jambes. On leur fabrique deux pas : les jambes (le bas du personnage) décalées d'un
+// pixel d'un côté puis de l'autre, et tout le personnage qui rebondit d'un pixel, comme la démarche de Rouge Feu.
+// La planche est recopiée dans une texture canvas (même clé) avant de nommer ses images.
+const LEGS = 5;             // hauteur des jambes, en pixels, depuis le bas du personnage
+
+function withWalkFrames(scene, sheet) {
+  const source = scene.textures.get(sheet.key).getSourceImage();
+  const canvas = document.createElement('canvas');
+  canvas.width = source.width;
+  canvas.height = source.height;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(source, 0, 0);
+  const { w, h } = sheet;
+  const cell = (col, row) => ctx.getImageData(col * w, row * h, w, h);
+  const same = (a, b) => a.data.every((v, i) => v === b.data[i]);
+  for (let row = 0; row < sheet.count; row++) {
+    DIRS.forEach((dir, d) => {
+      const still = cell(d * 3, row);
+      if (!same(still, cell(d * 3 + 1, row)) || !same(still, cell(d * 3 + 2, row))) return;
+      [-1, 1].forEach((side, k) => ctx.putImageData(stepFrame(still, w, h, side), (d * 3 + 1 + k) * w, row * h));
+    });
+  }
+  scene.textures.remove(sheet.key);
+  return scene.textures.addCanvas(sheet.key, canvas);
+}
+
+// Un pas fabriqué à partir de l'image debout : personnage remonté d'un pixel, jambes décalées de `side` pixel(s).
+function stepFrame(still, w, h, side) {
+  const out = new ImageData(w, h);
+  const src = still.data;
+  let bottom = h - 1;
+  while (bottom > 0 && ![...Array(w).keys()].some((x) => src[(bottom * w + x) * 4 + 3])) bottom--;
+  const legsTop = bottom - LEGS + 1;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      if (!src[i + 3]) continue;
+      const tx = y >= legsTop ? x + side : x;
+      const ty = y - 1;                                              // tout le personnage rebondit d'un pixel
+      if (tx < 0 || tx >= w || ty < 0) continue;
+      const o = (ty * w + tx) * 4;
+      for (let c = 0; c < 4; c++) out.data[o + c] = src[i + c];
+    }
+  }
+  return out;
 }
