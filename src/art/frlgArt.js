@@ -124,6 +124,9 @@ const pierPart = (y, at, x) => (at(x, y - 1) !== '=' ? 'start' : at(x, y + 1) !=
 
 // Grand arbre isolé (32 x 45 px) de la planche de Hoeloe : 2 cases de large, dépasse de 13 px au-dessus.
 const FRLG_TREE = { sheet: FRLG_SHEETS.props, sx: 95, sy: 33, w: 32, h: 45 };
+// Sur la planche, un bout gris du décor voisin dépasse dans le coin en haut à droite de la découpe (3 x 2 px) :
+// on ne copie pas ces pixels (sinon ils se voient à côté d'un sapin de bordure).
+const TREE_STRAY = { w: 3, h: 2 };
 
 // Bâtiments Rouge Feu : image entière, posée en bas de son emprise (footH cases de haut).
 export const FRLG_BUILDINGS = {
@@ -537,7 +540,12 @@ function tropicalTreeAnchor(x, y, at) {
 export function frlgTallImage(scene, code, x, y, at) {
   if (code === 'T') {
     if (!inFullTreeBlock(x, y, at) || mod2(x) !== 1 || mod2(y) !== 1) return null;
-    const key = sheetTexture(scene, 'tall-frlg-tree', FRLG_TREE.sheet, FRLG_TREE.sx, FRLG_TREE.sy, FRLG_TREE.w, FRLG_TREE.h);
+    const key = 'tall-frlg-tree';
+    if (!scene.textures.exists(key)) {
+      const tex = scene.textures.createCanvas(key, FRLG_TREE.w, FRLG_TREE.h);
+      drawFrlgTree(tex.getContext(), scene.textures, 0, 0);
+      tex.refresh();
+    }
     return { key, x: (x - 1) * S, y: (y + 1) * S - FRLG_TREE.h, baseY: (y + 1) * S - 1 };
   }
   if (code === 'ƫ') {
@@ -556,7 +564,9 @@ export function frlgTallImage(scene, code, x, y, at) {
 }
 
 function drawFrlgTree(ctx, textures, px, py) {
-  blit(ctx, textures, FRLG_TREE, px, py, FRLG_TREE.w, FRLG_TREE.h);
+  const { w, h } = FRLG_TREE;
+  blit(ctx, textures, FRLG_TREE, px, py, w - TREE_STRAY.w, TREE_STRAY.h);
+  blit(ctx, textures, { ...FRLG_TREE, sy: FRLG_TREE.sy + TREE_STRAY.h }, px, py + TREE_STRAY.h, w, h - TREE_STRAY.h);
 }
 
 // ---------- Voiture de la famille ----------
