@@ -16,7 +16,7 @@ import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
 import { visitedFlag } from '../systems/RegionMap.js';
 import { items } from '../systems/items.js';
-import { EMOTES, EMOTE_FRAMES, ITEM_ICONS } from '../art/uiIcons.js';
+import { ITEM_ICONS } from '../art/uiIcons.js';
 import { savePosition } from '../systems/save.js';
 import { memo } from '../systems/memo.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
@@ -52,6 +52,16 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // cityName() (affiché en haut à gauche)
 // et peuvent définir
 // `surroundingTile` (tuile de remplissage par défaut).
+// Objets posés au sol, dessinés dans le code : le tas de planches de la ferme (Saint-Ay), la caisse à outils de Jean
+// (Montépilloy).
+const FLOOR_PROPS = { planks: drawPlanksPile, toolbox: drawToolbox };
+
+// Un PNJ déplacé pendant la visite (voir stepTo) reprend sa place de départ.
+function restoreHome(d) {
+  if (d.home) Object.assign(d, d.home);
+  delete d.home;
+}
+
 export class MapScene extends Phaser.Scene {
   setupMap(map, spawn) {
     const { grid } = map;
@@ -99,10 +109,7 @@ export class MapScene extends Phaser.Scene {
     const tileWalkable = createWalkableCheck(grid);
     this.tileWalkable = tileWalkable;
     // Les PNJ qui se sont avancés vers le joueur (voir approach) reprennent leur place à la prochaine visite.
-    this.events.once('shutdown', () => (map.npcs ?? []).forEach((d) => {
-      if (d.home) Object.assign(d, d.home);
-      delete d.home;
-    }));
+    this.events.once('shutdown', () => (map.npcs ?? []).forEach(restoreHome));
 
     // Position sauvegardée devenue invalide (carte modifiée) : retour au point de départ de la carte.
     const spawnWalkable = tileWalkable(spawn.x, spawn.y);
@@ -310,17 +317,10 @@ export class MapScene extends Phaser.Scene {
         this.props.push({ data, graphics });
         continue;
       }
-      // Tas de planches de la ferme (Saint-Ay) : disparaît une fois les planches ramassées.
-      if (data.type === 'planks') {
+      // Objets posés au sol, dessinés dans le code (voir FLOOR_PROPS) : triés en profondeur avec les personnages.
+      if (FLOOR_PROPS[data.type]) {
         const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);
-        drawPlanksPile(graphics, data.x * TILE_SIZE, data.y * TILE_SIZE);
-        this.props.push({ data, graphics });
-        continue;
-      }
-      // Caisse à outils de Jean (Montépilloy), posée par terre.
-      if (data.type === 'toolbox') {
-        const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);
-        drawToolbox(graphics, data.x * TILE_SIZE, data.y * TILE_SIZE);
+        FLOOR_PROPS[data.type](graphics, data.x * TILE_SIZE, data.y * TILE_SIZE);
         this.props.push({ data, graphics });
         continue;
       }
@@ -381,22 +381,10 @@ export class MapScene extends Phaser.Scene {
     const [fx, fy] = from.find(([x, y]) => x !== this.player.tileX || y !== this.player.tileY) ?? from[0];
     const target = this.besidePlayer();
     const sprite = new CharacterSprite(this, fx, fy, lookOf({ id, name }), this.directionTo({ x: fx, y: fy }, target));
-    let at = { x: fx, y: fy };
+    const at = { x: fx, y: fy };
     const path = this.pathTo(at, target.x, target.y, [this.player.tileX, this.player.tileY]) ?? [[target.x, target.y]];
-    for (const [x, y] of path) {
-      sprite.setFacing(this.directionTo(at, { x, y }));
-      sprite.walkStep(WALK_DURATION);
-      const [px, py] = tileCenter(x, y);
-      await new Promise((resolve) => this.tweens.add({
-        targets: sprite, x: px, y: py, duration: WALK_DURATION,
-        onUpdate: () => sprite.updateDepth(), onComplete: resolve,
-      }));
-      at = { x, y };
-    }
-    const me = { x: this.player.tileX, y: this.player.tileY };
-    sprite.setFacing(this.directionTo(at, me));
-    this.player.facing = this.directionTo(me, at);
-    this.player.sprite.setFacing(this.player.facing);
+    for (const xy of path) await this.stepTo(sprite, at, xy, { remember: false });
+    this.faceEachOther(sprite, at);
     this.emerged[id] = { sprite, ...at, facing: sprite.facing };
   }
 
@@ -413,17 +401,38 @@ export class MapScene extends Phaser.Scene {
   // sa propre case s'il est cerné.
   besidePlayer() {
     const { tileX, tileY, facing } = this.player;
-    const OFFSETS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
-    const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
     const sides = facing === 'up' || facing === 'down' ? ['left', 'right'] : ['up', 'down'];
     for (const dir of [OPPOSITE[facing], ...sides, facing]) {
-      const [dx, dy] = OFFSETS[dir];
-      const x = tileX + dx;
-      const y = tileY + dy;
-      const taken = this.followers.members.some((m) => m.x === x && m.y === y);
-      if (this.tileWalkable(x, y) && !this.npcAt(x, y) && !this.propAt(x, y) && !taken) return { x, y, facing: OPPOSITE[dir] };
+      const x = tileX + DIRECTIONS[dir].dx;
+      const y = tileY + DIRECTIONS[dir].dy;
+      if (this.cellFree(x, y)) return { x, y, facing: OPPOSITE[dir] };
     }
     return { x: tileX, y: tileY, facing };
+  }
+
+  // Case où un personnage peut se poser : praticable, sans PNJ, objet ni suiveur.
+  cellFree(x, y) {
+    return this.tileWalkable(x, y) && !this.npcAt(x, y) && !this.propAt(x, y)
+      && !this.followers.members.some((m) => m.x === x && m.y === y);
+  }
+
+  npcById(id) {
+    return this.npcs.find((n) => n.data.id === id);
+  }
+
+  // Un pas d'une case : l'image `sprite` se tourne et marche jusqu'à la case [x, y] ; sa position `d` ({ x, y }) est
+  // mise à jour tout de suite. `remember` : garde la place de départ d'un PNJ (d.home, reprise à la visite suivante).
+  stepTo(sprite, d, [x, y], { remember = true, facing } = {}) {
+    if (remember) d.home ??= { x: d.x, y: d.y, facing: d.facing };
+    sprite.setFacing(facing ?? this.directionTo(d, { x, y }));
+    sprite.walkStep(WALK_DURATION);
+    d.x = x;
+    d.y = y;
+    const [px, py] = tileCenter(x, y);
+    return new Promise((resolve) => this.tweens.add({
+      targets: sprite, x: px, y: py, duration: WALK_DURATION,
+      onUpdate: () => sprite.updateDepth(), onComplete: resolve,
+    }));
   }
 
   async runEnterEvents() {
@@ -465,7 +474,7 @@ export class MapScene extends Phaser.Scene {
   //   { sea: true | false }              bruit des vagues
   //   { face: { npcId | 'player': direction } }
   //   { emote: npcId | 'player' | [x, y], kind }  bulle d'émotion au-dessus d'une tête ou d'une case (voir
-  //                                      art/uiIcons.js EMOTE_FRAMES : 'dots' « … » ou 'surprise' « ! »)
+  //                                      kind : 'dots' « … » ou 'surprise' « ! », voir emote)
   //   { sound: nom }                     bruitage (voir systems/audio.js, sfx)
   //   { emerge: { id, name, from: [[x, y], …] } }  un personnage sort de sa cachette et vient à côté du joueur
   //   { push: npcId }                    le joueur pousse le PNJ d'une case, dans le sens où il regarde (pushNpc)
@@ -505,13 +514,16 @@ export class MapScene extends Phaser.Scene {
       if (step.wait) await this.wait(step.wait);
       if (step.opening) await this.playOpening(step.opening);
       if (step.emerge) await this.emerge(step.emerge);
-      if (step.push) await this.pushNpc(this.npcs.find((n) => n.data.id === step.push), this.player.facing);
+      if (step.push) await this.pushNpc(this.npcById(step.push), this.player.facing);
       if (step.resetNpcs) this.resetNpcs(step.resetNpcs);
       if (step.askWord) memo.set(step.askWord.key, await this.scene.get('UI').askWord(step.askWord));
       if (step.say) await this.dialog.open(step.say.map(memo.fill), { speaker: step.speaker });
       if (step.approach) await this.approach(step.approach);
       if (step.comeBeside) await this.comeBeside(step.comeBeside);
-      if (step.faceTo) this.faceEachOther(step.faceTo);
+      if (step.faceTo) {
+        const npc = this.npcById(step.faceTo);
+        if (npc) this.faceEachOther(npc.sprite, npc.data);
+      }
       if (step.goTo) await this.walkPlayer(step.goTo, step.facing);
       if (step.drive) await this.driveAway(step.drive);
       if (step.hop) await this.hop(step.hop, step.times);
@@ -525,7 +537,7 @@ export class MapScene extends Phaser.Scene {
         if (step.block) await walking;
       }
       if (step.talk) {
-        const npc = this.npcs.find((n) => n.data.id === step.talk);
+        const npc = this.npcById(step.talk);
         if (npc) {
           await this.approach(step.talk);
           await this.talkTo(npc.data);
@@ -632,50 +644,31 @@ export class MapScene extends Phaser.Scene {
 
   // Le PNJ s'avance vers le joueur (plus court chemin jusqu'à une case voisine), puis ils se font face.
   async approach(id) {
-    const npc = this.npcs.find((n) => n.data.id === id);
+    const npc = this.npcById(id);
     if (!npc) return;
-    const path = this.pathNextToPlayer(npc.data) ?? [];
-    for (const [x, y] of path) {
-      const d = npc.data;
-      d.home ??= { x: d.x, y: d.y, facing: d.facing };
-      npc.sprite.setFacing(this.directionTo(d, { x, y }));
-      npc.sprite.walkStep(WALK_DURATION);
-      d.x = x;
-      d.y = y;
-      const [px, py] = tileCenter(x, y);
-      await new Promise((resolve) => this.tweens.add({
-        targets: npc.sprite, x: px, y: py, duration: WALK_DURATION,
-        onUpdate: () => npc.sprite.updateDepth(), onComplete: resolve,
-      }));
-    }
-    const toPlayer = this.directionTo(npc.data, this.player);
-    npc.sprite.setFacing(toPlayer);
-    npc.data.facing = toPlayer;
-    this.player.facing = OPPOSITE[toPlayer];
-    this.player.sprite.setFacing(this.player.facing);
+    for (const xy of this.pathNextToPlayer(npc.data) ?? []) await this.stepTo(npc.sprite, npc.data, xy);
+    this.faceEachOther(npc.sprite, npc.data);
   }
 
   // Le PNJ `id` vient sur une case libre à côté du joueur (voir besidePlayer), puis se tourne vers lui.
   async comeBeside(id) {
-    const npc = this.npcs.find((n) => n.data.id === id);
+    const npc = this.npcById(id);
     if (!npc) return;
     const me = { x: this.player.tileX, y: this.player.tileY };
     if (Math.abs(npc.data.x - me.x) + Math.abs(npc.data.y - me.y) !== 1) {
       const { x, y } = this.besidePlayer();
       if (x !== me.x || y !== me.y) await this.walkNpc(id, [x, y]);
     }
-    const toPlayer = this.directionTo(npc.data, me);
-    npc.sprite.setFacing(toPlayer);
-    npc.data.facing = toPlayer;
+    npc.data.facing = this.directionTo(npc.data, me);
+    npc.sprite.setFacing(npc.data.facing);
   }
 
-  // Le joueur et le PNJ `id` se tournent l'un vers l'autre.
-  faceEachOther(id) {
-    const npc = this.npcs.find((n) => n.data.id === id);
-    if (!npc) return;
+  // Le joueur et un personnage (image `sprite`, position `d`) se tournent l'un vers l'autre.
+  faceEachOther(sprite, d) {
     const me = { x: this.player.tileX, y: this.player.tileY };
-    npc.sprite.setFacing(this.directionTo(npc.data, me));
-    this.player.facing = this.directionTo(me, npc.data);
+    d.facing = this.directionTo(d, me);
+    sprite.setFacing(d.facing);
+    this.player.facing = OPPOSITE[d.facing];
     this.player.sprite.setFacing(this.player.facing);
   }
 
@@ -715,14 +708,14 @@ export class MapScene extends Phaser.Scene {
   // joueur lui barre la route ; avec `lead`, il s'arrête aussi quand le joueur traîne (à plus de 6 cases).
   // `then` : drapeaux levés à l'arrivée (ex. le PNJ entre dans une maison et disparaît).
   async walkNpc(id, [tx, ty], { lead = false, then = [] } = {}) {
-    const npc = this.npcs.find((n) => n.data.id === id);
+    const npc = this.npcById(id);
     if (!npc) return;
     const d = npc.data;
     const alive = () => !this.leaving && this.npcs.includes(npc);
     let stuck = 0;                                  // au bout d'une dizaine de secondes bloqué, on abandonne
-    const besidePlayer = () => this.player.tileX === tx && this.player.tileY === ty
+    const playerOnTarget = () => this.player.tileX === tx && this.player.tileY === ty
       && Math.abs(d.x - tx) + Math.abs(d.y - ty) === 1;            // le joueur occupe la case visée : on s'arrête à côté
-    while (alive() && (d.x !== tx || d.y !== ty) && !besidePlayer() && stuck < 40) {
+    while (alive() && (d.x !== tx || d.y !== ty) && !playerOnTarget() && stuck < 40) {
       // On contourne le joueur si possible ; sinon on attend qu'il se pousse.
       const path = this.pathTo(d, tx, ty, [this.player.tileX, this.player.tileY]) ?? this.pathTo(d, tx, ty);
       const far = () => Math.abs(this.player.tileX - d.x) + Math.abs(this.player.tileY - d.y) > 6;
@@ -738,16 +731,7 @@ export class MapScene extends Phaser.Scene {
         continue;
       }
       stuck = 0;
-      d.home ??= { x: d.x, y: d.y, facing: d.facing };
-      npc.sprite.setFacing(this.directionTo(d, { x, y }));
-      npc.sprite.walkStep(WALK_DURATION);
-      d.x = x;
-      d.y = y;
-      const [px, py] = tileCenter(x, y);
-      await new Promise((resolve) => this.tweens.add({
-        targets: npc.sprite, x: px, y: py, duration: WALK_DURATION,
-        onUpdate: () => npc.sprite.updateDepth(), onComplete: resolve,
-      }));
+      await this.stepTo(npc.sprite, d, [x, y]);
     }
     if (!alive()) return;
     d.facing = npc.sprite.facing;
@@ -761,22 +745,10 @@ export class MapScene extends Phaser.Scene {
   // suivant prend la case que celui de devant vient de quitter (s'il n'est pas juste derrière, on l'attend).
   // `then` : drapeaux levés quand le premier arrive. Le joueur qui barre la route les fait attendre.
   async walkLine(ids, [tx, ty], { then = [] } = {}) {
-    const line = ids.map((id) => this.npcs.find((n) => n.data.id === id)).filter(Boolean);
+    const line = ids.map((id) => this.npcById(id)).filter(Boolean);
     if (!line.length) return;
     const alive = () => !this.leaving && line.every((n) => this.npcs.includes(n));
-    const step = (npc, [x, y]) => {
-      const d = npc.data;
-      d.home ??= { x: d.x, y: d.y, facing: d.facing };
-      npc.sprite.setFacing(this.directionTo(d, { x, y }));
-      npc.sprite.walkStep(WALK_DURATION);
-      d.x = x;
-      d.y = y;
-      const [px, py] = tileCenter(x, y);
-      return new Promise((resolve) => this.tweens.add({
-        targets: npc.sprite, x: px, y: py, duration: WALK_DURATION,
-        onUpdate: () => npc.sprite.updateDepth(), onComplete: resolve,
-      }));
-    };
+    const step = (npc, xy) => this.stepTo(npc.sprite, npc.data, xy);
     const near = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
     let stuck = 0;
     const [leader] = line;
@@ -819,29 +791,33 @@ export class MapScene extends Phaser.Scene {
   // `ignore` : PNJ qu'on traverse quand même (ex. ceux d'une même file, voir walkLine).
   pathTo(from, tx, ty, avoid = null, ignore = []) {
     const OFF_ROAD = 5;
-    const free = (x, y) => this.tileWalkable(x, y) && !this.propAt(x, y)
-      && !(avoid && avoid[0] === x && avoid[1] === y)
-      && !this.npcs.some((n) => n.data !== from && !ignore.includes(n.data) && n.data.x === x && n.data.y === y);
+    const W = this.grid[0].length;
+    const key = (x, y) => y * W + x;
+    // Cases occupées, calculées une fois : PNJ (sauf `from` et `ignore`) et case évitée.
+    const taken = new Set(this.npcs.filter((n) => n.data !== from && !ignore.includes(n.data)).map((n) => key(n.data.x, n.data.y)));
+    if (avoid) taken.add(key(avoid[0], avoid[1]));
+    const free = (x, y) => x >= 0 && x < W && this.tileWalkable(x, y) && !taken.has(key(x, y)) && !this.propAt(x, y);
     const cost = (x, y) => (getTile(this.grid[y][x]).road ? 1 : OFF_ROAD);
     // Dijkstra par seaux (coûts entiers et petits).
-    const best = new Map([[`${from.x},${from.y}`, 0]]);
-    const prev = new Map([[`${from.x},${from.y}`, null]]);
+    const start = key(from.x, from.y);
+    const best = new Map([[start, 0]]);
+    const prev = new Map([[start, null]]);
     const buckets = [[[from.x, from.y]]];
     for (let d = 0; d < buckets.length; d++) {
       for (const [x, y] of buckets[d] ?? []) {
-        if (best.get(`${x},${y}`) !== d) continue;              // déjà atteint par un chemin plus court
+        if (best.get(key(x, y)) !== d) continue;                 // déjà atteint par un chemin plus court
         if (x === tx && y === ty) {
           const path = [];
-          for (let c = [x, y]; c && !(c[0] === from.x && c[1] === from.y); c = prev.get(`${c[0]},${c[1]}`)) path.unshift(c);
+          for (let c = [x, y]; c && key(c[0], c[1]) !== start; c = prev.get(key(c[0], c[1]))) path.unshift(c);
           return path;
         }
         for (const { dx, dy } of Object.values(DIRECTIONS)) {
           const nx = x + dx;
           const ny = y + dy;
-          const k = `${nx},${ny}`;
-          if (!free(nx, ny)) continue;
+          const k = key(nx, ny);
+          if (best.get(k) <= d || !free(nx, ny)) continue;        // déjà mieux atteint, ou bloqué
           const nd = d + cost(nx, ny);
-          if (best.has(k) && best.get(k) <= nd) continue;
+          if (best.get(k) <= nd) continue;
           best.set(k, nd);
           prev.set(k, [x, y]);
           (buckets[nd] ??= []).push([nx, ny]);
@@ -913,7 +889,10 @@ export class MapScene extends Phaser.Scene {
     const queue = [[this.player.tileX, this.player.tileY]];
     const interior = this.scene.key === 'Interior';
     // Sorties d'un intérieur : tapis de sortie et escaliers (ex. le couloir des casiers n'a que des escaliers).
-    const exit = (cx, cy) => ['E', 'η', 'ξ'].includes(this.grid[cy]?.[cx]);
+    const exit = (cx, cy) => {
+      const code = this.grid[cy]?.[cx];
+      return code !== undefined && (getTile(code).exit || getTile(code).stairs);
+    };
     while (queue.length) {
       const [cx, cy] = queue.shift();
       if (interior ? exit(cx, cy) : seen.size >= 40) return true;
@@ -948,8 +927,10 @@ export class MapScene extends Phaser.Scene {
     const ui = this.scene.get('UI');
     ui.curtain.setAlpha(0);
     const hide = ui.showPostcard(postcard);
+    this.events.once('shutdown', hide);             // la carte quitte l'écran même si la scène s'arrête avant
     await this.wait(800);
     await this.dialog.open([text].flat());
+    this.events.off('shutdown', hide);
     await hide();
   }
 
@@ -957,30 +938,19 @@ export class MapScene extends Phaser.Scene {
   // le joueur, si la case est libre (sinon, sa réplique `dialogue`). Arrivé sur une case `push.exit`, il s'échappe :
   // réplique `push.escaped` et drapeau `push.flag` (le PNJ disparaît). Voir aussi l'étape `resetNpcs`.
   async pushNpc(npc, dir) {
-    const { push } = npc.data;
-    const { dx, dy } = DIRECTIONS[dir];
     const d = npc.data;
-    const [tx, ty] = [d.x + dx, d.y + dy];
-    const free = this.tileWalkable(tx, ty) && !this.npcAt(tx, ty) && !this.propAt(tx, ty)
-      && !this.followers.members.some((m) => m.x === tx && m.y === ty);
-    if (!free) {
+    const tx = d.x + DIRECTIONS[dir].dx;
+    const ty = d.y + DIRECTIONS[dir].dy;
+    if (!this.cellFree(tx, ty)) {
       sfx('bump');
       await this.dialog.open(d.dialogue ?? []);
       return;
     }
     sfx('rustle');
-    d.home ??= { x: d.x, y: d.y, facing: d.facing };
-    [d.x, d.y] = [tx, ty];
-    npc.sprite.setFacing(dir);
-    npc.sprite.walkStep(WALK_DURATION);
-    const [px, py] = tileCenter(tx, ty);
-    await new Promise((resolve) => this.tweens.add({
-      targets: npc.sprite, x: px, y: py, duration: WALK_DURATION,
-      onUpdate: () => npc.sprite.updateDepth(), onComplete: resolve,
-    }));
-    if ((push.exit ?? []).some(([ex, ey]) => ex === tx && ey === ty)) {
-      if (push.escaped) await this.dialog.open(push.escaped);
-      flags.add(push.flag);
+    await this.stepTo(npc.sprite, d, [tx, ty], { facing: dir });
+    if ((d.push.exit ?? []).some(([ex, ey]) => ex === tx && ey === ty)) {
+      if (d.push.escaped) await this.dialog.open(d.push.escaped);
+      flags.add(d.push.flag);
       this.refreshActors();
     }
   }
@@ -988,8 +958,7 @@ export class MapScene extends Phaser.Scene {
   // Les PNJ `ids` poussés (voir pushNpc) reprennent leur place de départ.
   resetNpcs(ids) {
     for (const npc of this.npcs.filter((n) => ids.includes(n.data.id) && n.data.home)) {
-      Object.assign(npc.data, npc.data.home);
-      delete npc.data.home;
+      restoreHome(npc.data);
       const [px, py] = tileCenter(npc.data.x, npc.data.y);
       npc.sprite.setPosition(px, py).setFacing(npc.data.facing);
       npc.sprite.updateDepth();
@@ -998,7 +967,7 @@ export class MapScene extends Phaser.Scene {
 
   actorSprite(id) {
     if (id === 'player') return this.player.sprite;
-    return this.npcs.find((n) => n.data.id === id)?.sprite ?? this.followers.members.find((m) => m.id === id)?.sprite;
+    return this.npcById(id)?.sprite ?? this.followers.members.find((m) => m.id === id)?.sprite;
   }
 
   faceActors(facing) {
@@ -1038,10 +1007,12 @@ export class MapScene extends Phaser.Scene {
     }
   }
 
-  // Bulle d'émotion au-dessus de la tête d'un personnage ('player' : Pierre) ou d'une case [x, y], façon HeartGold : elle apparaît
-  // d'un petit bond, ses deux images alternent, puis elle disparaît.
+  // Bulle d'émotion au-dessus de la tête d'un personnage ('player' : Pierre) ou d'une case [x, y] : la petite bulle
+  // blanche « ! » (kind 'surprise') ou « … » ('dots') de l'indice d'interaction (systems/effects.js). Elle apparaît
+  // d'un petit bond, reste un instant, puis disparaît.
   async emote(id, kind = 'surprise') {
-    const frames = EMOTE_FRAMES[kind];
+    const texture = { surprise: 'hint-bubble', dots: 'hint-dots' }[kind];
+    if (!texture) return;
     let x;
     let top;
     if (Array.isArray(id)) {
@@ -1051,20 +1022,11 @@ export class MapScene extends Phaser.Scene {
       if (!sprite) return;
       [x, top] = [sprite.x, sprite.y + TILE_SIZE / 2 - sprite.image.displayHeight];
     }
-    // « ! » et « … » : les petites bulles blanches de l'indice d'interaction (systems/effects.js) ; les autres
-    // émotions gardent leur bulle HeartGold animée.
-    const small = { surprise: 'hint-bubble', dots: 'hint-dots' }[kind];
-    if (!frames && !small) return;
-    if (small) ensureSmallBubbles(this);
-    const bubble = small
-      ? this.add.image(x, top - 1, small).setOrigin(0.5, 1).setDepth(50).setScale(0.6)
-      : this.add.image(x, top - 1, EMOTES, frames[0]).setOrigin(0.5, 1).setDepth(50).setScale(0.6);
+    ensureSmallBubbles(this);
+    const bubble = this.add.image(x, top - 1, texture).setOrigin(0.5, 1).setDepth(50).setScale(0.6);
     sfx(kind === 'surprise' ? 'confirm' : 'select');
     this.tweens.add({ targets: bubble, scale: 1, duration: 120, ease: 'Back.easeOut' });
-    for (let i = 1; i <= 4; i++) {
-      await this.wait(170);
-      if (!small) bubble.setFrame(frames[i % 2]);
-    }
+    await this.wait(680);
     bubble.destroy();
   }
 
@@ -1095,7 +1057,7 @@ export class MapScene extends Phaser.Scene {
       await this.wait(220);
     }
     dancers.forEach((d) => d.setFacing('down'));
-    if (ids.length === 1) this.faceActors({ [id]: this.directionTo(this.npcs.find((n) => n.data.id === id)?.data ?? this.player, this.player) });
+    if (ids.length === 1) this.faceActors({ [id]: this.directionTo(this.npcById(id)?.data ?? this.player, this.player) });
     this.player.sprite.setFacing(this.player.facing);
   }
 
@@ -1111,7 +1073,7 @@ export class MapScene extends Phaser.Scene {
       }
     }
     const walks = ids.map((id) => {
-      const npc = this.npcs.find((n) => n.data.id === id);
+      const npc = this.npcById(id);
       const follower = this.followers.members.find((m) => m.id === id);
       const from = npc?.data ?? follower;
       if (!from) return null;
@@ -1127,18 +1089,7 @@ export class MapScene extends Phaser.Scene {
 
   // Un suiveur quitte la file un instant et marche jusqu'à la case [tx, ty] (il ne bloque personne).
   async walkFollower(m, [tx, ty]) {
-    const path = this.pathTo({ x: m.x, y: m.y }, tx, ty) ?? [];
-    for (const [x, y] of path) {
-      m.sprite.setFacing(this.directionTo(m, { x, y }));
-      m.sprite.walkStep(WALK_DURATION);
-      const [px, py] = tileCenter(x, y);
-      await new Promise((resolve) => this.tweens.add({
-        targets: m.sprite, x: px, y: py, duration: WALK_DURATION,
-        onUpdate: () => m.sprite.updateDepth(), onComplete: resolve,
-      }));
-      m.x = x;
-      m.y = y;
-    }
+    for (const xy of this.pathTo({ x: m.x, y: m.y }, tx, ty) ?? []) await this.stepTo(m.sprite, m, xy, { remember: false });
   }
 
   ensureMusicNote() {
@@ -1278,7 +1229,7 @@ export class MapScene extends Phaser.Scene {
     if (trigger.setFlags?.length) this.refreshActors();
     if (trigger.warp) {
       const code = this.grid[trigger.y]?.[trigger.x];
-      if (code === 'η' || code === 'ξ') sfx('stairs');
+      if (code && getTile(code).stairs) sfx('stairs');
       this.travel(trigger.warp);
     }
   }

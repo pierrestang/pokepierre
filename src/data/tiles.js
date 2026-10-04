@@ -1,7 +1,7 @@
 // Définition des tuiles : un code (1 caractère) -> propriétés.
 // `color` sert au rendu provisoire ; `frame` sera l'index dans le futur tileset ; `water` : on peut y pêcher
 // (mer, étang ou rivière, voir data/fishing.js) ; `road` : chemin, que les PNJ qui marchent seuls préfèrent (voir
-// MapScene.pathTo).
+// MapScene.pathTo) ; `exit` : tapis de sortie d'un intérieur ; `stairs` : escalier (passage vers une autre pièce).
 
 export const TILE_SIZE = 16;
 
@@ -105,8 +105,8 @@ export const TILES = {
   'u': { name: 'ordinateur',    color: 0x303840, solid: true },
   '+': { name: 'podium',        color: 0xd8b040, solid: false },
   '¤': { name: 'ascenseur',     color: 0x9ca4ac, solid: true },
-  'η': { name: 'escalier (monter)', color: 0xc89460, solid: false },
-  'ξ': { name: 'escalier (descendre)', color: 0x5c3c24, solid: false },
+  'η': { name: 'escalier (monter)', color: 0xc89460, solid: false, stairs: true },
+  'ξ': { name: 'escalier (descendre)', color: 0x5c3c24, solid: false, stairs: true },
 };
 
 export function getTile(code) {

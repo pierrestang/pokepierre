@@ -1,6 +1,6 @@
 // Petites valeurs libres de la partie (ex. le mot de passe de la cabane, choisi par le joueur), sauvegardées dans
-// localStorage comme les drapeaux. Dans les répliques des scénettes, `{nom}` est remplacé par la valeur (voir
-// MapScene.runSteps, `say`).
+// localStorage comme les drapeaux. Dans les répliques des scénettes, `{nom}` est remplacé par la valeur, et
+// `{nom|défaut}` par la valeur ou, faute de valeur, par `défaut` (voir MapScene.runSteps, `say`).
 
 const STORAGE_KEY = 'pokepierre.memo';
 
@@ -13,8 +13,6 @@ function load() {
 }
 
 let values = load();
-// Valeurs par défaut (ex. une partie où la fête de la cabane a eu lieu avant qu'on choisisse le mot de passe).
-const DEFAULTS = { motDePasse: 'QG' };
 
 function save() {
   try {
@@ -34,6 +32,6 @@ export const memo = {
     values = {};
     save();
   },
-  // Remplace `{nom}` par la valeur gardée, sinon sa valeur par défaut (laissé tel quel si aucune n'existe).
-  fill: (text) => text.replace(/\{(\w+)\}/g, (all, key) => values[key] ?? DEFAULTS[key] ?? all),
+  // Remplace `{nom}` / `{nom|défaut}` par la valeur gardée, sinon le défaut (laissé tel quel s'il n'y en a pas).
+  fill: (text) => text.replace(/\{(\w+)(?:\|([^}]*))?\}/g, (all, key, fallback) => values[key] ?? fallback ?? all),
 };

@@ -132,6 +132,7 @@ export const TRAITS = {
 const TRAIT_LIST = Object.values(TRAITS);
 export const traitById = (id) => TRAIT_LIST.find((t) => t.id === id) ?? null;
 export const traitsOfCity = (city) => TRAIT_LIST.filter((t) => t.city === city);
+export const TRAIT_CITIES = [...new Set(TRAIT_LIST.map((t) => t.city))];      // dans l'ordre de l'histoire
 
 // Objets remis au joueur (voir systems/items.js).
 export const ITEMS = {

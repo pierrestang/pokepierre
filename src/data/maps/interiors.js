@@ -483,8 +483,8 @@ export const interiors = {
     spawn: { x: 3, y: 6, facing: 'up' },
     objects: [
       { x: 1, y: 3, script: FELIX_AT_CABANE },
-      { x: 5, y: 3, script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe. « {motDePasse} ». Chut !'] }] },
-      { x: 6, y: 3, script: [{ speaker: 'Yanis', say: ['« {motDePasse} »… Je l\'ai écrit sur ma main, pour pas l\'oublier.'] }] },
+      { x: 5, y: 3, script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe. « {motDePasse|QG} ». Chut !'] }] },
+      { x: 6, y: 3, script: [{ speaker: 'Yanis', say: ['« {motDePasse|QG} »… Je l\'ai écrit sur ma main, pour pas l\'oublier.'] }] },
       { x: 0, y: 3, dialogue: ['La table du QG des cousins.'] },
       { x: 2, y: 3, dialogue: ['La table du QG des cousins.'] },
       { x: 7, y: 3, dialogue: ['La table du QG des cousins.'] },

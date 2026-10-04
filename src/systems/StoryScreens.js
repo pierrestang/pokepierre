@@ -1,5 +1,4 @@
 import { gameView, SCREEN_W, SCREEN_H } from './screen.js';
-import { FRLG_FONT, frlgText } from './frlgFont.js';
 import { FullScreenPanel, BAR } from './FullScreenPanel.js';
 import { POSTCARDS } from '../art/uiIcons.js';
 import { sfx } from './audio.js';
@@ -56,14 +55,17 @@ export class WordEntry extends FullScreenPanel {
     this.isOpen = true;
     this.render();
     return new Promise((resolve) => {
-      const onKey = (e) => {
+      this.listener = (e) => {
         const word = this.onKey(e);
-        if (word === null) return;
-        this.scene.input.keyboard.off('keydown', onKey);
-        resolve(word);
+        if (word !== null) resolve(word);
       };
-      this.scene.input.keyboard.on('keydown', onKey);
+      this.scene.input.keyboard.on('keydown', this.listener);
     });
+  }
+
+  close() {
+    super.close();
+    this.scene.input.keyboard.off('keydown', this.listener);
   }
 
   render() {

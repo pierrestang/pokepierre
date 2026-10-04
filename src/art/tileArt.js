@@ -1364,10 +1364,6 @@ const HORSE_STATUE_C = {
 // Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene), case (x, y)
 // en pixels px, py. Les cannes à pêche sont des images à part (voir art/uiIcons.js ROD_DECALS).
 const DECALS = {
-  // Vieille corde enroulée, cachée dans les hautes herbes (Saint-Ay).
-  rope(g, px, py) {
-    drawRope(g, px, py);
-  },
   // Tablier du pont ferroviaire de Newland Avenue, au-dessus de la rue : poutre d'acier bleu avec le nom de la
   // rue peint dessus, rails sur le dessus. (x, y) : case en haut à gauche ; `w` cases de large.
   railBridge(g, px, py, { w = 6 } = {}) {
@@ -1489,29 +1485,6 @@ export function drawToolbox(g, px, py) {
   g.fillStyle(0x000000, 0.22);
   g.fillRect(px + 1, py + 15, 14, 1);
   sprite(g, TOOLBOX, TOOLBOX_COLORS, px, py + 1);
-}
-
-// Vieille corde enroulée en spirale sur l'herbe, un bout qui dépasse (brins clairs et sombres alternés).
-const ROPE_COLORS = { o: 0x543c24, L: 0xf0d8a0, M: 0xd0a868, N: 0x966e3c };
-const ROPE = [
-  '.oooo...........',
-  'oLMNMo..........',
-  '.oooMNo.oooooo..',
-  '.....oNoLMNLMLo.',
-  '.....oMLooooooMo',
-  '....oMoLNMLNLoNo',
-  '....oNoMooooMoMo',
-  '....oMoNLMNMooNo',
-  '....oNMoooooNMo.',
-  '.....oNMNMNMNo..',
-  '......ooooooo...',
-];
-export function drawRope(g, px, py) {
-  g.fillStyle(0x000000, 0.18);                                         // ombre du rouleau
-  g.fillRect(px + 5, py + 15, 10, 1);
-  ROPE.forEach((row, ry) => [...row].forEach((c, rx) => {
-    if (c !== '.') rect(g, ROPE_COLORS[c], px + rx, py + 4 + ry, 1, 1);
-  }));
 }
 
 // Remblai en briques du pont ferroviaire de Newland Avenue (Hull) : briques rouges, couronnement de pierre.

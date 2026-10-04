@@ -13,11 +13,11 @@ const HAS_TRAITS = { ifSouvenirs: [TRAITS.patience.id, TRAITS.espritEquipe.id] }
 // construite, voir les portes `when`) ; la plateforme bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2).
 export const CABANE_SPOT = { x: 4, y: 19 };
 // Quelques années après la cabane : Pierre au bord du lac (voir CABANE_FETE, MANON_NEWS).
-export const LAKE_SPOT = { x: 10, y: 14 };
+const LAKE_SPOT = { x: 10, y: 14 };
 
 // Arrivée : image d'accueil de Saint-Ay, le ferry a accosté au ponton du lac. Papa et Manon retrouvent Pierre,
 // lui disent de les rejoindre à la clinique et partent devant, l'un derrière l'autre (ils y sont à son arrivée).
-export const CLINIC_DOOR = [19, 21];                                  // case devant la porte de la clinique
+const CLINIC_DOOR = [19, 21];                                  // case devant la porte de la clinique
 export const ARRIVAL = [
   { opening: { postcard: 'saintAy', text: 'Saint-Ay, Loiret. Quelque temps plus tard…' } },
   { approach: 'papa' },
@@ -113,9 +113,9 @@ export const CABANE_FETE = [
   { face: { 'felix-cabane': 'right', player: 'left' } },
   { speaker: 'Felix', say: ['Pas encore. Pierre, à toi de le choisir !'] },
   { askWord: { title: 'MOT DE PASSE DU QG ?', key: 'motDePasse', max: 8 } },
-  { speaker: 'Felix', say: ['« {motDePasse} »… Parfait. Personne ne le saura.'] },
+  { speaker: 'Felix', say: ['« {motDePasse|QG} »… Parfait. Personne ne le saura.'] },
   { hop: 'joshua-cabane' },
-  { speaker: 'Joshua', say: ['{motDePasse}. Retenu.'] },
+  { speaker: 'Joshua', say: ['{motDePasse|QG}. Retenu.'] },
   { speaker: 'Felix', say: ['Où que tu ailles après, cette cabane restera la nôtre. On est une équipe.'] },
   { face: { 'felix-cabane': 'down', player: 'down' } },
   { cheer: ['felix-cabane', 'player', 'joshua-cabane', 'yanis-cabane'] },
@@ -158,7 +158,7 @@ export const FELIX_AT_CABANE = [
   { speaker: 'Felix', say: ['Alors c\'est vrai, tu pars ?'] },
   { speaker: 'Joshua', say: ['Montépilloy, c\'est pas le bout du monde.'] },
   { speaker: 'Yanis', say: ['C\'est où, Montépilloy ?'] },
-  { speaker: 'Felix', say: ['La cabane t\'attendra. Et le mot de passe ne change pas : « {motDePasse} ».'] },
+  { speaker: 'Felix', say: ['La cabane t\'attendra. Et le mot de passe ne change pas : « {motDePasse|QG} ».'] },
   { setFlag: FLAGS.adieuCousins },
 ];
 

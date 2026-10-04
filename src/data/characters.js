@@ -48,7 +48,7 @@ export const BY_NAME = {
   'Anaïs': 'f47', Anais: 'f47',
   // Métiers
   'M. Bouly': 'f32', Directeur: 't3', Directrice: 'f54', Principale: 'f54', Sentinelle: 'f39', Manager: 'f8', Responsable: 't13',
-  'Agent immobilier': 'f34', Vendeur: 'f16', Cuisinier: 'f50', 'Pêcheur': 'f43', 'Capitaine du ferry': 'f43',
+  'Agent immobilier': 'f34', Vendeur: 'f16', Cuisinier: 'f50', 'Capitaine du ferry': 'f43',
   'Vieux pêcheur': 'f26', 'Vieux sage': 'f26',
   Moine: 'f24', Capitaine: 'f39', Surveillant: 'f62', Professor: 'f3', Professeur: 'f3', Professeure: 't10',
   "Professeure d'anglais": 't9', 'Hôtesse': 'f12', 'Pèlerine': 'f29', Fan: 't5', Chanteur: 't12',
@@ -83,8 +83,7 @@ export const defaultSpriteOf = (name) => BY_NAME[name] ?? null;
 
 // Portraits venant d'ailleurs que TownsPeople2 : dresseurs d'Émeraude (`colonne,rangée`).
 const EMERALD_PORTRAIT_BY_NAME = {
-  'Pêcheur': '6,0',
-  'Capitaine du ferry': '6,0',          // l'ancien pêcheur
+  'Capitaine du ferry': '6,0',          // l'ancien pêcheur de Fort-de-France
 };
 
 // Portrait affiché dans les dialogues : { key, frame } (texture et image), ou null si la personne n'en a pas.

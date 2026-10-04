@@ -1,12 +1,10 @@
-"""Icônes d'objets et bulles d'émotion de HeartGold/SoulSilver (planches fournies par l'utilisateur, usage
-personnel uniquement) vers public/assets/ui/.
+"""Icônes d'objets de HeartGold/SoulSilver (planche fournie par l'utilisateur, usage personnel uniquement) et cartes
+postales vers public/assets/ui/.
 
   item-icons.png + item-icons.json : atlas Phaser des icônes choisies (ICONS ci-dessous), une case de 32 x 32
     par icône, fond transparent. Source : assets-source/ds/hgss-items.png, icônes sur fond blanc ; chacune est
     repérée par sa boîte sur la planche, puis détourée (le blanc relié au bord devient transparent, le
     blanc à l'intérieur de l'icône reste). Les trois cannes existent aussi en petit (`<nom>-petite`, 14 x 14).
-  emotes.png : les 24 bulles d'émotion (3 rangées de 8, 16 x 16 px chacune), fond orange rendu transparent.
-    Source : assets-source/ds/hgss-emotions.png. Les bulles vont par deux (deux images d'une animation).
   postcards.png + postcards.json : cartes postales de la carte du voyage, une image de 256 x 160 par ville
     (POSTCARDS), prises dans les illustrations de lieux de Johto (assets-source/ds/hgss-location-art.png).
 
@@ -15,7 +13,7 @@ Usage : python3 scripts/build_ds_ui.py
 import json
 from pathlib import Path
 from PIL import Image
-from pixels import clear_color, clear_outside
+from pixels import clear_outside
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets-source' / 'ds'
@@ -163,55 +161,9 @@ def build_icons():
     print(f'{len(frames)} icônes -> public/assets/ui/item-icons.png')
 
 
-# Bulles du jeu, « … » et le « ! » de la bulle simple (case 22) : le signe est passé en noir, le contour de la bulle
-# ne change pas.
-BLACK_EMOTES = [0, 1, 22]
-SYMBOL_BLACK = (24, 24, 32, 255)
-
-
-def blacken_symbol(sheet, frame):
-    x0, y0 = (frame % 8) * 16, (frame // 8) * 16
-    px = sheet.load()
-
-    def transparent(x, y):
-        inside = x0 <= x < x0 + 16 and y0 <= y < y0 + 16
-        return not inside or px[x, y][3] == 0
-
-    for y in range(y0, y0 + 16):
-        for x in range(x0, x0 + 16):
-            r, g, b, a = px[x, y]
-            if a == 0:
-                continue
-            red = r > 200 and g < 200 and b < 200                       # « ! » rouge et son reflet rose
-            dot = (r, g, b) == (88, 88, 96) and not any(                # point gris, hors du contour de la bulle
-                transparent(x + dx, y + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1))
-            if (r, g, b) == (255, 255, 255):                            # blanc pur parasite : blanc de la bulle
-                px[x, y] = (248, 248, 248, 255)
-            if red or dot:
-                px[x, y] = SYMBOL_BLACK
-                if px[x + 1, y][:3] == (168, 168, 176):                 # ombre grise du point : noire aussi
-                    px[x + 1, y] = SYMBOL_BLACK
-
-
-def build_emotes():
-    im = Image.open(SRC / 'hgss-emotions.png').convert('RGBA')
-    xs = [4, 20, 38, 54, 72, 88, 106, 122]
-    ys = [4, 21, 38]
-    out = Image.new('RGBA', (16 * 8, 16 * 3), (0, 0, 0, 0))
-    for r, y in enumerate(ys):
-        for c, x in enumerate(xs):
-            cell = im.crop((x, y, x + 15, y + 16))
-            out.paste(clear_color(cell, (255, 128, 0)), (c * 16, r * 16))
-    for frame in BLACK_EMOTES:
-        blacken_symbol(out, frame)
-    out.save(OUT / 'emotes.png')
-    print('24 bulles -> public/assets/ui/emotes.png')
-
-
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     build_icons()
-    build_emotes()
     build_postcards()
 
 

@@ -79,25 +79,20 @@ export class UIScene extends Phaser.Scene {
       const got = all.filter((t) => souvenirs.has(t.id)).length;
       setTraits(all.length ? `Vertus : ${got} / ${all.length}` : '', show);
     };
-    const showCity = (value) => {
-      setCity(value);
-      renderTraits(Boolean(value));
-    };
     setCity(this.registry.get('city') ?? '');
     renderTraits(false);
-    const onCity = (_parent, value) => showCity(value);
-    // Première valeur : événement général `setdata` ; changements suivants : `changedata-city`. L'id de la ville
-    // (`cityId`) est posé juste après son nom : le compteur est redessiné à ce moment-là.
+    const onCity = (_parent, value) => setCity(value);
+    // Le compteur suit l'id de la ville (`cityId`, posé juste après son nom) et les vertus reçues.
+    const onCityId = () => renderTraits();
+    // Première valeur : événement général `setdata` ; changements suivants : `changedata-city` / `changedata-cityId`.
     const onFirstSet = (_parent, key, value) => {
       if (key === 'city') setCity(value);
       if (key === 'cityId') renderTraits();
     };
-    const onCityId = () => renderTraits();
     this.registry.events.on('setdata', onFirstSet);
     this.registry.events.on('changedata-city', onCity);
     this.registry.events.on('changedata-cityId', onCityId);
-    const render = () => renderTraits();
-    souvenirEvents.on('change', render);
+    souvenirEvents.on('change', onCityId);
 
     const setItems = createLabel(this, 2);
     const renderItems = (count, show = true) => setItems(`Objets : ${count}`, show);
@@ -113,7 +108,7 @@ export class UIScene extends Phaser.Scene {
 
     this.events.once('shutdown', () => {
       itemEvents.off('change', renderItems);
-      souvenirEvents.off('change', render);
+      souvenirEvents.off('change', onCityId);
       this.registry.events.off('setdata', onFirstSet);
       this.registry.events.off('changedata-city', onCity);
       this.registry.events.off('changedata-cityId', onCityId);

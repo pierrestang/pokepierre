@@ -198,8 +198,6 @@ export const JEAN_TRACTOR = [
   { speaker: 'Jean', say: ['Il manque une pièce à ce tracteur. Va voir M. Bouly, il sait peut-être où elle est.'] },
 ];
 
-// La pièce, au fond du tonneau du fond à droite de la grange (une fois que M. Bouly en a parlé).
-export const PART_BARREL = { x: 8, y: 3 };
 
 // Objet-souvenir : la cuillère de la caisse à outils de Jean, restée devant le tracteur après la réparation (la caisse
 // disparaît une fois la cuillère prise).

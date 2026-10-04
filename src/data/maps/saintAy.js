@@ -184,6 +184,9 @@ export const saintAyMap = {
     { on: 'enter', ifSouvenirs: [TRAITS.patience.id], unlessFlags: [FLAGS.felixInvite], steps: CLINIC_EXIT },
   ],
   triggers: [
+    // La vieille corde : cachée dans une touffe du coin de hautes herbes du sud-ouest, pendant le chantier ; on la
+    // trouve en marchant dessus.
+    { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: [{ sound: 'rustle' }, ...ROPE] },
     // En ressortant de l'enclos, les poules encore dedans reprennent leur place (aucune ne reste coincée).
     { x: ENCLOS_EXIT[0], y: ENCLOS_EXIT[1] + 1, script: [{ resetNpcs: ['poule-1', 'poule-2'] }] },
     // Route du nord : on part en voiture (voir la voiture de la famille) ; ensuite, la route de Montépilloy à pied.
@@ -197,7 +200,3 @@ export const saintAyMap = {
   ],
   spawn: { x: 5, y: 10, facing: 'left' },
 };
-
-// La vieille corde : cachée dans une touffe du coin de hautes herbes du sud-ouest, pendant le chantier ; on la
-// trouve en marchant dessus.
-saintAyMap.triggers.push({ ...ROPE_SPOT, ...ROPE_CONDITIONS, script: [{ sound: 'rustle' }, ...ROPE] });

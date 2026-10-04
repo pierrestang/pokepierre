@@ -10,7 +10,7 @@ import { ItemBag } from './ItemBag.js';
 import { flags } from './flags.js';
 import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
-import { TRAITS, traitById, traitsOfCity } from '../data/story.js';
+import { TRAIT_CITIES, traitById, traitsOfCity } from '../data/story.js';
 import { MAPS } from '../data/maps/index.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Carte (du voyage),
@@ -75,8 +75,7 @@ export class StartMenu {
 
   // Carnet des vertus : une page par ville (vertus reçues / vertus de la ville), puis les souvenirs des PNJ.
   traitPages() {
-    const cities = [...new Set(Object.values(TRAITS).map((t) => t.city))];
-    const pages = cities.map((city) => {
+    const pages = TRAIT_CITIES.map((city) => {
       const all = traitsOfCity(city);
       const got = all.filter((t) => souvenirs.has(t.id)).map((t) => t.name);
       return got.length ? `${MAPS[city]?.name ?? city} - ${got.length} / ${all.length} : ${got.join(', ')}.` : null;
