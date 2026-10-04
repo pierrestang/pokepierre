@@ -17,7 +17,7 @@ export class OverworldScene extends MapScene {
   create({ mapId = START_MAP, fromInterior, spawn: arrival } = {}) {
     const map = MAPS[mapId];
     let spawn = arrival ?? map.spawn;
-    const door = fromInterior && map.doors.find((d) => d.interior === fromInterior && (!d.when || meetsConditions(d.when)));
+    const door = fromInterior && (map.doors ?? []).find((d) => d.interior === fromInterior && (!d.when || meetsConditions(d.when)));
     if (door) spawn = { x: door.x, y: door.y + 1, facing: 'down' };
 
     this.setupMap(map, spawn);
@@ -34,7 +34,7 @@ export class OverworldScene extends MapScene {
   // Une porte `when` (ex. l'échelle de la cabane) n'est pas une case 'D' : on y monte dès que ses conditions
   // sont remplies.
   onTileEntered(tile, x, y) {
-    const door = this.map.doors.find((d) => d.x === x && d.y === y && (d.when ? meetsConditions(d.when) : tile.door));
+    const door = (this.map.doors ?? []).find((d) => d.x === x && d.y === y && (d.when ? meetsConditions(d.when) : tile.door));
     if (!door) return;
     if (door.when) {
       this.climbLadder(door.interior);

@@ -1,10 +1,10 @@
 import { parseGrid } from './parseGrid.js';
 
 // Route de Montépilloy — entre Saint-Ay (au sud) et Montépilloy (au nord), 24 x 30 cases comme la route de
-// Bonsecours : un chemin de terre en lacet à travers la campagne (champ de blé clôturé, mare, sapins, hautes
+// Bonsecours : un chemin de terre en lacet à travers la campagne (champs de blé, mare, sapins, hautes
 // herbes). Le déménagement se fait en voiture (voir saintAyStory.js CAR) ; la route s'ouvre ensuite, à pied, entre
 // les deux villages.
-// Légende : voir src/data/tiles.js (ç = chemin, F = clôture, ʬ = blé, ~ = mare, ĥ = hautes herbes, ƀ = buisson)
+// Légende : voir src/data/tiles.js (ç = chemin, ʬ = blé, ~ = mare, ĥ = hautes herbes, ƀ = buisson)
 export const routeMontepilloyMap = {
   id: 'routeMontepilloy',
   name: 'Route de Montépilloy',
@@ -13,19 +13,19 @@ export const routeMontepilloyMap = {
     'TTTTTTTTTTççTTTTTTTTTTTT', // 1
     'TT...f...Sçç....TT....TT', // 2
     'TT........ççĥĥĥ.TT....TT', // 3
-    'TT.FFFFFF.ççĥĥĥ...TTTTTT', // 4  champ de blé clôturé
-    'TT.FʬʬʬʬF.ççĥĥĥ...TTTTTT', // 5
-    'TT.FʬʬʬʬF.çç......TTTTTT', // 6
-    'TT.FʬʬʬʬF.çç......TTTTTT', // 7
-    'TT.FʬʬʬʬF.çççççç......TT', // 8
-    'TT.FʬʬʬʬF.çççççç....f.TT', // 9
-    'TT.FʬʬʬʬF.....çç......TT', // 10
-    'TT.FʬʬʬʬF.....ççf~~~~.TT', // 11  mare
-    'TT.FʬʬʬʬF.....çç.~~~~fTT', // 12
-    'TT.FFFFFF...ƀ.ççf~~~~.TT', // 13
-    'TT.f..........çç......TT', // 14
-    'TT.......f....çç..f...TT', // 15
-    'TTTTTT........çç......TT', // 16
+    'TT.ʬʬʬʬʬʬ.ççĥĥĥ...TTTTTT', // 4  champ de blé
+    'TT.ʬʬʬʬʬʬ.ççĥĥĥ...TTTTTT', // 5
+    'TT.ʬʬʬʬʬʬ.çç......TTTTTT', // 6
+    'TT.ʬʬʬʬʬʬ.çç......TTTTTT', // 7
+    'TT.ʬʬʬʬʬʬ.çççççç......TT', // 8
+    'TT.ʬʬʬʬʬʬ.çççççç....f.TT', // 9
+    'TT.ʬʬʬʬʬʬ.....çç......TT', // 10
+    'TT.ʬʬʬʬʬʬ.....ççf~~~~.TT', // 11  mare
+    'TT.ʬʬʬʬʬʬ.....çç.~~~~fTT', // 12
+    'TT.ʬʬʬʬʬʬ...ƀ.ççf~~~~.TT', // 13
+    'TT.f..........çç..ʬʬʬʬTT', // 14
+    'TT.......f....çç..ʬʬʬʬTT', // 15
+    'TTTTTT........çç..ʬʬʬʬTT', // 16
     'TTTTTT........çç....ƀ.TT', // 17
     'TTTTTT....çççççç......TT', // 18
     'TTTTTT..ƀ.çççççç......TT', // 19
@@ -35,11 +35,22 @@ export const routeMontepilloyMap = {
     'TT..ĥĥĥĥĥ.çç..ĥĥĥ.TTTTTT', // 23
     'TT..ĥĥĥĥĥ.çç..ĥĥĥ.TTTTTT', // 24
     'TT..ĥĥĥĥĥ.çç..ĥĥĥ.TTTTTT', // 25
-    'TT.ƀ......ççS.ĥĥĥ.....TT', // 26
-    'TT.....f..çç..........TT', // 27
+    'TT.ƀ......ççS.ĥĥĥ.ʬʬʬʬTT', // 26
+    'TT.....f..çç......ʬʬʬʬTT', // 27
     'TTTTTTTTTTççTTTTTTTTTTTT', // 28  sud : Saint-Ay
     'TTTTTTTTTTççTTTTTTTTTTTT', // 29
   ]),
+  // Deux passants sur la route.
+  npcs: [
+    {
+      id: 'promeneuse-route', name: 'Promeneuse', x: 17, y: 9, facing: 'left',
+      dialogue: ['Il paraît que les grenouilles de cette mare chantent en canon le soir.', 'Moi, je les écoute tous les jours.'],
+    },
+    {
+      id: 'gamin-route', name: 'Gamin', x: 9, y: 21, facing: 'right',
+      dialogue: ['J\'ai perdu mon cerf-volant dans les sapins…', 'Si tu le vois, il est rouge. Ou bleu. Je sais plus.'],
+    },
+  ],
   objects: [
     { x: 12, y: 26, dialogue: ['Route de Montépilloy — Nord : Montépilloy. Sud : Saint-Ay.'] },
     { x: 9, y: 2, dialogue: ['Montépilloy, Oise. Plus que quelques pas.'] },
