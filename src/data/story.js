@@ -12,34 +12,43 @@ export const FLAGS = {
   departFortDeFrance: 'depart-fort-de-france', // parti en ferry
   coquillageTrouve: 'coquillage-trouve',        // Fort-de-France : coquillage caché dans les hautes herbes
   saArrivee: 'sa-arrivee',                      // Saint-Ay : Papa et Manon t'ont retrouvé au bord du lac
-  familleSuit: 'famille-suit',                  // Papa et Manon suivent le joueur
+  familleSuit: 'famille-suit',                  // Papa et Manon sont partis devant, à la clinique
   familleArrivee: 'famille-arrivee',            // arrivés à la clinique de Saint-Ay
+  familleRentree: 'famille-rentree',            //   en sortant de la clinique : la famille est rentrée à la maison
   felixInvite: 'felix-invite',                  // Felix (ton cousin) t'a invité chez lui
   maisonFelixVisitee: 'maison-felix-visitee',   // entré chez Felix
   planCabane: 'plan-cabane',                    // Saint-Ay : Felix a lancé le chantier de la cabane
   pouleEnfuie1: 'poule-enfuie-1',               // les poules de l'enclos ont fui (tas de planches)
   pouleEnfuie2: 'poule-enfuie-2',
   cabaneFinie: 'cabane-finie',                  // la cabane des cousins est construite
+  ellipseSaintAy: 'ellipse-saint-ay',           //   « Quelques années plus tard… » : Pierre au bord du lac
+  manonNouvelle: 'manon-nouvelle',              //   Manon : « Papa a une nouvelle à nous annoncer » ; elle rentre
   annonceMutation: 'annonce-mutation',          // Papa a annoncé le départ pour Montépilloy
   adieuCousins: 'adieu-cousins',                // au revoir aux cousins à la cabane
   arriveeMontepilloy: 'arrivee-montepilloy',    // arrivé à Montépilloy (la famille y vit désormais)
   ellipseMontepilloy: 'ellipse-montepilloy',    // Montépilloy : « Quelques années plus tard… » joué
-  manonGuide: 'manon-guide',                    //   Manon : « Maman te cherche » ; elle mène Pierre à la maison
-  manonMaison: 'manon-maison',                  //   Manon est rentrée à la maison
   mamanAccueil: 'maman-accueil',                //   Maman a accueilli Pierre à la maison
   ecoleCm2: 'ecole-cm2',                        //   dernier jour de CM2 : entré à l'école
   cacheCache: 'cache-cache',                    //   Margaux a lancé la dernière partie de cache-cache
   trouveMargaux: 'trouve-margaux',              //   cache-cache : Margaux trouvée (bottes de foin de la ferme)
   trouveEtienne: 'trouve-etienne',              //   cache-cache : Étienne trouvé (arbre de la prairie)
   trouveBenoit: 'trouve-benoit',                //   cache-cache : Benoît trouvé (tonneau de la grange)
+  copainsPartent: 'copains-partent',            //   partie finie : les copains (qui suivaient Pierre) filent à l'école
   jeanQuetes: 'jean-quetes',                    //   Jean t'a demandé d'être son assistant (il te suit)
   boulyDemande: 'bouly-demande',                //   M. Bouly t'a parlé de la pièce qui manque à son tracteur
   pieceTrouvee: 'piece-trouvee',                //   pièce de tracteur trouvée dans le tonneau de la grange
-  jeanTracteur: 'jean-tracteur',                //   Jean s'installe devant le tracteur pour le réparer
   tracteurRepare: 'tracteur-repare',            //   « Passe-moi la clé ! » réussi : le tracteur est réparé
+  finJournee: 'fin-journee',                    //   les deux vertus reçues : le soleil se couche, on rentre dîner
   septembre: 'septembre',                       //   ellipse jusqu'en septembre : la famille devant la maison
-  departCollege: 'depart-college',              //   Pierre part pour le collège Bonsecours (sortie nord)
-  bonsecoursFini: 'bonsecours-fini',            // quête Bonsecours finie : la route du Prytanée s'ouvre
+  departCollege: 'depart-college',              //   septembre : au revoir de la famille, départ à pied
+  collegeOuverture: 'college-ouverture',        // Bonsecours : image d'accueil du premier jour de collège vue
+  collegeArrivee: 'college-arrivee',            //   le surveillant t'a accueilli dans le hall (il est monté au couloir)
+  remiArrive: 'remi-arrive',                    //   au casier, Rémi arrive en courant par l'escalier
+  casierPartage: 'casier-partage',              //   l'embrouille du casier : Rémi et toi le partagez
+  remiEnClasse: 'remi-en-classe',              //   Rémi file en salle de maths (« ça va sonner »)
+  remiInvite: 'remi-invite',                    //   en classe, Rémi t'invite à aller parler à Camille
+  finTroisieme: 'fin-troisieme',                //   ellipse : quatre ans plus tard, la fin de la troisième (le brevet)
+  bonsecoursFini: 'bonsecours-fini',            // brevet reçu du prof : la route du Prytanée s'ouvre
   arriveePrytanee: 'arrivee-prytanee',          // arrivé au Prytanée
   capitaineAccueil: 'capitaine-accueil',        // le capitaine t'envoie au dortoir (bâtiment 1)
   dortoirVisite: 'dortoir-visite',              // affaires déposées au dortoir
@@ -53,6 +62,11 @@ export const FLAGS = {
   leoPlan: 'leo-plan',                          //        chez Léo : la soirée commence (la nuit tombe)
   ousmaneSuit: 'ousmane-suit',                  //        Ousmane rejoint la file
   amiesSuivent: 'amies-suivent',                //        Charlotte et Anaïs rejoignent la file
+  leoColoc: 'leo-coloc',                        //        Léo entre dans la coloc (chercher Ousmane)
+  leoColoc2: 'leo-coloc2',                      //        Léo entre chez Charlotte et Anaïs
+  leoPubA: 'leo-pub-a',                         //        Léo entre dans le premier pub
+  leoPubB: 'leo-pub-b',                         //        Léo entre dans le deuxième pub
+  leoAsylum: 'leo-asylum',                      //        Léo entre à l'Asylum
   pinteCommandee: 'pinte-commandee',            //        premier pub : pinte commandée au bar
   tableTrouvee: 'table-trouvee',                //        deuxième pub : table de la bande retrouvée
   asylumFini: 'asylum-fini',                    //        dernière chanson à l'Asylum : sortie au petit matin
@@ -100,29 +114,38 @@ export const TOULON_QUESTS = {
   ifSouvenirs: ['souvenir-leo', 'souvenir-theo'],
 };
 
-// Qualités reçues de la famille à Fort-de-France (comptées comme des souvenirs).
-export const QUALITIES = {
-  joie: { id: 'souvenir-maman', name: 'Joie de vivre de Maman' },
-  pragmatisme: { id: 'souvenir-papa', name: 'Pragmatisme de Papa' },
-  complicite: { id: 'souvenir-manon', name: 'Complicité de Manon' },
+// Vertus (traits de caractère) : une seule collection, qui grandit de ville en ville. Encart « Pierre a reçu la vertu
+// X ! » (étape `trait`), « Pierre utilise X ! » quand une vertu débloque une situation (étape `useTrait`), carnet
+// (Start > VERTUS) et compteur de la ville en cours (UIScene). `city` : la ville où on le reçoit (id de carte).
+// Les `id` restent ceux des anciennes qualités et anciens rôles, pour les sauvegardes et les conditions (`ifSouvenirs`).
+export const TRAITS = {
+  joie: { id: 'souvenir-maman', name: 'Joie de vivre', city: 'fortDeFrance' },
+  pragmatisme: { id: 'souvenir-papa', name: 'Pragmatisme', city: 'fortDeFrance' },
+  confiance: { id: 'souvenir-manon', name: 'Confiance', city: 'fortDeFrance' },
+  patience: { id: 'role-grand-frere', name: 'Patience', city: 'saintAy' },
+  espritEquipe: { id: 'role-cousins', name: "Esprit d'équipe", city: 'saintAy' },
+  loyaute: { id: 'role-copains-montepilloy', name: 'Loyauté', city: 'montepilloy' },
+  ingeniosite: { id: 'role-bricoleur', name: 'Ingéniosité', city: 'montepilloy' },
+  insouciance: { id: 'vertu-insouciance', name: 'Insouciance', city: 'routeBonsecours' },
+  bandeHull: { id: 'role-bande-hull', name: 'La bande de Hull', city: 'hull' },
 };
-
-// Rôles et titres reçus (Saint-Ay, Hull, Montépilloy), comptés comme des souvenirs.
-export const ROLES = {
-  grandFrere: { id: 'role-grand-frere', name: 'Grand frère' },
-  cousins: { id: 'role-cousins', name: 'Cousins pour la vie' },
-  bandeHull: { id: 'role-bande-hull', name: 'La bande de Hull' },
-  copainsMontepilloy: { id: 'role-copains-montepilloy', name: 'Les copains de Montépilloy' },
-  bricoleur: { id: 'role-bricoleur', name: 'Bricoleur' },
-};
+const TRAIT_LIST = Object.values(TRAITS);
+export const traitById = (id) => TRAIT_LIST.find((t) => t.id === id) ?? null;
+export const traitsOfCity = (city) => TRAIT_LIST.filter((t) => t.city === city);
 
 // Objets remis au joueur (voir systems/items.js).
 export const ITEMS = {
   coquillageNacre: { id: 'coquillage-nacre', name: 'Coquillage nacré' },
+  // Objets-souvenirs facultatifs, un par ville.
+  coquillagePlage: { id: 'coquillage-plage', name: 'Coquillage de la plage' },     // Fort-de-France : fouiller le sable
+  galetLac: { id: 'galet-lac', name: 'Galet du lac' },                            // Saint-Ay : le vieux pêcheur méfiant
   canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
   vieilleCanne: { id: 'vieille-canne', name: 'Vieille canne' },     // pour pêcher face à l'eau (facultatif)
   planches: { id: 'planches', name: 'Planches' },
   corde: { id: 'corde', name: 'Vieille corde' },
+  cuillere: { id: 'cuillere', name: 'Cuillère de Jean' },                     // Montépilloy : objet-souvenir (caisse à outils)
+  brevet: { id: 'brevet', name: 'Diplôme du brevet' },                         // collège : remis par le prof
+  autocollant: { id: 'autocollant', name: 'Autocollant de Rémi' },             // collège : objet-souvenir (le casier)
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },
   clesAppartement: { id: 'cles-appartement', name: "Clés de l'appartement" },
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },
@@ -140,18 +163,18 @@ export const ITEMS = {
 };
 
 // Personnages qui marchent derrière le joueur, dans cet ordre, quand leurs conditions sont remplies.
-// `id` identique à celui du PNJ qu'ils remplacent : ils partent de sa position.
+// `id` identique à celui du PNJ qu'ils remplacent : ils partent de sa position. `name` : leur nom affiché, qui donne
+// leur apparence (voir characters.js) ; sans lui, l'id sert de nom (attention aux accents).
+// Fin du cache-cache de Montépilloy : les copains filent à l'école (ou, dans une ancienne partie, Loyauté déjà reçue).
+const COPAINS_DONE = { unlessFlags: [FLAGS.copainsPartent], unlessSouvenirs: ['role-copains-montepilloy'] };
+
+// Pas de suiveur à Fort-de-France ni à Saint-Ay : les PNJ y partent devant et attendent sur place.
 export const FOLLOWERS = [
-  { id: 'papa',  color: 0x3f6fd8, ifFlags: [FLAGS.familleSuit], unlessFlags: [FLAGS.familleArrivee] },
-  { id: 'manon', color: 0xf0a030, ifFlags: [FLAGS.familleSuit], unlessFlags: [FLAGS.familleArrivee] },
-  // Felix t'accompagne de la sortie de la clinique jusqu'à chez lui (maison 2).
-  { id: 'felix', color: 0x9060d0, ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.maisonFelixVisitee] },
-  // Montépilloy : Jean, ton assistant… ou plutôt toi le sien, jusqu'à la réparation du tracteur ; Margaux et
-  // Étienne, une fois trouvés au cache-cache, jusqu'à la fin de la partie.
-  { id: 'jean', color: 0x3c7c5c, ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.jeanTracteur, FLAGS.tracteurRepare] },
-  { id: 'margaux', color: 0xf08080, ifFlags: [FLAGS.trouveMargaux], unlessSouvenirs: ['role-copains-montepilloy'] },
-  { id: 'etienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], unlessSouvenirs: ['role-copains-montepilloy'] },
-  { id: 'benoit', color: 0xa07040, ifFlags: [FLAGS.trouveBenoit], unlessSouvenirs: ['role-copains-montepilloy'] },
+  // Montépilloy : les copains trouvés au cache-cache suivent Pierre jusqu'à la fin de la partie (ils filent alors à
+  // l'école, voir montepilloyStory.js GAME_OVER).
+  { id: 'margaux', name: 'Margaux', color: 0xf08080, ifFlags: [FLAGS.trouveMargaux], ...COPAINS_DONE },
+  { id: 'etienne', name: 'Étienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], ...COPAINS_DONE },
+  { id: 'benoit', name: 'Benoît', color: 0xa07040, ifFlags: [FLAGS.trouveBenoit], ...COPAINS_DONE },
   // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },

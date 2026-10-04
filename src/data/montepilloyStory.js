@@ -1,79 +1,57 @@
-import { FLAGS, ITEMS, ROLES } from './story.js';
+import { FLAGS, ITEMS, TRAITS } from './story.js';
 
-// Scénario de Montépilloy (voir le document « Montépilloy ») : quelques années après l'arrivée, Pierre vit son
-// dernier jour d'école primaire. Deux titres, dans n'importe quel ordre : « Les copains de Montépilloy » (la
-// dernière partie de cache-cache, lancée à la sortie de l'école) et « Bricoleur » (le tracteur de M. Bouly, réparé
-// avec Jean, son petit frère). Puis, en septembre, il part à pied pour le collège, par la sortie nord.
+// Scénario de Montépilloy (voir le document « Scénarios Poké-Pierre — Montépilloy & Le collège ») : quelques
+// années après l'arrivée, Pierre vit son dernier jour d'école primaire. Deux vertus, dans n'importe quel ordre après
+// l'école : Loyauté (la dernière partie de cache-cache, lancée à la sortie de l'école) et Ingéniosité (le tracteur
+// de M. Bouly, réparé avec Jean, son petit frère). La sortie nord garde le départ ; en septembre, Pierre part à pied
+// pour le collège, au village d'à côté. Pas de PNJ qui suit Pierre : ils partent devant.
 // Scénettes partagées par la carte du village et les intérieurs (étapes : voir MapScene.runSteps).
 
-// Arrivée en voiture (fin de Saint-Ay), puis l'ellipse : Pierre, face à la mare. Manon vient le chercher (Maman
-// le cherche) et rentre à la maison ; il la suit (elle l'attend s'il traîne).
-export const MONTEPILLOY_SPOTS = { pond: { x: 19, y: 16 }, houseDoor: [9, 7] };
-export const MANON_WALK = [{ walk: 'manon-arrivee', to: MONTEPILLOY_SPOTS.houseDoor, lead: true, then: [FLAGS.manonMaison] }];
-export const ELLIPSIS = [
-  { black: true },
-  { wait: 400 },
-  { say: ['Montépilloy, Oise. Quelques années plus tard…'] },
-  { setFlag: FLAGS.ellipseMontepilloy },
-  { black: false },
-  { approach: 'manon-arrivee' },
-  { speaker: 'Manon', say: ['Ah, te voilà ! Maman te cherche partout. Viens, suis-moi !'] },
-  { setFlag: FLAGS.manonGuide },
-  ...MANON_WALK,
+const BOTH = [TRAITS.loyaute.id, TRAITS.ingeniosite.id];
+
+// La dernière des deux vertus reçue (cache-cache ou tracteur) : la journée se termine, Pierre rentre dîner (DINNER).
+const END_OF_DAY = [
+  { ifSouvenirs: BOTH, say: ['Le soleil se couche sur Montépilloy. Il est temps de rentrer à la maison.'] },
+  { ifSouvenirs: BOTH, setFlag: FLAGS.finJournee },
 ];
 
-// À la maison : Maman accueille Pierre, que Manon a ramené.
+// Arrivée en voiture (fin de Saint-Ay), puis l'ellipse : image d'accueil, Pierre au bord de la mare.
+export const MONTEPILLOY_SPOTS = { pond: { x: 19, y: 16 }, houseDoor: [9, 7] };
+export const ARRIVAL = [
+  { opening: { postcard: 'montepilloy', text: 'Montépilloy, Oise. Quelques années plus tard…' } },
+  { setFlag: FLAGS.ellipseMontepilloy },
+  { say: ['Te voilà au bord de la mare. La maison est en haut du village : toute la famille y est.'] },
+];
+
+// À la maison : Maman accueille Pierre la première fois.
 export const MAMAN_WELCOME = [
   { approach: 'maman-mont' },
-  { speaker: 'Maman', say: ['Te voilà ! Dernier jour d\'école primaire ! Après, le collège.', 'Dépêche-toi, tu vas être en retard !'] },
+  { speaker: 'Maman', say: ['Te voilà ! Dernier jour d\'école primaire ! Après, le collège.', 'Dépêche-toi, tu vas être en retard ! L\'école est en bas de la grand-rue, à droite.'] },
   { setFlag: FLAGS.mamanAccueil },
-];
-
-// Le tracteur réparé (dernière quête) : ellipse jusqu'en septembre, la famille devant la maison (voir
-// SEPTEMBER_MORNING).
-const TO_SEPTEMBER = [
-  { black: true },
-  { wait: 400 },
-  { say: ['Septembre.'] },
-  { setFlag: FLAGS.septembre },
-  { travel: { map: 'montepilloy', x: 9, y: 7, facing: 'down' } },
-];
-
-// Septembre, devant la maison, au matin : la famille dit au revoir à Pierre, cartable sur le dos.
-export const SEPTEMBER_MORNING = [
-  { say: ['Devant la maison, au matin. Tu as ton cartable sur le dos.'] },
-  { speaker: 'Maman', say: ['Premier jour de collège. Tu as tout ?'] },
-  { speaker: 'Papa', say: ['Il a tout. Il a même vérifié deux fois.'] },
-  { speaker: 'Jean', say: ['Tu me raconteras comment c\'est ?'] },
-  { say: ['Le collège est au nord, au bout de la grand-rue.'] },
-  { setFlag: FLAGS.departCollege },
-];
-
-// La sortie nord : en septembre, Pierre part à pied pour le collège Bonsecours (voir maps/routeBonsecours.js) ;
-// avant, ce qu'il reste à faire.
-export const NORTH_EXIT = [
-  { ifFlags: [FLAGS.departCollege], say: ['Tu prends la route du collège, ton cartable sur le dos.'] },
-  { ifFlags: [FLAGS.departCollege], travel: { map: 'routeBonsecours', x: 10, y: 27, facing: 'up' }, end: true },
-  {
-    unlessSouvenirs: [ROLES.copainsMontepilloy.id],
-    say: ['Les copains t\'attendent pour la dernière partie de cache-cache, à la sortie de l\'école.'],
-  },
-  { unlessSouvenirs: [ROLES.bricoleur.id], say: ['Et Jean compte sur toi pour réparer le tracteur de M. Bouly.'] },
 ];
 
 // ---------- La maison : toute la famille ----------
 
-// Maman : sa réplique suit la journée (avant l'école, après l'école).
+// Maman : sa réplique suit la journée (avant l'école, après, une fois les deux vertus reçues) et rappelle ce qu'il
+// reste à faire.
 export const MAMAN = [
-  { ifFlags: [FLAGS.ecoleCm2], speaker: 'Maman', say: ['Alors, ce dernier jour ? Profite de tes copains, l\'été passe vite.'], end: true },
-  { speaker: 'Maman', say: ['Dernier jour d\'école primaire ! Après, le collège.'] },
+  {
+    unlessFlags: [FLAGS.ecoleCm2], speaker: 'Maman',
+    say: ['Dernier jour d\'école primaire ! Après, le collège.', 'File, l\'école est en bas de la grand-rue, à droite.'], end: true,
+  },
+  {
+    ifSouvenirs: BOTH, speaker: 'Maman',
+    say: ['Quelle journée ! Les vacances commencent… et à la rentrée, le collège.'], end: true,
+  },
+  { unlessSouvenirs: [TRAITS.loyaute.id], speaker: 'Maman', say: ['Tes copains jouent à cache-cache dans tout le village. File les trouver !'] },
+  { unlessSouvenirs: [TRAITS.ingeniosite.id], speaker: 'Maman', say: ['Et Jean cherche un assistant, là-haut dans sa chambre. Il a encore une réparation en tête…'] },
 ];
 
 export const PAPA = [
   { speaker: 'Papa', say: ['Le dernier jour, déjà. On est arrivés à Montépilloy, tu tenais à peine sur le siège arrière.'] },
 ];
 
-// ---------- L'école et le cache-cache ----------
+// ---------- L'école et le cache-cache → Loyauté ----------
 
 // En entrant à l'école : dernier jour de CM2.
 export const LAST_DAY = [
@@ -81,7 +59,8 @@ export const LAST_DAY = [
   { setFlag: FLAGS.ecoleCm2 },
 ];
 
-// À la sortie des classes, Margaux lance la dernière partie, dans tout le village.
+// À la sortie des classes, Margaux lance la dernière partie, dans tout le village (fond noir gardé : c'est Pierre
+// qui ferme les yeux).
 export const HIDE_AND_SEEK = [
   { approach: 'margaux-sortie' },
   { speaker: 'Margaux', say: ['Dernière partie avant les vacances. Mais cette fois, dans tout le village !'] },
@@ -92,23 +71,31 @@ export const HIDE_AND_SEEK = [
   { black: false },
 ];
 
-// Margaux, derrière les bottes de foin de la ferme ; Étienne, dans l'arbre de la prairie à côté de la mare ;
-// Benoît, dans un tonneau de la grange. Dans n'importe quel ordre : une fois trouvés, ils suivent Pierre, et le
-// dernier trouvé clôt la partie (voir GAME_OVER).
+// Margaux, derrière les bottes de foin de la ferme ; Étienne, dans l'arbre de la prairie près de la mare ; Benoît,
+// dans le tonneau du fond à gauche de la grange. Dans n'importe quel ordre : chacun trouvé suit Pierre ; le dernier
+// clôt la partie (la promesse) ; les copains filent récupérer leurs cartables et disparaissent : on les retrouve dans
+// la classe.
 const GAME_OVER = {
   ifFlags: [FLAGS.trouveMargaux, FLAGS.trouveEtienne, FLAGS.trouveBenoit],
-  unlessSouvenirs: [ROLES.copainsMontepilloy.id],
+  unlessSouvenirs: [TRAITS.loyaute.id],
   steps: [
     { speaker: 'Margaux', say: ['Alors on la refait l\'été prochain. Promis ?'] },
-    { quality: ROLES.copainsMontepilloy },
-    { say: ['Les copains retournent à l\'école récupérer leurs cartables.'] },
+    { speaker: 'Étienne', say: ['C\'était trop cool, cette partie !'] },
+    { speaker: 'Margaux', say: ['Allez, on file à l\'école récupérer nos cartables !'] },
+    { unlessSouvenirs: [TRAITS.ingeniosite.id], speaker: 'Benoît', say: ['Au fait, ton petit frère te cherche !'] },
+    { sound: 'door' },
+    { setFlag: FLAGS.copainsPartent },
+    // La vertu après leur départ : ils arrêtent aussi de suivre Pierre une fois Loyauté reçue (anciennes parties).
+    { trait: TRAITS.loyaute },
+    ...END_OF_DAY,
   ],
 };
 
 export const FOUND_MARGAUX = [
   { emote: 'player', kind: 'surprise' },
-  { say: ['Margaux était accroupie derrière les bottes de foin.'] },
-  { speaker: 'Margaux', say: ['Trouvée… L\'an prochain, au collège, on sera peut-être dans la même classe.'] },
+  { say: ['Quelque chose bouge derrière les bottes de foin…'] },
+  { emerge: { id: 'margaux', name: 'Margaux', from: [[12, 22], [11, 22], [12, 21], [11, 21]] } },
+  { speaker: 'Margaux', say: ['Zut, trouvée ! Les bottes de foin, c\'était trop facile…', 'L\'an prochain, au collège, je me trouverai une cachette imbattable. Je viens avec toi chercher les autres !'] },
   { setFlag: FLAGS.trouveMargaux },
   GAME_OVER,
 ];
@@ -116,47 +103,45 @@ export const FOUND_MARGAUX = [
 export const FOUND_ETIENNE = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Des feuilles tombent… Étienne est perché dans l\'arbre !'] },
-  { speaker: 'Étienne', say: ['Perdu ! L\'an prochain, on ira au collège ensemble. Tu m\'attends le matin ?'] },
+  { emerge: { id: 'etienne', name: 'Étienne', from: [[26, 17]] } },
+  { speaker: 'Étienne', say: ['Perdu ! L\'an prochain, on ira au collège ensemble. Tu m\'attends le matin ?', 'Je t\'aide à chercher les autres !'] },
   { setFlag: FLAGS.trouveEtienne },
   GAME_OVER,
 ];
 
-// Benoît, dans le tonneau du fond à gauche de la grange (pas celui de la pièce du tracteur) : le tonneau bouge
-// quand on entre.
+// Benoît, dans le tonneau du fond à gauche de la grange (pas celui de la pièce du tracteur, au fond à droite) : le
+// couvercle ne s'ouvre pas en fouillant ; Pierre attend (« Pierre utilise PATIENCE ! ») et le tonneau bouge.
 const BENOIT_LEFT = { ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveBenoit] };
 export const BENOIT_BARREL = [0, 4];
-export const BARREL_MOVES = {
-  on: 'enter',
-  ...BENOIT_LEFT,
-  steps: [
-    { emote: BENOIT_BARREL, kind: 'dots' },
-    { say: ['Un tonneau, au fond à gauche, bouge tout seul…'] },
-  ],
-};
 export const FOUND_BENOIT = [
+  { say: ['Tu essaies de soulever le couvercle du tonneau… Il ne bouge pas. On dirait qu\'on le retient de l\'intérieur.'] },
+  { say: ['Tu attends, sans faire un bruit…'] },
+  { ifSouvenirs: [TRAITS.patience.id], useTrait: TRAITS.patience },
+  { emote: BENOIT_BARREL, kind: 'dots' },
+  { say: ['Le tonneau se met à bouger… Le couvercle se soulève tout seul !'] },
   { emote: 'player', kind: 'surprise' },
-  { speaker: 'Benoît', say: ['Tu m\'as trouvé… Bon, c\'était ma dernière partie avec vous. L\'an prochain, je ne serai pas au collège avec vous.'] },
+  { emerge: { id: 'benoit', name: 'Benoît', from: [BENOIT_BARREL] } },
+  { speaker: 'Benoît', say: ['Tu m\'as trouvé… c\'était ma dernière partie avec vous. L\'an prochain, je ne serai pas au collège avec vous.'] },
   { setFlag: FLAGS.trouveBenoit },
   GAME_OVER,
 ];
 export const BENOIT_HIDING = { ...BENOIT_LEFT, x: BENOIT_BARREL[0], y: BENOIT_BARREL[1], script: FOUND_BENOIT };
 
-// ---------- La quête de Jean : Bricoleur ----------
+// ---------- La quête de Jean → Ingéniosité ----------
 
-// Jean, à l'étage : une fois la partie de cache-cache finie, il emmène Pierre comme assistant (il le suit
-// jusqu'au tracteur).
+// Jean, devant le tracteur (le tracteur occupe les cases x 10-11, y 12-13) ; l'escalier de la chambre des enfants.
+export const JEAN_AT_TRACTOR = [10, 14];
+const JEAN_UPSTAIRS_STAIRS = [12, 2];
+
+// Jean, à l'étage de la maison : après l'école, il lance la quête, descend l'escalier et part devant à la ferme (il y
+// est, sous le tracteur, à l'arrivée de Pierre).
 export const JEAN = [
   {
-    unlessFlags: [FLAGS.cacheCache], speaker: 'Jean',
-    say: ['Dépêche-toi, tu vas être en retard à l\'école ! Ce soir, j\'aurai un truc à te demander.'], end: true,
+    unlessFlags: [FLAGS.ecoleCm2], speaker: 'Jean',
+    say: ['Salut grand frère ! Je répare le grille-pain. Enfin… je l\'ai démonté. Presque pareil.', 'Dépêche-toi, tu vas être en retard à l\'école !'], end: true,
   },
-  {
-    unlessSouvenirs: [ROLES.copainsMontepilloy.id], speaker: 'Jean',
-    say: ['Tu ne devais pas jouer à cache-cache avec les copains ? Finis ta partie, après j\'ai besoin de toi.'], end: true,
-  },
-  { speaker: 'Jean', say: ['Le tracteur de M. Bouly est en panne. Je peux le réparer, mais il me faut un assistant.'] },
-  { say: ['Jean attrape sa caisse à outils et te suit.'] },
-  { setFlag: FLAGS.jeanQuetes },
+  { speaker: 'Jean', say: ['Le tracteur de M. Bouly est en panne. Je peux le réparer, mais il me faut un assistant.', 'Rejoins-moi à la ferme !'] },
+  { walk: 'jean-maison', to: JEAN_UPSTAIRS_STAIRS, block: true, then: [FLAGS.jeanQuetes] },
 ];
 
 // « Passe-moi la clé ! » : Jean, sous le tracteur, réclame trois outils ; Pierre les prend dans la caisse.
@@ -168,29 +153,32 @@ const WRONG_TOOL = {
 };
 const tool = (question, answer) => ({ quiz: { speaker: 'Jean', question, answer, choices: TOOLS, wrong: WRONG_TOOL } });
 
-// Jean, devant le tracteur pendant la réparation (le tracteur occupe les cases x 10-11, y 12-13).
-export const JEAN_AT_TRACTOR = [10, 14];
-
+// La réparation, une fois la pièce rapportée (à M. Bouly ou à Jean, voir BOULY et JEAN_TRACTOR).
 const REPAIR = [
-  { speaker: 'M. Bouly', say: ['La pièce ! Jean, à toi de jouer.'] },
   { take: ITEMS.pieceTracteur.id },
-  { setFlag: FLAGS.jeanTracteur },
-  { walk: 'jean', to: JEAN_AT_TRACTOR, block: true },
-  { say: ['Jean pose sa caisse à outils devant le tracteur et se met au travail.'] },
+  { say: ['Jean ouvre sa caisse à outils et se glisse sous le tracteur.'] },
   { speaker: 'Jean', say: ['Passe-moi la clé !'] },
   tool('La clé de 12 !', 'La clé de 12'),
   tool('Le tournevis plat !', 'Le tournevis plat'),
   tool('Le marteau… non, le petit !', 'Le petit marteau'),
   { sound: 'engine' },
   { say: ['Le moteur tousse… puis repart !'] },
-  { speaker: 'Jean', say: ['Tu vois ? À nous deux, on répare tout. T\'es un bricoleur, toi aussi.'] },
-  { quality: ROLES.bricoleur },
+  { speaker: 'Jean', say: ['À nous deux, on répare tout.'] },
+  { trait: TRAITS.ingeniosite },
+  { speaker: 'M. Bouly', say: ['Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de tracteur !'] },
+  { black: true },
   { setFlag: FLAGS.tracteurRepare },
-  ...TO_SEPTEMBER,
+  { sound: 'engine' },
+  { say: ['M. Bouly emmène Jean faire un tour de tracteur dans les champs.'] },
+  { black: false },
+  { say: ['La caisse à outils de Jean est restée là.'] },
+  ...END_OF_DAY,
 ];
 
-// M. Bouly, à la ferme : il dit seulement bonjour tant que Jean ne t'a rien demandé (PNJ à part, voir la carte).
+// M. Bouly, à la ferme : il dit seulement bonjour tant que Jean ne t'a rien demandé (PNJ à part, voir la carte) ;
+// ensuite, il parle de la pièce qui manque.
 export const BOULY = [
+  { ifItems: [ITEMS.pieceTracteur.id], speaker: 'M. Bouly', say: ['La pièce ! Jean, à toi de jouer.'] },
   { ifItems: [ITEMS.pieceTracteur.id], steps: REPAIR, end: true },
   {
     unlessFlags: [FLAGS.boulyDemande], speaker: 'M. Bouly',
@@ -203,5 +191,56 @@ export const BOULY = [
   { speaker: 'M. Bouly', say: ['La pièce doit être dans un des tonneaux de la grange.'] },
 ];
 
+// Jean, sous le tracteur : il attend la pièce ; on peut aussi la lui donner directement.
+export const JEAN_TRACTOR = [
+  { ifItems: [ITEMS.pieceTracteur.id], speaker: 'Jean', say: ['La pièce ! Parfait, passe-la-moi.'] },
+  { ifItems: [ITEMS.pieceTracteur.id], steps: REPAIR, end: true },
+  { speaker: 'Jean', say: ['Il manque une pièce à ce tracteur. Va voir M. Bouly, il sait peut-être où elle est.'] },
+];
+
 // La pièce, au fond du tonneau du fond à droite de la grange (une fois que M. Bouly en a parlé).
 export const PART_BARREL = { x: 8, y: 3 };
+
+// Objet-souvenir : la cuillère de la caisse à outils de Jean, restée devant le tracteur après la réparation (la caisse
+// disparaît une fois la cuillère prise).
+export const TOOLBOX = [
+  { say: ['La caisse à outils de Jean. Tout au fond, entre deux clés… la cuillère !'] },
+  { give: ITEMS.cuillere, text: 'Tu prends la cuillère. Un souvenir de votre réparation.' },
+];
+
+// ---------- Le départ → le collège ----------
+
+// Le soir de la dernière vertu, à la maison : le dîner en famille, puis l'ellipse jusqu'en septembre, devant la maison.
+export const DINNER = [
+  { say: ['Le soir, toute la famille est à table.'] },
+  { speaker: 'Jean', say: ['On a réparé le tracteur de M. Bouly ! Enfin… surtout moi.'] },
+  { speaker: 'Papa', say: ['Bravo, les garçons. Profitez bien de l\'été.'] },
+  { speaker: 'Maman', say: ['Et en septembre, c\'est le collège !'] },
+  { black: true },
+  { wait: 600 },
+  { setFlag: FLAGS.septembre },
+  { travel: { map: 'montepilloy', x: 9, y: 7, facing: 'down' } },
+];
+
+// Septembre, devant la maison, au matin : la famille dit au revoir à Pierre, cartable sur le dos.
+export const SEPTEMBER_MORNING = [
+  { opening: { postcard: 'montepilloySeptembre', text: 'Quelques mois plus tard… Septembre.' } },
+  { say: ['Devant la maison, au matin. Tu as ton cartable sur le dos.'] },
+  { speaker: 'Maman', say: ['Premier jour de collège. Tu as tout ?'] },
+  { speaker: 'Papa', say: ['Il a tout. Il a même vérifié deux fois.'] },
+  { speaker: 'Jean', say: ['Tu me raconteras comment c\'est ?'] },
+  { say: ['Le collège est au village d\'à côté : tu y vas à pied, par la sortie nord.'] },
+  { setFlag: FLAGS.departCollege },
+];
+
+// La sortie nord, gardienne du départ : elle rappelle ce qu'il reste à faire ; en septembre, Pierre part à pied pour
+// le collège.
+export const NORTH_EXIT = [
+  { ifFlags: [FLAGS.departCollege], say: ['Tu prends la route du collège, ton cartable sur le dos.'] },
+  { ifFlags: [FLAGS.departCollege], travel: { map: 'routeBonsecours', x: 10, y: 27, facing: 'up' }, end: true },
+  { ifSouvenirs: BOTH, say: ['Il se fait tard : rentre plutôt dîner à la maison.'], end: true },
+  { say: ['Ta journée n\'est pas finie.'] },
+  { unlessFlags: [FLAGS.ecoleCm2], say: ['C\'est le dernier jour de CM2 : file à l\'école, en bas de la grand-rue !'], end: true },
+  { unlessSouvenirs: [TRAITS.loyaute.id], say: ['Tes copains t\'attendent pour leur partie de cache-cache.'] },
+  { unlessSouvenirs: [TRAITS.ingeniosite.id], say: ['Et Jean a un tracteur à réparer avec toi.'] },
+];

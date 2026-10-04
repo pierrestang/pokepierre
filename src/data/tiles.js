@@ -1,6 +1,7 @@
 // Définition des tuiles : un code (1 caractère) -> propriétés.
 // `color` sert au rendu provisoire ; `frame` sera l'index dans le futur tileset ; `water` : on peut y pêcher
-// (mer, étang ou rivière, voir data/fishing.js).
+// (mer, étang ou rivière, voir data/fishing.js) ; `road` : chemin, que les PNJ qui marchent seuls préfèrent (voir
+// MapScene.pathTo).
 
 export const TILE_SIZE = 16;
 
@@ -12,24 +13,24 @@ export const TILES = {
   'W': { name: 'mur',           color: 0x9a9a9a, solid: true },
   'R': { name: 'toit',          color: 0xc0392b, solid: true },
   'D': { name: 'porte',         color: 0x7a4a24, solid: false, door: true },
-  'P': { name: 'chemin',        color: 0xe6d3a3, solid: false },
+  'P': { name: 'chemin',        color: 0xe6d3a3, solid: false, road: true },
   'f': { name: 'fleurs',        color: 0xf2a0c4, solid: false },
   'S': { name: 'panneau',       color: 0xf1c40f, solid: true },
   'F': { name: 'clôture',       color: 0xf3eee0, solid: true },
   'M': { name: 'boîte aux lettres', color: 0x5577aa, solid: true },
   's': { name: 'sable',         color: 0xf0dca0, solid: false },
   'w': { name: 'mer',           color: 0x3c80e0, solid: true, water: 'sea' },
-  '=': { name: 'ponton',        color: 0x9c6b3c, solid: false },
+  '=': { name: 'ponton',        color: 0x9c6b3c, solid: false, road: true },
   'Y': { name: 'palmier',       color: 0x3c9c4c, solid: true },
   'B': { name: 'bateau',        color: 0xf0f0f0, solid: true },
-  'C': { name: 'pavés',         color: 0xa8a098, solid: false },
+  'C': { name: 'pavés',         color: 0xa8a098, solid: false, road: true },
   'O': { name: 'tonneau',       color: 0x8c5a2c, solid: true },
-  'A': { name: 'asphalte',      color: 0x6c7074, solid: false },
+  'A': { name: 'asphalte',      color: 0x6c7074, solid: false, road: true },
   'J': { name: 'mât du drapeau', color: 0xc0c0c8, solid: true },
   'Q': { name: 'sacs de sable', color: 0xc8b080, solid: true },
   'V': { name: 'caisse',        color: 0x5c6c3c, solid: true },
   'G': { name: 'rivière',       color: 0x4a7a8a, solid: true, water: 'river' },
-  'I': { name: 'pont',          color: 0xc8b898, solid: false },
+  'I': { name: 'pont',          color: 0xc8b898, solid: false, road: true },
   'b': { name: 'cabine téléphonique', color: 0xc82828, solid: true },
   'l': { name: 'réverbère',     color: 0x282828, solid: true },
   'q': { name: 'bus',           color: 0xc82828, solid: true },
@@ -37,7 +38,7 @@ export const TILES = {
   'n': { name: 'lanterne',      color: 0xd83028, solid: true },
   'v': { name: 'drapeau vietnamien', color: 0xd82820, solid: true },
   'k': { name: 'lotus',         color: 0x4888e8, solid: true, water: 'pond' },
-  'r': { name: 'pont rouge',    color: 0xc83028, solid: false },
+  'r': { name: 'pont rouge',    color: 0xc83028, solid: false, road: true },
   't': { name: 'stand de rue',  color: 0xe8b040, solid: true },
   'y': { name: 'scooter',       color: 0x3c6cb0, solid: true },
   'c': { name: 'vélos',         color: 0x303030, solid: true },
@@ -77,12 +78,12 @@ export const TILES = {
   'ŕ': { name: 'rocher de plage', color: 0x9c9ca8, solid: true },
   'ƒ': { name: 'petites fleurs', color: 0xf8f8f8, solid: false },
   'ø': { name: 'rocher dans la mer', color: 0x9c9ca8, solid: true },
-  'ç': { name: 'pavés en chevrons', color: 0xc8ccd8, solid: false },
+  'ç': { name: 'pavés en chevrons', color: 0xc8ccd8, solid: false, road: true },
   'ψ': { name: 'cannes à pêche', color: 0x8c5c30, solid: true },
   'ʬ': { name: 'champ de blé', color: 0xe8c860, solid: false },   // on le traverse, comme les hautes herbes
-  'ɔ': { name: 'pavés (Rouge Feu)', color: 0xc8c8c8, solid: false },
+  'ɔ': { name: 'pavés (Rouge Feu)', color: 0xc8c8c8, solid: false, road: true },
   'ʕ': { name: 'remblai du pont (briques)', color: 0x9c4830, solid: true },
-  'ɐ': { name: 'dalles (Rouge Feu)', color: 0xd0d4d0, solid: false },
+  'ɐ': { name: 'dalles (Rouge Feu)', color: 0xd0d4d0, solid: false, road: true },
   'ñ': { name: 'neige',         color: 0xf0f4f8, solid: false },
   'Ñ': { name: 'sommet enneigé', color: 0xd0d8e0, solid: true },
   '¶': { name: 'drapeaux de prière', color: 0xe8c040, solid: true },

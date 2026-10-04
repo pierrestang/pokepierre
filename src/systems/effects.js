@@ -295,21 +295,33 @@ export function lightWindows(scene, map, game) {
   }
 }
 
+// Petites bulles blanches au signe noir (9 x 11) : « ! » ('hint-bubble') et « … » ('hint-dots'). Elles servent à
+// l'indice d'interaction et aux bulles d'émotion des scènes (MapScene.emote).
+export function ensureSmallBubbles(scene) {
+  const bubble = (key, sign) => ensureTexture(scene, key, 9, 11, (g) => {
+    px(g, 0x283048, 1, 0, 7, 9);
+    px(g, 0x283048, 0, 1, 9, 7);
+    px(g, 0xffffff, 1, 1, 7, 7);
+    px(g, 0xffffff, 2, 0, 5, 1);
+    sign(g);
+    px(g, 0x283048, 3, 9, 3, 1);                                         // pointe de la bulle
+    px(g, 0xffffff, 4, 9, 1, 1);
+    px(g, 0x283048, 4, 10, 1, 1);
+  });
+  bubble('hint-bubble', (g) => {                                         // ! noir
+    px(g, 0x181820, 4, 2, 1, 3);
+    px(g, 0x181820, 4, 6, 1, 1);
+  });
+  bubble('hint-dots', (g) => {                                           // … noir
+    for (const x of [2, 4, 6]) px(g, 0x181820, x, 4, 1, 1);
+  });
+}
+
 // Bulle « ! » au-dessus de ce à quoi le joueur fait face (personnage ou objet à examiner).
 export class InteractHint {
   constructor(scene) {
     this.scene = scene;
-    ensureTexture(scene, 'hint-bubble', 9, 11, (g) => {
-      px(g, 0x283048, 1, 0, 7, 9);
-      px(g, 0x283048, 0, 1, 9, 7);
-      px(g, 0xffffff, 1, 1, 7, 7);
-      px(g, 0xffffff, 2, 0, 5, 1);
-      px(g, 0x181820, 4, 2, 1, 3);                                       // ! noir
-      px(g, 0x181820, 4, 6, 1, 1);
-      px(g, 0x283048, 3, 9, 3, 1);                                       // pointe de la bulle
-      px(g, 0xffffff, 4, 9, 1, 1);
-      px(g, 0x283048, 4, 10, 1, 1);
-    });
+    ensureSmallBubbles(scene);
     this.image = scene.add.image(0, 0, 'hint-bubble').setOrigin(0.5, 1).setDepth(55).setVisible(false);
     this.target = null;
     this.baseY = 0;

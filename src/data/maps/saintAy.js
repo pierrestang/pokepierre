@@ -1,7 +1,7 @@
 import { parseGrid } from './parseGrid.js';
-import { FLAGS, ITEMS, ROLES } from '../story.js';
+import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
-  ARRIVAL, PLANKS, ROPE, CAR, henScript, CABANE_SPOT,
+  ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS,
 } from '../saintAyStory.js';
 
 // Le ferry (le même qu'à Fort-de-France), amarré à gauche du ponton du lac ; une case d'eau entre les deux.
@@ -22,6 +22,8 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // La vieille corde : au fond du coin de hautes herbes du sud-ouest, seulement pendant le chantier de la cabane.
 const ROPE_SPOT = { x: 2, y: 20 };
 const ROPE_CONDITIONS = { ifFlags: [FLAGS.planCabane], unlessItems: [ITEMS.corde.id], unlessFlags: [FLAGS.cabaneFinie] };
+// Une poule qu'on ne peut pas pousser par là (clôture, planches, autre poule).
+const HEN_STUCK = ['Cot cot ! La poule ne bouge pas de ce côté.'];
 const COUSIN_COLORS = { felix: 0x9060d0, joshua: 0x20a0c0, yanis: 0xc0b040 };
 
 export const saintAyMap = {
@@ -31,12 +33,12 @@ export const saintAyMap = {
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 1
     'TTTT.....ĥĥ..Sçç..............TT', // 2
-    'TTTTfff.ĥĥĥĥ..çç.RRRRR.FFFFF..TT', // 3
-    'TT..fff..ĥĥĥ..çç.RRRRR.F...F..TT', // 4
-    'TT..fff...ĥ...çç.WWWWW.F...F..TT', // 5
-    '~~~.ççççççççççççMWDWWW.F...F..TT', // 6
-    '~~~~çççççççççççççççççççFFçFF..TT', // 7
-    '~~~~~==~..ĥĥ..çç......çççç....TT', // 8
+    'TTTTfff.ĥĥĥĥ..çç.RRRRR.FFFFFF.TT', // 3
+    'TT..fff..ĥĥĥ..çç.RRRRR.F....F.TT', // 4
+    'TT..fff...ĥ...çç.WWWWW.F....F.TT', // 5
+    '~~~.ççççççççççççMWDWWW.F....F.TT', // 6
+    '~~~~çççççççççççççççççççFFFçFF.TT', // 7
+    '~~~~~==~..ĥĥ..ççççççççççççç...TT', // 8
     'BBBB~==~~ĥĥĥĥ.çç.RRRRR.....ĥĥ.TT', // 9
     'BBBB~==~~~ĥĥĥ.çç.RRRRR....ĥĥĥ.TT', // 10
     '~~~~~==~~~ĥĥ..çç.WWWWW.....ĥĥ.TT', // 11
@@ -67,7 +69,7 @@ export const saintAyMap = {
     },
     {
       x: 19, y: 20, interior: 'hospital',
-      lock: { ifFlags: [FLAGS.familleSuit] },
+      lock: { ifFlags: [FLAGS.saArrivee] },
       lockedDialogue: ["La clinique de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
     // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite).
@@ -84,7 +86,7 @@ export const saintAyMap = {
   props: [
     // Le tas de planches de l'enclos à poules, gardé par les poules ; il disparaît une fois les planches ramassées.
     {
-      type: 'planks', x: 26, y: 4, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
+      type: 'planks', x: 25, y: 4, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
       script: PLANKS,
     },
     // La cabane des cousins, une fois construite, perchée dans les sapins au sud du lac.
@@ -97,17 +99,12 @@ export const saintAyMap = {
     // la rangée du bas de la route (on passe derrière).
     { type: 'familyCar', x: 19, y: 7, w: 3, h: 1, facing: 'left', turnUp: 15, ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
-  // Décor lié à l'histoire : la corde dans les hautes herbes (pendant le chantier).
-  decals: [
-    { kind: 'rope', ...ROPE_SPOT, ...ROPE_CONDITIONS },
-  ],
   objects: [
     { x: 13, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
     { x: 13, y: 15, dialogue: ['Saint-Ay, Loiret. Bienvenue au village !'] },
     { x: 17, y: 20, dialogue: ['Clinique de Saint-Ay.'] },
     { x: 16, y: 6, dialogue: ['La boîte aux lettres de la famille.'] },
     { x: 16, y: 12, dialogue: ['La boîte aux lettres de Felix et de ses frères et sœur.'] },
-    { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: ROPE },
     // Le ferry qui a amené la famille de Fort-de-France.
     ...Array.from({ length: (BOAT_POS.w + 1) * BOAT_POS.h }, (_, i) => ({
       x: BOAT_POS.x + (i % (BOAT_POS.w + 1)),
@@ -116,59 +113,79 @@ export const saintAyMap = {
     })),
   ],
   npcs: [
-    // Arrivée : Papa et Manon arrivent en courant (ils suivent ensuite Pierre jusqu'à la clinique).
+    // Arrivée : Papa et Manon arrivent en courant, puis partent devant à la clinique (ils y sont à ton arrivée).
     {
       id: 'papa', name: 'Papa', x: 10, y: 7, facing: 'left', color: 0x3f6fd8,
-      ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit],
-      dialogue: ["Maman est à la clinique. Suis-nous !"],
+      ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit, FLAGS.familleArrivee],
+      dialogue: ['Maman est à la clinique, en bas du village. Rejoins-nous !'],
     },
     {
       id: 'manon', name: 'Manon', x: 11, y: 6, facing: 'left', color: 0xf0a030,
-      ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit],
-      dialogue: ['Vite, viens avec nous !'],
+      ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit, FLAGS.familleArrivee],
+      dialogue: ['Vite, à la clinique !'],
     },
-    // En sortant de la clinique, Felix (ton cousin) vient à ta rencontre, puis te suit jusqu'à chez lui.
+    // En sortant de la clinique, Felix (ton cousin) vient à ta rencontre et part devant, chez lui, où les cousins
+    // t'attendent (voir CLINIC_EXIT).
     {
       id: 'felix', name: 'Felix', x: 17, y: 21, facing: 'right', color: COUSIN_COLORS.felix,
-      ifSouvenirs: [ROLES.grandFrere.id], unlessFlags: [FLAGS.felixInvite],
-      dialogue: ["Cousin ! Ça y est, on a emménagé ! La maison au toit de chaume, sur la rue du milieu, juste sous la vôtre. Viens, les autres t'attendent !"],
+      ifSouvenirs: [TRAITS.patience.id], unlessFlags: [FLAGS.felixInvite],
+      dialogue: [
+        'Cousin ! Ça y est, on a emménagé ! La maison au toit de chaume, sur la rue du milieu, juste sous la vôtre.',
+        'Rejoins-nous là-bas, les autres t\'attendent !',
+      ],
     },
-    // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis près du lac.
+    // Quelques années après la cabane : Manon vient chercher Pierre au bord du lac (voir MANON_NEWS).
     {
-      id: 'joshua', name: 'Joshua', x: 26, y: 8, facing: 'left', color: COUSIN_COLORS.joshua,
+      id: 'manon-lac', name: 'Manon', x: 14, y: 13, facing: 'left', color: 0xf0a030,
+      ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.manonNouvelle],
+      dialogue: ['Viens vite, Papa a une nouvelle à nous annoncer !'],
+    },
+    // Le vieux pêcheur méfiant, au bord du lac : il ne parle qu'à quelqu'un de confiance (trait Confiance).
+    { id: 'vieux-pecheur', name: 'Vieux pêcheur', x: 8, y: 8, facing: 'left', still: true, script: OLD_FISHER },
+    // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis au bord du lac, côté sud (vers la corde).
+    {
+      id: 'joshua', name: 'Joshua', x: 28, y: 8, facing: 'left', color: COUSIN_COLORS.joshua,
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.planches.id], speaker: 'Joshua', say: ['Avec ces planches, on va faire un vrai QG.'], end: true },
-        { speaker: 'Joshua', say: ['Les planches sont au fond de l\'enclos à poules… derrière les poules.'] },
+        { speaker: 'Joshua', say: ['Les planches sont au fond de l\'enclos à poules… derrière les poules.', 'Pousse-les pour dégager le tas : mets-toi derrière une poule et appuie sur A. Elles détestent ça !'] },
       ],
     },
     {
-      id: 'yanis', name: 'Yanis', x: 4, y: 6, facing: 'right', color: COUSIN_COLORS.yanis,
+      id: 'yanis', name: 'Yanis', x: 8, y: 15, facing: 'down', color: COUSIN_COLORS.yanis,
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.corde.id], speaker: 'Yanis', say: ['Parfait. Ça tiendra… sûrement.'], end: true },
         { speaker: 'Yanis', say: ["J'ai vu une vieille corde dans les hautes herbes, tout au sud-ouest. Derrière le lac."] },
       ],
     },
-    // Les poules gardent le tas de planches (coin de l'enclos) ; effrayées, elles filent de l'autre côté.
-    { id: 'poule-1', name: 'Poule', x: 25, y: 4, facing: 'right', unlessFlags: [FLAGS.pouleEnfuie1], script: henScript(FLAGS.pouleEnfuie1) },
-    { id: 'poule-1b', name: 'Poule', x: 24, y: 6, facing: 'down', ifFlags: [FLAGS.pouleEnfuie1], dialogue: ['Cot… cot.'] },
-    { id: 'poule-2', name: 'Poule', x: 26, y: 5, facing: 'up', unlessFlags: [FLAGS.pouleEnfuie2], script: henScript(FLAGS.pouleEnfuie2) },
-    { id: 'poule-2b', name: 'Poule', x: 26, y: 6, facing: 'left', ifFlags: [FLAGS.pouleEnfuie2], dialogue: ['Cot… cot.'] },
-    { id: 'poule-3', name: 'Poule', x: 24, y: 4, facing: 'down', dialogue: ['Cot cot !'] },
+    // Trois poules collées au tas de planches, une de chaque côté : on pousse celle de devant (A, dans le sens où
+    // l'on regarde) pour dégager le tas (voir MapScene.pushNpc). Poussée jusqu'à la porte, une poule s'échappe et
+    // picore dans la rue.
+    {
+      id: 'poule-1', name: 'Poule', x: 25, y: 5, facing: 'up', unlessFlags: [FLAGS.pouleEnfuie1],
+      dialogue: HEN_STUCK, push: henPush(FLAGS.pouleEnfuie1),
+    },
+    { id: 'poule-1b', name: 'Poule', x: 23, y: 9, facing: 'down', ifFlags: [FLAGS.pouleEnfuie1], dialogue: ['Cot… cot.'] },
+    {
+      id: 'poule-2', name: 'Poule', x: 26, y: 4, facing: 'left', unlessFlags: [FLAGS.pouleEnfuie2],
+      dialogue: HEN_STUCK, push: henPush(FLAGS.pouleEnfuie2),
+    },
+    { id: 'poule-2b', name: 'Poule', x: 25, y: 9, facing: 'left', ifFlags: [FLAGS.pouleEnfuie2], dialogue: ['Cot… cot.'] },
+    { id: 'poule-3', name: 'Poule', x: 24, y: 4, facing: 'right', dialogue: ['Cot cot ! Celle-là ne bougera pas de son coin.'] },
+    { id: 'poule-4', name: 'Poule', x: 27, y: 6, facing: 'left', dialogue: ['Cot cot ! Elle picore tranquillement dans son coin.'] },
   ],
   events: [
     // Arrivée après la traversée : écran noir, puis Papa et Manon te trouvent au bord du lac.
     { on: 'enter', ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.saArrivee], steps: ARRIVAL },
-    // En sortant de la clinique : Felix vient te parler, puis te suit.
-    {
-      on: 'enter',
-      ifSouvenirs: [ROLES.grandFrere.id],
-      unlessFlags: [FLAGS.felixInvite],
-      steps: [{ talk: 'felix' }, { setFlag: FLAGS.felixInvite }],
-    },
+    // Quelques années plus tard, au bord du lac : Manon vient te chercher.
+    { on: 'enter', ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.manonNouvelle], steps: MANON_NEWS },
+    // En sortant de la clinique : Felix vient te chercher (voir CLINIC_EXIT).
+    { on: 'enter', ifSouvenirs: [TRAITS.patience.id], unlessFlags: [FLAGS.felixInvite], steps: CLINIC_EXIT },
   ],
   triggers: [
+    // En ressortant de l'enclos, les poules encore dedans reprennent leur place (aucune ne reste coincée).
+    { x: ENCLOS_EXIT[0], y: ENCLOS_EXIT[1] + 1, script: [{ resetNpcs: ['poule-1', 'poule-2'] }] },
     // Route du nord : on part en voiture (voir la voiture de la famille) ; ensuite, la route de Montépilloy à pied.
     ...[14, 15].map((x) => ({
       x,
@@ -177,8 +194,10 @@ export const saintAyMap = {
       dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'],
       warp: { map: 'routeMontepilloy', x: 10, y: 28, facing: 'up' },
     })),
-    // La corde se ramasse aussi en marchant dessus.
-    { ...ROPE_SPOT, ...ROPE_CONDITIONS, script: ROPE },
   ],
   spawn: { x: 5, y: 10, facing: 'left' },
 };
+
+// La vieille corde : cachée dans une touffe du coin de hautes herbes du sud-ouest, pendant le chantier ; on la
+// trouve en marchant dessus.
+saintAyMap.triggers.push({ ...ROPE_SPOT, ...ROPE_CONDITIONS, script: [{ sound: 'rustle' }, ...ROPE] });

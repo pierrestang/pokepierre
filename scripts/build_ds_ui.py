@@ -54,7 +54,7 @@ ICONS = {
 #               parc National, tour Cendrée ; colonne 1 : tour Ferraille, îles Tourb., mont Creuset, route de
 #               Glace, antre du Dragon, grotte Sombre (est), chutes Tohjo, route Victoire.
 POSTCARDS = {
-    'fortDeFrance': (1, 1, 0),      # îles Tourbillon, le matin : la mer autour de l'île
+    'fortDeFrance': (0, 5, 0),      # bois aux Chênes, le matin (choix de l'utilisateur pour l'intro)
     'saintAy': (0, 5, 0),           # bois aux Chênes, le matin : la forêt de sapins
     'bordeaux': (0, 6, 1),          # parc National, l'après-midi
     'hanoi': (1, 4, 0),             # antre du Dragon : le pavillon sur l'eau, comme la tour de la Tortue
@@ -63,6 +63,9 @@ POSTCARDS = {
     'sriLanka': (1, 6, 0),          # chutes Tohjo : cascade dans la jungle
     'thailand': (1, 0, 1),          # tour Ferraille : temple de bois
     'nepal': (1, 3, 0),             # route de Glace : la montagne
+    'montepilloy': (0, 5, 1),       # bois aux Chênes, l'après-midi : la campagne au soleil couchant
+    'montepilloySeptembre': (0, 5, 0),   # bois aux Chênes, le matin : septembre, le premier jour de collège
+    'routeBonsecours': (0, 6, 0),   # parc National, le matin : l'allée et la cour du collège
 }
 POSTCARD_X = ([69, 328, 587], [907, 1166, 1425])
 POSTCARD_W, POSTCARD_H = 256, 160

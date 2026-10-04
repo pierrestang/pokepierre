@@ -8,7 +8,8 @@ import { lookOf } from '../data/characters.js';
 // la mer défile vers la gauche et le ferry file vers la droite dans son sillage, en tanguant.
 // Au bout de quelques secondes, fondu au noir puis arrivée (`next` : { sceneKey, data }).
 // `deck: true` : la traversée commence sur le pont du ferry (départ de Fort-de-France) : la famille,
-// accoudée au bastingage, regarde la mer vers l'île qu'elle quitte.
+// accoudée au bastingage, regarde la mer vers l'île qu'elle quitte ; le capitaine (l'ancien pêcheur) vient
+// raconter ses poissons, sans fin.
 // `road: true` : même écran de voyage, mais en voiture : la campagne défile vers la gauche, la voiture de la
 // famille roule vers la droite sur la route de terre, en vibrant, avec des bouffées de fumée.
 const DURATION = 3600;
@@ -118,7 +119,22 @@ export class FerryScene extends Phaser.Scene {
     await wait(500);
     face('manon', 'up');
     face('pierre', 'up');
-    await say(['Tu emportes la joie de vivre de Maman, le pragmatisme de Papa et la complicité de Manon.']);
+
+    // Le capitaine arrive par la droite et se poste à côté de Pierre : monologue sur les poissons.
+    const captainSprite = lookOf({ id: 'capitaine', name: 'Capitaine du ferry' }).sprite;
+    const captain = this.add.image(SCREEN_W + 12, DECK_Y + 30, sheetOf(captainSprite).key, `${captainSprite}-left-0`)
+      .setOrigin(0.5, 1).setDepth(3);
+    await new Promise((resolve) => this.tweens.add({ targets: captain, x: 250, duration: 1400, onComplete: resolve }));
+    face('pierre', 'right');
+    const CAPTAIN = 'Capitaine du ferry';
+    await say(['Alors, petit, tu sais ce qui nage sous nos pieds ?', 'Des thons, des daurades, des balarous… et même des poissons volants !'], CAPTAIN);
+    await say(["Le meilleur moment pour pêcher, c'est à l'aube, quand la mer est d'huile. Après, ils se méfient."], CAPTAIN);
+    await say(['Les coryphènes, quand on les sort de l\'eau, elles changent de couleur : bleu, vert, or…'], CAPTAIN);
+    await say(['Et mon plus gros ? Un marlin bleu, long comme ce ferry ! Bon… presque. Mais il tirait comme un bœuf !'], CAPTAIN);
+    await say(['Le capitaine continue… et continue encore. La traversée va être longue.']);
+    face('pierre', 'up');
+    await wait(400);
+    await say(['Tu emportes : Joie de vivre, Pragmatisme et Confiance.']);
 
     await wait(1500);
     cam.fadeOut(800);

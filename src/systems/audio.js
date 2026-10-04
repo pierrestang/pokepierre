@@ -365,6 +365,14 @@ const SFX = {
       tone(sfxBus, { duty: 0.25, f: freq(n), start: t + d, dur: d === 0.3 ? 0.35 : 0.1, vol: 0.12 }));
     tone(sfxBus, { type: 'triangle', f: freq('C3'), start: t, dur: 0.65, vol: 0.18 });
   },
+  // Trait de caractère reçu ou utilisé : fanfare plus longue que celle des objets
+  trait: (t) => {
+    [['G4', 0], ['C5', 0.1], ['E5', 0.2], ['G5', 0.3], ['E5', 0.42], ['G5', 0.5], ['C6', 0.6]].forEach(([n, d]) =>
+      tone(sfxBus, { duty: 0.25, f: freq(n), start: t + d, dur: d === 0.6 ? 0.45 : 0.09, vol: 0.12 }));
+    tone(sfxBus, { type: 'triangle', f: freq('C3'), start: t, dur: 0.3, vol: 0.18 });
+    tone(sfxBus, { type: 'triangle', f: freq('G2'), start: t + 0.3, dur: 0.3, vol: 0.18 });
+    tone(sfxBus, { type: 'triangle', f: freq('C3'), start: t + 0.6, dur: 0.5, vol: 0.18 });
+  },
   // Partie sauvegardée
   save: (t) => {
     [['G5', 0], ['C6', 0.09], ['E6', 0.18]].forEach(([n, d]) => tone(sfxBus, { duty: 0.125, f: freq(n), start: t + d, dur: 0.12, vol: 0.1 }));

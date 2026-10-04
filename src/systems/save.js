@@ -1,6 +1,7 @@
 import { souvenirs } from './souvenirs.js';
 import { flags } from './flags.js';
 import { items } from './items.js';
+import { memo } from './memo.js';
 
 // Position du joueur sauvegardée à chaque pas : { scene, data, spawn: { x, y, facing } }.
 // `scene` + `data` suffisent à relancer la bonne scène ; les souvenirs et drapeaux
@@ -28,7 +29,7 @@ export function loadPosition() {
 export const hasSave = () =>
   loadPosition() !== null || souvenirs.count() > 0 || flags.list().length > 0 || items.count() > 0;
 
-// Efface toute la progression (position, souvenirs, drapeaux, objets).
+// Efface toute la progression (position, souvenirs, drapeaux, objets, valeurs libres).
 export function eraseSave() {
   try {
     localStorage.removeItem(STORAGE_KEY);
@@ -38,4 +39,5 @@ export function eraseSave() {
   souvenirs.reset();
   flags.reset();
   items.reset();
+  memo.reset();
 }

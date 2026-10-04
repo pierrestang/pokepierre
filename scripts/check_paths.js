@@ -51,7 +51,8 @@ for (const { id, map, kind } of places) {
       if (!flagsOk(p, raised)) continue;
       for (let y = p.y; y < p.y + p.h; y++) for (let x = p.x; x < p.x + p.w; x++) blocked.add(`${x},${y}`);
     }
-    for (const n of map.npcs ?? []) if (flagsOk(n, raised)) blocked.add(`${n.x},${n.y}`);
+    // Les PNJ qu'on pousse (`push`, ex. les poules de l'enclos) ne bloquent pas : on les écarte.
+    for (const n of map.npcs ?? []) if (flagsOk(n, raised) && !n.push) blocked.add(`${n.x},${n.y}`);
     const openDoors = new Set((map.doors ?? []).filter((d) => d.when && flagsOk(d.when, raised)).map((d) => `${d.x},${d.y}`));
     const free = (x, y) => (tileOk(x, y) || openDoors.has(`${x},${y}`)) && !blocked.has(`${x},${y}`);
 

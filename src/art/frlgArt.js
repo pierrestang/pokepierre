@@ -707,10 +707,10 @@ export const FRLG_DECOR = {
   window: block(2, 4, 0, 2, 2),         // fenêtre à rideaux
   notice: block(2, 9, 0, 1, 2),         // panneau d'affichage
   computer: CENTER_ITEM(0, 1, 2),       // ordinateur
-  crtTv: { ...RS(558, 84, 16, 27, 1, 1), lift: 8 },     // télé sur son meuble (Rubis/Saphir)
-  console: { ...RS(486, 50, 13, 16, 1, 1), lift: 8 },   // console et manette
+  crtTv: { ...RS(558, 84, 16, 27, 1, 1), back: 11 },    // télé sur son meuble (Rubis/Saphir), le pied au niveau des meubles du mur
+  console: { ...RS(486, 50, 13, 16, 1, 1) },   // console et manette
   bed: RS(488, 79, 24, 32, 2, 2),       // lit
-  computerDesk: RS(448, 74, 32, 39, 2, 2),   // bureau avec ordinateur et tabouret
+  computerDesk: { sprite: { sheet: 'frlg-desk', sx: 0, sy: 0 }, pw: 32, ph: 30, w: 2, h: 2, back: 11 },   // bureau avec ordinateur (sans tabouret)
   pottedPlant: RS(630, 50, 16, 15, 1, 1),   // petite plante en pot
   chalkboard: RS(369, 51, 64, 18, 4, 1),   // tableau vert (au mur)
   schoolDesk: RS(498, 128, 32, 22, 2, 1),  // pupitre avec des livres
@@ -723,6 +723,9 @@ export const FRLG_DECOR = {
   // ensureBarTexture) : comptoir en bois (bouts gauche, droit et milieu), pompes à bière posées dessus, étagère à
   // bouteilles fixée au mur (y = 1, au-dessus du barman), tabourets, table ronde, cible de fléchettes ; cabine de DJ
   // (platines, table de mixage, ordinateur), enceintes, néons et boule à facettes.
+  // Casier métallique du collège (texture 'frlg-locker', voir ensureLockerTexture), adossé au mur du fond : il
+  // monte sur le mur (`back`) comme les grands meubles des pièces.
+  locker: { sprite: { sheet: 'frlg-locker', sx: 0, sy: 0 }, pw: 16, ph: 30, w: 1, h: 1, back: 14 },
   barCounterL: { sprite: { sheet: 'frlg-bar', sx: 16, sy: 0 }, pw: 16, ph: 16, w: 1, h: 1 },
   barCounter: { sprite: { sheet: 'frlg-bar', sx: 0, sy: 0 }, pw: 16, ph: 16, w: 1, h: 1 },
   barCounterR: { sprite: { sheet: 'frlg-bar', sx: 32, sy: 0 }, pw: 16, ph: 16, w: 1, h: 1 },
@@ -748,6 +751,26 @@ export const FRLG_DECOR = {
 
 // Mobilier de bar et de boîte de nuit (voir FRLG_DECOR barCounter…), dessiné au pixel près dans les tons de
 // Rouge Feu : bois sombre, contours brun-noir, reflets clairs.
+// Casier métallique bleu (16 x 30) : contour sombre, porte avec trois fentes d'aération, poignée et étiquette.
+function ensureLockerTexture(textures) {
+  if (textures.exists('frlg-locker')) return;
+  const tex = textures.createCanvas('frlg-locker', 16, 30);
+  const ctx = tex.getContext();
+  const R = (c, x, y, w, h) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+  R('#38486c', 0, 0, 16, 30);                             // contour
+  R('#6c88b8', 1, 1, 14, 28);                             // porte
+  R('#90a8d0', 1, 1, 14, 1);                              // reflet du haut
+  R('#90a8d0', 1, 1, 1, 28);
+  R('#4c6494', 14, 1, 1, 28);                             // ombre du bord droit
+  for (const y of [4, 6, 8]) R('#38486c', 4, y, 8, 1);    // fentes d'aération
+  R('#f0f0e8', 5, 12, 6, 3);                              // étiquette
+  R('#a0a0a8', 6, 13, 4, 1);
+  R('#d8d8e0', 11, 17, 2, 4);                             // poignée
+  R('#38486c', 12, 18, 1, 3);
+  R('#4c6494', 1, 26, 14, 2);                             // socle
+  tex.refresh();
+}
+
 function ensureBarTexture(textures) {
   if (textures.exists('frlg-bar')) return;
   const tex = textures.createCanvas('frlg-bar', 256, 32);
@@ -914,6 +937,26 @@ function ensureCartonTexture(textures) {
   tex.refresh();
 }
 
+// Bureau avec ordinateur de Rubis/Saphir (rs-objects.png, 32 x 39 px) sans son tabouret vert : on garde le bureau
+// (30 premières rangées), on efface le tabouret et on redessine le pied droit, symétrique du pied gauche.
+function ensureDeskTexture(textures) {
+  if (textures.exists('frlg-desk')) return;
+  const tex = textures.createCanvas('frlg-desk', 32, 30);
+  const ctx = tex.getContext();
+  ctx.drawImage(textures.get(FRLG_SHEETS.rsObjects).getSourceImage(), 448, 74, 32, 30, 0, 0, 32, 30);
+  ctx.clearRect(5, 26, 27, 4);                            // tabouret, sous le bureau
+  ctx.clearRect(31, 24, 1, 2);
+  const leg = ctx.getImageData(0, 24, 6, 6);              // pied gauche (avec le bord avant du bureau)
+  const mirror = ctx.createImageData(6, 6);
+  for (let y = 0; y < 6; y++) {
+    for (let x = 0; x < 6; x++) {
+      for (let c = 0; c < 4; c++) mirror.data[(y * 6 + x) * 4 + c] = leg.data[(y * 6 + 5 - x) * 4 + c];
+    }
+  }
+  ctx.putImageData(mirror, 26, 24);
+  tex.refresh();
+}
+
 // Couche 1 d'un intérieur : mur (deux rangées du haut), noir (murs du bas et des côtés), parquet.
 export function drawFrlgInteriorGround(ctx, textures, x, y, at) {
   const px = x * S;
@@ -937,15 +980,19 @@ const STAIRS_IN_WALL = {
 };
 
 // Coin haut-gauche (en pixels) d'un meuble de Rubis/Saphir : posé en bas de son emprise ; contre le mur du
-// fond (rangée juste sous le mur), il remonte au besoin pour que son haut morde d'au moins 4 px sur la plinthe,
-// et encore de `lift` px pour les meubles bas posés au sol (télé, console), adossés au mur comme les autres.
+// fond (rangée juste sous le mur), il remonte jusqu'à toucher le mur (voir `back`).
 // `dx`, `dy` : décalage en pixels (ex. petit carton posé sur un bureau).
 export function decorSpritePosition(interior, { kind, x, y, dx = 0, dy = 0 }) {
   const d = FRLG_DECOR[kind];
   const px = x * S + Math.round((d.w * S - d.pw) / 2);
   const bottomAligned = (y + d.h) * S - d.ph;
   const againstWall = interior.grid[y - 1]?.[x] === 'X';
-  return { px: px + dx, py: (againstWall ? Math.min(y * S - 4, bottomAligned) - (d.lift ?? 0) : bottomAligned) + dy };
+  // Contre le mur du fond : le haut du meuble touche le bas du gris (il couvre la plinthe, 8 px au-dessus de sa case).
+  // Un meuble sans profondeur dessinée (télé, console) a alors le pied au niveau des meubles du mur (8 px dans sa case).
+  // `back` : rangée de l'image où commence l'arrière du meuble (ce qui dépasse au-dessus, comme l'écran du bureau
+  // ou la télé, mord sur le mur).
+  const wallTop = y * S - 8 - (d.back ?? 0);
+  return { px: px + dx, py: (againstWall ? Math.min(wallTop, bottomAligned) : bottomAligned) + dy };
 }
 
 // Lit de l'intérieur sous la case (x, y) : coin haut-gauche de son image, en pixels (voir CharacterSprite, `bed`).
@@ -960,6 +1007,8 @@ export const BED_LOWER = { sheet: FRLG_SHEETS.rsObjects, sx: 488, sy: 79 + 13, w
 // Couche 3 d'un intérieur : meubles, puis tapis de sortie sur chaque groupe de cases 'E' d'une rangée.
 export function drawFrlgInteriorDecor(ctx, textures, interior) {
   ensureCartonTexture(textures);
+  ensureDeskTexture(textures);
+  ensureLockerTexture(textures);
   ensureBarTexture(textures);
   const roomW = interior.grid[0].length * S;
   interior.grid.forEach((row, y) => row.forEach((code, x) => {

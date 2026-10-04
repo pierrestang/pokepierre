@@ -102,6 +102,7 @@ export const fortDeFranceMap = {
       id: 'gamin', name: 'Gamin', x: 21, y: 23, facing: 'down',
       dialogue: [
         "J'ai vu des poissons sauter près des rochers !",
+        "Et sur la plage, à gauche du gros rocher, il y a un coquillage qui brille dans le sable. Je l'ai pas pris, il est trop beau.",
         'Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ?',
       ],
     },
@@ -111,15 +112,15 @@ export const fortDeFranceMap = {
       unlessFlags: [FLAGS.departFortDeFrance],
       script: MANON,
     },
-    // Le pêcheur : au bout du ponton, puis devant le ferry avec sa canne cassée une fois la scène de Papa
-    // terminée (voir data/fortDeFranceStory.js).
+    // Le capitaine du ferry (l'ancien pêcheur) : au bout du ponton, puis devant le ferry avec sa canne cassée une
+    // fois la scène de Papa terminée (voir data/fortDeFranceStory.js).
     {
-      id: 'pecheur', name: 'Pêcheur', x: 15, y: 29, facing: 'down', still: true,
+      id: 'pecheur', name: 'Capitaine du ferry', x: 15, y: 29, facing: 'down', still: true,
       unlessFlags: [FLAGS.papaFait],
       script: FISHER_AT_PIER_END,
     },
     {
-      id: 'pecheur', name: 'Pêcheur', x: 15, y: 27, facing: 'up', still: true,
+      id: 'pecheur', name: 'Capitaine du ferry', x: 15, y: 27, facing: 'up', still: true,
       ifFlags: [FLAGS.papaFait],
       script: FISHER_AT_FERRY,
     },
@@ -133,14 +134,29 @@ export const fortDeFranceMap = {
       steps: [{ talk: 'manon' }],
     },
   ],
-  // Coquillage caché par Manon dans les hautes herbes (quête de Manon), trouvé une seule fois.
-  triggers: [
-    {
-      x: 7, y: 12, ifFlags: [FLAGS.manonDemande], unlessFlags: [FLAGS.coquillageTrouve], setFlags: [FLAGS.coquillageTrouve],
-      readyDialogue: ['Quelque chose brille entre les herbes…'], item: ITEMS.coquillageNacre,
-    },
-  ],
   // Autour de l'île, l'écran est rempli de mer.
   surroundings: 'w',
   spawn: { x: 15, y: 10, facing: 'down' },
 };
+
+// Quête de Manon : le coquillage est caché dans une touffe du petit pré près des statues ; on le trouve en marchant
+// dessus.
+fortDeFranceMap.triggers = [{
+  x: 7, y: 12, ifFlags: [FLAGS.manonDemande], unlessFlags: [FLAGS.coquillageTrouve],
+  script: [
+    { sound: 'rustle' },
+    { say: ['Quelque chose brille entre les herbes…'] },
+    { give: ITEMS.coquillageNacre, text: 'Tu trouves un coquillage nacré !' },
+    { setFlag: FLAGS.coquillageTrouve },
+  ],
+}];
+
+// Objet-souvenir facultatif : un coquillage dans le sable, à gauche du rocher de la plage (le gamin en parle).
+fortDeFranceMap.objects.push({
+  x: 8, y: 23, hidden: true, unlessItems: [ITEMS.coquillagePlage.id],
+  script: [
+    { sound: 'rustle' },
+    { say: ['Tu fouilles le sable au pied du rocher…'] },
+    { give: ITEMS.coquillagePlage, text: 'Tu trouves un petit coquillage rose et blanc ! Un souvenir de l\'île.' },
+  ],
+});

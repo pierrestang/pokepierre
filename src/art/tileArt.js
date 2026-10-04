@@ -209,9 +209,11 @@ const BARREL_COLORS = {
 };
 function barrel(g, px, py, x, y, at) {
   if (!groundProvided) grass(g, px, py, x, y, at);
+  // Dans un intérieur, adossé au mur du fond : il remonte sur la plinthe (8 px), comme les autres meubles.
+  const top = at(x, y - 1) === 'X' ? py - 8 : py;
   g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 2, py + 15, 13, 1);
-  sprite(g, BARREL, BARREL_COLORS, px, py);
+  g.fillRect(px + 2, top + 15, 13, 1);
+  sprite(g, BARREL, BARREL_COLORS, px, top);
 }
 
 // Asphalte de la place d'armes, ligne blanche en bordure.
@@ -1318,15 +1320,16 @@ const ROD_STAND = [
 ];
 function fishingRods(g, px, py, x, y) {
   floor(g, px, py, x, y);
+  // Socle collé au mur du fond : il couvre la plinthe (8 px au-dessus de la case), comme les autres meubles.
+  const base = py - 8;
   g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 1, py + 15, 15, 1);
-  const base = py + 8;
+  g.fillRect(px + 1, base + 8, 15, 1);
   // Les cannes sont posées par-dessus, selon l'histoire (décor `rodsOnRack`, voir ROD_DECALS).
   if (x % 2 === 1) {
     // Épuisette posée contre le mur : manche et filet.
-    rect(g, 0x383840, px + 10, py - 13, 1, 23);
-    rect(g, 0x9c6834, px + 11, py - 13, 1, 23);
-    pixelArt(g, NET_HEAD, px + 8, py - 19);
+    rect(g, 0x383840, px + 10, base - 21, 1, 23);
+    rect(g, 0x9c6834, px + 11, base - 21, 1, 23);
+    pixelArt(g, NET_HEAD, px + 8, base - 27);
   }
   pixelArt(g, ROD_STAND, px, base);
 }
@@ -1457,6 +1460,35 @@ export function drawPlanksPile(g, px, py) {
   g.fillStyle(0x000000, 0.2);
   g.fillRect(px + 2, py + 15, 14, 1);
   sprite(g, PLANKS, PLANK_COLORS, px, py);
+}
+
+// Caisse à outils de Jean (Montépilloy), posée par terre, d'après l'icône de la Boîte Jetons de HeartGold (couvercle
+// rouge ouvert, plateau jaune, caisse grise) mais vue de face, à l'échelle d'une case : couvercle relevé vers l'arrière,
+// plateau à compartiments avec une clé, fermoir doré, ombre au sol.
+const TOOLBOX_COLORS = {
+  K: 0x302830, r: 0xe86868, R: 0xb03038, w: 0xe0e4ec, s: 0x9098a8, y: 0xf8e060, Y: 0xd0b038,
+  h: 0xd4d8e0, g: 0xa4a8b8, G: 0x787c8c, L: 0xf0d050,
+};
+const TOOLBOX = [
+  '..KKKKKKKKKKKK..',
+  '..KrrrrrrrrrrK..',
+  '..KRrrrrrrrrRK..',
+  '...KRRRRRRRRK...',
+  '.KKKKKKKKKKKKKK.',
+  '.KYyYyYyKsKyYyK.',
+  '.KyYyYyYKwsKYyK.',
+  'KKKKKKKKKKKKKKKK',
+  'KhhhhhhhhhhhhhhK',
+  'KgggggggLLgggggK',
+  'KgGGGGGGLLGGGGgK',
+  'KgGGGGGGGGGGGGgK',
+  'KGGGGGGGGGGGGGGK',
+  'KKKKKKKKKKKKKKKK',
+];
+export function drawToolbox(g, px, py) {
+  g.fillStyle(0x000000, 0.22);
+  g.fillRect(px + 1, py + 15, 14, 1);
+  sprite(g, TOOLBOX, TOOLBOX_COLORS, px, py + 1);
 }
 
 // Vieille corde enroulée en spirale sur l'herbe, un bout qui dépasse (brins clairs et sombres alternés).

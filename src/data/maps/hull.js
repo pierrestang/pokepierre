@@ -1,7 +1,7 @@
 import { parseGrid } from './parseGrid.js';
 import { toAirport } from './airportLinks.js';
-import { FLAGS, ROLES } from '../story.js';
-import { ARRIVAL, OUSMANE_WALK, DAWN, NEXT_MORNING, HULL_SPOTS, NIGHT, DAWN_TIME } from '../hullStory.js';
+import { FLAGS, TRAITS } from '../story.js';
+import { ARRIVAL, OUSMANE_WALK, DAWN, NEXT_MORNING, HULL_SPOTS, NIGHT, DAWN_TIME, LEO_ROUTE } from '../hullStory.js';
 
 // Hors de la carte : Newland Avenue et la grande rue se prolongent, l'estuaire au sud, trottoirs ailleurs.
 function outside(x, y, grid) {
@@ -14,7 +14,7 @@ function outside(x, y, grid) {
 }
 
 const NOT_HOME = ["Ce n'est pas chez toi."];
-const BANDE = ROLES.bandeHull.id;
+const BANDE = TRAITS.bandeHull.id;
 
 // Hull (Angleterre), façon Rouge Feu, 30 x 48 cases. En haut, le campus (université, jardin et bassin derrière,
 // deux terrains de football, bibliothèque Brynmor Jones, The Asylum) ; Newland Avenue descend tout droit,
@@ -170,16 +170,11 @@ export const hullMap = {
       ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.ousmaneRentre],
       dialogue: ['Viens, je te montre la coloc. Suis-moi !'],
     },
-    // Soirée : Léo attend devant l'étape suivante et y marche devant toi.
-    ...[
-      [HULL_SPOTS.leoDoor, [FLAGS.leoPlan], [FLAGS.ousmaneSuit]],
-      [[3, 24], [FLAGS.ousmaneSuit], [FLAGS.amiesSuivent]],
-      [[9, 24], [FLAGS.amiesSuivent], [FLAGS.pinteCommandee]],
-      [[9, 18], [FLAGS.pinteCommandee], [FLAGS.tableTrouvee]],
-      [[20, 24], [FLAGS.tableTrouvee], [FLAGS.asylumFini]],
-    ].map(([[x, y], ifFlags, unlessFlags], i) => ({
-      id: `leo-${i}`, name: 'Léo', x, y, facing: 'down', ifFlags, unlessFlags,
-      dialogue: ['Allez, suis-moi ! La soirée ne fait que commencer.'],
+    // Soirée : Léo mène la bande. Il attend devant l'étape d'avant, marche jusqu'à la porte de la suivante (voir
+    // LEO_ROUTE) et entre : on le retrouve à l'intérieur.
+    ...LEO_ROUTE.map(({ from: [x, y], ifFlags, unlessFlags, entered, hint }, i) => ({
+      id: `leo-${i}`, name: 'Léo', x, y, facing: 'down', ifFlags, unlessFlags: [...unlessFlags, entered],
+      dialogue: hint,
     })),
     // Au petit matin, devant l'Asylum.
     {
@@ -191,15 +186,9 @@ export const hullMap = {
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.hullAccueil], steps: ARRIVAL },
     { on: 'enter', ifFlags: [FLAGS.hullAccueil], unlessFlags: [FLAGS.ousmaneRentre], steps: OUSMANE_WALK },
-    // Léo marche vers l'étape suivante de la soirée.
-    ...[
-      [[3, 24], [FLAGS.leoPlan], [FLAGS.ousmaneSuit]],
-      [[9, 24], [FLAGS.ousmaneSuit], [FLAGS.amiesSuivent]],
-      [[9, 18], [FLAGS.amiesSuivent], [FLAGS.pinteCommandee]],
-      [[20, 24], [FLAGS.pinteCommandee], [FLAGS.tableTrouvee]],
-      [[22, 13], [FLAGS.tableTrouvee], [FLAGS.asylumFini]],
-    ].map(([to, ifFlags, unlessFlags], i) => ({
-      on: 'enter', ifFlags, unlessFlags, steps: [{ walk: `leo-${i}`, to, lead: true }],
+    // Léo marche jusqu'à la porte de l'étape suivante de la soirée, la bande derrière lui, et entre.
+    ...LEO_ROUTE.map(({ ifFlags, unlessFlags, door, entered }, i) => ({
+      on: 'enter', ifFlags, unlessFlags: [...unlessFlags, entered], steps: [{ walk: `leo-${i}`, to: door, lead: true, then: [entered] }],
     })),
     { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [BANDE], steps: DAWN },
     { on: 'enter', ifSouvenirs: [BANDE], unlessFlags: [FLAGS.lendemainHull, FLAGS.revisions], steps: NEXT_MORNING },

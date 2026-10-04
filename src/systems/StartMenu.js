@@ -10,11 +10,13 @@ import { ItemBag } from './ItemBag.js';
 import { flags } from './flags.js';
 import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
+import { TRAITS, traitById, traitsOfCity } from '../data/story.js';
+import { MAPS } from '../data/maps/index.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Carte (du voyage),
-// Souvenirs, Objets (le sac, avec les icônes), Quêtes (aller au début de la quête d'une ville, pour tester), PNJ
-// (choisir l'apparence de chaque personnage), Sauvegarder, Options (musique, sons), Quitter la partie (retour à
-// l'écran titre), Fermer.
+// Vertus (le carnet, avec les souvenirs des PNJ), Objets (le sac, avec les icônes), Quêtes (aller au début de la
+// quête d'une ville, pour tester), PNJ (choisir l'apparence de chaque personnage), Sauvegarder, Options (musique,
+// sons), Quitter la partie (retour à l'écran titre), Fermer.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
 const MAIN = { quests: 3, options: 6 };               // place de ces entrées dans le menu principal
@@ -60,7 +62,7 @@ export class StartMenu {
     }
     return [
       { label: 'CARTE', action: () => this.showPanel(this.regionMap, () => this.close(), this.currentMapId()) },
-      { label: 'SOUVENIRS', action: () => this.showInDialog(this.souvenirPages()) },
+      { label: 'VERTUS', action: () => this.showInDialog(this.traitPages()) },
       { label: 'OBJETS', action: () => this.showPanel(this.itemBag, () => this.close()) },
       { label: 'QUÊTES', action: () => this.showPage('quests', 0) },
       { label: 'PNJ', action: () => this.showPanel(this.npcLooks, () => this.afterNpcLooks()) },
@@ -71,15 +73,23 @@ export class StartMenu {
     ];
   }
 
-  souvenirPages() {
-    const list = souvenirs.list().map((s) => s.name);
-    return list.length ? [`Souvenirs (${list.length}) : ${list.join(', ')}.`] : ["Tu n'as encore aucun souvenir."];
+  // Carnet des vertus : une page par ville (vertus reçues / vertus de la ville), puis les souvenirs des PNJ.
+  traitPages() {
+    const cities = [...new Set(Object.values(TRAITS).map((t) => t.city))];
+    const pages = cities.map((city) => {
+      const all = traitsOfCity(city);
+      const got = all.filter((t) => souvenirs.has(t.id)).map((t) => t.name);
+      return got.length ? `${MAPS[city]?.name ?? city} - ${got.length} / ${all.length} : ${got.join(', ')}.` : null;
+    }).filter(Boolean);
+    const others = souvenirs.list().filter((s) => !traitById(s.id)).map((s) => s.name);
+    if (others.length) pages.push(`Souvenirs (${others.length}) : ${others.join(', ')}.`);
+    return pages.length ? pages : ['Ton carnet des vertus est encore vide.'];
   }
 
-  // Le menu ne s'ouvre qu'en jeu, le joueur à l'arrêt et sans dialogue en cours.
+  // Le menu ne s'ouvre qu'en jeu, le joueur à l'arrêt, hors scénette et sans dialogue en cours.
   canOpen() {
     const map = this.mapScene();
-    return Boolean(map && !map.transitioning && !map.player.moving && !this.dialog.isOpen);
+    return Boolean(map && !map.transitioning && !map.scripting && !map.player.moving && !this.dialog.isOpen);
   }
 
   open() {

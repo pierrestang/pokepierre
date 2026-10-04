@@ -12,7 +12,7 @@ export const QUEST_STARTS = [
   { label: 'FORT-DE-FRANCE', maps: ['fortDeFrance'], go: { interior: 'ffHouseUp', fromMap: 'fortDeFrance' } },
   { label: 'SAINT-AY', maps: ['saintAy'], upTo: FLAGS.coquillageTrouve, go: { map: 'saintAy', x: 5, y: 10, facing: 'left' } },
   { label: 'MONTÉPILLOY', maps: ['montepilloy'], upTo: FLAGS.arriveeMontepilloy, go: { map: 'montepilloy', x: 19, y: 16, facing: 'down' } },
-  { label: 'BONSECOURS', maps: ['routeBonsecours'], upTo: FLAGS.departCollege, go: { map: 'routeBonsecours', x: 10, y: 27, facing: 'up' } },
+  { label: 'COLLÈGE', maps: ['routeBonsecours'], upTo: FLAGS.departCollege, go: { map: 'routeBonsecours', x: 10, y: 27, facing: 'up' } },
   { label: 'PRYTANÉE', maps: ['prytanee'], upTo: FLAGS.arriveePrytanee, go: { map: 'prytanee', x: 14, y: 21, facing: 'up' } },
   { label: 'BORDEAUX', maps: ['bordeaux'], upTo: FLAGS.arriveeBordeaux, go: { map: 'bordeaux', x: 1, y: 6, facing: 'right' } },
   { label: 'HULL', maps: ['hull'], upTo: FLAGS.arriveeHull, go: { map: 'hull', x: 1, y: 35, facing: 'right' } },
@@ -51,7 +51,7 @@ export function questState(index) {
     if ((node.ifFlags ?? []).some((f) => !doneSet.has(f))) return;       // branche pas encore atteinte
     // Nœud qui lève un drapeau encore baissé : pas encore joué.
     if ([node.setFlag, ...(node.setFlags ?? [])].some((f) => f && order.includes(f) && !raised.includes(f))) return;
-    for (const s of [node.quality, node.souvenir]) if (s?.id) found.souvenirs.set(s.id, s);
+    for (const s of [node.trait, node.souvenir]) if (s?.id) found.souvenirs.set(s.id, s);
     for (const i of [node.give, node.item]) if (i?.id) found.given.set(i.id, i);
     if (typeof node.take === 'string') found.taken.add(node.take);
     if (node.receive?.item) found.taken.add(node.receive.item.id);     // objet rendu à un PNJ

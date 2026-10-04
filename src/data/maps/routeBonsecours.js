@@ -1,16 +1,18 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS } from '../story.js';
+import { COLLEGE_ARRIVAL } from '../collegeStory.js';
 
-// Route de Bonsecours — entre Montépilloy (au sud) et le Prytanée (au nord), 24 x 30 cases : un chemin de terre
-// qui traverse la cour du collège Bonsecours (clôture blanche, portails au sud et au nord). Au bout, deux
-// sentinelles gardent la route du Prytanée tant que la quête Bonsecours n'est pas finie.
+// Bonsecours, le village d'à côté — entre Montépilloy (au sud) et le Prytanée (au nord), 24 x 30 cases : un chemin
+// de terre qui traverse la cour du collège Bonsecours (clôture blanche, portails au sud et au nord). Pierre y arrive à pied
+// par le sud (voir data/collegeStory.js). Au bout, deux sentinelles gardent la route du
+// Prytanée : il faut le brevet pour y candidater.
 // Légende : voir src/data/tiles.js (ç = chemin, F = clôture, ĥ = hautes herbes, ŕ = rocher)
 const GUARD = { name: 'Sentinelle', color: 0x3c5c2c, facing: 'down', unlessFlags: [FLAGS.bonsecoursFini] };
-const GUARD_LINES = ["[Texte provisoire] Halte ! Le Prytanée n'accueille que les élèves qui ont fini leur année à Bonsecours."];
+const GUARD_LINES = ["Halte ! Pour candidater au Prytanée, il faut ton diplôme du brevet."];
 
 export const routeBonsecoursMap = {
   id: 'routeBonsecours',
-  name: 'Route de Bonsecours',
+  name: 'Bonsecours',
   grid: parseGrid([
     'TTTTTTTTTTççTTTTTTTTTTTT', // 0  nord : le Prytanée (gardé tant que la quête Bonsecours n'est pas finie)
     'TTTTTTTTTTççTTTTTTTTTTTT', // 1
@@ -57,6 +59,8 @@ export const routeBonsecoursMap = {
     { x: 13, y: 11, dialogue: ['Collège Bonsecours.'] },
     { x: 12, y: 26, dialogue: ['Route de Bonsecours — Sud : Montépilloy. Nord : Prytanée.'] },
   ],
+  // Premier jour : Pierre arrive par la route du sud (image d'accueil ; le surveillant l'attend dans le hall).
+  events: [{ on: 'enter', ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeOuverture], steps: COLLEGE_ARRIVAL }],
   triggers: [
     // Sud : retour à Montépilloy.
     ...[10, 11].map((x) => ({ x, y: 29, warp: { map: 'montepilloy', x: 14, y: 1, facing: 'down' } })),
@@ -66,7 +70,7 @@ export const routeBonsecoursMap = {
       y: 0,
       ifFlags: [FLAGS.bonsecoursFini],
       dialogue: GUARD_LINES,
-      readyDialogue: ['Ton année au collège Bonsecours terminée, tu prends la route du Prytanée.'],
+      readyDialogue: ['Ton brevet en poche, tu prends la route du Prytanée pour y candidater.'],
       setFlags: [FLAGS.arriveePrytanee],
       warp: { map: 'prytanee', x: 14, y: 22, facing: 'up' },
     })),
