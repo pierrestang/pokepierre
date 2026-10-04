@@ -68,7 +68,7 @@ export const ORDERS = [
 const ALL_SERVED = ORDERS.map((o) => o.flag);
 
 export const PUB_A_WELCOME = [
-  { speaker: 'Léo', say: ['Première tournée, c\'est le nouveau !'] },
+  { speaker: 'Léo', say: ['Première tournée, c\'est toi qui régales !'] },
   { say: ['Objectif : ramène la tournée. Demande à chacun ce qu\'il veut, puis commande au comptoir.'] },
 ];
 
