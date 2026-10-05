@@ -328,7 +328,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 ### Passage optionnel : Benoît triste (Joie de vivre)
 Après le cache-cache et jusqu'au matin de septembre, Benoît est assis seul devant la grange (il n'est plus dans la
 classe avec Margaux et Étienne). Bonus sans objet.
-- Benoît : « Margaux et Étienne iront au collège ensemble. Moi, je pars ailleurs. Je connaîtrai personne. » →
+- Benoît : « Si tu cherches un coin pour bouder, la grange est déjà prise. » / « Margaux et Étienne iront au collège
+  ensemble. Moi, je pars ailleurs. Je connaîtrai personne. » →
   **« Pierre utilise Joie de vivre ! »** → « Tu lui racontes la fois où Fanny a failli casser le vase de Maman… Benoît
   éclate de rire. » / Benoît : **« T'es bête… Merci. Je t'écrirai. »**
 - Ensuite : « Le vase… j'y pense encore. »

@@ -214,6 +214,7 @@ export const JEAN_TRACTOR = [
 // Facultatif : après le cache-cache, Benoît est assis seul devant la grange ; Pierre le fait rire (Joie de vivre).
 export const BENOIT_SAD = [
   { ifFlags: [FLAGS.benoitConsole], speaker: 'Benoît', say: ['Le vase… j\'y pense encore.'], end: true },
+  { speaker: 'Benoît', say: ['Si tu cherches un coin pour bouder, la grange est déjà prise.'] },
   { speaker: 'Benoît', say: ['Margaux et Étienne iront au collège ensemble. Moi, je pars ailleurs. Je connaîtrai personne.'] },
   { useTrait: TRAITS.joie },
   { say: ['Tu lui racontes la fois où Fanny a failli casser le vase de Maman… Benoît éclate de rire.'] },
