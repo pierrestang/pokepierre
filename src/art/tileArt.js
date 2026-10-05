@@ -1383,6 +1383,27 @@ const DECALS = {
     rect(g, 0x506078, px, deck + 2, W, 1);
   },
   // Le cheval que Val sculpte (maison de Felix) : statuette en bois sur son socle, copeaux sur la table.
+  // Le lendemain de la soirée de Bordeaux : gobelets rouges renversés au sol (posés sur la case (x, y)).
+  partyCups(g, px, py) {
+    for (const [dx, dy, lying] of [[2, 6, false], [8, 9, true], [11, 4, false]]) {
+      if (lying) {
+        rect(g, 0xc02828, px + dx, py + dy, 5, 3);
+        rect(g, 0xf0f0f0, px + dx + 5, py + dy, 1, 3);                          // bord blanc, couché
+      } else {
+        rect(g, 0xc02828, px + dx, py + dy + 1, 4, 4);
+        rect(g, 0xf0f0f0, px + dx, py + dy, 4, 1);                              // bord blanc
+        rect(g, 0x801818, px + dx, py + dy + 5, 4, 1);
+      }
+    }
+  },
+  // … et le salon sens dessus dessous : confettis et papiers froissés.
+  partyMess(g, px, py) {
+    for (const [dx, dy, c] of [[1, 2, 0xf05090], [5, 11, 0x40a0f0], [9, 3, 0xf0d040], [13, 8, 0x60c060], [3, 14, 0xf0d040],
+      [11, 13, 0xf05090], [7, 6, 0x40a0f0]]) rect(g, c, px + dx, py + dy, 2, 1);
+    rect(g, 0xe8e8e0, px + 4, py + 7, 4, 3);                                    // papiers froissés
+    rect(g, 0xc8c8c0, px + 5, py + 8, 2, 1);
+    rect(g, 0xe8e8e0, px + 10, py + 10, 3, 3);
+  },
   statue(g, px, py) {
     HORSE_STATUE.forEach((row, ry) => [...row].forEach((c, rx) => {
       if (c !== '.') rect(g, HORSE_STATUE_C[c], px - 3 + rx, py - 5 + ry, 1, 1);

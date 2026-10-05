@@ -37,6 +37,7 @@ export const FLAGS = {
   trouveEtienne: 'trouve-etienne',              //   cache-cache : Étienne trouvé (arbre de la prairie)
   trouveBenoit: 'trouve-benoit',                //   cache-cache : Benoît trouvé (tonneau de la grange)
   copainsPartent: 'copains-partent',            //   partie finie : les copains (qui suivaient Pierre) filent à l'école
+  benoitConsole: 'benoit-console',              //   facultatif : Benoît, triste devant la grange, a ri (Joie de vivre)
   jeanQuetes: 'jean-quetes',                    //   Jean t'a demandé d'être son assistant (il te suit)
   boulyDemande: 'bouly-demande',                //   M. Bouly t'a parlé de la pièce qui manque à son tracteur
   pieceTrouvee: 'piece-trouvee',                //   pièce de tracteur trouvée dans le tonneau de la grange
@@ -46,6 +47,7 @@ export const FLAGS = {
   departCollege: 'depart-college',              //   septembre : au revoir de la famille, départ à pied
   collegeOuverture: 'college-ouverture',        // Bonsecours : image d'accueil du premier jour de collège vue
   collegeArrivee: 'college-arrivee',            //   le surveillant t'a accueilli dans le hall (il est monté au couloir)
+  margauxTrouvee: 'margaux-trouvee',            //   facultatif : Margaux trouvée dans le placard d'entretien (Ingéniosité)
   remiArrive: 'remi-arrive',                    //   au casier, Rémy arrive en courant par l'escalier
   casierPartage: 'casier-partage',              //   l'embrouille du casier : Rémy et toi le partagez
   remiEnClasse: 'remi-en-classe',              //   Rémy file en salle de maths (« ça va sonner »)
@@ -76,6 +78,10 @@ export const FLAGS = {
   coupureReparee: 'coupure-reparee',            //   compteur électrique relevé : la lumière revient (Indépendance)
   preparatifs: 'preparatifs',                   //   Ousmane lance la soirée : enceinte chez Paulfit, gobelets chez Rémi
   soiree: 'soiree',                             //   la soirée d'intégration, dans l'appartement
+  lendemainSoiree: 'lendemain-soiree',          //   en quittant la fête : le lendemain matin, l'appartement en désordre
+  gobeletsRanges: 'gobelets-ranges',            //     facultatif (Autonomie) : les gobelets ramassés
+  salonRange: 'salon-range',                    //       … le salon rangé
+  litFaitBordeaux: 'lit-fait-bordeaux',         //       … le lit fait
   soireeFinie: 'soiree-finie',                  //   en sortant : « Quelques mois plus tard » (l'oral d'anglais)
   remiKedge: 'remi-kedge',                      //   Rémi, devant KEDGE : « T'inquiète, c'est easy. »
   arriveeHull: 'arrivee-hull',                  // arrivé à Hull (Angleterre)
@@ -211,6 +217,9 @@ export const ITEMS = {
   gobelets: { id: 'gobelets', name: 'Gobelets' },                              // Bordeaux : prêtés par Rémi
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },
   diplomeHull: { id: 'diplome-hull', name: 'Diplôme d\'anglais de Hull' },
+  insigne: { id: 'insigne-prytanee', name: 'Insigne du Prytanée' },          // Prytanée : objet-souvenir (le nouveau)
+  photoSoiree: { id: 'photo-soiree', name: 'Photo de la soirée' },           // Bordeaux : objet-souvenir (le rangement)
+  flechettes: { id: 'flechettes-habitue', name: 'Fléchettes de l\'habitué' }, // Hull : objet-souvenir (le pari)
   objetChance: { id: 'objet-chance', name: 'Objet de chance' },
   marchandise: { id: 'marchandise', name: 'Marchandise' },
   billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },

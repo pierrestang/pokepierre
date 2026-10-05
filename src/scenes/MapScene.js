@@ -542,8 +542,9 @@ export class MapScene extends Phaser.Scene {
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
   //   { hop: id | [ids], times? } : petits sauts sur place ('player' : Pierre)
   //   { cheer: [ids] } : tous sautent ensemble, des notes et des cœurs s'envolent
-  //   { darts: { opponent, win, lose } } : partie de fléchettes, trois lancers (systems/Darts.js), contre un adversaire
-  //                                      au score tiré au hasard ; gagnée ou perdue, la scénette continue
+  //   { darts: { opponent, win, lose, onWin?, onLose? } } : partie de fléchettes, trois lancers (systems/Darts.js), contre
+  //                                      un adversaire au score tiré au hasard ; gagnée ou perdue, la scénette continue
+  //                                      (après les étapes `onWin` ou `onLose`, s'il y en a)
   // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
   //   Fin de scène : une marche bloquante (`block`) suivie seulement de drapeaux (setFlag) ne fait plus attendre le
   //   joueur ; il reprend la main pendant que le PNJ s'en va, et ces drapeaux sont posés à son arrivée (voir walkNpc).
@@ -578,7 +579,11 @@ export class MapScene extends Phaser.Scene {
         await this.slideItem(step.slide, step.from, step.to === 'player' ? [x, y] : step.to);
       }
       if (step.dance) await this.dance(step.dance);
-      if (step.darts) await this.dartsGame(step.darts);
+      if (step.darts) {
+        const won = await this.dartsGame(step.darts);
+        const then = won ? step.darts.onWin : step.darts.onLose;
+        if (then && await this.runSteps(then)) return true;
+      }
       if (step.wait) await this.wait(step.wait);
       if (step.opening) await this.playOpening(step.opening);
       if (step.emerge) await this.emerge(step.emerge);
@@ -1391,6 +1396,7 @@ export class MapScene extends Phaser.Scene {
     const theirs = 10 + Math.floor(Math.random() * 90);
     await this.dialog.open([`Tes lancers : ${throws.map((t) => t.label.replace(/[.!…]+$/, '')).join(', ')}. Total : ${total} points.`]);
     await this.dialog.open([`${theirs} points pour moi.`, ...(total > theirs ? win : lose)], { speaker: opponent });
+    return total > theirs;
   }
 
   // Pièce dans le noir, façon grotte sans Flash : tout est noir sauf un halo autour de Pierre. map.dark : { radius?,

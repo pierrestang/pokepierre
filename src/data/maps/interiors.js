@@ -5,16 +5,18 @@ import {
 } from '../saintAyStory.js';
 import { MAMAN_FDF } from '../fortDeFranceStory.js';
 import {
-  AGENT_KEYS, BLACKOUT, ENGLISH_ORAL, METER, PARTY, PAULFIT, REMI_CUPS,
+  AGENT_KEYS, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_END, PAULFIT, REMI_CUPS, TIDY_BED, TIDY_CUPS,
+  TIDY_LIVING_ROOM,
 } from '../bordeauxStory.js';
-import { GEOFFREY_GUIDE, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
+import { GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
 import {
-  SURVEILLANT, COLLEGE_WELCOME, LOCKER, REMI, REMI_INVITE, REMI_SEAT, CAMILLE, PROF, LOCKER_SIDE, SURVEILLANT_SPOT,
+  SURVEILLANT, COLLEGE_WELCOME, LOCKER, REMI, REMI_INVITE, REMI_SEAT, CAMILLE, PROF, LOCKER_SIDE, SURVEILLANT_SPOT, CLOSET,
 } from '../collegeStory.js';
 import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING, DINNER } from '../montepilloyStory.js';
 import { FRLG_SHEETS, cabaneFrame, cabaneOverlay } from '../../art/frlgArt.js';
 import {
-  LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP, LIBRARY,
+  LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
+  LIBRARY,
 } from '../hullStory.js';
 
 // Soirée de Hull : la bande, d'une étape à l'autre (premier pub, deuxième pub, Asylum).
@@ -89,8 +91,9 @@ const collegeStudents = (list, conditions = {}) => list.map(([x, y, line, facing
 const PRYTANEE_NIGHT = { ifFlags: [FLAGS.soirMur], unlessFlags: [FLAGS.murReussi] };
 const PRYTANEE_DAY = [{ unlessFlags: [FLAGS.soirMur] }, { ifFlags: [FLAGS.murReussi] }];
 
-// La soirée d'intégration de Bordeaux, dans l'appartement (voir data/bordeauxStory.js).
-const PARTY_TIME = { ifFlags: [FLAGS.soiree], unlessFlags: [FLAGS.soireeFinie] };
+// La soirée d'intégration de Bordeaux, dans l'appartement (voir data/bordeauxStory.js), puis le lendemain matin.
+const PARTY_TIME = { ifFlags: [FLAGS.soiree], unlessFlags: [FLAGS.lendemainSoiree] };
+const MORNING_AFTER = { ifFlags: [FLAGS.lendemainSoiree], unlessFlags: [FLAGS.soireeFinie] };
 
 // La famille quitte la maison de Fort-de-France une fois partie en bateau.
 const HOME_FDF = { unlessFlags: [FLAGS.departFortDeFrance] };
@@ -760,7 +763,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'ηooommmmmmoooξ', // salle de français, casiers, escalier vers le hall
+      'ηooommmmmmomoξ', // salle de français, casiers, placard d'entretien, escalier vers le hall
       'oooooooooooooo',
       'oooooooooooooo',
       'moooooooooooom',
@@ -768,6 +771,7 @@ export const interiors = {
     ]),
     decor: [
       ...Array.from({ length: 6 }, (_, i) => ({ kind: 'locker', x: 4 + i, y: 2 })),
+      { kind: 'cabinet', x: 11, y: 1 },                 // le placard d'entretien (poignée cassée)
       { kind: 'pottedPlant', x: 0, y: 5 },
       { kind: 'pottedPlant', x: 13, y: 5 },
     ],
@@ -778,6 +782,7 @@ export const interiors = {
     ],
     objects: [
       { x: 6, y: 2, script: LOCKER },
+      { x: 11, y: 2, script: CLOSET },
       ...[4, 5, 7, 8, 9].map((x) => ({ x, y: 2, dialogue: ['Un casier fermé à clé. Pas le tien.'] })),
     ],
     npcs: [
@@ -846,8 +851,15 @@ export const interiors = {
       { id: 'prof-maths', name: 'Professeur', x: 9, y: 2, facing: 'down', color: 0x4c6c9c, script: PROF },
       // Après l'ellipse (fin de la troisième), Pierre est seul avec le prof pour le brevet (Rémy est en sciences).
       {
-        id: 'margaux-college', name: 'Margaux', x: 2, y: 5, facing: 'up', still: true, color: 0xf08080, unlessFlags: [FLAGS.finTroisieme],
+        id: 'margaux-college', name: 'Margaux', x: 2, y: 5, facing: 'up', still: true, color: 0xf08080,
+        ifFlags: [FLAGS.margauxTrouvee], unlessFlags: [FLAGS.finTroisieme],
         dialogue: ['On est dans la même classe, comme promis ! Enfin… presque promis.'],
+      },
+      // Margaux cachée (placard d'entretien, voir collegeStory.js CLOSET) : Étienne vient prévenir, à sa place.
+      {
+        id: 'etienne-maths', name: 'Étienne', x: 2, y: 5, facing: 'up', still: true, color: 0x6080a0,
+        unlessFlags: [FLAGS.margauxTrouvee, FLAGS.finTroisieme],
+        dialogue: ['Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance !'],
       },
       // Camille, une fille de ta classe : la scène du dialogue à choix (voir collegeStory.js CAMILLE).
       {
@@ -909,7 +921,11 @@ export const interiors = {
         [1, 7, 'Qui a écrit « vive les vacances » sur la table ? C\'est pas moi. Enfin si.'],
         [10, 7, 'La sonnerie, c\'est le plus beau son du monde.'],
       ]),
-      { id: 'etienne-college', name: 'Étienne', x: 7, y: 5, facing: 'up', still: true, color: 0x6080a0, dialogue: ['Les casiers, c\'était vrai ! Par contre, pas la même classe… On se voit à la récré !'] },
+      // Étienne revient ici une fois Margaux trouvée (ou à la fin de la troisième) ; avant, il est en salle de maths.
+      ...[{ ifFlags: [FLAGS.margauxTrouvee] }, { ifFlags: [FLAGS.finTroisieme], unlessFlags: [FLAGS.margauxTrouvee] }].map((when) => ({
+        id: 'etienne-college', name: 'Étienne', x: 7, y: 5, facing: 'up', still: true, color: 0x6080a0, ...when,
+        dialogue: ['Les casiers, c\'était vrai ! Par contre, pas la même classe… On se voit à la récré !'],
+      })),
     ],
   },
 
@@ -1062,11 +1078,7 @@ export const interiors = {
         ifFlags: [FLAGS.copainsPartent], unlessFlags: [FLAGS.septembre],
         dialogue: ['Benoît dans un tonneau… Il fallait y penser !'],
       },
-      {
-        id: 'benoit-fin', name: 'Benoît', x: 3, y: 5, facing: 'up', color: 0xa07040,
-        ifFlags: [FLAGS.copainsPartent], unlessFlags: [FLAGS.septembre],
-        dialogue: ['Je sens encore le cidre… Ma mère va me tuer.'],
-      },
+      // Benoît, lui, est assis seul devant la grange (voir maps/montepilloy.js).
     ],
     events: [{ on: 'enter', unlessFlags: [FLAGS.ecoleCm2], steps: LAST_DAY }],
   },
@@ -1124,6 +1136,12 @@ export const interiors = {
       {
         id: 'eleve-hall', name: 'Élève', sprite: 'f74', x: 8, y: 5, facing: 'left', ...when,
         dialogue: ['Le deuxième étage, c\'est les terminales. Ils se croient chez eux.'],
+      },
+      // Facultatif, jusqu'au bac : le nouveau qui a le mal du pays (voir prytaneeStory.js HOMESICK).
+      {
+        id: 'nouveau', name: 'Nouveau', sprite: 'f30', x: 2, y: 5, facing: 'right', still: true, ...when,
+        unlessFlags: [...(when.unlessFlags ?? []), FLAGS.ellipseBac],
+        script: HOMESICK,
       },
     ]),
   },
@@ -1305,6 +1323,9 @@ export const interiors = {
     decals: [
       { kind: 'meter', x: 5, y: 0, unlessFlags: [FLAGS.coupureReparee] },
       { kind: 'meter', x: 5, y: 0, on: true, ifFlags: [FLAGS.coupureReparee] },
+      // Le lendemain de la soirée : le désordre à ranger (gobelets, salon).
+      { kind: 'partyCups', x: 3, y: 4, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.gobeletsRanges] },
+      { kind: 'partyMess', x: 8, y: 6, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.salonRange] },
     ],
     // Dans le noir tant que le compteur n'est pas relevé.
     dark: { ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.coupureReparee], radius: 34 },
@@ -1318,6 +1339,8 @@ export const interiors = {
         ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.preparatifs],
         dialogue: ['On n\'y voit rien… Il est où, ce compteur ? Pas près de la porte, en tout cas.'],
       },
+      // Le lendemain matin : Ousmane dort, dans son lit (celui de gauche).
+      { id: 'ousmane-lit', name: 'Ousmane', x: 0, y: 3, facing: 'down', still: true, inBed: true, ...MORNING_AFTER, script: OUSMANE_ASLEEP },
       // La soirée : Ousmane et Rémi dans la foule.
       { id: 'ousmane-fete', name: 'Ousmane', x: 7, y: 6, facing: 'left', ...PARTY_TIME, dancing: true, dialogue: ['Regarde-moi ça ! Et dire que tout à l\'heure on était dans le noir.'] },
       { id: 'remi-fete', name: 'Rémi', x: 5, y: 6, facing: 'right', ...PARTY_TIME, dancing: true, dialogue: ['This party is so lit ! Enfin… grâce à toi, littéralement.'] },
@@ -1338,7 +1361,13 @@ export const interiors = {
     // Le tableau électrique : au fond, sans bulle « ! » (on le cherche dans le noir).
     objects: [
       { x: 5, y: 1, hidden: true, script: METER },
+      // Le lendemain matin, facultatif : les gobelets, le salon, ton lit (celui de droite).
+      { x: 3, y: 4, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.gobeletsRanges], script: TIDY_CUPS },
+      { x: 8, y: 6, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.salonRange], script: TIDY_LIVING_ROOM },
+      ...[10, 11].map((x) => ({ x, y: 3, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.litFaitBordeaux], script: TIDY_BED })),
     ],
+    // En quittant la fête (devant la porte) : le lendemain matin.
+    triggers: [[6, 8], [7, 8], [5, 9], [8, 9]].map(([x, y]) => ({ x, y, ...PARTY_TIME, script: PARTY_END })),
     events: [
       { on: 'enter', ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.coupure], steps: BLACKOUT },
       { on: 'enter', ...PARTY_TIME, steps: PARTY },
@@ -1680,7 +1709,7 @@ export const interiors = {
       { id: 'client-b4', name: 'Cliente', x: 5, y: 4, facing: 'left', fidget: true, dialogue: ['Cheers!'] },
       // L'habitué, près de la cible : la partie de fléchettes (voir hullStory.js DARTS).
       { id: 'habitue', name: 'Habitué', x: 5, y: 2, facing: 'down', ...PUB_B_TIME, script: DARTS },
-      { id: 'habitue-apres', name: 'Habitué', x: 5, y: 2, facing: 'down', ifFlags: [FLAGS.flechettesJouees], dialogue: ['Good game, mate!'] },
+      { id: 'habitue-apres', name: 'Habitué', x: 5, y: 2, facing: 'down', ifFlags: [FLAGS.flechettesJouees], script: HABITUE_AFTER },
       // La bande, à la table du fond à droite.
       ...[['leo-pubb', 'Léo', 6, 4, 'right', 'Une partie de fléchettes, et on file à l\'Asylum !'],
         ['ousmane-pubb', 'Ousmane', 8, 4, 'left', 'Vas-y, montre-lui !'],

@@ -253,7 +253,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 | M. Bouly | Le fermier, et son tracteur en panne | `f32` |
 | Margaux | Copine de classe : lance le cache-cache | `f48` |
 | Étienne | Copain de classe | `f36` |
-| Benoît | Copain de classe, qui n'ira pas au collège avec eux | `f38` |
+| Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul devant la grange | `f38` |
 
 ### Quêtes, dans l'ordre (les quêtes 2 et 3 dans n'importe quel ordre après l'école)
 1. **Le dernier jour de CM2** : en entrant à l'école, « C'est le dernier jour de CM2. » Margaux : « Dernier jour de CM2 !
@@ -301,9 +301,18 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
   grand-rue ! » ; « Tes copains t'attendent pour leur partie de cache-cache. » ; « Et Jean a un tracteur à réparer avec
   toi. » ; « Il se fait tard : rentre plutôt dîner à la maison. »
 
+### Passage optionnel : Benoît triste (Joie de vivre)
+Après le cache-cache et jusqu'au matin de septembre, Benoît est assis seul devant la grange (il n'est plus dans la
+classe avec Margaux et Étienne). Bonus sans objet.
+- Benoît : « Margaux et Étienne iront au collège ensemble. Moi, je pars ailleurs. Je connaîtrai personne. » →
+  **« Pierre utilise Joie de vivre ! »** → « Tu lui racontes la fois où Fanny a failli casser le vase de Maman… Benoît
+  éclate de rire. » / Benoît : **« T'es bête… Merci. Je t'écrirai. »**
+- Ensuite : « Le vase… j'y pense encore. »
+
 ### Vertus
 - **Gagnée** : Ingéniosité (le tracteur, avec Jean).
-- **Utilisées** : **Esprit d'équipe**, pour ouvrir le tonneau de Benoît avec Margaux et Étienne.
+- **Utilisées** : **Esprit d'équipe**, pour ouvrir le tonneau de Benoît avec Margaux et Étienne ; **Joie de vivre**, pour
+  consoler Benoît (optionnel).
 
 ### Objet optionnel
 - **Cuillère de Jean**, dans la caisse à outils restée devant le tracteur : « La caisse à outils de Jean. Tout au fond,
@@ -343,8 +352,8 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 | Professeur | Prof de maths : rappel à l'ordre, puis l'oral du brevet | `f3` |
 | Professeure | Prof de français : « Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit ! » | `t10` |
 | Professeur de sciences | « Aujourd'hui, on observe des feuilles au microscope. Les feuilles des arbres de Bonsecours ! » | figurant |
-| Margaux | En salle de maths : « On est dans la même classe, comme promis ! Enfin… presque promis. » | `f48` |
-| Étienne | En salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `f36` |
+| Margaux | Cachée dans le placard d'entretien au début (passage optionnel) ; une fois trouvée, en salle de maths : « On est dans la même classe, comme promis ! Enfin… presque promis. » | `f48` |
+| Étienne | Tant que Margaux est cachée, en salle de maths, à sa place : « Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance ! » ; ensuite (ou après l'ellipse), en salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `f36` |
 | Élèves | Une réplique chacun, dans le hall, le couloir et les trois salles | figurants |
 | Sentinelles (2) | Gardent la route du Prytanée : « Halte ! Pour candidater au Prytanée, il faut ton diplôme du brevet. » | `f39` |
 
@@ -382,10 +391,18 @@ maths va commencer : file en classe, avec ton colocataire de casier. Et pas de b
 t'attend à son bureau : il a ton brevet. » → « Ton brevet en poche ! Avec ça, tu peux candidater au Prytanée, au bout de
 la route du nord. »
 
+### Passage optionnel : la cachette de Margaux (Ingéniosité)
+Du premier jour jusqu'à la fin de la troisième. Bonus sans objet. Dans le couloir des casiers, un placard d'entretien à la
+poignée cassée : « La poignée tourne dans le vide. » → **« Pierre utilise Ingéniosité ! »** → « Tu glisses ta règle
+dans la fente et tu fais jouer le loquet… Clac ! » / Margaux, à l'intérieur : **« Quoi ?! Personne m'avait jamais
+trouvée ! »** / « Bon. L'été prochain, je trouve mieux. Promis. » Elle retourne ensuite en salle de maths (et Étienne en
+salle de français). Après l'ellipse, ou une fois Margaux trouvée, le placard répond seulement « La poignée tourne dans
+le vide. » ; Margaux ne participe à aucune scène obligatoire.
+
 ### Vertus
 - **Gagnée** : Audace (Rémy, la scène de Camille). Phrase du carnet : « Oser aller vers les autres, même quand on est
   timide. »
-- **Utilisées** : **Audace**, à l'oral du brevet.
+- **Utilisées** : **Audace**, à l'oral du brevet ; **Ingéniosité**, pour ouvrir le placard de Margaux (optionnel).
 
 ### Objet optionnel
 - **Autocollant de Rémy**, au casier une fois l'Audace reçue : « Le casier 12 : votre QG, à Rémy et toi. Rémy a
@@ -396,7 +413,7 @@ la route du nord. »
 Aucune.
 
 ### Mini-jeux
-Dialogue à choix (Camille), calcul mental (une question).
+Dialogue à choix (Camille), calcul mental (une question), le placard de Margaux (optionnel).
 
 ### Départ et trajet
 - **Condition** : le diplôme du brevet. Rémy : « Le Prytanée ? T'es un ouf. Tu m'enverras une photo en uniforme ! » Les
@@ -421,6 +438,7 @@ Dialogue à choix (Camille), calcul mental (une question).
 | Geoffrey | Camarade de chambre | `f42` |
 | Militaires | Porte sud, drapeau, cour ; la nuit, trois rondes avec lampe | `f31`, et `f5` imposé pour certains |
 | Élèves | Hall et dortoir des terminales | `f22`, `f74`, `f69`, `f41`, `f9` (imposés) |
+| Nouveau | Dans le hall de l'internat, le jour, jusqu'au bac : le mal du pays (passage optionnel) | `f30` (imposé) |
 
 ### Quêtes, dans l'ordre
 1. **La chambre → Autonomie.** Trois tâches dans n'importe quel ordre : « Pierre fait son lit. », « Pierre range ses
@@ -449,13 +467,20 @@ Dialogue à choix (Camille), calcul mental (une question).
 mur, à la porte nord. Gare aux rondes ! » → « Objectif : va voir les résultats du bac, sur le panneau de la place
 d'armes. » → « Le capitaine t'attend à la porte nord, la route de Bordeaux. »
 
+### Passage optionnel : le nouveau qui a le mal du pays (Joie de vivre)
+Dans le hall de l'internat, de l'arrivée jusqu'au bac (pas la nuit du mur, où le hall est vide) : « Un nouvel élève, une
+lettre à la main. » ; le nouveau : « Ma mère me manque. Ici, personne ne rigole jamais. » → **« Pierre utilise Joie de
+vivre ! »** → « Tu lui apprends le pas de danse de Maman, au milieu du hall. » / « Il rit… puis il danse aussi. » / le
+nouveau : **« T'es fou. Mais ça fait du bien. Tiens, garde ça : j'en ai deux. »** → **Insigne du Prytanée** (« Tu reçois
+un insigne du Prytanée ! »). Ensuite : « T'es fou. Mais ça fait du bien. »
+
 ### Vertus
 - **Gagnée** : Autonomie (l'inspection du capitaine).
 - **Utilisées** : **Esprit d'équipe**, pour faire le mur avec Tanguy et Geoffrey ; **Audace**, face au capitaine au petit
-  matin.
+  matin ; **Joie de vivre**, pour le nouveau (optionnel).
 
 ### Objet optionnel
-Aucun.
+- **Insigne du Prytanée**, donné par le nouveau (voir le passage optionnel).
 
 ### Boîte aux lettres
 Aucune. Dans le hall : « Le courrier des internes, trié par chambre. Rien pour toi aujourd'hui. »
@@ -502,7 +527,10 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
      français ! » ; dans tous les cas → **Gobelets**.
    - Ousmane : « On est bons. Rentre, ça commence. » ; « La soirée d'intégration bat son plein. L'enceinte de Paulfit
      trône au milieu du salon. » (répliques des étudiants, par exemple « C'est toi qui as rallumé le courant ? Respect. »)
-4. **Le diplôme d'anglais.** En sortant : « Quelques mois plus tard… ». Rémi, devant KEDGE : **« T'inquiète, c'est
+   - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous.
+     Ousmane dort sur le canapé. »** (Ousmane est couché dans le lit de gauche ; des gobelets et du désordre au sol). Voir
+     le passage optionnel.
+4. **Le diplôme d'anglais.** En sortant de l'appartement : « Quelques mois plus tard… ». Rémi, devant KEDGE : **« T'inquiète, c'est
    easy. »** La professeure : « Welcome to your English oral! Three questions. Ready? » → **« Pierre utilise
    Audace ! »** → trois traductions (« Je suis en
    retard », « Ça marche ! », « J'ai hâte ! » ; bonnes réponses « I am late. », « Deal! », « I can't wait! » ; une erreur :
@@ -515,12 +543,23 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 d'anglais à KEDGE. » → « Objectif : va à l'aéroport, sortie est. » Ousmane rappelle aussi : « Il manque l'enceinte :
 Paulfit, le studio au nord. » / « Et les gobelets : Rémi, l'appart près du campus. »
 
+### Passage optionnel : le rangement après la soirée (Autonomie)
+Le lendemain matin, dans l'appartement. Trois interactions dans n'importe quel ordre : les gobelets (« Pierre ramasse les
+gobelets. »), le salon (« Pierre range le salon. »), le lit de droite (« Pierre fait son lit. ») ; à la première :
+**« Pierre utilise Autonomie ! »**. Avant, Ousmane : « Ousmane dort sur le canapé. » Une fois les trois faites, Ousmane
+se réveille : **« Attends… t'as tout rangé ? Tout seul ? »** / « Tiens, j'ai trouvé ça sous le canapé. » → **Photo de la
+soirée** (« Tu reçois la photo de la soirée ! »). Ensuite : « Attends… t'as tout rangé ? Tout seul ? »
+On peut aussi sortir tout de suite : « Quelques mois plus tard… » ; l'appartement est alors rangé, Ousmane n'est plus
+couché, et la photo n'est plus disponible.
+
 ### Vertus
 - **Gagnée** : aucune. Le compteur de vertus n'est pas affiché à Bordeaux.
-- **Utilisées** : **Ingéniosité**, pendant la coupure ; **Audace**, avant l'oral d'anglais.
+- **Utilisées** : **Ingéniosité**, pendant la coupure ; **Audace**, avant l'oral d'anglais ; **Autonomie**, pour le
+  rangement (optionnel).
 
 ### Objet optionnel
-Aucun. L'enceinte et les gobelets sont obligatoires, et repris au début de la soirée.
+- **Photo de la soirée**, donnée par Ousmane au réveil (voir le passage optionnel). L'enceinte et les gobelets, eux, sont
+  obligatoires et repris au début de la soirée.
 
 ### Boîte aux lettres
 Aucune.
@@ -553,7 +592,7 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 | Charlotte | De la bande, sérieuse | `f45` |
 | Anaïs | De la bande | `f47` |
 | Barman, Barmaid, clients | Les deux pubs | Barman `f38` ; les autres en figurants |
-| Habitué | Adversaire aux fléchettes | figurant |
+| Habitué | Adversaire aux fléchettes, et le pari (passage optionnel) | figurant |
 | Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `f3` |
 
 ### Quêtes, dans l'ordre
@@ -568,8 +607,8 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
    sur un plateau. Tu rapportes la tournée à la table. » ; Ousmane « Santé ! » ; Léo « Cheers ! Allez, on finit ça et on
    file au pub d'en face. »
 3. **Deuxième pub : les fléchettes.** L'habitué : « Hey, the new guy! Tu joues ? » ; choix « Allez ! » / « Pas
-   maintenant. » ; partie de trois lancers, gagnée (« Well played, mate! Tu reviens quand tu veux. ») ou perdue (« Not
-   bad! La prochaine fois, peut-être. ») ; Léo : « On file à l'Asylum ! »
+   maintenant. » ; le pari (voir le passage optionnel), puis une partie de trois lancers, gagnée ou perdue ; Léo : « On
+   file à l'Asylum ! » (l'histoire continue dans les deux cas).
 4. **L'Asylum, l'aube → Insouciance.** Romain : « Vous en avez mis du temps ! » ; Léo : « Tout le monde sur la piste ! » /
    « C'est notre chanson ! Venez tous ! » → **« Pierre utilise Joie de vivre ! »** → « Tu entraînes toute la bande sur la
    piste, comme Maman au salon. » ; « Toute la bande danse sur la piste. » ; « La musique ralentit… Dernière
@@ -597,12 +636,24 @@ qu'il veut, puis commande au comptoir. » → « Objectif : suis la bande au pub
 demain, devant l'université. » → « Objectif : va voir les résultats devant l'université. » → « Objectif : retrouve la
 bande devant chez Léo. » → « Objectif : va à l'aéroport. Le bus rouge part de l'arrêt de la grande rue. »
 
+### Passage optionnel : le pari des fléchettes (Audace)
+Avant la partie, l'habitué : « Un pari ? Si tu gagnes, mes fléchettes sont à toi. » → **« Pierre utilise Audace ! »** →
+« Tu tends la main. Pari tenu. »
+- Gagné : **« Well played, mate! Un pari, c'est un pari. »** → **Fléchettes de l'habitué** (« Tu reçois les fléchettes
+  de l'habitué ! »).
+- Perdu : « Not bad! La prochaine fois, peut-être. », puis l'habitué : « Revanche ? » (Oui / Pas maintenant). On peut
+  rejouer le pari autant qu'on veut tant que le pub est ouvert : en enchaînant les revanches, ou en reparlant à
+  l'habitué (« Revanche ? »). Audace n'est utilisée qu'au premier pari.
+- Une fois les fléchettes obtenues : « Good game, mate! ». Si on les a déjà en commençant la partie, elle se joue sans
+  pari (« Well played, mate! Tu reviens quand tu veux. » ou « Not bad! La prochaine fois, peut-être. »).
+
 ### Vertus
 - **Gagnée** : Insouciance (l'aube devant l'Asylum).
-- **Utilisées** : **Joie de vivre**, sur la piste de l'Asylum ; **Autonomie**, au guichet de l'aéroport avant Hanoï.
+- **Utilisées** : **Joie de vivre**, sur la piste de l'Asylum ; **Autonomie**, au guichet de l'aéroport avant Hanoï ;
+  **Audace**, pour le pari des fléchettes (optionnel).
 
 ### Objet optionnel
-Aucun.
+- **Fléchettes de l'habitué**, gagnées au pari (voir le passage optionnel).
 
 ### Boîte aux lettres
 Aucune.
@@ -744,11 +795,11 @@ définies, rien n'est codé).
 
 | Vertu | Ville | Où et auprès de qui elle se gagne | Phrase du carnet | Où elle resert |
 |---|---|---|---|---|
-| Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Hull : la piste de l'Asylum |
+| Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
-| Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Bordeaux : la coupure |
-| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE |
-| Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Hull : le guichet de l'aéroport, avant Hanoï |
+| Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
+| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (optionnel) |
+| Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (photo, optionnel) ; Hull : le guichet de l'aéroport, avant Hanoï |
 | Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Nulle part pour l'instant |
 
 Vertus supprimées (leurs scènes restent, sans encart) : Pragmatisme (le tri des cannes), Confiance (le coquillage de
@@ -782,7 +833,7 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 | M. Bouly | `f32` | Montépilloy |
 | Margaux | `f48` | Montépilloy, collège |
 | Étienne | `f36` | Montépilloy, collège |
-| Benoît | `f38` | Montépilloy |
+| Benoît | `f38` | Montépilloy (la classe, puis seul devant la grange) |
 | Surveillant | `f62` | Collège |
 | Principale | `f54` | Collège |
 | Rémy | `f33` | Collège |
@@ -808,6 +859,7 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 | Anaïs | `f47` | Hull |
 | Barman | `f38` | Hull |
 | Habitué | figurant | Hull |
+| Nouveau | `f30` | Prytanée (hall de l'internat) |
 | Professor | `f3` | Hull (deux fois) |
 | Directrice | `f54` | Hanoï |
 | Anna, Tom | `f59`, `f56` | Hanoï |
@@ -880,16 +932,18 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 - Plusieurs répliques provisoires restent aussi avant Hull, à Fort-de-France : la télé, la console de Manon et le frigo
   (« [Texte provisoire] … »). Dans l'entreprise parisienne, le dernier étage bloqué l'est aussi.
 - **Objets sans usage** : l'objet de chance (Hanoï) reste dans le sac. Les objets optionnels (vieille canne exceptée :
-  elle sert à pêcher) ne servent plus après leur ville : galet du lac, cuillère, autocollant.
+  elle sert à pêcher) ne servent plus après leur ville : galet du lac, cuillère, autocollant, insigne du Prytanée, photo
+  de la soirée, fléchettes de l'habitué.
 - **Le gamin de la route de Montépilloy** parle d'un cerf-volant perdu, mais aucun cerf-volant n'est codé.
 - **La maison de la voisine** à Montépilloy est fermée (« Personne ne répond. »), et sa boîte aux lettres ne contient
   rien.
 
 ### Vertus jamais utilisées
-Insouciance (Hull) ne sert encore nulle part. Joie de vivre et Audace servent trois fois, Esprit d'équipe deux fois,
-Ingéniosité et Autonomie une fois. Hors de la route principale, seul le vieux pêcheur de Saint-Ay (Joie de vivre)
-utilise une vertu : la règle « une vertu dans un passage optionnel par ville » (CLAUDE.md) n'est respectée qu'à
-Saint-Ay.
+Insouciance (Hull) ne sert encore nulle part. Joie de vivre sert cinq fois (dont trois en passage optionnel), Audace
+quatre fois (dont une optionnelle), Esprit d'équipe, Ingéniosité et Autonomie deux fois chacune (Ingéniosité et Autonomie
+une fois en passage optionnel). Chaque ville de Saint-Ay à Hull a désormais un passage optionnel qui utilise une vertu ;
+Fort-de-France n'en a pas (aucune vertu n'est acquise avant), et aucun passage optionnel ne se joue encore en revenant
+dans une ancienne ville.
 
 ### Objectifs manquants
 - Les répliques « Objectif : » n'existent qu'au Prytanée, à Bordeaux et à Hull. Fort-de-France, Saint-Ay, Montépilloy et

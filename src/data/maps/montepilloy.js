@@ -7,6 +7,7 @@ import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
   ARRIVAL, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, NORTH_EXIT, JEAN_AT_TRACTOR, JEAN_TRACTOR, TOOLBOX,
+  BENOIT_SAD,
 } from '../montepilloyStory.js';
 
 // Montépilloy (Oise) — village de campagne façon Rouge Feu, 32 x 26 cases. Chemins de terre de deux cases : la
@@ -109,6 +110,13 @@ export const montepilloyMap = {
       id: 'jean', name: 'Jean', x: JEAN_AT_TRACTOR[0], y: JEAN_AT_TRACTOR[1], facing: 'up', color: 0x3c7c5c,
       ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.tracteurRepare],
       script: JEAN_TRACTOR,
+    },
+    // Après le cache-cache, Benoît est assis seul devant la grange, jusqu'au matin de septembre (facultatif, voir
+    // montepilloyStory.js BENOIT_SAD).
+    {
+      id: 'benoit-grange', name: 'Benoît', x: 5, y: 16, facing: 'down', still: true, color: 0xa07040,
+      ifFlags: [FLAGS.copainsPartent], unlessFlags: [FLAGS.septembre],
+      script: BENOIT_SAD,
     },
     // À la sortie de l'école, Margaux lance le cache-cache (voir HIDE_AND_SEEK).
     {

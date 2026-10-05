@@ -112,6 +112,29 @@ export const PUB_A_BAR = [
 
 // ---------- 3. Deuxième pub : les fléchettes ----------
 
+// Facultatif : le pari (Audace). Gagné, les fléchettes de l'habitué (objet-souvenir de Hull) ; perdu, il propose une
+// revanche, autant de fois qu'on veut tant qu'on est dans ce pub (ici, puis en lui reparlant, voir HABITUE_AFTER).
+const LOST = ['Not bad! La prochaine fois, peut-être.'];
+const BET_WON = [{ give: ITEMS.flechettes, text: 'Tu reçois les fléchettes de l\'habitué !' }];
+const betGame = (rematches) => ({
+  darts: {
+    opponent: 'Habitué', win: ['Well played, mate! Un pari, c\'est un pari.'], lose: LOST,
+    onWin: BET_WON, onLose: rematches > 0 ? rematch(rematches - 1) : [],
+  },
+});
+function rematch(rematches) {
+  return [{
+    speaker: 'Habitué',
+    choose: 'Revanche ?',
+    choices: [{ label: 'Oui', steps: [betGame(rematches)] }, { label: 'Pas maintenant', steps: [] }],
+  }];
+}
+const REMATCHES = 8;                              // revanches enchaînées sans reparler à l'habitué
+export const HABITUE_AFTER = [
+  { ifItems: [ITEMS.flechettes.id], speaker: 'Habitué', say: ['Good game, mate!'], end: true },
+  ...rematch(REMATCHES),
+];
+
 export const DARTS = [
   { speaker: 'Habitué', say: ['Hey, the new guy! Tu joues ?'] },
   {
@@ -120,7 +143,17 @@ export const DARTS = [
       {
         label: 'Allez !',
         steps: [
-          { darts: { opponent: 'Habitué', win: ['Well played, mate! Tu reviens quand tu veux.'], lose: ['Not bad! La prochaine fois, peut-être.'] } },
+          // Les fléchettes déjà gagnées : la partie, sans pari.
+          { ifItems: [ITEMS.flechettes.id], darts: { opponent: 'Habitué', win: ['Well played, mate! Tu reviens quand tu veux.'], lose: LOST } },
+          {
+            unlessItems: [ITEMS.flechettes.id],
+            steps: [
+              { speaker: 'Habitué', say: ['Un pari ? Si tu gagnes, mes fléchettes sont à toi.'] },
+              { useTrait: TRAITS.audace },
+              { say: ['Tu tends la main. Pari tenu.'] },
+              betGame(REMATCHES),
+            ],
+          },
           { speaker: 'Léo', say: ['On file à l\'Asylum !'] },
           { say: ['Objectif : rejoins la bande à l\'Asylum, tout en haut, sur le campus.'] },
           { setFlag: FLAGS.flechettesJouees },

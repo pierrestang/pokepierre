@@ -134,6 +134,36 @@ export const FRONT_DOOR = [
 
 export const PARTY = [{ say: ['La soirée d\'intégration bat son plein. L\'enceinte de Paulfit trône au milieu du salon.'] }];
 
+// En quittant la fête : le lendemain matin, l'appartement en désordre ; Ousmane dort. Facultatif (Autonomie) : tout
+// ranger, dans n'importe quel ordre ; Ousmane se réveille et donne l'objet-souvenir de Bordeaux, la photo de la soirée.
+// On peut aussi sortir tout de suite : quelques mois plus tard (MONTHS_LATER), l'appartement est rangé.
+export const PARTY_END = [
+  { black: true },
+  { wait: 600 },
+  { setFlag: FLAGS.lendemainSoiree },
+  { black: false },
+  { say: ['Le lendemain matin. L\'appartement est sens dessus dessous. Ousmane dort sur le canapé.'] },
+];
+const TIDY_FLAGS = [FLAGS.gobeletsRanges, FLAGS.salonRange, FLAGS.litFaitBordeaux];
+const OUSMANE_WAKES = [
+  { speaker: 'Ousmane', say: ['Attends… t\'as tout rangé ? Tout seul ?', 'Tiens, j\'ai trouvé ça sous le canapé.'] },
+  { give: ITEMS.photoSoiree, text: 'Tu reçois la photo de la soirée !' },
+];
+// Une tâche du rangement (la première : Autonomie), puis le réveil d'Ousmane si c'était la dernière.
+const tidy = (text, flag) => [
+  { unlessFlags: TIDY_FLAGS, useTrait: TRAITS.autonomie },
+  { say: [text] },
+  { setFlag: flag },
+  { ifFlags: TIDY_FLAGS, steps: OUSMANE_WAKES },
+];
+export const TIDY_CUPS = tidy('Pierre ramasse les gobelets.', FLAGS.gobeletsRanges);
+export const TIDY_LIVING_ROOM = tidy('Pierre range le salon.', FLAGS.salonRange);
+export const TIDY_BED = tidy('Pierre fait son lit.', FLAGS.litFaitBordeaux);
+export const OUSMANE_ASLEEP = [
+  { ifItems: [ITEMS.photoSoiree.id], speaker: 'Ousmane', say: ['Attends… t\'as tout rangé ? Tout seul ?'], end: true },
+  { say: ['Ousmane dort sur le canapé.'] },
+];
+
 // En sortant de la soirée : quelques mois plus tard.
 export const MONTHS_LATER = [
   { black: true },

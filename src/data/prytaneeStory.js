@@ -105,6 +105,18 @@ export const GEOFFREY_GUIDE = [
   { ifFlags: [FLAGS.litFait, FLAGS.affairesPretes], speaker: 'Geoffrey', say: ['Il reste l\'armoire. Demande à Tanguy, c\'est un maniaque.'] },
 ];
 
+// Facultatif, de l'arrivée jusqu'au bac : dans le hall de l'internat, un nouveau a le mal du pays ; le pas de danse de
+// Maman (Joie de vivre) le fait rire. Objet-souvenir du Prytanée : son insigne.
+export const HOMESICK = [
+  { ifItems: [ITEMS.insigne.id], speaker: 'Nouveau', say: ['T\'es fou. Mais ça fait du bien.'], end: true },
+  { say: ['Un nouvel élève, une lettre à la main.'] },
+  { speaker: 'Nouveau', say: ['Ma mère me manque. Ici, personne ne rigole jamais.'] },
+  { useTrait: TRAITS.joie },
+  { say: ['Tu lui apprends le pas de danse de Maman, au milieu du hall.', 'Il rit… puis il danse aussi.'] },
+  { speaker: 'Nouveau', say: ['T\'es fou. Mais ça fait du bien. Tiens, garde ça : j\'en ai deux.'] },
+  { give: ITEMS.insigne, text: 'Tu reçois un insigne du Prytanée !' },
+];
+
 // ---------- 2. Le mur, la nuit ----------
 
 // Rondes de la cour (voir systems/Patrols.js) : trois militaires, lampe à la main.

@@ -166,6 +166,19 @@ export const CAMILLE = [
   { speaker: 'Professeur', say: ['Pierre ! Viens me voir à mon bureau : c\'est l\'heure de ton oral du brevet.'] },
 ];
 
+// Facultatif : la cachette imbattable de Margaux, le placard d'entretien du couloir des casiers (poignée cassée), jusqu'à
+// la fin de la troisième. Ingéniosité ouvre le loquet ; Margaux retourne ensuite en salle de maths.
+const STUCK_HANDLE = 'La poignée tourne dans le vide.';
+export const CLOSET = [
+  { ifFlags: [FLAGS.margauxTrouvee], say: [STUCK_HANDLE], end: true },
+  { ifFlags: [FLAGS.finTroisieme], say: [STUCK_HANDLE], end: true },
+  { say: [STUCK_HANDLE] },
+  { useTrait: TRAITS.ingeniosite },
+  { say: ['Tu glisses ta règle dans la fente et tu fais jouer le loquet… Clac !'] },
+  { speaker: 'Margaux', say: ['Quoi ?! Personne m\'avait jamais trouvée !', 'Bon. L\'été prochain, je trouve mieux. Promis.'] },
+  { setFlag: FLAGS.margauxTrouvee },
+];
+
 // Le prof de maths : à la fin de la troisième (après l'ellipse), l'oral du brevet, en face à face à son bureau. « Prêt ? »,
 // Pierre utilise Audace, puis un seul calcul (une erreur ne bloque pas : il fait recompter) ; il remet le diplôme du
 // brevet, qui ouvre la route du Prytanée.

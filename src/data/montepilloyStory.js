@@ -74,8 +74,8 @@ export const HIDE_AND_SEEK = [
 
 // Margaux, derrière les bottes de foin de la ferme ; Étienne, dans l'arbre de la prairie près de la mare ; Benoît,
 // dans le tonneau du fond à gauche de la grange. Dans n'importe quel ordre : chacun trouvé suit Pierre ; le dernier
-// clôt la partie (la promesse) ; les copains filent récupérer leurs cartables et disparaissent : on les retrouve dans
-// la classe. Le tonneau de Benoît ne s'ouvre qu'à plusieurs : il est toujours le dernier.
+// clôt la partie (la promesse) ; les copains filent récupérer leurs cartables et disparaissent : on retrouve Margaux et
+// Étienne dans la classe, Benoît seul devant la grange (BENOIT_SAD). Le tonneau de Benoît ne s'ouvre qu'à plusieurs : il est toujours le dernier.
 const GAME_OVER = {
   ifFlags: [FLAGS.trouveMargaux, FLAGS.trouveEtienne, FLAGS.trouveBenoit],
   unlessFlags: [FLAGS.copainsPartent],
@@ -197,6 +197,16 @@ export const JEAN_TRACTOR = [
   { speaker: 'Jean', say: ['Il manque une pièce à ce tracteur. Va voir M. Bouly, il sait peut-être où elle est.'] },
 ];
 
+
+// Facultatif : après le cache-cache, Benoît est assis seul devant la grange ; Pierre le fait rire (Joie de vivre).
+export const BENOIT_SAD = [
+  { ifFlags: [FLAGS.benoitConsole], speaker: 'Benoît', say: ['Le vase… j\'y pense encore.'], end: true },
+  { speaker: 'Benoît', say: ['Margaux et Étienne iront au collège ensemble. Moi, je pars ailleurs. Je connaîtrai personne.'] },
+  { useTrait: TRAITS.joie },
+  { say: ['Tu lui racontes la fois où Fanny a failli casser le vase de Maman… Benoît éclate de rire.'] },
+  { speaker: 'Benoît', say: ['T\'es bête… Merci. Je t\'écrirai.'] },
+  { setFlag: FLAGS.benoitConsole },
+];
 
 // Objet-souvenir : la cuillère de la caisse à outils de Jean, restée devant le tracteur après la réparation (la caisse
 // disparaît une fois la cuillère prise).
