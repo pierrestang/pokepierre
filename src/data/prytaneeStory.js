@@ -130,9 +130,18 @@ export const BEHIND_THE_WALL = [
   { travel: { interior: 'dortoir', x: 7, y: 4, facing: 'left' } },
 ];
 
-// Au dortoir, au petit matin ; puis l'ellipse jusqu'aux résultats du bac.
+// Au dortoir, au petit matin : le capitaine monte demander qui est sorti (Audace) ; puis l'ellipse jusqu'aux
+// résultats du bac.
 export const MORNING = [
   { say: ['Au petit matin, au dortoir.'] },
+  { sound: 'door' },
+  { walk: 'capitaine-matin', to: [9, 4], block: true },
+  { face: { 'capitaine-matin': 'left', player: 'right' } },
+  { speaker: 'Capitaine', say: ['Trois lits vides cette nuit, d\'après la ronde. Qui est sorti ?'] },
+  { useTrait: TRAITS.audace },
+  { say: ['Tu regardes le capitaine droit dans les yeux, sans un mot.'] },
+  { speaker: 'Capitaine', say: ['… Je n\'ai rien vu non plus.'] },
+  { walk: 'capitaine-matin', to: DORM_EXIT, block: true },
   { speaker: 'Geoffrey', say: ['Personne a rien vu. On remet ça quand vous voulez les gars !'] },
   { setFlag: FLAGS.murMatin },
   { black: true },

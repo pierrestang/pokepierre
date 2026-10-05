@@ -21,7 +21,7 @@ function outside(x, y, grid) {
 }
 
 const NOT_HOME = ["Ce n'est pas chez toi."];
-const LACHER_PRISE = TRAITS.lacherPrise.id;
+const INSOUCIANCE = TRAITS.insouciance.id;
 // Les adieux, devant chez Léo : une fois le diplôme en poche, jusqu'à ce que chacun ait annoncé son départ.
 const FAREWELL_TIME = { ifItems: [ITEMS.diplomeHull.id], unlessFlags: [FLAGS.adieuxHull] };
 
@@ -215,7 +215,7 @@ export const hullMap = {
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.hullAccueil], steps: ARRIVAL },
     { on: 'enter', ifFlags: [FLAGS.hullAccueil], unlessFlags: [FLAGS.ousmaneRentre], steps: OUSMANE_WALK },
-    { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [LACHER_PRISE], steps: DAWN },
+    { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [INSOUCIANCE], steps: DAWN },
     // En sortant de la bibliothèque : le lendemain, les résultats.
     { on: 'enter', ifFlags: [FLAGS.revisions], unlessFlags: [FLAGS.jourResultats], steps: NEXT_DAY },
   ],

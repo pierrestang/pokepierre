@@ -64,6 +64,17 @@ puis Hanoï. Pas de combats.
 - src/data/ : les données de cartes et de contenu.
 - src/systems/ : déplacement, collisions, dialogues.
 
+## Vertus
+- 8 vertus au maximum dans tout le jeu, une par ville au maximum : 6 jusqu'à Hull, 2 places réservées après Hull
+  (src/data/story.js TRAITS).
+- Les 6 vertus, leur ville et leur situation type : Joie de vivre (Fort-de-France : une ambiance éteinte à
+  rallumer) ; Esprit d'équipe (Saint-Ay : un obstacle qu'on ne franchit qu'à plusieurs) ; Ingéniosité (Montépilloy :
+  un mécanisme à réparer ou bricoler) ; Audace (collège : une situation intimidante) ; Autonomie (Prytanée : faire
+  seul, sans qu'on le demande) ; Insouciance (Hull : un souci qui gâche le moment, à mettre de côté).
+- Les vertus servent comme des CS : chaque ville utilise au moins une vertu déjà acquise sur la route principale, et
+  une dans un passage optionnel, y compris en revenant dans les anciennes villes. Sans la bonne vertu, une réplique
+  d'indice décrit la situation.
+
 ## Méthode de travail
 - Avancer par petits jalons jouables, un seul à la fois.
 - Toujours laisser le jeu dans un état testable dans le navigateur.

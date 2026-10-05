@@ -21,7 +21,7 @@ import {
 const PUB_A_TIME = { ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.tourneeServie] };
 const PUB_B_TIME = { ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.flechettesJouees] };
 const ASYLUM_TIME = { ifFlags: [FLAGS.flechettesJouees] };
-const LACHER_PRISE = TRAITS.lacherPrise.id;
+const INSOUCIANCE = TRAITS.insouciance.id;
 
 // Collège Bonsecours : la principale, derrière l'accueil du hall.
 const PRINCIPALE = [
@@ -62,7 +62,7 @@ const FF_UP_CARTONS = [[6, 3], [0, 5], [3, 5], [8, 5]];
 // Papa, ses cannes rangées, envoie Pierre au salon une fois la quête de Manon finie aussi (tant que Maman n'a pas
 // dansé).
 const PAPA_TO_SALON = {
-  ifSouvenirs: [TRAITS.pragmatisme.id, TRAITS.confiance.id], unlessSouvenirs: [TRAITS.joie.id],
+  ifFlags: [FLAGS.papaFait, FLAGS.secretManon], unlessSouvenirs: [TRAITS.joie.id],
   speaker: 'Papa', say: ['Maman t\'attend au salon.'],
 };
 
@@ -214,7 +214,7 @@ export const interiors = {
   },
 
   // Fort-de-France — la cabane de pêche de Papa, façon Rouge Feu : cannes, caisses (dessinées dans le code),
-  // fenêtre, panneau, plante. Papa trie avant le départ (Pragmatisme) ; caisse « À DONNER » en bas à gauche.
+  // fenêtre, panneau, plante. Papa trie avant le départ ; caisse « À DONNER » en bas à gauche.
   ffHut: {
     name: 'Cabane de pêche',
     frlg: true,
@@ -252,9 +252,9 @@ export const interiors = {
         id: 'papa', name: 'Papa', x: 1, y: 4, facing: 'left', color: 0x3f6fd8, still: true,
         ...HOME_FDF,
         script: [
-          { ifSouvenirs: [TRAITS.pragmatisme.id], speaker: 'Papa', say: ["Hm. Il reste des caisses, si t'as rien à faire."] },
+          { ifFlags: [FLAGS.papaFait], speaker: 'Papa', say: ["Hm. Il reste des caisses, si t'as rien à faire."] },
           PAPA_TO_SALON,
-          { ifSouvenirs: [TRAITS.pragmatisme.id], end: true },
+          { ifFlags: [FLAGS.papaFait], end: true },
           { say: ['Des caisses partout. Papa trie sans lever les yeux.'] },
           { speaker: 'Papa', say: ["T'es venu m'aider ou regarder ?"] },
           {
@@ -266,7 +266,6 @@ export const interiors = {
           },
           { say: ['Papa en garde une et jette les deux autres dans une caisse marquée « À DONNER ».'] },
           { speaker: 'Papa', say: ['Voilà. Déménagement terminé.'] },
-          { trait: TRAITS.pragmatisme },
           { setFlag: FLAGS.papaFait },
           PAPA_TO_SALON,
         ],
@@ -372,7 +371,7 @@ export const interiors = {
         ],
       },
     ],
-    // En rentrant avec « Grand frère » et « Cousins pour la vie » : l'annonce de la mutation.
+    // En rentrant, la cabane inaugurée, quelques années plus tard : l'annonce de la mutation.
     events: [{ on: 'enter', ...ANNOUNCEMENT_EVENT, ifFlags: [FLAGS.ellipseSaintAy], steps: ANNOUNCEMENT }],
   },
 
@@ -548,11 +547,11 @@ export const interiors = {
         id: 'maman-hopital', name: 'Maman', x: 0, y: 3, facing: 'down', color: 0xe86fa0, still: true, inBed: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         script: [
-          { unlessSouvenirs: [TRAITS.patience.id], speaker: 'Maman', say: ['Va dire bonjour à Fanny, dans son berceau. Tends-lui la main.'], end: true },
+          { unlessFlags: [FLAGS.fannyMain], speaker: 'Maman', say: ['Va dire bonjour à Fanny, dans son berceau. Tends-lui la main.'], end: true },
           { speaker: 'Maman', say: ['Fanny dort. Va voir tes cousins, ils viennent d\'emménager au village.'] },
         ],
       },
-      // Le berceau : Patience (voir FANNY_CRADLE).
+      // Le berceau : la main de Fanny (voir FANNY_CRADLE).
       {
         id: 'fanny-hopital', name: 'Fanny', x: 3, y: 3, facing: 'down', still: true, inBed: true, child: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
@@ -843,7 +842,7 @@ export const interiors = {
       { x: 5, y: 1, dialogue: ['Au tableau : « Le carré de l\'hypoténuse est égal à la somme des carrés des deux autres côtés. »'] },
     ],
     npcs: [
-      // Le prof de maths : ta classe (6e B) ; il remet le brevet une fois l'Insouciance reçue (voir collegeStory.js).
+      // Le prof de maths : ta classe (6e B) ; il remet le brevet une fois l'Audace reçue (voir collegeStory.js).
       { id: 'prof-maths', name: 'Professeur', x: 9, y: 2, facing: 'down', color: 0x4c6c9c, script: PROF },
       // Après l'ellipse (fin de la troisième), Pierre est seul avec le prof pour le brevet (Rémy est en sciences).
       {
@@ -1170,7 +1169,11 @@ export const interiors = {
         id: 'capitaine-inspection', name: 'Capitaine', x: 13, y: 3, facing: 'down', color: 0x3c5c2c,   // en haut de l'escalier
         ifFlags: [FLAGS.chambrePrete], unlessFlags: [FLAGS.inspection],
       },
-      // Au petit matin, de retour du mur.
+      // Au petit matin, de retour du mur : le capitaine monte au dortoir (voir prytaneeStory.js MORNING).
+      {
+        id: 'capitaine-matin', name: 'Capitaine', x: 13, y: 3, facing: 'down', color: 0x3c5c2c,   // en haut de l'escalier
+        ifFlags: [FLAGS.murReussi], unlessFlags: [FLAGS.murMatin],
+      },
       {
         id: 'tanguy-matin', name: 'Tanguy', x: 5, y: 6, facing: 'right', color: 0x8c6c3c,
         ifFlags: [FLAGS.murReussi], unlessFlags: [FLAGS.ellipseBac], dialogue: ['On remet ça quand tu veux.'],
@@ -1528,7 +1531,7 @@ export const interiors = {
       ...[['leo-apres', 'Léo', 6, 6, 'J\'ai lu la même page six fois… hier. Et aujourd\'hui aussi.'],
         ['romain-apres', 'Romain', 1, 4, 'Quelle soirée ! On en reparlera longtemps.'],
         ['prophecy-apres', 'Prophecy', 6, 4, 'Bonne chance pour les exams, Pierre.']].map(([id, name, x, y, line]) => ({
-        id, name, x, y, facing: 'down', ifSouvenirs: [LACHER_PRISE], unlessFlags: [FLAGS.jourResultats], dialogue: [line],
+        id, name, x, y, facing: 'down', ifSouvenirs: [INSOUCIANCE], unlessFlags: [FLAGS.jourResultats], dialogue: [line],
       })),
     ],
     events: [{ on: 'enter', ifFlags: [FLAGS.leoAppel], unlessFlags: [FLAGS.leoPlan], steps: LEO_PLAN }],
@@ -1574,7 +1577,7 @@ export const interiors = {
     events: [
       { on: 'enter', ifFlags: [FLAGS.ousmaneRentre], unlessFlags: [FLAGS.leoAppel], steps: LEO_CALLED },
       // Au petit matin, après l'Asylum : on dort.
-      { on: 'enter', ifSouvenirs: [LACHER_PRISE], unlessFlags: [FLAGS.lendemainHull], steps: SLEEP },
+      { on: 'enter', ifSouvenirs: [INSOUCIANCE], unlessFlags: [FLAGS.lendemainHull], steps: SLEEP },
     ],
   },
 

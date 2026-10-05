@@ -1,13 +1,15 @@
-import { FLAGS, ITEMS, TRAITS, traitsOfCity } from './story.js';
+import { FLAGS, ITEMS, TRAITS } from './story.js';
 
 // Scénario de Fort-de-France (voir le document « Scénarios Poké-Pierre — Fort-de-France & Saint-Ay ») : le dernier
-// jour sur l'île, Pierre reçoit trois traits de sa famille (dans n'importe quel ordre), offre une canne au capitaine
-// du ferry, l'ancien pêcheur (quête ouverte par celle de Papa), puis embarque avec toute la famille pour Saint-Ay.
+// jour sur l'île, Pierre aide Papa et retrouve le coquillage de Manon (dans n'importe quel ordre), puis danse avec Maman
+// (Joie de vivre) ; il offre une canne au capitaine du ferry, l'ancien pêcheur (quête ouverte par celle de Papa), puis
+// embarque avec toute la famille pour Saint-Ay.
 // Maman, au salon, rappelle le programme ; le capitaine garde le départ.
 // Scénettes partagées par la carte de l'île et les intérieurs (étapes : voir MapScene.runSteps).
 
 const CAPITAINE = 'Capitaine du ferry';
-const CITY_TRAITS = traitsOfCity('fortDeFrance').map((q) => q.id);
+// Les trois scènes de la famille faites : le tri des cannes, le coquillage de Manon, la danse de Maman.
+const FAMILY_DONE = { ifFlags: [FLAGS.papaFait, FLAGS.secretManon], ifSouvenirs: [TRAITS.joie.id] };
 
 // Départ, dès la canne offerte : fondu au noir, puis pont du ferry et traversée (FerryScene, `deck`).
 export const DEPARTURE = [
@@ -16,18 +18,18 @@ export const DEPARTURE = [
   { travel: { map: 'saintAy', x: 5, y: 10, facing: 'left', ferry: true, deck: true } },
 ];
 
-// Ce qu'il reste à faire, rappelé par le capitaine tant qu'un trait manque.
+// Ce qu'il reste à faire, rappelé par le capitaine tant qu'une scène de la famille manque.
 const REMINDERS = [
   {
     unlessSouvenirs: [TRAITS.joie.id], speaker: CAPITAINE,
     say: ["Ta mère t'attend au salon avant qu'on éteigne la musique."],
   },
   {
-    unlessSouvenirs: [TRAITS.pragmatisme.id], speaker: CAPITAINE,
+    unlessFlags: [FLAGS.papaFait], speaker: CAPITAINE,
     say: ["Ton père est encore à sa cabane, il a besoin d'un coup de main."],
   },
   {
-    unlessSouvenirs: [TRAITS.confiance.id], speaker: CAPITAINE,
+    unlessFlags: [FLAGS.secretManon], speaker: CAPITAINE,
     say: ["Ta sœur te cherchait tout à l'heure, elle avait l'air de préparer un coup."],
   },
 ];
@@ -43,10 +45,9 @@ export const FISHER_AT_PIER_END = [
 
 // Le capitaine devant le ferry, sa canne cassée à la main (après la scène de Papa). Les étapes sont
 // testées dans l'ordre ; `end` arrête la scénette. Il explique d'abord que le ferry ne part pas sans sa canne (même si
-// Pierre en a déjà une). Il n'accepte la canne qu'une fois les trois traits reçus (avant, il rappelle ce qu'il reste à
-// faire) : « Oui », il la reçoit et on embarque aussitôt.
+// Pierre en a déjà une). Il n'accepte la canne qu'une fois les trois scènes de la famille faites (avant, il rappelle ce
+// qu'il reste à faire) : « Oui », il la reçoit et on embarque aussitôt.
 const HAS_ROD = { ifItems: [ITEMS.canneAPeche.id] };
-const FAMILY_READY = { ifSouvenirs: CITY_TRAITS };
 // « Oui » : la canne de la caisse « À DONNER », puis le départ.
 const GIVE_ROD = [
   { emote: 'pecheur', kind: 'surprise' },
@@ -70,17 +71,17 @@ export const FISHER_AT_FERRY = [
   { speaker: CAPITAINE, say: ['Pas de canne, pas de capitaine. Le ferry ne part pas sans moi.'] },
   { setFlag: FLAGS.canneMontree },
   // Avec la canne de la caisse et la famille prête : il demande, on choisit.
-  { ...HAS_ROD, ...FAMILY_READY, speaker: CAPITAINE, say: ['Hm ? Tu as quelque chose pour moi ?'] },
+  { ...HAS_ROD, ...FAMILY_DONE, speaker: CAPITAINE, say: ['Hm ? Tu as quelque chose pour moi ?'] },
   {
     ...HAS_ROD,
-    ...FAMILY_READY,
+    ...FAMILY_DONE,
     choose: 'Tu lui donnes la canne à pêche ?',
     choices: [
       { label: 'Oui', steps: GIVE_ROD },
       { label: 'Non', steps: [{ speaker: CAPITAINE, say: ['Ah… Bon. Le ferry attendra, alors.'] }, { end: true }] },
     ],
   },
-  // Avec la canne, mais un trait manque : ce qu'il reste à faire.
+  // Avec la canne, mais une scène de la famille manque : ce qu'il reste à faire.
   { ...HAS_ROD, steps: REMINDERS, end: true },
   // Sans canne : il pousse Pierre à en chercher une.
   { speaker: CAPITAINE, say: ["Ton père en a toute une collection, dans sa cabane de pêche. Il en aurait pas une en trop, des fois ?"] },
@@ -94,16 +95,16 @@ export const FERRY = [
 
 // Manon, une fois la quête de Papa finie aussi, envoie Pierre au salon, chez Maman (Papa de même, voir interiors.ffHut).
 const MANON_TO_SALON = {
-  ifSouvenirs: [TRAITS.pragmatisme.id, TRAITS.confiance.id], unlessSouvenirs: [TRAITS.joie.id],
+  ifFlags: [FLAGS.papaFait, FLAGS.secretManon], unlessSouvenirs: [TRAITS.joie.id],
   speaker: 'Manon', say: ['Maman t\'attend au salon.'],
 };
 
-// Manon — Confiance : elle attend devant la maison et vient te parler à la sortie ; elle a caché un
+// Manon : elle attend devant la maison et vient te parler à la sortie ; elle a caché un
 // coquillage dans les hautes herbes de l'île.
 export const MANON = [
-  { ifSouvenirs: [TRAITS.confiance.id], speaker: 'Manon', say: ["Chut… c'est notre secret."] },
+  { ifFlags: [FLAGS.secretManon], speaker: 'Manon', say: ["Chut… c'est notre secret."] },
   MANON_TO_SALON,
-  { ifSouvenirs: [TRAITS.confiance.id], end: true },
+  { ifFlags: [FLAGS.secretManon], end: true },
   { ifItems: [ITEMS.coquillageNacre.id], emote: 'manon', kind: 'surprise' },
   { ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon', say: ["Tu l'as trouvé !"] },
   { ifItems: [ITEMS.coquillageNacre.id], say: ['Manon sort de sa poche un deuxième coquillage, identique.'] },
@@ -112,7 +113,7 @@ export const MANON = [
     say: ["Un pour toi, un pour moi. Comme ça, où qu'on aille, on garde un bout de l'île. Et c'est notre secret."],
   },
   { ifItems: [ITEMS.coquillageNacre.id], emote: 'manon', kind: 'dots' },
-  { ifItems: [ITEMS.coquillageNacre.id], trait: TRAITS.confiance },
+  { ifItems: [ITEMS.coquillageNacre.id], setFlag: FLAGS.secretManon },
   MANON_TO_SALON,
   { ifItems: [ITEMS.coquillageNacre.id], end: true },
   {
@@ -134,26 +135,26 @@ export const MANON = [
   { setFlag: FLAGS.manonDemande },
 ];
 
-// Maman — Joie de vivre : au salon, elle rappelle le programme ; une fois Papa et Manon aidés (Pragmatisme et
-// Confiance), elle t'entraîne dans une danse.
-const OTHERS_DONE = [TRAITS.pragmatisme.id, TRAITS.confiance.id];
+// Maman — Joie de vivre : au salon, elle rappelle le programme ; une fois Papa et Manon aidés (le tri des cannes, le
+// coquillage), elle t'entraîne dans une danse.
+const OTHERS_DONE = [FLAGS.papaFait, FLAGS.secretManon];
 export const MAMAN_FDF = [
   {
     ifSouvenirs: [TRAITS.joie.id], unlessFlags: [FLAGS.canneOfferte], speaker: 'Maman',
     say: ['Le capitaine du ferry avait l\'air embêté, au ponton. Passe le voir.'], end: true,
   },
-  // La danse, une fois les deux autres traits reçus.
-  { ifSouvenirs: OTHERS_DONE, speaker: 'Maman', say: ['Te voilà ! Ton père et ta sœur m\'ont tout raconté.', 'Tu entends cette chanson ? Viens danser avec moi !'] },
-  { ifSouvenirs: OTHERS_DONE, dance: 'maman' },
-  { ifSouvenirs: OTHERS_DONE, speaker: 'Maman', say: ['On part cet après-midi, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi.'] },
-  { ifSouvenirs: OTHERS_DONE, trait: TRAITS.joie, end: true },
+  // La danse, une fois les deux autres scènes faites.
+  { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['Te voilà ! Ton père et ta sœur m\'ont tout raconté.', 'Tu entends cette chanson ? Viens danser avec moi !'] },
+  { ifFlags: OTHERS_DONE, dance: 'maman' },
+  { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['On part cet après-midi, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi.'] },
+  { ifFlags: OTHERS_DONE, trait: TRAITS.joie, end: true },
   // Rappel du programme.
   {
-    unlessSouvenirs: [TRAITS.pragmatisme.id], speaker: 'Maman',
+    unlessFlags: [FLAGS.papaFait], speaker: 'Maman',
     say: ['Ton père trie ses affaires à sa cabane de pêche, à droite de la plage. Va lui donner un coup de main.'],
   },
   {
-    unlessSouvenirs: [TRAITS.confiance.id], speaker: 'Maman',
+    unlessFlags: [FLAGS.secretManon], speaker: 'Maman',
     say: ['Ta sœur mijote quelque chose dehors… Va voir ce qu\'elle prépare.'],
   },
   { speaker: 'Maman', say: ['Après, reviens me voir.'] },

@@ -2,7 +2,7 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 
 // Scénario du collège Bonsecours (voir le document « Scénarios Poké-Pierre — Montépilloy & Le collège ») : suite
 // directe de Montépilloy, au village d'à côté (Pierre y va à pied et rentre chez lui le soir). Une seule vertu,
-// Insouciance, apportée par Rémy. Ordre : arrivée (le surveillant), l'embrouille du casier, puis en salle
+// Audace, apportée par Rémy. Ordre : arrivée (le surveillant), l'embrouille du casier, puis en salle
 // de maths la scène de la fille (dialogue à choix) et la remarque du prof, enfin le brevet remis par le prof, qui
 // ouvre la route du Prytanée.
 // Scénettes partagées par la route de Bonsecours et les intérieurs du collège (étapes : voir MapScene.runSteps).
@@ -14,7 +14,7 @@ export const SURVEILLANT = [
     say: ['Avant le premier cours, va ranger tes affaires dans ton casier : le casier 12, au couloir des casiers.'], end: true,
   },
   {
-    unlessSouvenirs: [TRAITS.insouciance.id], speaker: 'Surveillant',
+    unlessSouvenirs: [TRAITS.audace.id], speaker: 'Surveillant',
     say: ['Le cours de maths va commencer : file en classe, avec ton colocataire de casier. Et pas de bruit, hein !'], end: true,
   },
   { unlessItems: [ITEMS.brevet.id], speaker: 'Surveillant', say: ['Ton prof de maths t\'attend à son bureau : il a ton brevet.'], end: true },
@@ -96,10 +96,10 @@ export const REMI_INVITE = [
   { setFlag: FLAGS.remiInvite },
 ];
 
-// Le casier 12 : l'embrouille, puis, une fois l'Insouciance reçue, votre QG (et l'autocollant de Rémy, objet-souvenir).
+// Le casier 12 : l'embrouille, puis, une fois l'Audace reçue, votre QG (et l'autocollant de Rémy, objet-souvenir).
 export const LOCKER = [
   { unlessFlags: [FLAGS.casierPartage], steps: LOCKER_FIGHT, end: true },
-  { unlessSouvenirs: [TRAITS.insouciance.id], say: ['Le casier 12, à Rémy et toi. Tes affaires en haut, les siennes en bas.'], end: true },
+  { unlessSouvenirs: [TRAITS.audace.id], say: ['Le casier 12, à Rémy et toi. Tes affaires en haut, les siennes en bas.'], end: true },
   { ifItems: [ITEMS.autocollant.id], say: ['Le casier 12 : votre QG, à Rémy et toi. L\'autocollant de Rémy brille sur la porte.'], end: true },
   { say: ['Le casier 12 : votre QG, à Rémy et toi. Rémy a collé un autocollant de Pokémon à l\'intérieur de la porte.'] },
   // Rémy arrive par l'escalier, vient à côté de Pierre, lui donne le sien, puis repart en classe.
@@ -111,22 +111,22 @@ export const LOCKER = [
   { walk: 'remy-autocollant', to: CORRIDOR_STAIRS, block: true, then: [FLAGS.remyRepart] },
 ];
 
-// Rémy, en classe (on le trouve à sa place jusqu'au brevet) : il pousse Pierre vers la fille, puis, l'Insouciance reçue, le
+// Rémy, en classe (on le trouve à sa place jusqu'au brevet) : il pousse Pierre vers la fille, puis, l'Audace reçue, le
 // casier devient leur QG ; à la fin de la troisième, il encourage Pierre pour le brevet.
 export const REMI = [
   { ifItems: [ITEMS.brevet.id], speaker: 'Rémy', say: ['Le Prytanée ? T\'es un ouf. Tu m\'enverras une photo en uniforme !'], end: true },
   { ifFlags: [FLAGS.finTroisieme], speaker: 'Rémy', say: ['Le prof veut te voir pour le brevet. Vas-y, c\'est toi le roi du calcul mental.'], end: true },
-  { ifSouvenirs: [TRAITS.insouciance.id], speaker: 'Rémy', say: ['Le casier, c\'est notre QG. On se retrouve là à chaque récré !'], end: true },
+  { ifSouvenirs: [TRAITS.audace.id], speaker: 'Rémy', say: ['Le casier, c\'est notre QG. On se retrouve là à chaque récré !'], end: true },
   { speaker: 'Rémy', say: ['Vas-y, je te suis. Le cours va bientôt commencer.'] },
 ];
 
-// La scène de la fille → Insouciance : dialogue à choix, trois répliques à chaque étape (trop guindée, trop lourde,
+// La scène de la fille → Audace : dialogue à choix, trois répliques à chaque étape (trop guindée, trop lourde,
 // naturelle). Les mauvaises ne bloquent pas : petit flottement, Rémy lance un « joker » ; la bonne fait avancer l'échange.
 const RELAX = 'Rémy, derrière toi, chuchote : « Joker. On la refait, tranquille. »';
 const line = (question, choices, answer, wrong) => ({ quiz: { question, choices, answer, wrong: { ...wrong, default: [RELAX] } } });
 export const CAMILLE = [
   { unlessFlags: [FLAGS.remiInvite], say: ['Une fille de ta classe sort ses cahiers.'], end: true },
-  { ifSouvenirs: [TRAITS.insouciance.id], speaker: 'Camille', say: ['On se met à côté, comme promis ! Moi, les maths, c\'est pas mon fort.'], end: true },
+  { ifSouvenirs: [TRAITS.audace.id], speaker: 'Camille', say: ['On se met à côté, comme promis ! Moi, les maths, c\'est pas mon fort.'], end: true },
   { comeBeside: 'remi-classe' },
   { faceTo: 'camille' },
   { say: ['Rémy te suit, l\'air de rien.', 'La fille sort ses cahiers. Elle lève les yeux vers toi.'] },
@@ -147,7 +147,7 @@ export const CAMILLE = [
   { speaker: 'Camille', say: ['Ça marche ! Je suis nulle en calcul, tu m\'aideras.'] },
   { say: ['Camille sourit.'] },
   { speaker: 'Rémy', say: ['Trop facile. Je savais que t\'allais gérer.'] },
-  { trait: TRAITS.insouciance },
+  { trait: TRAITS.audace },
   { speaker: 'Rémy', say: ['Bon. Notre casier, c\'est notre QG, maintenant. Et toi, t\'es mon pote.'] },
   { walk: 'remi-classe', to: REMI_SEAT, block: true },
   // Le prof les rappelle à l'ordre, depuis son bureau.
@@ -167,7 +167,7 @@ export const CAMILLE = [
 ];
 
 // Le prof de maths : à la fin de la troisième (après l'ellipse), l'oral du brevet, en face à face à son bureau. « Prêt ? »,
-// Pierre utilise Confiance, puis un seul calcul (une erreur ne bloque pas : il fait recompter) ; il remet le diplôme du
+// Pierre utilise Audace, puis un seul calcul (une erreur ne bloque pas : il fait recompter) ; il remet le diplôme du
 // brevet, qui ouvre la route du Prytanée.
 const calcul = (question, choices, answer) => ({
   quiz: { speaker: 'Professeur', question, choices, answer, wrong: { default: ['Hmm… Recompte tranquillement.'] } },
@@ -176,7 +176,7 @@ export const PROF = [
   { ifItems: [ITEMS.brevet.id], speaker: 'Professeur', say: ['Avec ton brevet, tu peux candidater au Prytanée. Bonne chance, Pierre !'], end: true },
   { unlessFlags: [FLAGS.finTroisieme], speaker: 'Professeur', say: ['Sors ton cahier, Pierre : aujourd\'hui, calcul mental !'], end: true },
   { speaker: 'Professeur', say: ['Prêt ?'] },
-  { useTrait: TRAITS.confiance },
+  { useTrait: TRAITS.audace },
   calcul('Combien font 7 plus 5 ?', ['11', '12', '13'], '12'),
   { speaker: 'Professeur', say: ['Parfait ! Comme quoi, malgré le bruit… Tu as mérité ton diplôme du brevet.'] },
   { give: ITEMS.brevet, text: 'Tu reçois ton diplôme du brevet !' },

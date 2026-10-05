@@ -10,7 +10,7 @@ import { ItemBag } from './ItemBag.js';
 import { flags } from './flags.js';
 import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
-import { TRAIT_CITIES, traitById, traitsOfCity } from '../data/story.js';
+import { MAX_TRAITS, TRAITS, traitById } from '../data/story.js';
 import { MAPS } from '../data/maps/index.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Carte (du voyage),
@@ -73,16 +73,19 @@ export class StartMenu {
     ];
   }
 
-  // Carnet des vertus : une page par ville (vertus reçues / vertus de la ville), puis les souvenirs des PNJ.
+  // Carnet des vertus : le total, puis une page par vertu reçue (sa ville, sa phrase, ses utilisations), puis les
+  // souvenirs des PNJ.
   traitPages() {
-    const pages = TRAIT_CITIES.map((city) => {
-      const all = traitsOfCity(city);
-      const got = all.filter((t) => souvenirs.has(t.id)).map((t) => t.name);
-      return got.length ? `${MAPS[city]?.name ?? city} - ${got.length} / ${all.length} : ${got.join(', ')}.` : null;
-    }).filter(Boolean);
+    const got = Object.values(TRAITS).filter((t) => souvenirs.has(t.id));
     const others = souvenirs.list().filter((s) => !traitById(s.id)).map((s) => s.name);
+    if (!got.length && !others.length) return ['Ton carnet des vertus est encore vide.'];
+    const times = (n) => (n ? `Utilisée ${n} fois.` : 'Pas encore utilisée.');
+    const pages = [
+      `Vertus : ${got.length} sur ${MAX_TRAITS}.`,
+      ...got.map((t) => `${t.name.toUpperCase()} (${MAPS[t.city]?.name ?? t.city}) : « ${t.phrase} » ${times(souvenirs.uses(t.id))}`),
+    ];
     if (others.length) pages.push(`Souvenirs (${others.length}) : ${others.join(', ')}.`);
-    return pages.length ? pages : ['Ton carnet des vertus est encore vide.'];
+    return pages;
   }
 
   // Le menu ne s'ouvre qu'en jeu, le joueur à l'arrêt, hors scénette et sans dialogue en cours.

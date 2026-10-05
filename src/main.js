@@ -8,7 +8,10 @@ import { FerryScene } from './scenes/FerryScene.js';
 import { souvenirs } from './systems/souvenirs.js';
 import { flags } from './systems/flags.js';
 import { items } from './systems/items.js';
-import { eraseSave } from './systems/save.js';
+import { eraseSave, migrateSave } from './systems/save.js';
+
+// Anciennes sauvegardes : vertus converties avant tout affichage.
+migrateSave();
 
 // La police des dialogues doit être chargée avant de dessiner le premier texte (1,5 s au plus).
 await Promise.race([

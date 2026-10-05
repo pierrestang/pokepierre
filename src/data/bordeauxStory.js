@@ -1,8 +1,8 @@
-import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
+import { FLAGS, ITEMS, TRAITS } from './story.js';
 
 // Scénario de Bordeaux (les études), en cinq temps :
 //   1. Les clés : l'agence, puis Ousmane, le coloc, devant l'immeuble ; ils entrent ensemble.
-//   2. La coupure : l'appartement dans le noir ; Pierre (Pragmatisme) relève le compteur → Indépendance.
+//   2. La coupure : l'appartement dans le noir ; Pierre (Ingéniosité) relève le compteur. Pas de vertu à Bordeaux.
 //   3. La soirée d'intégration : l'enceinte chez Paulfit, les gobelets chez Rémi ; la fête dans l'appartement.
 //   4. Le diplôme d'anglais : l'oral à KEDGE (Rémi devant la porte).
 //   5. Le départ : l'aéroport (sortie est), Ousmane au guichet ; vol pour Hull.
@@ -47,7 +47,7 @@ export const BLACKOUT = [
   { say: ['Il fait tout noir. L\'interrupteur ne répond pas.'] },
   { speaker: 'Ousmane', say: ['C\'est quoi ce délire ? On appelle quelqu\'un ?'] },
   { speaker: 'Pierre', say: ['Non.'] },
-  { useTrait: TRAITS.pragmatisme },
+  { useTrait: TRAITS.ingeniosite },
   { setFlag: FLAGS.coupure },
   { say: ['Objectif : trouve le compteur électrique.'] },
 ];
@@ -60,7 +60,6 @@ export const METER = [
   { setFlag: FLAGS.coupureReparee },
   { approach: 'ousmane-coupure' },
   { speaker: 'Ousmane', say: ['T\'es sérieux, tu savais faire ça ?'] },
-  { trait: TRAITS.independance },
   {
     speaker: 'Ousmane',
     say: [
@@ -159,6 +158,7 @@ const oral = (question, choices, answer, wrong) => ({ quiz: { speaker: PROF, que
 export const ENGLISH_ORAL = [
   { ifItems: [ITEMS.diplomeAnglais.id], speaker: PROF, say: ['Avec ça, la route vers l\'est t\'est ouverte.'], end: true },
   { speaker: PROF, say: ['Welcome to your English oral! Three questions. Ready?'] },
+  { useTrait: TRAITS.audace },
   oral('« Je suis en retard », in English?', ['I am in retard.', 'I am late.', 'I am en retard, my friend.'], 'I am late.', {
     'I am in retard.': ['Oh dear… Non. Vraiment pas. Try again!'],
     'I am en retard, my friend.': ['Very French. Try again!'],
@@ -179,13 +179,10 @@ export const ENGLISH_ORAL = [
 
 // ---------- 5. Le départ ----------
 
-// Les vertus reçues ici (encart du trajet).
-const CARRY = carryText('bordeaux');
-
 // Au guichet de l'aéroport, le vol pour Hull : Ousmane garde le départ.
 export const FLIGHT_TO_HULL = [
   { faceTo: 'ousmane-aeroport' },
   { speaker: 'Ousmane', say: ['Hull, hein. Je pars une semaine avant toi, je te garde une place à la coloc.'] },
   { setFlag: FLAGS.arriveeHull },
-  { travel: { map: 'hull', x: 1, y: 35, facing: 'right', plane: true, carry: CARRY } },
+  { travel: { map: 'hull', x: 1, y: 35, facing: 'right', plane: true } },
 ];

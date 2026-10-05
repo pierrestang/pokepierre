@@ -4,7 +4,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 //   1. L'arrivée en bus, Ousmane à l'arrêt, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
 //   2. Premier pub : la tournée (chaque commande, puis le barman, en anglais) ; une erreur, on retourne redemander.
 //   3. Deuxième pub : une partie de fléchettes contre un habitué (systems/Darts.js), gagnée ou perdue.
-//   4. L'Asylum, puis le petit matin devant la boîte : Lâcher-prise ; rentrer dormir.
+//   4. L'Asylum (Joie de vivre), puis le petit matin devant la boîte : Insouciance ; rentrer dormir.
 //   5. La veille de l'examen, les révisions à la bibliothèque (tour de table, choix sans mauvaise réponse bloquante).
 //   6. Le lendemain, les résultats devant l'université : le diplôme d'anglais de Hull.
 //   7. Les adieux devant chez Léo : chacun part en échange ; Léo et Ousmane restent. Puis l'avion pour Hanoï.
@@ -142,6 +142,8 @@ export const ASYLUM_ENTER = [
 const BAND_ASYLUM = ['romain-asylum', 'prophecy-asylum', 'leo-asylum', 'ousmane-asylum', 'charlotte-asylum', 'anais-asylum'];
 export const ASYLUM_DANCE = [
   { speaker: 'Léo', say: ['C\'est notre chanson ! Venez tous !'] },
+  { useTrait: TRAITS.joie },
+  { say: ['Tu entraînes toute la bande sur la piste, comme Maman au salon.'] },
   { gather: BAND_ASYLUM, area: [4, 4, 4, 3] },
   { say: ['Toute la bande danse sur la piste.'] },
   { dance: BAND_ASYLUM },
@@ -152,7 +154,7 @@ export const ASYLUM_DANCE = [
   { travel: { map: 'hull', x: 23, y: 13, facing: 'down' } },
 ];
 
-// Au petit matin, devant l'Asylum, toute la bande : Léo part dans la mauvaise direction ; Lâcher-prise.
+// Au petit matin, devant l'Asylum, toute la bande : Léo part dans la mauvaise direction ; Insouciance.
 export const DAWN = [
   { say: ['Ciel bleuté, les réverbères s\'éteignent. Toute la bande est devant l\'Asylum.'] },
   { approach: 'leo-aube' },
@@ -162,7 +164,7 @@ export const DAWN = [
   { speaker: 'Charlotte', say: ['Au fait… les exams, c\'est après-demain.'] },
   { speaker: 'Anaïs', say: ['Ne dis pas ça maintenant.'] },
   { speaker: 'Léo', say: ['Demain, bibliothèque. Tout le monde.'] },
-  { trait: TRAITS.lacherPrise },
+  { trait: TRAITS.insouciance },
   { say: ['Objectif : rentre dormir à la coloc.'] },
 ];
 
@@ -252,8 +254,10 @@ export const FAREWELL = [
 
 // Les vertus reçues à Hull (encart du trajet).
 const CARRY = carryText('hull');
-// Le vol pour Hanoï : personne au guichet.
+// Le vol pour Hanoï : personne au guichet, Pierre part seul (Autonomie).
 export const FLIGHT_TO_HANOI = [
+  { useTrait: TRAITS.autonomie },
+  { say: ['Pour la première fois, personne ne t\'accompagne. Tu prends ton billet pour Hanoï.'] },
   { setFlag: FLAGS.arriveeHanoi },
   { travel: { map: 'hanoi', x: 1, y: 6, facing: 'right', plane: true, carry: CARRY } },
 ];

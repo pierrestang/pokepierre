@@ -631,6 +631,7 @@ export class MapScene extends Phaser.Scene {
         this.refreshActors();                       // PNJ et suiveurs qui dépendent du trait
       }
       if (step.useTrait) {
+        souvenirs.use(step.useTrait.id);
         sfx('trait');
         await this.dialog.open([`Pierre utilise ${step.useTrait.name.toUpperCase()} !`]);
       }

@@ -7,6 +7,7 @@ export const FLAGS = {
   journeeLancee: 'journee-lancee',              // Maman a lancé la journée au salon
   papaFait: 'papa-fait',                        // tri des cannes avec Papa terminé (le pêcheur se déplace)
   manonDemande: 'manon-demande',                // Manon t'a lancé à la recherche du coquillage
+  secretManon: 'secret-manon',                  // Manon t'a donné son coquillage jumeau (« notre secret »)
   canneMontree: 'canne-montree',                // le pêcheur t'a montré sa canne cassée
   canneOfferte: 'canne-offerte',                // canne de la caisse « À DONNER » offerte au pêcheur
   departFortDeFrance: 'depart-fort-de-france', // parti en ferry
@@ -14,6 +15,7 @@ export const FLAGS = {
   saArrivee: 'sa-arrivee',                      // Saint-Ay : Papa et Manon t'ont retrouvé au bord du lac
   familleSuit: 'famille-suit',                  // Papa et Manon sont partis devant, à la clinique
   familleArrivee: 'famille-arrivee',            // arrivés à la clinique de Saint-Ay
+  fannyMain: 'fanny-main',                      //   Fanny a attrapé le doigt de Pierre, au berceau
   familleRentree: 'famille-rentree',            //   en sortant de la clinique : la famille est rentrée à la maison
   felixInvite: 'felix-invite',                  // Felix (ton cousin) t'a invité chez lui
   maisonFelixVisitee: 'maison-felix-visitee',   // entré chez Felix
@@ -134,29 +136,62 @@ export const TOULON_QUESTS = {
   ifSouvenirs: ['souvenir-leo', 'souvenir-theo'],
 };
 
-// Vertus (traits de caractère) : une seule collection, qui grandit de ville en ville. Encart « Pierre a reçu la vertu
-// X ! » (étape `trait`), « Pierre utilise X ! » quand une vertu débloque une situation (étape `useTrait`), carnet
-// (Start > VERTUS) et compteur de la ville en cours (UIScene). `city` : la ville où on le reçoit (id de carte).
-// Les `id` restent ceux des anciennes qualités et anciens rôles, pour les sauvegardes et les conditions (`ifSouvenirs`).
+// Vertus (traits de caractère) : une seule collection, qui grandit de ville en ville ; 8 au plus dans tout le jeu, une
+// par ville au plus (6 jusqu'à Hull, 2 places réservées après). Encart « Pierre a reçu la vertu X ! » (étape `trait`),
+// « Pierre utilise X ! » quand une vertu débloque une situation (étape `useTrait`, comptée dans le carnet), carnet
+// (Start > VERTUS) et compteur « Vertus : X sur 8 » (UIScene). `city` : la ville où on la reçoit (id de carte) ;
+// `phrase` : sa phrase dans le carnet. Les `id` gardent ceux des anciennes sauvegardes quand c'est la même vertu ;
+// les anciennes sont converties au chargement (voir TRAIT_MIGRATION, systems/save.js migrateSave).
 export const TRAITS = {
-  joie: { id: 'souvenir-maman', name: 'Joie de vivre', city: 'fortDeFrance' },
-  pragmatisme: { id: 'souvenir-papa', name: 'Pragmatisme', city: 'fortDeFrance' },
-  confiance: { id: 'souvenir-manon', name: 'Confiance', city: 'fortDeFrance' },
-  patience: { id: 'role-grand-frere', name: 'Patience', city: 'saintAy' },
-  espritEquipe: { id: 'role-cousins', name: "Esprit d'équipe", city: 'saintAy' },
-  loyaute: { id: 'role-copains-montepilloy', name: 'Loyauté', city: 'montepilloy' },
-  ingeniosite: { id: 'role-bricoleur', name: 'Ingéniosité', city: 'montepilloy' },
-  insouciance: { id: 'vertu-insouciance', name: 'Insouciance', city: 'routeBonsecours' },
-  autonomie: { id: 'vertu-autonomie', name: 'Autonomie', city: 'prytanee' },
-  independance: { id: 'vertu-independance', name: 'Indépendance', city: 'bordeaux' },
-  lacherPrise: { id: 'vertu-lacher-prise', name: 'Lâcher-prise', city: 'hull' },
+  joie: {
+    id: 'souvenir-maman', name: 'Joie de vivre', city: 'fortDeFrance',
+    phrase: 'Rire et danser partout où l\'on va, même le jour du départ.',
+  },
+  espritEquipe: {
+    id: 'role-cousins', name: "Esprit d'équipe", city: 'saintAy',
+    phrase: 'Construire à plusieurs ce qu\'on ne ferait jamais seul.',
+  },
+  ingeniosite: {
+    id: 'role-bricoleur', name: 'Ingéniosité', city: 'montepilloy',
+    phrase: 'Trouver comment réparer ce qui ne marche plus.',
+  },
+  audace: {
+    id: 'vertu-audace', name: 'Audace', city: 'routeBonsecours',
+    phrase: 'Oser aller vers les autres, même quand on est timide.',
+  },
+  autonomie: {
+    id: 'vertu-autonomie', name: 'Autonomie', city: 'prytanee',
+    phrase: 'Faire les choses soi-même, sans attendre qu\'on les fasse à sa place.',
+  },
+  insouciance: {
+    id: 'vertu-insouciance-hull', name: 'Insouciance', city: 'hull',
+    phrase: 'Profiter du moment, sans penser à demain.',
+  },
 };
+export const MAX_TRAITS = 8;
 const TRAIT_LIST = Object.values(TRAITS);
 export const traitById = (id) => TRAIT_LIST.find((t) => t.id === id) ?? null;
 export const traitsOfCity = (city) => TRAIT_LIST.filter((t) => t.city === city);
 export const TRAIT_CITIES = [...new Set(TRAIT_LIST.map((t) => t.city))];      // dans l'ordre de l'histoire
-// Encart du trajet vers la ville suivante : seulement les vertus reçues dans la ville qu'on quitte.
+// Encart du trajet vers la ville suivante : seulement la vertu reçue dans la ville qu'on quitte.
 export const carryText = (city) => `Tu emportes : ${traitsOfCity(city).map((t) => t.name).join(', ')}.`;
+
+// Anciennes sauvegardes (avant le passage à 8 vertus) : vertus renommées (ancien id -> vertu), vertus retirées (ancien
+// id -> drapeau qui marque la scène comme faite, ou null). Attention : l'ancien « vertu-insouciance » est la vertu du
+// collège, devenue Audace.
+export const TRAIT_MIGRATION = {
+  renamed: {
+    'vertu-insouciance': TRAITS.audace,
+    'vertu-lacher-prise': TRAITS.insouciance,
+  },
+  removed: {
+    'souvenir-papa': null,                                  // Pragmatisme : le tri des cannes lève déjà papa-fait
+    'souvenir-manon': FLAGS.secretManon,                    // Confiance : le coquillage de Manon
+    'role-grand-frere': FLAGS.fannyMain,                    // Patience : la main de Fanny
+    'role-copains-montepilloy': FLAGS.copainsPartent,       // Loyauté : la fin du cache-cache
+    'vertu-independance': null,                             // Indépendance : le compteur relève déjà coupure-reparee
+  },
+};
 
 // Objets remis au joueur (voir systems/items.js).
 export const ITEMS = {
@@ -191,8 +226,8 @@ export const ITEMS = {
 // Personnages qui marchent derrière le joueur, dans cet ordre, quand leurs conditions sont remplies.
 // `id` identique à celui du PNJ qu'ils remplacent : ils partent de sa position. `name` : leur nom affiché, qui donne
 // leur apparence (voir characters.js) ; sans lui, l'id sert de nom (attention aux accents).
-// Fin du cache-cache de Montépilloy : les copains filent à l'école (ou, dans une ancienne partie, Loyauté déjà reçue).
-const COPAINS_DONE = { unlessFlags: [FLAGS.copainsPartent], unlessSouvenirs: ['role-copains-montepilloy'] };
+// Fin du cache-cache de Montépilloy : les copains filent à l'école.
+const COPAINS_DONE = { unlessFlags: [FLAGS.copainsPartent] };
 
 // Pas de suiveur à Fort-de-France ni à Saint-Ay : les PNJ y partent devant et attendent sur place.
 export const FOLLOWERS = [

@@ -4,7 +4,7 @@ import { parseGrid } from './parseGrid.js';
 // d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
 import BUILT from '../builtMaps/saint-ay.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS, ITEMS, TRAITS } from '../story.js';
+import { FLAGS, ITEMS } from '../story.js';
 import {
   ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS,
 } from '../saintAyStory.js';
@@ -154,7 +154,7 @@ export const saintAyMap = {
     },
     {
       id: 'felix', name: 'Felix', x: 17, y: 21, facing: 'right', color: COUSIN_COLORS.felix,
-      ifSouvenirs: [TRAITS.patience.id], unlessFlags: [FLAGS.felixInvite],
+      ifFlags: [FLAGS.fannyMain], unlessFlags: [FLAGS.felixInvite],
       dialogue: [
         'Cousin ! Ça y est, on a emménagé ! La maison au toit de chaume, sur la rue du milieu, juste sous la vôtre.',
         'Rejoins-nous là-bas, les autres t\'attendent !',
@@ -166,7 +166,7 @@ export const saintAyMap = {
       ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.manonNouvelle],
       dialogue: ['Viens vite, Papa a une nouvelle à nous annoncer !'],
     },
-    // Le vieux pêcheur méfiant, au bord du lac : il ne parle qu'à quelqu'un de confiance (trait Confiance).
+    // Le vieux pêcheur de mauvaise humeur, au bord du lac : la chanson de Maman le déride (Joie de vivre).
     { id: 'vieux-pecheur', name: 'Vieux pêcheur', x: 8, y: 8, facing: 'left', still: true, script: OLD_FISHER },
     // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis au bord du lac, côté sud (vers la corde).
     {
@@ -207,7 +207,7 @@ export const saintAyMap = {
     // Quelques années plus tard, au bord du lac : Manon vient te chercher.
     { on: 'enter', ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.manonNouvelle], steps: MANON_NEWS },
     // En sortant de la clinique : Felix vient te chercher (voir CLINIC_EXIT).
-    { on: 'enter', ifSouvenirs: [TRAITS.patience.id], unlessFlags: [FLAGS.felixInvite], steps: CLINIC_EXIT },
+    { on: 'enter', ifFlags: [FLAGS.fannyMain], unlessFlags: [FLAGS.felixInvite], steps: CLINIC_EXIT },
   ],
   triggers: [
     // La vieille corde : cachée dans une touffe du coin de hautes herbes du sud-ouest, pendant le chantier ; on la

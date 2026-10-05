@@ -1,13 +1,13 @@
 import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 import { MONTEPILLOY_SPOTS } from './montepilloyStory.js';
 
-// Scénario de Saint-Ay (voir le document « Scénarios Poké-Pierre — Fort-de-France & Saint-Ay ») : Pierre gagne
-// Patience à la naissance de Fanny, puis Esprit d'équipe en construisant une cabane avec ses cousins (planches et
-// corde dans n'importe quel ordre), et part en voiture pour Montépilloy après une nouvelle mutation de Papa.
+// Scénario de Saint-Ay (voir le document « Scénarios Poké-Pierre — Fort-de-France & Saint-Ay ») : la naissance de
+// Fanny, puis Esprit d'équipe en construisant une cabane avec ses cousins (planches et corde dans n'importe quel ordre), et part en voiture pour Montépilloy après une nouvelle mutation de Papa.
 // Pas de PNJ qui suit Pierre : ils disent où les rejoindre, partent à l'écran, et l'attendent sur place.
 // Scénettes partagées par la carte du village et les intérieurs (étapes : voir MapScene.runSteps).
 
-const HAS_TRAITS = { ifSouvenirs: [TRAITS.patience.id, TRAITS.espritEquipe.id] };
+// La cabane inaugurée (Esprit d'équipe) : vient forcément après la naissance de Fanny.
+const CABANE_DONE = { ifSouvenirs: [TRAITS.espritEquipe.id] };
 // La cabane des cousins : posée sur deux blocs de sapins de la forêt au sud du lac (cases 2 à 5, rangées 18
 // et 19). Pied de l'échelle : la case où l'on monte, devant le sapin de droite (praticable une fois la cabane
 // construite, voir les portes `when`) ; la plateforme bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2).
@@ -35,7 +35,7 @@ export const ARRIVAL = [
 ];
 
 // La clinique : Maman vient d'accoucher de Fanny. Pierre s'approche du berceau ; à lui de tendre la main
-// (FANNY_CRADLE, Patience).
+// (FANNY_CRADLE).
 export const BIRTH = [
   { setFlag: FLAGS.familleArrivee },
   { speaker: 'Papa', say: ['Te voilà ! Maman est là-bas.'] },
@@ -47,14 +47,14 @@ export const BIRTH = [
   { speaker: 'Maman', say: ['Approche-toi. Tends-lui la main, doucement.'] },
 ];
 
-// Le berceau de Fanny — Patience : Pierre tend un doigt (A), elle l'attrape et ne le lâche pas tout de suite.
+// Le berceau de Fanny : Pierre tend un doigt (A), elle l'attrape et ne le lâche pas tout de suite.
 export const FANNY_CRADLE = [
-  { ifSouvenirs: [TRAITS.patience.id], say: ['Fanny dort, son petit poing serré.'], end: true },
+  { ifFlags: [FLAGS.fannyMain], say: ['Fanny dort, son petit poing serré.'], end: true },
   { say: ['Tu tends un doigt vers Fanny…'] },
   { emote: 'player', kind: 'surprise' },
   { say: ['Elle l\'attrape ! Et elle serre fort. Tu attends… elle ne le lâche pas tout de suite.'] },
   { speaker: 'Maman', say: ['Elle a de la poigne, celle-là.', 'À partir d\'aujourd\'hui, tu vas veiller sur elle.'] },
-  { trait: TRAITS.patience },
+  { setFlag: FLAGS.fannyMain },
 ];
 
 // En sortant de la clinique : la famille rentre à la maison ; Felix vient chercher Pierre et part devant.
@@ -97,13 +97,18 @@ export const FELIX_CHANTIER = [
 ];
 
 // Dans la cabane toute neuve (voir interiors.cabane) : les quatre cousins assis derrière les deux longues
-// tables. Chacun parle en sautillant, puis toute la bande saute de joie. Pierre se retrouve debout devant
-// les tables, toujours dans la cabane.
+// tables. Ils s'ennuient déjà : Pierre (Joie de vivre) lance une chanson et toute la bande saute de joie ; puis
+// chacun parle en sautillant. Pierre se retrouve debout devant les tables, toujours dans la cabane.
 export const CABANE_FETE = [
   { black: true },
   { wait: 500 },
   { black: false },
   { say: ['La cabane est finie. Les quatre cousins s\'installent au QG.'] },
+  { speaker: 'Joshua', say: ['Bon… et maintenant, on fait quoi ?'] },
+  { speaker: 'Yanis', say: ['On s\'ennuie déjà.'] },
+  { useTrait: TRAITS.joie },
+  { say: ['Tu lances une chanson, et tout le monde se met à sauter dans la cabane !'] },
+  { cheer: ['felix-cabane', 'player', 'joshua-cabane', 'yanis-cabane'] },
   { hop: 'felix-cabane' },
   { speaker: 'Felix', say: ['Voilà. Notre QG.'] },
   { hop: 'joshua-cabane' },
@@ -118,7 +123,6 @@ export const CABANE_FETE = [
   { speaker: 'Joshua', say: ['{motDePasse|QG}. Retenu.'] },
   { speaker: 'Felix', say: ['Où que tu ailles après, cette cabane restera la nôtre. On est une équipe.'] },
   { face: { 'felix-cabane': 'down', player: 'down' } },
-  { cheer: ['felix-cabane', 'player', 'joshua-cabane', 'yanis-cabane'] },
   { trait: TRAITS.espritEquipe },
   // Ellipse : quelques années plus tard, Pierre au bord du lac ; Manon vient le chercher (voir MANON_NEWS).
   { black: true },
@@ -179,7 +183,7 @@ export const ANNOUNCEMENT = [
   { speaker: 'Papa', say: ['Pierre, va annoncer la nouvelle à tes cousins. Ils sont à la cabane.'] },
   { setFlag: FLAGS.annonceMutation },
 ];
-export const ANNOUNCEMENT_EVENT = { ...HAS_TRAITS, unlessFlags: [FLAGS.annonceMutation] };
+export const ANNOUNCEMENT_EVENT = { ...CABANE_DONE, unlessFlags: [FLAGS.annonceMutation] };
 
 // Le départ : la voiture chargée devant la maison (tournée vers la gauche : le capot donne sur la case CAR_HOOD).
 export const CAR_HOOD = [18, 7];
@@ -211,14 +215,15 @@ export const CAR = [
 ];
 
 
-// Le vieux pêcheur du lac, méfiant : il ne parle qu'à quelqu'un de confiance (premier usage d'un trait). Il donne
-// alors l'objet-souvenir de Saint-Ay, un galet du lac.
+// Le vieux pêcheur du lac, de mauvaise humeur : la chanson de Maman le déride (Joie de vivre). Il donne alors
+// l'objet-souvenir de Saint-Ay, un galet du lac.
 export const OLD_FISHER = [
   { ifItems: [ITEMS.galetLac.id], speaker: 'Vieux pêcheur', say: ['Prends soin de ce galet. Et de ta petite sœur.'], end: true },
-  { unlessSouvenirs: [TRAITS.confiance.id], say: ['Le vieil homme te tourne le dos. Il ne parle pas aux inconnus.'], end: true },
+  { unlessSouvenirs: [TRAITS.joie.id], say: ['Le vieil homme te tourne le dos. Il a l\'air de mauvaise humeur.'], end: true },
   { speaker: 'Vieux pêcheur', say: ['Hm ? Je ne parle pas aux inconnus, moi.'] },
-  { useTrait: TRAITS.confiance },
-  { say: ['Tu t\'assois à côté de lui sans rien dire, comme avec Manon quand vous gardiez un secret.'] },
+  { useTrait: TRAITS.joie },
+  { say: ['Tu t\'assois à côté de lui et tu fredonnes la chanson de Maman.'] },
+  { speaker: 'Vieux pêcheur', say: ['… Elle est pas mal, ta chanson.'] },
   { speaker: 'Vieux pêcheur', say: ['… T\'as l\'air d\'un gamin de confiance, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
   { give: ITEMS.galetLac, text: 'Le vieux pêcheur te donne un galet tout lisse.' },
 ];
