@@ -239,8 +239,9 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 ### Arrivée et image d'accueil
 - Carte postale `montepilloy` (« bois aux Chênes, l'après-midi ») : **« Montépilloy, Oise. Quelques années plus
   tard… »** ; « Te voilà au bord de la mare. La maison est en haut du village : toute la famille y est. »
-- À la maison, Maman : « Te voilà ! Dernier jour d'école primaire ! Après, le collège. » / « Dépêche-toi, tu vas être en
-  retard ! L'école est en bas de la grand-rue, à droite. »
+- À la maison, Maman : « Te voilà ! Dernier jour d'école primaire ! Après, le collège. » / **« Et ton petit frère Jean
+  ne te lâchera pas : à huit ans, il veut déjà tout réparer dans la maison. »** / « Dépêche-toi, tu vas être en retard !
+  L'école est en bas de la grand-rue, à droite. »
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -249,7 +250,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 | Papa | « Le dernier jour, déjà. On est arrivés à Montépilloy, tu tenais à peine sur le siège arrière. » | `t1` |
 | Manon | « Le collège ? Tu verras, on s'y fait vite. Et le matin, tu feras la route à pied avec les copains. » | `t7` |
 | Fanny | « Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! » » | `f18` |
-| Jean | Petit frère, « né entre-temps » d'après le code : la réparation du tracteur | `t12` |
+| Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `t12` |
 | M. Bouly | Le fermier, et son tracteur en panne | `f32` |
 | Margaux | Copine de classe : lance le cache-cache | `f48` |
 | Étienne | Copain de classe | `f36` |
@@ -919,8 +920,6 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
   « Tu as toujours le tien ? »).
 - **L'examen de Hull** n'est pas joué : « veille d'examen », révisions, puis « Le lendemain… » directement aux résultats.
 - **Deux diplômes d'anglais** se suivent : « Diplôme d'anglais » (KEDGE, Bordeaux), puis « Diplôme d'anglais de Hull ».
-- **Jean**, le petit frère, apparaît à Montépilloy sans avoir été présenté. Seul un commentaire du code dit qu'il est
-  « né entre-temps ».
 
 ### Images d'accueil
 - Fort-de-France, Saint-Ay et le matin de septembre à Montépilloy utilisent la **même illustration** (bois aux Chênes, le

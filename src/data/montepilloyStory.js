@@ -24,10 +24,17 @@ export const ARRIVAL = [
   { say: ['Te voilà au bord de la mare. La maison est en haut du village : toute la famille y est.'] },
 ];
 
-// À la maison : Maman accueille Pierre la première fois.
+// À la maison : Maman accueille Pierre la première fois, et présente Jean (né à Montépilloy, 8 ans).
 export const MAMAN_WELCOME = [
   { approach: 'maman-mont' },
-  { speaker: 'Maman', say: ['Te voilà ! Dernier jour d\'école primaire ! Après, le collège.', 'Dépêche-toi, tu vas être en retard ! L\'école est en bas de la grand-rue, à droite.'] },
+  {
+    speaker: 'Maman',
+    say: [
+      'Te voilà ! Dernier jour d\'école primaire ! Après, le collège.',
+      'Et ton petit frère Jean ne te lâchera pas : à huit ans, il veut déjà tout réparer dans la maison.',
+      'Dépêche-toi, tu vas être en retard ! L\'école est en bas de la grand-rue, à droite.',
+    ],
+  },
   { setFlag: FLAGS.mamanAccueil },
 ];
 
