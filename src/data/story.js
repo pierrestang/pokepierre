@@ -78,6 +78,8 @@ export const FLAGS = {
   coupureReparee: 'coupure-reparee',            //   compteur électrique relevé : la lumière revient (Indépendance)
   preparatifs: 'preparatifs',                   //   Ousmane lance la soirée : enceinte chez Paulfit, gobelets chez Rémi
   soiree: 'soiree',                             //   la soirée d'intégration, dans l'appartement
+  leoSoiree: 'leo-soiree',                      //     Léo (KEDGE) rencontré à la soirée
+  anaisSoiree: 'anais-soiree',                  //     Anaïs (KEDGE) rencontrée à la soirée
   lendemainSoiree: 'lendemain-soiree',          //   en quittant la fête : le lendemain matin, l'appartement en désordre
   gobeletsRanges: 'gobelets-ranges',            //     facultatif (Autonomie) : les gobelets ramassés
   salonRange: 'salon-range',                    //       … le salon rangé

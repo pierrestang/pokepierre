@@ -27,7 +27,14 @@ export const ARRIVAL = [
   { black: false },
   { say: ['Il pleut. Ousmane attend à l\'arrêt de bus.'] },
   { approach: 'ousmane-arrivee' },
-  { speaker: 'Ousmane', say: ['T\'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps.', 'Viens, je te montre la coloc.'] },
+  {
+    speaker: 'Ousmane',
+    say: [
+      'T\'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps.',
+      'Léo et Anaïs sont déjà là. Toute la promo de KEDGE a atterri ici.',
+      'Viens, je te montre la coloc.',
+    ],
+  },
   { setFlag: FLAGS.hullAccueil },
   { walk: 'ousmane-arrivee', to: HULL_SPOTS.colocDoor, lead: true, then: [FLAGS.ousmaneRentre] },
 ];
@@ -44,7 +51,7 @@ export const LEO_CALLED = [
 // Chez Léo : la soirée est lancée, rendez-vous au pub ; Romain et Prophecy viendront à l'Asylum.
 export const LEO_PLAN = [
   { approach: 'leo-maison' },
-  { speaker: 'Léo', say: ['Ce soir, on sort. Tout le monde.'] },
+  { speaker: 'Léo', say: ['Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde !'] },
   { speaker: 'Romain', say: ['Nous, on vous rejoint à l\'Asylum.'] },
   { speaker: 'Prophecy', say: ['On a nos propres plans avant.'] },
   { speaker: 'Léo', say: ['Les autres sont déjà au pub, en haut de Newland Avenue. On y va !'] },
@@ -69,6 +76,7 @@ const ALL_SERVED = ORDERS.map((o) => o.flag);
 
 export const PUB_A_WELCOME = [
   { speaker: 'Léo', say: ['Première tournée, c\'est toi qui régales !'] },
+  { speaker: 'Anaïs', say: ['Comme à Bordeaux, mais c\'est toi qui régales cette fois !'] },
   { say: ['Objectif : ramène la tournée. Demande à chacun ce qu\'il veut, puis commande au comptoir.'] },
 ];
 

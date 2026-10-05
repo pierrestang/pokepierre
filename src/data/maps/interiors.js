@@ -5,8 +5,8 @@ import {
 } from '../saintAyStory.js';
 import { MAMAN_FDF } from '../fortDeFranceStory.js';
 import {
-  AGENT_KEYS, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_END, PAULFIT, REMI_CUPS, TIDY_BED, TIDY_CUPS,
-  TIDY_LIVING_ROOM,
+  AGENT_KEYS, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_END, PARTY_LEO, PAULFIT, REMI_CUPS,
+  TIDY_BED, TIDY_CUPS, TIDY_LIVING_ROOM,
 } from '../bordeauxStory.js';
 import { GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
 import {
@@ -1344,6 +1344,9 @@ export const interiors = {
       // La soirée : Ousmane et Rémi dans la foule.
       { id: 'ousmane-fete', name: 'Ousmane', x: 7, y: 6, facing: 'left', ...PARTY_TIME, dancing: true, dialogue: ['Regarde-moi ça ! Et dire que tout à l\'heure on était dans le noir.'] },
       { id: 'remi-fete', name: 'Rémi', x: 5, y: 6, facing: 'right', ...PARTY_TIME, dancing: true, dialogue: ['This party is so lit ! Enfin… grâce à toi, littéralement.'] },
+      // Léo et Anaïs, de KEDGE, qu'on retrouve à Hull (sprites de Hull, par leur nom : voir characters.js).
+      { id: 'leo-fete', name: 'Léo', x: 4, y: 5, facing: 'right', ...PARTY_TIME, dancing: true, script: PARTY_LEO },
+      { id: 'anais-fete', name: 'Anaïs', x: 8, y: 5, facing: 'left', ...PARTY_TIME, dancing: true, script: PARTY_ANAIS },
       { id: 'etudiant-1', name: 'Étudiant', x: 1, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Première année à KEDGE ! Et toi ?'] },
       { id: 'etudiant-2', name: 'Étudiant', x: 3, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['C\'est toi qui as rallumé le courant ? Respect.'] },
       { id: 'etudiant-3', name: 'Étudiant', x: 8, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['L\'enceinte, elle envoie !'] },

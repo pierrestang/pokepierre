@@ -507,6 +507,8 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 | Ousmane | Le coloc ; garde aussi le départ à l'aéroport | `f15` |
 | Paulfit | Fan de musculation : prête l'enceinte | `f44` |
 | Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `f40` |
+| Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `f55` |
+| Anaïs | Étudiante de KEDGE (« de ta promo »), invitée à la soirée ; on la retrouve à Hull | `f47` |
 | Étudiants (13) | À la soirée d'intégration | figurants |
 | Professeure d'anglais | L'oral à KEDGE | `t9` |
 | Hôtesse | Guichet de l'aéroport | `f12` |
@@ -527,6 +529,9 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
      français ! » ; dans tous les cas → **Gobelets**.
    - Ousmane : « On est bons. Rentre, ça commence. » ; « La soirée d'intégration bat son plein. L'enceinte de Paulfit
      trône au milieu du salon. » (répliques des étudiants, par exemple « C'est toi qui as rallumé le courant ? Respect. »)
+   - Parmi les invités, Léo : **« Moi c'est Léo, aussi à KEDGE. Paraît qu'on part tous à Hull l'an prochain pour
+     l'échange… Ça va être quelque chose. »** (ensuite : « La prochaine soirée, c'est à Hull ! ») ; Anaïs : **« Anaïs, de ta
+     promo ! Léo dit qu'à Hull il pleut tout le temps. J'espère qu'il exagère. »** (ensuite : « À Hull, alors ! »).
    - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous.
      Ousmane dort sur le canapé. »** (Ousmane est couché dans le lit de gauche ; des gobelets et du désordre au sol). Voir
      le passage optionnel.
@@ -579,28 +584,29 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 
 ### Arrivée et image d'accueil
 - **Pas de carte postale** : écran noir, « Hull, Angleterre. », puis « Il pleut. Ousmane attend à l'arrêt de bus. » ;
-  Ousmane : **« T'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps. »** / « Viens, je te
-  montre la coloc. » Il pleut à Hull tant qu'il fait jour.
+  Ousmane : **« T'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps. »** / « Léo et Anaïs sont
+  déjà là. Toute la promo de KEDGE a atterri ici. » / « Viens, je te montre la coloc. » Il pleut à Hull tant qu'il fait jour.
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Ousmane | Coloc de Pierre, toujours avec la bande | `f15` |
-| Léo | Meneur de la bande, parle franglais | `f55` |
+| Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `f55` |
 | Romain | Colocataire de Léo | `t3` |
 | Prophecy | Colocataire de Léo | `f53` |
 | Charlotte | De la bande, sérieuse | `f45` |
-| Anaïs | De la bande | `f47` |
+| Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `f47` |
 | Barman, Barmaid, clients | Les deux pubs | Barman `f38` ; les autres en figurants |
 | Habitué | Adversaire aux fléchettes, et le pari (passage optionnel) | figurant |
 | Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `f3` |
 
 ### Quêtes, dans l'ordre
 1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite la maison au toit
-   d'ardoise, en haut de Newland Avenue, à droite. » Chez Léo : **« Ce soir, on sort. Tout le monde. »** ; Romain : « Nous,
+   d'ardoise, en haut de Newland Avenue, à droite. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Romain : « Nous,
    on vous rejoint à l'Asylum. » ; Prophecy : « On a nos propres plans avant. » ; Léo : « Les autres sont déjà au pub, en
    haut de Newland Avenue. On y va ! » ; « La nuit tombe sur Hull. »
-2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** Chacun dit sa commande en
+2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** ; Anaïs : « Comme à Bordeaux, mais
+   c'est toi qui régales cette fois ! » Chacun dit sa commande en
    français : Léo « Une Guinness, évidemment. », Ousmane « Un cidre, s'il te plaît. », Charlotte « Un gin tonic ! »,
    Anaïs « Un verre de vin rouge. ». Le barman les demande en anglais (« And for Léo? »…), parmi six boissons ; une
    erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : « Le barman pose les verres
@@ -852,11 +858,11 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 | Rémi | `f40` | Bordeaux |
 | Professeure d'anglais | `t9` | Bordeaux (KEDGE) |
 | Hôtesse | `f12` | Aéroport |
-| Léo (de Hull) | `f55` | Hull |
+| Léo (de Hull) | `f55` | Bordeaux (la soirée), Hull |
 | Romain | `t3` | Hull, Amsterdam |
 | Prophecy | `f53` | Hull |
 | Charlotte | `f45` | Hull |
-| Anaïs | `f47` | Hull |
+| Anaïs | `f47` | Bordeaux (la soirée), Hull |
 | Barman | `f38` | Hull |
 | Habitué | figurant | Hull |
 | Nouveau | `f30` | Prytanée (hall de l'internat) |
@@ -904,9 +910,9 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
   nommé.
 
 ### Répliques contradictoires ou répétées
-- **La bande de Hull** : le code la présente comme des « retrouvailles », la bande connaissant Pierre « depuis
-  Bordeaux ». Mais seul Ousmane apparaît à Bordeaux : Léo, Romain, Prophecy, Charlotte et Anaïs ne sont jamais présentés.
-  L'habitué du pub accueille Pierre d'un « Hey, the new guy! ».
+- **La bande de Hull** : Ousmane, Léo et Anaïs connaissent Pierre depuis Bordeaux (la soirée d'intégration), mais
+  Romain, Prophecy et Charlotte ne sont jamais présentés avant Hull. L'habitué du pub accueille Pierre d'un « Hey, the
+  new guy! », ce qui est cohérent (il ne le connaît pas).
 - **Deux départs presque identiques** : sur le pont du ferry (« Regarde-la bien. » / « Elle ne va pas bouger. On
   reviendra. » / « Manon te montre son coquillage, à voix basse. » / « Tu as le tien ? ») et dans la voiture qui quitte
   Saint-Ay (« Regarde bien Saint-Ay. » / « Elle ne va pas bouger. On reviendra. » / « Manon te montre son coquillage. » /

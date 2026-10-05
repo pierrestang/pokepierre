@@ -133,6 +133,17 @@ export const FRONT_DOOR = [
 ];
 
 export const PARTY = [{ say: ['La soirée d\'intégration bat son plein. L\'enceinte de Paulfit trône au milieu du salon.'] }];
+// Parmi les invités, Léo et Anaïs, de KEDGE : on les retrouve à Hull (voir hullStory.js).
+export const PARTY_LEO = [
+  { ifFlags: [FLAGS.leoSoiree], speaker: 'Léo', say: ['La prochaine soirée, c\'est à Hull !'], end: true },
+  { speaker: 'Léo', say: ['Moi c\'est Léo, aussi à KEDGE. Paraît qu\'on part tous à Hull l\'an prochain pour l\'échange… Ça va être quelque chose.'] },
+  { setFlag: FLAGS.leoSoiree },
+];
+export const PARTY_ANAIS = [
+  { ifFlags: [FLAGS.anaisSoiree], speaker: 'Anaïs', say: ['À Hull, alors !'], end: true },
+  { speaker: 'Anaïs', say: ['Anaïs, de ta promo ! Léo dit qu\'à Hull il pleut tout le temps. J\'espère qu\'il exagère.'] },
+  { setFlag: FLAGS.anaisSoiree },
+];
 
 // En quittant la fête : le lendemain matin, l'appartement en désordre ; Ousmane dort. Facultatif (Autonomie) : tout
 // ranger, dans n'importe quel ordre ; Ousmane se réveille et donne l'objet-souvenir de Bordeaux, la photo de la soirée.
