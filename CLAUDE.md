@@ -74,6 +74,9 @@ puis Hanoï. Pas de combats.
 - Les vertus servent comme des CS : chaque ville utilise au moins une vertu déjà acquise sur la route principale, et
   une dans un passage optionnel, y compris en revenant dans les anciennes villes. Sans la bonne vertu, une réplique
   d'indice décrit la situation.
+- Verrous : les vertus servent aussi de clés qui débloquent, dans les villes déjà visitées, des scènes de retour (pas un
+  objet utile, mais une scène et un souvenir). Premier verrou : le panier de la cabane de Saint-Ay (Ingéniosité,
+  saintAyStory.js PULLEY). D'autres viendront.
 
 ## Méthode de travail
 - Avancer par petits jalons jouables, un seul à la fois.
