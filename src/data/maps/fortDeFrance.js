@@ -1,6 +1,11 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
 import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON } from '../fortDeFranceStory.js';
+// Le dessin de la carte : la version DS faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème DS, puis
+// retouches dans builder.html) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les
+// bâtiments d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
+import BUILT from '../builtMaps/fort-de-france.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 
 // Le ferry amarré au ponton : départ vers Saint-Ay une fois tout réuni (voir data/fortDeFranceStory.js).
 const BOAT_POS = { x: 17, y: 27, w: 4, h: 2 };   // une case d'eau entre le ponton et le ferry
@@ -17,7 +22,8 @@ const BOAT_POS = { x: 17, y: 27, w: 4, h: 2 };   // une case d'eau entre le pont
 export const fortDeFranceMap = {
   id: 'fortDeFrance',
   name: 'Fort-de-France',
-  grid: parseGrid([
+  built: BUILT,
+  sourceGrid: parseGrid([
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 0
     'wwwwwwwwwwwwwwsssssswwwwwwwwwwwwww', // 1
     'wwwwwwwwwwsssssssssssssswwwwwwwwww', // 2
@@ -35,11 +41,11 @@ export const fortDeFranceMap = {
     'wøss.ɱɱɱɱ..f..ççç........WDWW.ssww', // 14
     'wwss.ɱɱɱɱ.....ççç.ŦŦŦf.....ƫƫ.ssww', // 15
     'wwss.ɱɲɲɱ..ƨ..ççç.ŦŦŦ...ƀƒ.ƫƫ.ssww', // 16
-    'wwss.ɱɲɲɱ.....ççç.ŦŦŦĥĥĥĥĥ.ƨ..ssww', // 17
+    'wwss.ɱɲɲɱ.....ççç.ŦŦŦ.ĥĥ...ƨ..ssww', // 17
     'wwwss.......ƚ.ççç.ŦŦŦĥĥĥĥƫƫ..sswww', // 18
     'wwwsss...ƫƫ...ççç....ĥĥĥĥƫƫ..sswww', // 19
-    'wwwwsss..ƫƫf..ççç.f.ĥĥĥĥĥĥ..sswwøw', // 20
-    'wwwwwsss..ƨƫƫ.ççç.ƨƫƫĥĥĥĥ.ssswwwww', // 21
+    'wwwwsss..ƫƫf..ççç.f.ĥ.ĥĥĥĥ..sswwøw', // 20
+    'wwwwwsss..ƨƫƫ.ççç.ƨƫƫ..ĥĥ.ssswwwww', // 21
     'wwwwwssss..ƫƫ.ççç..ƫƫ....sssswwwww', // 22
     'wwwwwwwss.ŕ...ççç......sssswwwwwww', // 23
     'wwwwwwwwsssssssssssssssssswwwwwwww', // 24
@@ -56,19 +62,16 @@ export const fortDeFranceMap = {
     { x: 15, y: 7, interior: 'ffHouse' },
     { x: 26, y: 14, interior: 'ffHut' },
   ],
-  buildings: [
+  // Les bâtiments (maison, cabane, ferry) sont dans le dessin ; la liste d'origine sert à la conversion.
+  buildings: [],
+  sourceBuildings: [
     { type: 'house', x: 14, y: 4 },
     { type: 'fishingHut', x: 25, y: 11 },
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
-  // Gros arbre feuillu de Fortree City près de la cabane du pêcheur : seul son tronc bloque.
-  props: [
-    { type: 'bigTree', x: 23, y: 14, w: 1, h: 1, dialogue: ['Un vieil arbre immense. Son ombre est bien fraîche.'] },
-  ],
   objects: [
     { x: 12, y: 12, dialogue: ['Fort-de-France — Martinique. Bienvenue sur l\'île !'] },
     { x: 17, y: 8, dialogue: ['La boîte aux lettres de la famille.', "Rien aujourd'hui… Peut-être une carte postale de Saint-Ay, un jour ?"] },
-    { x: 19, y: 7, dialogue: ['Le drapeau rouge, vert et noir de la Martinique flotte au vent.'] },
     // Mémorial de l'Anse Caffard (Cap 110) : six statues de pierre blanche tournées vers la mer, en trois
     // rangées (une, deux, trois), au fond d'un petit plateau rocheux herbeux de 4 x 4 cases ; on monte
     // par l'escalier (blanc) jusqu'à l'herbe devant les statues.
@@ -144,3 +147,6 @@ fortDeFranceMap.triggers = [{
     { setFlag: FLAGS.coquillageTrouve },
   ],
 }];
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+fortDeFranceMap.grid = builtGrid(fortDeFranceMap.sourceGrid, BUILT);

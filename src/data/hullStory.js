@@ -157,7 +157,7 @@ export const DAWN = [
   { say: ['Ciel bleuté, les réverbères s\'éteignent. Toute la bande est devant l\'Asylum.'] },
   { approach: 'leo-aube' },
   { speaker: 'Léo', say: ['Ok guys, zis night was very, very beautiful. Now we go \'ome. Follow me, I know ze way!'] },
-  { walk: 'leo-aube', to: [19, 11], block: true },
+  { walk: 'leo-aube', to: [15, 11], block: true },
   { speaker: 'Ousmane', say: ['Léo… c\'est de l\'autre côté.'] },
   { speaker: 'Charlotte', say: ['Au fait… les exams, c\'est après-demain.'] },
   { speaker: 'Anaïs', say: ['Ne dis pas ça maintenant.'] },

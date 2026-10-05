@@ -1,4 +1,9 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : la version Gen 4 faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème Gen 4,
+// scripts/g4_theme.py) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les bâtiments
+// d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
+import BUILT from '../builtMaps/route-de-montepilloy.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 
 // Route de Montépilloy — entre Saint-Ay (au sud) et Montépilloy (au nord), 24 x 30 cases comme la route de
 // Bonsecours : un chemin de terre tout droit entre deux champs de blé clôturés, sapins en bordure. Le déménagement
@@ -7,7 +12,8 @@ import { parseGrid } from './parseGrid.js';
 export const routeMontepilloyMap = {
   id: 'routeMontepilloy',
   name: 'Route de Montépilloy',
-  grid: parseGrid([
+  built: BUILT,
+  sourceGrid: parseGrid([
     'TTTTTTTTTTççTTTTTTTTTTTT', // 0  nord : Montépilloy
     'TTTTTTTTTTççTTTTTTTTTTTT', // 1
     'TTFFFFFFFSçç.FFFFFFFFFTT', // 2  deux champs de blé clôturés, collés aux sapins
@@ -63,3 +69,6 @@ export const routeMontepilloyMap = {
   surroundings: 'T',
   spawn: { x: 10, y: 27, facing: 'up' },
 };
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+routeMontepilloyMap.grid = builtGrid(routeMontepilloyMap.sourceGrid, BUILT);

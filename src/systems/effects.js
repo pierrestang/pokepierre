@@ -29,11 +29,44 @@ export class GrassCovers {
     if (!this.covers.has(id)) {
       // Bas de la tuile Rouge Feu des hautes herbes (ou du blé), juste devant un personnage debout sur cette
       // case (profondeur 10 + y / 10000, joueur + 0.001).
-      const image = this.scene.add.image(x * S, y * S + GRASS_COVER_TOP, tallGrassCoverTexture(this.scene, this.at(x, y))).setOrigin(0).setVisible(false)
+      // Carte dessinée avec le créateur (map.backdrop) : le bas de la case telle qu'elle est dessinée (hautes herbes
+      // Gen 4), pas la touffe Rouge Feu.
+      const backdrop = this.map.backdrop?.sheet;
+      let texture = tallGrassCoverTexture(this.scene, this.at(x, y));
+      let frame;
+      if (backdrop && this.scene.textures.exists(backdrop)) {
+        const tex = this.scene.textures.get(backdrop);
+        frame = `herbe-${x},${y}`;
+        if (!tex.has(frame)) tex.add(frame, 0, x * S, y * S + GRASS_COVER_TOP, S, S - GRASS_COVER_TOP);
+        texture = backdrop;
+      }
+      const image = this.scene.add.image(x * S, y * S + GRASS_COVER_TOP, texture, frame).setOrigin(0).setVisible(false)
         .setDepth(10 + (y * S + S / 2) / 10000 + 0.002);
       this.covers.set(id, image);
     }
     return this.covers.get(id);
+  }
+
+  // Carte du créateur : la case dessinée a-t-elle vraiment des hautes herbes (ou du blé) dans son bas ? Une case 'ĥ'
+  // de la grille retouchée en herbe rase ne cache pas les jambes. D'après le dessin cuit de la carte : l'herbe rase DPPt
+  // est presque unie (sa couleur principale couvre ~75 % de la case), les touffes et le blé sont texturés (≤ 41 %).
+  drawnPlants(x, y) {
+    const backdrop = this.map.backdrop?.sheet;
+    if (!backdrop || !this.scene.textures.exists(backdrop)) return true;
+    this.plants ??= new Map();
+    const id = `${x},${y}`;
+    if (!this.plants.has(id)) {
+      const source = this.scene.textures.get(backdrop).getSourceImage();
+      const data = source.getContext('2d', { willReadFrequently: true })
+        .getImageData(x * S, y * S + GRASS_COVER_TOP, S, S - GRASS_COVER_TOP).data;
+      const count = new Map();
+      for (let i = 0; i < data.length; i += 4) {
+        const color = (data[i] << 16) | (data[i + 1] << 8) | data[i + 2];
+        count.set(color, (count.get(color) ?? 0) + 1);
+      }
+      this.plants.set(id, Math.max(...count.values()) < 0.5 * (data.length / 4));
+    }
+    return this.plants.get(id);
   }
 
   // Affiche les touffes des cases occupées par les personnages (`sprites`), cache les autres.
@@ -41,7 +74,7 @@ export class GrassCovers {
     const shown = new Set();
     for (const sprite of sprites) {
       for (const { x, y } of sprite.tiles()) {
-        if (!TALL_PLANTS.includes(this.at(x, y))) continue;
+        if (!TALL_PLANTS.includes(this.at(x, y)) || !this.drawnPlants(x, y)) continue;
         shown.add(`${x},${y}`);
         this.cover(x, y).setVisible(true);
       }

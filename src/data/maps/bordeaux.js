@@ -1,4 +1,9 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : la version Gen 4 faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème Gen 4,
+// scripts/g4_theme.py) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les bâtiments
+// d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
+import BUILT from '../builtMaps/bordeaux.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
@@ -24,7 +29,8 @@ function outside(x, y, grid) {
 export const bordeauxMap = {
   id: 'bordeaux',
   name: 'Bordeaux',
-  grid: parseGrid([
+  built: BUILT,
+  sourceGrid: parseGrid([
     'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  arbres : bord de l'écran
     'ɔɔɔRRRRRɔɔRRRRRRRRRRRRRRRRRRRRɔɔ', // 1  ton immeuble, l'agence, le studio de Paulfit, le stade
     'ɔɔɔRRRRRɔɔRRRRRRRRRRRRRRRRRRRRɔɔ', // 2
@@ -76,7 +82,9 @@ export const bordeauxMap = {
     },
     { x: 23, y: 20, interior: 'appartRemi' },                     // l'appartement de Rémi, près du campus
   ],
-  buildings: [
+  // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
+  buildings: [],
+  sourceBuildings: [
     { type: 'slateHouse', x: 3, y: 1 },
     { type: 'agence',   x: 10, y: 1 },
     { type: 'frontierHouse', x: 15, y: 1 },
@@ -153,3 +161,6 @@ export const bordeauxMap = {
   surroundings: { outside, border: 'ƀ', borderSkip: ['G', 'ɐ'] },
   spawn: { x: 1, y: 6, facing: 'right' },
 };
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+bordeauxMap.grid = builtGrid(bordeauxMap.sourceGrid, BUILT);

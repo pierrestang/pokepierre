@@ -1,4 +1,9 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : la version Gen 4 faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème Gen 4,
+// scripts/g4_theme.py) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les bâtiments
+// d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
+import BUILT from '../builtMaps/prytanee.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
   ARRIVAL, BAC_RESULTS, CAPTAIN_AT_GATE, CAPTAIN_WELCOME, DORM_DOOR_FRONT, NIGHT, NORTH_GATE, NORTH_GATE_SCRIPT, PATROLS,
@@ -25,7 +30,8 @@ const AT_BOARD = { ifFlags: [FLAGS.bacDescente], unlessFlags: [FLAGS.arriveeBord
 export const prytaneeMap = {
   id: 'prytanee',
   name: 'Prytanée',
-  grid: parseGrid([
+  built: BUILT,
+  sourceGrid: parseGrid([
     'TTTTTTTTTTTTTTTTTTTTTTTTɔɔTTTTTTTTTT', // 0  nord : porte vers Bordeaux
     'TTTTTTTTTTTTTTTTTTTTTTTTɔɔTTTTTTTTTT', // 1
     'TTFFFFFFFFFFFFFFFFFFFFFFɔɔFFFFFFFFTT', // 2  enceinte
@@ -127,7 +133,9 @@ export const prytaneeMap = {
       ...BAC_RESULTS,
     ],
   }],
-  buildings: [
+  // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
+  buildings: [],
+  sourceBuildings: [
     { type: 'mansion', x: 4, y: 3 },                // internat des garçons
     { type: 'museum', x: 12, y: 3 },                // salles de cours
     { type: 'mansion', x: 26, y: 3 },               // internat des filles
@@ -164,3 +172,6 @@ export const prytaneeMap = {
   ],
   spawn: { x: SOUTH_GATE[0], y: SOUTH_GATE[1], facing: 'up' },
 };
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+prytaneeMap.grid = builtGrid(prytaneeMap.sourceGrid, BUILT);

@@ -1,4 +1,9 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : la version Gen 4 faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème Gen 4,
+// scripts/g4_theme.py) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les bâtiments
+// d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
+import BUILT from '../builtMaps/bonsecours.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { FLAGS } from '../story.js';
 import { COLLEGE_ARRIVAL } from '../collegeStory.js';
 
@@ -13,7 +18,8 @@ const GUARD_LINES = ["Halte ! Pour candidater au Prytanée, il faut ton diplôme
 export const routeBonsecoursMap = {
   id: 'routeBonsecours',
   name: 'Bonsecours',
-  grid: parseGrid([
+  built: BUILT,
+  sourceGrid: parseGrid([
     'TTTTTTTTTTççTTTTTTTTTTTT', // 0  nord : le Prytanée (gardé tant que la quête Bonsecours n'est pas finie)
     'TTTTTTTTTTççTTTTTTTTTTTT', // 1
     'TTTTTTTT..çççççççç....TT', // 2
@@ -48,7 +54,9 @@ export const routeBonsecoursMap = {
   doors: [
     { x: 9, y: 11, interior: 'bonsecours' },
   ],
-  buildings: [
+  // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
+  buildings: [],
+  sourceBuildings: [
     { type: 'lab', x: 6, y: 8 },
   ],
   npcs: [
@@ -78,3 +86,6 @@ export const routeBonsecoursMap = {
   surroundings: 'T',
   spawn: { x: 10, y: 27, facing: 'up' },
 };
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+routeBonsecoursMap.grid = builtGrid(routeBonsecoursMap.sourceGrid, BUILT);

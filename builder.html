@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Créateur de cartes — Poképierre</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #14161b; --panel: #1b1e25; --raise: #242832; --hover: #2c313c; --line: #2a2e38; --text: #e7e9ee;
+        --muted: #8a92a3; --accent: #e8473f; --accent-soft: rgba(232, 71, 63, 0.15); --ok: #3fb563;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden;
+        font: 13px/1.35 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+      button, select, input { font: inherit; color: inherit; }
+      .app { display: grid; grid-template-rows: auto 1fr auto; height: 100%; }
+      .i { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round;
+        stroke-linejoin: round; flex: none; }
+      .grow { flex: 1; }
+
+      /* ---------- Barre du haut ---------- */
+      header { display: flex; align-items: center; gap: 4px; padding: 6px 10px; background: var(--panel);
+        border-bottom: 1px solid var(--line); min-width: 0; }
+      .brand { font: 600 16px 'Pixelify Sans', system-ui; white-space: nowrap; margin-right: 10px; }
+      .brand b { color: var(--accent); }
+      .btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; border-radius: 7px;
+        padding: 6px 9px; cursor: pointer; white-space: nowrap; color: var(--muted); transition: background 0.12s, color 0.12s; }
+      .btn:hover:not(:disabled) { background: var(--hover); color: var(--text); }
+      .btn.primary { background: var(--accent); color: #fff; font-weight: 600; }
+      .btn.primary:hover:not(:disabled) { background: #f05a52; color: #fff; }
+      .btn.icon { padding: 6px; }
+      .btn:disabled { opacity: 0.3; cursor: default; }
+      .map-meta { display: flex; align-items: center; gap: 2px; margin: 0 8px; min-width: 0; }
+      input[type=text], input[type=number], select { background: var(--raise); border: 1px solid transparent; border-radius: 7px;
+        padding: 5px 8px; outline: none; }
+      input:focus, select:focus { border-color: var(--accent); }
+      #map-name { width: 200px; background: none; font-weight: 600; color: var(--text); }
+      #map-name:hover { background: var(--raise); }
+      .size { display: flex; align-items: center; gap: 2px; color: var(--muted); }
+      .size input { width: 46px; background: none; text-align: center; padding: 5px 2px; -moz-appearance: textfield; }
+      .size input:hover { background: var(--raise); }
+      .size input::-webkit-inner-spin-button { display: none; }
+      #resize { color: var(--accent); }
+      #resize[hidden] { display: none; }
+
+      /* ---------- Zone principale : palette | outils | carte ---------- */
+      /* Largeur du panneau des planches : réglable en tirant son bord droit (--aside, retenue dans le navigateur). */
+      main { --aside: 460px; display: grid; grid-template-columns: var(--aside) 48px 1fr; min-height: 0; }
+      aside { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 12px; background: var(--panel);
+        border-right: 1px solid var(--line); min-height: 0; }
+      #aside-resize { position: absolute; top: 0; right: -3px; width: 6px; height: 100%; cursor: col-resize; z-index: 2; }
+      #aside-resize:hover, #aside-resize.on { background: var(--accent); opacity: 0.6; }
+      .section-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px;
+        font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: -6px; }
+      .section-title span:not(.seg) { font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+      /* Calques : en automatique, trois pastilles (masquer / afficher) ; en manuel, la liste pour choisir où poser. */
+      .layers { display: grid; gap: 2px; }
+      .layer { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px; padding: 6px 6px 6px 10px;
+        border-radius: 7px; cursor: pointer; }
+      .layer:hover { background: var(--hover); }
+      .layer.on { background: var(--accent-soft); box-shadow: inset 2px 0 var(--accent); }
+      .layer b { font-weight: 600; }
+      .layer small { display: block; color: var(--muted); font-size: 11px; }
+      .layer .short { display: none; }
+      .layers.auto { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+      .layers.auto .layer { grid-template-columns: auto 1fr; padding: 5px 8px; gap: 6px; background: var(--raise); }
+      .layers.auto .layer:hover { background: var(--hover); }
+      .layers.auto .layer.on { background: var(--raise); box-shadow: none; }
+      .layers.auto .layer .full { display: none; }
+      .layers.auto .layer .short { display: block; font-weight: 500; }
+      .layers.auto .layer.hidden { opacity: 0.45; }
+      .layers.auto .layer.hidden .short { text-decoration: line-through; }
+      .layers.auto .eye { order: -1; padding: 0; }
+      .eye { display: grid; place-items: center; background: none; border: 0; cursor: pointer; color: var(--muted);
+        padding: 2px; border-radius: 5px; }
+      .eye .i { width: 15px; height: 15px; }
+      .eye:hover { color: var(--text); }
+      .eye.off { opacity: 0.4; }
+      .seg { display: inline-flex; background: var(--raise); border-radius: 6px; padding: 2px; }
+      .seg button { background: none; color: var(--muted); border: 0; border-radius: 4px; padding: 2px 9px; font-size: 11px;
+        font-weight: 500; text-transform: none; letter-spacing: 0; cursor: pointer; }
+      .seg button.on { background: var(--hover); color: var(--text); }
+
+      /* Planche */
+      .sheet-row { display: flex; gap: 4px; }
+      .sheet-row select { flex: 1; min-width: 0; }
+      #palette-zoom { color: var(--muted); background: var(--raise); min-width: 38px; justify-content: center; }
+      #palette-wrap { flex: 1; overflow: auto; border-radius: 8px; min-height: 120px;
+        background: repeating-conic-gradient(#262a33 0 25%, #20232b 0 50%) 0 0 / 16px 16px; }
+      #palette { display: block; height: auto; cursor: crosshair; image-rendering: pixelated; }
+      /* ×1 : la planche occupe toute la largeur du panneau (et suit sa largeur). */
+      #palette.fit { width: 100%; height: auto; }
+      .stamp { display: flex; align-items: center; gap: 10px; }
+      .stamp:has(#stamp-info:empty) { display: none; }   /* rien de choisi : pas d'aperçu */
+      #stamp-preview { image-rendering: pixelated; background: var(--raise); border-radius: 6px; max-width: 48px; max-height: 48px; }
+      .stamp p { margin: 0; color: var(--muted); font-size: 12px; }
+
+      /* Barre d'outils verticale (raccourcis dans les infobulles) */
+      #tools { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; background: var(--panel);
+        border-right: 1px solid var(--line); }
+      .tool { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 8px; background: none; border: 0;
+        cursor: pointer; color: var(--muted); }
+      .tool:hover { background: var(--hover); color: var(--text); }
+      .tool.on { background: var(--accent-soft); color: var(--accent); }
+      #tools hr { width: 20px; border: 0; border-top: 1px solid var(--line); margin: 6px 0; }
+
+      /* Carte */
+      #view { position: relative; overflow: hidden; background: var(--bg); min-height: 0; }
+      #map { position: absolute; inset: 0; image-rendering: pixelated; }
+      #view.pan, #view.pan #map { cursor: grab; }
+      .float { position: absolute; display: flex; align-items: center; gap: 2px; padding: 3px; background: rgba(27, 30, 37, 0.9);
+        border-radius: 10px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); backdrop-filter: blur(6px); }
+      #zoombar { right: 12px; bottom: 12px; }
+      #zoombar .btn { padding: 5px; }
+      #zoom { min-width: 48px; text-align: center; font-variant-numeric: tabular-nums; color: var(--text); font-size: 12px; }
+
+      footer { display: flex; gap: 16px; padding: 4px 12px; background: var(--panel); border-top: 1px solid var(--line);
+        color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+      #status.ok { color: var(--ok); }
+      #status.err { color: var(--accent); }
+
+      /* Fenêtres (ouvrir, nouvelle carte) */
+      dialog { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 18px;
+        min-width: 340px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+      dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+      dialog h3 { margin: 0 0 12px; font-size: 15px; }
+      dialog .row { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+      dialog .row input[type=number] { width: 60px; }
+      dialog .actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 16px; }
+      #map-list { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow: auto; }
+      #map-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 10px; border-radius: 7px; cursor: pointer; }
+      #map-list li:hover { background: var(--hover); }
+      #map-list small { color: var(--muted); }
+      .help { color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+      @media (max-width: 1200px) {
+        .btn .label { display: none; }
+        .btn.primary .label { display: inline; }
+        #map-name { width: 140px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <span class="brand">Poké<b>pierre</b></span>
+        <button class="btn" id="new" title="Nouvelle carte"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="label">Nouvelle</span></button>
+        <button class="btn" id="open" title="Ouvrir une carte"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="label">Ouvrir</span></button>
+        <div class="map-meta">
+          <input type="text" id="map-name" title="Nom de la carte" />
+          <span class="size" title="Taille de la carte (cases)"><input type="number" id="map-w" min="5" max="200" title="Largeur (cases)" />×<input type="number" id="map-h" min="5" max="200" title="Hauteur (cases)" /></span>
+          <button class="btn" id="resize" title="Appliquer la nouvelle taille" hidden>Redimensionner</button>
+        </div>
+        <span class="grow"></span>
+        <button class="btn icon" id="undo" title="Annuler (Ctrl+Z)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+        <button class="btn icon" id="redo" title="Rétablir (Ctrl+Maj+Z)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+        <button class="btn" id="test" title="Jouer la carte dans le jeu"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span class="label">Tester</span></button>
+        <button class="btn primary" id="save" title="Enregistrer (Ctrl+S)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg><span class="label">Enregistrer</span></button>
+        <button class="btn" id="back" title="Revenir au jeu"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span class="label">Jeu</span></button>
+      </header>
+
+      <main>
+        <aside>
+          <div id="aside-resize" title="Tirer pour élargir ou réduire le panneau (double-clic : largeur par défaut)"></div>
+          <div class="section-title">Calques
+            <span class="seg" id="layer-mode" title="Auto : chaque case posée se range toute seule (sol, objet, au-dessus de Pierre, collisions) ; Manuel : tu choisis le calque (touche A pour basculer)">
+              <button data-mode="auto">Auto</button><button data-mode="manuel">Manuel</button>
+            </span>
+          </div>
+          <div class="layers" id="layers"></div>
+          <div class="section-title">Planche <span id="sheet-size"></span></div>
+          <div class="sheet-row">
+            <select id="sheet"></select>
+            <button class="btn" id="palette-zoom" title="Taille de la palette (×1 : toute la largeur du panneau)">×2</button>
+          </div>
+          <div id="palette-wrap"><canvas id="palette"></canvas></div>
+          <div class="stamp">
+            <canvas id="stamp-preview" width="16" height="16"></canvas>
+            <p id="stamp-info"></p>
+          </div>
+        </aside>
+
+        <nav id="tools">
+          <button class="tool" data-tool="brush" title="Pinceau — pose la sélection (B)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></svg></button>
+          <button class="tool" data-tool="rect" title="Zone — remplit un rectangle avec la sélection (R)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="1.5"/></svg></button>
+          <button class="tool" data-tool="fill" title="Remplir — les cases identiques reliées (G)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l7-7 7 7-7 7z"/><path d="M4 11h14"/><path d="M20 15c0 1.6 1 2.6 1 3.6a1 1 0 0 1-2 0c0-1 1-2 1-3.6z"/></svg></button>
+          <button class="tool" data-tool="erase" title="Gomme — enlève la case du dessus (E)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 20h12"/><path d="M4 15l9-9 6 6-8 8H8z"/><path d="M9 10l6 6"/></svg></button>
+          <button class="tool" data-tool="pick" title="Pipette — reprend une case de la carte (I)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3l6 6-3 3-6-6z"/><path d="M12 8l-7 7v4h4l7-7"/></svg></button>
+          <button class="tool" data-tool="move" title="Déplacer — glisser un élément ; ailleurs, tracer une zone puis la glisser ; avec Alt : copier (M)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/><path d="M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></svg></button>
+          <hr />
+          <button class="tool" data-tool="solid" title="Collisions — clic : bloquer / libérer (C)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M6.5 6.5l11 11"/></svg></button>
+          <button class="tool" data-tool="spawn" title="Départ de Pierre (S)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4"/><path d="M6 4h11l-2.5 4L17 12H6"/></svg></button>
+          <hr />
+          <button class="tool" id="grid" title="Grille (H)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9.3h16M4 14.7h16M9.3 4v16M14.7 4v16"/></svg></button>
+          <button class="tool" id="show-solid" title="Toujours voir les collisions (V)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </nav>
+
+        <div id="view">
+          <canvas id="map"></canvas>
+          <div class="float" id="zoombar">
+            <button class="btn icon" id="zoom-out" title="Dézoomer (−)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+            <span id="zoom">×2</span>
+            <button class="btn icon" id="zoom-in" title="Zoomer (+)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+            <button class="btn icon" id="zoom-fit" title="Voir toute la carte (0)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <span id="coords">—</span>
+        <span id="tile-info"></span>
+        <span class="grow"></span>
+        <span id="status"></span>
+      </footer>
+    </div>
+
+    <dialog id="open-dialog">
+      <h3>Ouvrir une carte</h3>
+      <ul id="map-list"></ul>
+      <div class="actions"><button class="btn" id="open-cancel">Fermer</button></div>
+    </dialog>
+
+    <dialog id="new-dialog">
+      <form method="dialog">
+        <h3>Nouvelle carte</h3>
+        <div class="row"><label>Nom <input type="text" id="new-name" value="Nouvelle carte" /></label></div>
+        <div class="row">Taille <input type="number" id="new-w" value="30" min="5" max="200" /> ×
+          <input type="number" id="new-h" value="20" min="5" max="200" /> cases</div>
+        <p class="help">L'écran du jeu montre environ 22 × 15 cases.</p>
+        <div class="actions"><button class="btn" value="cancel">Annuler</button><button class="btn primary" value="ok">Créer</button></div>
+      </form>
+    </dialog>
+
+    <script type="module" src="/src/builder/builder.js"></script>
+  </body>
+</html>

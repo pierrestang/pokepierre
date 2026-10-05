@@ -29,6 +29,7 @@ import {
 } from '../systems/effects.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 import { CITY_MUSIC } from '../data/music.js';
+import { applyBuiltLook, hiddenUnderTop } from '../systems/builtMaps.js';
 
 const FADE_MS = 150;
 const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`reply`)
@@ -89,14 +90,16 @@ export class MapScene extends Phaser.Scene {
     this.pendingWalkFlags = new Set();
     this.events.once('shutdown', () => this.pendingWalkFlags.forEach(flags.add));
     this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
+    // Carte dessinée avec le créateur de cartes (map.built) : son dessin remplace le rendu Rouge Feu.
+    if (map.built) applyBuiltLook(this, map);
     renderMap(this, map);
     // Morceaux du décor redessinés par-dessus les personnages qui sont derrière (ex. tables de la cabane) :
     // { sheet, frame(scene), x, y, h } en pixels, triés en profondeur par leur bas.
     for (const o of map.overlays ?? []) {
       this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(10 + (o.y + o.h) / 10000);
     }
-    if (this.scene.key === 'Overworld') flags.add(visitedFlag(map.id));    // pour la carte du voyage
-    this.canopy = canopyTiles(grid);
+    if (this.scene.key === 'Overworld' && !map.builder) flags.add(visitedFlag(map.id));    // pour la carte du voyage
+    this.canopy = map.built || map.backdrop ? new Set() : canopyTiles(grid);   // un dessin du créateur a ses cimes à lui
     this.startWaterSparkles();
     this.grassCovers = new GrassCovers(this, map);
     const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
@@ -123,8 +126,12 @@ export class MapScene extends Phaser.Scene {
     this.npcs = [];
     this.props = [];
     this.decals = [];
+    this.silhouette = null;                   // silhouette du joueur sous les toits (voir updateSilhouette)
     this.followers = new Followers(this);
-    const tileWalkable = createWalkableCheck(grid);
+    // Carte du créateur : les collisions sont celles du dessin, case par case.
+    const tileWalkable = map.built
+      ? (x, y) => x >= 0 && y >= 0 && x < map.built.width && y < map.built.height && !map.built.solid[y * map.built.width + x]
+      : createWalkableCheck(grid);
     this.tileWalkable = tileWalkable;
     // Les PNJ qui se sont avancés vers le joueur (voir approach) reprennent leur place à la prochaine visite.
     this.events.once('shutdown', () => (map.npcs ?? []).forEach(restoreHome));
@@ -165,7 +172,8 @@ export class MapScene extends Phaser.Scene {
     // Touche moderne : bords de l'écran légèrement assombris (WebGL uniquement).
     if (!cam.vignetteFX && cam.postFX) {
       cam.vignetteFX = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.18);
-      if (this.scene.key === 'Overworld') applyTimeOfDay(cam, this.game);   // lumière selon l'heure
+      // Lumière selon l'heure ; pas sur une carte du créateur en essai (on la juge toujours en plein jour).
+      if (this.scene.key === 'Overworld' && !map.builder) applyTimeOfDay(cam, this.game);
     }
     cam.fadeIn(FADE_MS);
     this.applyAmbience(map);
@@ -1293,6 +1301,7 @@ export class MapScene extends Phaser.Scene {
 
   // Sauvegarde où se trouve le joueur (appelé à l'arrivée et à chaque pas).
   savePosition() {
+    if (this.map.builder) return;                   // carte du créateur en essai : la vraie partie reste intacte
     const { tileX: x, tileY: y, facing } = this.player;
     savePosition({ ...this.location(), spawn: { x, y, facing } });
   }
@@ -1524,5 +1533,22 @@ export class MapScene extends Phaser.Scene {
     const { x, y } = player.tile();
     if (this.canopy.has(`${x},${y}`)) player.image.setTint(0x8890a8);
     else player.image.clearTint();
+    this.updateSilhouette(player, x, y);
+  }
+
+  // Carte du créateur : quand un toit ou une cime (calque « au-dessus de Pierre ») cache le joueur, sa silhouette
+  // reste visible en transparence par-dessus, pour ne jamais le perdre de vue dans une rue étroite.
+  updateSilhouette(player, x, y) {
+    const key = this.map.topLayer;
+    if (!key) return;
+    const hidden = !player.inBed && player.visible && player.image.alpha > 0.5 && hiddenUnderTop(this, key, x, y);
+    if (!hidden) {
+      this.silhouette?.setVisible(false);
+      return;
+    }
+    const img = player.image;
+    this.silhouette ??= this.add.image(0, 0, img.texture.key).setAlpha(0.5).setDepth(110.5);   // juste au-dessus des toits
+    this.silhouette.setTexture(img.texture.key, img.frame.name).setOrigin(img.originX, img.originY)
+      .setFlipX(img.flipX).setPosition(player.x + img.x, player.y + img.y).setVisible(true);
   }
 }

@@ -1,4 +1,9 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : la version Gen 4 faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème Gen 4,
+// scripts/g4_theme.py) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les bâtiments
+// d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
+import BUILT from '../builtMaps/saint-ay.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
   ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS,
@@ -29,7 +34,8 @@ const COUSIN_COLORS = { felix: 0x9060d0, joshua: 0x20a0c0, yanis: 0xc0b040 };
 export const saintAyMap = {
   id: 'saintAy',
   name: 'Saint-Ay',
-  grid: parseGrid([
+  built: BUILT,
+  sourceGrid: parseGrid([
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 1
     'TTTT.....ĥĥ..Sçç..............TT', // 2
@@ -80,7 +86,9 @@ export const saintAyMap = {
     },
   ],
   // Bâtiments (coin haut-gauche, en cases) ; la collision reste dans la grille.
-  buildings: [
+  // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
+  buildings: [],
+  sourceBuildings: [
     { type: 'cottage', x: 17, y: 3 },
     { type: 'cottage', x: 17, y: 9 },          // maison des cousins : même extérieur que celle de Pierre
     { type: 'slateHouse', x: 18, y: 17 },      // la clinique : toit d'ardoise, porte rouge
@@ -218,3 +226,6 @@ export const saintAyMap = {
   ],
   spawn: { x: 5, y: 10, facing: 'left' },
 };
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+saintAyMap.grid = builtGrid(saintAyMap.sourceGrid, BUILT);

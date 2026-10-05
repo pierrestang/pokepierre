@@ -82,6 +82,7 @@ export class TitleScene extends Phaser.Scene {
       [
         { label: 'Nouvelle partie', action: () => this.onNewGame() },
         { label: 'Continuer la partie', action: () => this.continueGame(), disabled: !this.canContinue },
+        { label: 'Créateur de cartes', action: () => { window.location.href = `${import.meta.env.BASE_URL}builder.html`; } },
       ],
       this.canContinue ? 1 : 0,
     );

@@ -1,4 +1,9 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : la version Gen 4 faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème Gen 4,
+// scripts/g4_theme.py) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les bâtiments
+// d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
+import BUILT from '../builtMaps/montepilloy.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
   ARRIVAL, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, NORTH_EXIT, JEAN_AT_TRACTOR, JEAN_TRACTOR, TOOLBOX,
@@ -17,7 +22,8 @@ import {
 export const montepilloyMap = {
   id: 'montepilloy',
   name: 'Montépilloy',
-  grid: parseGrid([
+  built: BUILT,
+  sourceGrid: parseGrid([
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTTççTTTTTTTTTTTTTTTT', // 1
     'TTTT.........Sçç..............TT', // 2
@@ -54,7 +60,9 @@ export const montepilloyMap = {
     { x: 7, y: 15, interior: 'boulyBarn' },
     { x: 18, y: 13, interior: 'school' },
   ],
-  buildings: [
+  // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
+  buildings: [],
+  sourceBuildings: [
     { type: 'house', x: 8, y: 3 },
     { type: 'greenHouse', x: 17, y: 3 },
     { type: 'school', x: 17, y: 10 },
@@ -162,3 +170,6 @@ export const montepilloyMap = {
   // Le soir de la dernière vertu : le soleil se couche (voir montepilloyStory.js END_OF_DAY).
   night: { ifFlags: [FLAGS.finJournee], unlessFlags: [FLAGS.septembre] },
 };
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+montepilloyMap.grid = builtGrid(montepilloyMap.sourceGrid, BUILT);

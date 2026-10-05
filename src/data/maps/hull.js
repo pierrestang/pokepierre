@@ -1,4 +1,9 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : la version Gen 4 faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème Gen 4,
+// scripts/g4_theme.py) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les bâtiments
+// d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
+import BUILT from '../builtMaps/hull.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { toAirport } from './airportLinks.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
@@ -34,7 +39,8 @@ const FAREWELL_TIME = { ifItems: [ITEMS.diplomeHull.id], unlessFlags: [FLAGS.adi
 export const hullMap = {
   id: 'hull',
   name: 'Hull',
-  grid: parseGrid([
+  built: BUILT,
+  sourceGrid: parseGrid([
     'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0
     'ƀFFFFFFFFFffffffffffFFFFFFFFFƀ', // 1
     'ƀFRRRRRRRFƀ.~~~~~~.ƀFRRRRRRRFƀ', // 2
@@ -127,7 +133,9 @@ export const hullMap = {
     { x: 8, y: 41, lockedDialogue: ['Hull Minster, la grande église de la vieille ville. Fermée à cette heure.'] },
     { x: 22, y: 41, lockedDialogue: ["The Deep. L'aquarium ouvre à 10 h."] },
   ],
-  buildings: [
+  // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
+  buildings: [],
+  sourceBuildings: [
     { type: 'footballPitch', x: 2, y: 2, w: 7, h: 6 },
     { type: 'footballPitch', x: 21, y: 2, w: 7, h: 6 },
     { type: 'university', x: 10, y: 5 },
@@ -172,12 +180,13 @@ export const hullMap = {
       ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.ousmaneRentre],
       dialogue: ['Viens, je te montre la coloc.'],
     },
-    // Au petit matin, toute la bande devant l'Asylum.
+    // Au petit matin, toute la bande devant l'Asylum, en rang sur la rangée du dessus : la rue reste libre pour Léo, qui
+    // part dans la mauvaise direction (vers l'ouest, voir hullStory.js DAWN).
     ...[['leo-aube', 'Léo', 22, 13, 'right', 'Demain, bibliothèque. Tout le monde.'],
       ['ousmane-aube', 'Ousmane', 21, 12, 'down', 'Allez, on rentre se coucher.'],
-      ['charlotte-aube', 'Charlotte', 20, 13, 'right', 'Les exams… on en reparle demain.'],
+      ['charlotte-aube', 'Charlotte', 20, 12, 'down', 'Les exams… on en reparle demain.'],
       ['anais-aube', 'Anaïs', 27, 13, 'left', 'Je sens plus mes pieds.'],
-      ['romain-aube', 'Romain', 18, 13, 'right', 'Quelle nuit !'],
+      ['romain-aube', 'Romain', 18, 12, 'down', 'Quelle nuit !'],
       ['prophecy-aube', 'Prophecy', 19, 12, 'down', 'On refait ça quand ?']].map(([id, name, x, y, facing, line]) => ({
       id, name, x, y, facing, ...DAWN_TIME, dialogue: [line],
     })),
@@ -218,3 +227,6 @@ export const hullMap = {
   surroundings: { outside, border: 'ƀ', borderSkip: ['ɐ', '~'] },
   spawn: { x: 1, y: 35, facing: 'right' },
 };
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+hullMap.grid = builtGrid(hullMap.sourceGrid, BUILT);
