@@ -58,6 +58,7 @@ POSTCARDS = {
     'hanoi': (1, 4, 0),             # antre du Dragon : le pavillon sur l'eau, comme la tour de la Tortue
     'paris': (0, 6, 2),             # parc National, la nuit : les réverbères
     'corse': (1, 1, 1),             # îles Tourbillon, l'après-midi : côte rocheuse
+    'hull': (1, 1, 2),              # îles Tourbillon, la nuit : l'estuaire de la Humber sous la pluie
     'sriLanka': (1, 6, 0),          # chutes Tohjo : cascade dans la jungle
     'thailand': (1, 0, 1),          # tour Ferraille : temple de bois
     'nepal': (1, 3, 0),             # route de Glace : la montagne

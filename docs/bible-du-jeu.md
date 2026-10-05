@@ -584,7 +584,8 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 ## 7. Hull (Angleterre)
 
 ### Arrivée et image d'accueil
-- **Pas de carte postale** : écran noir, « Hull, Angleterre. », puis « Il pleut. Ousmane attend à l'arrêt de bus. » ;
+- Carte postale `hull` (« îles Tourbillon, la nuit » : une mer grise et agitée) : **« Hull, Angleterre. Il pleut. »**, puis
+  « Il pleut. Ousmane attend à l'arrêt de bus. » ;
   Ousmane : **« T'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps. »** / « Léo et Anaïs sont
   déjà là. Toute la promo de KEDGE a atterri ici. » / « Viens, je te montre la coloc. » Il pleut à Hull tant qu'il fait jour.
 
@@ -924,8 +925,10 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 ### Images d'accueil
 - Fort-de-France, Saint-Ay et le matin de septembre à Montépilloy utilisent la **même illustration** (bois aux Chênes, le
   matin).
-- **Hull n'a pas d'image d'accueil** (écran noir et texte). Hanoï, Amsterdam, New Delhi, Paris, Toulon, la Corse, Bali, le
-  Sri Lanka, la Thaïlande et le Népal n'ont pas d'ouverture. Des cartes postales existent pourtant pour Hanoï, Paris, la
+- **À Hull**, « Il pleut. » se répète : la carte postale dit « Hull, Angleterre. Il pleut. », puis la réplique suivante
+  commence par « Il pleut. Ousmane attend à l'arrêt de bus. ».
+- Hanoï, Amsterdam, New Delhi, Paris, Toulon, la Corse, Bali, le Sri Lanka, la Thaïlande et le Népal n'ont pas
+  d'ouverture. Des cartes postales existent pourtant pour Hanoï, Paris, la
   Corse, le Sri Lanka, la Thaïlande et le Népal.
 
 ### Quêtes inachevées ou textes provisoires

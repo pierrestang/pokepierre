@@ -19,12 +19,10 @@ export const HULL_SPOTS = {
 
 // ---------- 1. L'arrivée ----------
 
-// Arrivée en bus : écran noir, il pleut, Ousmane attend à l'arrêt et te montre la coloc (il marche devant).
+// Arrivée en bus : image d'accueil (l'estuaire sous la pluie), Ousmane attend à l'arrêt et te montre la coloc (il marche
+// devant).
 export const ARRIVAL = [
-  { black: true },
-  { wait: 700 },
-  { say: ['Hull, Angleterre.'] },
-  { black: false },
+  { opening: { postcard: 'hull', text: 'Hull, Angleterre. Il pleut.' } },
   { say: ['Il pleut. Ousmane attend à l\'arrêt de bus.'] },
   { approach: 'ousmane-arrivee' },
   {
