@@ -375,13 +375,69 @@ def fingerprint(img):
     return (-(-img.width // TILE), -(-img.height // TILE)), bits
 
 
+def descriptor(img, wt, ht):
+    """Ce qui fait se ressembler deux éléments, en un vecteur : couleurs (teintes pondérées par la saturation, gris
+    clairs ou sombres, couleur moyenne), taille (en cases) et forme (silhouette ramenée à 8 x 8, posée en bas au
+    centre d'un carré, comme on la voit sur la planche)."""
+    a = np.array(img).astype(float) / 255
+    alpha = a[:, :, 3]
+    px = a[alpha > 0.1]
+    if not len(px):
+        return np.zeros(16 + 3 + 2 + 64)
+    rgb = px[:, :3]
+    mx, mn = rgb.max(1), rgb.min(1)
+    sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1e-6), 0)
+    hue = np.array([colorsys.rgb_to_hsv(*p)[0] for p in rgb[:: max(1, len(rgb) // 2000)]])
+    sat_s, val_s = sat[:: max(1, len(rgb) // 2000)], mx[:: max(1, len(rgb) // 2000)]
+    colored = sat_s > 0.18
+    hues = np.histogram(hue[colored], bins=12, range=(0, 1), weights=(sat_s * val_s)[colored])[0]
+    greys = np.histogram(val_s[~colored], bins=4, range=(0, 1))[0]
+    hist = np.concatenate([hues, greys]).astype(float)
+    hist /= max(hist.sum(), 1e-6)
+    side = max(img.width, img.height)
+    square = np.zeros((side, side))
+    square[side - img.height:, (side - img.width) // 2:(side - img.width) // 2 + img.width] = alpha
+    shape = np.array(Image.fromarray((square * 255).astype(np.uint8)).resize((8, 8), Image.BILINEAR)) / 255
+    size = np.log2([wt, ht])
+    # Poids : couleur, taille et forme comptent autant.
+    return np.concatenate([hist * 3.0, rgb.mean(0) * 1.5, size * 1.4, shape.flatten() * 0.35])
+
+
+def order_by_similarity(items):
+    """Éléments rangés pour que chacun ait pour voisins ceux qui lui ressemblent le plus (couleur, taille, forme) :
+    regroupement hiérarchique (Ward) et ordre des feuilles optimal (deux voisins de la liste aussi proches que
+    possible), coupé en familles d'une huitaine d'éléments. Chaque famille commence une nouvelle ligne de la planche
+    (`group`, voir pack) et y est rangée de la plus haute à la plus basse (les lignes se remplissent mieux) : en
+    faisant défiler la palette, on voit des familles d'éléments semblables, et les familles proches se suivent."""
+    if len(items) < 3:
+        return items
+    from scipy.cluster.hierarchy import fcluster, leaves_list, linkage, optimal_leaf_ordering
+    from scipy.spatial.distance import pdist
+    vectors = np.array([descriptor(it['img'], it['wt'], it['ht']) for it in items])
+    dist = pdist(vectors)
+    tree = optimal_leaf_ordering(linkage(dist, 'ward'), dist)
+    leaves = list(leaves_list(tree))
+    family = fcluster(tree, t=max(1, len(items) // 8), criterion='maxclust')
+    rank = {i: k for k, i in enumerate(leaves)}
+    first = {}                                      # chaque famille à la place de son premier élément dans l'ordre
+    for i in leaves:
+        first.setdefault(family[i], rank[i])
+    order = sorted(range(len(items)), key=lambda i: (first[family[i]], -items[i]['ht'], -items[i]['wt'], rank[i]))
+    for i in order:
+        items[i]['group'] = int(family[i])
+    return [items[i] for i in order]
+
+
 def pack(items, cols):
-    """Rangement en étagères : renvoie la planche et la position de chaque élément (alignés sur la grille)."""
-    items = sorted(items, key=lambda it: (-it['ht'], -it['wt']))
+    """Rangement en étagères, dans l'ordre de `items` (voir order_by_similarity) : renvoie la planche et la position de
+    chaque élément (alignés sur la grille)."""
     x, y, shelf, placed = 0, 0, 0, []
+    group = None
     for it in items:
-        if x + it['wt'] > cols:
+        # Une nouvelle famille d'éléments semblables commence une nouvelle ligne.
+        if x + it['wt'] > cols or (it.get('group') != group and x > 0):
             x, y, shelf = 0, y + shelf, 0
+        group = it.get('group')
         placed.append((it, x, y))
         x += it['wt']
         shelf = max(shelf, it['ht'])
@@ -483,7 +539,7 @@ def debug_sheet(sheet, rects, items, path):
     out = Image.new('RGBA', sheet.size, (70, 70, 70, 255))
     out.alpha_composite(sheet)
     d = ImageDraw.Draw(out)
-    for k, ((cx, cy, w, h), it) in enumerate(zip(rects, sorted(items, key=lambda it: (-it['ht'], -it['wt'])))):
+    for k, ((cx, cy, w, h), it) in enumerate(zip(rects, items)):
         d.rectangle([cx * TILE, cy * TILE, (cx + w) * TILE - 1, (cy + h) * TILE - 1], outline=(255, 0, 0, 255))
         d.text((cx * TILE + 2, cy * TILE + 1), f"{k} {it['source'][:6]}@{it['at']}", fill=(255, 255, 0, 255))
     out.save(path)
@@ -620,20 +676,25 @@ def main():
                                    'f': {k: round(float(v), 2) for k, v in (feats or {}).items()}})
 
     entries = []
+    index = {}
     for cat_id, label in CATEGORIES:
         items = kept[cat_id]
         if not items:
             continue
         cols = max(8, min(24, max(it['wt'] for it in items)))
         items = [it for it in items if it['wt'] <= cols]
+        # G4_ORDER=taille : l'ancien rangement (les plus hauts d'abord), pour comparer.
+        items = sorted(items, key=lambda it: (-it['ht'], -it['wt'])) if os.environ.get('G4_ORDER') == 'taille' \
+            else order_by_similarity(items)
         sheet, rows, rects = pack(items, cols)
         sheet.save(V2 / f'g4-{cat_id}.png', optimize=True)
         if DEBUG:
             debug_sheet(sheet, rects, items, DEBUG / f'{cat_id}.png')
-            order = sorted(items, key=lambda it: (-it['ht'], -it['wt']))
             (DEBUG / f'{cat_id}.json').write_text('\n'.join(
-                json.dumps([k, it['source'], it['at'], it['forced'], it['f'], r]) for k, (it, r) in enumerate(zip(order, rects))))
+                json.dumps([k, it['source'], it['at'], it['forced'], it['f'], r]) for k, (it, r) in enumerate(zip(items, rects))))
         (V2 / f'g4-{cat_id}.elements.json').write_text(json.dumps(element_map(sheet, cols, rows, rects), separators=(',', ':')))
+        for it, (cx, cy, w, h) in zip(items, rects):
+            index[f"{it['source']}@{it['at']}"] = {'sheet': f'g4-{cat_id}', 'col': cx, 'row': cy, 'w': w, 'h': h}
         authors = sorted({sheets[it['source']].get('author') or it['source'] for it in items})
         entries.append({'id': f'g4-{cat_id}', 'name': label, 'file': f'g4-{cat_id}.png', 'cols': cols, 'rows': rows,
                         'empty': empty_tiles(sheet, cols, rows), 'author': ', '.join(authors), 'gen': 4,
@@ -654,6 +715,9 @@ def main():
             s['elements'] = [[o['col'], o['row'], o['w'], o['h'], OBJECT_KINDS.get(name, 'mobilier')] for name, o in objets.items()]
         elif s['id'] == 'autotiles-g4':
             s['elements'] = [[x0, y0, x1 - x0, y1 - y0, kind] for x0, y0, x1, y1, kind in REGIONS['autotiles-g4']]
+    # Emplacement de chaque élément, d'après son origine (« planche@colonne,rangée ») : scripts/g4_theme.py désigne
+    # ainsi les éléments qu'il pose, quel que soit leur rangement.
+    (V2 / 'g4-index.json').write_text(json.dumps(index, separators=(',', ':')))
     archive = remap_maps(used, entries)
     catalog['sheets'] = [s for s in catalog['sheets'] if not s.get('category') and s['id'] != ARCHIVE] + entries
     if archive:

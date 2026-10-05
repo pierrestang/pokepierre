@@ -15,11 +15,22 @@ Le dessin suit la grille du jeu (portes, chemins, eau, hautes herbes au même en
 import hashlib
 import json
 from collections import Counter
+from pathlib import Path
 
 from PIL import Image
 
 TILE = 16
 DPPT = 'dppt'
+
+# Éléments de la bibliothèque Gen 4 (planches g4-<type>), désignés par leur origine « planche@colonne,rangée » : leur
+# emplacement dans les planches change quand la bibliothèque est rangée autrement (scripts/build_g4_library.py, qui écrit
+# g4-index.json) ; lib() le retrouve. (dx, dy) : une case du bloc de l'élément, à partir de son coin haut-gauche.
+INDEX = json.loads((Path(__file__).resolve().parent.parent / 'public' / 'assets' / 'v2' / 'g4-index.json').read_text())
+
+
+def lib(origin, dx=0, dy=0):
+    e = INDEX[origin]
+    return (e['sheet'], e['col'] + dx, e['row'] + dy)
 
 # ---------- Sols : bloc 3 x 3 (coins et bords) sur l'herbe, case pleine, angles rentrants (haut-gauche, haut-droit,
 # bas-gauche, bas-droit) ----------
@@ -30,19 +41,21 @@ TERRAINS = {
     # Étang, lac, rivière : rives de terre ; les angles rentrants sont les coins de l'îlot du dessous.
     'pond': {'sheet': DPPT, 'outer': (0, 5), 'center': (1, 6), 'inner': [(2, 10), (0, 10), (2, 8), (0, 8)]},
     'tall': {'sheet': 'autotiles-g4', 'outer': (0, 1), 'center': (1, 2), 'inner': [(1, 0)] * 4},
-    'wheat': {'sheet': 'g4-herbes', 'outer': (0, 40), 'center': (1, 41), 'inner': [(1, 41)] * 4},
+    'wheat': {'sheet': lib('kyle-ext@5,41')[0], 'outer': lib('kyle-ext@5,41')[1:], 'center': lib('kyle-ext@5,41', 1, 1)[1:],
+              'inner': [lib('kyle-ext@5,41', 1, 1)[1:]] * 4},
 }
 GRASS = (DPPT, 4, 0)
 GRASS_BITS = [(DPPT, 4, 1), (DPPT, 4, 2), (DPPT, 3, 2), (DPPT, 3, 3)]
 FLOWERS = {'f': ('autotiles-g4', 0, 8), 'ƒ': ('autotiles-g4', 3, 4)}
 # Ville : pavés en chevrons (g4-sols, bloc gris-bleu) et bitume (g4-sols, la route au car).
-COBBLE = [('g4-sols', 12, 27), ('g4-sols', 13, 27), ('g4-sols', 12, 28), ('g4-sols', 13, 28)]
-ASPHALT = [('g4-sols', 2, 9), ('g4-sols', 3, 9), ('g4-sols', 2, 10), ('g4-sols', 3, 10)]
+COBBLE = [lib('ds-justin@232,16', 12 + i % 2, 8 + i // 2) for i in range(4)]
+ASPHALT = [lib('ds-justin@52,44', 2 + i % 2, 9 + i // 2) for i in range(4)]
 # Remblai du pont de chemin de fer (Hull) : murets de briques rouges (g4-sols).
-BRICK = [('g4-sols', 9, 25), ('g4-sols', 9, 26)]
+BRICK = [lib('ds-justin@232,16', 9, 6), lib('ds-justin@232,16', 9, 7)]
 # Terrain de foot : la pelouse au cadre blanc (g4-sols), coins et bords pris dans le carré de 4 x 4.
-PITCH = {'tl': (0, 122), 't': (1, 122), 'tr': (3, 122), 'l': (0, 123), 'c': (4, 122), 'r': (3, 123),
-         'bl': (0, 125), 'b': (1, 125), 'br': (3, 125)}
+PITCH = {part: lib('rmxp-urbain@1,43', dx, dy) for part, (dx, dy) in {
+    'tl': (0, 0), 't': (1, 0), 'tr': (3, 0), 'l': (0, 1), 'c': (4, 0), 'r': (3, 1),
+    'bl': (0, 3), 'b': (1, 3), 'br': (3, 3)}.items()}
 
 GROUND_OF_CODE = {'ç': 'path', 's': 'beach', 'w': 'sea', 'ø': 'sea', '~': 'pond', 'G': 'pond', 'B': 'pond',
                   'ĥ': 'tall', 'ʬ': 'wheat', 'ɔ': 'cobble', 'ɐ': 'asphalt', '=': 'pond', 'I': 'pond'}
@@ -66,19 +79,21 @@ FENCES = {
     'blanche': {'tl': (0, 128), 'h': (1, 128), 'tr': (2, 128), 'v': (0, 129), 'bl': (0, 130), 'br': (2, 130), 'post': (4, 128)},
 }
 # Forêt dense (g4-arbres, 2 x 4 : deux rangs d'arbres) ; tronc d'un arbre DPPt pour le bas de la lisière.
-FOREST = ('g4-arbres', 3, 219)
+FOREST = lib('rmxp-nature@25,1')
 # Ponton et ponts de bois (g4-mobilier, le ponton retouché de Fort-de-France) : bord gauche, milieu, bord droit ; deux
 # rangées qui alternent.
-PIER = [[('g4-mobilier', 12, 113), ('g4-mobilier', 13, 113), ('g4-mobilier', 14, 113)],
-        [('g4-mobilier', 12, 114), ('g4-mobilier', 13, 114), ('g4-mobilier', 14, 114)]]
+PIER = [[lib('rmxp-urbain@22,10', 1 + c, 1 + r) for c in range(3)] for r in range(2)]
 
 # ---------- Bâtiments ----------
 # Un bâtiment : planche, case en haut à gauche, largeur, hauteur (en cases), porte (colonne, rangée dans le
-# tampon) ; `elem` : numéro d'élément de la bibliothèque (seules ses cases sont prises) ; `shift` : décalage en pixels
+# tampon) ; seuls les pixels d'un seul tenant avec la porte sont pris (pas les morceaux des voisins de la planche) ;
+# planche « lib:<origine> » : un élément de la bibliothèque Gen 4 (col, row : décalage dans son bloc) ; `shift` : décalage en pixels
 # (portes à cheval sur deux cases) ; `doors` : autres cases de porte (colonnes) sur la rangée de la porte ; `cols` :
 # colonnes du tampon gardées (des travées de fenêtres retirées pour rétrécir une façade), `w` et `door` comptés après.
-def b(sheet, col, row, w, h, door, elem=None, shift=0, doors=(), cols=None):
-    return {'sheet': sheet, 'col': col, 'row': row, 'w': w, 'h': h, 'door': door, 'elem': elem, 'shift': shift,
+def b(sheet, col, row, w, h, door, shift=0, doors=(), cols=None):
+    if sheet.startswith('lib:'):
+        sheet, col, row = lib(sheet[4:], col, row)
+    return {'sheet': sheet, 'col': col, 'row': row, 'w': w, 'h': h, 'door': door, 'shift': shift,
             'doors': doors, 'cols': cols}
 
 
@@ -95,16 +110,16 @@ BUILDINGS = {
     'temple': b(DPPT, 0, 335, 7, 7, (3, 6)),                      # temple au clocher
     'vitrine': b(DPPT, 0, 385, 6, 7, (2, 6)),                     # bâtiment vitré
     'abri': b(DPPT, 0, 399, 4, 4, (2, 3)),                        # petit abri
-    'mauve-2': b('g4-batiments', 0, 226, 6, 6, (2, 5), elem=50),
-    'grange': b('g4-batiments', 9, 677, 6, 6, (2, 5), elem=230, doors=(3,)),   # sans son aile droite
-    'boutique': b('g4-batiments', 5, 320, 5, 10, (1, 9), elem=81),
-    'stade': b('g4-batiments', 5, 341, 11, 10, (5, 9), elem=87),
-    'manoir': b('g4-batiments', 12, 459, 9, 9, (3, 8), elem=129, cols=(0, 2, 3, 4, 5, 6, 8)),   # une travée de moins par aile
-    'palais': b('g4-batiments', 0, 251, 12, 12, (5, 11), elem=61, shift=-8),
-    'longere': b('g4-batiments', 12, 882, 11, 7, (5, 6), elem=336),     # longue bâtisse au toit orange
-    'bleue': b('g4-batiments', 18, 1029, 6, 6, (2, 5), elem=412),
-    'grise': b('g4-batiments', 6, 1022, 6, 6, (2, 5), elem=406),
-    'tuiles': b('g4-batiments', 0, 1022, 6, 6, (2, 5), elem=405),
+    'mauve-2': b('lib:dppt@0,313', 0, 0, 6, 6, (2, 5)),
+    'grange': b('lib:kaliser@0,205', 1, 0, 6, 6, (2, 5), doors=(3,)),   # sans son aile droite
+    'boutique': b('lib:lotus-1@0,411', 0, 0, 5, 10, (1, 9)),
+    'stade': b('lib:ds-justin@41,86', 5, 0, 11, 10, (5, 9)),
+    'manoir': b('lib:ds-justin@75,85', 0, 0, 9, 9, (3, 8), cols=(0, 2, 3, 4, 5, 6, 8)),   # une travée de moins par aile
+    'palais': b('lib:ds-justin@163,32', 0, 0, 12, 12, (5, 11), shift=-8),
+    'longere': b('lib:ds-justin@16,107', 0, 0, 11, 7, (5, 6)),     # longue bâtisse au toit orange
+    'bleue': b('lib:lotus-1@0,182', 0, 0, 6, 6, (2, 5)),
+    'grise': b('lib:lotus-1@0,140', 0, 0, 6, 6, (2, 5)),
+    'tuiles': b('lib:lotus-1@0,124', 0, 0, 6, 6, (2, 5)),
 }
 # Bâtiment Gen 4 de chaque type du jeu ; THEMES : variantes par carte (une ville, un style).
 BUILDING_OF_TYPE = {
@@ -121,9 +136,9 @@ FENCE_OF_MAP = {'prytanee': 'blanche', 'hull': 'blanche', 'bordeaux': 'blanche'}
 
 # Véhicules et bateaux (g4-vehicules) : élément, case en haut à gauche, taille ; posés en bas à gauche de leur emprise.
 VEHICLES = {
-    'bus': {'elem': 141, 'col': 0, 'row': 177, 'w': 4, 'h': 3},
-    'boat': {'elem': 224, 'col': 5, 'row': 216, 'w': 3, 'h': 2},
-    'ferry': {'elem': None, 'col': 0, 'row': 224, 'w': 8, 'h': 3},  # le yacht du ferry de Fort-de-France
+    'bus': {'at': lib('jared-camping@15,13', 0, 1), 'w': 4, 'h': 3},
+    'boat': {'at': lib('jared-bateaux@0,129', 5, 1), 'w': 3, 'h': 2},
+    'ferry': {'at': lib('sinnoh-kyle@38,25'), 'w': 8, 'h': 3},     # le yacht du ferry de Fort-de-France
 }
 
 
@@ -138,7 +153,6 @@ class G4:
         self.stacks = {name: {} for name in ('sol', 'decor', 'dessus')}
         self.solid = {}
         self.doors = set()                      # cases de porte des bâtiments posés (toujours franchissables)
-        self.owner_cache = {}
 
     # ----- outils -----
     def at(self, x, y):
@@ -157,35 +171,17 @@ class G4:
         info = self.bd.sheet_info[sheet]
         return row * info['cols'] + col in info['emptySet']
 
-    def owned(self, sheet, elem):
-        """Cases (col, rangée) de la planche qui appartiennent à l'élément `elem` de la bibliothèque."""
-        key = (sheet, elem)
-        if key not in self.owner_cache:
-            data = json.loads((self.bd_dir() / f'{sheet}.elements.json').read_text())
-            cols = self.bd.cols[sheet]
-            cells, i = set(), 0
-            for owner, n in data['owner']:
-                if owner == elem:
-                    cells.update(((i + k) % cols, (i + k) // cols) for k in range(n))
-                i += n
-            self.owner_cache[key] = cells
-        return self.owner_cache[key]
-
-    def bd_dir(self):
-        from convert_maps_v2 import V2
-        return V2
-
     def stamp(self, spec, left, top, layer_of_row, solid_of_cell=None):
         """Pose un tampon (bâtiment, véhicule) : sa case (i, j) sur la case (left + i, top + j) de la carte, au calque
         layer_of_row(j). Avec un décalage en pixels, les cases sont recoupées dans la planche."""
         sheet, col, row, w, h = spec['sheet'], spec['col'], spec['row'], spec['w'], spec['h']
-        owned = self.owned(sheet, spec['elem']) if spec.get('elem') is not None else None
         shift = spec.get('shift', 0)
         cols = spec.get('cols')
         if cols:
             w = len(cols)
-        if shift or spec.get('door'):
-            img = self.element_image(sheet, col, row, w, h, owned, spec.get('door'), cols)
+        seed = spec.get('door') or spec.get('seed')
+        if shift or seed:
+            img = self.element_image(sheet, col, row, w, h, seed, cols)
             for j in range(h):
                 for i in range(-1, w + 1):
                     px = i * TILE - shift
@@ -198,16 +194,14 @@ class G4:
             return
         for j in range(h):
             for i in range(w):
-                if owned is None or (col + i, row + j) in owned:
-                    self.put(layer_of_row(j), left + i, top + j, (sheet, col + i, row + j))
+                self.put(layer_of_row(j), left + i, top + j, (sheet, col + i, row + j))
 
-    def element_image(self, sheet, col, row, w, h, owned, door=None, cols=None):
+    def element_image(self, sheet, col, row, w, h, door=None, cols=None):
         cols = cols or range(w)
         img = Image.new('RGBA', (len(cols) * TILE, h * TILE))
         for j in range(h):
             for i, c in enumerate(cols):
-                if owned is None or (col + c, row + j) in owned:
-                    img.paste(self.bd.tile_image(sheet, col + c, row + j), (i * TILE, j * TILE))
+                img.paste(self.bd.tile_image(sheet, col + c, row + j), (i * TILE, j * TILE))
         if door is not None:
             # Seule la partie d'un seul tenant qui contient la porte : les bouts des voisins de la planche sont écartés.
             import numpy as np
@@ -415,9 +409,7 @@ class G4:
                 self.solid[c] = 0
             self.stamp(spec, left, top, lambda j: 'decor' if j >= first_solid else 'dessus')
             # Collisions : les cases du bas (hauteur de l'emprise du jeu) bien couvertes par le bâtiment.
-            img = self.element_image(spec['sheet'], spec['col'], spec['row'], spec['w'], spec['h'],
-                                     self.owned(spec['sheet'], spec['elem']) if spec['elem'] is not None else None,
-                                     spec['door'], spec['cols'])
+            img = self.element_image(spec['sheet'], spec['col'], spec['row'], spec['w'], spec['h'], spec['door'], spec['cols'])
             for j in range(max(0, first_solid), spec['door'][1] + 1):
                 for i in range(-1, len(spec['cols'] or range(spec['w'])) + 1):
                     px = i * TILE - spec['shift']
@@ -440,7 +432,7 @@ class G4:
                 hz = 'l' if i == 0 else 'r' if i == w - 1 else ''
                 part = (v + hz) or ('c' if not (v or hz) else v or hz)
                 part = {'tl': 'tl', 'tr': 'tr', 'bl': 'bl', 'br': 'br'}.get(part, part)
-                self.stacks['sol'][(x0 + i, y0 + j)] = [('g4-sols', *PITCH[part])]
+                self.stacks['sol'][(x0 + i, y0 + j)] = [PITCH[part]]
 
     def paint_vehicle(self, bld):
         v = VEHICLES[bld['type']]
@@ -456,7 +448,9 @@ class G4:
         else:
             left = x0 + ((x1 - x0 + 1) - v['w']) // 2
         top = y1 - v['h'] + 1
-        spec = {'sheet': 'g4-vehicules', 'col': v['col'], 'row': v['row'], 'w': v['w'], 'h': v['h'], 'elem': v['elem']}
+        sheet, col, row = v['at']
+        # Seuls les pixels d'un seul tenant avec le centre du véhicule (pas un voisin de la planche).
+        spec = {'sheet': sheet, 'col': col, 'row': row, 'w': v['w'], 'h': v['h'], 'seed': (v['w'] // 2, v['h'] // 2)}
         self.stamp(spec, left, top, lambda j: 'dessus' if j == 0 and v['h'] > 2 else 'decor')
 
     def connected(self, cells, start):

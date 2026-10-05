@@ -12,6 +12,7 @@ const PALETTE_ZOOMS = [1, 2, 3];
 const ZOOMS = [0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
 const PAN_STEP = 96;                         // déplacement aux flèches, en pixels d'écran (x4 avec Maj)
 const HISTORY = 100;
+const ERASE_SIZES = [1, 2, 3, 5];            // côté du carré gommé, en cases
 const KEYS = {
   current: 'pokepierre.builder.current',     // la carte en cours (rouverte au rechargement de la page)
   dirty: 'pokepierre.builder.dirty',         // la carte en cours a des modifications non enregistrées
@@ -19,6 +20,7 @@ const KEYS = {
   library: 'pokepierre.builder.maps',        // cartes enregistrées dans le navigateur (site publié)
   test: 'pokepierre.builder.test',           // la carte à tester dans le jeu
   aside: 'pokepierre.builder.aside',         // largeur du panneau des planches
+  eraseSize: 'pokepierre.builder.eraseSize', // taille de la gomme
 };
 
 const $ = (id) => document.getElementById(id);
@@ -41,7 +43,8 @@ const state = {
   stamp: null,              // { w, h, tiles: [{ sheet, index } | null] }
   paletteSel: null,         // { x0, y0, x1, y1 } en cases de la planche affichée
   zoom: 2,
-  paletteZoom: 2,
+  eraseSize: 1,             // côté du carré gommé (ERASE_SIZES)
+  paletteZoom: 1,            // ×1 : la planche occupe toute la largeur du panneau
   hidden: new Set(),        // calques masqués
   autoLayer: true,          // calque choisi tout seul (sol / décor / au-dessus de Pierre) et collisions automatiques
   ox: 0,                    // décalage de la carte dans la vue, en pixels d'écran
@@ -58,6 +61,9 @@ const state = {
   // vite.config.js ; null dans le navigateur), ou null pour une carte jamais enregistrée. Elle garde son identifiant
   // (son fichier) même renommée, et on ne remplace pas sans le dire une version enregistrée qui a changé depuis.
   base: null,
+  lastMoved: null,          // l'élément qu'on vient de déplacer (outil Déplacer) : Suppr le supprime
+  clipboard: null,          // bloc copié (Ctrl+C, Ctrl+D) : { w, h, whole, cells: [{ dx, dy, refs, solid }] }
+  pasting: false,           // la copie suit la souris : un clic la pose (Échap pour arrêter)
 };
 
 // ---------- Planches ----------
@@ -426,6 +432,7 @@ function stampAt(ax, ay, x, y) {
 }
 
 function draw() {
+  updateSelectionBar();
   const dpr = window.devicePixelRatio || 1;
   const m = state.map;
   const cs = cellSize();
@@ -512,6 +519,7 @@ function drawCursor(cs) {
   }
   if (drag?.tool === 'move') {
     // L'élément suit la souris (il est retiré de la carte pendant le glissé).
+    if (drag.deleted || !inside(drag.last.x, drag.last.y)) return;   // lâché ici, il serait supprimé : on ne le montre plus
     const { dx, dy } = clampShift(drag.bounds, drag.last.x - drag.start.x, drag.last.y - drag.start.y);
     ctx.globalAlpha = 0.85;
     for (const l of OBJECT_LAYERS) {
@@ -522,9 +530,23 @@ function drawCursor(cs) {
     outline(b.x0 + dx, b.y0 + dy, b.x1 - b.x0 + 1, b.y1 - b.y0 + 1, cs);
     return;
   }
+  if (state.tool === 'move' && state.pasting && h && state.clipboard) {
+    const clip = state.clipboard;
+    ctx.globalAlpha = 0.75;
+    for (const c of clip.cells) {
+      for (const l of OBJECT_LAYERS) for (const t of c.tiles[l]) drawStampTile(t, h.x + c.dx, h.y + c.dy, cs);
+    }
+    ctx.globalAlpha = 1;
+    outline(h.x, h.y, clip.w, clip.h, cs);
+    return;
+  }
   if (state.tool === 'move' && state.moveSel) {
     const r = state.moveSel;
     outline(r.x0, r.y0, r.x1 - r.x0 + 1, r.y1 - r.y0 + 1, cs);
+  }
+  if (state.tool === 'move' && state.lastMoved?.length) {
+    const b = boundsOf(state.lastMoved);
+    outline(b.x0, b.y0, b.x1 - b.x0 + 1, b.y1 - b.y0 + 1, cs);
   }
   if (!h) return;
   if (state.tool === 'move') {
@@ -536,6 +558,11 @@ function drawCursor(cs) {
       const b = boundsOf(cells);
       outline(b.x0, b.y0, b.x1 - b.x0 + 1, b.y1 - b.y0 + 1, cs);
     } else if (!state.moveSel) outline(h.x, h.y, 1, 1, cs);
+    return;
+  }
+  if (state.tool === 'erase') {
+    const { x0, y0, n } = eraseSquare(h.x, h.y);
+    outline(x0, y0, n, n, cs);
     return;
   }
   if (state.tool === 'brush' && state.stamp) {
@@ -582,6 +609,7 @@ function remember() {
 }
 function restore(from, to) {
   state.moveSel = null;
+  state.lastMoved = null;
   if (!from.length) return;
   to.push(snapshot());
   Object.assign(state.map, JSON.parse(from.pop()));
@@ -836,6 +864,114 @@ function dropObject(cells, dx, dy) {
   }
 }
 
+// Suppr / ⌫ avec l'outil Déplacer : l'élément qu'on glisse, celui qu'on vient de lâcher, la zone choisie, ou sinon
+// l'élément sous la souris. Ses collisions partent avec lui (l'eau reste bloquante).
+function deleteObject() {
+  if (state.tool !== 'move') return false;
+  const drag = state.drag;
+  if (drag?.tool === 'move') {
+    drag.deleted = true;
+    requestDraw();
+    return true;
+  }
+  const cells = state.lastMoved ?? (state.moveSel ? objectsIn(state.moveSel) : state.hover && objectAt(state.hover.x, state.hover.y));
+  if (!cells?.length) return false;
+  remember();
+  liftObject(cells);
+  state.lastMoved = null;
+  state.moveSel = null;
+  hoverObject.key = null;
+  changed();
+  setStatus('Élément supprimé');
+  return true;
+}
+
+// ---------- Copier, coller, dupliquer ----------
+// Une zone choisie (outil Déplacer) est copiée en entier : ses trois calques et ses collisions, qui remplacent ceux
+// des cases où on la pose. Un élément (celui qu'on vient de déplacer, ou celui sous la souris) est copié seul, sans
+// le sol dessous : il se pose par-dessus ce qui est là, avec ses collisions.
+function selectionCells() {
+  const m = state.map;
+  if (state.moveSel) {
+    const r = state.moveSel;
+    const cells = [];
+    for (let y = r.y0; y <= r.y1; y++) {
+      for (let x = r.x0; x <= r.x1; x++) {
+        const i = y * m.width + x;
+        cells.push({ x, y, refs: Object.fromEntries(OBJECT_LAYERS.map((l) => [l, [...stackOf(m.layers[l][i])]])), solid: m.solid[i] });
+      }
+    }
+    return { cells, whole: true };
+  }
+  const cells = state.lastMoved ?? (state.hover && objectAt(state.hover.x, state.hover.y));
+  if (!cells?.length) return null;
+  return { cells: cells.map((c) => ({ ...c, solid: m.solid[c.y * m.width + c.x] })), whole: false };
+}
+
+function copySelection() {
+  const sel = selectionCells();
+  if (!sel) return false;
+  const b = boundsOf(sel.cells);
+  state.clipboard = {
+    whole: sel.whole, w: b.x1 - b.x0 + 1, h: b.y1 - b.y0 + 1,
+    // Cases notées par planche et numéro (pas par leur référence dans la carte) : on peut coller dans une autre carte.
+    cells: sel.cells.map((c) => ({
+      dx: c.x - b.x0, dy: c.y - b.y0, solid: c.solid,
+      tiles: Object.fromEntries(OBJECT_LAYERS.map((l) => [l, c.refs[l].map((r) => decodeRef(state.map, r)).filter(Boolean)])),
+    })),
+  };
+  setStatus(`Copié : ${state.clipboard.w} × ${state.clipboard.h} cases`, 'ok');
+  return true;
+}
+
+// Mode « coller » : la copie suit la souris (son coin haut-gauche sur la case survolée), chaque clic en pose une.
+function startPasting() {
+  if (!state.clipboard) return false;
+  setTool('move');
+  state.pasting = true;
+  state.moveSel = null;
+  state.lastMoved = null;
+  setStatus('Clic : poser la copie (autant de fois qu\'on veut) · Échap : arrêter');
+  requestDraw();
+  return true;
+}
+
+function stopPasting() {
+  if (!state.pasting) return;
+  state.pasting = false;
+  setStatus('');
+  requestDraw();
+}
+
+function pasteAt(x0, y0) {
+  const clip = state.clipboard;
+  const m = state.map;
+  remember();
+  for (const c of clip.cells) {
+    const x = x0 + c.dx;
+    const y = y0 + c.dy;
+    if (!inside(x, y)) continue;
+    const i = y * m.width + x;
+    for (const l of OBJECT_LAYERS) {
+      const refs = c.tiles[l].map((t) => refOf(m, t.sheet, t.index));
+      if (clip.whole) setStack(m.layers[l], i, refs);
+      else if (refs.length) setStack(m.layers[l], i, [...stackOf(m.layers[l][i]), ...refs]);
+    }
+    if (clip.whole || c.solid === 1) m.solid[i] = c.solid;
+  }
+  hoverObject.key = null;
+  changed();
+}
+
+function duplicateSelection() {
+  return copySelection() && startPasting();
+}
+
+function updateSelectionBar() {
+  const show = state.tool === 'move' && !state.pasting && Boolean(state.moveSel || state.lastMoved?.length);
+  $('selbar').hidden = !show;
+}
+
 // Décalage de déplacement, l'élément restant entièrement dans la carte.
 function clampShift(b, dx, dy) {
   const m = state.map;
@@ -928,6 +1064,11 @@ canvas.addEventListener('pointerdown', (e) => {
     if (inside(c.x, c.y)) pickAt(c.x, c.y);
     return;
   }
+  if (tool === 'move' && state.pasting) {
+    if (inside(c.x, c.y)) pasteAt(c.x, c.y);
+    return;
+  }
+  state.lastMoved = null;
   if (tool === 'move') {
     // Dans la zone sélectionnée : on la déplace ; sur un élément : on le prend ; ailleurs : on trace une zone.
     const sel = state.moveSel;
@@ -1003,9 +1144,23 @@ const endDrag = () => {
     return;
   }
   if (drag.tool === 'move') {
+    // Lâché hors de la carte (ou Suppr pendant le glissé) : l'élément est supprimé (il a déjà été retiré).
+    if (drag.deleted || !inside(drag.last.x, drag.last.y)) {
+      if (drag.copy) state.undo.pop();          // une copie jetée : rien n'a changé
+      else {
+        state.moveSel = null;
+        changed();
+        setStatus(drag.cells.length ? 'Élément supprimé' : '');
+      }
+      updateHistoryButtons();
+      requestDraw();
+      return;
+    }
     const { dx, dy } = clampShift(drag.bounds, drag.last.x - drag.start.x, drag.last.y - drag.start.y);
     if (!drag.copy || dx || dy) dropObject(drag.cells, dx, dy);       // copie lâchée sur place : rien à poser
     if (drag.sel) state.moveSel = { x0: drag.sel.x0 + dx, y0: drag.sel.y0 + dy, x1: drag.sel.x1 + dx, y1: drag.sel.y1 + dy };
+    // L'élément lâché reste choisi : Suppr le supprime.
+    state.lastMoved = drag.sel ? null : drag.cells.map((c) => ({ ...c, x: c.x + dx, y: c.y + dy }));
     if (dx || dy) changed();
     else state.undo.pop();                       // simple clic : rien n'a bougé
     updateHistoryButtons();
@@ -1034,14 +1189,34 @@ const endDrag = () => {
 canvas.addEventListener('pointerup', endDrag);
 canvas.addEventListener('pointercancel', endDrag);
 
+// Cases gommées autour de (x, y) : un carré de eraseSize de côté, centré sur la souris.
+function eraseSquare(x, y) {
+  const n = state.eraseSize;
+  const x0 = x - Math.floor((n - 1) / 2);
+  const y0 = y - Math.floor((n - 1) / 2);
+  return { x0, y0, n };
+}
+
+function setEraseSize(n) {
+  state.eraseSize = n;
+  store.set(KEYS.eraseSize, n);
+  document.querySelectorAll('[data-erase]').forEach((b) => b.classList.toggle('on', Number(b.dataset.erase) === n));
+  requestDraw();
+}
+
 function applyAt(c, e) {
   const drag = state.drag;
+  if (drag.tool === 'erase') {                  // la gomme mord aussi sur la carte depuis un bord
+    const { x0, y0, n } = eraseSquare(c.x, c.y);
+    for (let y = y0; y < y0 + n; y++) for (let x = x0; x < x0 + n; x++) eraseTile(x, y);
+    requestDraw();
+    return;
+  }
   if (!inside(c.x, c.y)) return;
   const m = state.map;
   const i = c.y * m.width + c.x;
   switch (drag.tool) {
     case 'brush': brushAt(c.x, c.y, drag.start); break;
-    case 'erase': eraseTile(c.x, c.y); break;
     case 'fill': if (c === drag.start) floodFill(c.x, c.y); break;
     case 'solid':
       // Le premier clic décide : bloquer (ou libérer si la case l'était, ou avec Maj) ; le glissé continue pareil.
@@ -1083,7 +1258,9 @@ function zoomTo(next, clientX, clientY) {
 // ---------- Outils, calques, champs ----------
 
 function setTool(tool) {
+  if (tool !== 'move') state.pasting = false;
   state.tool = tool;
+  $('erasebar').hidden = tool !== 'erase';
   document.querySelectorAll('[data-tool]').forEach((b) => b.classList.toggle('on', b.dataset.tool === tool));
   requestDraw();
 }
@@ -1168,6 +1345,7 @@ function setStatus(text, kind = '') {
 function loadMap(map, { base = null, dirty = false } = {}) {
   hoverObject.key = null;
   state.moveSel = null;
+  state.lastMoved = null;
   state.map = map;
   map.sheets.forEach(loadSheet);
   state.undo = [];
@@ -1359,6 +1537,10 @@ function bindUi() {
   document.addEventListener('click', (e) => { if (e.target.closest('button')) e.target.closest('button').blur(); });
   $('test').onclick = testMap;
   document.querySelectorAll('#layer-mode button').forEach((b) => { b.onclick = () => setAutoLayer(b.dataset.mode === 'auto'); });
+  document.querySelectorAll('[data-erase]').forEach((b) => { b.onclick = () => setEraseSize(Number(b.dataset.erase)); });
+  $('sel-dup').onclick = duplicateSelection;
+  $('sel-del').onclick = () => { deleteObject(); requestDraw(); };
+  setEraseSize(ERASE_SIZES.includes(store.get(KEYS.eraseSize)) ? store.get(KEYS.eraseSize) : 1);
   $('zoom-in').onclick = () => zoomStep(1);
   $('zoom-out').onclick = () => zoomStep(-1);
   $('zoom-fit').onclick = centerMap;
@@ -1415,6 +1597,9 @@ function bindUi() {
     }
     if ((e.ctrlKey || e.metaKey) && k === 'y') { e.preventDefault(); restore(state.redo, state.undo); return; }
     if ((e.ctrlKey || e.metaKey) && k === 's') { e.preventDefault(); save(); return; }
+    if ((e.ctrlKey || e.metaKey) && k === 'c') { if (copySelection()) e.preventDefault(); return; }
+    if ((e.ctrlKey || e.metaKey) && k === 'v') { if (startPasting()) e.preventDefault(); return; }
+    if ((e.ctrlKey || e.metaKey) && k === 'd') { e.preventDefault(); duplicateSelection(); return; }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === ' ') { spaceDown = true; view.classList.add('pan'); e.preventDefault(); return; }
     const arrows = { ArrowLeft: [1, 0], ArrowRight: [-1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
@@ -1426,8 +1611,14 @@ function bindUi() {
     }
     const tools = { b: 'brush', r: 'rect', g: 'fill', e: 'erase', i: 'pick', m: 'move', c: 'solid', s: 'spawn' };
     if (e.key === 'Escape') {
+      stopPasting();
       state.moveSel = null;
+      state.lastMoved = null;
       requestDraw();
+    }
+    if ((e.key === 'Delete' || e.key === 'Backspace') && deleteObject()) {
+      e.preventDefault();
+      return;
     }
     if (tools[k]) setTool(tools[k]);
     if (['1', '2', '3'].includes(k)) {
@@ -1435,6 +1626,11 @@ function bindUi() {
       setLayer(LAYERS[Number(k) - 1].id);
     }
     if (k === 'a') setAutoLayer(!state.autoLayer);
+    if (e.key === '[' || e.key === ']') {
+      const i = ERASE_SIZES.indexOf(state.eraseSize) + (e.key === ']' ? 1 : -1);
+      setEraseSize(ERASE_SIZES[Math.max(0, Math.min(ERASE_SIZES.length - 1, i))]);
+      setTool('erase');
+    }
     if (k === 'h') $('grid').click();
     if (k === 'v') $('show-solid').click();
     if (k === '0') centerMap();

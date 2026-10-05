@@ -176,6 +176,7 @@ export const ANNOUNCEMENT = [
   { speaker: 'Fanny', say: ['Je pourrai emmener mes poupées ?'] },
   { speaker: 'Maman', say: ['On y arrivera, comme à chaque fois. Tous ensemble.'] },
   { speaker: 'Papa', say: ['Et cette fois, pas de ferry. On prend la voiture.'] },
+  { speaker: 'Papa', say: ['Pierre, va annoncer la nouvelle à tes cousins. Ils sont à la cabane.'] },
   { setFlag: FLAGS.annonceMutation },
 ];
 export const ANNOUNCEMENT_EVENT = { ...HAS_TRAITS, unlessFlags: [FLAGS.annonceMutation] };
