@@ -213,6 +213,7 @@ export const ITEMS = {
   cuillere: { id: 'cuillere', name: 'Cuillère de Jean' },                     // Montépilloy : objet-souvenir (caisse à outils)
   brevet: { id: 'brevet', name: 'Diplôme du brevet' },                         // collège : remis par le prof
   autocollant: { id: 'autocollant', name: 'Autocollant de Rémy' },             // collège : objet-souvenir (le casier)
+  reglementQG: { id: 'reglement-qg', name: 'Règlement du QG' },               // Saint-Ay : le panier de la cabane (verrou)
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },
   clesAppartement: { id: 'cles-appartement', name: "Clés de l'appartement" },
   enceinte: { id: 'enceinte', name: 'Enceinte' },                              // Bordeaux : prêtée par Paulfit

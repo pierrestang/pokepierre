@@ -305,7 +305,7 @@ export const interiors = {
 
   // Saint-Ay — la chaumière de la famille, façon Rouge Feu. Le déménagement est terminé (plus de cartons).
   // La famille y rentre après la naissance de Fanny ; quelques années plus tard, Papa y annonce le départ pour
-  // Montépilloy.
+  // Montépilloy. Une fois la famille partie (en revenant à pied de Montépilloy), la maison est vide.
   // Scénario : voir data/saintAyStory.js.
   playerHouse: {
     name: 'Maison de la famille',
@@ -338,7 +338,7 @@ export const interiors = {
     npcs: [
       {
         id: 'papa-maison', name: 'Papa', x: 2, y: 4, facing: 'right', color: 0x3f6fd8,
-        ifFlags: [FLAGS.familleRentree], still: true,
+        ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.arriveeMontepilloy], still: true,
         script: [
           { unlessFlags: [FLAGS.planCabane], speaker: 'Papa', say: ['Fanny dort enfin. File voir tes cousins, ils viennent d\'emménager !'], end: true },
           { unlessFlags: [FLAGS.cabaneFinie], speaker: 'Papa', say: ['Alors, cette cabane, elle avance ? J\'ai hâte de la voir !'], end: true },
@@ -348,7 +348,7 @@ export const interiors = {
       },
       {
         id: 'maman-maison', name: 'Maman', x: 7, y: 4, facing: 'left', color: 0xe86fa0,
-        ifFlags: [FLAGS.familleRentree], still: true,
+        ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.arriveeMontepilloy], still: true,
         script: [
           { unlessFlags: [FLAGS.ellipseSaintAy], speaker: 'Maman', say: ['Chut… Fanny dort à l\'étage. Va plutôt jouer avec tes cousins !'], end: true },
           { ifFlags: [FLAGS.annonceMutation], speaker: 'Maman', say: ['Les valises sont prêtes. On part dès que tu es prêt.'], end: true },
@@ -357,7 +357,7 @@ export const interiors = {
       },
       {
         id: 'manon-maison', name: 'Manon', x: 8, y: 3, facing: 'down', color: 0xf0a030,
-        ifFlags: [FLAGS.familleRentree],
+        ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.arriveeMontepilloy],
         script: [
           { unlessFlags: [FLAGS.ellipseSaintAy], speaker: 'Manon', say: ['Fanny pleure toute la nuit… Mais elle est trop mignonne.'], end: true },
           { ifFlags: [FLAGS.annonceMutation], speaker: 'Manon', say: ['Encore un déménagement…'], end: true },
@@ -367,7 +367,7 @@ export const interiors = {
       // Quelques années plus tard, Fanny a grandi : elle joue dans le salon.
       {
         id: 'fanny-maison', name: 'Fanny', x: 6, y: 3, facing: 'down', color: 0xf0c0c0,
-        ifFlags: [FLAGS.ellipseSaintAy],
+        ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.arriveeMontepilloy],
         script: [
           { ifFlags: [FLAGS.annonceMutation], speaker: 'Fanny', say: ['C\'est loin, Montépilloy ? Il y aura des poules ?'], end: true },
           { speaker: 'Fanny', say: ['Pierre ! Tu joues à cache-cache avec moi ?'] },

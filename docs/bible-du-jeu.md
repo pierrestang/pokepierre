@@ -212,6 +212,19 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
   chanson. » / « T'as le sourire de ta mère, toi. » / **« Ce galet, je l'ai trouvé au fond du lac quand j'avais ton âge. Il porte bonheur.
   Garde-le. »** Ensuite : « Prends soin de ce galet. Et de ta petite sœur. »
 
+### Retour à Saint-Ay (après le départ)
+On peut revenir à pied depuis Montépilloy (par la route de Montépilloy). La maison de la famille est vide ; dans la
+cabane (toujours avec le mot de passe), Felix dit « Notre QG ! Reviens quand tu veux. ».
+
+**Verrou d'Ingéniosité : le panier de la cabane** (scène de retour, une seule fois). Au pied de la cabane, une poulie
+rouillée retient un panier coincé tout en haut. Sans Ingéniosité : « Le panier des cousins est coincé là-haut. La poulie
+est grippée. » Avec : **« Pierre utilise Ingéniosité ! »** → « Tu grattes la rouille, tu remets la corde dans la gorge
+de la poulie… Le panier redescend ! » → « Dans le panier, un mot de Felix : » / **« Si tu lis ça, c'est que t'as réparé
+la poulie. On savait que tu reviendrais. La cabane est toujours à toi. »** → « Et le règlement du QG : » / « RÈGLEMENT DU
+QG : 1. Pas d'entrée sans le mot de passe. 2. Sauf si t'as des bonbons. 3. Yanis a toujours tort. 4. C'est Felix le
+chef (écrit par Felix). 5. Non. (écrit par les autres). » → **Règlement du QG** (« Tu prends le règlement du QG. »).
+Ensuite, la poulie reste réparée : « Le panier des cousins est redescendu. Il est vide. »
+
 ### Boîte aux lettres (carte postale)
 Du capitaine du ferry : « Une carte postale ! Elle vient du capitaine du ferry. » / « « Petit Pierre, la canne tient
 bon, le poisson moins. Ta mère avait raison, l'île est plus calme sans vous. » / « Reviens quand tu veux, le ferry
@@ -806,7 +819,7 @@ définies, rien n'est codé).
 |---|---|---|---|---|
 | Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
-| Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
+| Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
 | Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (optionnel) |
 | Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (photo, optionnel) ; Hull : le guichet de l'aéroport, avant Hanoï |
 | Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Nulle part pour l'instant |
@@ -938,17 +951,18 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
   (« [Texte provisoire] … »). Dans l'entreprise parisienne, le dernier étage bloqué l'est aussi.
 - **Objets sans usage** : l'objet de chance (Hanoï) reste dans le sac. Les objets optionnels (vieille canne exceptée :
   elle sert à pêcher) ne servent plus après leur ville : galet du lac, cuillère, autocollant, insigne du Prytanée, photo
-  de la soirée, fléchettes de l'habitué.
+  de la soirée, fléchettes de l'habitué, règlement du QG.
 - **Le gamin de la route de Montépilloy** parle d'un cerf-volant perdu, mais aucun cerf-volant n'est codé.
 - **La maison de la voisine** à Montépilloy est fermée (« Personne ne répond. »), et sa boîte aux lettres ne contient
   rien.
 
 ### Vertus jamais utilisées
 Insouciance (Hull) ne sert encore nulle part. Joie de vivre sert cinq fois (dont trois en passage optionnel), Audace
-quatre fois (dont une optionnelle), Esprit d'équipe, Ingéniosité et Autonomie deux fois chacune (Ingéniosité et Autonomie
-une fois en passage optionnel). Chaque ville de Saint-Ay à Hull a désormais un passage optionnel qui utilise une vertu ;
-Fort-de-France n'en a pas (aucune vertu n'est acquise avant), et aucun passage optionnel ne se joue encore en revenant
-dans une ancienne ville.
+quatre fois (dont une optionnelle), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
+Esprit d'équipe et Autonomie deux fois chacune (Autonomie une fois en passage optionnel). Chaque ville de Saint-Ay à
+Hull a désormais un passage optionnel qui utilise une vertu ; Fort-de-France n'en a pas (aucune vertu n'est acquise
+avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instant : le panier de la cabane de Saint-Ay
+(Ingéniosité).
 
 ### Objectifs manquants
 - Les répliques « Objectif : » n'existent qu'au Prytanée, à Bordeaux et à Hull. Fort-de-France, Saint-Ay, Montépilloy et

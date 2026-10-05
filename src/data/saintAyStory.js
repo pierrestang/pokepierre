@@ -157,6 +157,8 @@ export const henPush = (flag) => ({ exit: [ENCLOS_EXIT], flag, escaped: ['La pou
 
 // Les cousins à la cabane : avant l'annonce, puis l'adieu, puis après.
 export const FELIX_AT_CABANE = [
+  // Après le départ (en revenant de Montépilloy) : comme avant l'annonce.
+  { ifFlags: [FLAGS.arriveeMontepilloy], speaker: 'Felix', say: ['Notre QG ! Reviens quand tu veux.'], end: true },
   { ifFlags: [FLAGS.adieuCousins], speaker: 'Felix', say: ['La cabane t\'attendra. Allez, file, ta famille t\'attend à la voiture, devant ta maison.'], end: true },
   { unlessFlags: [FLAGS.annonceMutation], speaker: 'Felix', say: ['Notre QG ! Reviens quand tu veux.'], end: true },
   { speaker: 'Felix', say: ['Alors c\'est vrai, tu pars ?'] },
@@ -215,6 +217,30 @@ export const CAR = [
   { travel: { map: 'montepilloy', ...MONTEPILLOY_SPOTS.pond, facing: 'down', car: true, carry: carryText('saintAy') } },
 ];
 
+
+// Verrou de vertu (scène de retour, voir CLAUDE.md « Vertus ») : en revenant à pied de Montépilloy, au pied de la cabane,
+// une poulie grippée retient le panier des cousins, coincé tout en haut. Ingéniosité la répare : un mot de Felix et le
+// règlement du QG (objet-souvenir). Une seule fois ; ensuite, la poulie reste réparée et le panier vide.
+export const PULLEY_SPOT = { x: 7, y: 19 };
+export const PULLEY = [
+  { ifItems: [ITEMS.reglementQG.id], say: ['Le panier des cousins est redescendu. Il est vide.'], end: true },
+  { unlessSouvenirs: [TRAITS.ingeniosite.id], say: ['Le panier des cousins est coincé là-haut. La poulie est grippée.'], end: true },
+  { useTrait: TRAITS.ingeniosite },
+  { say: ['Tu grattes la rouille, tu remets la corde dans la gorge de la poulie… Le panier redescend !'] },
+  {
+    say: [
+      'Dans le panier, un mot de Felix :',
+      '« Si tu lis ça, c\'est que t\'as réparé la poulie. On savait que tu reviendrais. La cabane est toujours à toi. »',
+    ],
+  },
+  {
+    say: [
+      'Et le règlement du QG :',
+      '« RÈGLEMENT DU QG : 1. Pas d\'entrée sans le mot de passe. 2. Sauf si t\'as des bonbons. 3. Yanis a toujours tort. 4. C\'est Felix le chef (écrit par Felix). 5. Non. (écrit par les autres). »',
+    ],
+  },
+  { give: ITEMS.reglementQG, text: 'Tu prends le règlement du QG.' },
+];
 
 // Le vieux pêcheur du lac, de mauvaise humeur : la chanson de Maman le déride (Joie de vivre). Il donne alors
 // l'objet-souvenir de Saint-Ay, un galet du lac.

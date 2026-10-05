@@ -1530,6 +1530,25 @@ const TOOLBOX = [
   'KGGGGGGGGGGGGGGK',
   'KKKKKKKKKKKKKKKK',
 ];
+// La poulie de la cabane des cousins (Saint-Ay), au pied du sapin : poteau, roue rouillée en haut, corde, et le panier,
+// coincé tout en haut (`up`) ou redescendu (réparée, panier vide).
+function drawPulley(g, px, py, up) {
+  g.fillStyle(0x000000, 0.22);
+  g.fillRect(px + 3, py + 15, 10, 1);
+  rect(g, 0x5c3c20, px + 3, py - 34, 3, 49);                                  // poteau
+  rect(g, 0x7c5430, px + 4, py - 34, 1, 49);
+  rect(g, 0x5c3c20, px + 3, py - 36, 10, 3);                                  // potence
+  rect(g, up ? 0x9c4c1c : 0x707078, px + 9, py - 34, 5, 5);                  // roue (rouillée tant qu'elle est grippée)
+  rect(g, up ? 0xc8702c : 0xa0a0a8, px + 10, py - 33, 3, 3);
+  const basketY = up ? py - 28 : py + 6;
+  rect(g, 0xd8c8a0, px + 11, py - 29, 1, basketY - (py - 29));                 // corde
+  rect(g, 0x6c4424, px + 8, basketY, 8, 7);                                   // panier en osier
+  rect(g, 0xa87444, px + 9, basketY + 1, 6, 5);
+  for (let x = 9; x < 15; x += 2) rect(g, 0x7c5030, px + x, basketY + 2, 1, 4);
+}
+export const drawPulleyStuck = (g, px, py) => drawPulley(g, px, py, true);
+export const drawPulleyFixed = (g, px, py) => drawPulley(g, px, py, false);
+
 export function drawToolbox(g, px, py) {
   g.fillStyle(0x000000, 0.22);
   g.fillRect(px + 1, py + 15, 14, 1);

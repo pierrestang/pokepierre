@@ -6,7 +6,7 @@ import BUILT from '../builtMaps/saint-ay.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
-  ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS,
+  ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS, PULLEY, PULLEY_SPOT,
 } from '../saintAyStory.js';
 
 // Le ferry (le même qu'à Fort-de-France), amarré à gauche du ponton du lac ; une case d'eau entre les deux.
@@ -106,6 +106,13 @@ export const saintAyMap = {
       type: 'cabane', x: CABANE_SPOT.x - 1, y: CABANE_SPOT.y - 3, w: 4, h: 3, ifFlags: [FLAGS.cabaneFinie],
       dialogue: ['La cabane des cousins. On y monte par l\'échelle.'],
     },
+    // Verrou d'Ingéniosité, en revenant de Montépilloy : la poulie du panier des cousins, au pied de la cabane (grippée,
+    // puis réparée ; voir saintAyStory.js PULLEY).
+    {
+      type: 'pulleyStuck', ...PULLEY_SPOT, w: 1, h: 1,
+      ifFlags: [FLAGS.arriveeMontepilloy], unlessItems: [ITEMS.reglementQG.id], script: PULLEY,
+    },
+    { type: 'pulleyFixed', ...PULLEY_SPOT, w: 1, h: 1, ifItems: [ITEMS.reglementQG.id], script: PULLEY },
     // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir, elle roule
     // jusqu'à la route du nord et monte vers Montépilloy. Elle disparaît une fois le trajet fait, et ne bloque que
     // la rangée du bas de la route (on passe derrière).
