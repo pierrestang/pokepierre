@@ -9,12 +9,9 @@ import { FLAGS, ITEMS, TRAITS, traitsOfCity } from './story.js';
 const CAPITAINE = 'Capitaine du ferry';
 const CITY_TRAITS = traitsOfCity('fortDeFrance').map((q) => q.id);
 
-// Toutes les conditions du départ : les trois traits et la canne offerte.
-export const READY_TO_LEAVE = { ifSouvenirs: CITY_TRAITS, ifFlags: [FLAGS.canneOfferte] };
-
-// Départ : réplique du capitaine, puis pont du ferry et traversée (FerryScene, `deck`).
+// Départ, dès la canne offerte : fondu au noir, puis pont du ferry et traversée (FerryScene, `deck`).
 export const DEPARTURE = [
-  { say: ["Le ferry est prêt. Ta famille t'attend à bord."], speaker: CAPITAINE },
+  { black: true },
   { setFlag: FLAGS.departFortDeFrance },
   { travel: { map: 'saintAy', x: 5, y: 10, facing: 'left', ferry: true, deck: true } },
 ];
@@ -46,18 +43,11 @@ export const FISHER_AT_PIER_END = [
 
 // Le capitaine devant le ferry, sa canne cassée à la main (après la scène de Papa). Les étapes sont
 // testées dans l'ordre ; `end` arrête la scénette. Il explique d'abord que le ferry ne part pas sans sa canne (même si
-// Pierre en a déjà une), puis demande si on a quelque chose pour lui : « Oui », il reçoit la canne et, la famille prête,
-// on embarque aussitôt.
-const HAS_ROD = { ifItems: [ITEMS.canneAPeche.id], unlessFlags: [FLAGS.canneOfferte] };
-const ROD_GIVEN = { ifFlags: [FLAGS.canneOfferte] };
-// Canne offerte mais famille pas encore prête : il rappelle ce qu'il reste à faire.
-const NOT_READY_YET = [
-  { ...ROD_GIVEN, speaker: CAPITAINE, say: ['On part dès que toute ta famille est prête.'] },
-  ...REMINDERS.map((step) => ({ ...step, ...ROD_GIVEN })),
-  { ...ROD_GIVEN, end: true },
-];
-const BOARD = DEPARTURE.map((step) => ({ ...READY_TO_LEAVE, ...step }));
-// « Oui » : la canne de la caisse « À DONNER ».
+// Pierre en a déjà une). Il n'accepte la canne qu'une fois les trois traits reçus (avant, il rappelle ce qu'il reste à
+// faire) : « Oui », il la reçoit et on embarque aussitôt.
+const HAS_ROD = { ifItems: [ITEMS.canneAPeche.id] };
+const FAMILY_READY = { ifSouvenirs: CITY_TRAITS };
+// « Oui » : la canne de la caisse « À DONNER », puis le départ.
 const GIVE_ROD = [
   { emote: 'pecheur', kind: 'surprise' },
   {
@@ -68,12 +58,9 @@ const GIVE_ROD = [
     ],
   },
   { take: ITEMS.canneAPeche.id, setFlag: FLAGS.canneOfferte },
-  ...BOARD,
-  ...NOT_READY_YET,
+  ...DEPARTURE,
 ];
 export const FISHER_AT_FERRY = [
-  ...BOARD,
-  ...NOT_READY_YET,
   // La canne cassée : le ferry est bloqué.
   {
     unlessFlags: [FLAGS.canneMontree], speaker: CAPITAINE,
@@ -82,25 +69,26 @@ export const FISHER_AT_FERRY = [
   { ifFlags: [FLAGS.canneMontree], say: ['Le capitaine te montre sa canne, cassée en deux.'] },
   { speaker: CAPITAINE, say: ['Pas de canne, pas de capitaine. Le ferry ne part pas sans moi.'] },
   { setFlag: FLAGS.canneMontree },
-  // Avec la canne de la caisse : il demande, on choisit.
-  { ...HAS_ROD, speaker: CAPITAINE, say: ['Hm ? Tu as quelque chose pour moi ?'] },
+  // Avec la canne de la caisse et la famille prête : il demande, on choisit.
+  { ...HAS_ROD, ...FAMILY_READY, speaker: CAPITAINE, say: ['Hm ? Tu as quelque chose pour moi ?'] },
   {
     ...HAS_ROD,
+    ...FAMILY_READY,
     choose: 'Tu lui donnes la canne à pêche ?',
     choices: [
       { label: 'Oui', steps: GIVE_ROD },
       { label: 'Non', steps: [{ speaker: CAPITAINE, say: ['Ah… Bon. Le ferry attendra, alors.'] }, { end: true }] },
     ],
   },
-  { ...HAS_ROD, end: true },
+  // Avec la canne, mais un trait manque : ce qu'il reste à faire.
+  { ...HAS_ROD, steps: REMINDERS, end: true },
   // Sans canne : il pousse Pierre à en chercher une.
   { speaker: CAPITAINE, say: ["Ton père en a toute une collection, dans sa cabane de pêche. Il en aurait pas une en trop, des fois ?"] },
   ...REMINDERS,
 ];
 
-// Le ferry, face au joueur : il n'embarque qu'une fois tout réuni.
+// Le ferry, face au joueur : on embarque par le capitaine, une fois la canne offerte.
 export const FERRY = [
-  ...DEPARTURE.map((step) => ({ ...READY_TO_LEAVE, ...step })),
   { say: ["Le ferry n'embarque pas encore. Le capitaine, sur le ponton, sait ce qu'il te reste à faire."] },
 ];
 
@@ -150,7 +138,6 @@ export const MANON = [
 // Confiance), elle t'entraîne dans une danse.
 const OTHERS_DONE = [TRAITS.pragmatisme.id, TRAITS.confiance.id];
 export const MAMAN_FDF = [
-  { ...READY_TO_LEAVE, speaker: 'Maman', say: ['Tout est prêt ! File au ponton, le ferry n\'attend plus que toi.'], end: true },
   {
     ifSouvenirs: [TRAITS.joie.id], unlessFlags: [FLAGS.canneOfferte], speaker: 'Maman',
     say: ['Le capitaine du ferry avait l\'air embêté, au ponton. Passe le voir.'], end: true,

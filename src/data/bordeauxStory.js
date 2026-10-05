@@ -185,7 +185,7 @@ const CARRY = carryText('bordeaux');
 // Au guichet de l'aéroport, le vol pour Hull : Ousmane garde le départ.
 export const FLIGHT_TO_HULL = [
   { faceTo: 'ousmane-aeroport' },
-  { speaker: 'Ousmane', say: ['Hull, hein. T\'as intérêt à ramener Léo.'] },
+  { speaker: 'Ousmane', say: ['Hull, hein. Je pars une semaine avant toi, je te garde une place à la coloc.'] },
   { setFlag: FLAGS.arriveeHull },
   { travel: { map: 'hull', x: 1, y: 35, facing: 'right', plane: true, carry: CARRY } },
 ];

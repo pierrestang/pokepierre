@@ -910,7 +910,7 @@ export const interiors = {
         [1, 7, 'Qui a écrit « vive les vacances » sur la table ? C\'est pas moi. Enfin si.'],
         [10, 7, 'La sonnerie, c\'est le plus beau son du monde.'],
       ]),
-      { id: 'etienne-college', name: 'Étienne', x: 7, y: 5, facing: 'up', still: true, color: 0x6080a0, dialogue: ['Paraît qu\'il y avait des casiers… Et en plus, on est dans la même classe !'] },
+      { id: 'etienne-college', name: 'Étienne', x: 7, y: 5, facing: 'up', still: true, color: 0x6080a0, dialogue: ['Les casiers, c\'était vrai ! Par contre, pas la même classe… On se voit à la récré !'] },
     ],
   },
 

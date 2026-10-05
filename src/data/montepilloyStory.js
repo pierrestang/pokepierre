@@ -1,4 +1,4 @@
-import { FLAGS, ITEMS, TRAITS } from './story.js';
+import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 
 // Scénario de Montépilloy (voir le document « Scénarios Poké-Pierre — Montépilloy & Le collège ») : quelques
 // années après l'arrivée, Pierre vit son dernier jour d'école primaire. Deux vertus, dans n'importe quel ordre après
@@ -104,7 +104,7 @@ export const FOUND_ETIENNE = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Des feuilles tombent… Étienne est perché dans l\'arbre !'] },
   { emerge: { id: 'etienne', name: 'Étienne', from: [[26, 17]] } },
-  { speaker: 'Étienne', say: ['Perdu ! L\'an prochain, on ira au collège ensemble. Tu m\'attends le matin ?', 'Je t\'aide à chercher les autres !'] },
+  { speaker: 'Étienne', say: ['Perdu ! Le collège, c\'est en septembre. Paraît qu\'il y a des casiers, j\'espère qu\'on sera dans la même classe.', 'Je t\'aide à chercher les autres !'] },
   { setFlag: FLAGS.trouveEtienne },
   GAME_OVER,
 ];
@@ -235,6 +235,8 @@ export const SEPTEMBER_MORNING = [
 // le collège.
 export const NORTH_EXIT = [
   { ifFlags: [FLAGS.departCollege], say: ['Tu prends la route du collège, ton cartable sur le dos.'] },
+  // Le premier départ : l'encart des vertus emportées, comme à la fin des trajets.
+  { ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeOuverture], say: [carryText('montepilloy')] },
   { ifFlags: [FLAGS.departCollege], travel: { map: 'routeBonsecours', x: 10, y: 27, facing: 'up' }, end: true },
   { ifSouvenirs: BOTH, say: ['Il se fait tard : rentre plutôt dîner à la maison.'], end: true },
   { say: ['Ta journée n\'est pas finie.'] },

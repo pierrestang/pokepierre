@@ -4,7 +4,7 @@ import { parseGrid } from './parseGrid.js';
 // d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
 import BUILT from '../builtMaps/bonsecours.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS } from '../story.js';
+import { FLAGS, carryText } from '../story.js';
 import { COLLEGE_ARRIVAL } from '../collegeStory.js';
 
 // Bonsecours, le village d'à côté — entre Montépilloy (au sud) et le Prytanée (au nord), 24 x 30 cases : un chemin
@@ -72,15 +72,18 @@ export const routeBonsecoursMap = {
   triggers: [
     // Sud : retour à Montépilloy.
     ...[10, 11].map((x) => ({ x, y: 29, warp: { map: 'montepilloy', x: 14, y: 1, facing: 'down' } })),
-    // Nord : le Prytanée, une fois la quête Bonsecours finie.
+    // Nord : le Prytanée, une fois la quête Bonsecours finie ; au premier départ, l'encart des vertus emportées, comme
+    // à la fin des trajets.
     ...[10, 11].map((x) => ({
       x,
       y: 0,
-      ifFlags: [FLAGS.bonsecoursFini],
-      dialogue: GUARD_LINES,
-      readyDialogue: ['Ton brevet en poche, tu prends la route du Prytanée pour y candidater.'],
-      setFlags: [FLAGS.arriveePrytanee],
-      warp: { map: 'prytanee', x: 16, y: 24, facing: 'up' },
+      script: [
+        { unlessFlags: [FLAGS.bonsecoursFini], say: GUARD_LINES, end: true },
+        { say: ['Ton brevet en poche, tu prends la route du Prytanée pour y candidater.'] },
+        { unlessFlags: [FLAGS.arriveePrytanee], say: [carryText('routeBonsecours')] },
+        { setFlag: FLAGS.arriveePrytanee },
+        { travel: { map: 'prytanee', x: 16, y: 24, facing: 'up' } },
+      ],
     })),
   ],
   surroundings: 'T',
