@@ -224,6 +224,6 @@ export const OLD_FISHER = [
   { useTrait: TRAITS.joie },
   { say: ['Tu t\'assois à côté de lui et tu fredonnes la chanson de Maman.'] },
   { speaker: 'Vieux pêcheur', say: ['… Elle est pas mal, ta chanson.'] },
-  { speaker: 'Vieux pêcheur', say: ['… T\'as l\'air d\'un gamin de confiance, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
+  { speaker: 'Vieux pêcheur', say: ['T\'as le sourire de ta mère, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
   { give: ITEMS.galetLac, text: 'Le vieux pêcheur te donne un galet tout lisse.' },
 ];
