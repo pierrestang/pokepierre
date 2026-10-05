@@ -16,7 +16,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / 'ASSETTILESPOKEMONV2' / 'DS _ DSi - Pokemon Black _ White - Friendly Characters - Overworld Entites.png'
+SRC = ROOT / 'assets-source' / 'ds' / 'bw-overworld.png'
 OUT = ROOT / 'ASSETTILESPOKEMONV2' / 'bw_personnages'
 CELL = 32
 WHITE = (255, 255, 255)
