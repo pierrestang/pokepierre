@@ -224,9 +224,10 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 - **Condition** : la naissance de Fanny, la cabane (Esprit d'équipe), l'annonce de Papa, l'adieu aux cousins. On monte dans la voiture devant la maison :
   « La voiture est chargée. » ; Felix accourt devant le capot : **« Le mot de passe, tu le gardes, hein ? »** ; « Tu
   montes à l'arrière, à côté de Manon et de Fanny. »
-- **Trajet en voiture** (écran noir) : Maman « Regarde bien Saint-Ay. » ; Papa « Elle ne va pas bouger. On reviendra. » ;
-  « Manon te montre son coquillage. » ; Manon « Tu as toujours le tien ? » ; « Par la vitre arrière : le lac, la
-  clinique, puis la cabane des cousins qui disparaît derrière les arbres. » Encart : « Tu emportes : Esprit d'équipe. »
+- **Trajet en voiture** (écran noir) : « La voiture s'éloigne de Saint-Ay. À l'arrière, tu es serré entre Manon et le siège
+  de Fanny. » ; Manon « Regarde, Fanny dort déjà. Elle rate tout. » ; Fanny (endormie) « … les poules… » ; Manon « Elle
+  rêve des poules de l'enclos. » ; « Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît
+  derrière les arbres. » ; Papa **« Allez. Montépilloy nous attend. »** Encart : « Tu emportes : Esprit d'équipe. »
 - Ensuite, la **route de Montépilloy** se parcourt à pied entre les deux villages. Une promeneuse (`f29`) : « Le blé est
   haut cette année. » / « Quand le vent souffle, on dirait la mer, en jaune. » ; un gamin (`f9`) : « J'ai perdu mon
   cerf-volant dans les champs… » / « Si tu le vois, il est rouge. Ou bleu. Je sais plus. » (aucun cerf-volant n'est
@@ -915,10 +916,6 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 - **La bande de Hull** : Ousmane, Léo et Anaïs connaissent Pierre depuis Bordeaux (la soirée d'intégration), mais
   Romain, Prophecy et Charlotte ne sont jamais présentés avant Hull. L'habitué du pub accueille Pierre d'un « Hey, the
   new guy! », ce qui est cohérent (il ne le connaît pas).
-- **Deux départs presque identiques** : sur le pont du ferry (« Regarde-la bien. » / « Elle ne va pas bouger. On
-  reviendra. » / « Manon te montre son coquillage, à voix basse. » / « Tu as le tien ? ») et dans la voiture qui quitte
-  Saint-Ay (« Regarde bien Saint-Ay. » / « Elle ne va pas bouger. On reviendra. » / « Manon te montre son coquillage. » /
-  « Tu as toujours le tien ? »).
 - **L'examen de Hull** n'est pas joué : « veille d'examen », révisions, puis « Le lendemain… » directement aux résultats.
 - **Deux diplômes d'anglais** se suivent : « Diplôme d'anglais » (KEDGE, Bordeaux), puis « Diplôme d'anglais de Hull ».
 
