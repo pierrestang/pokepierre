@@ -48,8 +48,8 @@ déjà débloquées.
   **« C'est le dernier matin à Fort-de-France. »**
 - Maman, d'en bas : **« Pierre ! Le ferry part cet après-midi ! Descends ! »**
 - En descendant au salon, Maman s'approche et pose le cadre de la journée : « Le ferry part cet après-midi, tous
-  ensemble. D'ici là, va voir ton père et ta sœur : » / « ton père trie ses affaires à sa cabane de pêche, et Manon
-  prépare un coup dehors. Ensuite, reviens me voir ! »
+  ensemble. D'ici là, va voir ton père et ta sœur : » / « ton père trie ses affaires à sa cabane de pêche, à droite de la
+  plage, et Manon prépare un coup dehors. Ensuite, reviens me voir ! »
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -64,20 +64,22 @@ déjà débloquées.
 ### Quêtes, dans l'ordre (les trois premières dans n'importe quel ordre)
 1. **Manon : le coquillage.** En sortant de la maison, Manon vient parler à Pierre : « Psst. Viens. » / « J'ai caché un
    truc sur l'île avant qu'on parte. Personne ne le sait. Même pas Papa. » / « Surtout pas Papa, il le mettrait dans la
-   caisse « À DONNER ». » / « C'est dans les hautes herbes. Trouve-le. » / « Passe dans les touffes une par une. Et ne dis rien à personne ! »
+   caisse « À DONNER ». » / « C'est dans les hautes herbes, dans le petit pré, à côté des statues. Trouve-le. » / « Passe dans les touffes une par une. Et ne dis rien à personne ! »
    - Indice si on revient la voir : « C'est dans les hautes herbes. Un indice : le petit pré, à côté des statues. »
    - En marchant sur la bonne touffe : « Quelque chose brille entre les herbes… » → **Coquillage nacré**
-     (« Tu trouves un coquillage nacré ! »).
+     (« Tu trouves un coquillage nacré ! » / « Manon attend sûrement de le voir. »).
    - Avec le coquillage, Manon : « Tu l'as trouvé ! » ; elle sort un deuxième coquillage identique : **« Un pour toi, un
      pour moi. Comme ça, où qu'on aille, on garde un bout de l'île. Et c'est notre secret. »** (sans vertu).
-     Ensuite : « Chut… c'est notre secret. »
+     Ensuite : « Chut… c'est notre secret. » Si le tri des cannes n'est pas fait, Manon ajoute (tout de suite, puis à chaque
+     fois) : « Papa trie ses cannes à sa cabane de pêche. Va l'aider ! »
 2. **Papa : le tri des cannes** (cabane de pêche). « Des caisses partout. Papa trie sans lever les yeux. » / Papa :
    « T'es venu m'aider ou regarder ? » / choix « Trois cannes à pêche sont posées là. Tu en prends combien ? »
    - « Une » : **« Voilà. Tu réfléchis. C'est ça, le pragmatisme. »** / « Une seule. Tu tiens ça de moi, pas de ta
      mère. »
    - « Les trois » : « Trois ?! On déménage, c'est pas une expédition de pêche. »
    - Dans les deux cas : « Papa en garde une et jette les deux autres dans une caisse marquée « À DONNER ». » / « Voilà.
-     Déménagement terminé. » (sans vertu). Le capitaine se déplace alors devant le ferry.
+     Déménagement terminé. » (sans vertu). Le capitaine se déplace alors devant le ferry. Si le coquillage n'est pas encore
+     partagé, Papa ajoute (tout de suite, puis à chaque fois) : « Ta sœur te cherchait dehors, du côté du petit pré. »
 3. **Le capitaine : la canne cassée** (ouverte par la quête de Papa). Devant le ferry : « Ah, te voilà… Regarde-moi ça.
    Trente ans qu'elle tenait. Elle a choisi aujourd'hui pour me lâcher. » / **« Pas de canne, pas de capitaine. Le
    ferry ne part pas sans moi. »** / « Ton père en a toute une collection, dans sa cabane de pêche. Il en aurait pas une
@@ -165,12 +167,15 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
    emménagé ! La maison au toit de chaume, sur la rue du milieu, juste sous la vôtre. » / « Rejoins-nous là-bas, les
    autres t'attendent ! » Chez lui : **« Bienvenue chez nous ! J'ai un plan : on construit une cabane. Rien que pour
    nous. »** ; Joshua : « Il faut des planches. Il y en a plein dans l'enclos à poules… mais il y a les poules. » ;
-   Yanis : « Et une corde pour les tenir. J'en ai vu une dans les hautes herbes, tout au sud-ouest. » ; Felix : « Moi,
+   Yanis : « Et une corde pour les tenir. J'en ai vu une dans les hautes herbes, tout au sud-ouest. » (au bord du lac,
+   ensuite : « J'ai vu une vieille corde dans les hautes herbes, juste sous les grands sapins du bord du lac. Tout en bas à
+   gauche du village. ») ; Felix : « Moi,
    je dirige le chantier. On la perche dans les sapins, au sud du lac. »
 3. **Les planches** (enclos à poules). Joshua : « Les planches sont au fond de l'enclos à poules… derrière les poules. » /
    « Pousse-les pour dégager le tas : mets-toi derrière une poule et appuie sur A. Elles détestent ça ! » Une poule
    poussée jusqu'à la porte s'échappe : « La poule file hors de l'enclos en caquetant ! » → **Planches** (« Tu récupères
-   des planches. » ; Joshua : « Tu as survécu aux poules ? Respect. »).
+   des planches. » ; Joshua : « Tu as survécu aux poules ? Respect. »). Si la corde est déjà là, Joshua ajoute : « On a
+   tout ! On ramène ça chez Felix. » (il le redit si on lui reparle).
 4. **La corde** (hautes herbes du sud-ouest, en marchant dessus) → **Vieille corde** (« Tu trouves une vieille corde,
    cachée dans les hautes herbes. » ; Yanis : « Parfait. Ça tiendra… sûrement. »). L'ordre entre 3 et 4 est libre.
 5. **La cabane.** Felix : « Tout est prêt ? Alors au travail ! » ; écran noir ; dans la cabane : « La cabane est finie.
@@ -190,7 +195,8 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
    ferry. On prend la voiture. » / « Pierre, va annoncer la nouvelle à tes cousins. Ils sont à la cabane. »
 7. **L'adieu aux cousins** (cabane). Felix « Alors c'est vrai, tu pars ? » ; Joshua « Montépilloy, c'est pas le bout du
    monde. » ; Yanis « C'est où, Montépilloy ? » ; Felix « La cabane t'attendra. Et le mot de passe ne change pas :
-   « {mot} ». »
+   « {mot} ». » / **« Allez, file, ta famille t'attend à la voiture, devant ta maison. »** (dit tout de suite, et quand
+   on lui reparle).
 
 ### Objectifs affichés (rappels des PNJ)
 - Felix pendant le chantier : « Il nous faut encore les planches : Joshua t'attend devant l'enclos à poules. Écarte les
@@ -282,23 +288,25 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
      à chercher les autres ! »
    - Benoît, dans le tonneau de gauche de la grange. Le tonneau ne s'ouvre qu'une fois Margaux et Étienne trouvés (ils
      suivent Pierre) ; avant : « Le couvercle ne bouge pas. On dirait qu'on le retient de l'intérieur… Il faudrait être
-     plusieurs pour le soulever. » Après : **« Pierre utilise Esprit d'équipe ! »** → « Margaux et Étienne t'aident à
+     plusieurs pour le soulever. Trouve d'abord les autres. » Après : **« Pierre utilise Esprit d'équipe ! »** → « Margaux et Étienne t'aident à
      tirer sur le couvercle… Il cède ! » / Benoît : **« Tu m'as trouvé…
      c'était ma dernière partie avec vous. L'an prochain, je ne serai pas au collège avec vous. »**
    - Chaque copain trouvé suit Pierre ; Benoît est donc toujours le dernier. Margaux : **« Alors on la refait l'été prochain. Promis ? »** ;
      Étienne « C'était trop cool, cette partie ! » ; Margaux « Allez, on file à l'école récupérer nos cartables ! » ;
-     Benoît (si le tracteur n'est pas réparé) « Au fait, ton petit frère te cherche ! » (sans vertu).
+     Benoît (si le tracteur n'est pas réparé) « Au fait, ton petit frère te cherche ! » et, si Jean n'a pas encore lancé la
+     réparation, « Jean t'attend dans sa chambre. » (sans vertu).
 3. **Le tracteur → Ingéniosité.** Jean, dans la chambre : « Le tracteur de M. Bouly est en panne. Je peux le réparer,
    mais il me faut un assistant. » / « Rejoins-moi à la ferme ! » M. Bouly : « Ah, Jean et son assistant ! Mon tracteur
-   est en panne : il lui manque une pièce. » / « Elle doit traîner quelque part… peut-être dans un des tonneaux de la
-   grange ? » Dans le tonneau du fond à droite : « Tu fouilles le bric-à-brac… Au fond du tonneau, une pièce de
-   tracteur ! » → **Pièce de tracteur**, rapportée à M. Bouly ou à Jean.
+   est en panne : il lui manque une pièce. » / « Elle doit traîner quelque part… peut-être dans le tonneau du fond, à
+   droite de la grange ? » Dans le tonneau du fond à droite : « Tu fouilles le bric-à-brac… Au fond du tonneau, une pièce
+   de tracteur ! » / « Jean va être content. » → **Pièce de tracteur**, rapportée à M. Bouly ou à Jean.
    - « Jean ouvre sa caisse à outils et se glisse sous le tracteur. » ; Jean : **« Passe-moi la clé ! »** → trois
      questions (« La clé de 12 ! », « Le tournevis plat ! », « Le marteau… non, le petit ! ») parmi cinq outils ;
      mauvaises réponses : « Ça, c'est une cuillère. Qui a mis une cuillère dans ma caisse ? », « Le gros ? Tu veux
      casser le tracteur ? », « Non, pas ça ! Regarde bien dans la caisse. »
    - « Le moteur tousse… puis repart ! » ; Jean : **« À nous deux, on répare tout. »** / « Il sent le gasoil, c'est trop
-     bien. » → vertu **Ingéniosité** ; M. Bouly : « Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de
+     bien. » → vertu **Ingéniosité** ; si le cache-cache n'est pas fini, Jean : « Tes copains jouent encore à cache-cache
+     dans le village. Va les trouver ! » ; M. Bouly : « Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de
      tracteur ! »
 4. **La fin de la journée** (le cache-cache fini et Ingéniosité reçue) : « Le soleil se couche sur Montépilloy. Il est temps de rentrer à
    la maison. » ; le dîner : « Le soir, toute la famille est à table. » ; Jean « On a réparé le tracteur de M. Bouly !
@@ -310,11 +318,12 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
    collège est au village d'à côté : tu y vas à pied, par la sortie nord. »
 
 ### Objectifs affichés (rappels)
-- Maman : « Tes copains jouent à cache-cache dans tout le village. File les trouver ! » / « Et Jean cherche un
+- Maman : « Tes copains jouent à cache-cache dans tout le village. File les trouver ! » / « Ils se cachent toujours aux
+  mêmes endroits : les bottes de foin, le grand arbre de la prairie, la grange… » / « Et Jean cherche un
   assistant, là-haut dans sa chambre. Il a encore une réparation en tête… »
 - La sortie nord : « Ta journée n'est pas finie. » ; « C'est le dernier jour de CM2 : file à l'école, en bas de la
   grand-rue ! » ; « Tes copains t'attendent pour leur partie de cache-cache. » ; « Et Jean a un tracteur à réparer avec
-  toi. » ; « Il se fait tard : rentre plutôt dîner à la maison. »
+  toi. » / « Jean t'attend dans sa chambre. » (tant que Jean n'a pas lancé la réparation) ; « Il se fait tard : rentre plutôt dîner à la maison. »
 
 ### Passage optionnel : Benoît triste (Joie de vivre)
 Après le cache-cache et jusqu'au matin de septembre, Benoît est assis seul devant la grange (il n'est plus dans la
@@ -355,7 +364,8 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
   Bonsecours, au bout de l'allée. Ton premier jour commence ! »
 - Dans le hall, le surveillant : « Bienvenue au collège Bonsecours ! C'est moi le surveillant. » / « Avant le premier
   cours, va ranger tes affaires dans ton casier : le casier 12, au couloir des casiers, en haut de l'escalier de
-  droite. » / « Ta classe, c'est la 6e B, en salle de maths. »
+  droite. » / « Ta classe, c'est la 6e B, en salle de maths. » / « La salle de maths, c'est par l'escalier de gauche du
+  hall. »
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -378,8 +388,8 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
    12. »** / « Le mien aussi dit 12 ! Regarde ! » / « J'étais là avant, de toute façon. » ; « Le ton monte. Chacun jure
    que c'est le sien. » ; le surveillant : **« Ça suffit, vous deux ! »** / « Puisque vous le voulez tous les deux, vous
    le partagez. Point. » ; Rémy : « Bon, colocataire, tu mets tes affaires en haut ou en bas ? » (choix « En haut. » /
-   « Comme tu veux. » ; dans les deux cas Rémy prend le bas, « c'est plus près de mes chaussures ») ; « Allez, on file en
-   maths, ça va sonner ! »
+   « Comme tu veux. » ; dans les deux cas Rémy prend le bas, « c'est plus près de mes chaussures ») ; « Allez, en maths !
+   Par l'escalier de gauche du hall, ça va sonner ! »
 2. **Camille → Audace** (salle de maths). « La salle de maths. Le cours n'a pas encore commencé : le prof range ses
    copies, ça discute de table en table. » ; Rémy : « Le cours commence dans cinq minutes. Tu vois la fille, au milieu de
    la classe ? Elle est en 6e B avec nous. » / « Elle connaît personne non plus. Va lui dire salut, je viens avec toi. »
@@ -965,6 +975,8 @@ avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instan
 (Ingéniosité).
 
 ### Objectifs manquants
+- À Saint-Ay, si la corde est trouvée **après** les planches, personne ne dit « On a tout ! » (Joshua est resté devant
+  l'enclos) : rien n'indique de retourner chez Felix, sauf en reparlant à Joshua, Yanis ou Felix.
 - Les répliques « Objectif : » n'existent qu'au Prytanée, à Bordeaux et à Hull. Fort-de-France, Saint-Ay, Montépilloy et
   le collège s'appuient seulement sur les rappels des PNJ. Paris et Toulon ont une « mission » d'arrivée ; Hanoï,
   Amsterdam, New Delhi et les pays d'Asie n'ont rien.

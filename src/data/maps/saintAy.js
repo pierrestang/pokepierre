@@ -180,6 +180,7 @@ export const saintAyMap = {
       id: 'joshua', name: 'Joshua', x: 28, y: 8, facing: 'left', color: COUSIN_COLORS.joshua,
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
+        { ifItems: [ITEMS.planches.id, ITEMS.corde.id], speaker: 'Joshua', say: ['On a tout ! On ramène ça chez Felix.'], end: true },
         { ifItems: [ITEMS.planches.id], speaker: 'Joshua', say: ['Avec ces planches, on va faire un vrai QG.'], end: true },
         { speaker: 'Joshua', say: ['Les planches sont au fond de l\'enclos à poules… derrière les poules.', 'Pousse-les pour dégager le tas : mets-toi derrière une poule et appuie sur A. Elles détestent ça !'] },
       ],
@@ -189,7 +190,7 @@ export const saintAyMap = {
       ifFlags: [FLAGS.planCabane], unlessFlags: [FLAGS.cabaneFinie],
       script: [
         { ifItems: [ITEMS.corde.id], speaker: 'Yanis', say: ['Parfait. Ça tiendra… sûrement.'], end: true },
-        { speaker: 'Yanis', say: ["J'ai vu une vieille corde dans les hautes herbes, tout au sud-ouest. Derrière le lac."] },
+        { speaker: 'Yanis', say: ["J'ai vu une vieille corde dans les hautes herbes, juste sous les grands sapins du bord du lac. Tout en bas à gauche du village."] },
       ],
     },
     // Trois poules collées au tas de planches, une de chaque côté : on pousse celle de devant (A, dans le sens où

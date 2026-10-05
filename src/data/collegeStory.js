@@ -39,6 +39,7 @@ export const COLLEGE_WELCOME = [
       'Bienvenue au collège Bonsecours ! C\'est moi le surveillant.',
       'Avant le premier cours, va ranger tes affaires dans ton casier : le casier 12, au couloir des casiers, en haut de l\'escalier de droite.',
       'Ta classe, c\'est la 6e B, en salle de maths.',
+      'La salle de maths, c\'est par l\'escalier de gauche du hall.',
     ],
   },
   { walk: 'surveillant-hall', to: HALL_STAIRS_RIGHT, block: true },
@@ -76,7 +77,7 @@ const LOCKER_FIGHT = [
     ],
   },
   { say: ['Rémy rigole. Toi, tu hausses les épaules : il a l\'air d\'un sacré numéro, celui-là.'] },
-  { speaker: 'Rémy', say: ['Allez, on file en maths, ça va sonner !'] },
+  { speaker: 'Rémy', say: ['Allez, en maths ! Par l\'escalier de gauche du hall, ça va sonner !'] },
   { walk: 'remi-casier', to: CORRIDOR_STAIRS, block: true, then: [FLAGS.remiEnClasse] },
 ];
 

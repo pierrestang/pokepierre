@@ -146,6 +146,7 @@ export const PLANKS = [
   { unlessFlags: [FLAGS.planCabane], say: ['Un tas de planches. De quoi construire quelque chose…'], end: true },
   { give: ITEMS.planches, text: 'Tu récupères des planches.' },
   { speaker: 'Joshua', say: ['Tu as survécu aux poules ? Respect.'] },
+  { ifItems: [ITEMS.corde.id], speaker: 'Joshua', say: ['On a tout ! On ramène ça chez Felix.'] },
 ];
 export const ROPE = [
   { give: ITEMS.corde, text: 'Tu trouves une vieille corde, cachée dans les hautes herbes.' },
@@ -166,6 +167,7 @@ export const FELIX_AT_CABANE = [
   { speaker: 'Yanis', say: ['C\'est où, Montépilloy ?'] },
   { speaker: 'Felix', say: ['La cabane t\'attendra. Et le mot de passe ne change pas : « {motDePasse|QG} ».'] },
   { setFlag: FLAGS.adieuCousins },
+  { speaker: 'Felix', say: ['Allez, file, ta famille t\'attend à la voiture, devant ta maison.'] },
 ];
 
 // L'annonce, en rentrant à la maison au toit de chaume avec les deux traits.

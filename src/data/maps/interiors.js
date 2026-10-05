@@ -63,6 +63,11 @@ const FF_UP_CARTONS = [[6, 3], [0, 5], [3, 5], [8, 5]];
 
 // Papa, ses cannes rangées, envoie Pierre au salon une fois la quête de Manon finie aussi (tant que Maman n'a pas
 // dansé).
+// Papa, ses cannes rangées, renvoie vers Manon tant que son secret n'est pas partagé.
+const PAPA_TO_MANON = {
+  ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.secretManon],
+  speaker: 'Papa', say: ['Ta sœur te cherchait dehors, du côté du petit pré.'],
+};
 const PAPA_TO_SALON = {
   ifFlags: [FLAGS.papaFait, FLAGS.secretManon], unlessSouvenirs: [TRAITS.joie.id],
   speaker: 'Papa', say: ['Maman t\'attend au salon.'],
@@ -151,7 +156,7 @@ export const interiors = {
             speaker: 'Maman',
             say: [
               "Le ferry part cet après-midi, tous ensemble. D'ici là, va voir ton père et ta sœur :",
-              "ton père trie ses affaires à sa cabane de pêche, et Manon prépare un coup dehors. Ensuite, reviens me voir !",
+              "ton père trie ses affaires à sa cabane de pêche, à droite de la plage, et Manon prépare un coup dehors. Ensuite, reviens me voir !",
             ],
           },
           { setFlag: FLAGS.journeeLancee },
@@ -257,6 +262,7 @@ export const interiors = {
         script: [
           { ifFlags: [FLAGS.papaFait], speaker: 'Papa', say: ["Hm. Il reste des caisses, si t'as rien à faire."] },
           PAPA_TO_SALON,
+          PAPA_TO_MANON,
           { ifFlags: [FLAGS.papaFait], end: true },
           { say: ['Des caisses partout. Papa trie sans lever les yeux.'] },
           { speaker: 'Papa', say: ["T'es venu m'aider ou regarder ?"] },
@@ -271,6 +277,7 @@ export const interiors = {
           { speaker: 'Papa', say: ['Voilà. Déménagement terminé.'] },
           { setFlag: FLAGS.papaFait },
           PAPA_TO_SALON,
+          PAPA_TO_MANON,
         ],
       },
     ],
@@ -618,7 +625,7 @@ export const interiors = {
       {
         x: 8, y: 3,
         ifFlags: [FLAGS.boulyDemande],
-        dialogue: ['Tu fouilles le bric-à-brac… Au fond du tonneau, une pièce de tracteur !'],
+        dialogue: ['Tu fouilles le bric-à-brac… Au fond du tonneau, une pièce de tracteur !', 'Jean va être content.'],
         after: ['Il ne reste que du bric-à-brac.'],
         item: ITEMS.pieceTracteur,
         setFlag: FLAGS.pieceTrouvee,

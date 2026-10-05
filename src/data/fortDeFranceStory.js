@@ -99,11 +99,18 @@ const MANON_TO_SALON = {
   speaker: 'Manon', say: ['Maman t\'attend au salon.'],
 };
 
+// Manon, son secret partagé, renvoie vers Papa tant que le tri des cannes n'est pas fait.
+const MANON_TO_PAPA = {
+  ifFlags: [FLAGS.secretManon], unlessFlags: [FLAGS.papaFait],
+  speaker: 'Manon', say: ['Papa trie ses cannes à sa cabane de pêche. Va l\'aider !'],
+};
+
 // Manon : elle attend devant la maison et vient te parler à la sortie ; elle a caché un
 // coquillage dans les hautes herbes de l'île.
 export const MANON = [
   { ifFlags: [FLAGS.secretManon], speaker: 'Manon', say: ["Chut… c'est notre secret."] },
   MANON_TO_SALON,
+  MANON_TO_PAPA,
   { ifFlags: [FLAGS.secretManon], end: true },
   { ifItems: [ITEMS.coquillageNacre.id], emote: 'manon', kind: 'surprise' },
   { ifItems: [ITEMS.coquillageNacre.id], speaker: 'Manon', say: ["Tu l'as trouvé !"] },
@@ -115,6 +122,7 @@ export const MANON = [
   { ifItems: [ITEMS.coquillageNacre.id], emote: 'manon', kind: 'dots' },
   { ifItems: [ITEMS.coquillageNacre.id], setFlag: FLAGS.secretManon },
   MANON_TO_SALON,
+  MANON_TO_PAPA,
   { ifItems: [ITEMS.coquillageNacre.id], end: true },
   {
     ifFlags: [FLAGS.manonDemande], speaker: 'Manon',
@@ -128,7 +136,7 @@ export const MANON = [
     say: [
       "J'ai caché un truc sur l'île avant qu'on parte. Personne ne le sait. Même pas Papa.",
       'Surtout pas Papa, il le mettrait dans la caisse « À DONNER ».',
-      "C'est dans les hautes herbes. Trouve-le.",
+      "C'est dans les hautes herbes, dans le petit pré, à côté des statues. Trouve-le.",
     ],
   },
   { speaker: 'Manon', say: ['Passe dans les touffes une par une. Et ne dis rien à personne !'] },

@@ -144,6 +144,7 @@ fortDeFranceMap.triggers = [{
     { sound: 'rustle' },
     { say: ['Quelque chose brille entre les herbes…'] },
     { give: ITEMS.coquillageNacre, text: 'Tu trouves un coquillage nacré !' },
+    { say: ['Manon attend sûrement de le voir.'] },
     { setFlag: FLAGS.coquillageTrouve },
   ],
 }];

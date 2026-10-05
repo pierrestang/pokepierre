@@ -52,6 +52,10 @@ export const MAMAN = [
     say: ['Quelle journée ! Les vacances commencent… et à la rentrée, le collège.'], end: true,
   },
   { unlessFlags: [FLAGS.copainsPartent], speaker: 'Maman', say: ['Tes copains jouent à cache-cache dans tout le village. File les trouver !'] },
+  {
+    ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.copainsPartent], speaker: 'Maman',
+    say: ['Ils se cachent toujours aux mêmes endroits : les bottes de foin, le grand arbre de la prairie, la grange…'],
+  },
   { unlessSouvenirs: [TRAITS.ingeniosite.id], speaker: 'Maman', say: ['Et Jean cherche un assistant, là-haut dans sa chambre. Il a encore une réparation en tête…'] },
 ];
 
@@ -91,6 +95,7 @@ const GAME_OVER = {
     { speaker: 'Étienne', say: ['C\'était trop cool, cette partie !'] },
     { speaker: 'Margaux', say: ['Allez, on file à l\'école récupérer nos cartables !'] },
     { unlessSouvenirs: [TRAITS.ingeniosite.id], speaker: 'Benoît', say: ['Au fait, ton petit frère te cherche !'] },
+    { unlessSouvenirs: [TRAITS.ingeniosite.id], unlessFlags: [FLAGS.jeanQuetes], speaker: 'Benoît', say: ['Jean t\'attend dans sa chambre.'] },
     { sound: 'door' },
     { setFlag: FLAGS.copainsPartent },
     ...END_OF_DAY,
@@ -118,7 +123,7 @@ export const FOUND_ETIENNE = [
 // Benoît, dans le tonneau du fond à gauche de la grange (pas celui de la pièce du tracteur, au fond à droite) : le
 // couvercle ne s'ouvre qu'à plusieurs, une fois Margaux et Étienne trouvés (ils suivent Pierre) : Esprit d'équipe.
 const BENOIT_LEFT = { ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveBenoit] };
-const STUCK = 'Le couvercle ne bouge pas. On dirait qu\'on le retient de l\'intérieur… Il faudrait être plusieurs pour le soulever.';
+const STUCK = 'Le couvercle ne bouge pas. On dirait qu\'on le retient de l\'intérieur… Il faudrait être plusieurs pour le soulever. Trouve d\'abord les autres.';
 export const BENOIT_BARREL = [0, 4];
 export const FOUND_BENOIT = [
   { unlessFlags: [FLAGS.trouveMargaux], say: [STUCK], end: true },
@@ -171,6 +176,7 @@ const REPAIR = [
   { say: ['Le moteur tousse… puis repart !'] },
   { speaker: 'Jean', say: ['À nous deux, on répare tout.', 'Il sent le gasoil, c\'est trop bien.'] },
   { trait: TRAITS.ingeniosite },
+  { unlessFlags: [FLAGS.copainsPartent], speaker: 'Jean', say: ['Tes copains jouent encore à cache-cache dans le village. Va les trouver !'] },
   { speaker: 'M. Bouly', say: ['Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de tracteur !'] },
   { black: true },
   { setFlag: FLAGS.tracteurRepare },
@@ -190,7 +196,7 @@ export const BOULY = [
     unlessFlags: [FLAGS.boulyDemande], speaker: 'M. Bouly',
     say: [
       'Ah, Jean et son assistant ! Mon tracteur est en panne : il lui manque une pièce.',
-      'Elle doit traîner quelque part… peut-être dans un des tonneaux de la grange ?',
+      'Elle doit traîner quelque part… peut-être dans le tonneau du fond, à droite de la grange ?',
     ],
   },
   { unlessFlags: [FLAGS.boulyDemande], setFlag: FLAGS.boulyDemande, end: true },
@@ -259,4 +265,5 @@ export const NORTH_EXIT = [
   { unlessFlags: [FLAGS.ecoleCm2], say: ['C\'est le dernier jour de CM2 : file à l\'école, en bas de la grand-rue !'], end: true },
   { unlessFlags: [FLAGS.copainsPartent], say: ['Tes copains t\'attendent pour leur partie de cache-cache.'] },
   { unlessSouvenirs: [TRAITS.ingeniosite.id], say: ['Et Jean a un tracteur à réparer avec toi.'] },
+  { unlessSouvenirs: [TRAITS.ingeniosite.id], unlessFlags: [FLAGS.jeanQuetes], say: ['Jean t\'attend dans sa chambre.'] },
 ];
