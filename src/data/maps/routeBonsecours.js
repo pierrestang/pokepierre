@@ -71,7 +71,7 @@ export const routeBonsecoursMap = {
   events: [{ on: 'enter', ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeOuverture], steps: COLLEGE_ARRIVAL }],
   triggers: [
     // Sud : retour à Montépilloy.
-    ...[10, 11].map((x) => ({ x, y: 29, warp: { map: 'montepilloy', x: 14, y: 1, facing: 'down' } })),
+    ...[10, 11].map((x) => ({ x, y: 29, warp: { map: 'montepilloy', x: 16, y: 1, facing: 'down' } })),
     // Nord : le Prytanée, une fois la quête Bonsecours finie ; au premier départ, l'encart des vertus emportées, comme
     // à la fin des trajets.
     ...[10, 11].map((x) => ({

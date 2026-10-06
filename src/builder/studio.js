@@ -280,6 +280,7 @@ export function createStudio(api) {
         const y = by - 2 + k + dy;
         if (y < 0 || y >= m.height) continue;
         for (let dx = 0; dx < lis.tree.w; dx++) {
+          if (bx + dx < 0 || bx + dx >= W) continue;
           const c = y * W + bx + dx;
           push(k >= 2 || set.has(c) ? 'decor' : 'dessus', c, lisRef(lis.tree.col + dx, k));
         }

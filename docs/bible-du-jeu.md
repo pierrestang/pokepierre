@@ -276,6 +276,13 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 
 ## 3. Montépilloy (Oise)
 
+### La carte
+- 35 x 29 cases (agrandie de 3 x 3 en octobre 2026, scripts/grow_montepilloy.py) : la grand-rue nord-sud sur trois
+  cases, la ferme de M. Bouly et la prairie élargies, le champ et la mare allongés ; ceinture d'arbres entiers.
+- La grange de M. Bouly (redessinée, plus large) occupe l'ancienne place du tracteur : le tracteur est à sa droite
+  (x 12-13, y 12-13), Jean devant lui, M. Bouly au début du chemin de la ferme (13, 16). L'école est la verrière : sa
+  porte en (24, 13). La porte de la voisine (maison jaune) se frappe depuis la rue (20, 7).
+
 ### Arrivée et image d'accueil
 - Carte postale `montepilloy` (« bois aux Chênes, l'après-midi ») : **« Montépilloy, Oise. Quelques années plus
   tard… »** ; « Te voilà au bord de la mare. La maison est en haut du village : toute la famille y est. »

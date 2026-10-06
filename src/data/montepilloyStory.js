@@ -17,7 +17,7 @@ const END_OF_DAY = [
 ];
 
 // Arrivée en voiture (fin de Saint-Ay), puis l'ellipse : image d'accueil, Pierre au bord de la mare.
-export const MONTEPILLOY_SPOTS = { pond: { x: 19, y: 16 }, houseDoor: [9, 7] };
+export const MONTEPILLOY_SPOTS = { pond: { x: 21, y: 16 }, houseDoor: [10, 7] };
 export const ARRIVAL = [
   { opening: { postcard: 'montepilloy', text: 'Montépilloy, Oise. Quelques années plus tard…' } },
   { setFlag: FLAGS.ellipseMontepilloy },
@@ -105,7 +105,7 @@ const GAME_OVER = {
 export const FOUND_MARGAUX = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Quelque chose bouge derrière les bottes de foin…'] },
-  { emerge: { id: 'margaux', name: 'Margaux', from: [[12, 22], [11, 22], [12, 21], [11, 21]] } },
+  { emerge: { id: 'margaux', name: 'Margaux', from: [[13, 24], [12, 24], [13, 22], [12, 22]] } },
   { speaker: 'Margaux', say: ['Zut, trouvée ! Les bottes de foin, c\'était trop facile…', 'L\'an prochain, au collège, je me trouverai une cachette imbattable. Je viens avec toi chercher les autres !'] },
   { setFlag: FLAGS.trouveMargaux },
   GAME_OVER,
@@ -114,7 +114,7 @@ export const FOUND_MARGAUX = [
 export const FOUND_ETIENNE = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Des feuilles tombent… Étienne est perché dans l\'arbre !'] },
-  { emerge: { id: 'etienne', name: 'Étienne', from: [[26, 17]] } },
+  { emerge: { id: 'etienne', name: 'Étienne', from: [[28, 18]] } },
   { speaker: 'Étienne', say: ['Perdu ! Le collège, c\'est en septembre. Paraît qu\'il y a des casiers, j\'espère qu\'on sera dans la même classe.', 'Je t\'aide à chercher les autres !'] },
   { setFlag: FLAGS.trouveEtienne },
   GAME_OVER,
@@ -140,8 +140,8 @@ export const BENOIT_HIDING = { ...BENOIT_LEFT, x: BENOIT_BARREL[0], y: BENOIT_BA
 
 // ---------- La quête de Jean → Ingéniosité ----------
 
-// Jean, devant le tracteur (le tracteur occupe les cases x 10-11, y 12-13) ; l'escalier de la chambre des enfants.
-export const JEAN_AT_TRACTOR = [10, 14];
+// Jean, devant le tracteur (le tracteur occupe les cases x 12-13, y 12-13, à droite de la grange) ; l'escalier de la chambre des enfants.
+export const JEAN_AT_TRACTOR = [12, 14];
 const JEAN_UPSTAIRS_STAIRS = [12, 2];
 
 // Jean, à l'étage de la maison : après l'école, il lance la quête, descend l'escalier et part devant à la ferme (il y
@@ -240,7 +240,7 @@ export const DINNER = [
   { black: true },
   { wait: 600 },
   { setFlag: FLAGS.septembre },
-  { travel: { map: 'montepilloy', x: 9, y: 7, facing: 'down' } },
+  { travel: { map: 'montepilloy', x: 10, y: 7, facing: 'down' } },
 ];
 
 // Septembre, devant la maison, au matin : la famille dit au revoir à Pierre, cartable sur le dos.

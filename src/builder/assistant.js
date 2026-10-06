@@ -605,7 +605,8 @@ export function createAssistant(api) {
           const y = by - 2 + k + dy;
           if (y < 0 || y >= H) continue;
           for (let dx = 0; dx < lis.tree.w; dx++) {
-            const i = y * W + bx + dx;
+            if (bx + dx < 0 || bx + dx >= W) continue;
+          const i = y * W + bx + dx;
             add(k >= 2 || forest[i] ? 'decor' : 'dessus', i, lisRef(lis.tree.col + dx, k));
           }
         }

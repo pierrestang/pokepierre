@@ -64,7 +64,7 @@ export const routeMontepilloyMap = {
     // Sud : Saint-Ay.
     ...[10, 11].map((x) => ({ x, y: 29, warp: { map: 'saintAy', x: 14, y: 1, facing: 'down' } })),
     // Nord : Montépilloy.
-    ...[10, 11].map((x) => ({ x, y: 0, warp: { map: 'montepilloy', x: 14, y: 24, facing: 'up' } })),
+    ...[10, 11].map((x) => ({ x, y: 0, warp: { map: 'montepilloy', x: 16, y: 27, facing: 'up' } })),
   ],
   surroundings: 'T',
   spawn: { x: 10, y: 27, facing: 'up' },

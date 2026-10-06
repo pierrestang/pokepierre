@@ -17,44 +17,76 @@
 export function layoutForest(W, H, isForest, inZone = () => true) {
   const inMap = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
   const open = (x, y) => inMap(x, y) && !isForest(x, y);
-  const full = (bx, by) => isForest(bx, by) && isForest(bx + 1, by) && isForest(bx, by + 1) && isForest(bx + 1, by + 1);
+  // Un bloc peut dépasser du bord de la carte (dehors : de la forêt) : une bordure d'épaisseur impaire garde des arbres
+  // entiers, coupés par le bord, au lieu de buissons.
+  const forestOrOut = (x, y) => !inMap(x, y) || isForest(x, y);
+  const cellsOf = (bx, by) => [[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]];
+  const full = (bx, by) => cellsOf(bx, by).some(([x, y]) => inMap(x, y)) && cellsOf(bx, by).every(([x, y]) => forestOrOut(x, y));
+  // Choix des arbres (blocs de 2 x 2, qui peuvent se chevaucher un peu) :
+  // 1. les arbres collés à chaque bord de la carte, chacun aligné sur son bord (haut, bas, gauche, droite) ;
+  // 2. le reste de la forêt, sur la grille de 2 x 2 qui en garde le plus ;
+  // 3. chaque case de forêt encore libre : l'arbre qui la couvre en chevauchant le moins (deux arbres plus serrés
+  //    plutôt qu'un buisson). Une case qu'aucun arbre entier ne couvre devient un buisson.
+  const blocks = [];
+  const covered = new Map();                   // case -> nombre d'arbres qui la couvrent
+  const chosen = new Set();
+  const usable = (bx, by) => full(bx, by) && cellsOf(bx, by).some(([x, y]) => inMap(x, y) && inZone(x, y));
+  const overlap = (bx, by) => cellsOf(bx, by).filter(([x, y]) => covered.has(y * W + x)).length;
+  const take = (bx, by) => {
+    chosen.add(`${bx},${by}`);
+    blocks.push([bx, by, 0]);
+    for (const [x, y] of cellsOf(bx, by)) if (inMap(x, y)) covered.set(y * W + x, (covered.get(y * W + x) ?? 0) + 1);
+  };
+  const edges = [
+    [...Array(W - 1).keys()].map((x) => [x, 0]),
+    [...Array(W - 1).keys()].map((x) => [x, H - 2]),
+    [...Array(H - 1).keys()].map((y) => [0, y]),
+    [...Array(H - 1).keys()].map((y) => [W - 2, y]),
+  ];
+  for (const edge of edges) for (const [bx, by] of edge) if (usable(bx, by) && !overlap(bx, by)) take(bx, by);
   let anchor = [0, 0];
   let most = -1;
   for (const ax of [0, 1]) {
     for (const ay of [0, 1]) {
       let n = 0;
-      for (let by = ay; by < H - 1; by += 2) for (let bx = ax; bx < W - 1; bx += 2) if (full(bx, by) && inZone(bx, by)) n++;
+      for (let by = ay - 2; by < H; by += 2) for (let bx = ax - 2; bx < W; bx += 2) if (usable(bx, by) && !overlap(bx, by)) n++;
       if (n > most) { most = n; anchor = [ax, ay]; }
     }
   }
-  const blocks = [];
-  const covered = new Set();
-  const low = new Set();                       // blocs de la dernière rangée : le tissu reste derrière leurs cimes
-  for (let by = anchor[1]; by < H - 1; by += 2) {
-    for (let bx = anchor[0]; bx < W - 1; bx += 2) {
-      if (!full(bx, by)) continue;
-      for (const [x, y] of [[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]]) {
-        covered.add(y * W + x);
-        if (by + 1 === H - 1) low.add(y * W + x);
+  for (let by = anchor[1] - 2; by < H; by += 2) {
+    for (let bx = anchor[0] - 2; bx < W; bx += 2) if (usable(bx, by) && !overlap(bx, by)) take(bx, by);
+  }
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (!isForest(x, y) || !inZone(x, y) || covered.has(y * W + x)) continue;
+      let best = null;
+      for (const [bx, by] of [[x - 1, y - 1], [x, y - 1], [x - 1, y], [x, y]]) {
+        if (!usable(bx, by) || chosen.has(`${bx},${by}`)) continue;
+        const o = overlap(bx, by);
+        if (!best || o < best[2]) best = [bx, by, o];
       }
-      if ([[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]].every(([x, y]) => inZone(x, y))) blocks.push([bx, by, 0]);
+      if (best) take(best[0], best[1]);
     }
   }
-  // Blocs dessinés une case plus bas.
-  const have = new Set(blocks.map(([bx, by]) => `${bx},${by}`));
-  const shift = new Set();
+  blocks.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+  const low = new Set();                       // blocs de la dernière rangée : le tissu reste derrière leurs cimes
   for (const [bx, by] of blocks) {
-    let y = by;
-    while (have.has(`${bx},${y}`) && y + 1 < H - 1) y += 2;
-    if (have.has(`${bx},${y}`) && y + 1 === H - 1) shift.add(`${bx},${by}`);
+    if (by + 1 === H - 1) for (const [x, y] of cellsOf(bx, by)) if (inMap(x, y)) low.add(y * W + x);
   }
+  // Blocs dessinés une case plus bas : la dernière rangée (troncs hors de la carte), les colonnes d'arbres qui la
+  // rejoignent (un arbre juste au-dessus d'un arbre descendu, 2 ou 3 rangées plus haut), et, dans la moitié basse, les
+  // blocs d'une rangée qui touchent un bloc descendu. Jamais si le tronc descendu tomberait sur une case libre.
+  const shift = new Set();
+  const trunkOk = (bx, by) => forestOrOut(bx, by + 2) && forestOrOut(bx + 1, by + 2);
+  for (const [bx, by] of blocks) if (by + 1 === H - 1) shift.add(`${bx},${by}`);
   for (let changed = true; changed;) {
     changed = false;
     for (const [bx, by] of blocks) {
       const k = `${bx},${by}`;
-      if (shift.has(k) || by < Math.floor(H / 2)) continue;
-      const belowOk = isForest(bx, by + 2) && isForest(bx + 1, by + 2);
-      if (belowOk && (shift.has(`${bx - 2},${by}`) || shift.has(`${bx + 2},${by}`))) { shift.add(k); changed = true; }
+      if (shift.has(k) || !trunkOk(bx, by)) continue;
+      const below = [2, 3].some((d) => shift.has(`${bx},${by + d}`));
+      const side = by >= Math.floor(H / 2) && (shift.has(`${bx - 2},${by}`) || shift.has(`${bx + 2},${by}`));
+      if (below || side) { shift.add(k); changed = true; }
     }
   }
   for (const b of blocks) b[2] = shift.has(`${b[0]},${b[1]}`) ? 1 : 0;

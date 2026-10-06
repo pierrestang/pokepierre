@@ -30,8 +30,10 @@ Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut 
 - Matières : Peindre (taille 1, 2, 3, 5), Zone, Remplir (les cases reliées de la même matière). Herbe, chemin, sable,
   hautes herbes, mer, étang : bords refaits autour de chaque coup de pinceau (planche « transitions », comme
   l'assistant). Fleurs : posées sur l'herbe libre. Pavés : motif de la ville. Forêt : par blocs de 2 x 2 calés sur la
-  grille ; toute la forêt peinte est redessinée à chaque coup en rangées d'arbres (src/builder/forestLayout.js : un
-  arbre entier par bloc de 2 x 2, de haut en bas ; tissu sombre seulement derrière, sur les cases qui ne touchent pas
+  grille ; toute la forêt peinte est redessinée à chaque coup en rangées d'arbres (src/builder/forestLayout.js : d'abord
+  les arbres collés à chaque bord, alignés sur leur bord (un arbre peut dépasser de la carte : une bordure d'épaisseur
+  impaire garde des arbres entiers), puis le reste sur la meilleure grille, puis chaque case encore libre couverte par
+  l'arbre qui chevauche le moins ; dessinés de haut en bas ; tissu sombre seulement derrière, sur les cases qui ne touchent pas
   une case libre ; buisson sur une case hors des blocs). La gomme repeint de
   l'herbe. Clôture : posée case par case au pinceau, ou en tour de rectangle avec Zone ; chaque case prend
   l'angle, le bout ou le montant qui va avec ses voisines (montant collé à droite de la case sur le côté droit d'un

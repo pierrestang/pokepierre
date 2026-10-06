@@ -442,28 +442,21 @@ def leaves(hue_fn, sat=None):
     return lambda img: hsv_map(img, fn)
 
 
-def shifted_blocks(blocks, H, forest=None):
-    """Blocs dessinés une case plus bas. La dernière rangée de la carte descend (cimes jusqu'au bord, troncs hors de la
-    carte) ; pour que les colonnes d'arbres des côtés la rejoignent sans trou, toute colonne de blocs qui descend jusqu'à
-    elle descend aussi, et, dans la moitié basse, les blocs d'une même rangée qui touchent un bloc descendu. Le décalage
-    d'une case avec la bordure du haut (troncs sur sa deuxième rangée) se fait dans les angles du haut."""
-    have = set(blocks)
-    shift = set()
-    for bx, by in blocks:
-        y = by
-        while (bx, y) in have and y + 1 < H - 1:
-            y += 2
-        if (bx, y) in have and y + 1 == H - 1:
-            shift.add((bx, by))
+def shifted_blocks(blocks, H, forest_or_out):
+    """Blocs dessinés une case plus bas (même règle que src/builder/forestLayout.js) : la dernière rangée (troncs hors
+    de la carte), les arbres juste au-dessus d'un arbre descendu (2 ou 3 rangées plus haut), et, dans la moitié basse,
+    les blocs d'une rangée qui touchent un bloc descendu ; jamais si le tronc descendu tomberait sur une case libre."""
+    shift = {(bx, by) for bx, by in blocks if by + 1 == H - 1}
+    trunk_ok = lambda bx, by: forest_or_out(bx, by + 2) and forest_or_out(bx + 1, by + 2)
     changed = True
     while changed:
         changed = False
         for bx, by in blocks:
-            if (bx, by) in shift or by < H // 2:
+            if (bx, by) in shift or not trunk_ok(bx, by):
                 continue
-            # Le tronc descendu tombe sur la rangée du dessous : seulement si elle est de la forêt (jamais une case libre).
-            below_ok = forest is None or all((bx + i, by + 2) in forest for i in (0, 1))
-            if below_ok and ((bx - 2, by) in shift or (bx + 2, by) in shift):
+            below = any((bx, by + d) in shift for d in (2, 3))
+            side = by >= H // 2 and ((bx - 2, by) in shift or (bx + 2, by) in shift)
+            if below or side:
                 shift.add((bx, by))
                 changed = True
     return shift
@@ -498,17 +491,50 @@ def forest_trees(v, variant):
         seen |= comp
         if len(comp) < 4:
             forest -= comp
-    is_f = lambda x, y: not (0 <= x < W and 0 <= y < H) or (x, y) in forest
-    is_open = lambda x, y: 0 <= x < W and 0 <= y < H and (x, y) not in forest     # les bords : de la forêt
-    full = lambda bx, by: all((x, y) in forest for x, y in ((bx, by), (bx + 1, by), (bx, by + 1), (bx + 1, by + 1)))
-    ax, ay = max(((a, b) for a in (0, 1) for b in (0, 1)),
-                 key=lambda p: sum(full(bx, by) for by in range(p[1], H - 1, 2) for bx in range(p[0], W - 1, 2)))
-    blocks = [(bx, by) for by in range(ay, H - 1, 2) for bx in range(ax, W - 1, 2) if full(bx, by)]
-    in_block = {(bx + i, by + j) for bx, by in blocks for i in (0, 1) for j in (0, 1)}
-    shift = shifted_blocks(blocks, H, forest)
+    in_map = lambda x, y: 0 <= x < W and 0 <= y < H
+    is_open = lambda x, y: in_map(x, y) and (x, y) not in forest     # les bords : de la forêt
+    f_or_out = lambda x, y: not in_map(x, y) or (x, y) in forest
+    cells_of = lambda bx, by: ((bx, by), (bx + 1, by), (bx, by + 1), (bx + 1, by + 1))
+    usable = lambda bx, by: any(in_map(*c) for c in cells_of(bx, by)) and all(f_or_out(*c) for c in cells_of(bx, by))
+    # Même choix que le créateur (src/builder/forestLayout.js) : les arbres collés à chaque bord, alignés sur leur
+    # bord ; le reste sur la grille qui en garde le plus ; chaque case encore libre, l'arbre qui la couvre en
+    # chevauchant le moins.
+    blocks, chosen, covered = [], set(), {}
+    overlap = lambda bx, by: sum(c in covered for c in cells_of(bx, by))
+
+    def take(bx, by):
+        chosen.add((bx, by))
+        blocks.append((bx, by))
+        for c in cells_of(bx, by):
+            if in_map(*c):
+                covered[c] = covered.get(c, 0) + 1
+    edges = [[(x, 0) for x in range(W - 1)], [(x, H - 2) for x in range(W - 1)], [(0, y) for y in range(H - 1)],
+             [(W - 2, y) for y in range(H - 1)]]
+    for edge in edges:
+        for bx, by in edge:
+            if usable(bx, by) and not overlap(bx, by):
+                take(bx, by)
+    count = lambda ax, ay: sum(usable(bx, by) and not overlap(bx, by) for by in range(ay - 2, H, 2) for bx in range(ax - 2, W, 2))
+    ax, ay = max(((a, b) for b in (0, 1) for a in (0, 1)), key=lambda p: count(*p))
+    for by in range(ay - 2, H, 2):
+        for bx in range(ax - 2, W, 2):
+            if usable(bx, by) and not overlap(bx, by):
+                take(bx, by)
+    for y in range(H):
+        for x in range(W):
+            if (x, y) not in forest or (x, y) in covered:
+                continue
+            cand = [(overlap(bx, by), bx, by) for bx, by in ((x - 1, y - 1), (x, y - 1), (x - 1, y), (x, y))
+                    if usable(bx, by) and (bx, by) not in chosen]
+            if cand:
+                _, bx, by = min(cand)
+                take(bx, by)
+    blocks.sort(key=lambda b: (b[1], b[0]))
+    in_block = set(covered)
+    shift = shifted_blocks(blocks, H, f_or_out)
     bushes = 0
     # Les blocs de la dernière rangée (dessinés une case plus bas) gardent le tissu derrière leurs cimes.
-    low = {(bx + i, by + j) for bx, by in blocks if by + 1 == H - 1 for i in (0, 1) for j in (0, 1)}
+    low = {(bx + i, by + j) for bx, by in blocks if by + 1 == H - 1 for i in (0, 1) for j in (0, 1) if in_map(bx + i, by + j)}
     for x, y in forest:
         touches = (x, y) not in low and any(is_open(x + dx, y + dy) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
         if touches:                                        # l'herbe sous l'arbre (ce que cachait le tissu)
@@ -517,7 +543,7 @@ def forest_trees(v, variant):
         if (x, y) not in in_block and touches:
             v.set_stack('decor', x, y, v.stack('decor', x, y) + [lref(lis['bush']['col'], 0)])
             bushes += 1
-    for bx, by in sorted(blocks, key=lambda b: (b[1], b[0])):
+    for bx, by in blocks:
         dy = 1 if (bx, by) in shift else 0                 # une case plus bas (voir shifted_blocks)
         for k in range(lis['tree']['h']):
             y = by - 2 + k + dy
@@ -525,6 +551,8 @@ def forest_trees(v, variant):
                 continue
             for dx in range(lis['tree']['w']):
                 x = bx + dx
+                if not 0 <= x < W:                         # arbre qui dépasse du bord de la carte
+                    continue
                 layer = 'decor' if k >= 2 or (x, y) in forest else 'dessus'
                 v.set_stack(layer, x, y, v.stack(layer, x, y) + [lref(lis['tree']['col'] + dx, k)])
     v.notes.append(f'forêt en rangées d\'arbres : {len(blocks)} arbres, {bushes} buisson(s)')
