@@ -495,7 +495,7 @@ export function createAssistant(api) {
   // La palette de forêt d'une case posée (tissu dense des bordures, éventuellement recoloré par ville), ou null.
   // Seules les planches d'arbres (et les cases recolorées de la planche assemblée) comptent : un toit de la même couleur
   // n'est pas de la forêt.
-  const TREE_SHEETS = new Set(['g4-arbres', 'rmxp-nature', 'auto']);
+  const TREE_SHEETS = new Set(['g4-arbres', 'rmxp-nature', 'auto', 'catalogue']);   // catalogue : la forêt du pinceau
   function forestVariant(ref) {
     const tile = decodeRef(state.map, ref);
     if (!tile || !TREE_SHEETS.has(tile.sheet)) return null;

@@ -10,8 +10,8 @@ import {
   BENOIT_SAD,
 } from '../montepilloyStory.js';
 
-// Montépilloy (Oise) — village de campagne façon Rouge Feu, 35 x 29 cases (agrandie en octobre 2026 : scripts/
-// grow_montepilloy.py). Chemins de terre : la grand-rue nord-sud, sur trois cases (la route du collège au nord, la route de Saint-Ay au sud), la rue des maisons et la rue de l'école. Les maisons
+// Montépilloy (Oise) — village de campagne façon Rouge Feu, 36 x 30 cases (agrandie en octobre 2026 : scripts/
+// grow_montepilloy.py ; dimensions paires pour la bordure d'arbres). Chemins de terre : la grand-rue nord-sud, sur trois cases (la route du collège au nord, la route de Saint-Ay au sud), la rue des maisons et la rue de l'école. Les maisons
 // bordent la grand-rue de chaque côté : la famille à gauche, la voisine à droite, l'école à droite en dessous. À
 // gauche, la ferme de M. Bouly, un enclos rectangulaire à clôture blanche ouvert à droite sur la grand-rue (deux
 // cases, panneau juste à l'intérieur) : la grange (toit orange de Rubis/Saphir, tonneaux à l'intérieur) et le
@@ -25,35 +25,36 @@ export const montepilloyMap = {
   name: 'Montépilloy',
   built: BUILT,
   sourceGrid: parseGrid([
-    'TTTTTTTTTTTTTTTçççTTTTTTTTTTTTTTTTT', // 0
-    'TTTTTTTTTTTTTTTçççTTTTTTTTTTTTTTTTT', // 1
-    'TTTTT.........Sççç...............TT', // 2
-    'TTTTT....RRRRR.ççç.RRRRR.........TT', // 3
-    'TT....ff.RRRRR.ççç.RRRRR.ff......TT', // 4
-    'TT.ƀƀ.ff.WWWWW.ççç.WWWWW.ff......TT', // 5
-    'TT..M...WDWWWW.ççç.WWWWWM........TT', // 6
-    'TT.....çççççççççççççDççççç...ƀ...TT', // 7
-    'TT.....ççççççççççççççççççç.......TT', // 8
-    'TT.............ççç...............TT', // 9
-    'TTFFFFFFFFFFFFFççç.RRRRR..TT..TTTTT', // 10
-    'TTF...........Fççç.RRRRR.fTT..TTTTT', // 11
-    'TTFRRRRRRR....Fççç.WWWWW.f..ƀ....TT', // 12
-    'TTFRRRRRRR....Fççç.WWWWWD........TT', // 13
-    'TTFWWWWWWW....Fççççççççççççççç...TT', // 14
-    'TTFWWWWDDW...SFççççççççççççççç...TT', // 15
-    'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ.TT', // 16
-    'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ.TT', // 17
-    'TTF..ççççççççççççç.f~~~~~~..TT..ĥTT', // 18
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.f~~~~~~~......TT', // 19
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFçççĥ~~~~~~~~.ĥ....TT', // 20
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.~~~~~~~~...TTTTT', // 21
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç..~~~~~~.ĥ..TTTTT', // 22
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç..~~~~~~.ĥ..TTTTT', // 23
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç....~~~.f.ĥ....TT', // 24
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç....~~~.f.ĥ....TT', // 25
-    'TTFFFFFFFFFFFFFççç...ĥ.ĥ.ĥ......ƀTT', // 26
-    'TTTTTTTTTTTTTTTçççTTTTTTTTTTTTTTTTT', // 27
-    'TTTTTTTTTTTTTTTçççTTTTTTTTTTTTTTTTT', // 28
+    'TTTTTTTTTTTTTT.çççTTTTTTTTTTTTTTTTTT', // 0
+    'TTTTTTTTTTTTTT.çççTTTTTTTTTTTTTTTTTT', // 1
+    'TTTTT.........Sççç................TT', // 2
+    'TTTTT....RRRRR.ççç.RRRRR..........TT', // 3
+    'TT....ff.RRRRR.ççç.RRRRR.ff.......TT', // 4
+    'TT.ƀƀ.ff.WWWWW.ççç.WWWWW.ff.......TT', // 5
+    'TT......WDWWMW.ççç.WWWWWM.........TT', // 6
+    'TT.....çççççççççççççDççççç...ƀ....TT', // 7
+    'TT.....ççççççççççççççççççç........TT', // 8
+    'TT.............ççç................TT', // 9
+    'TTFFFFFFFFFFFFFççç.RRRRR..TT..TTTTTT', // 10
+    'TTF...........Fççç.RRRRR.fTT..TTTTTT', // 11
+    'TTFRRRRRRR....Fççç.WWWWW.f.Dƀ.....TT', // 12
+    'TTFRRRRRRR....Fççç.WWWWW..........TT', // 13
+    'TTFWWWWWWW....Fççççççççççççççç....TT', // 14
+    'TTFWWWWDDW...SFççççççççççççççç....TT', // 15
+    'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ..TT', // 16
+    'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ..TT', // 17
+    'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ..TT', // 18
+    'TTF..ççççççççççççç.f~~~~~~..TT..ĥĥTT', // 19
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.f~~~~~~~.......TT', // 20
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFçççĥ~~~~~~~~.ĥ.....TT', // 21
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.~~~~~~~~...TTTTTT', // 22
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç..~~~~~~.ĥ..TTTTTT', // 23
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç..~~~~~~.ĥ..TTTTTT', // 24
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç....~~~.f.ĥ.....TT', // 25
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç....~~~.f.ĥ.....TT', // 26
+    'TTFFFFFFFFFFFFFççç..............ƀƀTT', // 27
+    'TTTTTTTTTTTTTT.çççTTTTTTTTTTTTTTTTTT', // 28
+    'TTTTTTTTTTTTTT.çççTTTTTTTTTTTTTTTTTT', // 29
   ]),
   doors: [
     { x: 9, y: 6, interior: 'montHouse' },
@@ -64,7 +65,7 @@ export const montepilloyMap = {
     { x: 7, y: 15, interior: 'boulyBarn' },
     { x: 8, y: 15, interior: 'boulyBarn' },
     // L'école (la verrière) : sa porte dessinée, déplacée dans le créateur.
-    { x: 24, y: 13, interior: 'school' },
+    { x: 27, y: 12, interior: 'school' },
   ],
   // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
   buildings: [],
@@ -125,7 +126,7 @@ export const montepilloyMap = {
     },
     // À la sortie de l'école, Margaux lance le cache-cache (voir HIDE_AND_SEEK).
     {
-      id: 'margaux-sortie', name: 'Margaux', x: 26, y: 14, facing: 'left', color: 0xf08080,
+      id: 'margaux-sortie', name: 'Margaux', x: 25, y: 13, facing: 'left', color: 0xf08080,
       ifFlags: [FLAGS.ecoleCm2], unlessFlags: [FLAGS.cacheCache],
       dialogue: ['Dernière partie avant les vacances !'],
     },
@@ -151,7 +152,7 @@ export const montepilloyMap = {
     { x: 14, y: 2, dialogue: ['Nord : route du collège Bonsecours.'] },
     // Une carte postale de Felix (Saint-Ay).
     {
-      x: 4, y: 6,
+      x: 12, y: 6,
       dialogue: [
         'Une carte postale ! Elle vient de Felix.',
         '« Pierre, la cabane tient toujours. Yanis a oublié le mot de passe, pas nous.',
@@ -161,7 +162,7 @@ export const montepilloyMap = {
     { x: 24, y: 6, dialogue: ['La boîte aux lettres de la voisine.'] },
     { x: 13, y: 15, dialogue: ['Ferme de M. Bouly.'] },
     // Cache-cache : Étienne dans l'arbre de la prairie (Margaux, voir les passages).
-    { x: 28, y: 18, ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveEtienne], script: FOUND_ETIENNE },
+    { x: 28, y: 19, ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveEtienne], script: FOUND_ETIENNE },
   ],
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveeMontepilloy], unlessFlags: [FLAGS.ellipseMontepilloy], steps: ARRIVAL },
@@ -170,16 +171,16 @@ export const montepilloyMap = {
   ],
   triggers: [
     // Porte sud : la route de Saint-Ay (voir maps/routeMontepilloy.js).
-    ...[15, 16, 17].map((x) => ({ x, y: 28, warp: { map: 'routeMontepilloy', x: 10, y: 1, facing: 'down' } })),
+    ...[15, 16, 17].map((x) => ({ x, y: 29, warp: { map: 'routeMontepilloy', x: 10, y: 1, facing: 'down' } })),
     // Cache-cache : Margaux, derrière les bottes de foin, au fond du champ de la ferme (on tombe sur elle en y
     // entrant).
-    ...[[12, 22], [13, 22], [12, 23], [13, 23], [12, 24], [13, 24], [12, 25], [13, 25]].map(([x, y]) => ({
+    ...[[12, 23], [13, 23], [12, 24], [13, 24], [12, 25], [13, 25], [12, 26], [13, 26]].map(([x, y]) => ({
       x, y, ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveMargaux], script: FOUND_MARGAUX,
     })),
     // Porte nord : ce qu'il reste à faire, puis septembre, puis la route du collège, à pied (voir NORTH_EXIT).
     ...[15, 16, 17].map((x) => ({ x, y: 0, script: NORTH_EXIT })),
   ],
-  spawn: { x: 16, y: 26, facing: 'up' },
+  spawn: { x: 16, y: 27, facing: 'up' },
   // Le soir de la dernière vertu : le soleil se couche (voir montepilloyStory.js END_OF_DAY).
   night: { ifFlags: [FLAGS.finJournee], unlessFlags: [FLAGS.septembre] },
 };

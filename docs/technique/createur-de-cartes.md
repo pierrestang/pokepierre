@@ -20,6 +20,15 @@ gomme de 1, 2, 3 ou 5 cases de côté ([ et ]) ; Ctrl+D (ou Ctrl+C puis Ctrl+V) 
 souris, chaque clic en pose une (une zone : ses trois calques et ses collisions ; un élément : seul, sans le sol).
 Les cartes actuelles restent en place tant qu'elles ne sont pas refaites dans le créateur.
 
+## Taille des cartes : toujours paire
+
+Les arbres des bordures font 2 x 2 cases. Sur une carte de largeur ou de hauteur impaire, les bordures de deux côtés
+opposés ne tombent pas sur la même grille : les arbres se serrent ou se décalent d'un côté. Le créateur arrondit donc
+toute taille (nouvelle carte, redimensionner) au nombre pair supérieur ; audit_maps.py signale `taille_impaire`
+(Fort-de-France, île sans bordure d'arbres, peut l'ignorer). Même règle pour les bandes de forêt de part et d'autre d'un
+chemin qui traverse une bordure : un chemin de 3 cases laisse une forêt impaire d'un côté ; on met une bande d'herbe
+d'une case le long du chemin (Montépilloy, 36 x 30 : x 14 aux deux sorties).
+
 ## Outil Déplacer : objet ou zone
 
 - Glisser en partant d'un objet le prend (builder.js objectAt : pixels qui se touchent, plus les cases posées avec lui

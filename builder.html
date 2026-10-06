@@ -195,7 +195,7 @@
         <button class="btn" id="open" title="Ouvrir une carte"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="label">Ouvrir</span></button>
         <div class="map-meta">
           <input type="text" id="map-name" title="Nom de la carte" />
-          <span class="size" title="Taille de la carte (cases)"><input type="number" id="map-w" min="5" max="200" title="Largeur (cases)" />×<input type="number" id="map-h" min="5" max="200" title="Hauteur (cases)" /></span>
+          <span class="size" title="Taille de la carte (cases)"><input type="number" id="map-w" min="6" max="200" step="2" title="Largeur (cases, paire)" />×<input type="number" id="map-h" min="6" max="200" step="2" title="Hauteur (cases, paire)" /></span>
           <button class="btn" id="resize" title="Appliquer la nouvelle taille" hidden>Redimensionner</button>
         </div>
         <span class="grow"></span>
@@ -321,9 +321,9 @@
       <form method="dialog">
         <h3>Nouvelle carte</h3>
         <div class="row"><label>Nom <input type="text" id="new-name" value="Nouvelle carte" /></label></div>
-        <div class="row">Taille <input type="number" id="new-w" value="30" min="5" max="200" /> ×
-          <input type="number" id="new-h" value="20" min="5" max="200" /> cases</div>
-        <p class="help">L'écran du jeu montre environ 22 × 15 cases.</p>
+        <div class="row">Taille <input type="number" id="new-w" value="30" min="6" max="200" step="2" /> ×
+          <input type="number" id="new-h" value="20" min="6" max="200" step="2" /> cases</div>
+        <p class="help">L'écran du jeu montre environ 22 × 15 cases. Taille toujours paire (les arbres des bordures font 2 × 2 cases).</p>
         <div class="actions"><button class="btn" value="cancel">Annuler</button><button class="btn primary" value="ok">Créer</button></div>
       </form>
     </dialog>

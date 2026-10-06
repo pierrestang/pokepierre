@@ -105,7 +105,7 @@ const GAME_OVER = {
 export const FOUND_MARGAUX = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Quelque chose bouge derrière les bottes de foin…'] },
-  { emerge: { id: 'margaux', name: 'Margaux', from: [[13, 24], [12, 24], [13, 22], [12, 22]] } },
+  { emerge: { id: 'margaux', name: 'Margaux', from: [[13, 25], [12, 25], [13, 23], [12, 23]] } },
   { speaker: 'Margaux', say: ['Zut, trouvée ! Les bottes de foin, c\'était trop facile…', 'L\'an prochain, au collège, je me trouverai une cachette imbattable. Je viens avec toi chercher les autres !'] },
   { setFlag: FLAGS.trouveMargaux },
   GAME_OVER,
@@ -114,7 +114,7 @@ export const FOUND_MARGAUX = [
 export const FOUND_ETIENNE = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Des feuilles tombent… Étienne est perché dans l\'arbre !'] },
-  { emerge: { id: 'etienne', name: 'Étienne', from: [[28, 18]] } },
+  { emerge: { id: 'etienne', name: 'Étienne', from: [[28, 19]] } },
   { speaker: 'Étienne', say: ['Perdu ! Le collège, c\'est en septembre. Paraît qu\'il y a des casiers, j\'espère qu\'on sera dans la même classe.', 'Je t\'aide à chercher les autres !'] },
   { setFlag: FLAGS.trouveEtienne },
   GAME_OVER,

@@ -13,6 +13,8 @@
                       vertes, et au moins 8 % de pixels sombres (14 % au minimum sur les vraies cases 'ĥ'), 0 % pour
                       une touffe d'herbe rase ;
   poche               cases libres qu'on ne peut pas atteindre (ni départ, ni PNJ, ni bord, ni porte).
+  taille_impaire      largeur ou hauteur impaire : les arbres des bordures (2 x 2 cases) ne tombent pas sur la même
+                      grille des deux côtés (règle : dimensions paires ; une carte sans bordure d'arbres peut l'ignorer).
 
 Usage : python3 scripts/audit_maps.py   (après avoir touché une carte du créateur, avec node scripts/check_paths.js)
 """
@@ -47,7 +49,8 @@ report={}
 for mid,g in data.items():
     m=json.load(open(R+f"src/data/builtMaps/{g['file']}.json")); W,H=m['width'],m['height']
     src=g['source']; grid=g['grid']; solid=m['solid']
-    res={k:[] for k in ['mur_invisible','objet_traversable','cache_dessus','trou_sol','herbe_sans_dessin','herbes_hors_grille','fleurs_et_bords','poche']}
+    res={k:[] for k in ['taille_impaire','mur_invisible','objet_traversable','cache_dessus','trou_sol','herbe_sans_dessin','herbes_hors_grille','fleurs_et_bords','poche']}
+    if W % 2 or H % 2: res['taille_impaire'].append((W, H))
     for y in range(H):
         for x in range(W):
             i=y*W+x; c=src[y][x]

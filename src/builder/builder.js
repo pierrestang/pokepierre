@@ -1423,6 +1423,13 @@ function buildLayerButtons() {
 }
 
 // « Redimensionner » n'apparaît que si la taille tapée diffère de celle de la carte.
+// Taille d'une carte : toujours paire (6 à 200 cases). Les arbres des bordures font 2 x 2 cases : sur une carte de
+// taille impaire, les bordures de deux côtés opposés ne tombent pas sur la même grille et les arbres se décalent.
+function evenSize(value, fallback) {
+  const n = Math.max(6, Math.min(200, Number(value) || fallback));
+  return n % 2 ? n + 1 : n;
+}
+
 function sizeEdited() {
   $('resize').hidden = Number($('map-w').value) === state.map.width && Number($('map-h').value) === state.map.height;
 }
@@ -1623,14 +1630,15 @@ function bindUi() {
   $('map-w').oninput = sizeEdited;
   $('map-h').oninput = sizeEdited;
   $('resize').onclick = () => {
-    const w = Math.max(5, Math.min(200, Number($('map-w').value) || state.map.width));
-    const h = Math.max(5, Math.min(200, Number($('map-h').value) || state.map.height));
+    const w = evenSize($('map-w').value, state.map.width);
+    const h = evenSize($('map-h').value, state.map.height);
     if (w === state.map.width && h === state.map.height) return;
     remember();
     state.map = resizeMap(state.map, w, h);
     syncFields();
     centerMap();
     changed();
+    setStatus(`Taille : ${w} × ${h} (toujours paire : les arbres des bordures font 2 × 2 cases)`);
   };
   $('save').onclick = save;
   $('open').onclick = showOpenDialog;
@@ -1640,8 +1648,8 @@ function bindUi() {
     if ($('new-dialog').returnValue !== 'ok') return;
     if (state.dirty && !window.confirm('Des modifications ne sont pas enregistrées. Créer une nouvelle carte quand même ?')) return;
     const name = $('new-name').value.trim() || 'Nouvelle carte';
-    const width = Math.max(5, Math.min(200, Number($('new-w').value) || 30));
-    const height = Math.max(5, Math.min(200, Number($('new-h').value) || 20));
+    const width = evenSize($('new-w').value, 30);
+    const height = evenSize($('new-h').value, 20);
     loadMap(blankMap({ id: slugify(name), name, width, height }));
     setStatus('Nouvelle carte');
   });

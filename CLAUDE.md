@@ -84,6 +84,11 @@ puis Hanoï. Pas de combats.
 - Toujours laisser le jeu dans un état testable dans le navigateur.
 - Après avoir touché une carte, un PNJ, un obstacle ou un voyage : `node scripts/check_paths.js` (aucun
   blocage à aucune étape de l'histoire).
+- Taille des cartes : largeur et hauteur toujours paires (en cases). Les arbres des bordures font 2 x 2 cases : sur une
+  carte de taille impaire, les bordures de deux côtés opposés ne tombent pas sur la même grille et les arbres se
+  décalent. Le créateur arrondit toute nouvelle taille au nombre pair ; l'audit signale `taille_impaire`. Un chemin de
+  largeur impaire qui traverse une bordure : une bande d'herbe d'une case le long du chemin, pour que la forêt garde
+  un nombre pair de cases de chaque côté.
 - Après avoir touché une carte du créateur : `python3 scripts/audit_maps.py` (murs invisibles, objets traversables,
   hautes herbes de la grille sans dessin, poches inaccessibles). Sous un toit ou une cime (calque « au-dessus de
   Pierre »), le jeu montre la silhouette du joueur (MapScene.updateSilhouette) ; ses jambes dans les hautes herbes sont
