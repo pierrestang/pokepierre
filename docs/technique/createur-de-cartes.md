@@ -31,6 +31,20 @@ calé sur la grille, la porte sur la dernière rangée. Mobilier (g4-mobilier) :
 transat, grande caisse, massif, table de pique-nique, banc de bois, abri de bois, distributeur, panneau d'affichage ;
 souche (végétation, garde son ombre). Les villes suivantes (Prytanée, Bordeaux, Hull) viendront plus tard.
 
+## Éléments relevés sur les cartes (octobre 2026)
+
+scripts/harvest_map_elements.py découpe l'image des objets de chaque carte en dessins d'un seul tenant (bâtiments,
+objets) et écrit dans assets-source/elements-cartes/candidats/ (ignoré par git) ceux qui ne sont pas déjà des éléments
+du catalogue. Les éléments retenus sont copiés et nommés dans assets-source/elements-cartes/ (<id>.png et
+elements.json : carte, rayon, collisions et porte relevées sur la carte) ; build_catalogue.py les ajoute au thème de
+leur carte et à « Libre » (MAP_ELEMENTS). Retenus : grande maison de brique (Hull), bâtiment jaune et hangar
+(Prytanée), grand bâtiment orange (Montépilloy), longue-vue, panneau du village, deux camionnettes, yacht. La rotonde et
+le manoir viennent de leur définition propre (g4_theme.BUILDINGS, via BUILDING_NAMES). Les morceaux (têtes de
+lampadaires, bouts de péniche), les doublons du catalogue et les pontons (on marche dessus) ne sont pas repris.
+Aussi ajoutés de la bibliothèque : poubelles, feu de camp, puits de pierre, cloche, banc blanc, tableau d'annonces,
+lanterne de jardin, poteau indicateur, bûches, table de jardin, tente, panneau en bois, oriflamme, réverbère rouge
+(rangée « bloquante » comptée depuis le bas : -1).
+
 ## Contour des bâtiments et des objets
 
 Tous les bâtiments ont le même contour : un trait d'un pixel gris très foncé (32, 32, 32) autour du dessin, comme la
@@ -44,6 +58,13 @@ partagent une case assemblée). Puis les objets (mobilier, clôtures, panneaux, 
 trait autour de chaque dessin d'un seul tenant, sauf les bateaux et véhicules (planches g4-vehicules, objets,
 jared-bateaux), ce qui est posé sur l'eau, et un objet collé sous une plante qui le contient (pied d'un palmier, plante
 de 16 cases au plus). Le catalogue passe aussi son mobilier par outlined(). La végétation ne change pas.
+Précautions (octobre 2026, après des traits parasites sur des cartes retouchées à la main) : un trou entièrement
+entouré par le dessin et les cases assemblées vertes (toit-jardin) comptent comme pleins pour trouver le bord ; une
+maison du mode simple n'est recalée sur le catalogue que si au moins la moitié de ses cases sont déjà celles du
+catalogue (sinon sa fiche ne correspond plus au dessin) et si la case est presque identique ; les cases assemblées
+créées par remove_shadows.py et outline_buildings.py à partir d'un objet sont notées dans assets-source/auto-kinds.json
+(le test « surtout vert » ne les prend plus pour de la végétation d'un passage à l'autre). Les deux scripts se
+relancent sans risque : ils ne changent que ce qui manque.
 
 ## Ombres : seulement la végétation
 

@@ -24,7 +24,7 @@ from PIL import Image
 from scipy import ndimage
 
 sys.path.insert(0, str(Path(__file__).parent))
-from remove_shadows import MAPS, STRIDE, TILE, V2, object_test  # noqa: E402
+from remove_shadows import MAPS, STRIDE, TILE, V2, object_test, remember_kind, save_kinds  # noqa: E402
 
 OUTLINE = (32, 32, 32)
 DARK = 50
@@ -51,6 +51,14 @@ def paint(a, mask):
     a[m, :3] = OUTLINE
     a[m, 3] = 255
     return a
+
+
+def same_tile(a, b, share=0.95):
+    """Deux cases (PIL RGBA) presque identiques : même silhouette et au moins `share` des pixels pareils."""
+    a, b = np.array(a).astype(int), np.array(b).astype(int)
+    if ((a[..., 3] > 0) != (b[..., 3] > 0)).mean() > 0.03:
+        return False
+    return (np.abs(a - b).sum(-1) < 24).mean() >= share
 
 
 def outlined(img):
@@ -98,6 +106,7 @@ def main(ids):
         W, H = m['width'], m['height']
         sheets = m['sheets']
         ref = lambda sheet, k: (sheets.index(sheet) if sheet in sheets else sheets.append(sheet) or len(sheets) - 1) * STRIDE + k
+        sheet_k = lambda r: (sheets[r // STRIDE], r % STRIDE)
         big = Image.new('RGBA', (W * TILE, H * TILE))
         for layer in ('decor', 'dessus'):
             for i, cell in enumerate(m['layers'][layer]):
@@ -110,6 +119,18 @@ def main(ids):
                         big.alpha_composite(img, ((i % W) * TILE, (i // W) * TILE))
         a = np.array(big)
         opaque = a[..., 3] >= 128
+        # Les cases assemblées surtout vertes (classées végétation : un toit-jardin, un palmier) comptent comme pleines
+        # pour trouver le bord, sans être repeintes : un toit-jardin n'est pas un trou dans l'immeuble.
+        greens = Image.new('RGBA', (W * TILE, H * TILE))
+        for layer in ('decor', 'dessus'):
+            for i, cell in enumerate(m['layers'][layer]):
+                for r in (cell if isinstance(cell, list) else [cell]):
+                    if r >= 0 and sheets[r // STRIDE] == 'auto' and not is_object('auto', r % STRIDE, tile_of('auto', r % STRIDE)):
+                        greens.alpha_composite(tile_of('auto', r % STRIDE), ((i % W) * TILE, (i // W) * TILE))
+        green = np.array(greens)[..., 3] >= 128
+        # Un trou entièrement entouré par le dessin (morceau de toit posé dans le calque Sol, case par case) n'est pas un
+        # bord : bouché pour trouver le contour.
+        filled = ndimage.binary_fill_holes(opaque) & ~opaque
         # Les clôtures et objets fins (souvent des cases assemblées, qu'on ne reconnaît pas à leur planche) disparaissent
         # à l'ouverture : il reste le corps des bâtiments.
         body = ndimage.binary_opening(opaque, structure=np.ones((OPEN, OPEN)))
@@ -147,7 +168,7 @@ def main(ids):
         lab2, n2 = ndimage.label(fine)
         ids2 = np.unique(lab2[keep[lab] & (lab2 > 0)])
         region = np.isin(lab2, ids2) & (lab2 > 0)
-        mask = border(opaque) & region
+        mask = border(opaque | filled | green) & region
         core = ndimage.binary_dilation(keep[lab], iterations=2)
         changed = 0
         made = {}                                  # (calque, case) -> cases refaites ici
@@ -184,7 +205,12 @@ def main(ids):
                         changed += 1
                         clean = Image.fromarray(t)
                         k2 = cat_by_bytes.get(clean.tobytes()) if sheet == 'catalogue' else None
-                        new.append(ref('catalogue', k2) if k2 is not None else ref('auto', bd.image_tile(clean)))
+                        if k2 is not None:
+                            new.append(ref('catalogue', k2))
+                        else:
+                            k3 = bd.image_tile(clean)
+                            remember_kind(k3)                # repeint d'un objet : reste un objet
+                            new.append(ref('auto', k3))
                         made.setdefault((layer, i), set()).add(new[-1])
                     cells[i] = new if len(new) > 1 else (new[0] if new else -1)
 
@@ -229,7 +255,8 @@ def main(ids):
                 pys, pxs = pboxes[pl - 1]
                 if px.sum() < pareas[pl] <= 16 * TILE * TILE and xs.start >= pxs.start - 4 and xs.stop <= pxs.stop + 4:
                     okeep[c] = False
-        apply(border(o_opaque) & okeep[olab], lambda sheet, k, img, t, x, y: object_tile(sheet, k, img))
+        o_filled = ndimage.binary_fill_holes(o_opaque) & ~o_opaque
+        apply(border(o_opaque | o_filled | green) & okeep[olab], lambda sheet, k, img, t, x, y: object_tile(sheet, k, img))
 
         # Maisons et mobilier posés en mode simple : leurs cases refaites deviennent celles du catalogue (la version avec contour),
         # pour que le créateur les reconnaisse toujours (sélection, gomme, remplacement), même si un objet collé
@@ -238,6 +265,16 @@ def main(ids):
             t = catalogue['themes'].get(el['theme']) or catalogue['themes']['libre']
             d = next((e for e in t['elements'] if e['id'] == el['id']), None)
             if not d or d['cat'] not in ('maisons', 'mobilier'):
+                continue
+            # La fiche doit encore correspondre au dessin : au moins la moitié de ses cases sont exactement celles du
+            # catalogue à cet endroit (sinon l'élément a été remplacé ou redessiné à la main : on n'y touche pas).
+            spots = [(j, i2, k) for j, row in enumerate(d['tiles']) for i2, k in enumerate(row)
+                     if k >= 0 and 0 <= el['x'] + i2 < W and 0 <= el['y'] + j < H]
+            def present(j, i2, k):
+                c = (el['y'] + j) * W + el['x'] + i2
+                st = m['layers']['decor' if j >= d['over'] else 'dessus'][c]
+                return ref('catalogue', k) in (st if isinstance(st, list) else [st])
+            if not spots or sum(present(*sp) for sp in spots) < 0.5 * len(spots):
                 continue
             for j, row in enumerate(d['tiles']):
                 for i2, k in enumerate(row):
@@ -252,13 +289,16 @@ def main(ids):
                     if want in stack:
                         continue
                     ours = [r for r in stack if r in made.get((layer, c), ())]
-                    if len(ours) == 1:
+                    # Seulement si la case du catalogue est presque la même (une fiche d'élément peut ne plus
+                    # correspondre au dessin : maison remplacée ou déplacée à la main).
+                    if len(ours) == 1 and same_tile(tile_of(*sheet_k(ours[0])), tile_of('catalogue', k)):
                         stack = [want if r == ours[0] else r for r in stack]
                         m['layers'][layer][c] = stack if len(stack) > 1 else stack[0]
         if changed:
             path.write_text(json.dumps(m, ensure_ascii=False))
         print(f'{mid:22} {int(keep.sum())} bâtiment(s), {changed} case(s) avec contour')
     bd.save_auto_sheet()
+    save_kinds()
 
 
 if __name__ == '__main__':

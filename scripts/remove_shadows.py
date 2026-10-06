@@ -68,6 +68,21 @@ def shadowless(img, opaque=True, greys=(), dark=40):
 
 # ---------- Cartes ----------
 
+# Ce que représente chaque case assemblée (planche auto) créée par ces scripts à partir d'un bâtiment ou d'un objet :
+# {numéro: 'objet'}. Sans cette trace, une case de toit-jardin rendue sans ombre ou avec contour pourrait passer pour
+# de la végétation (le test « surtout vert » des cases assemblées) d'un passage à l'autre.
+KINDS_FILE = Path(__file__).resolve().parent.parent / 'assets-source' / 'auto-kinds.json'
+KINDS = {int(k): v for k, v in json.loads(KINDS_FILE.read_text()).items()} if KINDS_FILE.exists() else {}
+
+
+def remember_kind(k, kind='objet'):
+    KINDS[int(k)] = kind
+
+
+def save_kinds():
+    KINDS_FILE.write_text(json.dumps({str(k): v for k, v in sorted(KINDS.items())}))
+
+
 def object_test(bd, catalogue, cat_img):
     """(tile_of(planche, numéro) -> image de la case, is_object(planche, numéro, image) -> True pour un bâtiment, du
     mobilier ou un objet, False pour la végétation, les éléments naturels et les sols)."""
@@ -94,6 +109,10 @@ def object_test(bd, catalogue, cat_img):
         if sheet == 'catalogue':
             return k not in nature_cat
         if sheet == 'auto':
+            if k in KINDS:
+                return KINDS[k] == 'objet'
+            if k not in keys:                     # case assemblée créée depuis (passe précédente) : l'index à jour
+                keys.update({i: kk for kk, i in bd.auto_index.items()})
             key = keys.get(k)
             if not key or key[0] not in ('img', 'stack'):
                 return False
@@ -177,7 +196,12 @@ def main(ids):
                         emptied.add(i)            # une case qui n'était que de l'ombre : retirée
                         continue
                     k2 = cat_by_bytes.get(clean.tobytes()) if sheet == 'catalogue' else None
-                    new.append(ref('catalogue', k2) if k2 is not None else ref('auto', bd.image_tile(clean)))
+                    if k2 is not None:
+                        new.append(ref('catalogue', k2))
+                    else:
+                        k3 = bd.image_tile(clean)
+                        remember_kind(k3)
+                        new.append(ref('auto', k3))
                 cells[i] = new if len(new) > 1 else (new[0] if new else -1)
         # Une case qui ne portait que de l'ombre ne bloque plus (sauf sur l'eau : l'ombre d'un bateau).
         freed = 0
@@ -197,6 +221,7 @@ def main(ids):
         print(f'{mid:22} {changed} case(s) sans ombre, {freed} case(s) libérée(s)')
         total += changed
     bd.save_auto_sheet()
+    save_kinds()
     return total
 
 
