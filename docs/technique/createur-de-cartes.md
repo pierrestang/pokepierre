@@ -45,6 +45,18 @@ Aussi ajoutés de la bibliothèque : poubelles, feu de camp, puits de pierre, cl
 lanterne de jardin, poteau indicateur, bûches, table de jardin, tente, panneau en bois, oriflamme, réverbère rouge
 (rangée « bloquante » comptée depuis le bas : -1).
 
+## Matières, arbres et plantes ajoutés (octobre 2026)
+
+- Matières en motif (2 x 2 cases qui se raccordent, toutes les villes ; build_catalogue.py PATTERNS) : pavés en
+  chevrons, dallage doré, dalles de pierre, planches (g4-sols), terre, chemin de pierres (g4-herbes), bitume
+  (g4_theme.ASPHALT). Pas de bords automatiques : on les peint comme les pavés.
+- Arbres (LIS_TREES) : les arbres de la planche des lisières, au format de l'arbre de forêt (4 x 4, bloc de 2 x 2 qui
+  bloque) : cerisier, arbre olive, arbre pointu, arbre pointu brun, arbre roux, grand feuillu orange, pin bleu, sapin
+  sombre, second palmier. Au moins cinq arbres par ville (MORE_TREES).
+- Plantes (gardent leur ombre, comme toute la végétation) : fougère, champignon, buisson à baies, hortensias, arbuste
+  taillé, tronc moussu, petit oranger, iris bleus, buisson à fleurs orange. Ils gardent leurs couleurs dans les villes
+  à feuillage recoloré (KEEP_COLOURS).
+
 ## Contour des bâtiments et des objets
 
 Tous les bâtiments ont le même contour : un trait d'un pixel gris très foncé (32, 32, 32) autour du dessin, comme la

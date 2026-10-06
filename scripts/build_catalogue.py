@@ -22,7 +22,7 @@ from scipy import ndimage
 
 import identites as I
 from fdf_ds_v2 import tint_stone, tint_martinique
-from g4_theme import BUILDINGS, COBBLE, FENCES
+from g4_theme import ASPHALT, BUILDINGS, COBBLE, FENCES
 from remove_shadows import shadowless
 from outline_buildings import outlined
 
@@ -177,7 +177,26 @@ ELEMENTS = {
     'palmier': ('Palmier', 'arbres', lambda: isolate(crop('g4-arbres', 9, 153, 3, 3)), 2, 'land'),
     'peuplier': ('Peuplier', 'arbres', lambda: isolate(crop('g4-arbres', 6, 147, 3, 4)), 3, 'land'),
     'sapin': ('Grand sapin', 'arbres', lambda: isolate(crop('g4-arbres', 0, 147, 3, 6)), 5, 'land'),
+    # Arbres de la planche des lisières (build_lisieres.py), au format de l'arbre de forêt (4 x 4, bloc de 2 x 2).
+    'cerisier': ('Cerisier en fleurs', 'arbres', lambda: lis_tree('dppt-rose'), 3, 'land'),
+    'arbre-olive': ('Arbre olive', 'arbres', lambda: lis_tree('dppt-olive'), 3, 'land'),
+    'arbre-pointu': ('Arbre pointu', 'arbres', lambda: lis_tree('dppt-pointu'), 3, 'land'),
+    'arbre-pointu-brun': ('Arbre pointu brun', 'arbres', lambda: lis_tree('dppt-pointu-brun'), 3, 'land'),
+    'arbre-roux': ('Arbre roux', 'arbres', lambda: lis_tree('dppt-roux'), 3, 'land'),
+    'feuillu-orange': ('Grand feuillu orange', 'arbres', lambda: lis_tree('dppt-large-orange'), 3, 'land'),
+    'pin-bleu': ('Pin bleu', 'arbres', lambda: lis_tree('dppt-pin-bleu'), 3, 'land'),
+    'sapin-sombre': ('Sapin sombre', 'arbres', lambda: lis_tree('g4-sapin-sombre'), 3, 'land'),
+    'palmier-2': ('Palmier (autre)', 'arbres', lambda: lis_tree('g4-palmier-2'), 3, 'land'),
     # Plantes.
+    'fougere': ('Fougère', 'plantes', lambda: lib_building((4, 401, 35, 34), sid='g4-plantes', shadow=True), -1, 'land'),
+    'champignon': ('Champignon', 'plantes', lambda: lib_building((17, 481, 14, 14), sid='g4-plantes', shadow=True), None, 'land'),
+    'baies-sombres': ('Buisson à baies', 'plantes', lambda: lib_building((6, 564, 36, 28), sid='g4-plantes', shadow=True), -1, 'land'),
+    'hortensias': ('Hortensias', 'plantes', lambda: lib_building((2, 643, 44, 29), sid='g4-plantes', shadow=True), -1, 'land'),
+    'arbuste-taille': ('Arbuste taillé', 'plantes', lambda: lib_building((80, 248, 18, 24), sid='g4-plantes', shadow=True), -1, 'land'),
+    'tronc-mousse': ('Tronc moussu', 'plantes', lambda: lib_building((17, 480, 30, 16), sid='g4-herbes', shadow=True), -1, 'land'),
+    'oranger': ('Petit oranger', 'plantes', lambda: lib_building((17, 1278, 14, 29), sid='g4-herbes', shadow=True), -1, 'land'),
+    'iris': ('Iris bleus', 'plantes', lambda: lib_building((50, 648, 12, 24), sid='g4-plantes', shadow=True), None, 'land'),
+    'buisson-orange': ('Buisson à fleurs orange', 'plantes', lambda: lib_building((65, 1277, 14, 14), sid='g4-herbes', shadow=True), -1, 'land'),
     'buisson': ('Buisson rond', 'plantes', lambda: crop('dppt', 7, 106), 0, 'land'),
     'baies': ('Arbuste à baies', 'plantes', lambda: crop('g4-herbes', 4, 79, 1, 2), 1, 'land'),
     'arbuste-rose': ('Arbuste fleuri', 'plantes', lambda: crop('g4-plantes', 5, 38, 1, 2), 1, 'land'),
@@ -253,6 +272,10 @@ ELEMENTS = {
 MAP_ELEMENTS_DIR = ROOT / 'assets-source' / 'elements-cartes'
 MAP_ELEMENTS = json.loads((MAP_ELEMENTS_DIR / 'elements.json').read_text())
 
+def lis_tree(vid):
+    return crop('lisieres', 0, LIS_ROUND[vid], 4, 4)
+
+
 # L'arbre rond de la planche des lisières (scripts/build_lisieres.py), par palette : sa première rangée.
 LIS_ROUND = {v['id']: v['roundRow'] for v in json.loads((V2 / 'lisieres.json').read_text())['variants']}
 
@@ -265,25 +288,58 @@ THEMES = {
     'fort-de-france': {'name': 'Fort-de-France (tropicale)', 'forest': None, 'paving': None, 'lamp': 'reverbere-rose',
                        'extra': ['palmier', 'hibiscus', 'fleurs-tropicales', 'parasol', 'drapeau-martinique',
                                  'statue-blanche', 'voilier-bleu', 'etal', 'etal-bocaux', 'transat',
-                                 'caisse', 'petite-fontaine', 'banc-blanc', 'reverbere-rouge', 'poubelle-bleue']},
+                                 'caisse', 'petite-fontaine', 'banc-blanc', 'reverbere-rouge', 'poubelle-bleue', 'palmier-2',
+                                 'oranger', 'buisson-orange', 'fougere', 'cerisier']},
     'saint-ay': {'name': 'Saint-Ay (village de Loire)', 'forest': 'chene', 'paving': None, 'lamp': 'lanterne-bois',
                  'palette': 'saint-ay', 'extra': ['arbre-foret', 'peuplier', 'roseaux', 'bois', 'fontaine', 'massif',
-                           'pique-nique', 'puits-pierre', 'lanterne-jardin', 'table-jardin', 'poubelle-rouge']},
+                           'pique-nique', 'puits-pierre', 'lanterne-jardin', 'table-jardin', 'poubelle-rouge',
+                           'arbre-olive', 'arbre-pointu', 'fougere', 'champignon', 'tronc-mousse', 'iris']},
     'route-de-montepilloy': {'name': 'Route de campagne', 'forest': 'dppt', 'paving': None, 'lamp': None,
-                             'extra': ['arbre-foret', 'peuplier', 'poteau-indicateur', 'tente', 'feu', 'buches']},
+                             'extra': ['arbre-foret', 'peuplier', 'poteau-indicateur', 'tente', 'feu', 'buches',
+                                       'arbre-pointu', 'arbre-pointu-brun', 'champignon', 'tronc-mousse', 'baies-sombres']},
     'montepilloy': {'name': 'Montépilloy (village agricole)', 'forest': 'automne', 'paving': None, 'lamp': None,
                     'extra': ['arbre-foret', 'puits', 'bois', 'banc-bois', 'abri-bois', 'souche',
-                              'caisse', 'feu', 'buches', 'poteau-indicateur', 'table-jardin', 'poubelle-rouge']},
+                              'caisse', 'feu', 'buches', 'poteau-indicateur', 'table-jardin', 'poubelle-rouge',
+                              'arbre-roux', 'feuillu-orange', 'baies-sombres', 'tronc-mousse', 'hortensias']},
     'bonsecours': {'name': 'Collège de Bonsecours', 'forest': 'pins', 'paving': None, 'lamp': 'globe',
                    'palette': 'bonsecours', 'extra': ['sapin', 'drapeau-france', 'velo', 'distributeur', 'affichage',
-                             'pique-nique', 'fontaine', 'cloche', 'annonces', 'panneau-bois', 'poubelle-bleue']},
+                             'pique-nique', 'fontaine', 'cloche', 'annonces', 'panneau-bois', 'poubelle-bleue',
+                             'pin-bleu', 'sapin-sombre', 'fougere', 'champignon', 'arbuste-taille']},
     'prytanee': {'name': 'Prytanée (lycée militaire)', 'forest': 'haie', 'paving': 'gravier', 'lamp': 'lanterne-bleue',
-                 'extra': ['haie', 'statue-bronze', 'drapeau-france', 'oriflamme', 'cloche', 'banc-blanc', 'poubelle-bleue']},
+                 'extra': ['haie', 'statue-bronze', 'drapeau-france', 'oriflamme', 'cloche', 'banc-blanc', 'poubelle-bleue',
+                           'arbuste-taille', 'cerisier', 'hortensias', 'iris']},
     'bordeaux': {'name': 'Bordeaux (pierre blonde)', 'forest': None, 'paving': 'blond', 'lamp': 'lanterne-hgss',
-                 'palette': 'bordeaux', 'extra': ['peniche', 'velo']},
+                 'palette': 'bordeaux', 'extra': ['peniche', 'velo', 'cerisier', 'arbuste-taille', 'hortensias', 'oranger']},
     'hull': {'name': 'Hull (brique anglaise)', 'forest': None, 'paving': 'brique', 'lamp': 'reverbere-noir',
-             'palette': 'hull', 'extra': ['cargo', 'cabine', 'velo']},
+             'palette': 'hull', 'extra': ['cargo', 'cabine', 'velo', 'arbre-olive', 'arbuste-taille', 'hortensias', 'cerisier']},
 }
+# Au moins cinq arbres par ville (octobre 2026).
+MORE_TREES = {
+    'fort-de-france': ['arbre-olive', 'arbre-pointu'],
+    'saint-ay': ['cerisier'],
+    'route-de-montepilloy': ['arbre-olive'],
+    'montepilloy': ['arbre-pointu-brun', 'peuplier'],
+    'bonsecours': ['arbre-foret', 'arbre-pointu'],
+    'prytanee': ['arbre-foret', 'arbre-pointu', 'arbre-olive', 'pin-bleu'],
+    'bordeaux': ['arbre-foret', 'arbre-olive', 'arbre-pointu', 'feuillu-orange'],
+    'hull': ['arbre-foret', 'arbre-pointu', 'sapin-sombre'],
+}
+for _tid, _more in MORE_TREES.items():
+    THEMES[_tid]['extra'] = THEMES[_tid]['extra'] + _more
+LIS_TREES = {'cerisier', 'arbre-olive', 'arbre-pointu', 'arbre-pointu-brun', 'arbre-roux', 'feuillu-orange', 'pin-bleu',
+             'sapin-sombre', 'palmier-2'}
+# Éléments qui gardent leurs couleurs dans les villes à feuillage recoloré.
+KEEP_COLOURS = {'hibiscus', 'arbuste-rose', 'hortensias', 'iris', 'oranger', 'buisson-orange', 'champignon'} | LIS_TREES
+# Matières en motif ajoutées en octobre 2026 (planches de la bibliothèque Gen 4, 2 x 2 cases qui se raccordent), dans
+# toutes les villes : id, nom, planche, colonne, rangée.
+PATTERNS = [
+    ('chevrons', 'Pavés en chevrons', 'g4-sols', 11, 8),
+    ('dallage-dore', 'Dallage doré', 'g4-sols', 12, 21),
+    ('dalles', 'Dalles de pierre', 'g4-sols', 16, 12),
+    ('parquet', 'Planches', 'g4-sols', 1, 42),
+    ('terre', 'Terre', 'g4-herbes', 0, 46),
+    ('pierres', 'Chemin de pierres', 'g4-herbes', 0, 50),
+]
 PAVING_FN = {'gris': lambda img: img, 'blond': I.tint(40, 0.20, 1.1), 'brique': I.tint(16, 0.34, 0.66)}
 FOREST_PATTERN = {'pins': ('g4-arbres', 0, 270, 4, 4, None), 'haie': ('g4-plantes', 5, 10, 1, 1, I.greener(0.72))}
 
@@ -433,10 +489,10 @@ def main():
             img = fn()
             if eid == 'arbre-foret' and t['forest'] in FOREST_FN:                 # l'arbre rond, palette de la ville
                 img = crop('lisieres', 0, LIS_ROUND[t['forest']], 4, 4)
-            elif cat in ('arbres', 'plantes') and leaves and eid not in ('hibiscus', 'arbuste-rose'):
+            elif cat in ('arbres', 'plantes') and leaves and eid not in KEEP_COLOURS:
                 img = leaves(img)
             entry = element_entry(pack, eid, name, cat, img, solid_from, place)
-            if eid == 'arbre-foret':                     # l'arbre rond bloque son bloc de 2 x 2 (colonnes 1-2)
+            if eid == 'arbre-foret' or eid in LIS_TREES:  # l'arbre rond bloque son bloc de 2 x 2 (colonnes 1-2)
                 entry['solid'] = [[1 if j >= 2 and i in (1, 2) else 0 for i in range(4)] for j in range(4)]
                 entry['over'] = 2
             elements.append(entry)
@@ -469,6 +525,13 @@ def main():
             fn = PAVING_FN[t['paving']]
             tiles = [[pack.add_tile(fn(crop(*c))) for c in COBBLE[r * 2:(r + 1) * 2]] for r in range(2)]
             materials.append({'id': 'paves', 'name': 'Pavés', 'kind': 'pattern', 'tiles': tiles, 'solid': 0})
+        for mid, mname, sid, c, r in PATTERNS:
+            materials.append({'id': mid, 'name': mname, 'kind': 'pattern',
+                              'tiles': [[pack.add_tile(crop(sid, c + i, r + j)) for i in range(2)] for j in range(2)],
+                              'solid': 0})
+        materials.append({'id': 'bitume', 'name': 'Bitume', 'kind': 'pattern',
+                          'tiles': [[pack.add_tile(crop(*ASPHALT[j * 2 + i])) for i in range(2)] for j in range(2)],
+                          'solid': 0})
         if t['forest'] in FOREST_FN:
             fill = FOREST_FN[t['forest']](crop('g4-arbres', 0, 145, 2, 2))
             materials.append({'id': 'foret', 'name': 'Forêt', 'kind': 'forest', 'variant': t['forest'],
