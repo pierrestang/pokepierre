@@ -18,18 +18,17 @@ export function tileCenter(x, y) {
 }
 
 // Personnage animé (joueur ou PNJ) posé sur sa case, la tête dépasse au-dessus.
-// `appearance` : `{ sprite: 't4' | 'f0' … }` (planches fournies, voir art/spriteSheets.js), une apparence
+// `appearance` : `{ sprite: 'g198' … }` (planches fournies, voir art/spriteSheets.js), une apparence
 // dessinée (voir art/characterArt.js, ex. le chat) ou une simple couleur de haut.
 // `bed` : { px, py, child? } : couché dans le lit dont l'image commence en (px, py) (voir frlgArt.bedAt).
 export class CharacterSprite extends Phaser.GameObjects.Container {
   constructor(scene, x, y, appearance, facing = 'down', { hat = false, bed = null } = {}) {
     super(scene, ...tileCenter(x, y));
     if (appearance?.sprite) {
-      // TownsPeople2 : pieds sur l'avant-dernière ligne de l'image ; Rouge Feu : sur la dernière.
+      // Pieds sur la dernière ligne de l'image.
       const sheet = sheetOf(appearance.sprite);
-      const foot = sheet.key === 'townsfolk' ? 1 : 0;
       this.prefix = `${appearance.sprite}-`;
-      this.image = scene.add.image(0, TILE_SIZE / 2 + foot, sheet.key, `${this.prefix}${facing}-0`).setOrigin(0.5, 1);
+      this.image = scene.add.image(0, TILE_SIZE / 2, sheet.key, `${this.prefix}${facing}-0`).setOrigin(0.5, 1);
     } else {
       const look = typeof appearance === 'number' ? lookFromColor(appearance, { hat }) : appearance;
       this.prefix = '';

@@ -7,8 +7,9 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
 
 ## Conventions
 
-- **Sprites** : `f{n}` = planche des PNJ de Rouge Feu / Vert Feuille (sans portrait de dialogue) ; `t{n}` = planche
-  TownsPeople2 (avec portrait). Attributions dans `src/data/characters.js` (`BY_NAME`). Un nom absent de cette liste
+- **Sprites** : uniquement des personnages de la quatrième génération, `g{n}` (sprites officiels de Diamant / Perle /
+  Platine et HeartGold / SoulSilver, `public/assets/characters/gen4-npcs.png`, liste et noms dans `gen4-npcs.json`) ;
+  Pierre est Lucas (`g198`) ; pas de portrait dans les dialogues, comme dans les jeux DS. Attributions dans `src/data/characters.js` (`BY_NAME`). Un nom absent de cette liste
   reçoit un **figurant** tiré au hasard d'après son identifiant et sa position (`EXTRAS`) ; le joueur peut changer
   toute apparence dans Start > PNJ.
 - **Vertus** : 8 au plus dans tout le jeu, une par ville au plus ; 6 jusqu'à Hull, 2 places réservées après Hull (pas
@@ -35,7 +36,7 @@ Fort-de-France → Saint-Ay → (route de Montépilloy) → Montépilloy → rou
 Bordeaux → Hull → Hanoï → Amsterdam → Hull (retour) → New Delhi → Rajasthan → Bordeaux (stade) → Paris → Toulon
 (Chemin de Saint-Jacques, Corse) → Bali → Sri Lanka → Thaïlande → Népal → « Nouveau pays » (non ouvert).
 
-Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux), où l'hôtesse (`f12`) propose les destinations
+Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux), où l'hôtesse (`g64`) propose les destinations
 déjà débloquées.
 
 ---
@@ -73,12 +74,12 @@ déjà débloquées.
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Maman | Au salon : programme de la journée, puis la danse (Joie de vivre) | `t8` |
-| Papa | Trie ses cannes dans la cabane de pêche | `t1` |
-| Manon | Sœur, devant la maison : le coquillage caché | `t7` |
-| Capitaine du ferry | « L'ancien pêcheur » : sa canne est cassée, il garde le départ | `f43` (portrait d'un dresseur d'Émeraude) |
-| Promeneuse | Devant le mémorial de l'Anse Caffard : « Je viens souvent ici, devant les statues. » / « Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés. » | `f29` |
-| Gamin | Sur la plage : « J'ai vu des poissons sauter près des rochers ! » / « Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ? » | `f9` |
+| Maman | Au salon : programme de la journée, puis la danse (Joie de vivre) | `g126` |
+| Papa | Trie ses cannes dans la cabane de pêche | `g119` |
+| Manon | Sœur, devant la maison : le coquillage caché | `g57` |
+| Capitaine du ferry | « L'ancien pêcheur » : sa canne est cassée, il garde le départ | `g118` |
+| Promeneuse | Devant le mémorial de l'Anse Caffard : « Je viens souvent ici, devant les statues. » / « Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés. » | `g82` |
+| Gamin | Sur la plage : « J'ai vu des poissons sauter près des rochers ! » / « Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ? » | `g59` |
 
 ### Quêtes, dans l'ordre (les trois premières dans n'importe quel ordre)
 1. **Manon : le coquillage.** En sortant de la maison, Manon vient parler à Pierre : « Psst. Viens. » / « J'ai caché un
@@ -165,13 +166,13 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Papa, Maman, Manon | Famille : clinique, puis maison | `t1`, `t8`, `t7` |
-| Fanny | La petite sœur, qui vient de naître (berceau, lit), puis enfant après l'ellipse | `f18` |
-| Felix | Cousin : lance et dirige le chantier de la cabane | `f2` |
-| Joshua | Cousin : les planches de l'enclos à poules | `f10` |
-| Yanis | Cousin : la corde des hautes herbes | `f66` |
-| Val | Cousin·e, sculpte un cheval en bois dans la maison de Felix : « Regarde, il commence à ressembler à quelque chose. La crinière, c'est le plus dur. » / « Il me faudra encore quelques semaines. Il doit être parfait. » | `t10` |
-| Vieux pêcheur | Méfiant, au bord du lac (objet optionnel) | `f26` |
+| Papa, Maman, Manon | Famille : clinique, puis maison | `g119`, `g126`, `g57` |
+| Fanny | La petite sœur, qui vient de naître (berceau, lit), puis enfant après l'ellipse | `g49` |
+| Felix | Cousin : lance et dirige le chantier de la cabane | `g93` |
+| Joshua | Cousin : les planches de l'enclos à poules | `g18` |
+| Yanis | Cousin : la corde des hautes herbes | `g96` |
+| Val | Cousin·e, sculpte un cheval en bois dans la maison de Felix : « Regarde, il commence à ressembler à quelque chose. La crinière, c'est le plus dur. » / « Il me faudra encore quelques semaines. Il doit être parfait. » | `g42` |
+| Vieux pêcheur | Méfiant, au bord du lac (objet optionnel) | `g67` |
 | Poules | Gardent le tas de planches | dessinées dans le code |
 
 ### Quêtes, dans l'ordre
@@ -266,8 +267,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
   de Fanny. » ; Manon « Regarde, Fanny dort déjà. Elle rate tout. » ; Fanny (endormie) « … les poules… » ; Manon « Elle
   rêve des poules de l'enclos. » ; « Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît
   derrière les arbres. » ; Papa **« Allez. Montépilloy nous attend. »** Encart : « Tu emportes : Esprit d'équipe. »
-- Ensuite, la **route de Montépilloy** se parcourt à pied entre les deux villages. Une promeneuse (`f29`) : « Le blé est
-  haut cette année. » / « Quand le vent souffle, on dirait la mer, en jaune. » ; un gamin (`f9`) : « J'ai perdu mon
+- Ensuite, la **route de Montépilloy** se parcourt à pied entre les deux villages. Une promeneuse (`g82`) : « Le blé est
+  haut cette année. » / « Quand le vent souffle, on dirait la mer, en jaune. » ; un gamin (`g59`) : « J'ai perdu mon
   cerf-volant dans les champs… » / « Si tu le vois, il est rouge. Ou bleu. Je sais plus. » (aucun cerf-volant n'est
   codé).
 
@@ -285,15 +286,15 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Maman | Rappelle le programme | `t8` |
-| Papa | « Le dernier jour, déjà. On est arrivés à Montépilloy, tu tenais à peine sur le siège arrière. » | `t1` |
-| Manon | « Le collège ? Tu verras, on s'y fait vite. Et le matin, tu feras la route à pied avec les copains. » | `t7` |
-| Fanny | « Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! » » | `f18` |
-| Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `t12` |
-| M. Bouly | Le fermier, et son tracteur en panne | `f32` |
-| Margaux | Copine de classe : lance le cache-cache | `f48` |
-| Étienne | Copain de classe | `f36` |
-| Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul devant la grange | `f38` |
+| Maman | Rappelle le programme | `g126` |
+| Papa | « Le dernier jour, déjà. On est arrivés à Montépilloy, tu tenais à peine sur le siège arrière. » | `g119` |
+| Manon | « Le collège ? Tu verras, on s'y fait vite. Et le matin, tu feras la route à pied avec les copains. » | `g57` |
+| Fanny | « Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! » » | `g49` |
+| Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `g52` |
+| M. Bouly | Le fermier, et son tracteur en panne | `g33` |
+| Margaux | Copine de classe : lance le cache-cache | `g43` |
+| Étienne | Copain de classe | `g108` |
+| Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul devant la grange | `g38` |
 
 ### Quêtes, dans l'ordre (les quêtes 2 et 3 dans n'importe quel ordre après l'école)
 1. **Le dernier jour de CM2** : en entrant à l'école, « C'est le dernier jour de CM2. » Margaux : « Dernier jour de CM2 !
@@ -390,17 +391,17 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Surveillant | Accueil, tranche l'embrouille du casier, rappelle l'objectif | `f62` |
-| Principale | Derrière l'accueil : « Bienvenue au collège Bonsecours, Pierre. Le surveillant t'expliquera tout ce qu'il faut savoir. » | `f54` |
-| Rémy | Le « colocataire » du casier 12, apporte l'Audace | `f33` |
-| Camille | Nouvelle de 6e B, la scène du dialogue à choix | `f19` |
-| Professeur | Prof de maths : rappel à l'ordre, puis l'oral du brevet | `f3` |
-| Professeure | Prof de français : « Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit ! » | `t10` |
+| Surveillant | Accueil, tranche l'embrouille du casier, rappelle l'objectif | `g116` |
+| Principale | Derrière l'accueil : « Bienvenue au collège Bonsecours, Pierre. Le surveillant t'expliquera tout ce qu'il faut savoir. » | `g37` |
+| Rémy | Le « colocataire » du casier 12, apporte l'Audace | `g109` |
+| Camille | Nouvelle de 6e B, la scène du dialogue à choix | `g25` |
+| Professeur | Prof de maths : rappel à l'ordre, puis l'oral du brevet | `g138` |
+| Professeure | Prof de français : « Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit ! » | `g54` |
 | Professeur de sciences | « Aujourd'hui, on observe des feuilles au microscope. Les feuilles des arbres de Bonsecours ! » | figurant |
-| Margaux | Cachée dans le placard d'entretien au début (passage optionnel) ; une fois trouvée, en salle de maths : « On est dans la même classe, comme promis ! Enfin… presque promis. » | `f48` |
-| Étienne | Tant que Margaux est cachée, en salle de maths, à sa place : « Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance ! » ; ensuite (ou après l'ellipse), en salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `f36` |
+| Margaux | Cachée dans le placard d'entretien au début (passage optionnel) ; une fois trouvée, en salle de maths : « On est dans la même classe, comme promis ! Enfin… presque promis. » | `g43` |
+| Étienne | Tant que Margaux est cachée, en salle de maths, à sa place : « Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance ! » ; ensuite (ou après l'ellipse), en salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `g108` |
 | Élèves | Une réplique chacun, dans le hall, le couloir et les trois salles | figurants |
-| Sentinelles (2) | Gardent la route du Prytanée : « Halte ! Pour candidater au Prytanée, il faut ton diplôme du brevet. » | `f39` |
+| Sentinelles (2) | Gardent la route du Prytanée : « Halte ! Pour candidater au Prytanée, il faut ton diplôme du brevet. » | `g87` |
 
 ### Quêtes, dans l'ordre
 1. **L'embrouille du casier.** « Le casier 12. Le tien, d'après ton papier. Tu poses la main sur la porte… » / « … et un
@@ -478,12 +479,12 @@ Dialogue à choix (Camille), calcul mental (une question), le placard de Margaux
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Capitaine | Accueil, inspection, garde la porte nord | `f39` |
-| Tanguy | Camarade de chambre | `f58` |
-| Geoffrey | Camarade de chambre | `f42` |
-| Militaires | Porte sud, drapeau, cour ; la nuit, trois rondes avec lampe | `f31`, et `f5` imposé pour certains |
-| Élèves | Hall et dortoir des terminales | `f22`, `f74`, `f69`, `f41`, `f9` (imposés) |
-| Nouveau | Dans le hall de l'internat, le jour, jusqu'au bac : le mal du pays (passage optionnel) | `f30` (imposé) |
+| Capitaine | Accueil, inspection, garde la porte nord | `g87` |
+| Tanguy | Camarade de chambre | `g56` |
+| Geoffrey | Camarade de chambre | `g41` |
+| Militaires | Porte sud, drapeau, cour ; la nuit, trois rondes avec lampe | `g87` ; `g8` imposé pour une ronde |
+| Élèves | Hall et dortoir des terminales | `g55`, `g56`, `g88`, `g89`, `g23` (imposés) |
+| Nouveau | Dans le hall de l'internat, le jour, jusqu'au bac : le mal du pays (passage optionnel) | `g58` (imposé) |
 
 ### Quêtes, dans l'ordre
 1. **La chambre → Autonomie.** Trois tâches dans n'importe quel ordre : « Pierre fait son lit. », « Pierre range ses
@@ -548,15 +549,15 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Agent immobilier | Remet les clés : « Vos parents ont tout réglé. Voici les clés, l'immeuble est juste à gauche. » | `f34` |
-| Ousmane | Le coloc ; garde aussi le départ à l'aéroport | `f15` |
-| Paulfit | Fan de musculation : prête l'enceinte | `f44` |
-| Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `f40` |
-| Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `f55` |
-| Anaïs | Étudiante de KEDGE (« de ta promo »), invitée à la soirée ; on la retrouve à Hull | `f47` |
+| Agent immobilier | Remet les clés : « Vos parents ont tout réglé. Voici les clés, l'immeuble est juste à gauche. » | `g35` |
+| Ousmane | Le coloc ; garde aussi le départ à l'aéroport | `g105` |
+| Paulfit | Fan de musculation : prête l'enceinte | `g86` |
+| Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `g117` |
+| Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `g55` |
+| Anaïs | Étudiante de KEDGE (« de ta promo »), invitée à la soirée ; on la retrouve à Hull | `g107` |
 | Étudiants (13) | À la soirée d'intégration | figurants |
-| Professeure d'anglais | L'oral à KEDGE | `t9` |
-| Hôtesse | Guichet de l'aéroport | `f12` |
+| Professeure d'anglais | L'oral à KEDGE | `g106` |
+| Hôtesse | Guichet de l'aéroport | `g64` |
 
 ### Quêtes, dans l'ordre
 1. **Les clés.** À l'agence → **Clés de l'appartement**. Devant l'immeuble, Ousmane : **« Salut, moi c'est Ousmane, ton
@@ -636,15 +637,15 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Ousmane | Coloc de Pierre, toujours avec la bande | `f15` |
-| Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `f55` |
-| Romain | Colocataire de Léo ; rencontre Pierre chez Léo | `t3` |
-| Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `f53` |
-| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontre Pierre au premier pub | `f45` |
-| Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `f47` |
-| Barman, Barmaid, clients | Les deux pubs | Barman `f38` ; les autres en figurants |
+| Ousmane | Coloc de Pierre, toujours avec la bande | `g105` |
+| Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `g55` |
+| Romain | Colocataire de Léo ; rencontre Pierre chez Léo | `g92` |
+| Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `g94` |
+| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontre Pierre au premier pub | `g44` |
+| Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `g107` |
+| Barman, Barmaid, clients | Les deux pubs | Barman `g101` ; les autres en figurants |
 | Habitué | Adversaire aux fléchettes, et le pari (passage optionnel) | figurant |
-| Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `f3` |
+| Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `g138` |
 
 ### Quêtes, dans l'ordre
 1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite la maison au toit
@@ -729,7 +730,7 @@ choix.
 
 - **Arrivée** : pas d'image d'accueil. Dans sa maison : « [Texte provisoire] Ta nouvelle maison à Hanoï. Demain, tu
   commences ton nouveau travail à l'agence de voyage ! »
-- **PNJ** : Directrice de l'agence de voyage (`f54`) ; Anna (`f59`) et Tom (`f56`), les deux touristes.
+- **PNJ** : Directrice de l'agence de voyage (`g37`) ; Anna (`g24`) et Tom (`g22`), les deux touristes.
 - **Quêtes** :
   1. La directrice : « [Directrice - texte provisoire] Bienvenue dans l'équipe de l'agence ! » / « C'est ton premier
      jour : voici l'étape 1 de ton nouveau travail. »
@@ -744,7 +745,7 @@ choix.
 
 ## 9. Amsterdam (Pays-Bas) : textes provisoires
 
-- **PNJ** : Laurent (`f52`), patron chez Corning ; Romain (`t3`) ; un vendeur (`f16`) au coffee shop.
+- **PNJ** : Laurent (`g53`), patron chez Corning ; Romain (`g92`) ; un vendeur (`g112`) au coffee shop.
 - **Quêtes** :
   1. Laurent : « [Laurent - texte provisoire] Bienvenue chez Corning ! Je suis Laurent, le patron. » / « Ton stage
      commence aujourd'hui. Bienvenue dans l'équipe ! »
@@ -765,7 +766,7 @@ choix.
 
 ## 11. New Delhi et le Rajasthan (Inde) : textes provisoires
 
-- **PNJ** : la professeure de l'université de Delhi (`t10`), Harsh (`f71`), le vieux sage (`f26`).
+- **PNJ** : la professeure de l'université de Delhi (`g54`), Harsh (`g89`), le vieux sage (`g71`).
 - **Quêtes** :
   1. La professeure : « [Professeure - texte provisoire] Namaste ! Bienvenue à l'université. » / « Tu es le bienvenu dans
      ce pays : ton échange commence aujourd'hui ! »
@@ -780,7 +781,7 @@ choix.
 
 ## 12. Bordeaux (le stade) : textes provisoires
 
-- Le stade s'ouvre une fois le semestre terminé. Le directeur (`t3`) : « [Directeur - texte provisoire] Bienvenue à la
+- Le stade s'ouvre une fois le semestre terminé. Le directeur (`g120`) : « [Directeur - texte provisoire] Bienvenue à la
   cérémonie ! Monte sur le podium pour recevoir ton diplôme. » ; douze diplômés (« Félicitations à nous tous ! »…).
 - Sur le podium : « Tu montes sur le podium sous les applaudissements ! » / « Le directeur te remet ton diplôme. » →
   **Diplôme de Bordeaux**.
@@ -791,8 +792,8 @@ choix.
 
 - **Arrivée** : « [Texte provisoire] Bienvenue à Paris ! » / « Première mission : aller manger au bistrot (2e bâtiment en
   haut à gauche). »
-- **PNJ** : le cuisinier (`f50`), Hugues (`f17`), Thomas (`f20`), une responsable (`t13`), le manager (`f8`), le
-  directeur (`t3`) ; à Bercy, le chanteur (`t12`), le guitariste (`f35`), le batteur (`f60`) et des fans (`t5`).
+- **PNJ** : le cuisinier (`g63`), Hugues (`g91`), Thomas (`g90`), une responsable (`g36`), le manager (`g122`), le
+  directeur (`g120`) ; à Bercy, le chanteur (`g69`), le guitariste (`g68`), le batteur (`g16`) et des fans (`g40`).
 - **Quêtes** :
   1. Le bistrot. Le cuisinier : « Aujourd'hui, c'est boeuf bourguignon... et le boeuf, c'est moi qui l'ai motivé ce
      matin ! » ; « Dis-moi, tu as emménagé dans le coin ? » → « Oui, je suis nouveau à Paris ! » ouvre l'appartement.
@@ -813,8 +814,8 @@ choix.
 
 - **Arrivée** : « [Texte provisoire] Bienvenue à Toulon ! » / « Mission : rejoindre l'appartement de Yanis (2e maison en
   haut à gauche). »
-- **PNJ** : Yanis (`f66`, même couleur que le cousin de Saint-Ay) ; des pèlerins sur le Chemin ; en Corse, Maman, Papa,
-  et les voisins Léo (`f55`) et Théo (`f57`).
+- **PNJ** : Yanis (`g96`, même couleur que le cousin de Saint-Ay) ; des pèlerins sur le Chemin ; en Corse, Maman, Papa,
+  et les voisins Léo (`g55`) et Théo (`g23`).
 - **Quêtes** :
   1. Yanis : « Pierre ! Te voilà enfin à Toulon ! » → « Souvenir de Yanis à Toulon » ; « Partir faire le Chemin de
      Saint-Jacques-de-Compostelle avec Yanis ? » → le Chemin (côte nord de l'Espagne), Yanis suit Pierre. Six bornes
@@ -830,7 +831,7 @@ choix.
 
 ## 15. Bali, Sri Lanka, Thaïlande, Népal : textes provisoires
 
-Chaque destination donne un objet magique qui ouvre la suivante. Pas de PNJ à Bali ; un moine (`f24`) dans les temples
+Chaque destination donne un objet magique qui ouvre la suivante. Pas de PNJ à Bali ; un moine (`g72`) dans les temples
 des trois autres.
 - **Bali** : dans la cabane près de la mer, « Dans le coffre de bois, un objet scintille : un objet magique ! » → **Objet
   magique de Bali**.
@@ -870,73 +871,73 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 
 | Personnage | Sprite | Où il apparaît |
 |---|---|---|
-| Pierre | `f0` (Red) | Partout |
-| Maman | `t8` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, Corse |
-| Papa | `t1` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, Corse |
-| Manon | `t7` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy |
-| Fanny | `f18` | Saint-Ay, Montépilloy |
-| Jean | `t12` | Montépilloy |
-| Capitaine du ferry | `f43` | Fort-de-France, le pont du ferry ; sa carte postale à Saint-Ay |
-| Promeneuse | `f29` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
-| Gamin | `f9` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
-| Felix | `f2` | Saint-Ay ; sa carte postale à Montépilloy |
-| Joshua | `f10` | Saint-Ay |
-| Yanis | `f66` | Saint-Ay, Toulon, Chemin de Saint-Jacques |
-| Val | `t10` | Saint-Ay |
-| Vieux pêcheur | `f26` | Saint-Ay |
-| M. Bouly | `f32` | Montépilloy |
-| Margaux | `f48` | Montépilloy, collège |
-| Étienne | `f36` | Montépilloy, collège |
-| Benoît | `f38` | Montépilloy (la classe, puis seul devant la grange) |
-| Surveillant | `f62` | Collège |
-| Principale | `f54` | Collège |
-| Rémy | `f33` | Collège |
-| Camille | `f19` | Collège |
-| Professeur (maths) | `f3` | Collège |
-| Professeure (français) | `t10` | Collège |
+| Pierre | `g198` (Red) | Partout |
+| Maman | `g126` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, Corse |
+| Papa | `g119` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, Corse |
+| Manon | `g57` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy |
+| Fanny | `g49` | Saint-Ay, Montépilloy |
+| Jean | `g52` | Montépilloy |
+| Capitaine du ferry | `g118` | Fort-de-France, le pont du ferry ; sa carte postale à Saint-Ay |
+| Promeneuse | `g82` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
+| Gamin | `g59` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
+| Felix | `g93` | Saint-Ay ; sa carte postale à Montépilloy |
+| Joshua | `g18` | Saint-Ay |
+| Yanis | `g96` | Saint-Ay, Toulon, Chemin de Saint-Jacques |
+| Val | `g42` | Saint-Ay |
+| Vieux pêcheur | `g67` | Saint-Ay |
+| M. Bouly | `g33` | Montépilloy |
+| Margaux | `g43` | Montépilloy, collège |
+| Étienne | `g108` | Montépilloy, collège |
+| Benoît | `g38` | Montépilloy (la classe, puis seul devant la grange) |
+| Surveillant | `g116` | Collège |
+| Principale | `g37` | Collège |
+| Rémy | `g109` | Collège |
+| Camille | `g25` | Collège |
+| Professeur (maths) | `g138` | Collège |
+| Professeure (français) | `g54` | Collège |
 | Professeur de sciences | figurant | Collège |
-| Sentinelles | `f39` | Route de Bonsecours |
-| Capitaine | `f39` | Prytanée |
-| Tanguy | `f58` | Prytanée |
-| Geoffrey | `f42` | Prytanée |
-| Militaires | `f31` / `f5` | Prytanée |
-| Agent immobilier | `f34` | Bordeaux |
-| Ousmane | `f15` | Bordeaux, aéroport, Hull |
-| Paulfit | `f44` | Bordeaux |
-| Rémi | `f40` | Bordeaux |
-| Professeure d'anglais | `t9` | Bordeaux (KEDGE) |
-| Hôtesse | `f12` | Aéroport |
-| Léo (de Hull) | `f55` | Bordeaux (la soirée), Hull |
-| Romain | `t3` | Hull, Amsterdam |
-| Prophecy | `f53` | Hull |
-| Charlotte | `f45` | Hull |
-| Anaïs | `f47` | Bordeaux (la soirée), Hull |
-| Barman | `f38` | Hull |
+| Sentinelles | `g87` | Route de Bonsecours |
+| Capitaine | `g87` | Prytanée |
+| Tanguy | `g56` | Prytanée |
+| Geoffrey | `g41` | Prytanée |
+| Militaires | `g87` / `g8` | Prytanée |
+| Agent immobilier | `g35` | Bordeaux |
+| Ousmane | `g105` | Bordeaux, aéroport, Hull |
+| Paulfit | `g86` | Bordeaux |
+| Rémi | `g117` | Bordeaux |
+| Professeure d'anglais | `g106` | Bordeaux (KEDGE) |
+| Hôtesse | `g64` | Aéroport |
+| Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull |
+| Romain | `g92` | Hull, Amsterdam |
+| Prophecy | `g94` | Hull |
+| Charlotte | `g44` | Hull |
+| Anaïs | `g107` | Bordeaux (la soirée), Hull |
+| Barman | `g101` | Hull |
 | Habitué | figurant | Hull |
-| Nouveau | `f30` | Prytanée (hall de l'internat) |
-| Professor | `f3` | Hull (deux fois) |
-| Directrice | `f54` | Hanoï |
-| Anna, Tom | `f59`, `f56` | Hanoï |
-| Laurent | `f52` | Amsterdam |
-| Vendeur | `f16` | Amsterdam |
-| Professeure (Delhi) | `t10` | New Delhi |
-| Harsh | `f71` | New Delhi, Rajasthan |
-| Vieux sage | `f26` | Rajasthan |
-| Directeur | `t3` | Bordeaux (stade), Paris (entreprise) |
-| Cuisinier | `f50` | Paris |
-| Hugues, Thomas | `f17`, `f20` | Paris |
-| Responsable, Manager | `t13`, `f8` | Paris |
-| Chanteur, Guitariste, Batteur, Fans | `t12`, `f35`, `f60`, `t5` | Paris (Bercy) |
-| Pèlerins / Pèlerine | figurant / `f29` | Chemin de Saint-Jacques |
-| Léo (voisin), Théo | `f55`, `f57` | Corse |
-| Moine | `f24` | Sri Lanka, Thaïlande, Népal |
+| Nouveau | `g58` | Prytanée (hall de l'internat) |
+| Professor | `g138` | Hull (deux fois) |
+| Directrice | `g37` | Hanoï |
+| Anna, Tom | `g24`, `g22` | Hanoï |
+| Laurent | `g53` | Amsterdam |
+| Vendeur | `g112` | Amsterdam |
+| Professeure (Delhi) | `g54` | New Delhi |
+| Harsh | `g89` | New Delhi, Rajasthan |
+| Vieux sage | `g71` | Rajasthan |
+| Directeur | `g120` | Bordeaux (stade), Paris (entreprise) |
+| Cuisinier | `g63` | Paris |
+| Hugues, Thomas | `g91`, `g90` | Paris |
+| Responsable, Manager | `g36`, `g122` | Paris |
+| Chanteur, Guitariste, Batteur, Fans | `g69`, `g68`, `g16`, `g40` | Paris (Bercy) |
+| Pèlerins / Pèlerine | figurant / `g15` | Chemin de Saint-Jacques |
+| Léo (voisin), Théo | `g55`, `g23` | Corse |
+| Moine | `g72` | Sri Lanka, Thaïlande, Népal |
 
 ---
 
 ## Incohérences repérées
 
 ### Noms incertains ou en double
-- **Rémy / Rémi** : deux personnages distincts. Rémy (`f33`) est le copain du collège ; Rémi (`f40`) est l'étudiant de
+- **Rémy / Rémi** : deux personnages distincts. Rémy (`g109`) est le copain du collège ; Rémi (`g117`) est l'étudiant de
   Bordeaux revenu des USA, qui se présente comme un inconnu (« Hey ! Moi c'est Rémi. »). Dans le code du collège,
   l'orthographe hésite aussi : le personnage affiché est « Rémy », mais ses identifiants et drapeaux s'écrivent « remi »
   (`remi`, `remi-casier`, `remi-classe`, `remiArrive`, `remiEnClasse`, `remiInvite`) ou « remy » (`remy-autocollant`,
@@ -944,18 +945,17 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 - **Les deux Paul** : le code ne contient qu'un seul Paul, **Paulfit** (Bordeaux). Je n'ai trouvé aucun autre
   personnage nommé Paul.
 - **Deux Léo** : Léo, meneur de la bande de Hull, et Léo, voisin des parents en Corse (avec Théo). Ils portent le même
-  nom et ont donc le même sprite (`f55`). La Corse ne dit pas s'il s'agit du même Léo. `characters.js` attribue aussi
+  nom et ont donc le même sprite (`g55`). La Corse ne dit pas s'il s'agit du même Léo. `characters.js` attribue aussi
   « Leo » (sans accent) au même sprite.
 - **Yanis** : cousin à Saint-Ay, puis hôte à Toulon, avec la même couleur et le même sprite. Aucune réplique de Toulon ne
   rappelle qu'il est le cousin.
 - **Romain** : de la bande de Hull, il annonce partir à Hong Kong, puis on le retrouve à Amsterdam dans une « maison
   commune » avec Pierre, sans explication.
-- **Sprites partagés** par des personnages différents : `t3` (Romain, le Directeur), `t12` (Jean, le chanteur de Bercy),
-  `t10` (Val, la prof de français, la prof de Delhi), `f26` (le vieux pêcheur, le vieux sage), `f54` (la principale, la
-  directrice de Hanoï), `f39` (les sentinelles, le capitaine du Prytanée), `f38` (Benoît, le barman de Hull), `f3` (le
-  prof de maths, le Professor de Hull), `f29` (les promeneuses, la pèlerine). La liste des figurants au hasard contient
-  aussi les sprites de Camille, Prophecy, Léo, Tom, Théo, Anna et Jean : un figurant peut ressembler à un personnage
-  nommé.
+- **Sprites partagés** par des personnages différents : `g87` (les militaires, les sentinelles, le capitaine du
+  Prytanée), `g138` (le prof de maths, le Professor de Hull), `g37` (la principale, la directrice de Hanoï), `g55` (Léo
+  de Hull, Léo de Corse, « Leo »). La liste des figurants au hasard (`EXTRAS`) contient aussi les sprites de Tom, Fanny,
+  Léo, Manon, Thomas, Felix, Yanis, Harsh, Étienne, Anaïs et de la professeure d'anglais : un figurant peut ressembler
+  à un personnage.
 
 ### Répliques contradictoires ou répétées
 - **L'examen de Hull** n'est pas joué : « veille d'examen », révisions, puis « Le lendemain… » directement aux résultats.

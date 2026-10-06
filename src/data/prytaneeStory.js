@@ -126,7 +126,7 @@ export const PATROLS = {
   guards: [
     // Chacun fait le tour d'un circuit, en boucle, et balaie les côtés à chaque angle.
     { id: 'ronde-1', path: [[8, 11], [15, 11], [15, 16], [8, 16]] },                // autour du jardin nord-ouest
-    { id: 'ronde-2', sprite: 'f5', path: [[26, 16], [19, 16], [19, 11], [26, 11]] }, // une militaire, autour du jardin nord-est
+    { id: 'ronde-2', sprite: 'g8', path: [[26, 16], [19, 16], [19, 11], [26, 11]] }, // une militaire, autour du jardin nord-est
     { id: 'ronde-3', path: [[23, 9], [23, 5], [25, 5], [25, 9]] },                 // dans l'allée de la porte nord
   ],
   caught: { speaker: 'Militaire', say: ['Hé, toi ! Retour au dortoir !'], back: { ...DORM_DOOR_FRONT, facing: 'down' } },

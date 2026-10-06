@@ -10,11 +10,7 @@ import { gameView } from './screen.js';
 import { FRLG_FONT, LINE_HEIGHT, frlgText, wrapText } from './frlgFont.js';
 import { sfx } from './audio.js';
 import { drawFrame, FRAME, FRAME_LIGHT, FRAME_FILL } from './frame.js';
-import { PORTRAITS } from '../art/spriteSheets.js';
-import { portraitOf } from '../data/characters.js';
 import { ITEM_ICONS, itemIcon } from '../art/uiIcons.js';
-
-const SHOW_PORTRAITS = false;
 
 const CHAR_DELAY = 25; // ms par caractère
 // Les dimensions sont en « pixels Game Boy » (u = facteur d'agrandissement de l'écran de jeu).
@@ -42,9 +38,7 @@ export class DialogBox {
     this.nameBg = scene.add.graphics();
     this.nameText = bitmapText(scene);
 
-    // Portrait en pied de la personne qui parle, debout sur le bord droit de la boîte. Masqué pour l'instant
-    // (SHOW_PORTRAITS) : comme dans Rouge Feu, seuls le nom et le texte s'affichent.
-    this.portrait = scene.add.image(0, 0, PORTRAITS, 'p0').setOrigin(1, 1).setVisible(false);
+    // Pas de portrait (comme dans les jeux DS) : seuls le nom et le texte s'affichent.
 
     // Icône de l'objet reçu, dans un petit cadre posé sur le bord haut de la boîte, à droite.
     this.icon = null;
@@ -55,7 +49,7 @@ export class DialogBox {
     scene.tweens.add({ targets: this.arrow, alpha: 0.2, duration: 300, yoyo: true, repeat: -1 });
 
     this.container = scene.add
-      .container(0, 0, [this.portrait, this.box, this.text, this.nameBg, this.nameText, this.iconBg, this.iconImage, this.arrow])
+      .container(0, 0, [this.box, this.text, this.nameBg, this.nameText, this.iconBg, this.iconImage, this.arrow])
       .setDepth(100)
       .setVisible(false);
 
@@ -95,7 +89,6 @@ export class DialogBox {
 
     this.text.setScale(u).setPosition(x + TEXT_LEFT * u, y + 6 * u);
     this.nameText.setScale(u).setPosition(x + 7 * u, y - 13 * u);
-    this.portrait.setScale(u).setPosition(x + w - 6 * u, y + 2 * u);
     this.arrow.setScale(u / 5).setPosition(x + w - 11 * u, y + H - 9 * u);
     this.setSpeaker(this.speaker);
     this.setIcon(this.icon);
@@ -173,9 +166,6 @@ export class DialogBox {
   }
 
   setSpeaker(speaker) {
-    const portrait = speaker && SHOW_PORTRAITS ? portraitOf(speaker) : null;
-    this.portrait.setVisible(portrait !== null);
-    if (portrait) this.portrait.setTexture(portrait.key, portrait.frame);
     this.speaker = speaker;
     this.nameBg.clear();
     this.nameText.setText(speaker ? frlgText(this.scene, speaker) : '');

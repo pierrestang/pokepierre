@@ -1137,16 +1137,16 @@ export const interiors = {
     ],
     npcs: PRYTANEE_DAY.flatMap((when) => [
       {
-        id: 'planton', name: 'Élève', sprite: 'f22', x: 5, y: 3, facing: 'down', still: true, ...when,
+        id: 'planton', name: 'Élève', sprite: 'g55', x: 5, y: 3, facing: 'down', still: true, ...when,
         dialogue: ['Salut ! Ta chambre est au premier, l\'escalier au fond à droite.'],
       },
       {
-        id: 'eleve-hall', name: 'Élève', sprite: 'f74', x: 8, y: 5, facing: 'left', ...when,
+        id: 'eleve-hall', name: 'Élève', sprite: 'g56', x: 8, y: 5, facing: 'left', ...when,
         dialogue: ['Le deuxième étage, c\'est les terminales. Ils se croient chez eux.'],
       },
       // Facultatif, jusqu'au bac : le nouveau qui a le mal du pays (voir prytaneeStory.js HOMESICK).
       {
-        id: 'nouveau', name: 'Nouveau', sprite: 'f30', x: 2, y: 5, facing: 'right', still: true, ...when,
+        id: 'nouveau', name: 'Nouveau', sprite: 'g58', x: 2, y: 5, facing: 'right', still: true, ...when,
         unlessFlags: [...(when.unlessFlags ?? []), FLAGS.ellipseBac],
         script: HOMESICK,
       },
@@ -1267,9 +1267,9 @@ export const interiors = {
     ],
     npcs: PRYTANEE_DAY.flatMap((when) => [
       // Internat des garçons : des garçons (apparences imposées, les figurants au hasard comptent aussi des filles).
-      { id: 'terminale-1', name: 'Élève', sprite: 'f69', x: 2, y: 4, facing: 'right', ...when, dialogue: ['Vous êtes la chambre du dessous ? Vous ronflez.'] },
-      { id: 'terminale-2', name: 'Élève', sprite: 'f41', x: 7, y: 4, facing: 'down', ...when, dialogue: ['Le bac, c\'est dans un an. Ou dans deux. Je sais plus.'] },
-      { id: 'terminale-3', name: 'Élève', sprite: 'f9', x: 10, y: 6, facing: 'left', ...when, dialogue: ['Mon lit n\'est jamais assez au carré pour le capitaine. Jamais.'] },
+      { id: 'terminale-1', name: 'Élève', sprite: 'g88', x: 2, y: 4, facing: 'right', ...when, dialogue: ['Vous êtes la chambre du dessous ? Vous ronflez.'] },
+      { id: 'terminale-2', name: 'Élève', sprite: 'g89', x: 7, y: 4, facing: 'down', ...when, dialogue: ['Le bac, c\'est dans un an. Ou dans deux. Je sais plus.'] },
+      { id: 'terminale-3', name: 'Élève', sprite: 'g23', x: 10, y: 6, facing: 'left', ...when, dialogue: ['Mon lit n\'est jamais assez au carré pour le capitaine. Jamais.'] },
     ]),
   },
 

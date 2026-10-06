@@ -93,11 +93,11 @@ export const prytaneeMap = {
     // autour du jardin sud-ouest, devant l'infirmerie.
     ...BY_DAY.flatMap((when) => [
       {
-        id: 'militaire-drapeau', name: 'Militaire', sprite: 'f5', x: 15, y: 16, facing: 'right', still: true, ...when,
+        id: 'militaire-drapeau', name: 'Militaire', sprite: 'g87', x: 15, y: 16, facing: 'right', still: true, ...when,
         dialogue: ['Le drapeau ne touche jamais le sol. Jamais. Même quand il pleut.'],
       },
       {
-        id: 'militaire-cour', name: 'Militaire', sprite: 'f5', x: 4, y: 22, facing: 'right', route: [[4, 22], [15, 22], [15, 16], [8, 16], [8, 17], [3, 17]], ...when,
+        id: 'militaire-cour', name: 'Militaire', sprite: 'g87', x: 4, y: 22, facing: 'right', route: [[4, 22], [15, 22], [15, 16], [8, 16], [8, 17], [3, 17]], ...when,
         dialogue: ['Lever des couleurs tous les matins à 7 h. Même le dimanche. Surtout le dimanche.'],
       },
     ]),

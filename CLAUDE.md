@@ -27,12 +27,12 @@ puis Hanoï. Pas de combats.
 - Écran : format GBA dézoomé, 360 x 240 px (22,5 x 15 cases), voir src/systems/screen.js.
 - Police des dialogues et du menu : police bitmap de Rouge Feu, extraite par scripts/extract_frlg_font.py
   vers public/assets/fonts/ (voir src/systems/frlgFont.js) ; deux lignes par page, pages coupées automatiquement.
-- Personnages : planches fournies par l'utilisateur dans public/assets/characters/ (voir
-  src/art/spriteSheets.js) : TownsPeople2 (`t{n}`, avec portraits de dialogue) et PNJ de Rouge Feu
-  (`f{n}`, extraits de assets-source/frlg-npcs.png par scripts/extract_frlg.py). Pierre = Red (`f0`).
-  Attribution par nom dans src/data/characters.js. Le chat reste dessiné dans le code (src/art/characterArt.js).
-  Champions d'Émeraude (`h{n}`, assets-source/gba/, extraits par scripts/extract_more_npcs.py), au choix dans
-  Start > PNJ. Pas de sprites DS pour les personnages.
+- Personnages : uniquement des PNJ de la quatrième génération (Diamant/Perle/Platine, HeartGold/SoulSilver), sprites
+  officiels fournis par l'utilisateur (ASSETTILESPOKEMONV2/personnages/gen4-officiels), rassemblés par
+  scripts/build_gen4_npcs.py dans public/assets/characters/gen4-npcs.png (`g{n}`, liste dans gen4-npcs.json ; voir
+  src/art/spriteSheets.js). Pierre = Lucas (`g198`). Attribution par nom dans src/data/characters.js. Pas de portraits
+  dans les dialogues. Le chat reste dessiné dans le code (src/art/characterArt.js). Le pack de PurpleZaffre
+  (gen4-zaffre) interdit la redistribution : ne pas l'utiliser (le dépôt et le jeu sont publics).
 - Arbres : uniquement des assets (aucun arbre dessiné dans le code). Grands sapins de Rouge Feu en blocs de
   2 x 2 cases 'T' alignés sur la grille (jamais de sapin isolé) ; le petit arbre 'ƚ' seulement sur les îles et dans
   les pays exotiques, des buissons 'ƀ' ailleurs ; les palmiers 'Y' sont le petit arbre sans son herbe
