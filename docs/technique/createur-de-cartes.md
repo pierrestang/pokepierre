@@ -20,6 +20,14 @@ gomme de 1, 2, 3 ou 5 cases de côté ([ et ]) ; Ctrl+D (ou Ctrl+C puis Ctrl+V) 
 souris, chaque clic en pose une (une zone : ses trois calques et ses collisions ; un élément : seul, sans le sol).
 Les cartes actuelles restent en place tant qu'elles ne sont pas refaites dans le créateur.
 
+## Outil Déplacer : objet ou zone
+
+- Glisser en partant d'un objet le prend (builder.js objectAt : pixels qui se touchent, plus les cases posées avec lui
+  d'après leur place dans leur planche) ; ailleurs, ou avec Maj, on trace une zone : seulement le rectangle tracé.
+- Pour ne pas emporter des objets sans rapport : les planches rangées sans ordre (auto, catalogue, transitions) ne
+  regroupent pas par place dans la planche ; un objet ne déborde pas sur la forêt qui le touche (sauf si on prend la
+  forêt) ; au-delà de 80 cases, ce n'est plus un objet : on trace une zone.
+
 ## Mode simple (src/builder/studio.js), écran par défaut
 
 Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut du panneau, choix mémorisé) garde l'ancien

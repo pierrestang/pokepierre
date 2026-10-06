@@ -569,7 +569,7 @@ function drawCursor(cs) {
     const key = `${h.x},${h.y},${[...state.hidden]}`;
     if (hoverObject.key !== key) Object.assign(hoverObject, { key, cells: objectAt(h.x, h.y) });
     const { cells } = hoverObject;
-    if (cells?.length) {
+    if (cells?.length && cells.length <= MAX_OBJECT_CELLS) {
       const b = boundsOf(cells);
       outline(b.x0, b.y0, b.x1 - b.x0 + 1, b.y1 - b.y0 + 1, cs);
     } else if (!state.moveSel) outline(h.x, h.y, 1, 1, cs);
@@ -694,6 +694,7 @@ function eraseTile(x, y) {
 // Le calque Sol compte aussi pour les objets qui y ont été posés (un ponton, une éolienne de la bibliothèque), pas
 // pour le vrai sol (herbe, chemins, eau).
 const OBJECT_LAYERS = ['sol', 'decor', 'dessus'];
+const MAX_OBJECT_CELLS = 80;                 // au-delà, l'outil Déplacer trace une zone au lieu de prendre l'objet
 const GROUND_KINDS = new Set(['sols', 'int-sols', 'eau', 'herbes']);
 
 // Case d'objet (et non de sol) ? Sur le calque Sol : seulement un élément connu d'un type « objet ».
@@ -706,9 +707,13 @@ function isObjectRef(l, ref) {
   return Boolean(kind) && !GROUND_KINDS.has(kind);
 }
 
+// Planches rangées sans ordre spatial (cases assemblées, recolorées, catalogue du mode simple, transitions) : deux
+// cases voisines dans la planche ne sont pas posées ensemble ; leur « ancre » regrouperait des objets sans rapport.
+const PACKED_SHEETS = new Set(['auto', 'catalogue', 'transitions']);
+
 function anchorKey(x, y, ref) {
   const tile = decodeRef(state.map, ref);
-  if (!tile) return null;
+  if (!tile || PACKED_SHEETS.has(tile.sheet)) return null;
   const cols = colsOf(tile.sheet);
   return `${tile.sheet}@${x - (tile.index % cols)},${y - Math.floor(tile.index / cols)}`;
 }
@@ -727,7 +732,7 @@ function objectAt(x, y) {
   if (!inside(x, y)) return null;
   const layers = OBJECT_LAYERS.filter((l) => !state.hidden.has(l));
   const atCache = new Map();
-  const at = (cx, cy) => {
+  let at = (cx, cy) => {
     const i = cy * m.width + cx;
     if (!atCache.has(i)) {
       atCache.set(i, layers.flatMap((l) => stackOf(m.layers[l][i]).filter((ref) => isObjectRef(l, ref))
@@ -735,6 +740,15 @@ function objectAt(x, y) {
     }
     return atCache.get(i);
   };
+  if (!at(x, y).length) return null;
+  // Un objet ne déborde pas sur la forêt qui le touche (une maison collée à la bordure d'arbres), sauf si c'est la
+  // forêt qu'on prend.
+  const forestSeed = assistant.isForestRef(at(x, y).at(-1).ref);
+  if (!forestSeed) {
+    for (const [i, list] of atCache) atCache.set(i, list.filter((e) => !assistant.isForestRef(e.ref)));
+    const baseAt = at;
+    at = (cx, cy) => baseAt(cx, cy).filter((e) => !assistant.isForestRef(e.ref));
+  }
   if (!at(x, y).length) return null;
   const W = m.width * TILE;
   const taken = new Map();                         // « x,y,calque,ref » -> { x, y, l, ref }
@@ -747,7 +761,8 @@ function objectAt(x, y) {
     const id = `${cx},${cy},${l},${ref}`;
     if (taken.has(id)) return;
     taken.set(id, { x: cx, y: cy, l, ref });
-    keys.add(anchorKey(cx, cy, ref));
+    const anchor = anchorKey(cx, cy, ref);
+    if (anchor) keys.add(anchor);
     Object.assign(box, { x0: Math.min(box.x0, cx), y0: Math.min(box.y0, cy), x1: Math.max(box.x1, cx), y1: Math.max(box.y1, cy) });
     const px = at(cx, cy).find((e) => e.l === l && e.ref === ref)?.px;
     if (px) for (let k = 0; k < TILE * TILE; k++) if (px[k]) pixels.push((cy * TILE + (k >> 4)) * W + cx * TILE + (k & 15));
@@ -792,7 +807,8 @@ function objectAt(x, y) {
     for (let cy = Math.max(0, box.y0 - 4); cy <= Math.min(m.height - 1, box.y1 + 4); cy++) {
       for (let cx = Math.max(0, box.x0 - 4); cx <= Math.min(m.width - 1, box.x1 + 4); cx++) {
         for (const { l, ref } of at(cx, cy)) {
-          if (!taken.has(`${cx},${cy},${l},${ref}`) && keys.has(anchorKey(cx, cy, ref))) {
+          const anchor = anchorKey(cx, cy, ref);
+          if (anchor && !taken.has(`${cx},${cy},${l},${ref}`) && keys.has(anchor)) {
             take(cx, cy, l, ref);
             grew = true;
           }
@@ -1122,7 +1138,10 @@ canvas.addEventListener('pointerdown', (e) => {
     // Dans la zone sélectionnée : on la déplace ; sur un élément : on le prend ; ailleurs : on trace une zone.
     const sel = state.moveSel;
     const inSel = sel && c.x >= sel.x0 && c.x <= sel.x1 && c.y >= sel.y0 && c.y <= sel.y1;
-    const cells = inSel ? objectsIn(sel) : objectAt(c.x, c.y);
+    // Maj : toujours tracer une zone, même en partant d'un objet.
+    let cells = inSel ? objectsIn(sel) : e.shiftKey ? null : objectAt(c.x, c.y);
+    // Un « objet » démesuré (des objets collés les uns aux autres) : on trace une zone plutôt que de tout emporter.
+    if (!inSel && cells?.length > MAX_OBJECT_CELLS) cells = null;
     if (cells?.length) {
       remember();
       // Alt : on en pose une copie (l'original reste en place, avec ses collisions).

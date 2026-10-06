@@ -646,7 +646,7 @@ export function createAssistant(api) {
   // Pour le pinceau de matières du mode simple (studio.js) : la matière de chaque case, poser une matière
   // ('grass' ou une matière du kit) sur des cases, puis refaire les bords autour d'elles.
   const terrain = {
-    ready: async () => { if (!kit) await load(); },
+    ready: async () => { if (!kit) await load(); await loadLisieres(); },
     classes,
     paint(cls, cells, id) {
       for (const i of cells) { cls[i] = id; setGround(i, id); }
@@ -657,6 +657,10 @@ export function createAssistant(api) {
     importantCells,
   };
 
-  return { fixTransitions, straightenPath, sowTall, regenerate, rebuildForest, parse, zone, zoneText, check, terrain,
+  // Une case de forêt (tissu d'une bordure, arbre ou buisson de lisière) : pour que la sélection d'un objet ne déborde
+  // pas sur la forêt qui le touche (builder.js objectAt). Faux tant que la planche des lisières n'est pas chargée.
+  const isForestRef = (ref) => Boolean(lis) && Boolean(forestVariant(ref) ?? lisieresVariant(ref));
+
+  return { isForestRef, fixTransitions, straightenPath, sowTall, regenerate, rebuildForest, parse, zone, zoneText, check, terrain,
     hasSow: () => Boolean(lastSow) };
 }
