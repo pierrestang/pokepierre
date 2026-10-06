@@ -507,6 +507,30 @@ export function createAssistant(api) {
     await api.loadSheet('lisieres');
   }
   const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  // Une case de végétation dense : couvre toute la case, et le vert domine (haie, tissu de forêt recoloré).
+  const coverCache = new Map();
+  function denseGreen(ref) {
+    const tile = decodeRef(state.map, ref);
+    if (!tile || tile.sheet === 'autotiles-g4' || tile.sheet === 'lisieres') return false;
+    if (!coverCache.has(ref)) {
+      const img = state.images[tile.sheet];
+      let full = false;
+      if (img) {
+        const c = api.colsOf(tile.sheet);
+        const cv = document.createElement('canvas');
+        cv.width = cv.height = 16;
+        const g = cv.getContext('2d', { willReadFrequently: true });
+        g.drawImage(img, (tile.index % c) * 16, Math.floor(tile.index / c) * 16, 16, 16, 0, 0, 16, 16);
+        const d = g.getImageData(0, 0, 16, 16).data;
+        let n = 0;
+        for (let i = 3; i < d.length; i += 4) if (d[i] > 200) n++;
+        full = n >= 240;
+      }
+      coverCache.set(ref, full);
+    }
+    const mean = meanOf(ref);
+    return coverCache.get(ref) && Boolean(mean) && mean[1] > mean[0] + 15 && mean[1] > mean[2] - 10;
+  }
   // La palette de forêt d'une case posée (tissu dense des bordures, éventuellement recoloré par ville), ou null.
   // Seules les planches d'arbres (et les cases recolorées de la planche assemblée) comptent : un toit de la même couleur
   // n'est pas de la forêt.
@@ -530,7 +554,8 @@ export function createAssistant(api) {
     const tile = decodeRef(state.map, ref);
     if (tile?.sheet !== 'lisieres') return null;
     const row = Math.floor(tile.index / lis.cols);
-    return lis.variants.find((v) => (row >= v.row && row < v.row + 4) || (row >= v.roundRow && row < v.roundRow + 4)) ?? null;
+    return lis.variants.find((v) => (v.row != null && row >= v.row && row < v.row + 4)
+      || (row >= v.roundRow && row < v.roundRow + 4)) ?? null;
   }
 
   // ---------- Bordure d'arbres tout autour de la carte ----------
@@ -549,7 +574,9 @@ export function createAssistant(api) {
       const W = m.width;
       const H = m.height;
       const inMap = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
-      const isForestRef = (r) => Boolean(forestVariant(r) ?? lisieresVariant(r));
+      // Une ancienne bordure : arbres et tissu de forêt reconnus, ou toute case de végétation dense et opaque (la haie
+      // du Prytanée, des cases assemblées vertes) ; pas les hautes herbes ni les fleurs.
+      const isForestRef = (r) => Boolean(forestVariant(r) ?? lisieresVariant(r)) || denseGreen(r);
       // La palette : celle de la forêt actuelle, sinon celle du thème de la ville, sinon DPPt.
       const votes = new Map();
       for (let i = 0; i < W * H; i++) {
@@ -558,8 +585,10 @@ export function createAssistant(api) {
           if (v) votes.set(v, (votes.get(v) ?? 0) + 1);
         }
       }
+      // L'arbre choisi pour la carte (« Arbres de la carte », mode simple) passe avant tout.
       const byTheme = { 'saint-ay': 'chene', montepilloy: 'automne' }[m.studio?.theme];
-      const variant = [...votes.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
+      const variant = lis.variants.find((v) => v.id === m.studio?.trees)
+        ?? [...votes.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
         ?? lis.variants.find((v) => v.id === byTheme) ?? lis.variants[0];
       // 1. Les bordures existantes : la forêt d'un seul tenant qui touche un bord.
       const forest = new Uint8Array(W * H);

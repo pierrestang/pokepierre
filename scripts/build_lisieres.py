@@ -41,6 +41,30 @@ VARIANTS = [
 ]
 
 
+# Autres arbres de bordure, au choix par carte (octobre 2026) : les arbres ronds de la planche DPPt de la même famille
+# (un arbre seul, rectangle en pixels) et des arbres de la bibliothèque Gen 4 ; chacun sur 4 x 4 cases comme l'arbre
+# rond, à la suite de la planche (les cases déjà posées ne bougent pas).
+EXTRA_TREES = [
+    ('dppt-olive', 'arbre rond olive', 'dppt', (3, 717, 42, 51)),
+    ('dppt-dore', 'arbre rond doré', 'dppt', (3, 781, 42, 51)),
+    ('dppt-roux', 'arbre rond roux', 'dppt', (3, 845, 42, 51)),
+    ('dppt-orange', 'arbre rond orange', 'dppt', (3, 909, 42, 51)),
+    ('dppt-rose', 'cerisier en fleurs', 'dppt', (3, 973, 42, 51)),
+    ('dppt-pointu', 'arbre pointu vert', 'dppt', (3, 1037, 42, 51)),
+    ('dppt-pointu-olive', 'arbre pointu olive', 'dppt', (3, 1101, 42, 51)),
+    ('dppt-pointu-brun', 'arbre pointu brun', 'dppt', (3, 1165, 42, 51)),
+    ('dppt-pin-bleu', 'pin bleu', 'dppt', (3, 1229, 42, 51)),
+    ('dppt-large', 'grand feuillu vert', 'dppt', (0, 1293, 47, 51)),
+    ('dppt-large-jaune', 'grand feuillu jaune', 'dppt', (0, 1357, 47, 51)),
+    ('dppt-large-orange', 'grand feuillu orange', 'dppt', (0, 1421, 47, 51)),
+    ('dppt-large-rouge', 'grand feuillu rouge', 'dppt', (0, 1485, 47, 51)),
+    ('dppt-large-pourpre', 'grand feuillu pourpre', 'dppt', (0, 1549, 47, 51)),
+    ('g4-palmier', 'palmier', 'g4-arbres', (97, 2449, 46, 47)),
+    ('g4-palmier-2', 'palmier (autre)', 'g4-arbres', (49, 3312, 46, 48)),
+    ('g4-sapin-sombre', 'sapin sombre', 'g4-arbres', (128, 2880, 32, 47)),
+]
+
+
 def tile(img, c, r, w=1, h=1):
     return img.crop((c * TILE, r * TILE, (c + w) * TILE, (r + h) * TILE))
 
@@ -85,6 +109,22 @@ def main():
                 means.append([round(float(v), 1) for v in px.mean(0)])
         sheet.alpha_composite(fn(round_tree), (0, (ROUND_ROW + 4 * k) * TILE))
         meta.append({'id': vid, 'name': name, 'row': k * 4, 'roundRow': ROUND_ROW + 4 * k, 'fillMeans': means})
+    # Les autres arbres, après les rangées des palettes (rien ne bouge pour les cartes déjà faites).
+    first = 4 * len(VARIANTS) * 2
+    big = Image.new('RGBA', (sheet.width, (first + 4 * len(EXTRA_TREES)) * TILE))
+    big.alpha_composite(sheet, (0, 0))
+    sheets = {}
+    for k, (vid, name, sid, (x, y, w, h)) in enumerate(EXTRA_TREES):
+        src = sheets.setdefault(sid, Image.open(V2 / f'{sid}.png').convert('RGBA'))
+        a = np.array(src.crop((x, y, x + w, y + h)))
+        lab, _ = ndimage.label(a[..., 3] > 0, structure=np.ones((3, 3)))
+        a[lab != np.bincount(lab.ravel())[1:].argmax() + 1] = 0
+        body = Image.fromarray(a)
+        cell = Image.new('RGBA', (4 * TILE, 4 * TILE))
+        cell.alpha_composite(body, ((4 * TILE - w) // 2, 4 * TILE - h))
+        big.alpha_composite(cell, (0, (first + 4 * k) * TILE))
+        meta.append({'id': vid, 'name': name, 'row': None, 'roundRow': first + 4 * k, 'fillMeans': []})
+    sheet = big
     sheet.save(V2 / 'lisieres.png', optimize=True)
     (V2 / 'lisieres.json').write_text(json.dumps({'cols': 5, 'variants': meta, 'tree': {'col': 0, 'w': 2, 'h': 4},
                                                   'bush': {'col': 2, 'h': 1},

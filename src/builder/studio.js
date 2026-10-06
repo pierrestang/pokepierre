@@ -263,11 +263,13 @@ export function createStudio(api) {
     for (const c of touched) { removeRefs('decor', c, mine); removeRefs('dessus', c, mine); }
     const set = new Set(d.forest.filter(([x, y]) => x < W && y < m.height).map(([x, y]) => y * W + x));
     for (const [x, y] of oldCells) if (x < W && y < m.height && !set.has(y * W + x)) m.solid[y * W + x] = 0;
-    const variant = lisVariant(fm.variant) ?? lis.variants[0];
+    // L'arbre choisi pour la carte (« Arbres de la carte »), sinon celui de la ville.
+    const variant = lisVariant(d.trees) ?? lisVariant(fm.variant) ?? lis.variants[0];
+    const bushRow = variant.row ?? lis.variants[0].row;              // les autres arbres n'ont pas de buisson à eux
     const isF = (x, y) => x >= 0 && y >= 0 && x < W && y < m.height && set.has(y * W + x);
     const { blocks, inBlock, touchesOpen } = layoutForest(W, m.height, isF);
     const grass = refOf(m, 'dppt', 4);
-    const lisRef = (col, row) => refOf(m, 'lisieres', (variant.row + row) * lis.cols + col);
+    const lisRef = (col, row) => refOf(m, 'lisieres', (bushRow + row) * lis.cols + col);
     for (const c of set) {
       const x = c % W;
       const y = Math.floor(c / W);
@@ -566,6 +568,10 @@ export function createStudio(api) {
     const sel = document.getElementById('studio-theme');
     sel.innerHTML = Object.entries(cat.themes).map(([id, t]) => `<option value="${id}">${t.name}</option>`).join('');
     sel.value = d.theme;
+    const trees = document.getElementById('studio-trees');
+    trees.innerHTML = '<option value="">selon la ville</option>'
+      + lis.variants.map((v) => `<option value="${v.id}">${v.name}</option>`).join('');
+    trees.value = d.trees ?? '';
     const mats = document.getElementById('studio-materials');
     mats.innerHTML = '';
     for (const mat of theme().materials) {
@@ -613,6 +619,16 @@ export function createStudio(api) {
       render();
     });
     document.querySelectorAll('[data-bsize]').forEach((b) => b.addEventListener('click', () => { ui.size = Number(b.dataset.bsize); render(); }));
+    // L'arbre de la carte : bordure (« Refaire la bordure d'arbres ») et pinceau Forêt. Changer d'arbre redessine la
+    // forêt peinte ; la bordure se refait avec le bouton.
+    document.getElementById('studio-trees').addEventListener('change', (e) => {
+      api.remember();
+      const d = data();
+      if (e.target.value) d.trees = e.target.value; else delete d.trees;
+      if (d.forest.length) renderForest([]);
+      api.changed();
+      render();
+    });
   }
 
   // Aperçu de l'élément sous la souris (vert : posable, rouge : refusé, bleu : remplace la maison survolée, porte sur

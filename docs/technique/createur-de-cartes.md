@@ -132,7 +132,13 @@ contrôle.
     touchent qu'en diagonale, couper les bosses d'une case, refaire les bords) et « Corriger les transitions » (chaque
     case de chemin, sable, mer, étang ou hautes herbes reçoit le bord qui va avec ses voisines) ;
   - bordure : « Refaire la bordure d'arbres » (toute la carte, assistant.js borderTrees ; aussi un bouton du panneau du
-    mode simple, sous les matières ; le résultat s'affiche en bas) : retire toutes les bordures
+    mode simple, sous les matières ; le résultat s'affiche en bas). Arbre au choix par carte : le menu « Arbres » du
+    mode simple (studio.trees dans la carte) sert à la bordure et au pinceau Forêt ; « selon la ville » : l'arbre de la
+    forêt déjà posée, sinon celui de la ville. Choix : les trois palettes de l'arbre rond, les arbres ronds de la même
+    famille de la planche DPPt (olive, doré, roux, orange, cerisier, pointus, pin bleu, grands feuillus) et deux
+    palmiers et un sapin sombre de la bibliothèque Gen 4 (build_lisieres.py EXTRA_TREES, à la suite de la planche, sans
+    buisson à eux). Comme ancienne bordure à retirer comptent aussi les cases de végétation dense et opaque collées au
+    bord (la haie du Prytanée, assistant.js denseGreen) : retire toutes les bordures
     d'arbres existantes (la forêt qui touche un bord : tissu, arbres et buissons de lisière, forêt du pinceau ; le sol
     dessous redevient de l'herbe), puis pose une bordure neuve qui longe le rectangle de la carte : une bande de 2 cases
     contre chaque bord, un arbre tous les 2 cases en largeur comme en hauteur (carte de dimensions paires). Pas d'arbre
