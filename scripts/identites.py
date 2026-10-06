@@ -257,11 +257,85 @@ def main():
         protected = pts | story | {(x, y) for y in range(v.H) for x in range(v.W) if v.kinds[y][x] in ('path', 'tall')}
         VILLES[map_id](v)
         v.finish(protected, pts | story)
+        fixes = repair(bd, v.m)
+        if fixes:
+            v.notes.append(fixes)
         done[map_id] = v
     bd.save_auto_sheet()
     for map_id, v in done.items():
         (ROOT / 'src' / 'data' / 'builtMaps' / f'{map_id}.json').write_text(json.dumps(v.m, ensure_ascii=False) + '\n')
         print(f'{map_id:22} {len(v.new_solid)} cases bloquantes ajoutées' + (' ; ' + ' ; '.join(v.notes) if v.notes else ''))
+
+
+# ---------- Réparations (sur toutes les cartes, après les opérations de la ville) ----------
+
+def repair(bd, m):
+    """Corrige deux défauts des cartes de base : les angles rentrants d'étang (cases d'un autre motif : bandes bleues et
+    brunes), remplacés par ceux de la planche « transitions » ; et le côté droit des enclos, dont le montant était collé
+    à gauche de la case (décroché de ses angles), remplacé par le montant de droite de la planche."""
+    W, H = m['width'], m['height']
+    notes = []
+    # Angles d'étang.
+    kit = json.loads((ROOT / 'public' / 'assets' / 'v2' / 'transitions.json').read_text())
+    ti = [t['id'] for t in kit['terrains']].index('pond')
+    t = kit['terrains'][ti]
+    ox, oy = t['outer']
+    src = lambda q, p: [(ox + 2 * (q % 2), oy + 2 * (q // 2)), (ox + 1, oy + 2 * (q // 2)), (ox + 2 * (q % 2), oy + 1),
+                        tuple(t['legacy'][q]), tuple(t['center'])][p]
+    keys = {i: k for k, i in bd.auto_index.items()}
+    legacy = {tuple(c) for c in t['legacy']}
+    n = 0
+    if 'auto' in m['sheets']:
+        slot = m['sheets'].index('auto')
+        for i, cell in enumerate(m['layers']['sol']):
+            stack = cell if isinstance(cell, list) else [cell]
+            out = []
+            for r in stack:
+                key = keys.get(r % STRIDE) if r >= 0 and r // STRIDE == slot else None
+                if key and key[0] == 'quads' and key[1] == 'dppt' and legacy & set(key[2]):
+                    pieces = [[p for p in range(5) if src(q, p) == tuple(key[2][q])] for q in range(4)]
+                    if all(pieces):
+                        if 'transitions' not in m['sheets']:
+                            m['sheets'].append('transitions')
+                        r = m['sheets'].index('transitions') * STRIDE + ti * kit['per'] + sum(p[0] * 5 ** q for q, p in enumerate(pieces))
+                        n += 1
+                out.append(r)
+            m['layers']['sol'][i] = out if isinstance(cell, list) else out[0]
+    if n:
+        notes.append(f'{n} angle(s) d\'étang refait(s)')
+    # Montants de clôture du côté droit.
+    from g4_theme import FENCES
+    if 'dppt' in m['sheets']:
+        slot = m['sheets'].index('dppt')
+        ref = lambda c, r: slot * STRIDE + dppt(c, r)
+        pieces = {ref(*xy) for f in FENCES.values() for xy in f.values()}
+        decor = m['layers']['decor']
+        has = lambda x, y, refs: 0 <= x < W and 0 <= y < H and any(r in refs for r in (decor[y * W + x] if isinstance(decor[y * W + x], list) else [decor[y * W + x]]))
+        isF = lambda x, y: has(x, y, pieces)
+        k = 0
+        for f in FENCES.values():
+            v_ref, vr_ref = ref(*f['v']), ref(*f['vr'])
+            for y in range(H):
+                for x in range(W):
+                    if not has(x, y, {v_ref}):
+                        continue
+                    side = 'v'
+                    for step in (-1, 1):
+                        e = y
+                        while isF(x, e + step):
+                            e += step
+                        if isF(x - 1, e) and not isF(x + 1, e):
+                            side = 'vr'
+                            break
+                        if isF(x + 1, e):
+                            break
+                    if side == 'vr':
+                        c = decor[y * W + x]
+                        decor[y * W + x] = [vr_ref if r == v_ref else r for r in c] if isinstance(c, list) else vr_ref
+                        k += 1
+        if k:
+            notes.append(f'{k} montant(s) de clôture recalé(s) à droite')
+    return ' ; '.join(notes)
 
 
 # ---------- Villes ----------

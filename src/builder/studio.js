@@ -32,6 +32,7 @@ export function createStudio(api) {
   const data = () => {
     const m = state.map;
     if (!m.studio) m.studio = { theme: guessTheme(m), forest: [], elements: [] };
+    m.studio.fence ??= [];
     return m.studio;
   };
   function guessTheme(m) {
@@ -213,13 +214,71 @@ export function createStudio(api) {
     }
   }
 
+  // ---------- Clôtures ----------
+
+  // Toutes les cases de clôture posées (des deux styles), pour les retrouver dans le Décor.
+  const fenceRefs = () => {
+    const out = new Set();
+    for (const t of Object.values(cat.themes)) {
+      for (const x of t.materials) if (x.kind === 'fence') Object.values(x.pieces).forEach((k) => out.add(refOf(state.map, 'dppt', k)));
+    }
+    return out;
+  };
+
+  // Redessine les clôtures autour des cases touchées : chaque case prend l'angle, le bout ou la jonction qui va avec
+  // ses voisines (la règle de g4_theme.paint_objects).
+  function renderFences(touched) {
+    const m = state.map;
+    const W = m.width;
+    const d = data();
+    const fm = theme().materials.find((x) => x.kind === 'fence') ?? cat.themes.libre.materials.find((x) => x.kind === 'fence');
+    const set = new Set(d.fence.map(([x, y]) => y * W + x));
+    const refs = fenceRefs();
+    const around = new Set();
+    for (const [x, y] of touched) {
+      for (const [dx, dy] of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        if (x + dx >= 0 && y + dy >= 0 && x + dx < W && y + dy < m.height) around.add((y + dy) * W + x + dx);
+      }
+    }
+    const isF = (x, y) => x >= 0 && y >= 0 && x < W && y < m.height && set.has(y * W + x);
+    // Montant : collé à droite de la case si le bout de son côté tourne vers la gauche (le côté droit d'un enclos).
+    const side = (x, y) => {
+      for (const step of [-1, 1]) {
+        let k = y;
+        while (isF(x, k + step)) k += step;
+        if (isF(x - 1, k) && !isF(x + 1, k)) return 'vr';
+        if (isF(x + 1, k)) return 'v';
+      }
+      return 'v';
+    };
+    // Tout le côté vertical dont une case a changé (son montant peut passer de gauche à droite).
+    for (const c of [...around]) {
+      const x = c % W;
+      for (const step of [-1, 1]) for (let k = Math.floor(c / W) + step; isF(x, k); k += step) around.add(k * W + x);
+    }
+    for (const c of around) {
+      const had = stackOf(m.layers.decor[c]).some((r) => refs.has(r));
+      removeRefs('decor', c, (r) => refs.has(r));
+      const x = c % W;
+      const y = Math.floor(c / W);
+      if (!set.has(c)) { if (had) m.solid[c] = 0; continue; }
+      const n = isF(x, y - 1);
+      const s = isF(x, y + 1);
+      const w = isF(x - 1, y);
+      const e = isF(x + 1, y);
+      const kind = (w || e) && (n || s) ? `${s ? 't' : 'b'}${e ? 'l' : 'r'}` : w || e ? 'h' : n || s ? side(x, y) : 'post';
+      push('decor', c, refOf(m, 'dppt', fm.pieces[kind]));
+      m.solid[c] = 1;
+    }
+  }
+
   // ---------- Peindre ----------
 
   // Cases du pinceau autour de (x, y) ; la forêt se peint par blocs de 2 x 2 calés sur la grille.
-  function brushCells(x, y, forest) {
+  function brushCells(x, y, forest, erase = false) {
     const m = state.map;
     const out = [];
-    const n = forest ? Math.max(2, ui.size + (ui.size % 2)) : ui.size;
+    const n = forest ? Math.max(2, ui.size + (ui.size % 2)) : !erase && material().kind === 'fence' ? 1 : ui.size;
     let x0 = x - Math.floor((n - 1) / 2);
     let y0 = y - Math.floor((n - 1) / 2);
     if (forest) { x0 -= ((x0 % 2) + 2) % 2; y0 -= ((y0 % 2) + 2) % 2; }
@@ -232,7 +291,7 @@ export function createStudio(api) {
   let stroke = null;                               // { cls, cells: Set, oldForest }
 
   function beginStroke() {
-    stroke = { cls: api.terrain.classes(), cells: new Set(), oldForest: data().forest.slice(), occ: occupancy() };
+    stroke = { cls: api.terrain.classes(), cells: new Set(), oldForest: data().forest.slice(), occ: occupancy(), fenceTouched: [] };
   }
 
   // Peint la matière choisie (ou, gomme : l'herbe) sur les cases [x, y].
@@ -248,6 +307,18 @@ export function createStudio(api) {
       if (stroke.occ.has(c)) continue;                         // un élément posé protège sa case
       fresh.push(c);
       stroke.cells.add(c);
+      // La clôture quitte la case (sauf si on peint de la clôture).
+      if (mat.kind !== 'fence' && d.fence.some(([a, b]) => a === x && b === y)) {
+        d.fence = d.fence.filter(([a, b]) => a !== x || b !== y);
+        stroke.fenceTouched.push([x, y]);
+      }
+      if (mat.kind === 'fence') {
+        if (m.solid[c] && !d.fence.some(([a, b]) => a === x && b === y)) continue;      // pas sur un obstacle
+        if (!d.fence.some(([a, b]) => a === x && b === y)) d.fence.push([x, y]);
+        removeRefs('decor', c, isFlower);
+        stroke.fenceTouched.push([x, y]);
+        continue;
+      }
       // La forêt quitte la case (sauf si on peint de la forêt).
       if (mat.kind !== 'forest' && d.forest.some(([a, b]) => a === x && b === y)) d.forest = d.forest.filter(([a, b]) => a !== x || b !== y);
       const sol = stackOf(m.layers.sol[c]);
@@ -282,6 +353,7 @@ export function createStudio(api) {
       m.solid[c] = mat.solid ? 1 : 0;
     }
     api.terrain.retileAround(stroke.cls, fresh);
+    if (stroke.fenceTouched.length) { renderFences(stroke.fenceTouched); stroke.fenceTouched = []; }
     if (mat.kind === 'forest' || cells.some(([x, y]) => stroke.oldForest.some(([a, b]) => a === x && b === y))) renderForest(stroke.oldForest);
   }
 
@@ -345,6 +417,10 @@ export function createStudio(api) {
       const t = { path: [1, 1, 'dppt'], beach: [6, 1, 'dppt'], sea: [6, 6, 'dppt'], pond: [1, 6, 'dppt'], tall: [1, 2, 'autotiles-g4'] }[mat.terrain];
       const c = api.colsOf(t[2]);
       for (const [x, y] of [[0, 0], [16, 0], [0, 16], [16, 16]]) draw(t[2], t[1] * c + t[0], x, y);
+    } else if (mat.kind === 'fence') {
+      grass();
+      draw('dppt', mat.pieces.h, 0, 8);
+      draw('dppt', mat.pieces.tr, 16, 8);
     } else if (mat.kind === 'overlay') {
       grass();
       for (const [x, y] of [[0, 0], [16, 0], [0, 16], [16, 16]]) draw(mat.tile[0], mat.tile[1], x, y);
@@ -460,7 +536,7 @@ export function createStudio(api) {
   function eraseAt(x, y) {
     const el = occupancy().get(y * state.map.width + x);
     if (el) { removeElement(el); stroke = null; return el; }
-    paintCells(brushCells(x, y, false), true);
+    paintCells(brushCells(x, y, false, true), true);
     return null;
   }
 
@@ -474,13 +550,16 @@ export function createStudio(api) {
       const y0 = forest ? r.y0 - (r.y0 % 2) : r.y0;
       const x1 = forest ? r.x1 + 1 - (r.x1 % 2) : r.x1;
       const y1 = forest ? r.y1 + 1 - (r.y1 % 2) : r.y1;
+      const fence = material().kind === 'fence';        // une clôture : le tour du rectangle seulement
       for (let y = Math.max(0, y0); y <= Math.min(state.map.height - 1, y1); y++) {
-        for (let x = Math.max(0, x0); x <= Math.min(state.map.width - 1, x1); x++) cells.push([x, y]);
+        for (let x = Math.max(0, x0); x <= Math.min(state.map.width - 1, x1); x++) {
+          if (!fence || x === x0 || x === x1 || y === y0 || y === y1) cells.push([x, y]);
+        }
       }
       beginStroke();
       paintCells(cells);
     },
-    brushCells: (x, y) => brushCells(x, y, !ui.element && material().kind === 'forest'),
+    brushCells: (x, y) => brushCells(x, y, !ui.element && state.tool !== 'erase' && material().kind === 'forest', state.tool === 'erase'),
     get ui() { return ui; },
     SIZES,
   };

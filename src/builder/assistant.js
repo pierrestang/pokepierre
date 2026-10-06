@@ -59,7 +59,7 @@ export function createAssistant(api) {
   function blockOf(t) {
     const cells = new Set();
     for (let dy = 0; dy < 3; dy++) for (let dx = 0; dx < 3; dx++) cells.add(`${t.outer[0] + dx},${t.outer[1] + dy}`);
-    for (const [c, r] of t.inner) cells.add(`${c},${r}`);
+    for (const [c, r] of [...t.inner, ...(t.legacy ?? [])]) cells.add(`${c},${r}`);   // legacy : anciens angles d'étang
     cells.add(`${t.center[0]},${t.center[1]}`);
     return cells;
   }

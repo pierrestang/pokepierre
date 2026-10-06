@@ -32,13 +32,18 @@ Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut 
   l'assistant). Fleurs : posées sur l'herbe libre. Pavés : motif de la ville. Forêt : par blocs de 2 x 2 calés sur la
   grille ; toute la forêt peinte est redessinée à chaque coup (tissu dense dedans, arbre entier sur chaque bloc qui
   touche une case libre, herbe seulement sous les cases ouvertes, buisson sur une case orpheline). La gomme repeint de
-  l'herbe. Mer, étang et forêt bloquent ; le reste libère la case.
+  l'herbe. Clôture : posée case par case au pinceau, ou en tour de rectangle avec Zone ; chaque case prend
+  l'angle, le bout ou le montant qui va avec ses voisines (montant collé à droite de la case sur le côté droit d'un
+  enclos) ; une ouverture se fait à la gomme. Clôture blanche au Prytanée, à Hull et à Bordeaux. Mer, étang et forêt bloquent ; le reste libère la case.
 - Éléments : un clic pose l'élément (aperçu vert, ou rouge avec la raison : sur un obstacle, sur un élément, sur une
   case importante, pas sur son sol — les bateaux, roseaux et nénuphars vont sur l'eau). Le bas bloque, le haut (toit,
   cime) passe au-dessus de Pierre, la porte d'une maison reste libre. La gomme sur un élément le retire et rend les
   collisions d'avant. Un élément posé protège ses cases du pinceau.
 - Ce que le mode simple a posé est noté dans la carte (`studio` : thème, cases de forêt, éléments posés) ; le jeu
   l'ignore. L'annulation le suit.
+- Angles rentrants de l'étang : la planche DPPt n'en a pas ; la planche « transitions » les compose avec la pointe d'un
+  coin d'îlot (rangées 11-13) aux couleurs de la berge (build_transitions.pond_inner). Les cartes du jeu sont reprises
+  par scripts/identites.py (repair : anciens angles d'étang, montants du côté droit des enclos), à chaque génération.
 - Catalogue : scripts/build_catalogue.py -> public/assets/v2/catalogue.png et catalogue.json (thèmes, matières,
   éléments avec leurs cases, collisions, rangées au-dessus de Pierre, porte, sol). Palettes des maisons : celles de
   scripts/identites.py (BUILDING_PALETTES). Arbres de lisière : planche « lisieres » (scripts/build_lisieres.py).

@@ -39,7 +39,8 @@ TERRAINS = {
     'beach': {'sheet': DPPT, 'outer': (5, 0), 'center': (6, 1), 'inner': [(7, 4), (6, 4), (7, 3), (6, 3)]},
     'sea': {'sheet': DPPT, 'outer': (5, 5), 'center': (6, 6), 'inner': [(7, 9), (6, 9), (7, 8), (6, 8)]},
     # Étang, lac, rivière : rives de terre ; les angles rentrants sont les coins de l'îlot du dessous.
-    'pond': {'sheet': DPPT, 'outer': (0, 5), 'center': (1, 6), 'inner': [(2, 10), (0, 10), (2, 8), (0, 8)]},
+    # Angles rentrants de l'étang : coins d'îlot recolorés (build_transitions.pond_inner).
+    'pond': {'sheet': DPPT, 'outer': (0, 5), 'center': (1, 6), 'inner': [(2, 13), (0, 13), (2, 11), (0, 11)], 'innerFix': True},
     'tall': {'sheet': 'autotiles-g4', 'outer': (0, 1), 'center': (1, 2), 'inner': [(1, 0)] * 4},
     'wheat': {'sheet': lib('kyle-ext@5,41')[0], 'outer': lib('kyle-ext@5,41')[1:], 'center': lib('kyle-ext@5,41', 1, 1)[1:],
               'inner': [lib('kyle-ext@5,41', 1, 1)[1:]] * 4},
@@ -75,8 +76,11 @@ OBJECTS = {
     'ʘ': [(DPPT, 5, 129), (DPPT, 5, 130)],          # mât et bannière (le drapeau de la cour)
 }
 FENCES = {
-    'bois': {'tl': (0, 131), 'h': (1, 131), 'tr': (2, 131), 'v': (0, 132), 'bl': (0, 133), 'br': (2, 133), 'post': (4, 131)},
-    'blanche': {'tl': (0, 128), 'h': (1, 128), 'tr': (2, 128), 'v': (0, 129), 'bl': (0, 130), 'br': (2, 130), 'post': (4, 128)},
+    # 'v' : montant collé au bord gauche de la case ; 'vr' : au bord droit (le côté droit d'un enclos).
+    'bois': {'tl': (0, 131), 'h': (1, 131), 'tr': (2, 131), 'v': (0, 132), 'vr': (2, 132), 'bl': (0, 133), 'br': (2, 133),
+             'post': (4, 131)},
+    'blanche': {'tl': (0, 128), 'h': (1, 128), 'tr': (2, 128), 'v': (0, 129), 'vr': (2, 129), 'bl': (0, 130), 'br': (2, 130),
+                'post': (4, 128)},
 }
 # Forêt dense (g4-arbres, 2 x 4 : deux rangs d'arbres) ; tronc d'un arbre DPPt pour le bas de la lisière.
 FOREST = lib('rmxp-nature@25,1')
@@ -268,6 +272,18 @@ class G4:
                 quads.append(spec['center'])
         if all(qd == spec['center'] for qd in quads):
             return (spec['sheet'], *spec['center'])
+        if spec.get('innerFix') and any(qd == spec['inner'][q] for q, qd in enumerate(quads)):
+            from build_transitions import pond_inner, HALF
+            sheet = self.bd.images[spec['sheet']]
+            img = Image.new('RGBA', (TILE, TILE))
+            for q, (col, row) in enumerate(quads):
+                qx, qy = q % 2, q // 2
+                if (col, row) == spec['inner'][q]:
+                    img.paste(pond_inner(sheet, {'outer': spec['outer'], 'inner': spec['inner']}, q), (qx * HALF, qy * HALF))
+                else:
+                    src = self.bd.tile_image(spec['sheet'], col, row)
+                    img.paste(src.crop((qx * HALF, qy * HALF, (qx + 1) * HALF, (qy + 1) * HALF)), (qx * HALF, qy * HALF))
+            return ('img', self.key(img), img)
         return ('auto', self.bd.quad_tile(spec['sheet'], tuple(quads)))
 
     def paint_ground(self):
@@ -336,6 +352,19 @@ class G4:
                             left -= 1
                         self.put('dessus', x, y - 1, (sheet, col0 + (x - left) % 2, row0 + 2))
 
+    def fence_side(self, x, y):
+        """Montant de clôture : à droite de la case si le bout de son côté (en haut ou en bas) tourne vers la gauche."""
+        f = lambda a, b: self.at(a, b) == 'F'
+        for step in (-1, 1):
+            k = y
+            while f(x, k + step):
+                k += step
+            if f(x - 1, k) and not f(x + 1, k):
+                return 'vr'
+            if f(x + 1, k):
+                return 'v'
+        return 'v'
+
     # ----- objets -----
     def paint_objects(self):
         fence = FENCES[FENCE_OF_MAP.get(self.map['id'], 'bois')]
@@ -350,7 +379,7 @@ class G4:
                     f = lambda dx, dy: self.at(x + dx, y + dy) == 'F'
                     n, s_, w, e = f(0, -1), f(0, 1), f(-1, 0), f(1, 0)
                     kind = (('t' if s_ else 'b') + ('l' if e else 'r')) if (w or e) and (n or s_) else \
-                        'h' if (w or e) else 'v' if (n or s_) else 'post'
+                        'h' if (w or e) else self.fence_side(x, y) if (n or s_) else 'post'
                     self.put('decor', x, y, (DPPT, *fence[kind]))
                 elif code in '=I':
                     same = lambda dx: self.at(x + dx, y) == code

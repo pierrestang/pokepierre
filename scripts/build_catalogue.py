@@ -22,7 +22,7 @@ from scipy import ndimage
 
 import identites as I
 from fdf_ds_v2 import tint_stone, tint_martinique
-from g4_theme import BUILDINGS, COBBLE
+from g4_theme import BUILDINGS, COBBLE, FENCES
 
 ROOT = Path(__file__).resolve().parent.parent
 V2 = ROOT / 'public' / 'assets' / 'v2'
@@ -304,6 +304,10 @@ def main():
             {'id': 'fleurs-roses', 'name': 'Fleurs roses', 'kind': 'overlay', 'tile': ['autotiles-g4', 35], 'solid': 0},
             {'id': 'fleurs-orange', 'name': 'Fleurs orange', 'kind': 'overlay', 'tile': ['dppt', 3], 'solid': 0},
         ]
+        # Clôture : les angles et les jonctions se choisissent d'après les voisines (comme g4_theme.paint_objects).
+        style = 'blanche' if tid in ('prytanee', 'hull', 'bordeaux') else 'bois'
+        materials.append({'id': 'cloture', 'name': 'Clôture blanche' if style == 'blanche' else 'Clôture', 'kind': 'fence',
+                          'pieces': {k: r * 8 + c for k, (c, r) in FENCES[style].items()}, 'solid': 1})
         if t['paving'] in PAVING_FN:
             fn = PAVING_FN[t['paving']]
             tiles = [[pack.add_tile(fn(crop(*c))) for c in COBBLE[r * 2:(r + 1) * 2]] for r in range(2)]
