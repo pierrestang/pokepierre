@@ -95,11 +95,16 @@ contrôle.
   - nettoyage : « Régulariser le chemin » (boucher les trous et les coupures d'une case, relier les chemins qui ne se
     touchent qu'en diagonale, couper les bosses d'une case, refaire les bords) et « Corriger les transitions » (chaque
     case de chemin, sable, mer, étang ou hautes herbes reçoit le bord qui va avec ses voisines) ;
-  - bordure : « Refaire la bordure d'arbres » (la forêt dense de la zone devient des rangées d'arbres entiers, même
-    règle que le pinceau Forêt : forestLayout.js ; Saint-Ay est générée ainsi, identites.py forest_trees). La palette
-    de la forêt (DPPt, chêne de Saint-Ay, automne de Montépilloy) est reconnue d'après ses cases ; seules les planches d'arbres comptent (pas un toit de même couleur).
-    Arbres et buissons : planche « lisières » (scripts/build_lisieres.py : l'arbre de rmxp-nature, de la même famille
-    que la forêt dense, une version par palette) ;
+  - bordure : « Refaire la bordure d'arbres » (toute la carte, assistant.js borderTrees) : retire toutes les bordures
+    d'arbres existantes (la forêt qui touche un bord : tissu, arbres et buissons de lisière, forêt du pinceau ; le sol
+    dessous redevient de l'herbe), puis pose une bordure neuve qui longe le rectangle de la carte : une bande de 2 cases
+    contre chaque bord, un arbre tous les 2 cases en largeur comme en hauteur (carte de dimensions paires). Pas d'arbre
+    sur l'eau, le relief, un chemin (les sorties), un objet ou une case importante du jeu : le trou reste. La rangée du
+    bas descend jusqu'au bord (troncs hors de la carte), les colonnes des côtés s'alignent sur elle ; tissu sombre
+    derrière les cases du bord. Palette : celle de la forêt actuelle, sinon celle de la ville. Saint-Ay, Montépilloy et
+    la route de Montépilloy ont été refaites ainsi (octobre 2026) ; identites.py forest_trees (ancienne règle) ne sert
+    plus qu'à regénérer la base de Saint-Ay. Les arbres et buissons viennent de la planche « lisières »
+    (scripts/build_lisieres.py) ;
   - remplissage : « Semer des hautes herbes » (touffes rondes sur l'herbe libre, à une case des chemins, densité
     réglable, tirage à graine rejouable) et « Régénérer cette zone » (le dernier semis est retiré, un autre tirage le
     remplace, rien d'autre ne bouge).

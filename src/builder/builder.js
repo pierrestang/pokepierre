@@ -1819,7 +1819,7 @@ function bindAssistant() {
     transitions: () => assistant.fixTransitions(),
     sow: () => assistant.sowTall(density()),
     regen: () => assistant.regenerate(density()),
-    forest: () => assistant.rebuildForest(),
+    forest: () => assistant.borderTrees(),
   };
   document.querySelectorAll('[data-asst]').forEach((b) => { b.onclick = () => runAssistant(actions[b.dataset.asst]); });
   $('asst-density').oninput = () => { $('asst-density-val').textContent = `${$('asst-density').value} %`; };
