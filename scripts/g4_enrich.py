@@ -2,13 +2,15 @@
 """Cartes Gen 4 de Saint-Ay à Hull, deuxième passe de dessin (octobre 2026) : enrichit le dessin des cartes générées par
 scripts/g4_theme.py puis retouchées dans le créateur, sans rien changer à leur structure jouable.
 
-Collisions, départ, portes, PNJ, objets, événements et obstacles conditionnels (props) restent tels quels : le script
-le vérifie avant d'écrire. Il part de la carte du tag git avant-refonte-g4 (les retouches faites depuis dans le créateur
+Départ, portes, PNJ, objets, événements et obstacles conditionnels (props) restent tels quels. Seul le mobilier
+(FURNITURE : réverbères, bancs, jardinières, tas de bois, rochers) ajoute des cases bloquantes : jamais sur un chemin,
+des hautes herbes ou une case de l'histoire (scripts/export_story_points.mjs : PNJ, objets, portes, scénettes, rondes,
+arrivées), et check_access refuse qu'une case ou un point qu'on atteignait ne s'atteigne plus. Il part de la carte du tag git avant-refonte-g4 (les retouches faites depuis dans le créateur
 seraient perdues) et, carte par carte (PLANS) :
 - prolonge les chemins de sable DPPt jusqu'aux portes et sous les boîtes aux lettres et jardinières (parvis), en
   refaisant les bords des cases voisines ;
 - plante des massifs de fleurs (calque Sol : ils se traversent) et nuance les grandes pelouses (touffes d'herbe rase) ;
-- pose des nénuphars et des rochers sur l'eau, des objets sur des cases déjà bloquantes ;
+- pose des nénuphars et des rochers sur l'eau, des objets sur des cases déjà bloquantes, du mobilier ;
 - retire les débris de retouches (bouts d'objets effacés).
 
 Usage : python3 scripts/g4_enrich.py [id…]     (ids des cartes : saint-ay, montepilloy… ; sans id : toutes)
@@ -22,6 +24,7 @@ import sys
 
 import numpy as np
 from PIL import Image
+from scipy import ndimage
 
 from convert_maps_v2 import Builder, load_catalog, ROOT, TILE
 from ds_theme import TERRAINS, GRASS, GRASS_BITS
@@ -33,6 +36,18 @@ GAME_ID = {'saint-ay': 'saintAy', 'route-de-montepilloy': 'routeMontepilloy', 'm
 FLOWERS = {'f': ('autotiles-g4', 0, 8), 'ƒ': ('autotiles-g4', 3, 4), 'o': ('dppt', 3, 0)}
 LILY = [('g4-eau', 13, 80), ('g4-eau', 14, 80)]          # nénuphars (sur fond transparent)
 ROCK_IN_WATER = ('dppt', 7, 145)                          # rocher cerclé d'écume
+
+# Mobilier qui ajoute des collisions : (planche, colonne, rangée, largeur, hauteur, première rangée bloquante) ; les
+# rangées du dessus passent au-dessus de Pierre.
+FURNITURE = {
+    'lampadaire': ('dppt', 7, 129, 1, 3, 2),          # réverbère DPPt
+    'banc': ('g4-mobilier', 2, 277, 2, 2, 1),
+    'jardiniere-rouge': ('g4-mobilier', 2, 279, 2, 1, 0),
+    'jardiniere-orange': ('g4-mobilier', 4, 279, 2, 1, 0),
+    'jardiniere-rose': ('g4-mobilier', 6, 279, 2, 1, 0),
+    'bois': ('g4-mobilier', 1, 117, 2, 2, 1),          # tas de bois (seul : le bout de barbecue voisin est retiré)
+    'rocher': ('dppt', 7, 146, 1, 1, 0),
+}
 
 # ---------- Plans, carte par carte ----------
 # paths : cases d'herbe libres qui deviennent chemin ; force_path : chemin sous des cases bloquantes (boîtes aux lettres) ;
@@ -48,6 +63,8 @@ PLANS = {
         },
         'lilies': [(1, 12), (4, 13), (7, 12), (2, 14), (6, 14), (3, 15)],
         'rocks': [(8, 13)],
+        'furniture': [('lampadaire', 13, 7), ('lampadaire', 16, 13),
+                      ('banc', 10, 14), ('banc', 23, 20), ('bois', 20, 11)],
     },
     'route-de-montepilloy': {
         'flowers': {                                         # bas-côtés fleuris, par touffes
@@ -55,6 +72,7 @@ PLANS = {
             'f': [(12, 4), (9, 12), (9, 13), (12, 17), (12, 19), (9, 25)],
             'o': [(9, 9), (12, 13)],
         },
+        'furniture': [('rocher', 9, 15), ('rocher', 12, 24)],
     },
     'montepilloy': {
         'force_path': [(7, 6), (22, 6)],                    # sable sous les boîtes aux lettres
@@ -64,6 +82,8 @@ PLANS = {
             'f': [(2, 7), (28, 13), (29, 14)],
         },
         'lilies': [(20, 18), (22, 19), (19, 20)],
+        'furniture': [('lampadaire', 13, 7), ('lampadaire', 16, 7), ('lampadaire', 16, 15), ('banc', 24, 17),
+                      ('jardiniere-rouge', 5, 6), ('jardiniere-rose', 26, 5)],
     },
     'bonsecours': {
         'flowers': {
@@ -71,6 +91,7 @@ PLANS = {
             'o': [(2, 9), (3, 13), (2, 22), (20, 9), (21, 14), (20, 18)],
             'f': [(14, 22), (15, 22), (16, 23), (6, 22), (7, 22)],
         },
+        'furniture': [('banc', 14, 7), ('lampadaire', 9, 17), ('lampadaire', 12, 20)],
     },
     'prytanee': {
         'flowers': {                                         # parterres symétriques des quatre pelouses
@@ -78,6 +99,8 @@ PLANS = {
                   (10, 18), (11, 18), (10, 19), (11, 19), (23, 18), (24, 18), (23, 19), (24, 19)],
             'o': [(12, 12), (13, 12), (21, 12), (22, 12), (12, 20), (13, 20), (21, 20), (22, 20)],
         },
+        'furniture': [('lampadaire', 14, 10), ('lampadaire', 20, 10), ('lampadaire', 14, 18), ('lampadaire', 20, 18),
+                      ('jardiniere-rouge', 3, 13), ('jardiniere-rouge', 31, 13)],
     },
     'bordeaux': {
         'flowers': {
@@ -86,6 +109,8 @@ PLANS = {
         },
         # Péniches sur la Garonne (bateaux longs de terriblejared).
         'objects': [('g4-vehicules', 0, 30, 6, 3, 12, 12), ('g4-vehicules', 6, 34, 5, 2, 26, 13)],
+        'furniture': [('lampadaire', 4, 8), ('lampadaire', 16, 8), ('lampadaire', 28, 8), ('banc', 11, 9),
+                      ('banc', 19, 9), ('lampadaire', 10, 14), ('lampadaire', 26, 14)],
     },
     'hull': {
         'flowers': {
@@ -94,6 +119,7 @@ PLANS = {
         },
         'lilies': [(13, 3), (16, 3)],                       # bassin du parc
         'rocks': [(4, 44), (25, 45), (28, 47)],
+        'furniture': [('banc', 15, 37)],
     },
 }
 
@@ -210,6 +236,39 @@ def neighbors8(x, y):
     return [(x + dx, y + dy) for dy in (-1, 0, 1) for dx in (-1, 0, 1) if dx or dy]
 
 
+STORY_POINTS = None          # cases de l'histoire par carte (scripts/export_story_points.mjs), lues une fois
+
+
+def check_access(map_id, W, H, solid0, new_solid, protected, points):
+    """Le mobilier ne bloque rien : aucune case protégée (chemins, hautes herbes, PNJ, objets, portes et cases devant,
+    déclencheurs, cases des scénettes et des rondes, arrivées) n'est prise ; toute case libre qu'on atteignait depuis
+    le départ ou un point de l'histoire s'atteint encore ; chaque point atteignable le reste (sa case, ou une voisine)."""
+    taken = new_solid & protected
+    assert not taken, f'{map_id} : mobilier sur une case protégée : {sorted(taken)}'
+    solid1 = list(solid0)
+    for x, y in new_solid:
+        solid1[y * W + x] = 1
+
+    def reach(solid):
+        starts = [(x, y) for x, y in points if 0 <= x < W and 0 <= y < H and not solid[y * W + x]]
+        seen, todo = set(starts), list(starts)
+        while todo:
+            cx, cy = todo.pop()
+            for n in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                if 0 <= n[0] < W and 0 <= n[1] < H and n not in seen and not solid[n[1] * W + n[0]]:
+                    seen.add(n)
+                    todo.append(n)
+        return seen
+
+    before, after = reach(solid0), reach(solid1)
+    lost = before - after - new_solid
+    assert not lost, f'{map_id} : cases devenues inaccessibles : {sorted(lost)}'
+    for x, y in points:
+        near = [(x, y), (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+        assert not any(c in before for c in near) or any(c in after for c in near), \
+            f'{map_id} : point {(x, y)} devenu inaccessible'
+
+
 def enrich(bd, map_id):
     """Applique le plan de la carte ; renvoie la carte et un résumé. Les collisions et le départ ne changent pas."""
     plan_ = PLANS[map_id]
@@ -218,7 +277,11 @@ def enrich(bd, map_id):
     solid0, spawn0 = list(m['solid']), dict(m['spawn'])
     kinds = classify(bd, m)
     _, pts = game_points(map_id)
+    story = {tuple(c) for c in STORY_POINTS[GAME_ID[map_id]]}
     solid = lambda x, y: bool(solid0[y * W + x])
+    # Emprise du mobilier (toutes ses rangées) : pas de fleurs dessous.
+    furniture_cells = {(x + i, y + j) for name, x, y in plan_.get('furniture', [])
+                       for j in range(FURNITURE[name][4]) for i in range(FURNITURE[name][3])}
     decor_empty = lambda x, y: all(r == -1 for r in (lambda c: c if isinstance(c, list) else [c])(
         m['layers']['decor'][y * W + x]))
     done = {'chemin': 0, 'fleurs': 0, 'touffes': 0, 'eau': 0, 'objets': 0, 'vidées': 0}
@@ -262,7 +325,7 @@ def enrich(bd, map_id):
     for code, cells in plan_.get('flowers', {}).items():
         for x, y in cells:
             assert not solid(x, y) and (x, y) not in pts, f'{map_id} : fleurs sur {(x, y)}'
-            if kinds[y][x] != 'grass' or not decor_empty(x, y):
+            if kinds[y][x] != 'grass' or not decor_empty(x, y) or (x, y) in furniture_cells:
                 print(f'  {map_id} : fleurs en {(x, y)} ignorées (sol {kinds[y][x]})')
                 continue
             img = grass_img.copy()
@@ -303,11 +366,42 @@ def enrich(bd, map_id):
                     assert solid(ax + i, ay + j), f'{map_id} : objet sur une case libre {(ax + i, ay + j)}'
                     put_decor(ax + i, ay + j, img)
         done['objets'] += 1
+    # Mobilier : cases bloquantes nouvelles, vérifiées ensuite (check_access).
+    new_solid = set()
+    for name, ax, ay in plan_.get('furniture', []):
+        sheet, c0, r0, w, h, solid_from = FURNITURE[name]
+        full = bd.images[sheet].crop((c0 * TILE, r0 * TILE, (c0 + w) * TILE, (r0 + h) * TILE))
+        if name == 'bois':
+            arr = np.array(full)
+            labels, _ = ndimage.label(arr[..., 3] > 0)
+            arr[labels != np.bincount(labels.ravel())[1:].argmax() + 1] = 0
+            full = Image.fromarray(arr)
+        for j in range(h):
+            for i in range(w):
+                img = full.crop((i * TILE, j * TILE, (i + 1) * TILE, (j + 1) * TILE))
+                if not img.getbbox():
+                    continue
+                x, y = ax + i, ay + j
+                if j >= solid_from:
+                    put_decor(x, y, img)
+                    if not solid(x, y):
+                        new_solid.add((x, y))
+                else:
+                    cell = m['layers']['dessus'][y * W + x]
+                    stack = [r for r in (cell if isinstance(cell, list) else [cell]) if r != -1]
+                    m['layers']['dessus'][y * W + x] = stack + [ref('auto', bd.image_tile(img))]
+        done['mobilier'] = done.get('mobilier', 0) + 1
+    protected = pts | story | {(x, y) for y in range(H) for x in range(W) if kinds[y][x] in ('path', 'tall')}
+    check_access(map_id, W, H, solid0, new_solid, protected, pts | story)
+    for x, y in new_solid:
+        m['solid'][y * W + x] = 1
+
     for x, y in plan_.get('clear', []):
         m['layers']['decor'][y * W + x] = -1
         done['vidées'] += 1
 
-    assert m['solid'] == solid0 and m['spawn'] == spawn0, f'{map_id} : collisions ou départ changés'
+    changed = {(i % W, i // W) for i in range(W * H) if m['solid'][i] != solid0[i]}
+    assert changed == new_solid and m['spawn'] == spawn0, f'{map_id} : collisions ou départ changés'
     return m, done
 
 
@@ -318,12 +412,17 @@ def main():
             print(f'== {map_id}')
             plan(map_id)
         return
+    global STORY_POINTS
+    STORY_POINTS = json.loads(subprocess.check_output(['node', str(ROOT / 'scripts' / 'export_story_points.mjs')], cwd=ROOT))
     bd = Builder(load_catalog())
     results = {map_id: enrich(bd, map_id) for map_id in (args or PLANS)}
     bd.save_auto_sheet()
     for map_id, (m, done) in results.items():
+        if not done.get('mobilier'):
+            done.pop('mobilier', None)
         (ROOT / 'src' / 'data' / 'builtMaps' / f'{map_id}.json').write_text(json.dumps(m, ensure_ascii=False) + '\n')
-        print(f'{map_id:22} ' + ', '.join(f'{k} {v}' for k, v in done.items() if v) + ' ; collisions et départ inchangés')
+        print(f'{map_id:22} ' + ', '.join(f'{k} {v}' for k, v in done.items() if v)
+              + ' ; collisions ajoutées seulement par le mobilier, tout reste accessible')
 
 
 if __name__ == '__main__':

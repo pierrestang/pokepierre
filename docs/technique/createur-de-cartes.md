@@ -61,8 +61,11 @@ scripts/g4_enrich.py enrichit les sept cartes de Saint-Ay à Hull (octobre 2026)
 avant-refonte-g4. Il travaille carte par carte (PLANS) : parvis de sable sous les boîtes aux lettres, massifs de fleurs
 dans le calque Sol (ils se traversent), touffes d'herbe rase sur les pelouses unies, nénuphars et rochers sur l'eau,
 péniches sur la Garonne. Le sol de chaque case est reconnu d'après sa case d'origine (planche DPPt ou clé de
-auto.json). Collisions, départ, portes, PNJ, événements et props ne changent pas : le script le vérifie avant
-d'écrire. `--plan <id>` affiche la grille d'une carte (sols, cases bloquantes, points importants, décors posés sur des
+auto.json). Départ, portes, PNJ, événements et props ne changent pas. Le mobilier (FURNITURE : réverbères, bancs,
+jardinières, tas de bois, rochers) ajoute des cases bloquantes. Il n'en pose jamais sur un chemin, des hautes herbes ou
+une case de l'histoire (scripts/export_story_points.mjs : PNJ, objets, portes, scénettes, circuits des rondes qui
+vont tout droit, arrivées). check_access refuse en plus qu'une case ou un point qu'on atteignait ne s'atteigne plus. Les
+PNJ des scénettes cherchent leur chemin (MapScene.walkNpc) : il leur suffit que tout reste relié. `--plan <id>` affiche la grille d'une carte (sols, cases bloquantes, points importants, décors posés sur des
 cases libres).
 
 ## Bibliothèque Gen 4 (build_g4_library.py)
