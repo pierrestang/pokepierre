@@ -186,10 +186,10 @@ export function createStudio(api) {
       else if (!inBlock(x, y)) push('decor', c, lisRef(lis.bush.col, 0));
     }
     // Un arbre entier par bloc, de haut en bas (la cime du dessous passe devant le tronc du dessus).
-    for (const [bx, by] of blocks) {
+    for (const [bx, by, dy] of blocks) {
       for (let k = 0; k < lis.tree.h; k++) {
-        const y = by - 2 + k;
-        if (y < 0) continue;
+        const y = by - 2 + k + dy;
+        if (y < 0 || y >= m.height) continue;
         for (let dx = 0; dx < lis.tree.w; dx++) {
           const c = y * W + bx + dx;
           push(k >= 2 || set.has(c) ? 'decor' : 'dessus', c, lisRef(lis.tree.col + dx, k));

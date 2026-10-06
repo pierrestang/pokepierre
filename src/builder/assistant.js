@@ -600,10 +600,10 @@ export function createAssistant(api) {
         }
       }
       // Un arbre entier par bloc, de haut en bas.
-      for (const [bx, by] of blocks) {
+      for (const [bx, by, dy] of blocks) {
         for (let k = 0; k < lis.tree.h; k++) {
-          const y = by - 2 + k;
-          if (y < 0) continue;
+          const y = by - 2 + k + dy;
+          if (y < 0 || y >= H) continue;
           for (let dx = 0; dx < lis.tree.w; dx++) {
             const i = y * W + bx + dx;
             add(k >= 2 || forest[i] ? 'decor' : 'dessus', i, lisRef(lis.tree.col + dx, k));
