@@ -1727,7 +1727,7 @@ const assistant = createAssistant({
 
 const studio = createStudio({
   state, base: BASE, loadSheet, colsOf, remember, changed, requestDraw, terrain: assistant.terrain,
-  setTool: (t) => setTool(t),
+  setTool: (t) => setTool(t), objectAt, liftObject, setStatus,
 });
 
 function setMode(mode) {

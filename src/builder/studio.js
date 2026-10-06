@@ -79,12 +79,18 @@ export function createStudio(api) {
     return occ;
   }
 
-  // Peut-on poser l'élément `def` avec son coin en haut à gauche en (x0, y0) ? { ok, why }
-  async function canPlace(def, x0, y0) {
+  // Peut-on poser l'élément `def` avec son coin en haut à gauche en (x0, y0) ? { ok, why, clear }
+  // `ignore` : cases d'une maison qu'on remplace (elle part avant). Un petit objet sur le chemin (boîte aux lettres,
+  // buisson, banc, petit arbre : au plus 8 cases) est dégagé (`clear`) ; la forêt, l'eau, une case importante (porte,
+  // PNJ, départ) ne le sont jamais.
+  async function canPlace(def, x0, y0, ignore = new Set()) {
     const m = state.map;
     const cls = api.terrain.classes();
     const occ = occupancy();
-    const important = new Set((await api.terrain.importantCells()).map(([x, y]) => `${x},${y}`));
+    const importantList = await api.terrain.importantCells();
+    const important = new Set(importantList.map(([x, y]) => `${x},${y}`));
+    const clear = new Map();                       // clé -> { el } ou { cells }
+    const cleared = new Set();
     for (let j = 0; j < def.h; j++) {
       for (let i = 0; i < def.w; i++) {
         if (def.tiles[j][i] < 0) continue;
@@ -92,18 +98,101 @@ export function createStudio(api) {
         const y = y0 + j;
         const foot = j >= def.over;
         if (x < 0 || x >= m.width || y >= m.height || (y < 0 && foot)) return { ok: false, why: 'dépasse de la carte' };
-        if (y < 0) continue;
+        if (y < 0 || !foot) continue;
         const k = y * m.width + x;
-        if (!foot) continue;
-        if (occ.has(k)) return { ok: false, why: 'chevauche un élément déjà posé' };
-        const water = cls[k] === 'sea' || cls[k] === 'pond';
+        if (ignore.has(k) || cleared.has(k)) continue;
+        const water = cls[k] === 'sea' || cls[k] === 'pond' || cls[k] === 'lagoon';
         if (def.place === 'water' && !water) return { ok: false, why: 'se pose sur l\'eau' };
-        if (def.place === 'land' && water) return { ok: false, why: 'se pose sur la terre ferme' };
-        if (def.solid[j][i] && def.place === 'land' && m.solid[k]) return { ok: false, why: 'chevauche un obstacle' };
-        if (def.solid[j][i] && important.has(`${x},${y}`)) return { ok: false, why: 'bloquerait une case importante (porte, PNJ, départ…)' };
+        if (def.place === 'land' && water) return { ok: false, why: `l'eau en ${x},${y}` };
+        if (def.solid[j][i] && important.has(`${x},${y}`)) {
+          const what = importantList.find(([a, b]) => a === x && b === y)?.[2] ?? 'case importante';
+          return { ok: false, why: `bloquerait ${what} en ${x},${y}` };
+        }
+        const el = occ.get(k);
+        if (el) {
+          const d = elementDef(el.id, el.theme);
+          if (d?.cat === 'maisons') return { ok: false, why: `chevauche une maison en ${x},${y}` };
+          clear.set(`e${data().elements.indexOf(el)}`, { el, name: d?.name });
+          occupancyCells(el).forEach((c) => cleared.add(c));
+          continue;
+        }
+        if (!(def.solid[j][i] && def.place === 'land' && m.solid[k])) continue;
+        // Un obstacle de la carte : un petit objet est dégagé, le reste refuse.
+        const cells = api.objectAt(x, y);
+        const own = (cells ?? []).map((c) => c.y * m.width + c.x);
+        const small = cells?.length && cells.length <= 8 && !cells.some((c) => important.has(`${c.x},${c.y}`));
+        if (!small) return { ok: false, why: `chevauche un obstacle en ${x},${y} (forêt, mur, objet trop grand)` };
+        clear.set(`c${k}`, { cells });
+        own.forEach((c) => cleared.add(c));
       }
     }
-    return { ok: true };
+    return { ok: true, clear: [...clear.values()] };
+  }
+
+  const occupancyCells = (el) => [...occupancy()].filter(([, e]) => e === el).map(([k]) => k);
+
+  // La maison sous (x, y) : une maison posée, ou une maison de la carte (un objet d'au moins 3 x 3) ; sa porte (la
+  // porte du jeu dans son emprise, sinon le milieu de son bas) et ses cases.
+  async function houseAt(x, y) {
+    const m = state.map;
+    const el = occupancy().get(y * m.width + x);
+    if (el) {
+      const d = elementDef(el.id, el.theme);
+      if (d?.cat !== 'maisons') return null;
+      return { el, door: [el.x + d.door[0], el.y + d.door[1]], ignore: new Set(occupancyCells(el)), name: d.name };
+    }
+    // Maisons de la carte : autour de chaque porte du jeu. Hauteur : les murs (rangées bloquantes au-dessus de la
+    // porte), puis le toit (rangées libres sous un toit), sans passer la rangée sous la porte d'une autre maison ;
+    // plus la rangée sous la porte (marche, ombre). Largeur : la plus longue suite de cases de bâtiment de ces rangées
+    // autour de la porte. Seules les cases de bâtiment partent (planche des bâtiments, cases recolorées, maisons DPPt) :
+    // un banc, un tas de bois, un réverbère collés à la maison restent.
+    const W = m.width;
+    const inMap = (cx, cy) => cx >= 0 && cy >= 0 && cx < W && cy < m.height;
+    const isBuilding = (ref) => {
+      const t = decodeRef(m, ref);
+      return Boolean(t) && (t.sheet === 'g4-batiments' || t.sheet === 'auto' || (t.sheet === 'dppt' && Math.floor(t.index / 8) >= 150));
+    };
+    const refsAt = (cx, cy, layer) => (inMap(cx, cy) ? stackOf(m.layers[layer][cy * W + cx]).filter(isBuilding) : []);
+    const building = (cx, cy) => refsAt(cx, cy, 'decor').length + refsAt(cx, cy, 'dessus').length > 0;
+    const doors = (await api.terrain.importantCells()).filter(([, , what]) => what === 'porte');
+    for (const [dx, dy] of doors) {
+      const band = (cy, test) => { for (let cx = dx - 3; cx <= dx + 3; cx++) if (inMap(cx, cy) && test(cx, cy)) return true; return false; };
+      const otherStop = new Set(doors.filter(([ox, oy]) => (ox !== dx || oy !== dy) && Math.abs(ox - dx) <= 6).map(([, oy]) => oy + 1));
+      let y0 = dy;
+      let roof = false;
+      while (y0 > 0 && dy - y0 < 11 && !otherStop.has(y0 - 1)) {
+        const cy = y0 - 1;
+        const solidRow = band(cy, (cx) => m.solid[cy * W + cx] && building(cx, cy));
+        const roofRow = band(cy, (cx) => !m.solid[cy * W + cx] && refsAt(cx, cy, 'dessus').length);
+        if (solidRow && !roof) { y0 = cy; continue; }
+        if (roofRow && !band(cy, (cx) => m.solid[cy * W + cx] && !building(cx, cy))) { roof = true; y0 = cy; continue; }
+        break;
+      }
+      let x0 = dx;
+      let x1 = dx;
+      for (let cy = y0; cy <= dy; cy++) {
+        let a = dx;
+        let b = dx;
+        while (a - 1 >= dx - 7 && building(a - 1, cy)) a--;
+        while (b + 1 <= dx + 7 && building(b + 1, cy)) b++;
+        x0 = Math.min(x0, a);
+        x1 = Math.max(x1, b);
+      }
+      if (x1 - x0 < 2) continue;
+      if (x < x0 - 1 || x > x1 + 1 || y < y0 || y > dy + 1) continue;
+      const cells = [];
+      for (let cy = y0; cy <= Math.min(m.height - 1, dy + 1); cy++) {
+        for (let cx = x0; cx <= x1 + 1; cx++) {
+          const decor = refsAt(cx, cy, 'decor');
+          const dessus = refsAt(cx, cy, 'dessus');
+          if (decor.length || dessus.length) cells.push({ x: cx, y: cy, refs: { sol: [], decor, dessus } });
+        }
+      }
+      // Cases libérées : celles où il ne reste rien d'autre que la maison (un banc collé garde sa case).
+      const ignore = new Set(cells.filter((c) => stackOf(m.layers.decor[c.y * W + c.x]).every(isBuilding)).map((c) => c.y * W + c.x));
+      return { cells, door: [dx, dy], ignore, name: 'la maison' };
+    }
+    return null;
   }
 
   function placeElement(def, x0, y0) {
@@ -518,17 +607,25 @@ export function createStudio(api) {
     document.querySelectorAll('[data-bsize]').forEach((b) => b.addEventListener('click', () => { ui.size = Number(b.dataset.bsize); render(); }));
   }
 
-  // Aperçu de l'élément sous la souris (vert : posable, rouge : refusé, avec la raison).
-  let ghost = null;                                // { x, y, ok, why }
+  // Aperçu de l'élément sous la souris (vert : posable, rouge : refusé, bleu : remplace la maison survolée, porte sur
+  // porte ; la raison s'affiche en bas).
+  let ghost = null;                                // { x, y, ok, why, replace, clear }
   async function hover(x, y) {
     const def = ui.element && theme().elements.find((e) => e.id === ui.element);
     if (!def) { ghost = null; return; }
-    const x0 = x - Math.floor(def.w / 2);
-    const y0 = y - def.h + 1;
-    if (ghost && ghost.x === x0 && ghost.y === y0) return;
-    ghost = { x: x0, y: y0, ok: true, pending: true };
-    const r = await canPlace(def, x0, y0);
-    if (ghost && ghost.x === x0 && ghost.y === y0) { ghost = { x: x0, y: y0, ...r }; api.requestDraw(); }
+    const target = def.cat === 'maisons' ? await houseAt(x, y) : null;
+    const x0 = target ? target.door[0] - def.door[0] : x - Math.floor(def.w / 2);
+    const y0 = target ? target.door[1] - def.door[1] : y - def.h + 1;
+    if (ghost && ghost.x === x0 && ghost.y === y0 && Boolean(ghost.replace) === Boolean(target)) return;
+    ghost = { x: x0, y: y0, ok: true, pending: true, replace: target };
+    const r = await canPlace(def, x0, y0, target?.ignore);
+    if (ghost && ghost.x === x0 && ghost.y === y0) {
+      ghost = { x: x0, y: y0, ...r, replace: target };
+      const extra = r.clear?.length ? ` ; dégage ${r.clear.length} petit(s) objet(s)` : '';
+      api.setStatus(r.ok ? (target ? `Clic : remplacer ${target.name} par ${def.name}${extra}` : `Clic : poser ${def.name}${extra}`)
+        : `${def.name} : pas ici, ${r.why}`, r.ok ? '' : 'err');
+      api.requestDraw();
+    }
   }
 
   function drawGhost(ctx, cs) {
@@ -541,7 +638,7 @@ export function createStudio(api) {
     }));
     ctx.globalAlpha = 1;
     ctx.lineWidth = 2;
-    ctx.strokeStyle = ghost.ok ? '#4ade80' : '#f87171';
+    ctx.strokeStyle = !ghost.ok ? '#f87171' : ghost.replace ? '#60a5fa' : '#4ade80';
     def.solid.forEach((row, j) => row.forEach((s, i) => {
       if (s) ctx.strokeRect((ghost.x + i) * cs + 2, (ghost.y + j) * cs + 2, cs - 4, cs - 4);
     }));
@@ -551,13 +648,24 @@ export function createStudio(api) {
   async function clickPlace() {
     const def = ui.element && theme().elements.find((e) => e.id === ui.element);
     if (!def || !ghost) return null;
-    const r = await canPlace(def, ghost.x, ghost.y);
+    const target = ghost.replace;
+    const r = await canPlace(def, ghost.x, ghost.y, target?.ignore);
     if (!r.ok) return { text: `${def.name} : pas ici, ${r.why}.`, kind: 'err' };
+    const before = await api.terrain.check();
     api.remember();
+    if (target?.el) removeElement(target.el);
+    else if (target) api.liftObject(target.cells);
+    for (const c of r.clear) {
+      if (c.el) removeElement(c.el);
+      else api.liftObject(c.cells);
+    }
     placeElement(def, ghost.x, ghost.y);
     api.changed();
+    const qc = api.terrain.verdict(before, await api.terrain.check());
     ghost = null;
-    return { text: `${def.name} posé${def.cat === 'maisons' ? 'e' : ''}.`, kind: 'ok' };
+    const done = target ? `${target.name} remplacée par ${def.name}` : `${def.name} posé${def.cat === 'maisons' ? 'e' : ''}`;
+    const extra = r.clear.length ? ` (${r.clear.length} petit(s) objet(s) dégagé(s))` : '';
+    return { text: `${done}${extra}. ${qc.text}`, kind: qc.ok ? 'ok' : 'warn' };
   }
 
   // Gomme : sur un élément posé, on le retire ; ailleurs, on repeint de l'herbe.

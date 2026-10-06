@@ -40,6 +40,13 @@ Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut 
   case importante, pas sur son sol — les bateaux, roseaux et nénuphars vont sur l'eau). Le bas bloque, le haut (toit,
   cime) passe au-dessus de Pierre, la porte d'une maison reste libre. La gomme sur un élément le retire et rend les
   collisions d'avant. Un élément posé protège ses cases du pinceau.
+- Remplacer une maison : une maison choisie, survolée au-dessus d'une maison (posée, ou de la carte : reconnue autour
+  d'une porte du jeu, murs puis toit, sans passer la rangée sous la porte d'une autre maison), l'aperçu se cale porte
+  sur porte (contour bleu) : un clic remplace (les portes du jeu restent justes). Seules les cases de bâtiment partent
+  (un banc, un tas de bois collés restent). Collisions : les cases de la maison remplacée ne comptent pas ; un petit
+  objet sur le chemin (au plus 8 cases : boîte aux lettres, buisson, banc, petit arbre) est dégagé ; la forêt, l'eau,
+  une porte, un PNJ, le départ ne le sont jamais. La raison d'un refus s'affiche au survol ; l'accessibilité est
+  vérifiée après la pose.
 - Ce que le mode simple a posé est noté dans la carte (`studio` : thème, cases de forêt, éléments posés) ; le jeu
   l'ignore. L'annulation le suit.
 - Eau de Fort-de-France : le lagon (eau claire) et le rivage (sable avec son écume) sont des cases fabriquées ; le
