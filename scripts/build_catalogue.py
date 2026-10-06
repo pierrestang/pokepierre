@@ -127,7 +127,7 @@ BUILDING_NAMES = {
 ELEMENTS = {
     # Arbres (le bas, ou le tronc, bloque ; la cime passe devant Pierre).
     'arbre-rond': ('Arbre rond', 'arbres', lambda: isolate(crop('dppt', 0, 40, 3, 4)), 3, 'land'),
-    'arbre-foret': ('Arbre de lisière', 'arbres', lambda: cut_mint(crop('lisieres', 0, 0, 2, 4)), 3, 'land'),
+    'arbre-foret': ('Arbre de forêt', 'arbres', lambda: crop('lisieres', 0, LIS_ROUND['dppt'], 4, 4), 3, 'land'),
     'palmier': ('Palmier', 'arbres', lambda: isolate(crop('g4-arbres', 9, 153, 3, 3)), 2, 'land'),
     'peuplier': ('Peuplier', 'arbres', lambda: isolate(crop('g4-arbres', 6, 147, 3, 4)), 3, 'land'),
     'sapin': ('Grand sapin', 'arbres', lambda: isolate(crop('g4-arbres', 0, 147, 3, 6)), 5, 'land'),
@@ -175,6 +175,9 @@ ELEMENTS = {
     'rocher-mer': ('Rocher dans l\'eau', 'eau', lambda: crop('dppt', 7, 145), None, 'water'),
 }
 
+# L'arbre rond de la planche des lisières (scripts/build_lisieres.py), par palette : sa première rangée.
+LIS_ROUND = {v['id']: v['roundRow'] for v in json.loads((V2 / 'lisieres.json').read_text())['variants']}
+
 # ---------- Thèmes ----------
 COMMON = ['buisson', 'baies', 'arbuste-rose', 'rocher', 'panneau', 'boite-lettres', 'banc', 'jardiniere-rouge',
           'jardiniere-orange', 'jardiniere-rose', 'pot', 'nenuphar', 'rocher-mer', 'barque', 'voilier']
@@ -204,10 +207,18 @@ FOREST_PATTERN = {'pins': ('g4-arbres', 0, 270, 4, 4, None), 'haie': ('g4-plante
 
 
 class Packer:
-    """Range les images dans la planche du catalogue (cases de 16 px, rangées de COLS cases)."""
+    """Range les images dans la planche du catalogue (cases de 16 px, rangées de COLS cases). Les cases déjà dans la
+    planche gardent leur numéro (les cartes y renvoient) ; les nouvelles s'ajoutent à la fin."""
     def __init__(self):
         self.tiles = []
         self.index = {}
+        old = V2 / 'catalogue.png'
+        if old.exists():
+            img = Image.open(old).convert('RGBA')
+            for k in range(img.width // TILE * (img.height // TILE)):
+                t = img.crop(((k % COLS) * TILE, (k // COLS) * TILE, (k % COLS + 1) * TILE, (k // COLS + 1) * TILE))
+                self.index.setdefault(t.tobytes(), k)
+                self.tiles.append(t)
 
     def add_tile(self, img):
         key = img.tobytes()
@@ -310,12 +321,15 @@ def main():
         for eid in ids:
             name, cat, fn, solid_from, place = ELEMENTS[eid]
             img = fn()
-            if eid == 'arbre-foret' and t['forest'] in FOREST_FN:                 # l'arbre de la forêt de la ville
-                row = {'dppt': 0, 'chene': 4, 'automne': 8}[t['forest']]
-                img = cut_mint(crop('lisieres', 0, row, 2, 4))
+            if eid == 'arbre-foret' and t['forest'] in FOREST_FN:                 # l'arbre rond, palette de la ville
+                img = crop('lisieres', 0, LIS_ROUND[t['forest']], 4, 4)
             elif cat in ('arbres', 'plantes') and leaves and eid not in ('hibiscus', 'arbuste-rose'):
                 img = leaves(img)
-            elements.append(element_entry(pack, eid, name, cat, img, solid_from, place))
+            entry = element_entry(pack, eid, name, cat, img, solid_from, place)
+            if eid == 'arbre-foret':                     # l'arbre rond bloque son bloc de 2 x 2 (colonnes 1-2)
+                entry['solid'] = [[1 if j >= 2 and i in (1, 2) else 0 for i in range(4)] for j in range(4)]
+                entry['over'] = 2
+            elements.append(entry)
         # Matières.
         materials = [
             {'id': 'herbe', 'name': 'Herbe', 'kind': 'plain', 'tile': ['dppt', 4], 'solid': 0},

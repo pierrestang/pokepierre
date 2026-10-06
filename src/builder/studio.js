@@ -1,5 +1,5 @@
 import { refOf, decodeRef, stackOf, EMPTY, TILE } from './mapModel.js';
-import { layoutForest } from './forestLayout.js';
+import { layoutForest, roundTreePieces } from './forestLayout.js';
 
 // Mode simple du créateur de cartes : on peint des matières et on pose des éléments entiers, dans le thème d'une ville.
 // - Matières (herbe, chemin, sable, hautes herbes, mer, étang, fleurs, pavés, forêt) : les bords se font tout seuls
@@ -254,7 +254,11 @@ export function createStudio(api) {
     // Effacer l'ancien rendu (cases de forêt d'avant et deux rangées au-dessus : les cimes).
     const touched = new Set();
     for (const [x, y] of [...oldCells, ...d.forest]) {
-      for (let dy = -2; dy <= 0; dy++) if (y + dy >= 0 && y + dy < m.height && x < W) touched.add((y + dy) * W + x);
+      for (let dy = -2; dy <= 0; dy++) {
+        for (const dx of [-1, 0, 1]) {
+          if (y + dy >= 0 && y + dy < m.height && x + dx >= 0 && x + dx < W) touched.add((y + dy) * W + x + dx);
+        }
+      }
     }
     for (const c of touched) { removeRefs('decor', c, mine); removeRefs('dessus', c, mine); }
     const set = new Set(d.forest.filter(([x, y]) => x < W && y < m.height).map(([x, y]) => y * W + x));
@@ -270,20 +274,16 @@ export function createStudio(api) {
       const s = stackOf(m.layers.sol[c]);
       m.layers.sol[c] = s.length > 1 ? [grass, ...s.slice(1)] : grass;
       m.solid[c] = 1;
-      // Le tissu ne reste que derrière ; au bord, l'herbe (et un buisson hors des blocs).
-      if (!touchesOpen(x, y)) push('decor', c, catRef(fm.tiles[y % 2][x % 2]));
-      else if (!inBlock(x, y)) push('decor', c, lisRef(lis.bush.col, 0));
+      // De l'herbe sous les arbres ; un buisson sur une case qu'aucun arbre ne couvre.
+      if (!inBlock(x, y) && touchesOpen(x, y)) push('decor', c, lisRef(lis.bush.col, 0));
     }
-    // Un arbre entier par bloc, de haut en bas (la cime du dessous passe devant le tronc du dessus).
-    for (const [bx, by, dy] of blocks) {
-      for (let k = 0; k < lis.tree.h; k++) {
-        const y = by - 2 + k + dy;
-        if (y < 0 || y >= m.height) continue;
-        for (let dx = 0; dx < lis.tree.w; dx++) {
-          if (bx + dx < 0 || bx + dx >= W) continue;
-          const c = y * W + bx + dx;
-          push(k >= 2 || set.has(c) ? 'decor' : 'dessus', c, lisRef(lis.tree.col + dx, k));
-        }
+    // L'arbre rond de chaque bloc, de haut en bas (disposition de HeartGold : la couronne de l'arbre du dessous passe
+    // devant le tronc de celui du dessus) ; ce qui déborde sur une case libre passe au-dessus de Pierre.
+    for (const [bx, by] of blocks) {
+      for (const p of roundTreePieces(lis, variant, bx, by)) {
+        if (p.x < 0 || p.y < 0 || p.x >= W || p.y >= m.height) continue;
+        const c = p.y * W + p.x;
+        push(p.trunk || set.has(c) ? 'decor' : 'dessus', c, refOf(m, 'lisieres', p.index));
       }
     }
   }

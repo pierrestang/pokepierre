@@ -1,5 +1,5 @@
 import { refOf, decodeRef, stackOf, EMPTY } from './mapModel.js';
-import { layoutForest } from './forestLayout.js';
+import { layoutForest, roundTreePieces } from './forestLayout.js';
 
 // Assistant du créateur de cartes : des commandes qui rangent derrière le dessinateur, sous son contrôle.
 // - Portée : la zone choisie (outil Déplacer), sinon toute la carte.
@@ -514,7 +514,8 @@ export function createAssistant(api) {
   function lisieresVariant(ref) {
     const tile = decodeRef(state.map, ref);
     if (tile?.sheet !== 'lisieres') return null;
-    return lis.variants[Math.floor(Math.floor(tile.index / lis.cols) / 4)] ?? null;
+    const row = Math.floor(tile.index / lis.cols);
+    return lis.variants.find((v) => (row >= v.row && row < v.row + 4) || (row >= v.roundRow && row < v.roundRow + 4)) ?? null;
   }
 
   // Refaire la bordure d'arbres : la forêt dense de la zone devient des rangées d'arbres entiers (forestLayout.js) :
@@ -627,6 +628,7 @@ export function createAssistant(api) {
   // doit avoir des dimensions paires). Pas d'arbre sur l'eau, le relief, un chemin (les sorties), un objet (maison,
   // clôture…) ou une case importante du jeu : le trou reste tel quel. La rangée du bas va jusqu'au bord (troncs hors de
   // la carte) ; les colonnes des côtés s'alignent sur elle.
+  // (Octobre 2026 : l'arbre rond de DPPt, disposé comme dans HeartGold, sans tissu sombre.)
   function borderTrees() {
     return run('Bordure', async () => {
       await loadLisieres();
@@ -677,8 +679,14 @@ export function createAssistant(api) {
         const sol = stackOf(m.layers.sol[i]);
         m.layers.sol[i] = sol.length > 1 ? [grassRef, ...sol.slice(1)] : grassRef;
         if (!stackOf(m.layers.decor[i]).length) m.solid[i] = 0;
-        // Les cimes posées au-dessus (jusqu'à 3 rangées plus haut) partent avec.
-        for (let k = 0; k <= 3; k++) if (i - k * W >= 0) clean('dessus', i - k * W);
+        // Les cimes posées autour (une colonne de chaque côté, jusqu'à 3 rangées plus haut) partent avec.
+        const x = i % W;
+        for (let k = 0; k <= 3; k++) {
+          for (const dx of [-1, 0, 1]) {
+            const j = i - k * W + dx;
+            if (j >= 0 && x + dx >= 0 && x + dx < W) { clean('dessus', j); if (dx || k) clean('decor', j); }
+          }
+        }
       }
       if (m.studio?.forest) m.studio.forest = m.studio.forest.filter(([x, y]) => !border[y * W + x]);
       // 2. La bande neuve : cases où un arbre peut aller.
@@ -691,48 +699,34 @@ export function createAssistant(api) {
         return stackOf(m.layers.decor[i]).every((r) => decodeRef(m, r)?.sheet === 'autotiles-g4');   // fleurs : oui
       };
       const trees = [];
-      const take = (bx, by, dy) => {
+      const take = (bx, by) => {
         const cells = [[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]];
-        if (cells.every(([x, y]) => allowed(x, y))) trees.push([bx, by, dy, cells.filter(([x, y]) => inMap(x, y))]);
+        if (cells.every(([x, y]) => allowed(x, y))) trees.push([bx, by, cells.filter(([x, y]) => inMap(x, y))]);
       };
-      for (let bx = 0; bx < W - 1; bx += 2) take(bx, 0, 0);                         // haut
-      for (let bx = 0; bx < W - 1; bx += 2) take(bx, H - 2, 1);                     // bas, jusqu'au bord
-      for (let by = 2; by < H - 2; by += 2) { take(0, by, 1); take(W - 2, by, 1); } // côtés, alignés sur le bas
-      const covered = new Set(trees.flatMap(([, , , cells]) => cells.map(([x, y]) => y * W + x)));
-      // Un arbre des côtés ne descend que si la case de son tronc (sous lui) est de la forêt ou hors de la carte.
-      for (const t of trees) {
-        const [bx, by] = t;
-        if (by > 0 && by < H - 2 && ![[bx, by + 2], [bx + 1, by + 2]].every(([x, y]) => !inMap(x, y) || covered.has(y * W + x))) t[2] = 0;
-      }
-      // 3. Dessin : herbe sous la bande, tissu derrière les cases qui ne touchent pas une case libre (et derrière la
-      // rangée du bas), arbres de haut en bas ; collisions sur les cases des arbres.
-      const lisRef = (col, row) => refOf(m, 'lisieres', (variant.row + row) * lis.cols + col);
+      for (let bx = 0; bx < W - 1; bx += 2) take(bx, 0);                            // haut
+      for (let bx = 0; bx < W - 1; bx += 2) take(bx, H - 2);                        // bas
+      for (let by = 2; by < H - 2; by += 2) { take(0, by); take(W - 2, by); }       // côtés
+      const covered = new Set(trees.flatMap(([, , cells]) => cells.map(([x, y]) => y * W + x)));
+      // 3. Dessin : herbe sous la bande, collisions sur les cases des arbres, puis l'arbre rond de chaque bloc, de haut
+      // en bas (disposition de HeartGold : la couronne de l'arbre du dessous passe devant le tronc de celui du dessus) ;
+      // ce qui déborde sur une case libre passe au-dessus de Pierre.
       const grass = refOf(m, 'dppt', 4);
       const add = (layer, i, ref) => {
         const stack = stackOf(m.layers[layer][i]);
         m.layers[layer][i] = stack.length ? [...stack, ref] : ref;
       };
-      const open = (x, y) => inMap(x, y) && !covered.has(y * W + x);
       for (const i of covered) {
-        const x = i % W;
-        const y = Math.floor(i / W);
         const sol = stackOf(m.layers.sol[i]);
         m.layers.sol[i] = sol.length > 1 ? [grass, ...sol.slice(1)] : grass;
         m.layers.decor[i] = EMPTY;                                                   // les fleurs sous les arbres partent
         m.solid[i] = 1;
-        const inner = ![[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => open(x + dx, y + dy));
-        if (inner || y >= H - 2) add('decor', i, lisRef(3 + (x % 2), y % 2));
       }
       trees.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
-      for (const [bx, by, dy] of trees) {
-        for (let k = 0; k < lis.tree.h; k++) {
-          const y = by - 2 + k + dy;
-          if (y < 0 || y >= H) continue;
-          for (let dx = 0; dx < lis.tree.w; dx++) {
-            const x = bx + dx;
-            if (!inMap(x, y)) continue;
-            add(k >= 2 || covered.has(y * W + x) ? 'decor' : 'dessus', y * W + x, lisRef(lis.tree.col + dx, k));
-          }
+      for (const [bx, by] of trees) {
+        for (const p of roundTreePieces(lis, variant, bx, by)) {
+          if (!inMap(p.x, p.y)) continue;
+          const i = p.y * W + p.x;
+          add(p.trunk || covered.has(i) ? 'decor' : 'dessus', i, refOf(m, 'lisieres', p.index));
         }
       }
       const odd = W % 2 || H % 2 ? ` Attention : la carte fait ${W} x ${H} ; en taille impaire, les écarts ne peuvent pas être réguliers.` : '';

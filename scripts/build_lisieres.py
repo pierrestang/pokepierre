@@ -11,6 +11,11 @@ Chaque palette de forêt des villes (scripts/identites.py) a sa version : DPPt d
 (Montépilloy). Pour chaque palette, 4 rangées : colonnes 0-1 l'arbre (2 x 4), colonne 2 le buisson (1 x 1), colonnes
 3-4 le tissu dense de la palette (2 x 2 ; l'éditeur le compare aux cases de la carte pour reconnaître la palette).
 
+Arbre rond (octobre 2026, l'arbre de toutes les bordures et forêts) : l'arbre rond de la planche DPPt (colonnes 0-2,
+rangées 40-43, le morceau d'un seul tenant), posé sur 4 x 4 cases : centré sur son bloc de 2 x 2 (colonnes 1-2, rangées
+2-3 de l'image), le bas de l'ombre sur le bas du bloc, la couronne qui déborde d'un tiers de case de chaque côté et
+d'une case et demie vers le haut. Une version par palette, rangées 12 et suivantes (4 par palette), colonnes 0-3.
+
 Écrit public/assets/v2/lisieres.png, lisieres.json et ajoute la planche, masquée, au catalogue (à relancer après
 scripts/build_v2_tiles.py).
 
@@ -52,7 +57,17 @@ def main():
     tree = Image.fromarray(a)
     bush = tile(dppt, 7, 106)
     fill = tile(rmxp, 25, 1, 2, 2)
-    sheet = Image.new('RGBA', (5 * TILE, 4 * TILE * len(VARIANTS)))
+    # L'arbre rond : le morceau d'un seul tenant, centré sur 64 x 64, le bas de l'ombre en bas.
+    from scipy import ndimage
+    a = np.array(tile(dppt, 0, 40, 3, 4))
+    lab, _ = ndimage.label(a[..., 3] > 0, structure=np.ones((3, 3)))
+    a[lab != np.bincount(lab.ravel())[1:].argmax() + 1] = 0
+    ys, xs = np.nonzero(a[..., 3])
+    body = Image.fromarray(a).crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
+    round_tree = Image.new('RGBA', (4 * TILE, 4 * TILE))
+    round_tree.alpha_composite(body, ((4 * TILE - body.width) // 2, 4 * TILE - body.height))
+    ROUND_ROW = 4 * len(VARIANTS)
+    sheet = Image.new('RGBA', (5 * TILE, 4 * TILE * len(VARIANTS) * 2))
     meta = []
     for k, (vid, name, fn) in enumerate(VARIANTS):
         y = k * 4 * TILE
@@ -68,10 +83,13 @@ def main():
             for i in range(2):
                 px = np.array(f.crop((i * TILE, j * TILE, (i + 1) * TILE, (j + 1) * TILE)))[..., :3].reshape(-1, 3)
                 means.append([round(float(v), 1) for v in px.mean(0)])
-        meta.append({'id': vid, 'name': name, 'row': k * 4, 'fillMeans': means})
+        sheet.alpha_composite(fn(round_tree), (0, (ROUND_ROW + 4 * k) * TILE))
+        meta.append({'id': vid, 'name': name, 'row': k * 4, 'roundRow': ROUND_ROW + 4 * k, 'fillMeans': means})
     sheet.save(V2 / 'lisieres.png', optimize=True)
     (V2 / 'lisieres.json').write_text(json.dumps({'cols': 5, 'variants': meta, 'tree': {'col': 0, 'w': 2, 'h': 4},
-                                                  'bush': {'col': 2, 'h': 1}}, ensure_ascii=False))
+                                                  'bush': {'col': 2, 'h': 1},
+                                                  'round': {'col': 0, 'w': 4, 'h': 4, 'ox': 1, 'oy': 2}},
+                                                 ensure_ascii=False))
     catalog = json.loads((V2 / 'catalog.json').read_text())
     catalog['sheets'] = [s for s in catalog['sheets'] if s['id'] != 'lisieres']
     catalog['sheets'].append({'id': 'lisieres', 'name': 'Lisières de forêt (assistant)', 'file': 'lisieres.png', 'cols': 5,

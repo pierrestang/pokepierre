@@ -78,6 +78,8 @@ Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut 
 - Angles rentrants de l'étang : la planche DPPt n'en a pas ; la planche « transitions » les compose avec la pointe d'un
   coin d'îlot (rangées 11-13) aux couleurs de la berge (build_transitions.pond_inner). Les cartes du jeu sont reprises
   par scripts/identites.py (repair : anciens angles d'étang, montants du côté droit des enclos), à chaque génération.
+- Catalogue stable : build_catalogue.py repart de la planche existante (les cases déjà posées sur les cartes gardent leur
+  numéro), les nouvelles cases s'ajoutent à la fin.
 - Catalogue : scripts/build_catalogue.py -> public/assets/v2/catalogue.png et catalogue.json (thèmes, matières,
   éléments avec leurs cases, collisions, rangées au-dessus de Pierre, porte, sol). Palettes des maisons : celles de
   scripts/identites.py (BUILDING_PALETTES). Arbres de lisière : planche « lisieres » (scripts/build_lisieres.py).
@@ -99,9 +101,11 @@ contrôle.
     d'arbres existantes (la forêt qui touche un bord : tissu, arbres et buissons de lisière, forêt du pinceau ; le sol
     dessous redevient de l'herbe), puis pose une bordure neuve qui longe le rectangle de la carte : une bande de 2 cases
     contre chaque bord, un arbre tous les 2 cases en largeur comme en hauteur (carte de dimensions paires). Pas d'arbre
-    sur l'eau, le relief, un chemin (les sorties), un objet ou une case importante du jeu : le trou reste. La rangée du
-    bas descend jusqu'au bord (troncs hors de la carte), les colonnes des côtés s'alignent sur elle ; tissu sombre
-    derrière les cases du bord. Palette : celle de la forêt actuelle, sinon celle de la ville. Saint-Ay, Montépilloy et
+    sur l'eau, le relief, un chemin (les sorties), un objet ou une case importante du jeu : le trou reste. Tous les
+    arbres (bordure, pinceau Forêt, élément « Arbre de forêt ») sont l'arbre rond de DPPt (planche « lisieres », une
+    version par palette), disposés comme dans HeartGold : un tous les 2 cases, dessinés de haut en bas (la couronne de
+    l'arbre du dessous cache le tronc de celui du dessus, dans les angles aussi), sans tissu sombre ; la couronne qui
+    déborde sur une case libre passe au-dessus de Pierre. Palette : celle de la forêt actuelle, sinon celle de la ville. Saint-Ay, Montépilloy et
     la route de Montépilloy ont été refaites ainsi (octobre 2026) ; identites.py forest_trees (ancienne règle) ne sert
     plus qu'à regénérer la base de Saint-Ay. Les arbres et buissons viennent de la planche « lisières »
     (scripts/build_lisieres.py) ;
