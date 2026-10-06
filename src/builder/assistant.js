@@ -1,5 +1,5 @@
 import { refOf, decodeRef, stackOf, EMPTY } from './mapModel.js';
-import { layoutForest, roundTreePieces, treeOrder } from './forestLayout.js';
+import { roundTreePieces, treeOrder } from './forestLayout.js';
 
 // Assistant du créateur de cartes : des commandes qui rangent derrière le dessinateur, sous son contrôle.
 // - Portée : la zone choisie (outil Déplacer), sinon toute la carte.
@@ -171,10 +171,24 @@ export function createAssistant(api) {
     return { t, code, center: pieces.every((p) => p === CENTER), quads: pieces.map((p, q) => source(t, q, p)) };
   }
 
+  const touchesUnknown = (cls, x, y) => {
+    const m = state.map;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx >= 0 && ny >= 0 && nx < m.width && ny < m.height && cls[ny * m.width + nx] === 'other') return true;
+      }
+    }
+    return false;
+  };
+
   const sameQuads = (a, b) => a && a.sheet === b.sheet && a.quads.every(([c, r], q) => c === b.quads[q][0] && r === b.quads[q][1]);
 
   // Refait les cases de bord de `cells` : renvoie { changed, kept } (kept : cases faites à la main laissées telles).
-  function retile(cls, cells) {
+  // `keepUnknown` : une case qui touche une case illisible (faite ou fondue à la main : champ de blé, ombre de
+  // lisière) reste telle quelle : son bord a été fait à la main pour aller avec elle.
+  function retile(cls, cells, keepUnknown = false) {
     const m = state.map;
     let changed = 0;
     let kept = 0;
@@ -183,6 +197,7 @@ export function createAssistant(api) {
       if (!SAME[id]) continue;
       const x = i % m.width;
       const y = Math.floor(i / m.width);
+      if (keepUnknown && touchesUnknown(cls, x, y)) continue;
       const w = wanted(cls, x, y, id);
       const stack = stackOf(m.layers.sol[i]);
       const current = stack.length ? quadsOf(stack[0]) : null;
@@ -320,7 +335,7 @@ export function createAssistant(api) {
       const z = zone();
       const cells = [];
       for (let y = z.y0; y <= z.y1; y++) for (let x = z.x0; x <= z.x1; x++) cells.push(y * m.width + x);
-      const { changed, kept } = retile(classes(), cells);
+      const { changed, kept } = retile(classes(), cells, true);
       return {
         where: zoneText(z),
         text: `${changed} case(s) de bord refaite(s) sur ${zoneText(z)}${kept ? ` (${kept} case(s) peinte(s) à la main laissée(s))` : ''}.`,
@@ -518,108 +533,6 @@ export function createAssistant(api) {
     return lis.variants.find((v) => (row >= v.row && row < v.row + 4) || (row >= v.roundRow && row < v.roundRow + 4)) ?? null;
   }
 
-  // Refaire la bordure d'arbres : la forêt dense de la zone devient des rangées d'arbres entiers (forestLayout.js) :
-  // un arbre par bloc de 2 x 2, le tissu sombre seulement derrière, un buisson sur une case hors des blocs au bord.
-  // Les collisions ne changent pas.
-  function rebuildForest() {
-    return run('Bordure', async () => {
-      await loadLisieres();
-      const m = state.map;
-      const W = m.width;
-      const H = m.height;
-      const z = zone();
-      const forest = new Uint8Array(W * H);
-      const votes = new Map();
-      for (let i = 0; i < W * H; i++) {
-        if (!m.solid[i]) continue;
-        for (const r of stackOf(m.layers.decor[i])) {
-          // Le tissu de forêt, ou les arbres d'une bordure déjà refaite (la commande peut être relancée).
-          const v = forestVariant(r) ?? lisieresVariant(r);
-          if (v) {
-            forest[i] = 1;
-            if (inZone(z, i % W, Math.floor(i / W))) votes.set(v, (votes.get(v) ?? 0) + 1);
-            break;
-          }
-        }
-      }
-      // Une forêt, c'est au moins 4 cases d'un seul tenant (une case isolée de la bonne couleur n'en est pas).
-      const comp = new Int32Array(W * H).fill(-1);
-      for (let i = 0; i < W * H; i++) {
-        if (!forest[i] || comp[i] >= 0) continue;
-        const cells = [i];
-        comp[i] = i;
-        for (let k = 0; k < cells.length; k++) {
-          const c = cells[k];
-          for (const j of [c - 1, c + 1, c - W, c + W]) {
-            if (j >= 0 && j < W * H && Math.abs((j % W) - (c % W)) <= 1 && forest[j] && comp[j] < 0) { comp[j] = i; cells.push(j); }
-          }
-        }
-        if (cells.length < 4) for (const c of cells) forest[c] = 0;
-      }
-      if (!votes.size) {
-        return { where: zoneText(z), empty: `aucune forêt dense reconnue sur ${zoneText(z)} (les sapins du collège et la haie `
-          + 'du Prytanée ont déjà une silhouette détourée).' };
-      }
-      const variant = [...votes.entries()].sort((a, b) => b[1] - a[1])[0][0];
-      const isF = (x, y) => x >= 0 && y >= 0 && x < W && y < H && forest[y * W + x];
-      const { blocks, inBlock, touchesOpen } = layoutForest(W, H, isF, (x, y) => inZone(z, x, y));
-      const lisRef = (col, row) => refOf(m, 'lisieres', (variant.row + row) * lis.cols + col);
-      const strip = (i) => {
-        // Le sol d'herbe sous la case, et plus de tissu de forêt dans son Décor.
-        const g = refOf(m, 'dppt', 4);
-        const solStack = stackOf(m.layers.sol[i]);
-        m.layers.sol[i] = solStack.length > 1 ? [g, ...solStack.slice(1)] : g;
-        const rest = stackOf(m.layers.decor[i]).filter((r) => !forestVariant(r) && !lisieresVariant(r));
-        m.layers.decor[i] = rest.length > 1 ? rest : rest.length ? rest[0] : EMPTY;
-      };
-      const add = (layer, i, ref) => {
-        const stack = stackOf(m.layers[layer][i]);
-        m.layers[layer][i] = stack.length ? [...stack, ref] : ref;
-      };
-      // Relancée : les arbres et buissons déjà posés partent (zone et deux rangées au-dessus : les cimes) ; le tissu
-      // revient sur les cases de forêt de l'intérieur qui l'avaient perdu.
-      for (let y = Math.max(0, z.y0 - 2); y <= z.y1; y++) {
-        for (let x = z.x0; x <= z.x1; x++) {
-          const i = y * W + x;
-          for (const layer of ['decor', 'dessus']) {
-            const rest = stackOf(m.layers[layer][i]).filter((r) => !lisieresVariant(r));
-            m.layers[layer][i] = rest.length > 1 ? rest : rest.length ? rest[0] : EMPTY;
-          }
-          if (inZone(z, x, y) && forest[i] && !stackOf(m.layers.decor[i]).some((r) => forestVariant(r))) {
-            add('decor', i, lisRef(3 + (x % 2), y % 2));
-          }
-        }
-      }
-      // Le tissu ne reste que derrière ; un buisson sur une case de forêt hors des blocs, au bord.
-      let bushes = 0;
-      for (let y = z.y0; y <= z.y1; y++) {
-        for (let x = z.x0; x <= z.x1; x++) {
-          const i = y * W + x;
-          if (!forest[i] || !touchesOpen(x, y)) continue;
-          strip(i);
-          if (!inBlock(x, y)) { add('decor', i, lisRef(lis.bush.col, 0)); bushes++; }
-        }
-      }
-      // Un arbre entier par bloc, de haut en bas.
-      for (const [bx, by, dy] of blocks) {
-        for (let k = 0; k < lis.tree.h; k++) {
-          const y = by - 2 + k + dy;
-          if (y < 0 || y >= H) continue;
-          for (let dx = 0; dx < lis.tree.w; dx++) {
-            if (bx + dx < 0 || bx + dx >= W) continue;
-          const i = y * W + bx + dx;
-            add(k >= 2 || forest[i] ? 'decor' : 'dessus', i, lisRef(lis.tree.col + dx, k));
-          }
-        }
-      }
-      const edges = blocks;
-      return {
-        where: zoneText(z),
-        text: `palette ${variant.name} : ${edges.length} arbre(s), ${bushes} buisson(s) sur ${zoneText(z)}.`,
-      };
-    });
-  }
-
   // ---------- Bordure d'arbres tout autour de la carte ----------
 
   // Toutes les bordures d'arbres existantes (la forêt qui touche un bord de la carte : tissu, arbres et buissons de
@@ -781,6 +694,6 @@ export function createAssistant(api) {
   // pas sur la forêt qui le touche (builder.js objectAt). Faux tant que la planche des lisières n'est pas chargée.
   const isForestRef = (ref) => Boolean(lis) && Boolean(forestVariant(ref) ?? lisieresVariant(ref));
 
-  return { borderTrees, isForestRef, fixTransitions, straightenPath, sowTall, regenerate, rebuildForest, parse, zone, zoneText, check, terrain,
+  return { borderTrees, isForestRef, fixTransitions, straightenPath, sowTall, regenerate, parse, zone, zoneText, check, terrain,
     hasSow: () => Boolean(lastSow) };
 }

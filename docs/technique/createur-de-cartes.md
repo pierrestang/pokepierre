@@ -117,7 +117,8 @@ contrôle.
   - nettoyage : « Régulariser le chemin » (boucher les trous et les coupures d'une case, relier les chemins qui ne se
     touchent qu'en diagonale, couper les bosses d'une case, refaire les bords) et « Corriger les transitions » (chaque
     case de chemin, sable, mer, étang ou hautes herbes reçoit le bord qui va avec ses voisines) ;
-  - bordure : « Refaire la bordure d'arbres » (toute la carte, assistant.js borderTrees) : retire toutes les bordures
+  - bordure : « Refaire la bordure d'arbres » (toute la carte, assistant.js borderTrees ; aussi un bouton du panneau du
+    mode simple, sous les matières ; le résultat s'affiche en bas) : retire toutes les bordures
     d'arbres existantes (la forêt qui touche un bord : tissu, arbres et buissons de lisière, forêt du pinceau ; le sol
     dessous redevient de l'herbe), puis pose une bordure neuve qui longe le rectangle de la carte : une bande de 2 cases
     contre chaque bord, un arbre tous les 2 cases en largeur comme en hauteur (carte de dimensions paires). Pas d'arbre
@@ -141,7 +142,11 @@ contrôle.
   cases importantes (carte du jeu : PNJ, portes et case devant, objets, déclencheurs, props) et signale seulement ce que
   la commande a rendu inatteignable.
 - Les cases peintes ou recolorées à la main (illisibles comme bord : motif de la mer, lagon de Fort-de-France) ne sont
-  jamais remplacées par « Corriger les transitions ».
+  jamais remplacées par « Corriger les transitions », ni les cases qui en touchent une (8 voisines : leur bord a été fait
+  à la main pour aller avec, comme le chemin sous les clôtures des champs de blé de la route) ; sur les cartes finies, la
+  commande ne change rien (vérifié sur les 8 cartes, octobre 2026).
+- Nettoyage d'octobre 2026 : l'élément « Arbre rond » (doublon de « Arbre de forêt ») et l'ancienne commande
+  rebuildForest (remplacée par borderTrees) sont retirés.
 - Les bords viennent de la planche « transitions » (scripts/build_transitions.py, masquée dans la palette) : pour chaque
   matière, les 625 cases de bord possibles, numérotées (matière x 625 + morceaux des quatre quarts en base 5). Le sol
   d'une case est reconnu d'après sa case d'origine (planche, clé de auto.json, case de transitions), sinon sa couleur.

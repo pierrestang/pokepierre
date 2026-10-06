@@ -176,6 +176,7 @@
       .studio-theme select { flex: 1; }
       #studio .help { margin: 0; font-size: 11px; opacity: .7; }
       #studio-materials { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; }
+      #studio-border { width: 100%; margin-top: 8px; }
       .swatch, .elem { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; border-radius: 8px;
         border: 2px solid transparent; background: rgba(255,255,255,.05); color: inherit; font: inherit; font-size: 11px; cursor: pointer; }
       .swatch canvas { width: 32px; height: 32px; image-rendering: pixelated; border-radius: 4px; }
@@ -221,6 +222,7 @@
             </div>
             <p class="help">Peindre, Zone ou Remplir : les bords se font tout seuls. Gomme : repeint de l'herbe.</p>
             <div id="studio-materials"></div>
+            <button class="btn" id="studio-border" title="Toute la carte : retire les bordures d'arbres existantes et pose une bordure neuve qui longe le rectangle de la carte, un arbre tous les 2 cases ; pas d'arbre sur l'eau, le relief, les chemins (sorties), les objets ni les cases importantes">Refaire la bordure d'arbres</button>
             <div class="section-title">Éléments</div>
             <p class="help">Clic sur la carte pour poser (contour rouge : pas ici, la raison s'affiche en bas). Une maison choisie, au-dessus d'une maison de la carte : contour bleu, clic pour la remplacer (porte sur porte). Gomme sur un élément : il est retiré.</p>
             <div id="studio-elements"></div>

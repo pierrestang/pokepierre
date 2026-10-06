@@ -12,6 +12,9 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   Pierre est Lucas (`g198`) ; pas de portrait dans les dialogues, comme dans les jeux DS. Attributions dans `src/data/characters.js` (`BY_NAME`). Un nom absent de cette liste
   reçoit un **figurant** tiré au hasard d'après son identifiant et sa position (`EXTRAS`) ; le joueur peut changer
   toute apparence dans Start > PNJ.
+- **Décor** : bâtiments, mobilier et objets sans ombre portée (pour que les planches DPPt et Gen 4 aillent ensemble) ;
+  la végétation et les éléments naturels (arbres, buissons, fleurs, rochers) gardent la leur. Cartes aux dimensions
+  paires, bordées d'arbres ronds de DPPt dont le jeu cache le bord extérieur.
 - **Vertus** : 8 au plus dans tout le jeu, une par ville au plus ; 6 jusqu'à Hull, 2 places réservées après Hull (pas
   encore définies). Encart « Pierre a reçu la vertu X ! » (étape `trait`) et « Pierre utilise X ! » (étape `useTrait`,
   comptée). Carnet dans Start > VERTUS : le total (« Vertus : X sur 8. »), puis une page par vertu reçue avec sa ville,

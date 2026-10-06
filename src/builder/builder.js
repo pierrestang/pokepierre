@@ -1819,6 +1819,7 @@ async function runAssistant(command) {
     const r = await command();
     $('asst-log').textContent = r.text;
     $('asst-log').className = r.kind;
+    setStatus(r.text, r.kind);                      // aussi en bas : l'assistant peut être replié (mode simple)
   } catch (err) {
     $('asst-log').textContent = `Erreur : ${err.message}`;
     $('asst-log').className = 'warn';
@@ -1836,6 +1837,7 @@ function bindAssistant() {
     forest: () => assistant.borderTrees(),
   };
   document.querySelectorAll('[data-asst]').forEach((b) => { b.onclick = () => runAssistant(actions[b.dataset.asst]); });
+  $('studio-border').onclick = () => runAssistant(actions.forest);
   $('asst-density').oninput = () => { $('asst-density-val').textContent = `${$('asst-density').value} %`; };
   $('asst-form').onsubmit = (e) => {
     e.preventDefault();

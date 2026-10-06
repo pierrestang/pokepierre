@@ -170,7 +170,6 @@ def lib_building(box, greys=(), sid='g4-batiments', shadow=False, dark=40):
 
 ELEMENTS = {
     # Arbres (le bas, ou le tronc, bloque ; la cime passe devant Pierre).
-    'arbre-rond': ('Arbre rond', 'arbres', lambda: isolate(crop('dppt', 0, 40, 3, 4)), 3, 'land'),
     'arbre-foret': ('Arbre de forêt', 'arbres', lambda: crop('lisieres', 0, LIS_ROUND['dppt'], 4, 4), 3, 'land'),
     'palmier': ('Palmier', 'arbres', lambda: isolate(crop('g4-arbres', 9, 153, 3, 3)), 2, 'land'),
     'peuplier': ('Peuplier', 'arbres', lambda: isolate(crop('g4-arbres', 6, 147, 3, 4)), 3, 'land'),
@@ -244,25 +243,25 @@ THEMES = {
               'extra': list(ELEMENTS)},
     'fort-de-france': {'name': 'Fort-de-France (tropicale)', 'forest': None, 'paving': None, 'lamp': 'reverbere-rose',
                        'extra': ['palmier', 'hibiscus', 'fleurs-tropicales', 'parasol', 'drapeau-martinique',
-                                 'statue-blanche', 'voilier-bleu', 'arbre-rond', 'etal', 'etal-bocaux', 'transat',
+                                 'statue-blanche', 'voilier-bleu', 'etal', 'etal-bocaux', 'transat',
                                  'caisse', 'petite-fontaine']},
     'saint-ay': {'name': 'Saint-Ay (village de Loire)', 'forest': 'chene', 'paving': None, 'lamp': 'lanterne-bois',
-                 'palette': 'saint-ay', 'extra': ['arbre-foret', 'arbre-rond', 'peuplier', 'roseaux', 'bois', 'fontaine', 'massif',
+                 'palette': 'saint-ay', 'extra': ['arbre-foret', 'peuplier', 'roseaux', 'bois', 'fontaine', 'massif',
                            'pique-nique']},
     'route-de-montepilloy': {'name': 'Route de campagne', 'forest': 'dppt', 'paving': None, 'lamp': None,
                              'extra': ['arbre-foret', 'peuplier']},
     'montepilloy': {'name': 'Montépilloy (village agricole)', 'forest': 'automne', 'paving': None, 'lamp': None,
-                    'extra': ['arbre-foret', 'arbre-rond', 'puits', 'bois', 'banc-bois', 'abri-bois', 'souche',
+                    'extra': ['arbre-foret', 'puits', 'bois', 'banc-bois', 'abri-bois', 'souche',
                               'caisse']},
     'bonsecours': {'name': 'Collège de Bonsecours', 'forest': 'pins', 'paving': None, 'lamp': 'globe',
-                   'palette': 'bonsecours', 'extra': ['sapin', 'drapeau-france', 'velo', 'arbre-rond', 'distributeur', 'affichage',
+                   'palette': 'bonsecours', 'extra': ['sapin', 'drapeau-france', 'velo', 'distributeur', 'affichage',
                              'pique-nique', 'fontaine']},
     'prytanee': {'name': 'Prytanée (lycée militaire)', 'forest': 'haie', 'paving': 'gravier', 'lamp': 'lanterne-bleue',
-                 'extra': ['haie', 'statue-bronze', 'drapeau-france', 'arbre-rond']},
+                 'extra': ['haie', 'statue-bronze', 'drapeau-france']},
     'bordeaux': {'name': 'Bordeaux (pierre blonde)', 'forest': None, 'paving': 'blond', 'lamp': 'lanterne-hgss',
-                 'palette': 'bordeaux', 'extra': ['arbre-rond', 'peniche', 'velo']},
+                 'palette': 'bordeaux', 'extra': ['peniche', 'velo']},
     'hull': {'name': 'Hull (brique anglaise)', 'forest': None, 'paving': 'brique', 'lamp': 'reverbere-noir',
-             'palette': 'hull', 'extra': ['cargo', 'cabine', 'arbre-rond', 'velo']},
+             'palette': 'hull', 'extra': ['cargo', 'cabine', 'velo']},
 }
 PAVING_FN = {'gris': lambda img: img, 'blond': I.tint(40, 0.20, 1.1), 'brique': I.tint(16, 0.34, 0.66)}
 FOREST_PATTERN = {'pins': ('g4-arbres', 0, 270, 4, 4, None), 'haie': ('g4-plantes', 5, 10, 1, 1, I.greener(0.72))}
