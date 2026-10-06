@@ -255,6 +255,7 @@ def main():
         _, pts = G.game_points(map_id)
         story = {tuple(c) for c in G.STORY_POINTS[G.GAME_ID.get(map_id, 'fortDeFrance')]}
         protected = pts | story | {(x, y) for y in range(v.H) for x in range(v.W) if v.kinds[y][x] in ('path', 'tall')}
+        v.important = pts | story
         VILLES[map_id](v)
         v.finish(protected, pts | story)
         fixes = repair(bd, v.m)
@@ -598,6 +599,133 @@ def retile(v, land, cells):
         v.set_stack('sol', x, y, [ref])
 
 
+# Fort-de-France : la côte suit une super-ellipse (centre, demi-axes, exposant ; 2 = ellipse) : la plus ronde qui garde
+# chaque objet, chaque case de l'histoire à une case de la mer et chaque cime au-dessus du sable (recherche faite sur la
+# carte d'octobre 2026 : 2,5 ; l'ancienne côte était à 3) ; l'herbe s'arrondit pareil, plus petite, pour une plage
+# régulière. Le bas (langue de sable, ponton) ne bouge pas.
+COAST = (17.0, 14.0, 16.2, 13.4, 2.5)
+LAWN = (17.0, 14.0, 13.8, 11.0, 2.5)
+KEEP_ZONE = lambda x, y: y >= 24 and 7 <= x <= 19
+
+
+def in_ellipse(e, x, y):
+    cx, cy, a, b, p = e
+    return abs((x + 0.5 - cx) / a) ** p + abs((y + 0.5 - cy) / b) ** p <= 1
+
+
+def round_island(v, spit):
+    """Arrondit l'île : la plage hors de la côte passe à la mer, la mer dans la côte devient plage, l'herbe des coins
+    devient plage. Jamais sur un objet bloquant, une case de l'histoire, le ponton ; les petits objets traversables
+    (fleurs, coquillages) d'une case changée sont retirés. Puis le sol de toute la côte est redessiné (règles de
+    fdf_ds_v2 : la plage va jusqu'à l'eau, l'écume est sur l'eau)."""
+    from ds_theme import TERRAINS, SEA_TO_DPPT
+    import fdf_ground as F
+    W, H = v.W, v.H
+    ground = F.read_ground(v.bd, v.m, v.kinds)
+    for x, y in spit:
+        ground[y][x] = 'beach'
+    # Coquillages cuits dans le sable (fdf_ds_v2 SHELLS) : reconnus à leurs pixels, reposés sur le sable redessiné.
+    from fdf_ds_v2 import SHELLS, cut_background
+    shells = [np.array(cut_background(v.bd.tile_image(*sh))) for sh in SHELLS]
+    keys = {i: k for k, i in v.bd.auto_index.items()}
+    shell_at = {}
+    for y in range(H):
+        for x in range(W):
+            refs = v.stack('sol', x, y)
+            if len(refs) != 1 or v.sheet_of(refs[0]) != 'auto' or (keys.get(refs[0] % STRIDE) or ('',))[0] != 'img':
+                continue
+            img = np.array(v.bd.auto_tiles[refs[0] % STRIDE].convert('RGBA'))
+            for k, sh in enumerate(shells):
+                mask = sh[..., 3] > 0
+                if (img[mask][:, :3] == sh[mask][:, :3]).all():
+                    shell_at[(x, y)] = k
+                    ground[y][x] = 'beach'
+                    break
+    near = lambda x, y, n: any(0 <= x + dx < W and 0 <= y + dy < H and ground[y + dy][x + dx] == 'water'
+                               for dx in range(-n, n + 1) for dy in range(-n, n + 1))
+    for y in range(H):
+        for x in range(W):
+            if ground[y][x] == 'other' and near(x, y, 1):
+                ground[y][x] = 'beach'                     # coins de côte assemblés
+    important = {(x, y) for x, y in v.important} if hasattr(v, 'important') else set()
+    stacks = lambda x, y: (v.stack('decor', x, y), v.stack('dessus', x, y))
+    # Un objet (Décor), une cime (Au-dessus de Pierre) ou une case de l'histoire : la case reste à terre. (Les cases de
+    # côte bloquantes sans objet sont de l'eau dessinée dans un coin.)
+    blocked = lambda x, y: any(stacks(x, y)) or (x, y) in important
+    changed = {}
+    for y in range(H):
+        for x in range(W):
+            g = ground[y][x]
+            if KEEP_ZONE(x, y) or g == 'pier':
+                continue
+            if g == 'beach' and not in_ellipse(COAST, x, y) and not blocked(x, y):
+                changed[(x, y)] = 'water'
+            elif g == 'water' and in_ellipse(COAST, x, y):
+                changed[(x, y)] = 'beach'
+            elif g == 'grass' and not in_ellipse(LAWN, x, y) and not blocked(x, y):
+                changed[(x, y)] = 'beach'
+    # L'allée centrale va jusqu'au ponton (mêmes colonnes) : chemin sur l'herbe et la plage qui les séparent.
+    pier_cols = sorted({x for y in range(H) for x in range(W) if ground[y][x] == 'pier'})
+    pier_top = min(y for y in range(H) for x in range(W) if ground[y][x] == 'pier')
+    for x in pier_cols:
+        y = pier_top - 1
+        while y > 0 and ground[y][x] != 'path' and not blocked(x, y):
+            changed[(x, y)] = 'path'
+            y -= 1
+    for (x, y), g in changed.items():
+        i = y * W + x
+        if g == 'water':
+            v.clear([(x, y)])
+            v.m['solid'][i] = v.solid0[i] = 1
+            v.kinds[y][x] = 'water'
+        elif g == 'path':
+            v.clear([(x, y)])
+            v.kinds[y][x] = 'path'
+        else:
+            if ground[y][x] == 'grass':
+                v.clear([(x, y)])                          # fleurs des coins
+            keep = bool(v.stack('decor', x, y))            # un rocher sorti de l'eau reste bloquant
+            v.m['solid'][i] = v.solid0[i] = 1 if keep else 0
+            v.kinds[y][x] = 'other'
+        ground[y][x] = g
+    # Sol de la côte redessiné : toute la plage et toute la mer.
+    from fdf_ds_v2 import FORECOURT
+    same_of = {'beach': {'beach', 'water', 'pier', 'path'}, 'water': {'water', 'pier'}, 'path': {'path', 'beach', 'pier'}}
+    for y in range(H):
+        for x in range(W):
+            g = ground[y][x]
+            if g not in same_of or (g == 'path' and (x, y) in FORECOURT):     # le parvis va jusqu'aux murs, sans bord
+                continue
+            spec = TERRAINS[g]
+            other = lambda dx, dy: 0 <= x + dx < W and 0 <= y + dy < H and ground[y + dy][x + dx] not in same_of[g]
+            quads = []
+            ox, oy = spec['outer']
+            for q in range(4):
+                qx, qy = q % 2, q // 2
+                dx, dy = (1 if qx else -1), (1 if qy else -1)
+                vv, hh, dd = other(0, dy), other(dx, 0), other(dx, dy)
+                quads.append((ox + 2 * qx, oy + 2 * qy) if vv and hh else (ox + 1, oy + 2 * qy) if vv
+                             else (ox + 2 * qx, oy + 1) if hh else spec['inner'][q] if dd else spec['center'])
+            if all(q == spec['center'] for q in quads) and g == 'water':
+                info = v.bd.objects['mer']
+                tile = ('objets', info['col'] + x % 2, info['row'] + y % 2, 'sea')
+                ref = v.ref('auto', v.bd.composite((tile,), SEA_TO_DPPT))
+            elif all(q == spec['center'] for q in quads):
+                ref = v.ref('dppt', v.bd.index('dppt', *spec['center']))
+            else:
+                ref = v.ref('auto', v.bd.quad_tile('dppt', tuple(quads)))
+            shell = shell_at.get((x, y)) if g == 'beach' else None
+            if shell is not None:
+                img = Image.fromarray(shells[shell])
+                v.set_stack('sol', x, y, [ref, v.ref('auto', v.bd.image_tile(img))])
+            else:
+                v.set_stack('sol', x, y, [ref])
+    n_sea = sum(g == 'water' for g in changed.values())
+    n_path = sum(g == 'path' for g in changed.values())
+    v.notes.append(f'île ronde : {n_sea} case(s) de plage rendues à la mer, {len(changed) - n_sea - n_path} gagnée(s) sur '
+                   f'la mer ou l\'herbe ; allée prolongée jusqu\'au ponton ({n_path} cases) ; lagon retiré')
+
+
 def hibiscus(img):
     """Arbuste à fleurs roses -> hibiscus rouge vif."""
     return hsv_map(img, lambda h, s, val: (np.where((h > 290) | (h < 20), 356, h),
@@ -606,8 +734,8 @@ def hibiscus(img):
 
 @ville('fort-de-france')
 def fort_de_france(v):
-    """Touches tropicales : lagon turquoise le long de la plage, hibiscus rouges, réverbères roses, un seul modèle de
-    palmier ; la poche laissée par la barque devient une langue de sable reliée à la plage."""
+    """Touches tropicales : île ronde, hibiscus rouges, réverbères roses, un seul modèle de palmier ; la poche laissée
+    par la barque devient une langue de sable reliée à la plage."""
     W, H = v.W, v.H
     # Langue de sable : les cases libres sans issue (ancienne barque) et la mer qui les sépare de la plage.
     spit = {(x, y) for x in range(9, 13) for y in range(26, 30)}
@@ -622,15 +750,8 @@ def fort_de_france(v):
     retile(v, land, around)
     for x, y in spit:
         v.kinds[y][x] = 'other'
-    # Lagon : la mer qui touche la plage, en turquoise clair.
-    shallow = [(x, y) for y in range(H) for x in range(W) if water(x, y) and v.solid(x, y)
-               and any(land(x + dx, y + dy) for dx in range(-2, 3) for dy in range(-2, 3))]
-    shallow += [(x, y) for y in range(H) for x in range(W) if land(x, y)       # bouts d'eau des bords de plage
-                and any(water(x + dx, y + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1))]
-    blue = lambda h, s: (h > 180) & (h < 255) & (s > 0.2)
-    v.recolor_cells(shallow, ('sol',), lambda img: hsv_map(img, lambda h, s, val: (
-        np.where(blue(h, s), 191, h), np.where(blue(h, s), np.minimum(s, 0.62), s),
-        np.where(blue(h, s), np.minimum(1, 0.42 + 0.62 * val), val))))
+    # Côte ronde (retours d'octobre 2026) ; plus de lagon turquoise : la mer DS va jusqu'à la plage.
+    round_island(v, spit)
     # Réverbères roses à la place des réverbères DPPt de l'allée (même emprise : tête au-dessus, pied bloquant).
     # Le réverbère DPPt recoloré en rose (le réverbère rose de la planche Clôtures a un pied trop fin pour se lire
     # comme un obstacle).
