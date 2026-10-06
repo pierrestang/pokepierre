@@ -106,3 +106,22 @@ export function drawLayers(ctx, map, layerIds, images, cols, scale = TILE, { x0 
     }
   }
 }
+
+// Bords d'une carte du créateur que le jeu ne montre pas : la dernière rangée, la première et la dernière colonne,
+// quand elles portent la bordure d'arbres (planche « lisieres ») : le bas et les côtés extérieurs des arbres restent
+// cachés. Renvoie { left, right, bottom } en cases (0 ou 1).
+export function hiddenEdges(built) {
+  const none = { left: 0, right: 0, bottom: 0 };
+  if (!built) return none;
+  const W = built.width;
+  const H = built.height;
+  const tree = (x, y) => [built.layers.decor[y * W + x], built.layers.dessus[y * W + x]].some((cell) => (Array.isArray(cell) ? cell : [cell])
+    .some((r) => r >= 0 && built.sheets[Math.floor(r / SHEET_STRIDE)] === 'lisieres'));
+  const any = (cells) => cells.some(([x, y]) => tree(x, y));
+  const range = (n) => [...Array(n).keys()];
+  return {
+    left: any(range(H).map((y) => [0, y])) ? 1 : 0,
+    right: any(range(H).map((y) => [W - 1, y])) ? 1 : 0,
+    bottom: any(range(W).map((x) => [x, H - 1])) ? 1 : 0,
+  };
+}

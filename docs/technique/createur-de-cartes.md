@@ -106,9 +106,10 @@ contrôle.
     version par palette), disposés comme dans HeartGold : un tous les 2 cases ; l'arbre du dessous passe devant celui
     du dessus, l'arbre de gauche devant celui de droite (forestLayout.js treeOrder : de haut en bas, et de droite à
     gauche dans une rangée) ; sans tissu sombre ; la couronne qui déborde sur une case libre passe au-dessus de Pierre.
-    Tous les arbres restent sur la même grille (angles alignés) ; le jeu ne montre pas la dernière rangée d'une carte
-    dont la bordure du bas est faite de ces arbres (MapScene.fitCamera, hidesLastRow) : le bas des derniers arbres
-    (tronc, ombre) reste caché. Le créateur assombrit cette rangée (« cachée dans le jeu » au survol). Palette : celle de la forêt actuelle, sinon celle de la ville. Saint-Ay, Montépilloy et
+    Tous les arbres restent sur la même grille (angles alignés). Le jeu ne montre pas les bords qui portent ces arbres
+    (mapModel.js hiddenEdges, MapScene.fitCamera) : la dernière rangée (le bas des derniers arbres : tronc, ombre) et
+    la première et la dernière colonne (les côtés extérieurs des arbres). Vaut aussi pour une carte essayée depuis le
+    créateur (« Tester »). Le créateur assombrit ces bords (« bord caché dans le jeu » au survol). Palette : celle de la forêt actuelle, sinon celle de la ville. Saint-Ay, Montépilloy et
     la route de Montépilloy ont été refaites ainsi (octobre 2026) ; identites.py forest_trees (ancienne règle) ne sert
     plus qu'à regénérer la base de Saint-Ay. Les arbres et buissons viennent de la planche « lisières »
     (scripts/build_lisieres.py) ;

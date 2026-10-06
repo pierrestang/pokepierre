@@ -3,6 +3,7 @@ import {
 } from './mapModel.js';
 import { createAssistant } from './assistant.js';
 import { createStudio } from './studio.js';
+import { hiddenEdges } from './mapModel.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -438,13 +439,6 @@ function stampAt(ax, ay, x, y) {
   return s.tiles[dy * s.w + dx];
 }
 
-// Même règle que le jeu (MapScene.hidesLastRow) : la dernière rangée porte la bordure d'arbres (planche « lisieres »).
-function hidesLastRow(m) {
-  const W = m.width;
-  return m.layers.decor.slice((m.height - 1) * W, m.height * W).some((cell) => stackOf(cell)
-    .some((r) => decodeRef(m, r)?.sheet === 'lisieres'));
-}
-
 function draw() {
   if (!state.map) return;                    // pas encore de carte (premier affichage, rechargement à chaud)
   showAssistantZone();
@@ -478,11 +472,13 @@ function draw() {
     drawLayers(ctx, m, [l.id], state.images, colsOf, cs, range);
   });
   ctx.globalAlpha = 1;
-  // La dernière rangée d'une carte bordée d'arbres en bas : cachée dans le jeu (MapScene.fitCamera) ; assombrie ici.
-  if (hidesLastRow(m)) {
-    ctx.fillStyle = 'rgba(12, 14, 22, 0.55)';
-    ctx.fillRect(0, (m.height - 1) * cs, m.width * cs, cs);
-  }
+  // Les bords cachés dans le jeu (bordure d'arbres : dernière rangée, colonnes des côtés ; MapScene.hiddenEdges) :
+  // assombris ici.
+  const edges = hiddenEdges(m);
+  ctx.fillStyle = 'rgba(12, 14, 22, 0.55)';
+  if (edges.bottom) ctx.fillRect(0, (m.height - 1) * cs, m.width * cs, cs);
+  if (edges.left) ctx.fillRect(0, 0, cs, (m.height - edges.bottom) * cs);
+  if (edges.right) ctx.fillRect((m.width - 1) * cs, 0, cs, (m.height - edges.bottom) * cs);
 
   // Collisions.
   if (state.showSolid || state.tool === 'solid') {
@@ -1204,7 +1200,12 @@ canvas.addEventListener('pointermove', (e) => {
       return `${l.name} : ${sheetInfo(tile.sheet)?.name ?? tile.sheet} n° ${tile.index}${stack.length > 1 ? ` (+${stack.length - 1})` : ''}`;
     }).filter(Boolean) : [];
     if (state.hover && state.map.solid[i]) parts.push('bloquée');
-    if (state.hover && c.y === state.map.height - 1 && hidesLastRow(state.map)) parts.push('dernière rangée : cachée dans le jeu');
+    if (state.hover) {
+      const e = hiddenEdges(state.map);
+      if ((e.bottom && c.y === state.map.height - 1) || (e.left && c.x === 0) || (e.right && c.x === state.map.width - 1)) {
+        parts.push('bord caché dans le jeu');
+      }
+    }
     $('tile-info').textContent = state.hover ? parts.join(' · ') || 'vide' : '';
   }
   if (state.mode === 'simple' && state.tool === 'place' && moved && state.hover) studio.hover(c.x, c.y);

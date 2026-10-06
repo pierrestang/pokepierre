@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { hiddenEdges } from '../builder/mapModel.js';
 import { TILE_SIZE, getTile } from '../data/tiles.js';
 import { FOLLOWERS } from '../data/story.js';
 import { CATCHES, FISHING_ROD } from '../data/fishing.js';
@@ -72,15 +73,6 @@ const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenir
 function restoreHome(d) {
   if (d.home) Object.assign(d, d.home);
   delete d.home;
-}
-
-// La dernière rangée d'une carte du créateur porte la bordure d'arbres (planche « lisieres ») : le jeu la cache.
-function hidesLastRow(built) {
-  if (!built) return false;
-  const W = built.width;
-  const row = built.layers.decor.slice((built.height - 1) * W, built.height * W);
-  return row.some((cell) => (Array.isArray(cell) ? cell : [cell])
-    .some((r) => r >= 0 && built.sheets[Math.floor(r / 100000)] === 'lisieres'));
 }
 
 export class MapScene extends Phaser.Scene {
@@ -279,19 +271,22 @@ export class MapScene extends Phaser.Scene {
   // petite que l'écran dans un sens, elle reste centrée dans ce sens (le décor autour comble le vide).
   fitCamera() {
     const cam = this.cameras.main;
-    const mapW = this.grid[0].length * TILE_SIZE;
-    // Carte du créateur bordée d'arbres en bas : la dernière rangée n'est jamais montrée (le bas des arbres de la
-    // bordure, troncs et ombres, reste caché ; voir docs/technique/createur-de-cartes.md).
-    const mapH = (this.grid.length - (hidesLastRow(this.map.built) ? 1 : 0)) * TILE_SIZE;
+    const mapW = this.grid[0].length * TILE_SIZE;   // (moins les colonnes cachées, plus bas)
+    // Carte du créateur bordée d'arbres : la dernière rangée et les colonnes des côtés ne sont jamais montrées (le bas
+    // et les côtés extérieurs des arbres restent cachés ; voir docs/technique/createur-de-cartes.md).
+    const edges = hiddenEdges(this.map.built);
+    const left = edges.left * TILE_SIZE;
+    const mapH = (this.grid.length - edges.bottom) * TILE_SIZE;
     const view = gameView(this.scale);
     const viewW = SCREEN_W;
     const viewH = SCREEN_H;
     cam.setViewport(view.x, view.y, view.w, view.h);
     cam.setZoom(view.zoom);
+    const shownW = mapW - left - edges.right * TILE_SIZE;
     cam.setBounds(
-      Math.min(0, (mapW - viewW) / 2),
+      left + Math.min(0, (shownW - viewW) / 2),
       Math.min(0, (mapH - viewH) / 2),
-      Math.max(mapW, viewW),
+      Math.max(shownW, viewW),
       Math.max(mapH, viewH),
     );
     cam.startFollow(this.player.sprite, true, 0.18, 0.18);   // suivi adouci

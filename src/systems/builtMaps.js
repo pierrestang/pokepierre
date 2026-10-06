@@ -136,6 +136,7 @@ export function bakeBuiltMap(scene, data) {
     id,
     name: data.name,
     builder: true,                                  // carte d'essai : ni sauvegarde, ni carte du voyage
+    built: data,                                    // son dessin (bords cachés : voir MapScene.hiddenEdges)
     grid,
     ...look,
     spawn: data.spawn,
