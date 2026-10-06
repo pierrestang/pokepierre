@@ -6,6 +6,9 @@
 //   comptent comme de la forêt) ;
 // - les arbres de la dernière rangée de la carte sont dessinés une case plus bas : leurs cimes vont jusqu'au bord et
 //   leurs troncs sortent de la carte (sinon le tronc, en haut de sa case, laisse une bande d'herbe sous la bordure) ;
+//   les colonnes d'arbres qui descendent jusqu'à elle descendent aussi (angles du bas sans trou), et, dans la moitié
+//   basse, les blocs d'une rangée qui touchent un bloc descendu, si leur tronc tombe sur de la forêt ; le décalage avec
+//   la bordure du haut se fait dans les angles du haut (scripts/identites.py shifted_blocks : même règle) ;
 // - une case de forêt hors des blocs qui touche une case libre devient un buisson.
 //
 // `isForest(x, y)` : la case est de la forêt ; `inZone(x, y)` : la case peut changer. Renvoie
@@ -34,9 +37,27 @@ export function layoutForest(W, H, isForest, inZone = () => true) {
         covered.add(y * W + x);
         if (by + 1 === H - 1) low.add(y * W + x);
       }
-      if ([[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]].every(([x, y]) => inZone(x, y))) blocks.push([bx, by, by + 1 === H - 1 ? 1 : 0]);
+      if ([[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]].every(([x, y]) => inZone(x, y))) blocks.push([bx, by, 0]);
     }
   }
+  // Blocs dessinés une case plus bas.
+  const have = new Set(blocks.map(([bx, by]) => `${bx},${by}`));
+  const shift = new Set();
+  for (const [bx, by] of blocks) {
+    let y = by;
+    while (have.has(`${bx},${y}`) && y + 1 < H - 1) y += 2;
+    if (have.has(`${bx},${y}`) && y + 1 === H - 1) shift.add(`${bx},${by}`);
+  }
+  for (let changed = true; changed;) {
+    changed = false;
+    for (const [bx, by] of blocks) {
+      const k = `${bx},${by}`;
+      if (shift.has(k) || by < Math.floor(H / 2)) continue;
+      const belowOk = isForest(bx, by + 2) && isForest(bx + 1, by + 2);
+      if (belowOk && (shift.has(`${bx - 2},${by}`) || shift.has(`${bx + 2},${by}`))) { shift.add(k); changed = true; }
+    }
+  }
+  for (const b of blocks) b[2] = shift.has(`${b[0]},${b[1]}`) ? 1 : 0;
   return {
     blocks,
     inBlock: (x, y) => covered.has(y * W + x),

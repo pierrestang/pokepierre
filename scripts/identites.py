@@ -442,6 +442,33 @@ def leaves(hue_fn, sat=None):
     return lambda img: hsv_map(img, fn)
 
 
+def shifted_blocks(blocks, H, forest=None):
+    """Blocs dessinés une case plus bas. La dernière rangée de la carte descend (cimes jusqu'au bord, troncs hors de la
+    carte) ; pour que les colonnes d'arbres des côtés la rejoignent sans trou, toute colonne de blocs qui descend jusqu'à
+    elle descend aussi, et, dans la moitié basse, les blocs d'une même rangée qui touchent un bloc descendu. Le décalage
+    d'une case avec la bordure du haut (troncs sur sa deuxième rangée) se fait dans les angles du haut."""
+    have = set(blocks)
+    shift = set()
+    for bx, by in blocks:
+        y = by
+        while (bx, y) in have and y + 1 < H - 1:
+            y += 2
+        if (bx, y) in have and y + 1 == H - 1:
+            shift.add((bx, by))
+    changed = True
+    while changed:
+        changed = False
+        for bx, by in blocks:
+            if (bx, by) in shift or by < H // 2:
+                continue
+            # Le tronc descendu tombe sur la rangée du dessous : seulement si elle est de la forêt (jamais une case libre).
+            below_ok = forest is None or all((bx + i, by + 2) in forest for i in (0, 1))
+            if below_ok and ((bx - 2, by) in shift or (bx + 2, by) in shift):
+                shift.add((bx, by))
+                changed = True
+    return shift
+
+
 def forest_trees(v, variant):
     """Forêt dense (tissu g4-arbres des bordures) refaite en rangées d'arbres entiers, comme les forêts DPPt : chaque
     bloc de 2 x 2 de la forêt (grille calée pour en garder le plus) porte un arbre de la planche « lisieres » (palette
@@ -478,6 +505,7 @@ def forest_trees(v, variant):
                  key=lambda p: sum(full(bx, by) for by in range(p[1], H - 1, 2) for bx in range(p[0], W - 1, 2)))
     blocks = [(bx, by) for by in range(ay, H - 1, 2) for bx in range(ax, W - 1, 2) if full(bx, by)]
     in_block = {(bx + i, by + j) for bx, by in blocks for i in (0, 1) for j in (0, 1)}
+    shift = shifted_blocks(blocks, H, forest)
     bushes = 0
     # Les blocs de la dernière rangée (dessinés une case plus bas) gardent le tissu derrière leurs cimes.
     low = {(bx + i, by + j) for bx, by in blocks if by + 1 == H - 1 for i in (0, 1) for j in (0, 1)}
@@ -490,7 +518,7 @@ def forest_trees(v, variant):
             v.set_stack('decor', x, y, v.stack('decor', x, y) + [lref(lis['bush']['col'], 0)])
             bushes += 1
     for bx, by in sorted(blocks, key=lambda b: (b[1], b[0])):
-        dy = 1 if by + 1 == H - 1 else 0                   # dernière rangée : une case plus bas, troncs hors carte
+        dy = 1 if (bx, by) in shift else 0                 # une case plus bas (voir shifted_blocks)
         for k in range(lis['tree']['h']):
             y = by - 2 + k + dy
             if y < 0 or y >= H:
