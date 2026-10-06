@@ -655,5 +655,20 @@ export function createAssistant(api) {
     return null;
   }
 
-  return { fixTransitions, straightenPath, sowTall, regenerate, rebuildForest, parse, zone, zoneText, check, hasSow: () => Boolean(lastSow) };
+  // Pour le pinceau de matières du mode simple (studio.js) : la matière de chaque case, poser une matière
+  // ('grass' ou une matière du kit) sur des cases, puis refaire les bords autour d'elles.
+  const terrain = {
+    ready: async () => { if (!kit) await load(); },
+    classes,
+    paint(cls, cells, id) {
+      for (const i of cells) { cls[i] = id; setGround(i, id); }
+    },
+    retileAround(cls, cells) { return retile(cls, [...ring(state.map, cells)]); },
+    check,
+    verdict,
+    importantCells,
+  };
+
+  return { fixTransitions, straightenPath, sowTall, regenerate, rebuildForest, parse, zone, zoneText, check, terrain,
+    hasSow: () => Boolean(lastSow) };
 }

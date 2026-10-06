@@ -2,6 +2,7 @@ import {
   TILE, EMPTY, LAYERS, blankMap, slugify, refOf, decodeRef, resizeMap, drawLayers, stackOf, topRef,
 } from './mapModel.js';
 import { createAssistant } from './assistant.js';
+import { createStudio } from './studio.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -18,6 +19,7 @@ const ERASE_SIZES = [1, 2, 3, 5];            // côté du carré gommé, en case
 const PALETTE_GROUPS = ['Sols et chemins', 'Eau', 'Végétation', 'Relief', 'Bâtiments', 'Mobilier urbain', 'Décor',
   'Intérieurs', 'Cases assemblées'];
 const KEYS = {
+  mode: 'pokepierre.builder.mode',
   current: 'pokepierre.builder.current',     // la carte en cours (rouverte au rechargement de la page)
   dirty: 'pokepierre.builder.dirty',         // la carte en cours a des modifications non enregistrées
   base: 'pokepierre.builder.base',           // version enregistrée d'où vient la carte en cours ({ id, etag }), ou null
@@ -68,6 +70,7 @@ const state = {
   lastMoved: null,          // l'élément qu'on vient de déplacer (outil Déplacer) : Suppr le supprime
   clipboard: null,          // bloc copié (Ctrl+C, Ctrl+D) : { w, h, whole, cells: [{ dx, dy, refs, solid }] }
   pasting: false,           // la copie suit la souris : un clic la pose (Échap pour arrêter)
+  mode: 'simple',           // 'simple' : matières et éléments (studio.js) ; 'detail' : planches et calques, case par case
 };
 
 // ---------- Planches ----------
@@ -502,6 +505,7 @@ function draw() {
   ctx.fillText('P', (sp.x + 0.5) * cs, (sp.y + 0.53) * cs);
 
   drawCursor(cs);
+  if (state.mode === 'simple') studio.drawGhost(ctx, cs);
 }
 
 const hoverObject = { key: null, cells: null };
@@ -510,6 +514,11 @@ const hoverObject = { key: null, cells: null };
 function drawCursor(cs) {
   const h = state.hover;
   const drag = state.drag;
+  if (drag?.tool === 'rect' && state.mode === 'simple') {
+    const r = rectOf(drag.start, drag.last);
+    outline(r.x0, r.y0, r.x1 - r.x0 + 1, r.y1 - r.y0 + 1, cs);
+    return;
+  }
   if (drag?.tool === 'rect') {
     const r = rectOf(drag.start, drag.last);
     ctx.globalAlpha = 0.7;
@@ -566,6 +575,15 @@ function drawCursor(cs) {
     } else if (!state.moveSel) outline(h.x, h.y, 1, 1, cs);
     return;
   }
+  if (state.mode === 'simple' && drag?.tool === 'rect') return;
+  if (state.mode === 'simple' && ['brush', 'erase'].includes(state.tool)) {
+    const cells = studio.brushCells(h.x, h.y);
+    const b = cells.reduce((r, [x, y]) => ({ x0: Math.min(r.x0, x), y0: Math.min(r.y0, y), x1: Math.max(r.x1, x), y1: Math.max(r.y1, y) }),
+      { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity });
+    if (cells.length) outline(b.x0, b.y0, b.x1 - b.x0 + 1, b.y1 - b.y0 + 1, cs);
+    return;
+  }
+  if (state.mode === 'simple' && state.tool === 'place') return;
   if (state.tool === 'erase') {
     const { x0, y0, n } = eraseSquare(h.x, h.y);
     outline(x0, y0, n, n, cs);
@@ -605,7 +623,8 @@ const rectOf = (a, b) => ({ x0: Math.min(a.x, b.x), y0: Math.min(a.y, b.y), x1: 
 
 function snapshot() {
   const m = state.map;
-  return JSON.stringify({ layers: m.layers, solid: m.solid, spawn: m.spawn, sheets: m.sheets, width: m.width, height: m.height });
+  return JSON.stringify({ layers: m.layers, solid: m.solid, spawn: m.spawn, sheets: m.sheets, width: m.width, height: m.height,
+    studio: m.studio ?? null });
 }
 function remember() {
   state.undo.push(snapshot());
@@ -625,6 +644,7 @@ function restore(from, to) {
   to.push(snapshot());
   Object.assign(state.map, JSON.parse(from.pop()));
   syncFields();
+  studio.render();
   changed();
   updateHistoryButtons();
 }
@@ -1071,6 +1091,24 @@ canvas.addEventListener('pointerdown', (e) => {
   }
   if (e.button !== 0) return;
   const tool = state.tool;
+  if (state.mode === 'simple' && tool === 'place') {
+    studio.clickPlace().then((r) => { if (r) setStatus(r.text, r.kind); requestDraw(); });
+    return;
+  }
+  if (state.mode === 'simple' && ['brush', 'rect', 'fill', 'erase'].includes(tool)) {
+    if (!inside(c.x, c.y)) return;
+    remember();
+    studio.beginStroke();
+    state.drag = { tool, start: c, last: c, simple: true };
+    if (tool === 'brush') studio.paintAt(c.x, c.y);
+    if (tool === 'fill') studio.fillFrom(c.x, c.y);
+    if (tool === 'erase') {
+      const el = studio.eraseAt(c.x, c.y);
+      if (el) { state.drag.removed = el; setStatus('Élément retiré', 'ok'); }
+    }
+    requestDraw();
+    return;
+  }
   if (tool === 'pick') {
     if (inside(c.x, c.y)) pickAt(c.x, c.y);
     return;
@@ -1126,6 +1164,7 @@ canvas.addEventListener('pointermove', (e) => {
     if (state.hover && state.map.solid[i]) parts.push('bloquée');
     $('tile-info').textContent = state.hover ? parts.join(' · ') || 'vide' : '';
   }
+  if (state.mode === 'simple' && state.tool === 'place' && moved && state.hover) studio.hover(c.x, c.y);
   if (drag && moved) {
     // Tracé continu : on remplit les cases sautées entre deux mouvements de souris.
     const steps = Math.max(Math.abs(c.x - drag.last.x), Math.abs(c.y - drag.last.y));
@@ -1146,6 +1185,16 @@ const endDrag = () => {
   state.drag = null;
   view.classList.remove('pan');
   if (!drag || drag.tool === 'pan') return;
+  if (drag.simple) {
+    if (drag.tool === 'rect') studio.paintRect(rectOf(drag.start, drag.last));
+    studio.endStroke();
+    if (state.undo.at(-1) === snapshot()) {
+      state.undo.pop();
+      updateHistoryButtons();
+    } else changed();
+    requestDraw();
+    return;
+  }
   if (drag.tool === 'select') {
     const r = rectOf(drag.start, drag.last);
     state.moveSel = inside(r.x0, r.y0) || inside(r.x1, r.y1) ? {
@@ -1217,6 +1266,13 @@ function setEraseSize(n) {
 
 function applyAt(c, e) {
   const drag = state.drag;
+  if (drag.simple) {
+    if (!inside(c.x, c.y) || drag.removed) return;
+    if (drag.tool === 'brush') studio.paintAt(c.x, c.y);
+    if (drag.tool === 'erase') studio.eraseAt(c.x, c.y);
+    requestDraw();
+    return;
+  }
   if (drag.tool === 'erase') {                  // la gomme mord aussi sur la carte depuis un bord
     const { x0, y0, n } = eraseSquare(c.x, c.y);
     for (let y = y0; y < y0 + n; y++) for (let x = x0; x < x0 + n; x++) eraseTile(x, y);
@@ -1270,6 +1326,7 @@ function zoomTo(next, clientX, clientY) {
 
 function setTool(tool) {
   if (tool !== 'move') state.pasting = false;
+  if (tool !== 'place' && studio.ui.element) { studio.ui.element = null; studio.render(); }
   state.tool = tool;
   $('erasebar').hidden = tool !== 'erase';
   document.querySelectorAll('[data-tool]').forEach((b) => b.classList.toggle('on', b.dataset.tool === tool));
@@ -1368,6 +1425,7 @@ function loadMap(map, { base = null, dirty = false } = {}) {
   syncFields();
   centerMap();
   store.set(KEYS.current, map);
+  studio.load().then(() => studio.render());
   if (dirty) setStatus('Brouillon repris : modifications non enregistrées');
 }
 
@@ -1667,6 +1725,21 @@ const assistant = createAssistant({
   selection: () => state.moveSel,
 });
 
+const studio = createStudio({
+  state, base: BASE, loadSheet, colsOf, remember, changed, requestDraw, terrain: assistant.terrain,
+  setTool: (t) => setTool(t),
+});
+
+function setMode(mode) {
+  state.mode = mode;
+  store.set(KEYS.mode, mode);
+  document.body.classList.toggle('simple', mode === 'simple');
+  document.querySelectorAll('#mode-switch button').forEach((b) => b.classList.toggle('on', b.dataset.mode === mode));
+  if (mode === 'simple' && ['pick', 'solid'].includes(state.tool)) setTool('brush');
+  if (mode === 'detail' && state.tool === 'place') setTool('move');
+  requestDraw();
+}
+
 function showAssistantZone() {
   const z = state.moveSel;
   $('asst-zone').textContent = z ? `zone ${z.x0},${z.y0} → ${z.x1},${z.y1}` : 'toute la carte';
@@ -1742,6 +1815,10 @@ async function start() {
   buildLayerButtons();
   bindUi();
   bindAssistant();
+  studio.bind();
+  document.querySelectorAll('#mode-switch button').forEach((b) => { b.onclick = () => setMode(b.dataset.mode); });
+  setMode(store.get(KEYS.mode) ?? 'simple');
+  if (state.mode === 'simple') $('assistant').classList.add('closed');      // replié : la carte d'abord
   setLayer('sol');
   setAutoLayer(true);
   setTool('brush');
@@ -1767,6 +1844,6 @@ async function start() {
 }
 
 // Accès console en développement (tests manuels) : window.builder.
-if (import.meta.env.DEV) window.builder = { state, setStamp, brushAt, eraseTile, placementOf, elementsOf, objectAt, anchorKey, loadSheet, loadMap, blankMap, changed };
+if (import.meta.env.DEV) window.builder = { state, studio, setMode, setTool, setStamp, brushAt, eraseTile, placementOf, elementsOf, objectAt, anchorKey, loadSheet, loadMap, blankMap, changed };
 
 start();

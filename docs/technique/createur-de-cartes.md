@@ -20,6 +20,31 @@ gomme de 1, 2, 3 ou 5 cases de côté ([ et ]) ; Ctrl+D (ou Ctrl+C puis Ctrl+V) 
 souris, chaque clic en pose une (une zone : ses trois calques et ses collisions ; un élément : seul, sans le sol).
 Les cartes actuelles restent en place tant qu'elles ne sont pas refaites dans le créateur.
 
+## Mode simple (src/builder/studio.js), écran par défaut
+
+Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut du panneau, choix mémorisé) garde l'ancien
+éditeur à planches et calques, pour le détail. En mode simple :
+
+- Ville : le thème de la carte (reconnu d'après l'identifiant d'une carte du jeu, « Libre » sinon). Il fixe les matières
+  (ses pavés, sa forêt) et les éléments proposés (maisons dans la palette de la ville, son réverbère, ses plantes).
+- Matières : Peindre (taille 1, 2, 3, 5), Zone, Remplir (les cases reliées de la même matière). Herbe, chemin, sable,
+  hautes herbes, mer, étang : bords refaits autour de chaque coup de pinceau (planche « transitions », comme
+  l'assistant). Fleurs : posées sur l'herbe libre. Pavés : motif de la ville. Forêt : par blocs de 2 x 2 calés sur la
+  grille ; toute la forêt peinte est redessinée à chaque coup (tissu dense dedans, arbre entier sur chaque bloc qui
+  touche une case libre, herbe seulement sous les cases ouvertes, buisson sur une case orpheline). La gomme repeint de
+  l'herbe. Mer, étang et forêt bloquent ; le reste libère la case.
+- Éléments : un clic pose l'élément (aperçu vert, ou rouge avec la raison : sur un obstacle, sur un élément, sur une
+  case importante, pas sur son sol — les bateaux, roseaux et nénuphars vont sur l'eau). Le bas bloque, le haut (toit,
+  cime) passe au-dessus de Pierre, la porte d'une maison reste libre. La gomme sur un élément le retire et rend les
+  collisions d'avant. Un élément posé protège ses cases du pinceau.
+- Ce que le mode simple a posé est noté dans la carte (`studio` : thème, cases de forêt, éléments posés) ; le jeu
+  l'ignore. L'annulation le suit.
+- Catalogue : scripts/build_catalogue.py -> public/assets/v2/catalogue.png et catalogue.json (thèmes, matières,
+  éléments avec leurs cases, collisions, rangées au-dessus de Pierre, porte, sol). Palettes des maisons : celles de
+  scripts/identites.py (BUILDING_PALETTES). Arbres de lisière : planche « lisieres » (scripts/build_lisieres.py).
+  Après scripts/build_v2_tiles.py (qui réécrit le catalogue des planches), relancer build_transitions.py,
+  build_lisieres.py et build_catalogue.py.
+
 ## Assistant (src/builder/assistant.js), première version
 
 Panneau en haut à droite de la carte. Le principe : on dessine vite et grossièrement, l'assistant range derrière, sous

@@ -79,6 +79,15 @@ def palette(roof=None, wall=None, wood=None, glass_keep=True, wall_min=0.45):
     return lambda img: hsv_map(img, fn)
 
 
+# Palettes de bâtiments par ville (aussi utilisées par le catalogue du créateur, scripts/build_catalogue.py).
+BUILDING_PALETTES = {
+    'hull': dict(roof=(215, 0.12, 0.62), wall=(6, 0.62, 0.86), wood=(8, 0.55, 0.8)),              # brique, ardoise
+    'bordeaux': dict(roof=(212, 0.16, 0.92), wall=(40, 0.30, 1.05), wood=(36, 0.32, 1.0), wall_min=0.3),  # pierre blonde
+    'saint-ay': dict(roof=(214, 0.16, 0.95), wall=(46, 0.07, 1.12), wood=(42, 0.13, 1.7)),         # tuffeau, ardoise
+    'bonsecours': dict(roof=(210, 0.1, 0.78), wall=(8, 0.5, 0.88), wood=(10, 0.45, 0.85), wall_min=0.4),  # école en brique
+}
+
+
 def tint(hue, sat, value=1.0, only=None):
     """Teinte uniforme (garde la clarté) ; `only(h, s, v)` : masque des pixels concernés."""
     def fn(h, s, v):
@@ -317,7 +326,7 @@ def hull(v):
     """Ville anglaise : brique rouge et ardoise sombre, pavés de brique, herbe sombre sous la pluie, réverbères
     victoriens ; signature : les docks, un cargo à grues à quai."""
     v.recolor_cells(building_cells_all(v), ('decor', 'dessus'),
-                    palette(roof=(215, 0.12, 0.62), wall=(6, 0.62, 0.86), wood=(8, 0.55, 0.8)))
+                    palette(**BUILDING_PALETTES['hull']))
     v.recolor_refs(is_cobble(v), tint(16, 0.34, 0.66), layers=('sol',))
     v.recolor_cells([(x, y) for y in range(v.H) for x in range(v.W)], ('sol',), greener(0.8, hue=135))
     v.recolor_refs(lambda sheet, k: sheet == 'dppt' and k in DPPT_LAMP, victorian, layers=('decor', 'dessus'))
@@ -330,7 +339,7 @@ def bordeaux(v):
     """Grande ville de pierre blonde : façades et pavés blonds, toits de zinc, platanes ; signature : la grille en fer
     forgé des quais de la Garonne."""
     v.recolor_cells(building_cells_all(v), ('decor', 'dessus'),
-                    palette(roof=(212, 0.16, 0.92), wall=(40, 0.30, 1.05), wood=(36, 0.32, 1.0), wall_min=0.3))
+                    palette(**BUILDING_PALETTES['bordeaux']))
     v.recolor_refs(is_cobble(v), tint(40, 0.20, 1.1), layers=('sol',))
     v.recolor_refs(lambda sheet, k: sheet == 'dppt' and k in DPPT_TREE, greener(1.12, hue=82),
                    layers=('decor', 'dessus'))
@@ -364,7 +373,7 @@ def saint_ay(v):
     signature : les roseaux au bord de l'étang."""
     woodpile = {(20, 11), (21, 11), (20, 12), (21, 12)}           # le tas de bois de g4_enrich reste du bois
     v.recolor_cells(building_cells_all(v) - woodpile, ('decor', 'dessus'),
-                    palette(roof=(214, 0.16, 0.95), wall=(46, 0.07, 1.12), wood=(42, 0.13, 1.7)))
+                    palette(**BUILDING_PALETTES['saint-ay']))
     v.recolor_refs(is_forest, leaves(lambda h, val: 86 + (h - 120) * 0.3, sat=0.3), layers=('decor', 'dessus'))
     reeds = [v.element('g4-eau', 13, r, 1, 1, cut=True) for r in (91, 92)]
     for i, (x, y) in enumerate([(7, 9), (8, 10), (8, 11), (8, 12), (5, 15), (0, 15)]):
@@ -452,7 +461,7 @@ def bonsecours(v):
     """Collège : bâtiment scolaire de brique au toit gris, clôtures blanches, forêt de sapins sombres, globes blancs ;
     signature : le drapeau français de la cour, avec un râtelier à vélos."""
     v.recolor_cells(building_cells_all(v), ('decor', 'dessus'),
-                    palette(roof=(210, 0.1, 0.78), wall=(8, 0.5, 0.88), wood=(10, 0.45, 0.85), wall_min=0.4))
+                    palette(**BUILDING_PALETTES['bonsecours']))
     swap_refs(v, DPPT_WOOD_FENCE)
     # Poteaux de bois pris dans des cases assemblées : blanchis aussi (cases 'F' de la grille du jeu).
     _, _src = G.game_points(v.id)
