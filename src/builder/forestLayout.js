@@ -101,14 +101,19 @@ export function layoutForest(W, H, isForest, inZone = () => true) {
 // de 2 x 2) : les morceaux à poser pour un arbre dont le bloc commence en (bx, by), dans l'ordre de dessin.
 // Disposition de HeartGold : un arbre tous les 2 cases en largeur et en hauteur ; on dessine de haut en bas (et de
 // gauche à droite) : la couronne de l'arbre du dessous passe devant le tronc de celui du dessus.
+// `dy` : 1 pour la dernière rangée de la carte (l'arbre descend d'une case : son tronc et son ombre sortent de la carte).
 // Renvoie [{ x, y, index, trunk }] (trunk : la rangée du tronc et de l'ombre, dans le bloc).
-export function roundTreePieces(lis, variant, bx, by) {
+export function roundTreePieces(lis, variant, bx, by, dy = 0) {
   const r = lis.round;
   const pieces = [];
   for (let j = 0; j < r.h; j++) {
     for (let i = 0; i < r.w; i++) {
-      pieces.push({ x: bx - r.ox + i, y: by - r.oy + j, index: (variant.roundRow + j) * lis.cols + r.col + i, trunk: j === r.h - 1 });
+      pieces.push({ x: bx - r.ox + i, y: by - r.oy + j + dy, index: (variant.roundRow + j) * lis.cols + r.col + i, trunk: j === r.h - 1 });
     }
   }
   return pieces;
 }
+
+// Ordre de dessin des arbres : de haut en bas, et dans une rangée de droite à gauche. Le dernier dessiné passe devant :
+// l'arbre du dessous chevauche celui du dessus, l'arbre de gauche chevauche celui de droite.
+export const treeOrder = (a, b) => a[1] - b[1] || b[0] - a[0];

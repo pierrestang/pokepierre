@@ -103,9 +103,11 @@ contrôle.
     contre chaque bord, un arbre tous les 2 cases en largeur comme en hauteur (carte de dimensions paires). Pas d'arbre
     sur l'eau, le relief, un chemin (les sorties), un objet ou une case importante du jeu : le trou reste. Tous les
     arbres (bordure, pinceau Forêt, élément « Arbre de forêt ») sont l'arbre rond de DPPt (planche « lisieres », une
-    version par palette), disposés comme dans HeartGold : un tous les 2 cases, dessinés de haut en bas (la couronne de
-    l'arbre du dessous cache le tronc de celui du dessus, dans les angles aussi), sans tissu sombre ; la couronne qui
-    déborde sur une case libre passe au-dessus de Pierre. Palette : celle de la forêt actuelle, sinon celle de la ville. Saint-Ay, Montépilloy et
+    version par palette), disposés comme dans HeartGold : un tous les 2 cases ; l'arbre du dessous passe devant celui
+    du dessus, l'arbre de gauche devant celui de droite (forestLayout.js treeOrder : de haut en bas, et de droite à
+    gauche dans une rangée) ; sans tissu sombre ; la couronne qui déborde sur une case libre passe au-dessus de Pierre.
+    La rangée du bas (et les colonnes des côtés, pour garder le même écart) descend d'une case : le bas des arbres de
+    la dernière rangée (tronc, ombre) sort de la carte. Palette : celle de la forêt actuelle, sinon celle de la ville. Saint-Ay, Montépilloy et
     la route de Montépilloy ont été refaites ainsi (octobre 2026) ; identites.py forest_trees (ancienne règle) ne sert
     plus qu'à regénérer la base de Saint-Ay. Les arbres et buissons viennent de la planche « lisières »
     (scripts/build_lisieres.py) ;

@@ -1,5 +1,5 @@
 import { refOf, decodeRef, stackOf, EMPTY } from './mapModel.js';
-import { layoutForest, roundTreePieces } from './forestLayout.js';
+import { layoutForest, roundTreePieces, treeOrder } from './forestLayout.js';
 
 // Assistant du créateur de cartes : des commandes qui rangent derrière le dessinateur, sous son contrôle.
 // - Portée : la zone choisie (outil Déplacer), sinon toute la carte.
@@ -721,9 +721,12 @@ export function createAssistant(api) {
         m.layers.decor[i] = EMPTY;                                                   // les fleurs sous les arbres partent
         m.solid[i] = 1;
       }
-      trees.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+      trees.sort(treeOrder);
       for (const [bx, by] of trees) {
-        for (const p of roundTreePieces(lis, variant, bx, by)) {
+        // La dernière rangée descend d'une case (le bas des arbres sort de la carte) ; les colonnes des côtés descendent
+        // avec elle, pour garder le même écart jusqu'à l'angle du bas.
+        const side = (bx === 0 || bx === W - 2) && by >= 2;
+        for (const p of roundTreePieces(lis, variant, bx, by, by === H - 2 || side ? 1 : 0)) {
           if (!inMap(p.x, p.y)) continue;
           const i = p.y * W + p.x;
           add(p.trunk || covered.has(i) ? 'decor' : 'dessus', i, refOf(m, 'lisieres', p.index));
