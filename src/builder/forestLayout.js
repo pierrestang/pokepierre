@@ -2,15 +2,16 @@
 // au pinceau Forêt du mode simple et à scripts/identites.py forest_trees) :
 // - chaque bloc de 2 x 2 de la forêt (grille calée pour en garder le plus) porte un arbre entier, posé de haut en bas
 //   (la cime de l'arbre du dessous passe devant le tronc de celui du dessus) ;
-// - le tissu sombre reste seulement derrière, sur les cases qui ne touchent pas une case libre (le bord de la carte
-//   compte comme de la forêt) ;
+// - le tissu sombre reste seulement derrière, sur les cases qui ne touchent pas une case libre (les bords haut, gauche
+//   et droit de la carte comptent comme de la forêt ; le bas comme une case libre : la dernière rangée montre ses
+//   troncs sur l'herbe, pas une bande sombre) ;
 // - une case de forêt hors des blocs qui touche une case libre devient un buisson.
 //
 // `isForest(x, y)` : la case est de la forêt ; `inZone(x, y)` : la case peut changer. Renvoie
 // { blocks: [[bx, by]…] (de haut en bas), inBlock(x, y), touchesOpen(x, y) }.
 export function layoutForest(W, H, isForest, inZone = () => true) {
   const inMap = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
-  const open = (x, y) => inMap(x, y) && !isForest(x, y);
+  const open = (x, y) => (inMap(x, y) && !isForest(x, y)) || (y >= H && x >= 0 && x < W);
   const full = (bx, by) => isForest(bx, by) && isForest(bx + 1, by) && isForest(bx, by + 1) && isForest(bx + 1, by + 1);
   let anchor = [0, 0];
   let most = -1;

@@ -447,7 +447,7 @@ def forest_trees(v, variant):
     bloc de 2 x 2 de la forêt (grille calée pour en garder le plus) porte un arbre de la planche « lisieres » (palette
     `variant`), de haut en bas (la cime de l'arbre du dessous passe devant le tronc de celui du dessus ; une cime qui
     dépasse sur une case libre passe au-dessus de Pierre). Le tissu sombre reste seulement derrière, sur les cases qui
-    ne touchent pas une case libre (le bord de la carte compte comme de la forêt) ; une case de forêt hors des blocs
+    ne touchent pas une case libre (bords haut, gauche et droit : de la forêt ; bas : une case libre) ; une case hors des blocs
     devient un buisson. Les collisions ne changent pas. Même règle que le créateur (src/builder/forestLayout.js)."""
     W, H = v.W, v.H
     lis = json.loads((ROOT / 'public' / 'assets' / 'v2' / 'lisieres.json').read_text())
@@ -471,7 +471,8 @@ def forest_trees(v, variant):
         if len(comp) < 4:
             forest -= comp
     is_f = lambda x, y: not (0 <= x < W and 0 <= y < H) or (x, y) in forest
-    is_open = lambda x, y: 0 <= x < W and 0 <= y < H and (x, y) not in forest
+    # Le bas de la carte compte comme une case libre (troncs sur l'herbe), les autres bords comme de la forêt.
+    is_open = lambda x, y: (0 <= x < W and 0 <= y < H and (x, y) not in forest) or (y >= H and 0 <= x < W)
     full = lambda bx, by: all((x, y) in forest for x, y in ((bx, by), (bx + 1, by), (bx, by + 1), (bx + 1, by + 1)))
     ax, ay = max(((a, b) for a in (0, 1) for b in (0, 1)),
                  key=lambda p: sum(full(bx, by) for by in range(p[1], H - 1, 2) for bx in range(p[0], W - 1, 2)))
@@ -480,8 +481,9 @@ def forest_trees(v, variant):
     bushes = 0
     for x, y in forest:
         touches = any(is_open(x + dx, y + dy) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-        if touches:
+        if touches:                                        # l'herbe sous l'arbre (ce que cachait le tissu)
             v.set_stack('decor', x, y, [r for r in v.stack('decor', x, y) if not fill(r)])
+            v.set_stack('sol', x, y, [v.ref('dppt', v.bd.index('dppt', 4, 0))])
         if (x, y) not in in_block and touches:
             v.set_stack('decor', x, y, v.stack('decor', x, y) + [lref(lis['bush']['col'], 0)])
             bushes += 1

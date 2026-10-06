@@ -288,7 +288,14 @@ export function createStudio(api) {
     const fresh = [];
     for (const [x, y] of cells) {
       const c = y * W + x;
-      if (stroke.occ.has(c)) continue;                         // un élément posé protège sa case
+      if (stroke.occ.has(c)) {
+        // Un élément posé protège sa case ; un arbre ou une plante cède à la forêt peinte par-dessus.
+        const el = stroke.occ.get(c);
+        const def = elementDef(el.id, el.theme);
+        if (mat.kind !== 'forest' || !['arbres', 'plantes'].includes(def?.cat)) continue;
+        removeElement(el);
+        for (const [k, e] of stroke.occ) if (e === el) stroke.occ.delete(k);
+      }
       fresh.push(c);
       stroke.cells.add(c);
       // La clôture quitte la case (sauf si on peint de la clôture).
