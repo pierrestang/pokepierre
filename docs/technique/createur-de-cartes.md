@@ -39,7 +39,9 @@ Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut 
 - Éléments : un clic pose l'élément (aperçu vert, ou rouge avec la raison : sur un obstacle, sur un élément, sur une
   case importante, pas sur son sol — les bateaux, roseaux et nénuphars vont sur l'eau). Le bas bloque, le haut (toit,
   cime) passe au-dessus de Pierre, la porte d'une maison reste libre. La gomme sur un élément le retire et rend les
-  collisions d'avant. Un élément posé protège ses cases du pinceau.
+  collisions d'avant. Sous un élément posé, le pinceau peint seulement un sol qu'on traverse (herbe, chemin, sable,
+  pavés), sans toucher à ses collisions (un bout de chemin sous le bord d'une maison s'efface) ; l'eau, la forêt, la
+  clôture n'y vont pas. Un sol qu'on traverse ne libère jamais une case qui porte un objet (maison de la carte, rocher).
 - Remplacer une maison : une maison choisie, survolée au-dessus d'une maison (posée, ou de la carte : reconnue autour
   d'une porte du jeu, murs puis toit, sans passer la rangée sous la porte d'une autre maison), l'aperçu se cale porte
   sur porte (contour bleu) : un clic remplace (les portes du jeu restent justes). Seules les cases de bâtiment partent

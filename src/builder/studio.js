@@ -377,13 +377,17 @@ export function createStudio(api) {
     const fresh = [];
     for (const [x, y] of cells) {
       const c = y * W + x;
+      // Sous un élément posé : un sol qu'on traverse (herbe, chemin, sable, pavés…) se peint, sans toucher à ses
+      // collisions ; un arbre ou une plante cède à la forêt peinte par-dessus ; le reste (eau, forêt, clôture) non.
+      let under = false;
       if (stroke.occ.has(c)) {
-        // Un élément posé protège sa case ; un arbre ou une plante cède à la forêt peinte par-dessus.
         const el = stroke.occ.get(c);
         const def = elementDef(el.id, el.theme);
-        if (mat.kind !== 'forest' || !['arbres', 'plantes'].includes(def?.cat)) continue;
-        removeElement(el);
-        for (const [k, e] of stroke.occ) if (e === el) stroke.occ.delete(k);
+        if (mat.kind === 'forest' && ['arbres', 'plantes'].includes(def?.cat)) {
+          removeElement(el);
+          for (const [k, e] of stroke.occ) if (e === el) stroke.occ.delete(k);
+        } else if (!mat.solid && ['plain', 'kit', 'pattern', 'tile'].includes(mat.kind)) under = true;
+        else continue;
       }
       fresh.push(c);
       stroke.cells.add(c);
@@ -434,7 +438,10 @@ export function createStudio(api) {
           stroke.cls[c] = 'other';
         }
       }
-      m.solid[c] = mat.solid ? 1 : 0;
+      // Collisions : l'eau bloque ; un sol qu'on traverse libère la case, sauf sous un élément ou un objet du Décor
+      // (une maison de la carte, un rocher) qui garde les siennes.
+      if (mat.solid) m.solid[c] = 1;
+      else if (!under && !stackOf(m.layers.decor[c]).length) m.solid[c] = 0;
     }
     api.terrain.retileAround(stroke.cls, fresh);
     if (mat.center) themedCenter(mat, fresh);
