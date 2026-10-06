@@ -161,20 +161,22 @@ FILLERS = {(255, 174, 201), (239, 228, 176)}
 OBJECT_KINDS = {'ferry': 'vehicules', 'voilier': 'vehicules', 'palmier': 'arbres', 'palmier-petit': 'arbres',
                 'arbre': 'arbres', 'ponton': 'ponts', 'mer': 'eau'}
 
+# (type, nom dans la palette, rayon de la palette du créateur, voir src/builder/builder.js PALETTE_GROUPS). L'ordre
+# compte pour les doublons (le premier type gagne) : la palette, elle, suit l'ordre des rayons.
 CATEGORIES = [
-    ('arbres', 'Arbres'),
-    ('plantes', 'Fleurs et plantes'),
-    ('herbes', 'Herbes et buissons'),
-    ('sols', 'Sols et chemins'),
-    ('eau', 'Eau'),
-    ('rochers', 'Rochers et falaises'),
-    ('clotures', 'Clôtures et barrières'),
-    ('ponts', 'Ponts, escaliers et pontons'),
-    ('batiments', 'Bâtiments'),
-    ('vehicules', 'Bateaux et véhicules'),
-    ('mobilier', 'Mobilier et objets'),
-    ('int-sols', 'Intérieurs : sols et murs'),
-    ('int-meubles', 'Intérieurs : meubles'),
+    ('arbres', 'Arbres', 'Végétation'),
+    ('plantes', 'Fleurs et plantes', 'Végétation'),
+    ('herbes', 'Herbes et buissons', 'Végétation'),
+    ('sols', 'Sols et chemins', 'Sols et chemins'),
+    ('eau', 'Eau', 'Eau'),
+    ('rochers', 'Rochers et falaises', 'Relief'),
+    ('clotures', 'Clôtures et barrières', 'Mobilier urbain'),
+    ('ponts', 'Ponts, escaliers et pontons', 'Mobilier urbain'),
+    ('batiments', 'Bâtiments', 'Bâtiments'),
+    ('vehicules', 'Bateaux et véhicules', 'Décor'),
+    ('mobilier', 'Mobilier et objets', 'Mobilier urbain'),
+    ('int-sols', 'Intérieurs : sols et murs', 'Intérieurs'),
+    ('int-meubles', 'Intérieurs : meubles', 'Intérieurs'),
 ]
 
 
@@ -633,7 +635,7 @@ def main():
     catalog = json.loads((V2 / 'catalog.json').read_text())
     sheets = {s['id']: s for s in catalog['sheets']}
     used = used_library_tiles(catalog)
-    kept, seen = {c: [] for c, _ in CATEGORIES}, {}       # seen : taille en cases -> empreintes déjà gardées
+    kept, seen = {c: [] for c, *_ in CATEGORIES}, {}       # seen : taille en cases -> empreintes déjà gardées
     stats = {'éléments': 0, 'doublons': 0}
     for sheet_id, gridded, interior in SOURCES:
         if sheet_id not in sheets:
@@ -677,7 +679,7 @@ def main():
 
     entries = []
     index = {}
-    for cat_id, label in CATEGORIES:
+    for cat_id, label, group in CATEGORIES:
         items = kept[cat_id]
         if not items:
             continue
@@ -698,7 +700,7 @@ def main():
         authors = sorted({sheets[it['source']].get('author') or it['source'] for it in items})
         entries.append({'id': f'g4-{cat_id}', 'name': label, 'file': f'g4-{cat_id}.png', 'cols': cols, 'rows': rows,
                         'empty': empty_tiles(sheet, cols, rows), 'author': ', '.join(authors), 'gen': 4,
-                        'category': cat_id,
+                        'category': cat_id, 'group': group,
                         # Objet de chaque case (voir element_map) : le créateur s'en sert pour ranger chaque case posée
                         # (sol, décor, au-dessus de Pierre) et régler ses collisions.
                         'elementsFile': f'g4-{cat_id}.elements.json'})

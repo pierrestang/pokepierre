@@ -4,7 +4,7 @@
 La planche range chaque personnage dans un bloc de couleur unie, sur une grille d'images de 32 x 32 (les directions de
 haut en bas, les pas de gauche à droite ; les cases manquantes sont blanches). Pour chaque bloc (cases voisines de même
 couleur de fond), le fond et le blanc sont rendus transparents et le bloc est enregistré tel quel dans
-ASSETTILESPOKEMONV2/bw_personnages/NNN.png ; personnages.png montre tous les blocs numérotés. Rien n'est branché au jeu.
+_archive/bw_personnages/NNN.png (hors git : style Gen 5, retiré des assets) ; personnages.png montre tous les blocs numérotés. Rien n'est branché au jeu.
 Un bloc peut contenir deux personnages côte à côte (ex. un garçon et une fille sur le même fond).
 
 Usage : python3 scripts/extract_bw_characters.py
@@ -17,7 +17,7 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'assets-source' / 'ds' / 'bw-overworld.png'
-OUT = ROOT / 'ASSETTILESPOKEMONV2' / 'bw_personnages'
+OUT = ROOT / '_archive' / 'bw_personnages'
 CELL = 32
 WHITE = (255, 255, 255)
 

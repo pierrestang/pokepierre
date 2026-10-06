@@ -37,7 +37,6 @@ FLAT = {'f': (SHEET, 3, 1), 'ƒ': (SHEET, 3, 0)}                                
 MINT = 'mint'
 MINT_TO_DPPT = {(112, 200, 160): (104, 208, 160), (160, 224, 192): (168, 216, 176), (64, 176, 136): (88, 176, 136),
                 (24, 160, 104): (78, 156, 120)}
-TALL_GRASS = ('jungle', 2, 4, MINT)
 SEA = 'sea'                                     # marque des cases de mer à recolorer (voir SEA_TO_DPPT)
 
 # ---------- Objets ----------

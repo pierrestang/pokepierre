@@ -13,6 +13,9 @@ const ZOOMS = [0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
 const PAN_STEP = 96;                         // déplacement aux flèches, en pixels d'écran (x4 avec Maj)
 const HISTORY = 100;
 const ERASE_SIZES = [1, 2, 3, 5];            // côté du carré gommé, en cases
+// Rayons de la palette, dans l'ordre (le rayon de chaque planche : `group` dans catalog.json).
+const PALETTE_GROUPS = ['Sols et chemins', 'Eau', 'Végétation', 'Relief', 'Bâtiments', 'Mobilier urbain', 'Décor',
+  'Intérieurs', 'Cases assemblées'];
 const KEYS = {
   current: 'pokepierre.builder.current',     // la carte en cours (rouverte au rechargement de la page)
   dirty: 'pokepierre.builder.dirty',         // la carte en cours a des modifications non enregistrées
@@ -1652,18 +1655,17 @@ function bindUi() {
 async function start() {
   await Promise.all([loadCatalog(), detectProjectSave()]);
   const select = $('sheet');
-  // Planches rangées par génération : DS (Gen 4, puis Gen 5), puis GBA (Gen 3), puis les cases assemblées.
-  const GENS = [[4, 'Gen 4 — DS (Diamant, Perle, HeartGold)'], [5, 'Gen 5 — DS (Noir, Blanc)'],
-    [3, 'Gen 3 — GBA (Rubis, Émeraude, Rouge Feu)'],
-    [0, 'Cases assemblées']];
-  const labels = { 4: 'Gen 4 — DS : par type d\'élément' };
-  for (const [gen, label] of GENS) {
-    // Les planches d'origine masquées (remplacées par les planches par type, voir scripts/build_g4_library.py)
-    // restent chargées pour dessiner les cartes, mais ne sont pas proposées.
-    const sheets = state.catalog.sheets.filter((sh) => (sh.gen ?? 3) === gen && !sh.hidden);
+  // Planches rangées par rayon (bibliothèque Gen 4 par type d'élément, voir scripts/build_g4_library.py CATEGORIES),
+  // puis les cases assemblées. Les planches d'origine masquées (remplacées par les planches par type) restent chargées
+  // pour dessiner les cartes, mais ne sont pas proposées.
+  const shown = state.catalog.sheets.filter((sh) => !sh.hidden);
+  const groupOf = (sh) => sh.group ?? (sh.id === 'auto' ? 'Cases assemblées' : 'Autres planches');
+  const groups = [...PALETTE_GROUPS, ...new Set(shown.map(groupOf))].filter((g, i, all) => all.indexOf(g) === i);
+  for (const label of groups) {
+    const sheets = shown.filter((sh) => groupOf(sh) === label);
     if (!sheets.length) continue;
     const group = document.createElement('optgroup');
-    group.label = labels[gen] ?? label;
+    group.label = label;
     for (const sh of sheets) group.append(new Option(sh.name, sh.id));
     select.append(group);
   }
@@ -1673,7 +1675,7 @@ async function start() {
   setAutoLayer(true);
   setTool('brush');
   $('grid').classList.add('on');
-  showSheet(select.querySelector('option').value);          // la première planche proposée (Gen 4, Arbres)
+  showSheet(select.querySelector('option').value);          // la première planche proposée (Sols et chemins)
   fitCanvas();
   // Le brouillon du navigateur, s'il a des modifications ; sinon la version enregistrée (les cartes générées par
   // scripts/convert_maps_v2.py peuvent avoir changé depuis, et leurs cases assemblées avec).

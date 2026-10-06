@@ -5,9 +5,10 @@ Détail technique du créateur de cartes (sorti de CLAUDE.md, qui n'en garde qu'
 ## Éditeur
 
 Créateur de cartes (builder.html, src/builder/ ; entrée « Créateur de cartes » du menu titre) : nouveau design
-« V2 ». Planches déposées par l'utilisateur dans ASSETTILESPOKEMONV2/ (ressources de fans DeviantArt : ekat99,
-magiscarf, WesleyFG, phyromatical, adalkroofs… à créditer), préparées par scripts/build_v2_tiles.py vers
-public/assets/v2/ (cases de 16 px + catalog.json). Trois calques (sol, décor bloquant, au-dessus de Pierre),
+« V2 ». Planches Gen 4 déposées par l'utilisateur dans ASSETTILESPOKEMONV2/ (ressources de fans DeviantArt et eeveeexpo, à
+créditer ; rangées par usage, voir ASSETTILESPOKEMONV2/README.md ; audit et nettoyage du 6 octobre 2026 :
+docs/technique/assets-gen4.md), préparées par scripts/build_v2_tiles.py vers public/assets/v2/ (cases de 16 px +
+catalog.json). Plus de planches Gen 3 ni Gen 5 : la palette ne propose que la bibliothèque Gen 4, rangée par rayon. Trois calques (sol, décor bloquant, au-dessus de Pierre),
 collisions et point de départ. En dev, les cartes sont enregistrées dans src/data/builtMaps/<id>.json (vite.config.js) ;
 le jeu les ouvre avec ?carte=<id> (?carte=test : la carte en cours d'essai), voir src/systems/builtMaps.js.
 Une carte du jeu (Saint-Ay, Hull…) testée ainsi s'ouvre dans son contexte (PNJ, portes, histoire de la partie) sans

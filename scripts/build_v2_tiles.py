@@ -21,59 +21,45 @@ OUT = ROOT / 'public' / 'assets' / 'v2'
 TILE = 16
 
 # (identifiant, nom affiché dans la palette, fichier source, facteur de réduction, auteur, génération : 4 = DS
-# (Diamant / Perle / HeartGold), 3 = GBA (Rubis / Émeraude / Rouge Feu)[, fond à retirer]). Fond : un ensemble de
+# (Diamant / Perle / HeartGold) : les planches Gen 3 et Gen 5 ont été retirées (styles incompatibles)[, fond à
+# retirer]). Fond : un ensemble de
 # couleurs (damier peint à la place de la transparence, retiré partout) ou 'blanc' (le blanc relié aux bords).
 RMXP_FILL = {(255, 245, 104), (255, 0, 255), (240, 91, 161)}
+JUSTIN = 'tilesets/mixtes/dppt-hgss-complet_justin8964.png'
+KYLE = 'tilesets/batiments/sinnoh-batiments-objets_kyle-dove.png'
 SHEETS = [
-    ('dppt', 'Extérieurs Diamant / Perle', '4th_gen_outdoor_tileset_by_akizakura16_da5h3mn.png', 2, 'akizakura16', 4),
-    ('dppt-int', 'Intérieurs Diamant / Perle', '4th_gen_indoor_tileset_by_akizakura16_dac0c2w.png', 2, 'akizakura16', 4),
-    ('hgss-int', 'Chambre HeartGold / SoulSilver', 'pokemon_hgss_interior_tiles_by_ultimatetraveler_d2tjym2.png', 1,
+    # tilesets/exterieurs, batiments, interieurs, mixtes, vehicules : planches Gen 4 rangées par usage principal
+    # (voir ASSETTILESPOKEMONV2/README.md). Elles nourrissent la bibliothèque par type (scripts/build_g4_library.py).
+    ('dppt', 'Extérieurs Diamant / Perle', 'tilesets/exterieurs/dppt-exterieurs_akizakura16.png', 2, 'akizakura16', 4),
+    ('dppt-int', 'Intérieurs Diamant / Perle', 'tilesets/interieurs/dppt-interieurs_akizakura16.png', 2, 'akizakura16', 4),
+    ('hgss-int', 'Chambre HeartGold / SoulSilver', 'tilesets/interieurs/chambre-hgss_ultimatetraveler.png', 1,
      'ultimatetraveler', 4, {(204, 204, 204), (178, 178, 178)}),
-    ('ds-justin', 'Grande planche DPPt + HGSS (justin8964)', 'dppt_and_hgss_tileset_by_justin8964_dg9nal7.png', 1,
-     'justin8964', 4, {(167, 167, 167), (220, 220, 220)}),
-    ('ds-lightbulb', 'Grande planche DPPt + HGSS (lightbulb15)', 'pokemon_dppthgss_tileset_by_lightbulb15_d4eb7yc.png', 1,
-     'lightbulb15', 4, {(184, 178, 145), (255, 251, 228)}),
-    ('sinnoh-kyle', 'Sinnoh : bâtiments et objets (Kyle-Dove)', 'dp_tiles_for_public_by_kyle_dove_d1mjsuq.png', 1,
-     'Kyle-Dove / Speedialga', 4, 'blanc'),
-    ('biomes-kyle', 'Biomes (Kyle-Dove)', 'biome_tiles_public_by_kyle_dove_d4jdto6.png', 1, 'Kyle-Dove', 4),
-    # Compilation « Ready to use Tilesets » d'Aki (eeveeexpo.com/resources/15), rangée dans eeveeexpo/ : chaque
+    ('ds-justin', 'Grande planche DPPt + HGSS (justin8964)', JUSTIN, 1, 'justin8964', 4, {(167, 167, 167), (220, 220, 220)}),
+    ('sinnoh-kyle', 'Sinnoh : bâtiments et objets (Kyle-Dove)', KYLE, 1, 'Kyle-Dove / Speedialga', 4, 'blanc'),
+    # Compilation « Ready to use Tilesets » d'Aki (eeveeexpo.com/resources/15, voir credits/eeveeexpo.txt) : chaque
     # planche est à créditer à son artiste (pas au compilateur).
-    ('hgss-ext', 'HGSS extérieurs (Akizakura16, version récente)', 'eeveeexpo/akizakura16-hgss_xy1zPiF.png', 2, 'Akizakura16', 4),
-    ('hgss-int2', 'HGSS intérieurs (Akizakura16, version récente)', 'eeveeexpo/akizakura16-hgss_zEcLp2S.png', 2, 'Akizakura16', 4),
-    ('jesus-1', 'JesusCarrasco — nature verte', 'eeveeexpo/jesuscarrasco_90Ti2fE.png', 2, 'JesusCarrasco', 4),
-    ('jesus-2', 'JesusCarrasco — nature rouge (automne)', 'eeveeexpo/jesuscarrasco_JMCgaSr.png', 2, 'JesusCarrasco', 4),
-    ('jesus-3', 'JesusCarrasco — intérieurs', 'eeveeexpo/jesuscarrasco_dVHll7F.png', 2, 'JesusCarrasco', 4),
-    ('kaliser', 'Kaliser — ville et nature', 'eeveeexpo/kaliser_4MkW96K.png', 2, 'Kaliser', 4),
-    ('kyle-ext', 'Kyle-Dove — extérieurs', 'eeveeexpo/kyle-dove_BmmW5Ox.png', 2, 'Kyle-Dove', 4),
-    ('lotus-1', 'LotusKing — arbres, clôtures, centres', 'eeveeexpo/lotusking_iLyLdM2.png', 2, 'LotusKing', 4),
-    ('lotus-2', 'LotusKing — arbres, clôtures, centres (variante)', 'eeveeexpo/lotusking_oSBky9g.png', 2, 'LotusKing', 4),
-    ('lotus-aigue', 'LotusKing / Aigue--marine — maisons', 'eeveeexpo/lotusking-aigue-marine_YCfbsjd.png', 2, 'Aigue--marine / LotusKing', 4),
-    ('wilson-1', 'WilsonScarloxy — nature et maisons', 'eeveeexpo/wilsonscarloxy_pFSm87G.png', 2, 'WilsonScarloxy', 4),
-    ('wilson-2', 'WilsonScarloxy — ville', 'eeveeexpo/wilsonscarloxy_x9PBgKi.png', 2, 'WilsonScarloxy', 4),
-    ('sailor-1', 'SailorVicious — désert, eau, maisons', 'eeveeexpo/sailorvicious_fl0Fawh.png', 2, 'SailorVicious', 5),
-    ('sailor-2', 'SailorVicious — désert, eau, maisons (variante)', 'eeveeexpo/sailorvicious_M1sYicX.png', 2, 'SailorVicious', 5),
-    ('ultimo-ext', 'Gen 5 extérieurs (UltimoSpriter)', 'eeveeexpo/ultimospriter-gen5-exterieur_Cmm6Jjn.png', 2, 'UltimoSpriter', 5),
-    ('gen5-int', 'Gen 5 intérieurs (Akizakura16, Shiney570, UltimoSpriter)', 'eeveeexpo/gen5-interieur-akizakura16-shiney570-ultimospriter_RriSFxo.png', 2, 'Akizakura16, Shiney570, UltimoSpriter', 5),
-    ('magi-1', 'Magiscarf — ville et grottes', 'eeveeexpo/magiscarf_nYiXTiQ.png', 2, 'Magiscarf', 3),
-    ('magi-2', 'Magiscarf — intérieurs', 'eeveeexpo/magiscarf_kIBvowP.png', 2, 'Magiscarf', 3),
+    ('jesus-1', 'JesusCarrasco — nature verte', 'tilesets/exterieurs/nature-verte_jesuscarrasco.png', 2, 'JesusCarrasco', 4),
+    ('jesus-2', 'JesusCarrasco — nature rouge (automne)', 'tilesets/exterieurs/nature-automne_jesuscarrasco.png', 2, 'JesusCarrasco', 4),
+    ('jesus-3', 'JesusCarrasco — intérieurs', 'tilesets/interieurs/interieurs_jesuscarrasco.png', 2, 'JesusCarrasco', 4),
+    ('kaliser', 'Kaliser — ville et nature', 'tilesets/exterieurs/ville-nature_kaliser.png', 2, 'Kaliser', 4),
+    ('kyle-ext', 'Kyle-Dove — extérieurs', 'tilesets/exterieurs/nature-ville_kyle-dove.png', 2, 'Kyle-Dove', 4),
+    ('lotus-1', 'LotusKing — arbres, clôtures, centres', 'tilesets/exterieurs/arbres-clotures-centres_lotusking.png', 2, 'LotusKing', 4),
+    ('lotus-2', 'LotusKing — arbres, clôtures, centres (variante)',
+     'tilesets/exterieurs/arbres-clotures-centres_lotusking-variante.png', 2, 'LotusKing', 4),
+    ('lotus-aigue', 'LotusKing / Aigue--marine — maisons', 'tilesets/batiments/maisons_lotusking-aigue-marine.png', 2,
+     'Aigue--marine / LotusKing', 4),
+    ('wilson-1', 'WilsonScarloxy — nature et maisons', 'tilesets/exterieurs/nature-maisons_wilsonscarloxy.png', 2, 'WilsonScarloxy', 4),
+    ('wilson-2', 'WilsonScarloxy — ville', 'tilesets/batiments/ville_wilsonscarloxy.png', 2, 'WilsonScarloxy', 4),
     # Planches RMXP « Buildings / Nature / Urban » (cases de 16 px ; le vide est peint en jaune, magenta ou rose).
-    ('rmxp-batiments', 'Bâtiments DS : arènes, centres, maisons (RMXP)', 'BuildingsRMXP.png', 1, '', 4, RMXP_FILL),
-    ('rmxp-nature', 'Nature DS : sols, arbres, fleurs, rochers (RMXP)', 'NatureRMXP.png', 1, '', 4, RMXP_FILL),
-    ('rmxp-urbain', 'Ville DS : routes, clôtures, mobilier (RMXP)', 'UrbanRMXP.png', 1, '', 4, RMXP_FILL),
-    # Gen 4 Pack (Magiscarf, WesleyFG, SailorVicious, Kyle-Dove… voir « Gen 4 Pack/CREDITS.txt ») : dessiné en 32 px.
-    ('g4-pack', 'Gen 4 Pack : nature, neige, chemins', 'Gen 4 Pack/Tilesets/Custom Outside tileset.png', 2, 'Gen 4 Pack (voir CREDITS)', 4),
-    ('jared-bateaux', 'Bateaux, ferries et cargos (terriblejared)',
-     'big_boats_small_boats_ferry_yacht_and_more_by_terriblejared_dmhfmtk-pre.png', 1, 'terriblejared', 4),
+    ('rmxp-batiments', 'Bâtiments DS : arènes, centres, maisons (RMXP)', 'tilesets/batiments/batiments-rmxp.png', 1, '', 4, RMXP_FILL),
+    ('rmxp-nature', 'Nature DS : sols, arbres, fleurs, rochers (RMXP)', 'tilesets/exterieurs/nature-rmxp.png', 1, '', 4, RMXP_FILL),
+    ('rmxp-urbain', 'Ville DS : routes, clôtures, mobilier (RMXP)', 'tilesets/exterieurs/urbain-rmxp.png', 1, '', 4, RMXP_FILL),
+    # Gen 4 Pack (Magiscarf, WesleyFG, SailorVicious, Kyle-Dove… voir credits/gen4-pack.txt) : dessiné en 32 px.
+    ('g4-pack', 'Gen 4 Pack : nature, neige, chemins', 'tilesets/exterieurs/gen4-pack-exterieurs.png', 2, 'Gen 4 Pack (voir CREDITS)', 4),
+    ('jared-bateaux', 'Bateaux, ferries et cargos (terriblejared)', 'tilesets/vehicules/bateaux-ferries_terriblejared.png', 1,
+     'terriblejared', 4),
     ('jared-camping', 'Camping, caravanes, tentes et nature (terriblejared)',
-     'large_campground_tileset_w_nature_tiles__by_terriblejared_dmex0km-pre.png', 1, 'terriblejared', 4),
-    ('gen3', 'Nature', 'ekat_s_mega_gen_3_set_by_ekat99_deh8jtt-fullview.png', 2, 'ekat99', 3),
-    ('halcyon', 'Extérieurs (Halcyon)', 'pokemon_halcyon_outdoors_by_ekat99_dfbfwa0.png', 2, 'ekat99', 3),
-    ('ferme', 'Ferme et champs', 'deh8j8h-cb7f8f93-bb7c-4889-9a2b-968aba9bf39e.png', 1, '', 3),
-    ('cerisiers', 'Fleurs, cerisiers et rails', 'deocy1g-9ee0ef53-81f0-41fd-927a-fea58544820f.png', 1, '', 3),
-    ('foret', 'Forêt et falaises', 'deof85u-43b2871f-9219-4937-bfa4-e3b01864aed7.png', 1, '', 3),
-    ('jungle', 'Jungle et hautes herbes', 'dequnwm-9dc2822f-86e6-489c-a99d-b7a27903b197.png', 1, '', 3),
-    ('ville', 'Ville et jardins', 'deslp3a-64947b41-540e-457b-bef3-ff1c1712e4bd.png', 1, '', 3),
-    ('montagne', 'Forêt sombre et montagne', 'dkee61c-0e6cfc58-5626-47af-b245-61bfbae6e21e.png', 1, '', 3),
+     'tilesets/vehicules/camping-caravanes_terriblejared.png', 1, 'terriblejared', 4),
 ]
 
 
@@ -131,17 +117,16 @@ def empty_tile(img, x0, y0):
 # dans la planche « objets » : (nom, fichier source, rectangles x0, y0, x1, y1 en pixels — plusieurs morceaux sont
 # recollés côte à côte —, auteur, largeur en cases imposée ou None). L'objet est centré en bas de son bloc : une
 # largeur paire centre un arbre sur une limite de cases (pour un bloc de 2 x 2), impaire sur une case.
-JUSTIN = 'dppt_and_hgss_tileset_by_justin8964_dg9nal7.png'
 OBJECTS = [
     # Le yacht blanc, proue vers la gauche (le ferry de Fort-de-France, amarré au ponton).
-    ('ferry', 'dp_tiles_for_public_by_kyle_dove_d1mjsuq.png', [(480, 405, 603, 450)], 'Kyle-Dove / Speedialga', None),
+    ('ferry', KYLE, [(480, 405, 603, 450)], 'Kyle-Dove / Speedialga', None),
     ('palmier', JUSTIN, [(193, 1, 239, 48)], 'justin8964', 4),          # grand palmier DS (bloc de 2 x 2)
     ('palmier-petit', JUSTIN, [(261, 61, 299, 112)], 'justin8964', 3),  # palmier fin (une case)
     ('voilier', JUSTIN, [(642, 4, 731, 81)], 'justin8964', None),
     ('arbre', JUSTIN, [(2, 1, 46, 48)], 'justin8964', 4),               # arbre rond DS (bloc de 2 x 2)
     ('arbre-3', JUSTIN, [(2, 1, 46, 48)], 'justin8964', 3),             # le même, centré sur 3 cases
     # Ponton en planches transversales, poteaux sur les bords (3 x 3 cases, à répéter).
-    ('ponton', 'dp_tiles_for_public_by_kyle_dove_d1mjsuq.png', [(7, 808, 55, 856)], 'Kyle-Dove / Speedialga', 3),
+    ('ponton', KYLE, [(7, 808, 55, 856)], 'Kyle-Dove / Speedialga', 3),
     ('mer', JUSTIN, [(848, 272, 880, 304)], 'Dewitty (justin8964)', 2),  # mer DS, motif de 2 x 2 cases (pleine)
 ]
 
@@ -257,7 +242,7 @@ def g4_grass_to_dppt(img):
 def build_autotiles():
     pieces = []
     for name in AUTOTILES:
-        img = Image.open(SRC / 'Gen 4 Pack' / 'Autotiles' / f'{name}.png').convert('RGBA')
+        img = Image.open(SRC / 'autotiles' / 'gen4-pack' / f'{name}.png').convert('RGBA')
         scale = 1 if name == 'water shine' else 2
         img = img.resize((img.width // scale, img.height // scale), Image.NEAREST)
         pieces.append(g4_grass_to_dppt(img) if name in ('grass', 'dirt path') else img)
