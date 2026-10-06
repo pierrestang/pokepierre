@@ -14,11 +14,13 @@ import { refOf, decodeRef, stackOf, EMPTY } from './mapModel.js';
 const PIECES = 5;                                  // coin, bord horizontal, bord vertical, angle rentrant, plein
 const CENTER = 4;
 // Matières considérées comme « la même » pour tracer les bords (comme les scripts de conversion).
+// 'lagoon' : eau claire recolorée (lagon de Fort-de-France) ; 'shore' : rivage fabriqué (sable avec son écume) : l'eau
+// qui les touche ne trace pas de bord (le rivage a déjà le sien).
 const SAME = {
   path: new Set(['path', 'beach', 'pier']),
-  beach: new Set(['beach', 'sea', 'pond', 'pier', 'path']),
-  sea: new Set(['sea', 'pond', 'pier']),
-  pond: new Set(['pond', 'sea', 'pier', 'other']),
+  beach: new Set(['beach', 'sea', 'pond', 'pier', 'path', 'lagoon', 'shore']),
+  sea: new Set(['sea', 'pond', 'pier', 'lagoon', 'shore']),
+  pond: new Set(['pond', 'sea', 'pier', 'other', 'lagoon', 'shore']),
   tall: new Set(['tall']),
 };
 const GRASS_TILES = new Set(['4,0', '4,1', '4,2', '3,2', '3,3']);   // herbe DPPt et ses touffes
@@ -114,7 +116,7 @@ export function createAssistant(api) {
     return mean;
   }
 
-  // Matière d'une case : 'path', 'beach', 'sea', 'pond', 'tall', 'grass', 'pier' ou 'other'.
+  // Matière d'une case : 'path', 'beach', 'sea', 'pond', 'tall', 'grass', 'pier', 'lagoon', 'shore' ou 'other'.
   function classOf(x, y) {
     const m = state.map;
     const stack = stackOf(m.layers.sol[y * m.width + x]);
@@ -133,7 +135,9 @@ export function createAssistant(api) {
     const mean = meanOf(ref);
     if (!mean) return 'other';
     const [r, g, b] = mean;
-    if (b > r + 40 && b > g) return 'sea';
+    // De l'eau (même claire, même avec un coin d'écume) : le bleu domine le rouge.
+    if (b > r + 40 && b >= g - 10) return (r + g + b) / 3 > 150 ? 'lagoon' : 'sea';
+    if (r > 150 && g > 200) return 'shore';                         // sable clair, écume
     if (g > r + 15 && g > b - 10) return 'grass';
     return 'other';
   }

@@ -25,7 +25,7 @@ export function createStudio(api) {
   async function load() {
     if (cat) return;
     [cat, lis] = await Promise.all(['catalogue', 'lisieres'].map((id) => fetch(`${api.base}assets/v2/${id}.json`).then((r) => r.json())));
-    await Promise.all(['catalogue', 'lisieres', 'dppt', 'autotiles-g4', 'transitions'].map((id) => api.loadSheet(id)));
+    await Promise.all(['catalogue', 'lisieres', 'dppt', 'autotiles-g4', 'transitions', 'auto'].map((id) => api.loadSheet(id)));
     await api.terrain.ready();
   }
 
@@ -337,6 +337,10 @@ export function createStudio(api) {
       removeRefs('decor', c, isFlower);
       if (mat.kind === 'plain' || mat.kind === 'kit') {
         api.terrain.paint(stroke.cls, [c], mat.kind === 'plain' ? 'grass' : mat.terrain);
+      } else if (mat.kind === 'tile') {
+        const [sh, k] = mat.tiles[y % mat.tiles.length][x % mat.tiles[0].length];
+        m.layers.sol[c] = sol.length > 1 ? [refOf(m, sh, k), ...sol.slice(1)] : refOf(m, sh, k);
+        stroke.cls[c] = mat.cls ?? 'other';
       } else if (mat.kind === 'pattern') {
         const k = mat.tiles[y % mat.tiles.length][x % mat.tiles[0].length];
         if (mat.solid) {
@@ -353,12 +357,42 @@ export function createStudio(api) {
       m.solid[c] = mat.solid ? 1 : 0;
     }
     api.terrain.retileAround(stroke.cls, fresh);
+    if (mat.center) themedCenter(mat, fresh);
     if (stroke.fenceTouched.length) { renderFences(stroke.fenceTouched); stroke.fenceTouched = []; }
     if (mat.kind === 'forest' || cells.some(([x, y]) => stroke.oldForest.some(([a, b]) => a === x && b === y))) renderForest(stroke.oldForest);
   }
 
   function endStroke() {
     stroke = null;
+  }
+
+  // La mer d'une ville (Fort-de-France : son océan) à la place de la case pleine de DPPt, autour des cases peintes.
+  function themedCenter(mat, cells) {
+    const m = state.map;
+    const W = m.width;
+    const t = { sea: [6, 6], pond: [1, 6] }[mat.terrain];
+    const plain = refOf(m, 'dppt', t[1] * api.colsOf('dppt') + t[0]);
+    for (const c0 of cells) {
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const x = (c0 % W) + dx;
+          const y = Math.floor(c0 / W) + dy;
+          if (x < 0 || y < 0 || x >= W || y >= m.height) continue;
+          const c = y * W + x;
+          const sol = stackOf(m.layers.sol[c]);
+          // Une case du rivage qui a un coin d'eau claire : sa version avec l'océan.
+          const tile = decodeRef(m, sol[0]);
+          const swap = tile?.sheet === 'auto' && mat.swap?.[`${tile.index}:${(y % 2) * 2 + (x % 2)}`];
+          if (swap !== undefined && swap !== false) {
+            m.layers.sol[c] = sol.length > 1 ? [catRef(swap), ...sol.slice(1)] : catRef(swap);
+            continue;
+          }
+          if (sol[0] !== plain) continue;
+          const [sh, k] = mat.center[(y % 2) * 2 + (x % 2)];
+          m.layers.sol[c] = sol.length > 1 ? [refOf(m, sh, k), ...sol.slice(1)] : refOf(m, sh, k);
+        }
+      }
+    }
   }
 
   // Remplir : la matière choisie sur toutes les cases reliées de la même matière que celle cliquée.
@@ -375,7 +409,7 @@ export function createStudio(api) {
       const c = todo.pop();
       for (const n of [c - 1, c + 1, c - W, c + W]) {
         if (n < 0 || n >= W * m.height || seen.has(n) || Math.abs((n % W) - (c % W)) > 1) continue;
-        if (cls[n] !== want || stroke.occ.has(n) || (m.solid[n] && want !== 'sea' && want !== 'pond')) continue;
+        if (cls[n] !== want || stroke.occ.has(n) || (m.solid[n] && !['sea', 'pond', 'lagoon'].includes(want))) continue;
         seen.add(n);
         todo.push(n);
       }
@@ -413,10 +447,13 @@ export function createStudio(api) {
     };
     const grass = () => { for (const [x, y] of [[0, 0], [16, 0], [0, 16], [16, 16]]) draw('dppt', 4, x, y); };
     if (mat.kind === 'plain') grass();
-    else if (mat.kind === 'kit') {
+    else if (mat.kind === 'kit' && !mat.center) {
       const t = { path: [1, 1, 'dppt'], beach: [6, 1, 'dppt'], sea: [6, 6, 'dppt'], pond: [1, 6, 'dppt'], tall: [1, 2, 'autotiles-g4'] }[mat.terrain];
       const c = api.colsOf(t[2]);
       for (const [x, y] of [[0, 0], [16, 0], [0, 16], [16, 16]]) draw(t[2], t[1] * c + t[0], x, y);
+    } else if (mat.kind === 'tile' || mat.center) {
+      const tiles = mat.center ? [[mat.center[0], mat.center[1]], [mat.center[2], mat.center[3]]] : mat.tiles;
+      for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) { const [sh, k] = tiles[j % tiles.length][i % tiles[0].length]; draw(sh, k, i * 16, j * 16); }
     } else if (mat.kind === 'fence') {
       grass();
       draw('dppt', mat.pieces.h, 0, 8);

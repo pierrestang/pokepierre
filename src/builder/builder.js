@@ -1844,6 +1844,6 @@ async function start() {
 }
 
 // Accès console en développement (tests manuels) : window.builder.
-if (import.meta.env.DEV) window.builder = { state, studio, setMode, setTool, setStamp, brushAt, eraseTile, placementOf, elementsOf, objectAt, anchorKey, loadSheet, loadMap, blankMap, changed };
+if (import.meta.env.DEV) window.builder = { state, studio, assistant, setMode, setTool, setStamp, brushAt, eraseTile, placementOf, elementsOf, objectAt, anchorKey, loadSheet, loadMap, blankMap, changed };
 
 start();

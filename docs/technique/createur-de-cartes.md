@@ -41,6 +41,11 @@ Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut 
   collisions d'avant. Un élément posé protège ses cases du pinceau.
 - Ce que le mode simple a posé est noté dans la carte (`studio` : thème, cases de forêt, éléments posés) ; le jeu
   l'ignore. L'annulation le suit.
+- Eau de Fort-de-France : le lagon (eau claire) et le rivage (sable avec son écume) sont des cases fabriquées ; le
+  créateur les reconnaît à leur couleur ('lagoon', 'shore' : l'eau qui les touche ne trace pas de bord). Thème
+  Fort-de-France : « Mer » pose l'océan de la carte, « Lagon » l'eau claire ; Remplir sur le lagon le change en océan
+  d'un coup, et les cases du rivage qui ont un coin d'eau claire passent à leur version avec l'océan (catalogue :
+  ocean_swaps).
 - Angles rentrants de l'étang : la planche DPPt n'en a pas ; la planche « transitions » les compose avec la pointe d'un
   coin d'îlot (rangées 11-13) aux couleurs de la berge (build_transitions.pond_inner). Les cartes du jeu sont reprises
   par scripts/identites.py (repair : anciens angles d'étang, montants du côté droit des enclos), à chaque génération.

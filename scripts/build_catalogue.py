@@ -267,6 +267,31 @@ def element_entry(pack, eid, name, cat, img, solid_from, place, door=None, theme
             'over': solid_from if solid_from is not None else 0, 'place': place, 'door': door}
 
 
+def ocean_swaps(pack):
+    """Fort-de-France : les cases du lagon et du rivage qui ont de l'eau claire, avec l'océan à la place (une version
+    par position dans le motif 2 x 2 de l'océan). Le pinceau Mer les pose autour de lui : plus de carré de lagon dans
+    les angles du rivage. Clé : « n° de la case auto:position » -> n° dans la planche du catalogue."""
+    auto = sheet('auto')
+    cols = auto.width // TILE
+    tile = lambda k: np.array(auto.crop(((k % cols) * TILE, (k // cols) * TILE, (k % cols + 1) * TILE, (k // cols + 1) * TILE)))
+    lagoon = np.unique(tile(1418)[..., :3].reshape(-1, 3), axis=0).astype(int)
+    m = json.loads((ROOT / 'src' / 'data' / 'builtMaps' / 'fort-de-france.json').read_text())
+    slot = m['sheets'].index('auto')
+    used = {r % 100000 for c in m['layers']['sol'] for r in (c if isinstance(c, list) else [c]) if r >= 0 and r // 100000 == slot}
+    swaps = {}
+    for k in sorted(used):
+        a = tile(k)
+        px = a[..., :3].astype(int).reshape(-1, 1, 3)
+        near = ((np.abs(px - lagoon[None]).sum(-1).min(-1) < 20).reshape(TILE, TILE)) & (a[..., 3] > 0)
+        if not near.any():
+            continue
+        for p in range(4):
+            out = a.copy()
+            out[near] = tile(48 + p)[near]
+            swaps[f'{k}:{p}'] = pack.add_tile(Image.fromarray(out))
+    return swaps
+
+
 def main():
     pack = Packer()
     themes = {}
@@ -304,6 +329,14 @@ def main():
             {'id': 'fleurs-roses', 'name': 'Fleurs roses', 'kind': 'overlay', 'tile': ['autotiles-g4', 35], 'solid': 0},
             {'id': 'fleurs-orange', 'name': 'Fleurs orange', 'kind': 'overlay', 'tile': ['dppt', 3], 'solid': 0},
         ]
+        if tid == 'fort-de-france':
+            # La mer et le lagon de la carte (cases fabriquées de la planche « auto » : océan en motif 2 x 2, eau claire).
+            for x in materials:
+                if x['id'] == 'mer':
+                    x['center'] = [['auto', 48], ['auto', 49], ['auto', 50], ['auto', 51]]
+                    x['swap'] = ocean_swaps(pack)
+            materials.insert(6, {'id': 'lagon', 'name': 'Lagon', 'kind': 'tile', 'tiles': [[['auto', 1418]]],
+                                 'cls': 'lagoon', 'solid': 1})
         # Clôture : les angles et les jonctions se choisissent d'après les voisines (comme g4_theme.paint_objects).
         style = 'blanche' if tid in ('prytanee', 'hull', 'bordeaux') else 'bois'
         materials.append({'id': 'cloture', 'name': 'Clôture blanche' if style == 'blanche' else 'Clôture', 'kind': 'fence',
