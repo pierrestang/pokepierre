@@ -40,7 +40,12 @@ ROCK_IN_WATER = ('dppt', 7, 145)                          # rocher cerclé d'éc
 # Mobilier qui ajoute des collisions : (planche, colonne, rangée, largeur, hauteur, première rangée bloquante) ; les
 # rangées du dessus passent au-dessus de Pierre.
 FURNITURE = {
-    'lampadaire': ('dppt', 7, 129, 1, 3, 2),          # réverbère DPPt
+    # Un réverbère différent par ville (voir scripts/identites.py) : lanterne en bois à Saint-Ay, globe blanc au collège,
+    # lanterne bleue au Prytanée, lanterne HGSS à Bordeaux ; Montépilloy n'en a pas (puits et meules de foin).
+    'lanterne-bois': ('g4-clotures', 9, 76, 1, 2, 1),
+    'globe': ('g4-mobilier', 0, 257, 2, 3, 2),
+    'lanterne-bleue': ('g4-mobilier', 2, 257, 2, 4, 3),
+    'lanterne-hgss': ('g4-mobilier', 6, 241, 2, 3, 2),
     'banc': ('g4-mobilier', 2, 277, 2, 2, 1),
     'jardiniere-rouge': ('g4-mobilier', 2, 279, 2, 1, 0),
     'jardiniere-orange': ('g4-mobilier', 4, 279, 2, 1, 0),
@@ -63,7 +68,7 @@ PLANS = {
         },
         'lilies': [(1, 12), (4, 13), (7, 12), (2, 14), (6, 14), (3, 15)],
         'rocks': [(8, 13)],
-        'furniture': [('lampadaire', 13, 7), ('lampadaire', 16, 13),
+        'furniture': [('lanterne-bois', 13, 8), ('lanterne-bois', 16, 14),
                       ('banc', 10, 14), ('banc', 23, 20), ('bois', 20, 11)],
     },
     'route-de-montepilloy': {
@@ -82,8 +87,7 @@ PLANS = {
             'f': [(2, 7), (28, 13), (29, 14)],
         },
         'lilies': [(20, 18), (22, 19), (19, 20)],
-        'furniture': [('lampadaire', 13, 7), ('lampadaire', 16, 7), ('lampadaire', 16, 15), ('banc', 24, 17),
-                      ('jardiniere-rouge', 5, 6), ('jardiniere-rose', 26, 5)],
+        'furniture': [('banc', 24, 17), ('jardiniere-rouge', 5, 6), ('jardiniere-rose', 26, 5)],
     },
     'bonsecours': {
         'flowers': {
@@ -91,7 +95,7 @@ PLANS = {
             'o': [(2, 9), (3, 13), (2, 22), (20, 9), (21, 14), (20, 18)],
             'f': [(14, 22), (15, 22), (16, 23), (6, 22), (7, 22)],
         },
-        'furniture': [('banc', 14, 7), ('lampadaire', 9, 17), ('lampadaire', 12, 20)],
+        'furniture': [('banc', 14, 7), ('globe', 9, 17), ('globe', 12, 20)],
     },
     'prytanee': {
         'flowers': {                                         # parterres symétriques des quatre pelouses
@@ -99,7 +103,8 @@ PLANS = {
                   (10, 18), (11, 18), (10, 19), (11, 19), (23, 18), (24, 18), (23, 19), (24, 19)],
             'o': [(12, 12), (13, 12), (21, 12), (22, 12), (12, 20), (13, 20), (21, 20), (22, 20)],
         },
-        'furniture': [('lampadaire', 14, 10), ('lampadaire', 20, 10), ('lampadaire', 14, 18), ('lampadaire', 20, 18),
+        'furniture': [('lanterne-bleue', 14, 9), ('lanterne-bleue', 20, 9), ('lanterne-bleue', 14, 17),
+                      ('lanterne-bleue', 20, 17),
                       ('jardiniere-rouge', 3, 13), ('jardiniere-rouge', 31, 13)],
     },
     'bordeaux': {
@@ -109,8 +114,8 @@ PLANS = {
         },
         # Péniches sur la Garonne (bateaux longs de terriblejared).
         'objects': [('g4-vehicules', 0, 30, 6, 3, 12, 12), ('g4-vehicules', 6, 34, 5, 2, 26, 13)],
-        'furniture': [('lampadaire', 4, 8), ('lampadaire', 16, 8), ('lampadaire', 28, 8), ('banc', 11, 9),
-                      ('banc', 19, 9), ('lampadaire', 10, 14), ('lampadaire', 26, 14)],
+        'furniture': [('lanterne-hgss', 4, 8), ('lanterne-hgss', 16, 8), ('lanterne-hgss', 28, 8), ('banc', 11, 9),
+                      ('banc', 19, 9), ('lanterne-hgss', 10, 14), ('lanterne-hgss', 26, 14)],
     },
     'hull': {
         'flowers': {
@@ -118,7 +123,7 @@ PLANS = {
             'o': [(15, 37), (16, 37)],
         },
         'lilies': [(13, 3), (16, 3)],                       # bassin du parc
-        'rocks': [(4, 44), (25, 45), (28, 47)],
+        'rocks': [(25, 45), (28, 47)],                     # (le cargo des docks occupe l'ouest : identites.py)
         'furniture': [('banc', 15, 37)],
     },
 }
@@ -384,7 +389,8 @@ def enrich(bd, map_id):
                 x, y = ax + i, ay + j
                 if j >= solid_from:
                     put_decor(x, y, img)
-                    if not solid(x, y):
+                    # Bloquante si la case est vraiment pleine (une ombre portée, semi-transparente, ne bloque pas).
+                    if not solid(x, y) and (np.array(img)[..., 3] > 200).sum() >= 12:
                         new_solid.add((x, y))
                 else:
                     cell = m['layers']['dessus'][y * W + x]
