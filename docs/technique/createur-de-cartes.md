@@ -31,6 +31,17 @@ calé sur la grille, la porte sur la dernière rangée. Mobilier (g4-mobilier) :
 transat, grande caisse, massif, table de pique-nique, banc de bois, abri de bois, distributeur, panneau d'affichage ;
 souche (végétation, garde son ombre). Les villes suivantes (Prytanée, Bordeaux, Hull) viendront plus tard.
 
+## Contour des bâtiments
+
+Tous les bâtiments ont le même contour : un trait d'un pixel gris très foncé (32, 32, 32) autour du dessin, comme la
+maison de bois au toit bleu (scripts/outline_buildings.py, octobre 2026). Le trait remplace le pixel du bord (l'emprise
+ne change pas) ; un bord déjà sombre garde sa couleur. Catalogue : build_catalogue.py passe ses maisons par outlined().
+Cartes : le script trouve les bâtiments sur l'image des objets de la carte (dessin plein d'au moins 3 x 3 cases après
+une ouverture de 10 px, qui efface clôtures et poteaux ; pas sur l'eau), les sépare des traits fins qui les touchent
+(ouverture de 5 px), et ne touche qu'aux cases surtout faites de bâtiment ; les maisons posées en mode simple
+reprennent les cases du catalogue. Exceptions dans SKIP (Prytanée : deux cases où le haut du toit et la clôture
+partagent une case assemblée). Mobilier, clôtures et végétation ne changent pas.
+
 ## Ombres : seulement la végétation
 
 Les bâtiments, le mobilier et les objets n'ont pas d'ombre portée (les planches DPPt en avaient, la bibliothèque Gen 4

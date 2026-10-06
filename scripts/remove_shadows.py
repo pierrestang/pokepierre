@@ -68,23 +68,14 @@ def shadowless(img, opaque=True, greys=(), dark=40):
 
 # ---------- Cartes ----------
 
-def main(ids):
-    sys.path.insert(0, str(Path(__file__).parent))
-    from convert_maps_v2 import Builder, load_catalog
-    bd = Builder(load_catalog())
-    catalogue = json.loads((V2 / 'catalogue.json').read_text())
+def object_test(bd, catalogue, cat_img):
+    """(tile_of(planche, numéro) -> image de la case, is_object(planche, numéro, image) -> True pour un bâtiment, du
+    mobilier ou un objet, False pour la végétation, les éléments naturels et les sols)."""
     cat_cols = catalogue['cols']
-    cat_img = Image.open(V2 / 'catalogue.png').convert('RGBA')
     # Cases du catalogue qui sont de la végétation (arbres, plantes, eau) : leur ombre reste.
     nature_cat = {k for t in catalogue['themes'].values() for e in t['elements'] if e['cat'] in ('arbres', 'plantes', 'eau')
                   for row in e['tiles'] for k in row if k >= 0}
     keys = {i: k for k, i in bd.auto_index.items()}
-    # Cases du catalogue par image : un élément du mode simple garde ses cases de catalogue (sa version sans ombre, que
-    # build_catalogue.py y range), pour que le créateur le reconnaisse toujours (gomme, sélection).
-    cat_by_bytes = {}
-    for k in range(cat_img.width // TILE * (cat_img.height // TILE)):
-        t = cat_img.crop(((k % cat_cols) * TILE, (k // cat_cols) * TILE, (k % cat_cols + 1) * TILE, (k // cat_cols + 1) * TILE))
-        cat_by_bytes.setdefault(t.tobytes(), k)
 
     def tile_of(sheet, k):
         if sheet == 'auto':
@@ -114,6 +105,25 @@ def main(ids):
             r, g, b = (a[..., i][vis].astype(int) for i in range(3))
             return ((g > r + 15) & (g > b)).mean() < 0.25
         return True                               # bâtiments, mobilier, clôtures, véhicules…
+
+    return tile_of, is_object
+
+
+def main(ids):
+    sys.path.insert(0, str(Path(__file__).parent))
+    from convert_maps_v2 import Builder, load_catalog
+    bd = Builder(load_catalog())
+    catalogue = json.loads((V2 / 'catalogue.json').read_text())
+    cat_cols = catalogue['cols']
+    cat_img = Image.open(V2 / 'catalogue.png').convert('RGBA')
+    # Cases du catalogue par image : un élément du mode simple garde ses cases de catalogue (sa version sans ombre, que
+    # build_catalogue.py y range), pour que le créateur le reconnaisse toujours (gomme, sélection).
+    cat_by_bytes = {}
+    for k in range(cat_img.width // TILE * (cat_img.height // TILE)):
+        t = cat_img.crop(((k % cat_cols) * TILE, (k // cat_cols) * TILE, (k % cat_cols + 1) * TILE, (k // cat_cols + 1) * TILE))
+        cat_by_bytes.setdefault(t.tobytes(), k)
+
+    tile_of, is_object = object_test(bd, catalogue, cat_img)
 
     total = 0
     for path in sorted(MAPS.glob('*.json')):
