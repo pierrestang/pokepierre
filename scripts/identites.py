@@ -186,7 +186,7 @@ class Ville:
         full = Image.fromarray(arr)
         return fn(full) if fn else full
 
-    def place(self, img, ax, ay, solid_from, block=True):
+    def place(self, img, ax, ay, solid_from, block=True, min_fill=12):
         """Pose une image (cases entières) en (ax, ay) : rangées >= solid_from dans le Décor (bloquantes si `block`),
         les autres au-dessus de Pierre."""
         w, h = img.width // TILE, img.height // TILE
@@ -198,7 +198,7 @@ class Ville:
                 x, y = ax + i, ay + j
                 layer = 'decor' if j >= solid_from else 'dessus'
                 self.set_stack(layer, x, y, self.stack(layer, x, y) + [self.img_ref(tile)])
-                if layer == 'decor' and block and not self.solid(x, y) and (np.array(tile)[..., 3] > 200).sum() >= 12:
+                if layer == 'decor' and block and not self.solid(x, y) and (np.array(tile)[..., 3] > 200).sum() >= min_fill:
                     self.new_solid.add((x, y))
 
     def clear(self, cells, layers=('decor', 'dessus')):
@@ -382,6 +382,110 @@ def montepilloy(v):
     v.place(hay, 21, 22, solid_from=0)
     v.place(hay, 24, 20, solid_from=0)
     v.notes.append('murets de pierre abandonnés : aucun muret Gen 4 ne suit le tracé des clôtures existantes')
+
+
+DPPT_WOOD_FENCE = {dppt(c, r): dppt(c, r - 3) for c in range(5) for r in range(131, 134)}   # bois -> blanc (même plan)
+
+
+def swap_refs(v, mapping, sheet='dppt', layers=('decor', 'dessus')):
+    """Remplace des cases d'une planche par d'autres (même rôle, ex. clôture de bois -> clôture blanche)."""
+    for layer in layers:
+        for y in range(v.H):
+            for x in range(v.W):
+                refs = v.stack(layer, x, y)
+                new = [v.ref(sheet, mapping[r % STRIDE]) if v.sheet_of(r) == sheet and r % STRIDE in mapping else r
+                       for r in refs]
+                if new != refs:
+                    v.set_stack(layer, x, y, new)
+
+
+def fill_border(v, tile_of):
+    """Bordure de forêt remplacée : chaque case de forêt (Décor) prend tile_of(x, y) ; les bouts de forêt au-dessus
+    de cases libres disparaissent."""
+    for y in range(v.H):
+        for x in range(v.W):
+            for layer in ('decor', 'dessus'):
+                refs = v.stack(layer, x, y)
+                if not any(is_forest(v.sheet_of(r), r % STRIDE) for r in refs):
+                    continue
+                rest = [r for r in refs if not is_forest(v.sheet_of(r), r % STRIDE)]
+                if layer == 'decor' or v.solid(x, y):
+                    rest.append(v.img_ref(tile_of(x, y)))
+                v.set_stack(layer, x, y, rest)
+
+
+def flag_france(img):
+    """Oriflamme bleue -> drapeau français (bandes verticales bleu, blanc, rouge sur la largeur de l'oriflamme)."""
+    a = np.array(img).astype(int)
+    blue = (a[..., 3] > 0) & (a[..., 2] > a[..., 0] + 30) & (a[..., 2] > a[..., 1])
+    ys, xs = np.nonzero(blue)
+    x0, x1 = xs.min(), xs.max() + 1
+    for y, x in zip(ys, xs):
+        band = (x - x0) * 3 // (x1 - x0)
+        shade = a[y, x, :3].sum() / 3 / 150
+        base = [(36, 60, 168), (240, 240, 244), (214, 40, 48)][band]
+        a[y, x, :3] = [min(255, int(c * (0.78 + 0.3 * shade))) for c in base]
+    return Image.fromarray(a.astype(np.uint8))
+
+
+def gravel(v, cells):
+    """Allées de gravier clair (plage claire DPPt) à la place des pavés : bords d'herbe seulement contre les pelouses."""
+    from ds_theme import TERRAINS
+    spec = TERRAINS['beach']
+    grassy = lambda x, y: 0 <= x < v.W and 0 <= y < v.H and v.kinds[y][x] in ('grass', 'flowers', 'tall')
+    for x, y in cells:
+        quads = []
+        ox, oy = spec['outer']
+        for q in range(4):
+            qx, qy = q % 2, q // 2
+            dx, dy = (1 if qx else -1), (1 if qy else -1)
+            vv, hh, dd = grassy(x, y + dy), grassy(x + dx, y), grassy(x + dx, y + dy)
+            quads.append((ox + 2 * qx, oy + 2 * qy) if vv and hh else (ox + 1, oy + 2 * qy) if vv
+                         else (ox + 2 * qx, oy + 1) if hh else spec['inner'][q] if dd else spec['center'])
+        ref = (v.ref('dppt', v.bd.index('dppt', *spec['center'])) if all(q == spec['center'] for q in quads)
+               else v.ref('auto', v.bd.quad_tile('dppt', tuple(quads))))
+        v.set_stack('sol', x, y, [ref])
+
+
+@ville('bonsecours')
+def bonsecours(v):
+    """Collège : bâtiment scolaire de brique au toit gris, clôtures blanches, forêt de sapins sombres, globes blancs ;
+    signature : le drapeau français de la cour, avec un râtelier à vélos."""
+    v.recolor_cells(building_cells_all(v), ('decor', 'dessus'),
+                    palette(roof=(210, 0.1, 0.78), wall=(8, 0.5, 0.88), wood=(10, 0.45, 0.85), wall_min=0.4))
+    swap_refs(v, DPPT_WOOD_FENCE)
+    # Poteaux de bois pris dans des cases assemblées : blanchis aussi (cases 'F' de la grille du jeu).
+    _, _src = G.game_points(v.id)
+    fence = [(x, y) for y, row in enumerate(G.json.loads(G.subprocess.check_output(
+        ['node', str(ROOT / 'scripts' / 'export_audit.mjs')], cwd=ROOT))['routeBonsecours']['source'])
+        for x, c in enumerate(row) if c == 'F']
+    whiten = lambda img: hsv_map(img, lambda h, s_, val: (
+        h, np.where((h < 45) & (s_ > 0.25) & (val > 0.2), 0.04, s_),
+        np.where((h < 45) & (s_ > 0.25) & (val > 0.2), np.minimum(1, val * 1.6 + 0.15), val)))
+    v.recolor_cells(fence, ('decor',), whiten)
+    pines = v.bd.images['g4-arbres'].crop((0, 270 * TILE, 4 * TILE, 274 * TILE))
+    fill_border(v, lambda x, y: pines.crop(((x % 4) * TILE, (y % 4) * TILE, (x % 4 + 1) * TILE, (y % 4 + 1) * TILE)))
+    v.place(v.element('g4-mobilier', 10, 249, 2, 5, fn=flag_france), 18, 5, solid_from=4)
+    v.place(v.element('g4-mobilier', 9, 249, 1, 2), 18, 8, solid_from=1)        # un pot de buis au pied du mât
+    for x, (c, r) in zip((16, 17), ((17, 71), (18, 71))):
+        v.place(v.element('g4-mobilier', c, r, 1, 1), x, 14, solid_from=0)
+    v.notes.append('bâtiment scolaire : recoloration (pas de bâtiment plus massif à la même emprise) ; '
+                   'terrain de sport abandonné (pas la place sans toucher aux chemins)')
+
+
+@ville('prytanee')
+def prytanee(v):
+    """Lycée militaire : allées de gravier clair, enceinte de haie taillée, lanternes bleues ; signature : la statue
+    de bronze sur sa pelouse."""
+    cobble = is_cobble(v)
+    cells = [(x, y) for y in range(v.H) for x in range(v.W)
+             if any(cobble(v.sheet_of(r), r % STRIDE) for r in v.stack('sol', x, y))]
+    gravel(v, cells)
+    hedge = greener(0.72)(v.bd.images['g4-plantes'].crop((5 * TILE, 10 * TILE, 6 * TILE, 11 * TILE)))
+    fill_border(v, lambda x, y: hedge)
+    bronze = lambda img: hsv_map(img, lambda h, s, val: (np.where(s > 0.05, 34, h), np.where(s > 0.05, 0.5, s), val))
+    v.place(v.element('g4-mobilier', 9, 77, 3, 5, isolate=True, fn=bronze), 11, 10, solid_from=3, min_fill=90)
+    v.notes.append("mur d'enceinte en pierre abandonné pour une haie taillée (pas de mur de pierre à motif répétable)")
 
 
 if __name__ == '__main__':
