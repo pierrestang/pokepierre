@@ -510,6 +510,13 @@ export function createAssistant(api) {
     return best;
   }
 
+  // Un arbre, un buisson ou un tissu de la planche « lisieres » (déjà posé par cette commande) : sa palette.
+  function lisieresVariant(ref) {
+    const tile = decodeRef(state.map, ref);
+    if (tile?.sheet !== 'lisieres') return null;
+    return lis.variants[Math.floor(Math.floor(tile.index / lis.cols) / 4)] ?? null;
+  }
+
   // Refaire la bordure d'arbres : la forêt dense de la zone devient des rangées d'arbres entiers (forestLayout.js) :
   // un arbre par bloc de 2 x 2, le tissu sombre seulement derrière, un buisson sur une case hors des blocs au bord.
   // Les collisions ne changent pas.
@@ -525,7 +532,8 @@ export function createAssistant(api) {
       for (let i = 0; i < W * H; i++) {
         if (!m.solid[i]) continue;
         for (const r of stackOf(m.layers.decor[i])) {
-          const v = forestVariant(r);
+          // Le tissu de forêt, ou les arbres d'une bordure déjà refaite (la commande peut être relancée).
+          const v = forestVariant(r) ?? lisieresVariant(r);
           if (v) {
             forest[i] = 1;
             if (inZone(z, i % W, Math.floor(i / W))) votes.set(v, (votes.get(v) ?? 0) + 1);
@@ -560,13 +568,27 @@ export function createAssistant(api) {
         const g = refOf(m, 'dppt', 4);
         const solStack = stackOf(m.layers.sol[i]);
         m.layers.sol[i] = solStack.length > 1 ? [g, ...solStack.slice(1)] : g;
-        const rest = stackOf(m.layers.decor[i]).filter((r) => !forestVariant(r));
+        const rest = stackOf(m.layers.decor[i]).filter((r) => !forestVariant(r) && !lisieresVariant(r));
         m.layers.decor[i] = rest.length > 1 ? rest : rest.length ? rest[0] : EMPTY;
       };
       const add = (layer, i, ref) => {
         const stack = stackOf(m.layers[layer][i]);
         m.layers[layer][i] = stack.length ? [...stack, ref] : ref;
       };
+      // Relancée : les arbres et buissons déjà posés partent (zone et deux rangées au-dessus : les cimes) ; le tissu
+      // revient sur les cases de forêt de l'intérieur qui l'avaient perdu.
+      for (let y = Math.max(0, z.y0 - 2); y <= z.y1; y++) {
+        for (let x = z.x0; x <= z.x1; x++) {
+          const i = y * W + x;
+          for (const layer of ['decor', 'dessus']) {
+            const rest = stackOf(m.layers[layer][i]).filter((r) => !lisieresVariant(r));
+            m.layers[layer][i] = rest.length > 1 ? rest : rest.length ? rest[0] : EMPTY;
+          }
+          if (inZone(z, x, y) && forest[i] && !stackOf(m.layers.decor[i]).some((r) => forestVariant(r))) {
+            add('decor', i, lisRef(3 + (x % 2), y % 2));
+          }
+        }
+      }
       // Le tissu ne reste que derrière ; un buisson sur une case de forêt hors des blocs, au bord.
       let bushes = 0;
       for (let y = z.y0; y <= z.y1; y++) {
