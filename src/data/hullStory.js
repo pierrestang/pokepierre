@@ -23,7 +23,7 @@ export const HULL_SPOTS = {
 // devant).
 export const ARRIVAL = [
   { opening: { postcard: 'hull', text: 'Hull, Angleterre.' } },
-  { say: ['Il pleut. Ousmane attend à l\'arrêt de bus.'] },
+  { say: ['Ousmane attend à l\'arrêt de bus.'] },
   { approach: 'ousmane-arrivee' },
   {
     speaker: 'Ousmane',

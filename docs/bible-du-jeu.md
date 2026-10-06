@@ -610,7 +610,7 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 
 ### Arrivée et image d'accueil
 - Carte postale `hull` (« îles Tourbillon, la nuit » : une mer grise et agitée) : **« Hull, Angleterre. »**, puis
-  « Il pleut. Ousmane attend à l'arrêt de bus. » ;
+  « Ousmane attend à l'arrêt de bus. » ;
   Ousmane : **« T'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps. »** / « Léo et Anaïs sont
   déjà là. Toute la promo de KEDGE a atterri ici. » / « Viens, je te montre la coloc. » Il pleut à Hull tant qu'il fait jour.
 
@@ -946,8 +946,6 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 ### Images d'accueil
 - Fort-de-France, Saint-Ay et le matin de septembre à Montépilloy utilisent la **même illustration** (bois aux Chênes, le
   matin).
-- **À Hull**, la narration « Il pleut. Ousmane attend à l'arrêt de bus. » annonce la pluie juste avant la blague
-  d'Ousmane (« Oui, il pleut. Il pleut tout le temps. »).
 - Hanoï, Amsterdam, New Delhi, Paris, Toulon, la Corse, Bali, le Sri Lanka, la Thaïlande et le Népal n'ont pas
   d'ouverture. Des cartes postales existent pourtant pour Hanoï, Paris, la
   Corse, le Sri Lanka, la Thaïlande et le Népal.
