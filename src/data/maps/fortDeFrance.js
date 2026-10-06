@@ -1,5 +1,5 @@
 import { parseGrid } from './parseGrid.js';
-import { FLAGS, ITEMS } from '../story.js';
+import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON } from '../fortDeFranceStory.js';
 // Le dessin de la carte : la version DS faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème DS, puis
 // retouches dans builder.html) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les
@@ -131,6 +131,12 @@ export const fortDeFranceMap = {
       steps: [{ talk: 'manon' }],
     },
   ],
+  // Guirlande de fanions (art/bunting.js) du faîte du toit au haut du mât, et le long de l'avant-toit : elle apparaît
+  // quand Pierre reçoit la Joie de vivre (la danse avec Maman, voir data/fortDeFranceStory.js). Points en pixels.
+  decals: [{
+    kind: 'fanions', x: 15, y: 6, ifSouvenirs: [TRAITS.joie.id],
+    cords: [[262, 47, 309, 58, 7], [206, 90, 290, 90, 2, 17]],
+  }],
   // Autour de l'île, l'écran est rempli de mer.
   surroundings: 'w',
   spawn: { x: 15, y: 10, facing: 'down' },

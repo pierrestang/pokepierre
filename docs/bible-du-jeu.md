@@ -60,7 +60,13 @@ déjà débloquées.
   de la maison, bordures de fleurs le long de l'allée.
 - Plage semée de coquillages et d'étoiles de mer. En mer : la barque du pêcheur contre le ponton et deux voiliers au
   large.
-- Les collisions, les portes et les places des PNJ n'ont pas changé.
+- Mobilier (deuxième passe) : lampadaires aux deux carrefours de l'allée, un banc le long du chemin du mémorial et un
+  face à la mer, un parasol sur la plage à droite du ponton, une clôture blanche devant le jardin, un tas de bois contre
+  la cabane. Il ajoute des cases bloquantes, jamais sur un chemin, une porte, un PNJ, un objet ou un événement
+  (vérifié par scripts/fdf_ds_v2.py).
+- Quand Pierre reçoit la Joie de vivre (la danse avec Maman), une guirlande de fanions apparaît : du faîte du toit au
+  haut du mât, et le long de l'avant-toit (décor `fanions`, src/art/bunting.js).
+- Portes, places des PNJ et événements n'ont pas changé.
 
 ### PNJ présents
 | Nom | Rôle | Sprite |

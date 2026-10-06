@@ -7,7 +7,11 @@
                       maison, le jeu montre alors sa silhouette (MapScene.updateSilhouette) ;
   trou_sol            case sans sol ;
   herbe_sans_dessin   hautes herbes / blé de la grille sans dessin d'herbes (corriger la grille, sourceGrid) ;
-  dessin_sans_herbe   herbes dessinées sur une case '.' (indicatif : les touffes décoratives y passent aussi) ;
+  herbes_hors_grille  hautes herbes dessinées sur une case '.' (le jeu n'y cache pas les jambes) : à corriger ;
+  fleurs_et_bords     case '.' texturée mais pas en hautes herbes (fleurs, bords de chemin, coquillages, touffes d'herbe
+                      rase) : indicatif, normal. Les hautes herbes se reconnaissent à leurs contours : presque toutes
+                      vertes, et au moins 8 % de pixels sombres (14 % au minimum sur les vraies cases 'ĥ'), 0 % pour
+                      une touffe d'herbe rase ;
   poche               cases libres qu'on ne peut pas atteindre (ni départ, ni PNJ, ni bord, ni porte).
 
 Usage : python3 scripts/audit_maps.py   (après avoir touché une carte du créateur, avec node scripts/check_paths.js)
@@ -29,6 +33,12 @@ def layer_img(m,L,i):
     return out
 def full(img):  # part de pixels entièrement opaques
     a=img.getchannel('A').getdata(); return sum(1 for v in a if v==255)/256
+def greenish(img):  # part de pixels verts (herbe, feuillage) : les hautes herbes sont presque toutes vertes
+    px=[p for p in img.getdata() if p[3]]
+    return sum(1 for r,g,b,a in px if g>r+20 and g>b)/max(1,len(px))
+def dark(img):  # part de pixels sombres (contours des brins)
+    px=[p for p in img.getdata() if p[3]]
+    return sum(1 for r,g,b,a in px if r*0.3+g*0.59+b*0.11<110)/max(1,len(px))
 def share(img):
     px=list(img.convert('RGB').getdata())[6*16:]; return Counter(px).most_common(1)[0][1]/len(px)
 WATER=set('w~GBø=I')
@@ -37,7 +47,7 @@ report={}
 for mid,g in data.items():
     m=json.load(open(R+f"src/data/builtMaps/{g['file']}.json")); W,H=m['width'],m['height']
     src=g['source']; grid=g['grid']; solid=m['solid']
-    res={k:[] for k in ['mur_invisible','objet_traversable','cache_dessus','trou_sol','herbe_sans_dessin','dessin_sans_herbe','poche']}
+    res={k:[] for k in ['mur_invisible','objet_traversable','cache_dessus','trou_sol','herbe_sans_dessin','herbes_hors_grille','fleurs_et_bords','poche']}
     for y in range(H):
         for x in range(W):
             i=y*W+x; c=src[y][x]
@@ -54,7 +64,8 @@ for mid,g in data.items():
             plant=share(comp)<0.5
             if c in 'ĥʬ' and not plant: res['herbe_sans_dessin'].append((x,y))
             # herbes dessinées hors grille : seulement les cases d'herbe libres au sol texturé sans objet
-            if c=='.' and not solid[i] and plant and full(dec)<0.05: res['dessin_sans_herbe'].append((x,y))
+            if c=='.' and not solid[i] and plant and full(dec)<0.05:
+                res['herbes_hors_grille' if greenish(comp)>=0.9 and dark(comp)>=0.08 else 'fleurs_et_bords'].append((x,y))
     # poches : composantes libres sans point d'intérêt ni départ ni bord de carte
     seen=set(); interest={(p['x'],p['y']) for p in g['pts']}; sp=g['spawn']
     for y in range(H):

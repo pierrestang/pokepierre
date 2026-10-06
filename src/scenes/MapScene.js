@@ -19,6 +19,7 @@ import { flags, meetsConditions } from '../systems/flags.js';
 import { visitedFlag } from '../systems/RegionMap.js';
 import { items } from '../systems/items.js';
 import { ITEM_ICONS } from '../art/uiIcons.js';
+import { addBunting } from '../art/bunting.js';
 import { savePosition } from '../systems/save.js';
 import { memo } from '../systems/memo.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
@@ -399,6 +400,11 @@ export class MapScene extends Phaser.Scene {
           graphics.add(this.add.image(dx, dy, ITEM_ICONS, frame).setOrigin(0).setCrop(0, 0, 32, keep));
         }
         this.decals.push({ data, graphics });
+        continue;
+      }
+      // Guirlande de fanions (art/bunting.js) : fil tendu entre deux points, fanions qui ondulent.
+      if (data.kind === 'fanions') {
+        this.decals.push({ data, graphics: addBunting(this, data, depth) });
         continue;
       }
       const graphics = this.add.graphics().setDepth(depth);

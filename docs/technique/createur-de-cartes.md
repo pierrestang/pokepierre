@@ -38,8 +38,12 @@ build_v2_tiles.py). Appliqué à Fort-de-France, puis refait en octobre 2026 par
 de la carte retouchée et garde ses collisions, son départ, sa côte et ses grands objets. Il refait les sols : chemins
 vers la maison, la cabane et le mémorial, hautes herbes exactement sur les 'ĥ', fleurs et coquillages dans le calque
 Sol (ils se traversent). Il ajoute des objets sur des cases déjà bloquantes : le mémorial en pierre blanche, le drapeau
-martiniquais recoloré, des arbustes, une barque et des voiliers. Il vérifie à la fin que collisions et départ n'ont pas
-bougé.
+martiniquais recoloré, des arbustes, une barque et des voiliers. Deuxième passe (FURNITURE) : du mobilier qui ajoute
+des collisions (lampadaires, bancs, parasol, clôture, tas de bois). check_access refuse toute case bloquante sur un
+chemin, une porte (et la case devant), un PNJ, un objet, un déclencheur, la clairière ou des hautes herbes. Il refuse
+aussi qu'une case ou un point d'intérêt qu'on atteignait depuis le départ ne s'atteigne plus. Guirlande de fanions
+(décor `fanions`, après la Joie de vivre) : fanions découpés par scripts/build_fanions.py, fil et pose dans
+src/art/bunting.js.
 
 ## Thème Gen 4 (de Saint-Ay à Hull)
 

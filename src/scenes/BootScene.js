@@ -3,6 +3,7 @@ import { preloadSpriteSheets, registerSpriteSheets } from '../art/spriteSheets.j
 import { preloadFrlg } from '../art/frlgArt.js';
 import { preloadFrlgFont } from '../systems/frlgFont.js';
 import { preloadUiIcons } from '../art/uiIcons.js';
+import { preloadBunting } from '../art/bunting.js';
 import { MAPS } from '../data/maps/index.js';
 import {
   requestedBuiltMap, loadBuiltMap, preloadBuiltMap, bakeBuiltMap, preloadBuiltLooks, gameMapOf, useBuiltLook, protectSave,
@@ -22,6 +23,7 @@ export class BootScene extends Phaser.Scene {
     preloadFrlg(this);
     preloadFrlgFont(this);
     preloadUiIcons(this);
+    preloadBunting(this);
     preloadBuiltLooks(this, MAPS);                 // cartes du jeu dessinées avec le créateur (ex. Fort-de-France)
     this.builtMap = requestedBuiltMap() && loadBuiltMap(requestedBuiltMap());
     if (this.builtMap) {

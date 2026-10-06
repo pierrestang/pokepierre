@@ -48,7 +48,7 @@ CLEARING = [(x, y) for y in range(14, 17) for x in range(6, 10)] + [(7, 17), (8,
 # comme dans une ville DS : bordures de l'allée, jardin de la maison, offrandes au mémorial, abords de la cabane,
 # deux prés fleuris au nord ; pas de fleur isolée au milieu de l'herbe.
 FLOWER_BEDS = {
-    'ƒ': [(13, 11), (17, 11), (13, 13), (17, 13), (13, 18), (17, 18), (13, 20), (17, 20),       # bordures
+    'ƒ': [(13, 11), (17, 11), (13, 18), (17, 18),                                               # bordures
           (18, 8), (21, 8), (21, 9), (22, 9),                                                    # jardin
           (5, 14), (5, 15),                                                                      # mémorial
           (28, 16), (29, 16), (25, 17), (26, 17)],                                               # cabane
@@ -83,6 +83,22 @@ OBJECTS = [
     {'el': ('g4-vehicules', 6, 11, 4, 2), 'at': (9, 28), 'solid_from': 0},
     {'el': ('g4-vehicules', 0, 59, 3, 2), 'at': (3, 28), 'solid_from': 0},
     {'el': ('g4-vehicules', 0, 62, 3, 2), 'at': (28, 29), 'solid_from': 0},
+]
+# Mobilier qui ajoute des collisions (octobre 2026, deuxième passe) : rangées `solid_from` incluses -> cases bloquantes
+# nouvelles. Jamais sur un chemin, une porte, un PNJ, un objet ou un événement : main() vérifie que tout reste
+# accessible depuis le point d'arrivée (voir check_access).
+FURNITURE = [
+    # Lampadaires DPPt aux deux carrefours de l'allée (tête au-dessus de Pierre).
+    *[{'el': ('dppt', 7, 129, 1, 3), 'at': (x, y), 'solid_from': 2} for x in (13, 17) for y in (12, 19)],
+    # Banc le long du chemin du mémorial, banc face à la mer sur la plage ouest.
+    {'el': ('g4-mobilier', 2, 277, 2, 2), 'at': (11, 13), 'solid_from': 1},
+    {'el': ('g4-mobilier', 2, 277, 2, 2), 'at': (3, 19), 'solid_from': 1},
+    # Parasol et banc blanc sur la plage, à droite du ponton (l'ombre portée tombe dans l'eau : coupée).
+    {'el': ('g4-mobilier', 6, 157, 4, 4), 'at': (22, 22), 'solid_from': 3},
+    # Clôture blanche DPPt devant le jardin fleuri de la maison.
+    *[{'el': ('dppt', 1, 128, 1, 1), 'at': (x, 11), 'solid_from': 0} for x in range(18, 22)],
+    # Tas de bois contre la cabane de pêche.
+    {'el': ('g4-mobilier', 1, 117, 2, 2), 'at': (22, 13), 'solid_from': 1},
 ]
 # Ce que les nouveaux objets remplacent : l'éolienne et son buisson flottant, la souche du mémorial, les fleurs
 # bloquantes (cases du calque Décor / Au-dessus de Pierre vidées).
@@ -139,13 +155,45 @@ def cut_background(img):
     return Image.fromarray(a)
 
 
+def check_access(W, H, solid0, solid1, spawn, points, new_solid, protected):
+    """Le mobilier ne bloque rien : aucune case protégée n'est prise, toutes les cases libres qu'on atteignait depuis le
+    point d'arrivée s'atteignent encore, et chaque PNJ, objet, porte ou déclencheur reste atteignable (sa case, ou une
+    case voisine s'il est sur une case bloquante)."""
+    taken = new_solid & protected
+    assert not taken, f'mobilier sur une case protégée : {sorted(taken)}'
+
+    def reach(solid):
+        seen, todo = {(spawn['x'], spawn['y'])}, [(spawn['x'], spawn['y'])]
+        while todo:
+            cx, cy = todo.pop()
+            for n in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                if 0 <= n[0] < W and 0 <= n[1] < H and n not in seen and not solid[n[1] * W + n[0]]:
+                    seen.add(n)
+                    todo.append(n)
+        return seen
+
+    before, after = reach(solid0), reach(solid1)
+    lost = before - after - new_solid
+    assert not lost, f'cases devenues inaccessibles : {sorted(lost)}'
+    for x, y, kind in points:
+        near = [(x, y)] + [(x + dx, y + dy) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))]
+        was = any(c in before for c in near)
+        assert not was or any(c in after for c in near), f'{kind} en {(x, y)} devenu inaccessible'
+
+
 def main():
     m = json.loads(MAP.read_text())
     W, H = m['width'], m['height']
     solid0, spawn0 = list(m['solid']), dict(m['spawn'])
     bd = Builder(load_catalog())
-    source = json.loads(subprocess.check_output(['node', str(ROOT / 'scripts' / 'export_audit.mjs')], cwd=ROOT))
-    source = source['fortDeFrance']['source']
+    exported = json.loads(subprocess.check_output(['node', str(ROOT / 'scripts' / 'export_audit.mjs')], cwd=ROOT))
+    source = exported['fortDeFrance']['source']
+    # Cases à garder accessibles : PNJ, objets, portes (et la case devant), déclencheurs. Cases interdites au mobilier :
+    # celles-là, les chemins, la clairière du mémorial, les hautes herbes.
+    points = [(p['x'], p['y'], p['k']) for p in exported['fortDeFrance']['pts']]
+    points += [(p['x'], p['y'] + 1, 'devant une porte') for p in exported['fortDeFrance']['pts'] if p['k'] == 'door']
+    protected = ({(x, y) for x, y, _ in points} | set(PATHS) | set(CLEARING)
+                 | {(x, y) for y, row in enumerate(source) for x, c in enumerate(row) if c == 'ĥ'})
     solid = lambda x, y: bool(solid0[y * W + x])
 
     def tile_img(sheet, ref):
@@ -250,8 +298,9 @@ def main():
         if not solid(x, y) and ground[y][x] == 'beach' and (x, y) not in stacks['decor']:
             stacks['sol'][(x, y)].append(('auto', shells[i % len(shells)]))
 
-    # Objets.
-    for obj in OBJECTS:
+    # Objets (sur des cases déjà bloquantes), puis mobilier (cases bloquantes nouvelles).
+    new_solid = set()
+    for obj in OBJECTS + FURNITURE:
         sheet, c0, r0, w, h = obj['el']
         ax, ay = obj['at']
         full = bd.images[sheet].crop((c0 * TILE, r0 * TILE, (c0 + w) * TILE, (r0 + h) * TILE))
@@ -272,7 +321,9 @@ def main():
                     img = tint_martinique(img, i * TILE, j * TILE, box)
                 x, y = ax + i, ay + j
                 layer = 'decor' if j >= obj['solid_from'] else 'dessus'
-                assert layer == 'dessus' or solid(x, y), f'objet sur une case libre : {(x, y)}'
+                if layer == 'decor' and not solid(x, y):
+                    assert obj in FURNITURE, f'objet sur une case libre : {(x, y)}'
+                    new_solid.add((x, y))
                 stacks[layer].setdefault((x, y), []).append(('auto', bd.image_tile(img)))
 
     # ---------- Écriture : une case seule telle quelle, plusieurs fondues en une ----------
@@ -310,12 +361,16 @@ def main():
                 cells[y * W + x] = ref('auto', bd.image_tile(img))
         layers[name] = cells
 
-    out = {**m, 'sheets': sheets, 'layers': layers}
-    assert out['solid'] == solid0 and out['spawn'] == spawn0, 'collisions ou départ changés'
+    solid1 = list(solid0)
+    for x, y in new_solid:
+        solid1[y * W + x] = 1
+    check_access(W, H, solid0, solid1, spawn0, points, new_solid, protected)
+    out = {**m, 'sheets': sheets, 'layers': layers, 'solid': solid1}
+    assert out['spawn'] == spawn0, 'départ changé'
     bd.save_auto_sheet()
     MAP.write_text(json.dumps(out, ensure_ascii=False) + '\n')
     print(f'Fort-de-France : {sum(1 for c in layers["decor"] if c != -1)} cases de décor, '
-          f'{len(bd.auto_tiles)} cases assemblées ; collisions et départ inchangés')
+          f'{len(bd.auto_tiles)} cases assemblées, {len(new_solid)} cases bloquantes ajoutées ; tout reste accessible')
 
 
 if __name__ == '__main__':
