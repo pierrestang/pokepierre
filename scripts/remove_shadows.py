@@ -14,7 +14,6 @@ gardés). Le catalogue du créateur (scripts/build_catalogue.py) passe ses maiso
 
 Usage : python3 scripts/remove_shadows.py [id de carte…]   (toutes les cartes par défaut)
 """
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -37,15 +36,15 @@ DPPT_COLS = 8
 DPPT_NATURE = {(7, 145), (7, 146), (7, 106), (7, 107)}    # rochers, buissons ronds parmi les objets DPPt
 
 
-def semi_black(a):
-    """Pixels d'ombre DPPt : noirs (ou presque) et semi-transparents."""
-    return (a[..., 3] > 0) & (a[..., 3] < 255) & (a[..., :3].astype(int).sum(-1) < 40)
+def semi_black(a, dark=40):
+    """Pixels d'ombre DPPt : noirs (ou presque : somme RVB < `dark`) et semi-transparents."""
+    return (a[..., 3] > 0) & (a[..., 3] < 255) & (a[..., :3].astype(int).sum(-1) < dark)
 
 
-def opaque_shadow(a):
+def opaque_shadow(a, greys=()):
     """Gris d'ombre opaque relié à l'extérieur du dessin (pixels transparents ou bord de l'image)."""
     grey = np.zeros(a.shape[:2], bool)
-    for g in SHADOW_GREYS:
+    for g in SHADOW_GREYS + list(greys):
         grey |= (np.abs(a[..., :3].astype(int) - g).sum(-1) < 6) & (a[..., 3] == 255)
     outside = a[..., 3] == 0
     lab, _ = ndimage.label(grey | outside)
@@ -56,12 +55,13 @@ def opaque_shadow(a):
     return grey & np.isin(lab, list(keep))
 
 
-def shadowless(img, opaque=True):
-    """L'image sans son ombre portée (PIL RGBA)."""
+def shadowless(img, opaque=True, greys=(), dark=40):
+    """L'image sans son ombre portée (PIL RGBA) ; `greys` : autres couleurs d'ombre opaque propres à ce dessin ;
+    `dark` : seuil des pixels d'ombre semi-transparents (gris foncé d'une ombre plus claire)."""
     a = np.array(img.convert('RGBA'))
-    remove = semi_black(a)
+    remove = semi_black(a, dark)
     if opaque:
-        remove |= opaque_shadow(a)
+        remove |= opaque_shadow(a, greys)
     a[remove] = 0
     return Image.fromarray(a)
 

@@ -20,6 +20,17 @@ gomme de 1, 2, 3 ou 5 cases de côté ([ et ]) ; Ctrl+D (ou Ctrl+C puis Ctrl+V) 
 souris, chaque clic en pose une (une zone : ses trois calques et ses collisions ; un élément : seul, sans le sol).
 Les cartes actuelles restent en place tant qu'elles ne sont pas refaites dans le créateur.
 
+## Éléments ajoutés de la bibliothèque Gen 4 (octobre 2026)
+
+build_catalogue.py `LIB_BUILDINGS` : quinze bâtiments de g4-batiments choisis par l'utilisateur, chacun dans le thème de
+sa ville et dans « Libre » (Fort-de-France : case au toit orange, maison au toit vert d'eau, petite maison rose,
+boutique à auvent ; Saint-Ay : maison d'ardoise, maison de bois au toit bleu, maison de pierre, grande maison à
+lucarne ; Montépilloy : chaumière dorée, cabane, maison à colombages, remise ; collège : grand bâtiment de pierre,
+bâtiment à colonnes, immeuble vitré). Pris par rectangle en pixels (le dessin d'un seul tenant), sans ombre, le bas
+calé sur la grille, la porte sur la dernière rangée. Mobilier (g4-mobilier) : fontaine, petite fontaine, étals,
+transat, grande caisse, massif, table de pique-nique, banc de bois, abri de bois, distributeur, panneau d'affichage ;
+souche (végétation, garde son ombre). Les villes suivantes (Prytanée, Bordeaux, Hull) viendront plus tard.
+
 ## Ombres : seulement la végétation
 
 Les bâtiments, le mobilier et les objets n'ont pas d'ombre portée (les planches DPPt en avaient, la bibliothèque Gen 4

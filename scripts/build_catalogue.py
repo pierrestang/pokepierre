@@ -125,6 +125,49 @@ BUILDING_NAMES = {
     'longere': 'Longère', 'bleue': 'Maison bleue', 'grise': 'Maison grise', 'tuiles': 'Maison aux tuiles',
 }
 
+# Bâtiments de la bibliothèque Gen 4 (g4-batiments, choisis en octobre 2026 pour les quatre premières villes) :
+# id : (nom, rectangle en pixels dans la planche, colonne de la porte, couleurs d'ombre opaque propres, thèmes).
+# Le dessin est pris d'un seul tenant, sans ombre, le bas calé sur la grille ; la porte est sur la dernière rangée.
+GRAY = (128, 128, 128)
+LIB_BUILDINGS = {
+    'toit-orange': ('Case au toit orange', (69, 12257, 54, 79), 1, (), ['fort-de-france']),
+    'toit-vert': ('Maison au toit vert d\'eau', (122, 23336, 96, 114), 2, (), ['fort-de-france']),
+    'toit-rose': ('Petite maison rose', (14, 23913, 75, 84), 2, (), ['fort-de-france']),
+    'boutique-auvent': ('Boutique à auvent', (1, 6710, 68, 71), 2, (), ['fort-de-france']),
+    'ardoise-verte': ('Maison d\'ardoise', (201, 14291, 78, 102), 2, (), ['saint-ay']),
+    'bois-bleu': ('Maison de bois au toit bleu', (122, 14040, 96, 114), 2, (), ['saint-ay']),
+    'pierre': ('Maison de pierre', (8, 14874, 95, 96), 3, [(25, 25, 25)], ['saint-ay']),
+    'lucarne': ('Grande maison à lucarne', (194, 16643, 94, 108), 2, [(28, 35, 38), (25, 44, 38)], ['saint-ay']),
+    'chaumiere-doree': ('Chaumière dorée', (224, 8384, 128, 107), 3, [GRAY], ['montepilloy']),
+    'cabane': ('Cabane de bois', (97, 12081, 77, 79), 1, (), ['montepilloy']),
+    'colombages': ('Maison à colombages', (5, 16032, 102, 125), 3, [GRAY], ['montepilloy']),
+    'remise': ('Remise en rondins', (0, 12769, 84, 99), 2, (), ['montepilloy']),
+    'college': ('Grand bâtiment de pierre', (7, 13745, 98, 127), 3, (), ['bonsecours']),
+    'internat': ('Bâtiment à colonnes', (163, 16374, 74, 122), 2, (), ['bonsecours']),
+    'gymnase': ('Immeuble vitré', (80, 22049, 80, 95), 2, (), ['bonsecours']),
+}
+
+
+def lib_building(box, greys=(), sid='g4-batiments', shadow=False, dark=40):
+    """Un dessin de la bibliothèque (rectangle en pixels), d'un seul tenant, sans ombre (sauf `shadow` : végétation),
+    le bas calé sur la grille."""
+    x, y, w, h = box
+    img = isolate(sheet(sid).crop((x, y, x + w, y + h)))
+    if not shadow:
+        img = shadowless(img, greys=greys, dark=dark)
+    bx0, by0, bx1, by1 = img.getbbox()
+    if sid == 'g4-batiments':
+        left = (x + bx0) % TILE                   # garde le calage de la planche (colonne de la porte)
+        tw = math.ceil((left + bx1 - bx0) / TILE)
+    else:                                         # un objet : centré sur le moins de cases possible
+        tw = math.ceil((bx1 - bx0) / TILE)
+        left = (tw * TILE - (bx1 - bx0)) // 2
+    th = math.ceil((by1 - by0) / TILE)
+    out = Image.new('RGBA', (tw * TILE, th * TILE))
+    out.alpha_composite(img.crop((bx0, by0, bx1, by1)), (left, th * TILE - (by1 - by0)))
+    return out
+
+
 ELEMENTS = {
     # Arbres (le bas, ou le tronc, bloque ; la cime passe devant Pierre).
     'arbre-rond': ('Arbre rond', 'arbres', lambda: isolate(crop('dppt', 0, 40, 3, 4)), 3, 'land'),
@@ -167,6 +210,20 @@ ELEMENTS = {
     'globe': ('Réverbère à globe', 'mobilier', lambda: crop('g4-mobilier', 0, 257, 2, 3), 2, 'land'),
     'lanterne-bleue': ('Lanterne bleue', 'mobilier', lambda: crop('g4-mobilier', 2, 257, 2, 4), 3, 'land'),
     'lanterne-hgss': ('Lanterne', 'mobilier', lambda: crop('g4-mobilier', 6, 241, 2, 3), 2, 'land'),
+    # Mobilier de la bibliothèque Gen 4 (g4-mobilier, octobre 2026).
+    'fontaine': ('Fontaine', 'mobilier', lambda: lib_building((176, 2513, 63, 63), sid='g4-mobilier'), 1, 'land'),
+    'petite-fontaine': ('Petite fontaine', 'mobilier', lambda: lib_building((85, 2383, 54, 49), sid='g4-mobilier'), 2, 'land'),
+    'etal': ('Étal de marché', 'mobilier', lambda: lib_building((0, 2306, 56, 53), sid='g4-mobilier'), 2, 'land'),
+    'etal-bocaux': ('Étal aux bocaux', 'mobilier', lambda: lib_building((115, 2170, 73, 54), sid='g4-mobilier'), 2, 'land'),
+    'transat': ('Transat', 'mobilier', lambda: lib_building((33, 2368, 34, 48), sid='g4-mobilier'), 1, 'land'),
+    'caisse': ('Grande caisse', 'mobilier', lambda: lib_building((143, 512, 50, 66), sid='g4-mobilier'), 1, 'land'),
+    'massif': ('Massif de fleurs', 'mobilier', lambda: lib_building((0, 776, 68, 61), sid='g4-mobilier'), 1, 'land'),
+    'pique-nique': ('Table de pique-nique', 'mobilier', lambda: lib_building((102, 4187, 36, 37), sid='g4-mobilier'), 1, 'land'),
+    'banc-bois': ('Banc de bois', 'mobilier', lambda: lib_building((34, 4228, 30, 28), sid='g4-mobilier'), 1, 'land'),
+    'abri-bois': ('Abri de bois', 'mobilier', lambda: lib_building((135, 1906, 81, 78), sid='g4-mobilier', dark=120), 3, 'land'),
+    'distributeur': ('Distributeur', 'mobilier', lambda: lib_building((165, 4229, 21, 27), sid='g4-mobilier'), 1, 'land'),
+    'affichage': ('Panneau d\'affichage', 'mobilier', lambda: lib_building((135, 4234, 18, 22), sid='g4-mobilier'), 1, 'land'),
+    'souche': ('Souche et hache', 'plantes', lambda: lib_building((262, 4181, 19, 27), sid='g4-mobilier', shadow=True), 1, 'land'),
     # Sur l'eau (toujours bloquante : rien à ajouter).
     'barque': ('Barque', 'eau', lambda: isolate(crop('g4-vehicules', 6, 10, 5, 3)), None, 'water'),
     'voilier': ('Voilier', 'eau', lambda: crop('g4-vehicules', 0, 59, 3, 2), None, 'water'),
@@ -187,15 +244,19 @@ THEMES = {
               'extra': list(ELEMENTS)},
     'fort-de-france': {'name': 'Fort-de-France (tropicale)', 'forest': None, 'paving': None, 'lamp': 'reverbere-rose',
                        'extra': ['palmier', 'hibiscus', 'fleurs-tropicales', 'parasol', 'drapeau-martinique',
-                                 'statue-blanche', 'voilier-bleu', 'arbre-rond']},
+                                 'statue-blanche', 'voilier-bleu', 'arbre-rond', 'etal', 'etal-bocaux', 'transat',
+                                 'caisse', 'petite-fontaine']},
     'saint-ay': {'name': 'Saint-Ay (village de Loire)', 'forest': 'chene', 'paving': None, 'lamp': 'lanterne-bois',
-                 'palette': 'saint-ay', 'extra': ['arbre-foret', 'arbre-rond', 'peuplier', 'roseaux', 'bois']},
+                 'palette': 'saint-ay', 'extra': ['arbre-foret', 'arbre-rond', 'peuplier', 'roseaux', 'bois', 'fontaine', 'massif',
+                           'pique-nique']},
     'route-de-montepilloy': {'name': 'Route de campagne', 'forest': 'dppt', 'paving': None, 'lamp': None,
                              'extra': ['arbre-foret', 'peuplier']},
     'montepilloy': {'name': 'Montépilloy (village agricole)', 'forest': 'automne', 'paving': None, 'lamp': None,
-                    'extra': ['arbre-foret', 'arbre-rond', 'puits', 'bois']},
+                    'extra': ['arbre-foret', 'arbre-rond', 'puits', 'bois', 'banc-bois', 'abri-bois', 'souche',
+                              'caisse']},
     'bonsecours': {'name': 'Collège de Bonsecours', 'forest': 'pins', 'paving': None, 'lamp': 'globe',
-                   'palette': 'bonsecours', 'extra': ['sapin', 'drapeau-france', 'velo', 'arbre-rond']},
+                   'palette': 'bonsecours', 'extra': ['sapin', 'drapeau-france', 'velo', 'arbre-rond', 'distributeur', 'affichage',
+                             'pique-nique', 'fontaine']},
     'prytanee': {'name': 'Prytanée (lycée militaire)', 'forest': 'haie', 'paving': 'gravier', 'lamp': 'lanterne-bleue',
                  'extra': ['haie', 'statue-bronze', 'drapeau-france', 'arbre-rond']},
     'bordeaux': {'name': 'Bordeaux (pierre blonde)', 'forest': None, 'paving': 'blond', 'lamp': 'lanterne-hgss',
@@ -321,6 +382,14 @@ def main():
             solid_from = max(1, h - math.ceil(h * 0.55))
             elements.append(element_entry(pack, f'maison-{bid}', bname, 'maisons', img, solid_from, 'land',
                                           door=list(spec['door']), theme_fn=pal))
+        for bid, (bname, box, door_col, greys, where) in LIB_BUILDINGS.items():
+            if tid != 'libre' and tid not in where:
+                continue
+            img = lib_building(box, greys)
+            h = img.height // TILE
+            solid_from = max(1, h - math.ceil(h * 0.55))
+            elements.append(element_entry(pack, f'maison-{bid}', bname, 'maisons', img, solid_from, 'land',
+                                          door=[door_col, h - 1], theme_fn=pal))
         ids = list(dict.fromkeys(COMMON + t['extra'] + ([t['lamp']] if t['lamp'] else [])))
         for eid in ids:
             name, cat, fn, solid_from, place = ELEMENTS[eid]
