@@ -626,8 +626,8 @@ export function createAssistant(api) {
   // lisière, forêt peinte au pinceau) sont retirées, puis une bordure neuve longe le rectangle de la carte : une bande
   // de 2 cases contre chaque bord, un arbre tous les 2 cases en largeur comme en hauteur (même écart partout ; la carte
   // doit avoir des dimensions paires). Pas d'arbre sur l'eau, le relief, un chemin (les sorties), un objet (maison,
-  // clôture…) ou une case importante du jeu : le trou reste tel quel. La rangée du bas va jusqu'au bord (troncs hors de
-  // la carte) ; les colonnes des côtés s'alignent sur elle.
+  // clôture…) ou une case importante du jeu : le trou reste tel quel. La dernière rangée de la carte n'est pas montrée
+  // par le jeu : le bas des arbres du bas (tronc, ombre) est caché.
   // (Octobre 2026 : l'arbre rond de DPPt, disposé comme dans HeartGold, sans tissu sombre.)
   function borderTrees() {
     return run('Bordure', async () => {
@@ -723,10 +723,9 @@ export function createAssistant(api) {
       }
       trees.sort(treeOrder);
       for (const [bx, by] of trees) {
-        // La dernière rangée descend d'une case (le bas des arbres sort de la carte) ; les colonnes des côtés descendent
-        // avec elle, pour garder le même écart jusqu'à l'angle du bas.
-        const side = (bx === 0 || bx === W - 2) && by >= 2;
-        for (const p of roundTreePieces(lis, variant, bx, by, by === H - 2 || side ? 1 : 0)) {
+        // Tous les arbres sur la même grille (angles alignés) ; le bas des arbres de la dernière rangée est caché par le
+        // jeu, qui ne montre pas la dernière rangée de la carte (MapScene.fitCamera).
+        for (const p of roundTreePieces(lis, variant, bx, by)) {
           if (!inMap(p.x, p.y)) continue;
           const i = p.y * W + p.x;
           add(p.trunk || covered.has(i) ? 'decor' : 'dessus', i, refOf(m, 'lisieres', p.index));

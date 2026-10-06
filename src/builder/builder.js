@@ -438,6 +438,13 @@ function stampAt(ax, ay, x, y) {
   return s.tiles[dy * s.w + dx];
 }
 
+// Même règle que le jeu (MapScene.hidesLastRow) : la dernière rangée porte la bordure d'arbres (planche « lisieres »).
+function hidesLastRow(m) {
+  const W = m.width;
+  return m.layers.decor.slice((m.height - 1) * W, m.height * W).some((cell) => stackOf(cell)
+    .some((r) => decodeRef(m, r)?.sheet === 'lisieres'));
+}
+
 function draw() {
   if (!state.map) return;                    // pas encore de carte (premier affichage, rechargement à chaud)
   showAssistantZone();
@@ -471,6 +478,11 @@ function draw() {
     drawLayers(ctx, m, [l.id], state.images, colsOf, cs, range);
   });
   ctx.globalAlpha = 1;
+  // La dernière rangée d'une carte bordée d'arbres en bas : cachée dans le jeu (MapScene.fitCamera) ; assombrie ici.
+  if (hidesLastRow(m)) {
+    ctx.fillStyle = 'rgba(12, 14, 22, 0.55)';
+    ctx.fillRect(0, (m.height - 1) * cs, m.width * cs, cs);
+  }
 
   // Collisions.
   if (state.showSolid || state.tool === 'solid') {
@@ -1192,6 +1204,7 @@ canvas.addEventListener('pointermove', (e) => {
       return `${l.name} : ${sheetInfo(tile.sheet)?.name ?? tile.sheet} n° ${tile.index}${stack.length > 1 ? ` (+${stack.length - 1})` : ''}`;
     }).filter(Boolean) : [];
     if (state.hover && state.map.solid[i]) parts.push('bloquée');
+    if (state.hover && c.y === state.map.height - 1 && hidesLastRow(state.map)) parts.push('dernière rangée : cachée dans le jeu');
     $('tile-info').textContent = state.hover ? parts.join(' · ') || 'vide' : '';
   }
   if (state.mode === 'simple' && state.tool === 'place' && moved && state.hover) studio.hover(c.x, c.y);

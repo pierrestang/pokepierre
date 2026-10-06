@@ -74,6 +74,15 @@ function restoreHome(d) {
   delete d.home;
 }
 
+// La dernière rangée d'une carte du créateur porte la bordure d'arbres (planche « lisieres ») : le jeu la cache.
+function hidesLastRow(built) {
+  if (!built) return false;
+  const W = built.width;
+  const row = built.layers.decor.slice((built.height - 1) * W, built.height * W);
+  return row.some((cell) => (Array.isArray(cell) ? cell : [cell])
+    .some((r) => r >= 0 && built.sheets[Math.floor(r / 100000)] === 'lisieres'));
+}
+
 export class MapScene extends Phaser.Scene {
   setupMap(map, spawn) {
     const { grid } = map;
@@ -271,7 +280,9 @@ export class MapScene extends Phaser.Scene {
   fitCamera() {
     const cam = this.cameras.main;
     const mapW = this.grid[0].length * TILE_SIZE;
-    const mapH = this.grid.length * TILE_SIZE;
+    // Carte du créateur bordée d'arbres en bas : la dernière rangée n'est jamais montrée (le bas des arbres de la
+    // bordure, troncs et ombres, reste caché ; voir docs/technique/createur-de-cartes.md).
+    const mapH = (this.grid.length - (hidesLastRow(this.map.built) ? 1 : 0)) * TILE_SIZE;
     const view = gameView(this.scale);
     const viewW = SCREEN_W;
     const viewH = SCREEN_H;

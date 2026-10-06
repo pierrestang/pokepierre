@@ -280,7 +280,7 @@ export function createStudio(api) {
     // L'arbre rond de chaque bloc, de haut en bas (disposition de HeartGold : la couronne de l'arbre du dessous passe
     // devant le tronc de celui du dessus) ; ce qui déborde sur une case libre passe au-dessus de Pierre.
     for (const [bx, by] of [...blocks].sort(treeOrder)) {
-      for (const p of roundTreePieces(lis, variant, bx, by, by + 1 === m.height - 1 ? 1 : 0)) {
+      for (const p of roundTreePieces(lis, variant, bx, by)) {
         if (p.x < 0 || p.y < 0 || p.x >= W || p.y >= m.height) continue;
         const c = p.y * W + p.x;
         push(p.trunk || set.has(c) ? 'decor' : 'dessus', c, refOf(m, 'lisieres', p.index));
