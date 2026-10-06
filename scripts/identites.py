@@ -344,5 +344,45 @@ def bordeaux(v):
     v.notes.append('pas de tonneaux dans la bibliothèque : signature reportée sur la grille du quai')
 
 
+FOREST = {1740, 1741, 1752, 1753}                        # la forêt dense des bordures (g4-arbres, motif de 2 x 2)
+is_forest = lambda sheet, k: sheet == 'g4-arbres' and k in FOREST
+
+
+def leaves(hue_fn, sat=None):
+    """Feuillage recoloré : chaque vert prend la teinte hue_fn(h, v) (garde la clarté)."""
+    def fn(h, s, v):
+        g = (h > 60) & (h < 180) & (s > 0.12)
+        h2 = np.where(g, hue_fn(h, v), h)
+        s2 = np.where(g, np.maximum(s, sat) if sat else s, s)
+        return h2, s2, v
+    return lambda img: hsv_map(img, fn)
+
+
+@ville('saint-ay')
+def saint_ay(v):
+    """Village de Loire : maisons de tuffeau blanc à toit d'ardoise, chênes vert olive, lanternes de bois ;
+    signature : les roseaux au bord de l'étang."""
+    woodpile = {(20, 11), (21, 11), (20, 12), (21, 12)}           # le tas de bois de g4_enrich reste du bois
+    v.recolor_cells(building_cells_all(v) - woodpile, ('decor', 'dessus'),
+                    palette(roof=(214, 0.16, 0.95), wall=(46, 0.07, 1.12), wood=(42, 0.13, 1.7)))
+    v.recolor_refs(is_forest, leaves(lambda h, val: 86 + (h - 120) * 0.3, sat=0.3), layers=('decor', 'dessus'))
+    reeds = [v.element('g4-eau', 13, r, 1, 1, cut=True) for r in (91, 92)]
+    for i, (x, y) in enumerate([(7, 9), (8, 10), (8, 11), (8, 12), (5, 15), (0, 15)]):
+        assert v.solid(x, y) and v.kinds[y][x] == 'water', (x, y)
+        v.place(reeds[i % 2], x, y, solid_from=0)
+
+
+@ville('montepilloy')
+def montepilloy(v):
+    """Village agricole de l'Oise : forêt d'automne, sans réverbères ; signature : le puits de pierre, et les meules
+    de foin près des champs."""
+    v.recolor_refs(is_forest, leaves(lambda h, val: 12 + val * 32, sat=0.62), layers=('decor', 'dessus'))
+    v.place(v.element('g4-clotures', 6, 24, 3, 2, isolate=True), 2, 8, solid_from=1)
+    hay = v.element('g4-arbres', 0, 305, 4, 1, isolate=True)
+    v.place(hay, 21, 22, solid_from=0)
+    v.place(hay, 24, 20, solid_from=0)
+    v.notes.append('murets de pierre abandonnés : aucun muret Gen 4 ne suit le tracé des clôtures existantes')
+
+
 if __name__ == '__main__':
     main()
