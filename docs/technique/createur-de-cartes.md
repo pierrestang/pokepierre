@@ -55,6 +55,16 @@ porte du jeu, collisions sur la hauteur de l'emprise (le haut du toit passe deva
 bâtiment, vérifier qu'il ne bloque ni PNJ ni passage (check_paths.js) : les rues de Hull et Bordeaux sont étroites.
 Refaire : python3 scripts/convert_maps_v2.py --force=<id> (efface les retouches faites dans le créateur).
 
+## Deuxième passe des cartes Gen 4 (g4_enrich.py)
+
+scripts/g4_enrich.py enrichit les sept cartes de Saint-Ay à Hull (octobre 2026), à partir du tag git
+avant-refonte-g4. Il travaille carte par carte (PLANS) : parvis de sable sous les boîtes aux lettres, massifs de fleurs
+dans le calque Sol (ils se traversent), touffes d'herbe rase sur les pelouses unies, nénuphars et rochers sur l'eau,
+péniches sur la Garonne. Le sol de chaque case est reconnu d'après sa case d'origine (planche DPPt ou clé de
+auto.json). Collisions, départ, portes, PNJ, événements et props ne changent pas : le script le vérifie avant
+d'écrire. `--plan <id>` affiche la grille d'une carte (sols, cases bloquantes, points importants, décors posés sur des
+cases libres).
+
 ## Bibliothèque Gen 4 (build_g4_library.py)
 
 Palette Gen 4 rangée par type d'élément (arbres, fleurs, herbes, sols, eau, rochers, clôtures, ponts, bâtiments,
