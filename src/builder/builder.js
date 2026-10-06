@@ -1695,6 +1695,7 @@ function bindAssistant() {
     transitions: () => assistant.fixTransitions(),
     sow: () => assistant.sowTall(density()),
     regen: () => assistant.regenerate(density()),
+    forest: () => assistant.rebuildForest(),
   };
   document.querySelectorAll('[data-asst]').forEach((b) => { b.onclick = () => runAssistant(actions[b.dataset.asst]); });
   $('asst-density').oninput = () => { $('asst-density-val').textContent = `${$('asst-density').value} %`; };
@@ -1705,7 +1706,7 @@ function bindAssistant() {
     const cmd = assistant.parse(text, density());
     if (!cmd) {
       $('asst-log').className = 'warn';
-      $('asst-log').textContent = 'Je n\'ai pas compris. Essaie : « régularise le chemin », « corrige les transitions », '
+      $('asst-log').textContent = 'Je n\'ai pas compris. Essaie : « régularise le chemin », « corrige les transitions », « refais la bordure d\'arbres », '
         + '« sème des hautes herbes, 30 % », « régénère cette zone ».';
       return;
     }

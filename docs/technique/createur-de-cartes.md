@@ -31,10 +31,17 @@ contrôle.
   - nettoyage : « Régulariser le chemin » (boucher les trous et les coupures d'une case, relier les chemins qui ne se
     touchent qu'en diagonale, couper les bosses d'une case, refaire les bords) et « Corriger les transitions » (chaque
     case de chemin, sable, mer, étang ou hautes herbes reçoit le bord qui va avec ses voisines) ;
+  - bordure : « Refaire la bordure d'arbres » (sur la forêt dense de la zone : le tissu dense reste à l'intérieur ;
+    chaque bloc de 2 x 2 qui touche une case hors forêt devient un arbre entier posé sur l'herbe, dont la cime déborde
+    vers le haut ; une bordure ouverte seulement vers le bas garde son tissu en haut et montre les troncs en bas ; une
+    case de forêt hors bloc devient un buisson). La palette de la forêt (DPPt, chêne de Saint-Ay, automne de
+    Montépilloy) est reconnue d'après ses cases ; seules les planches d'arbres comptent (pas un toit de même couleur).
+    Arbres et buissons : planche « lisières » (scripts/build_lisieres.py : l'arbre de rmxp-nature, de la même famille
+    que la forêt dense, une version par palette) ;
   - remplissage : « Semer des hautes herbes » (touffes rondes sur l'herbe libre, à une case des chemins, densité
     réglable, tirage à graine rejouable) et « Régénérer cette zone » (le dernier semis est retiré, un autre tirage le
     remplace, rien d'autre ne bouge).
-- Chaque commande ne touche qu'au calque Sol, jamais aux collisions, et tient en un seul pas d'historique (Ctrl+Z) ; une
+- Aucune commande ne change les collisions ; chacune tient en un seul pas d'historique (Ctrl+Z) ; une
   commande qui ne change rien n'en laisse pas. Après chacune, l'assistant vérifie l'accessibilité depuis le départ des
   cases importantes (carte du jeu : PNJ, portes et case devant, objets, déclencheurs, props) et signale seulement ce que
   la commande a rendu inatteignable.

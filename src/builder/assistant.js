@@ -2,11 +2,11 @@ import { refOf, decodeRef, stackOf, EMPTY } from './mapModel.js';
 
 // Assistant du créateur de cartes : des commandes qui rangent derrière le dessinateur, sous son contrôle.
 // - Portée : la zone choisie (outil Déplacer), sinon toute la carte.
-// - Chaque commande est un seul pas d'historique (Ctrl+Z l'annule d'un coup) et ne touche qu'au calque Sol : jamais aux
-//   collisions. Après chaque commande, l'assistant vérifie que les cases importantes (départ, PNJ, portes, objets,
+// - Chaque commande est un seul pas d'historique (Ctrl+Z l'annule d'un coup) et ne change jamais les collisions. Après chaque commande, l'assistant vérifie que les cases importantes (départ, PNJ, portes, objets,
 //   déclencheurs d'une carte du jeu) restent atteignables.
 // - Commandes (boutons ou phrase en français, mêmes actions) : régulariser un chemin, corriger les transitions entre
-//   matières, semer des hautes herbes (densité, tirage rejouable, « régénère cette zone »).
+//   matières, semer des hautes herbes (densité, tirage rejouable, « régénère cette zone »), refaire la bordure d'arbres
+//   (lisière d'arbres entiers à la place des carrés de forêt coupés).
 //
 // Les bords de matières viennent de la planche « transitions » (scripts/build_transitions.py) : chaque case de bord
 // a un numéro calculable (matière x 625 + morceaux des quatre quarts en base 5), sans fabriquer d'image.
@@ -265,11 +265,12 @@ export function createAssistant(api) {
     if (!kit) await load();
     const pre = await check();
     api.remember();
-    const before = JSON.stringify(state.map.layers.sol);
+    const snap = () => JSON.stringify([state.map.layers, state.map.solid]);
+    const before = snap();
     const result = await fn();
-    if (JSON.stringify(state.map.layers.sol) === before) {
+    if (snap() === before) {
       api.forget();
-      return { text: `${label} : rien à changer sur ${result.where}.`, kind: '' };
+      return { text: `${label} : ${result.empty ?? `rien à changer sur ${result.where}.`}`, kind: result.empty ? 'warn' : '' };
     }
     api.changed();
     const qc = verdict(pre, await check());
@@ -475,6 +476,161 @@ export function createAssistant(api) {
     });
   }
 
+  // ---------- Bordure d'arbres ----------
+
+  // Planche des lisières (scripts/build_lisieres.py) : pour chaque palette de forêt, un arbre entier (2 x 4) et un
+  // buisson (1 x 1), et le tissu dense de la palette (pour la reconnaître).
+  let lis = null;
+  async function loadLisieres() {
+    if (lis) return;
+    lis = await fetch(`${api.base}assets/v2/lisieres.json`).then((r) => r.json());
+    await api.loadSheet('lisieres');
+  }
+  const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  // La palette de forêt d'une case posée (tissu dense des bordures, éventuellement recoloré par ville), ou null.
+  // Seules les planches d'arbres (et les cases recolorées de la planche assemblée) comptent : un toit de la même couleur
+  // n'est pas de la forêt.
+  const TREE_SHEETS = new Set(['g4-arbres', 'rmxp-nature', 'auto']);
+  function forestVariant(ref) {
+    const tile = decodeRef(state.map, ref);
+    if (!tile || !TREE_SHEETS.has(tile.sheet)) return null;
+    const mean = meanOf(ref);
+    if (!mean) return null;
+    // La palette la plus proche (le chêne de Saint-Ay et la forêt DPPt sont voisins).
+    let best = null;
+    let gap = 8;
+    for (const v of lis.variants) {
+      for (const f of v.fillMeans) if (dist(f, mean) < gap) { gap = dist(f, mean); best = v; }
+    }
+    return best;
+  }
+
+  // Refaire la bordure d'arbres : la forêt dense garde son tissu à l'intérieur ; chaque bloc de 2 x 2 qui touche une
+  // case hors forêt devient un arbre entier posé sur l'herbe (sa cime déborde vers le haut, sur la forêt ou au-dessus
+  // de Pierre) ; une case de forêt qui ne tient pas dans un bloc devient un buisson. Les collisions ne changent pas.
+  function rebuildForest() {
+    return run('Bordure', async () => {
+      await loadLisieres();
+      const m = state.map;
+      const W = m.width;
+      const H = m.height;
+      const z = zone();
+      const forest = new Uint8Array(W * H);
+      const votes = new Map();
+      for (let i = 0; i < W * H; i++) {
+        if (!m.solid[i]) continue;
+        for (const r of stackOf(m.layers.decor[i])) {
+          const v = forestVariant(r);
+          if (v) {
+            forest[i] = 1;
+            if (inZone(z, i % W, Math.floor(i / W))) votes.set(v, (votes.get(v) ?? 0) + 1);
+            break;
+          }
+        }
+      }
+      // Une forêt, c'est au moins 4 cases d'un seul tenant (une case isolée de la bonne couleur n'en est pas).
+      const comp = new Int32Array(W * H).fill(-1);
+      for (let i = 0; i < W * H; i++) {
+        if (!forest[i] || comp[i] >= 0) continue;
+        const cells = [i];
+        comp[i] = i;
+        for (let k = 0; k < cells.length; k++) {
+          const c = cells[k];
+          for (const j of [c - 1, c + 1, c - W, c + W]) {
+            if (j >= 0 && j < W * H && Math.abs((j % W) - (c % W)) <= 1 && forest[j] && comp[j] < 0) { comp[j] = i; cells.push(j); }
+          }
+        }
+        if (cells.length < 4) for (const c of cells) forest[c] = 0;
+      }
+      if (!votes.size) {
+        return { where: zoneText(z), empty: `aucune forêt dense reconnue sur ${zoneText(z)} (les sapins du collège et la haie `
+          + 'du Prytanée ont déjà une silhouette détourée).' };
+      }
+      const variant = [...votes.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      const isF = (x, y) => x >= 0 && y >= 0 && x < W && y < H && forest[y * W + x];
+      const full = (bx, by) => isF(bx, by) && isF(bx + 1, by) && isF(bx, by + 1) && isF(bx + 1, by + 1);
+      // Grille de 2 x 2 calée pour garder le plus d'arbres entiers dans la zone.
+      let anchor = [0, 0];
+      let most = -1;
+      for (const ax of [0, 1]) {
+        for (const ay of [0, 1]) {
+          let n = 0;
+          for (let by = ay; by < H - 1; by += 2) for (let bx = ax; bx < W - 1; bx += 2) if (full(bx, by) && inZone(z, bx, by)) n++;
+          if (n > most) { most = n; anchor = [ax, ay]; }
+        }
+      }
+      const [ax, ay] = anchor;
+      const inBlock = new Uint8Array(W * H);
+      const edges = [];
+      for (let by = ay; by < H - 1; by += 2) {
+        for (let bx = ax; bx < W - 1; bx += 2) {
+          if (!full(bx, by)) continue;
+          inBlock[by * W + bx] = inBlock[by * W + bx + 1] = inBlock[(by + 1) * W + bx] = inBlock[(by + 1) * W + bx + 1] = 1;
+          const all = [[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]];
+          if (!all.every(([x, y]) => inZone(z, x, y))) continue;
+          // Bloc de lisière : une de ses voisines (hors du bloc, dans la carte) n'est pas de la forêt.
+          const open = all.some(([x, y]) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => {
+            const nx = x + dx;
+            const ny = y + dy;
+            return nx >= 0 && ny >= 0 && nx < W && ny < H && !isF(nx, ny);
+          }));
+          if (open) {
+            // Lisière ouverte seulement vers le bas (bordure du haut) : la rangée du haut garde le tissu dense, les troncs
+            // se posent sur l'herbe de la rangée du bas.
+            const openAt = (x, y) => x >= 0 && y >= 0 && x < W && y < H && !isF(x, y);
+            const sides = !isF(bx - 1, by) && bx > 0 || !isF(bx - 1, by + 1) && bx > 0
+              || openAt(bx + 2, by) || openAt(bx + 2, by + 1) || openAt(bx, by - 1) || openAt(bx + 1, by - 1);
+            edges.push([bx, by, !sides]);
+          }
+        }
+      }
+      const lisRef = (col, row) => refOf(m, 'lisieres', (variant.row + row) * lis.cols + col);
+      const strip = (i) => {
+        // Le sol d'herbe sous l'arbre, et plus de tissu de forêt dans le Décor de la case.
+        const g = refOf(m, 'dppt', 4);
+        const solStack = stackOf(m.layers.sol[i]);
+        m.layers.sol[i] = solStack.length > 1 ? [g, ...solStack.slice(1)] : g;
+        const rest = stackOf(m.layers.decor[i]).filter((r) => !forestVariant(r));
+        m.layers.decor[i] = rest.length > 1 ? rest : rest.length ? rest[0] : EMPTY;
+      };
+      const add = (layer, i, ref) => {
+        const stack = stackOf(m.layers[layer][i]);
+        m.layers[layer][i] = stack.length ? [...stack, ref] : ref;
+      };
+      for (const [bx, by, belowOnly] of edges) {
+        const cells = belowOnly ? [[bx, by + 1], [bx + 1, by + 1]] : [[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]];
+        for (const [x, y] of cells) strip(y * W + x);
+      }
+      // Les arbres de haut en bas : la cime d'un arbre passe devant le tronc de celui du dessus.
+      edges.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+      for (const [bx, by] of edges) {
+        for (let k = 0; k < lis.tree.h; k++) {
+          const y = by - 2 + k;
+          if (y < 0) continue;
+          for (let dx = 0; dx < lis.tree.w; dx++) {
+            const i = y * W + bx + dx;
+            add(k >= 2 || m.solid[i] ? 'decor' : 'dessus', i, lisRef(lis.tree.col + dx, k));
+          }
+        }
+      }
+      // Les cases de forêt de la zone qui ne tiennent dans aucun bloc : un buisson.
+      let bushes = 0;
+      for (let y = z.y0; y <= z.y1; y++) {
+        for (let x = z.x0; x <= z.x1; x++) {
+          const i = y * W + x;
+          if (!forest[i] || inBlock[i]) continue;
+          strip(i);
+          add('decor', i, lisRef(lis.bush.col, 0));
+          bushes++;
+        }
+      }
+      return {
+        where: zoneText(z),
+        text: `palette ${variant.name} : ${edges.length} arbre(s) de lisière, ${bushes} buisson(s) sur ${zoneText(z)}.`,
+      };
+    });
+  }
+
   // ---------- Phrases ----------
 
   // Lit une demande en français (mots-clés) et lance la commande correspondante ; null si la phrase n'est pas comprise.
@@ -488,6 +644,7 @@ export function createAssistant(api) {
     if (/herbe/.test(t) && /(seme|semer|ajoute|plante|remplis|mets|pose|parseme|herbes hautes|hautes herbes)/.test(t)) {
       return { run: () => sowTall(d), label: 'semer des hautes herbes' };
     }
+    if (/(bordure|lisiere|foret|arbres)/.test(t)) return { run: rebuildForest, label: 'refaire la bordure d\'arbres' };
     if (/chemin|allee|sentier/.test(t) && /(regular|redress|nettoi|propre|aligne|angle|droit|lisse)/.test(t)) {
       return { run: straightenPath, label: 'régulariser le chemin' };
     }
@@ -498,5 +655,5 @@ export function createAssistant(api) {
     return null;
   }
 
-  return { fixTransitions, straightenPath, sowTall, regenerate, parse, zone, zoneText, check, hasSow: () => Boolean(lastSow) };
+  return { fixTransitions, straightenPath, sowTall, regenerate, rebuildForest, parse, zone, zoneText, check, hasSow: () => Boolean(lastSow) };
 }
