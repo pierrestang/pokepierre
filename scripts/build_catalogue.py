@@ -124,6 +124,8 @@ BUILDING_NAMES = {
     'verriere': 'Grande maison à verrière', 'ecole': 'Immeuble', 'casino': 'Façade à auvent', 'temple': 'Temple',
     'vitrine': 'Bâtiment vitré', 'abri': 'Petit abri', 'grange': 'Grange', 'boutique': 'Boutique',
     'longere': 'Longère', 'bleue': 'Maison bleue', 'grise': 'Maison grise', 'tuiles': 'Maison aux tuiles',
+    # Déjà posés sur les cartes générées (scripts/g4_theme.py), ajoutés au catalogue en octobre 2026.
+    'stade': 'Rotonde', 'manoir': 'Manoir',
 }
 
 # Bâtiments de la bibliothèque Gen 4 (g4-batiments, choisis en octobre 2026 pour les quatre premières villes) :
@@ -223,6 +225,21 @@ ELEMENTS = {
     'abri-bois': ('Abri de bois', 'mobilier', lambda: lib_building((135, 1906, 81, 78), sid='g4-mobilier', dark=120), 3, 'land'),
     'distributeur': ('Distributeur', 'mobilier', lambda: lib_building((165, 4229, 21, 27), sid='g4-mobilier'), 1, 'land'),
     'affichage': ('Panneau d\'affichage', 'mobilier', lambda: lib_building((135, 4234, 18, 22), sid='g4-mobilier'), 1, 'land'),
+    'poubelle-bleue': ('Poubelle bleue', 'mobilier', lambda: lib_building((31, 1032, 14, 24), sid='g4-mobilier'), -1, 'land'),
+    'poubelle-rouge': ('Poubelle rouge', 'mobilier', lambda: lib_building((16, 1033, 14, 23), sid='g4-mobilier'), -1, 'land'),
+    'feu': ('Feu de camp', 'mobilier', lambda: lib_building((54, 1869, 34, 29), sid='g4-mobilier'), -1, 'land'),
+    'puits-pierre': ('Puits de pierre', 'mobilier', lambda: lib_building((219, 2958, 21, 45), sid='g4-mobilier'), -1, 'land'),
+    'cloche': ('Cloche', 'mobilier', lambda: lib_building((13, 3041, 38, 37), sid='g4-mobilier'), -1, 'land'),
+    'banc-blanc': ('Banc blanc', 'mobilier', lambda: lib_building((263, 3131, 34, 21), sid='g4-mobilier'), -1, 'land'),
+    'annonces': ('Tableau d\'annonces', 'mobilier', lambda: lib_building((0, 3335, 16, 25), sid='g4-mobilier'), -1, 'land'),
+    'lanterne-jardin': ('Lanterne de jardin', 'mobilier', lambda: lib_building((58, 3398, 20, 47), sid='g4-mobilier'), -1, 'land'),
+    'poteau-indicateur': ('Poteau indicateur', 'mobilier', lambda: lib_building((224, 4180, 32, 27), sid='g4-mobilier'), -1, 'land'),
+    'buches': ('Bûches', 'mobilier', lambda: lib_building((101, 4236, 22, 20), sid='g4-mobilier'), -1, 'land'),
+    'table-jardin': ('Table de jardin', 'mobilier', lambda: lib_building((115, 4613, 89, 43), sid='g4-mobilier'), -2, 'land'),
+    'tente': ('Tente', 'mobilier', lambda: lib_building((258, 2012, 59, 68), sid='g4-mobilier'), -3, 'land'),
+    'panneau-bois': ('Panneau en bois', 'mobilier', lambda: lib_building((294, 4177, 20, 31), sid='g4-mobilier'), -1, 'land'),
+    'oriflamme': ('Oriflamme', 'mobilier', lambda: lib_building((68, 4120, 23, 56), sid='g4-mobilier'), -1, 'land'),
+    'reverbere-rouge': ('Réverbère rouge', 'mobilier', lambda: lib_building((274, 3396, 16, 40), sid='g4-mobilier'), -1, 'land'),
     'souche': ('Souche et hache', 'plantes', lambda: lib_building((262, 4181, 19, 27), sid='g4-mobilier', shadow=True), 1, 'land'),
     # Sur l'eau (toujours bloquante : rien à ajouter).
     'barque': ('Barque', 'eau', lambda: isolate(crop('g4-vehicules', 6, 10, 5, 3)), None, 'water'),
@@ -232,6 +249,9 @@ ELEMENTS = {
     'cargo': ('Cargo à grues', 'eau', lambda: isolate(crop('g4-vehicules', 0, 82, 9, 4)), None, 'water'),
     'rocher-mer': ('Rocher dans l\'eau', 'eau', lambda: crop('dppt', 7, 145), None, 'water'),
 }
+
+MAP_ELEMENTS_DIR = ROOT / 'assets-source' / 'elements-cartes'
+MAP_ELEMENTS = json.loads((MAP_ELEMENTS_DIR / 'elements.json').read_text())
 
 # L'arbre rond de la planche des lisières (scripts/build_lisieres.py), par palette : sa première rangée.
 LIS_ROUND = {v['id']: v['roundRow'] for v in json.loads((V2 / 'lisieres.json').read_text())['variants']}
@@ -245,20 +265,20 @@ THEMES = {
     'fort-de-france': {'name': 'Fort-de-France (tropicale)', 'forest': None, 'paving': None, 'lamp': 'reverbere-rose',
                        'extra': ['palmier', 'hibiscus', 'fleurs-tropicales', 'parasol', 'drapeau-martinique',
                                  'statue-blanche', 'voilier-bleu', 'etal', 'etal-bocaux', 'transat',
-                                 'caisse', 'petite-fontaine']},
+                                 'caisse', 'petite-fontaine', 'banc-blanc', 'reverbere-rouge', 'poubelle-bleue']},
     'saint-ay': {'name': 'Saint-Ay (village de Loire)', 'forest': 'chene', 'paving': None, 'lamp': 'lanterne-bois',
                  'palette': 'saint-ay', 'extra': ['arbre-foret', 'peuplier', 'roseaux', 'bois', 'fontaine', 'massif',
-                           'pique-nique']},
+                           'pique-nique', 'puits-pierre', 'lanterne-jardin', 'table-jardin', 'poubelle-rouge']},
     'route-de-montepilloy': {'name': 'Route de campagne', 'forest': 'dppt', 'paving': None, 'lamp': None,
-                             'extra': ['arbre-foret', 'peuplier']},
+                             'extra': ['arbre-foret', 'peuplier', 'poteau-indicateur', 'tente', 'feu', 'buches']},
     'montepilloy': {'name': 'Montépilloy (village agricole)', 'forest': 'automne', 'paving': None, 'lamp': None,
                     'extra': ['arbre-foret', 'puits', 'bois', 'banc-bois', 'abri-bois', 'souche',
-                              'caisse']},
+                              'caisse', 'feu', 'buches', 'poteau-indicateur', 'table-jardin', 'poubelle-rouge']},
     'bonsecours': {'name': 'Collège de Bonsecours', 'forest': 'pins', 'paving': None, 'lamp': 'globe',
                    'palette': 'bonsecours', 'extra': ['sapin', 'drapeau-france', 'velo', 'distributeur', 'affichage',
-                             'pique-nique', 'fontaine']},
+                             'pique-nique', 'fontaine', 'cloche', 'annonces', 'panneau-bois', 'poubelle-bleue']},
     'prytanee': {'name': 'Prytanée (lycée militaire)', 'forest': 'haie', 'paving': 'gravier', 'lamp': 'lanterne-bleue',
-                 'extra': ['haie', 'statue-bronze', 'drapeau-france']},
+                 'extra': ['haie', 'statue-bronze', 'drapeau-france', 'oriflamme', 'cloche', 'banc-blanc', 'poubelle-bleue']},
     'bordeaux': {'name': 'Bordeaux (pierre blonde)', 'forest': None, 'paving': 'blond', 'lamp': 'lanterne-hgss',
                  'palette': 'bordeaux', 'extra': ['peniche', 'velo']},
     'hull': {'name': 'Hull (brique anglaise)', 'forest': None, 'paving': 'brique', 'lamp': 'reverbere-noir',
@@ -330,6 +350,8 @@ def solid_mask(img, solid_from, thin=False):
 def element_entry(pack, eid, name, cat, img, solid_from, place, door=None, theme_fn=None):
     if theme_fn:
         img = theme_fn(img)
+    if solid_from is not None and solid_from < 0:              # compté depuis le bas : -1, la dernière rangée
+        solid_from += img.height // TILE
     # Bâtiments et mobilier sans ombre portée (scripts/remove_shadows.py) ; la végétation garde la sienne.
     if cat in ('maisons', 'mobilier'):
         img = shadowless(img)
@@ -393,6 +415,18 @@ def main():
             solid_from = max(1, h - math.ceil(h * 0.55))
             elements.append(element_entry(pack, f'maison-{bid}', bname, 'maisons', img, solid_from, 'land',
                                           door=[door_col, h - 1], theme_fn=pal))
+        # Éléments relevés sur les cartes (scripts/harvest_map_elements.py, choisis et nommés dans
+        # assets-source/elements-cartes/elements.json) : dans le thème de leur carte et dans Libre ; l'image vient de la
+        # carte (sans ombre, avec contour), les collisions aussi.
+        for me in MAP_ELEMENTS:
+            if tid != 'libre' and tid != me['map']:
+                continue
+            img = Image.open(MAP_ELEMENTS_DIR / f"{me['id']}.png").convert('RGBA')
+            entry = element_entry(pack, me['id'], me['name'], me['cat'], img, me['over'], me['place'], door=me['door'])
+            entry['solid'] = [row[:] for row in me['solid']]
+            if me['door']:
+                entry['solid'][me['door'][1]][me['door'][0]] = 0
+            elements.append(entry)
         ids = list(dict.fromkeys(COMMON + t['extra'] + ([t['lamp']] if t['lamp'] else [])))
         for eid in ids:
             name, cat, fn, solid_from, place = ELEMENTS[eid]
