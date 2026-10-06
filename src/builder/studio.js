@@ -1,9 +1,10 @@
 import { refOf, decodeRef, stackOf, EMPTY, TILE } from './mapModel.js';
+import { layoutForest } from './forestLayout.js';
 
 // Mode simple du créateur de cartes : on peint des matières et on pose des éléments entiers, dans le thème d'une ville.
 // - Matières (herbe, chemin, sable, hautes herbes, mer, étang, fleurs, pavés, forêt) : les bords se font tout seuls
-//   (planche « transitions », voir assistant.js) ; la forêt se peint par blocs de 2 x 2 et sa lisière (arbres entiers
-//   sur l'herbe, cimes qui débordent) est refaite à chaque coup de pinceau.
+//   (planche « transitions », voir assistant.js) ; la forêt se peint par blocs de 2 x 2, en rangées d'arbres entiers
+//   (forestLayout.js), refaites à chaque coup de pinceau.
 // - Éléments (maisons, arbres, plantes, mobilier, bateaux) : posés d'un clic, avec leurs collisions, leur porte, la
 //   partie au-dessus de Pierre (toit, cime) ; refusés (contour rouge) s'ils chevauchent un obstacle, une case importante
 //   (porte, PNJ…) ou s'ils ne sont pas sur leur sol (un bateau sur l'eau). Un élément posé se reprend à la gomme.
@@ -171,38 +172,21 @@ export function createStudio(api) {
     for (const [x, y] of oldCells) if (x < W && y < m.height && !set.has(y * W + x)) m.solid[y * W + x] = 0;
     const variant = lisVariant(fm.variant) ?? lis.variants[0];
     const isF = (x, y) => x >= 0 && y >= 0 && x < W && y < m.height && set.has(y * W + x);
-    const outside = (x, y) => x >= 0 && y >= 0 && x < W && y < m.height && !set.has(y * W + x);
+    const { blocks, inBlock, touchesOpen } = layoutForest(W, m.height, isF);
     const grass = refOf(m, 'dppt', 4);
-    const edges = [];
+    const lisRef = (col, row) => refOf(m, 'lisieres', (variant.row + row) * lis.cols + col);
     for (const c of set) {
       const x = c % W;
       const y = Math.floor(c / W);
       const s = stackOf(m.layers.sol[c]);
       m.layers.sol[c] = s.length > 1 ? [grass, ...s.slice(1)] : grass;
       m.solid[c] = 1;
-      // Une case qui ne tient plus dans un bloc entier (gommée à côté) : un buisson plutôt qu'un bout de tissu.
-      const bx = x - (x % 2);
-      const by = y - (y % 2);
-      const whole = isF(bx, by) && isF(bx + 1, by) && isF(bx, by + 1) && isF(bx + 1, by + 1);
-      push('decor', c, whole ? catRef(fm.tiles[y % 2][x % 2]) : refOf(m, 'lisieres', variant.row * lis.cols + lis.bush.col));
-      if (x % 2 || y % 2) continue;
-      // Un bloc de 2 x 2 (coin pair) qui touche une case libre : un arbre entier.
-      const all = [[x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]];
-      if (!all.every(([a, b]) => isF(a, b))) continue;
-      const open = all.some(([a, b]) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => outside(a + dx, b + dy)));
-      if (!open) continue;
-      edges.push([x, y]);
+      // Le tissu ne reste que derrière ; au bord, l'herbe (et un buisson hors des blocs).
+      if (!touchesOpen(x, y)) push('decor', c, catRef(fm.tiles[y % 2][x % 2]));
+      else if (!inBlock(x, y)) push('decor', c, lisRef(lis.bush.col, 0));
     }
-    const lisRef = (col, row) => refOf(m, 'lisieres', (variant.row + row) * lis.cols + col);
-    for (const [bx, by] of edges) {
-      // Sous l'arbre, l'herbe seulement sur les cases qui touchent une case hors forêt ; ailleurs le tissu reste derrière
-      // (sinon l'herbe se voit entre deux couronnes voisines).
-      const cells = [[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]]
-        .filter(([x, y]) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => outside(x + dx, y + dy)));
-      for (const [x, y] of cells) removeRefs('decor', y * W + x, mine);
-    }
-    edges.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
-    for (const [bx, by] of edges) {
+    // Un arbre entier par bloc, de haut en bas (la cime du dessous passe devant le tronc du dessus).
+    for (const [bx, by] of blocks) {
       for (let k = 0; k < lis.tree.h; k++) {
         const y = by - 2 + k;
         if (y < 0) continue;

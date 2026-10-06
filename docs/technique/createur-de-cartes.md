@@ -30,8 +30,9 @@ Le créateur s'ouvre en mode « Simple » ; « Case par case » (bouton en haut 
 - Matières : Peindre (taille 1, 2, 3, 5), Zone, Remplir (les cases reliées de la même matière). Herbe, chemin, sable,
   hautes herbes, mer, étang : bords refaits autour de chaque coup de pinceau (planche « transitions », comme
   l'assistant). Fleurs : posées sur l'herbe libre. Pavés : motif de la ville. Forêt : par blocs de 2 x 2 calés sur la
-  grille ; toute la forêt peinte est redessinée à chaque coup (tissu dense dedans, arbre entier sur chaque bloc qui
-  touche une case libre, herbe seulement sous les cases ouvertes, buisson sur une case orpheline). La gomme repeint de
+  grille ; toute la forêt peinte est redessinée à chaque coup en rangées d'arbres (src/builder/forestLayout.js : un
+  arbre entier par bloc de 2 x 2, de haut en bas ; tissu sombre seulement derrière, sur les cases qui ne touchent pas
+  une case libre ; buisson sur une case hors des blocs). La gomme repeint de
   l'herbe. Clôture : posée case par case au pinceau, ou en tour de rectangle avec Zone ; chaque case prend
   l'angle, le bout ou le montant qui va avec ses voisines (montant collé à droite de la case sur le côté droit d'un
   enclos) ; une ouverture se fait à la gomme. Clôture blanche au Prytanée, à Hull et à Bordeaux. Mer, étang et forêt bloquent ; le reste libère la case.
@@ -66,11 +67,9 @@ contrôle.
   - nettoyage : « Régulariser le chemin » (boucher les trous et les coupures d'une case, relier les chemins qui ne se
     touchent qu'en diagonale, couper les bosses d'une case, refaire les bords) et « Corriger les transitions » (chaque
     case de chemin, sable, mer, étang ou hautes herbes reçoit le bord qui va avec ses voisines) ;
-  - bordure : « Refaire la bordure d'arbres » (sur la forêt dense de la zone : le tissu dense reste à l'intérieur ;
-    chaque bloc de 2 x 2 qui touche une case hors forêt devient un arbre entier posé sur l'herbe, dont la cime déborde
-    vers le haut ; une bordure ouverte seulement vers le bas garde son tissu en haut et montre les troncs en bas ; une
-    case de forêt hors bloc devient un buisson). La palette de la forêt (DPPt, chêne de Saint-Ay, automne de
-    Montépilloy) est reconnue d'après ses cases ; seules les planches d'arbres comptent (pas un toit de même couleur).
+  - bordure : « Refaire la bordure d'arbres » (la forêt dense de la zone devient des rangées d'arbres entiers, même
+    règle que le pinceau Forêt : forestLayout.js ; Saint-Ay est générée ainsi, identites.py forest_trees). La palette
+    de la forêt (DPPt, chêne de Saint-Ay, automne de Montépilloy) est reconnue d'après ses cases ; seules les planches d'arbres comptent (pas un toit de même couleur).
     Arbres et buissons : planche « lisières » (scripts/build_lisieres.py : l'arbre de rmxp-nature, de la même famille
     que la forêt dense, une version par palette) ;
   - remplissage : « Semer des hautes herbes » (touffes rondes sur l'herbe libre, à une case des chemins, densité

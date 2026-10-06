@@ -1,4 +1,5 @@
 import { refOf, decodeRef, stackOf, EMPTY } from './mapModel.js';
+import { layoutForest } from './forestLayout.js';
 
 // Assistant du créateur de cartes : des commandes qui rangent derrière le dessinateur, sous son contrôle.
 // - Portée : la zone choisie (outil Déplacer), sinon toute la carte.
@@ -509,9 +510,9 @@ export function createAssistant(api) {
     return best;
   }
 
-  // Refaire la bordure d'arbres : la forêt dense garde son tissu à l'intérieur ; chaque bloc de 2 x 2 qui touche une
-  // case hors forêt devient un arbre entier posé sur l'herbe (sa cime déborde vers le haut, sur la forêt ou au-dessus
-  // de Pierre) ; une case de forêt qui ne tient pas dans un bloc devient un buisson. Les collisions ne changent pas.
+  // Refaire la bordure d'arbres : la forêt dense de la zone devient des rangées d'arbres entiers (forestLayout.js) :
+  // un arbre par bloc de 2 x 2, le tissu sombre seulement derrière, un buisson sur une case hors des blocs au bord.
+  // Les collisions ne changent pas.
   function rebuildForest() {
     return run('Bordure', async () => {
       await loadLisieres();
@@ -552,45 +553,10 @@ export function createAssistant(api) {
       }
       const variant = [...votes.entries()].sort((a, b) => b[1] - a[1])[0][0];
       const isF = (x, y) => x >= 0 && y >= 0 && x < W && y < H && forest[y * W + x];
-      const full = (bx, by) => isF(bx, by) && isF(bx + 1, by) && isF(bx, by + 1) && isF(bx + 1, by + 1);
-      // Grille de 2 x 2 calée pour garder le plus d'arbres entiers dans la zone.
-      let anchor = [0, 0];
-      let most = -1;
-      for (const ax of [0, 1]) {
-        for (const ay of [0, 1]) {
-          let n = 0;
-          for (let by = ay; by < H - 1; by += 2) for (let bx = ax; bx < W - 1; bx += 2) if (full(bx, by) && inZone(z, bx, by)) n++;
-          if (n > most) { most = n; anchor = [ax, ay]; }
-        }
-      }
-      const [ax, ay] = anchor;
-      const inBlock = new Uint8Array(W * H);
-      const edges = [];
-      for (let by = ay; by < H - 1; by += 2) {
-        for (let bx = ax; bx < W - 1; bx += 2) {
-          if (!full(bx, by)) continue;
-          inBlock[by * W + bx] = inBlock[by * W + bx + 1] = inBlock[(by + 1) * W + bx] = inBlock[(by + 1) * W + bx + 1] = 1;
-          const all = [[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]];
-          if (!all.every(([x, y]) => inZone(z, x, y))) continue;
-          // Bloc de lisière : une de ses voisines (hors du bloc, dans la carte) n'est pas de la forêt.
-          const open = all.some(([x, y]) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => {
-            const nx = x + dx;
-            const ny = y + dy;
-            return nx >= 0 && ny >= 0 && nx < W && ny < H && !isF(nx, ny);
-          }));
-          if (open) {
-            // Lisière ouverte seulement vers le bas (bordure du haut) : la rangée du haut garde le tissu dense, les troncs
-            // se posent sur l'herbe de la rangée du bas.
-            const openAt = (x, y) => x >= 0 && y >= 0 && x < W && y < H && !isF(x, y);
-            const sides = !isF(bx - 1, by) && bx > 0 || !isF(bx - 1, by + 1) && bx > 0
-              || openAt(bx + 2, by) || openAt(bx + 2, by + 1) || openAt(bx, by - 1) || openAt(bx + 1, by - 1);
-            edges.push([bx, by, !sides]);
-          }
-        }
-      }
+      const { blocks, inBlock, touchesOpen } = layoutForest(W, H, isF, (x, y) => inZone(z, x, y));
       const lisRef = (col, row) => refOf(m, 'lisieres', (variant.row + row) * lis.cols + col);
       const strip = (i) => {
-        // Le sol d'herbe sous l'arbre, et plus de tissu de forêt dans le Décor de la case.
+        // Le sol d'herbe sous la case, et plus de tissu de forêt dans son Décor.
         const g = refOf(m, 'dppt', 4);
         const solStack = stackOf(m.layers.sol[i]);
         m.layers.sol[i] = solStack.length > 1 ? [g, ...solStack.slice(1)] : g;
@@ -601,36 +567,31 @@ export function createAssistant(api) {
         const stack = stackOf(m.layers[layer][i]);
         m.layers[layer][i] = stack.length ? [...stack, ref] : ref;
       };
-      for (const [bx, by, belowOnly] of edges) {
-        const cells = belowOnly ? [[bx, by + 1], [bx + 1, by + 1]] : [[bx, by], [bx + 1, by], [bx, by + 1], [bx + 1, by + 1]];
-        for (const [x, y] of cells) strip(y * W + x);
+      // Le tissu ne reste que derrière ; un buisson sur une case de forêt hors des blocs, au bord.
+      let bushes = 0;
+      for (let y = z.y0; y <= z.y1; y++) {
+        for (let x = z.x0; x <= z.x1; x++) {
+          const i = y * W + x;
+          if (!forest[i] || !touchesOpen(x, y)) continue;
+          strip(i);
+          if (!inBlock(x, y)) { add('decor', i, lisRef(lis.bush.col, 0)); bushes++; }
+        }
       }
-      // Les arbres de haut en bas : la cime d'un arbre passe devant le tronc de celui du dessus.
-      edges.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
-      for (const [bx, by] of edges) {
+      // Un arbre entier par bloc, de haut en bas.
+      for (const [bx, by] of blocks) {
         for (let k = 0; k < lis.tree.h; k++) {
           const y = by - 2 + k;
           if (y < 0) continue;
           for (let dx = 0; dx < lis.tree.w; dx++) {
             const i = y * W + bx + dx;
-            add(k >= 2 || m.solid[i] ? 'decor' : 'dessus', i, lisRef(lis.tree.col + dx, k));
+            add(k >= 2 || forest[i] ? 'decor' : 'dessus', i, lisRef(lis.tree.col + dx, k));
           }
         }
       }
-      // Les cases de forêt de la zone qui ne tiennent dans aucun bloc : un buisson.
-      let bushes = 0;
-      for (let y = z.y0; y <= z.y1; y++) {
-        for (let x = z.x0; x <= z.x1; x++) {
-          const i = y * W + x;
-          if (!forest[i] || inBlock[i]) continue;
-          strip(i);
-          add('decor', i, lisRef(lis.bush.col, 0));
-          bushes++;
-        }
-      }
+      const edges = blocks;
       return {
         where: zoneText(z),
-        text: `palette ${variant.name} : ${edges.length} arbre(s) de lisière, ${bushes} buisson(s) sur ${zoneText(z)}.`,
+        text: `palette ${variant.name} : ${edges.length} arbre(s), ${bushes} buisson(s) sur ${zoneText(z)}.`,
       };
     });
   }

@@ -442,6 +442,61 @@ def leaves(hue_fn, sat=None):
     return lambda img: hsv_map(img, fn)
 
 
+def forest_trees(v, variant):
+    """Forêt dense (tissu g4-arbres des bordures) refaite en rangées d'arbres entiers, comme les forêts DPPt : chaque
+    bloc de 2 x 2 de la forêt (grille calée pour en garder le plus) porte un arbre de la planche « lisieres » (palette
+    `variant`), de haut en bas (la cime de l'arbre du dessous passe devant le tronc de celui du dessus ; une cime qui
+    dépasse sur une case libre passe au-dessus de Pierre). Le tissu sombre reste seulement derrière, sur les cases qui
+    ne touchent pas une case libre (le bord de la carte compte comme de la forêt) ; une case de forêt hors des blocs
+    devient un buisson. Les collisions ne changent pas. Même règle que le créateur (src/builder/forestLayout.js)."""
+    W, H = v.W, v.H
+    lis = json.loads((ROOT / 'public' / 'assets' / 'v2' / 'lisieres.json').read_text())
+    var = next(x for x in lis['variants'] if x['id'] == variant)
+    lref = lambda col, row: v.ref('lisieres', (var['row'] + row) * lis['cols'] + col)
+    fill = lambda r: is_forest(v.sheet_of(r), r % STRIDE)
+    forest = {(x, y) for y in range(H) for x in range(W) if v.solid(x, y) and any(fill(r) for r in v.stack('decor', x, y))}
+    # Moins de 4 cases d'un seul tenant : pas une forêt.
+    seen = set()
+    for c in sorted(forest):
+        if c in seen:
+            continue
+        comp, todo = {c}, [c]
+        while todo:
+            x, y = todo.pop()
+            for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if n in forest and n not in comp:
+                    comp.add(n)
+                    todo.append(n)
+        seen |= comp
+        if len(comp) < 4:
+            forest -= comp
+    is_f = lambda x, y: not (0 <= x < W and 0 <= y < H) or (x, y) in forest
+    is_open = lambda x, y: 0 <= x < W and 0 <= y < H and (x, y) not in forest
+    full = lambda bx, by: all((x, y) in forest for x, y in ((bx, by), (bx + 1, by), (bx, by + 1), (bx + 1, by + 1)))
+    ax, ay = max(((a, b) for a in (0, 1) for b in (0, 1)),
+                 key=lambda p: sum(full(bx, by) for by in range(p[1], H - 1, 2) for bx in range(p[0], W - 1, 2)))
+    blocks = [(bx, by) for by in range(ay, H - 1, 2) for bx in range(ax, W - 1, 2) if full(bx, by)]
+    in_block = {(bx + i, by + j) for bx, by in blocks for i in (0, 1) for j in (0, 1)}
+    bushes = 0
+    for x, y in forest:
+        touches = any(is_open(x + dx, y + dy) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        if touches:
+            v.set_stack('decor', x, y, [r for r in v.stack('decor', x, y) if not fill(r)])
+        if (x, y) not in in_block and touches:
+            v.set_stack('decor', x, y, v.stack('decor', x, y) + [lref(lis['bush']['col'], 0)])
+            bushes += 1
+    for bx, by in sorted(blocks, key=lambda b: (b[1], b[0])):
+        for k in range(lis['tree']['h']):
+            y = by - 2 + k
+            if y < 0:
+                continue
+            for dx in range(lis['tree']['w']):
+                x = bx + dx
+                layer = 'decor' if k >= 2 or (x, y) in forest else 'dessus'
+                v.set_stack(layer, x, y, v.stack(layer, x, y) + [lref(lis['tree']['col'] + dx, k)])
+    v.notes.append(f'forêt en rangées d\'arbres : {len(blocks)} arbres, {bushes} buisson(s)')
+
+
 @ville('saint-ay')
 def saint_ay(v):
     """Village de Loire : maisons de tuffeau blanc à toit d'ardoise, chênes vert olive, lanternes de bois ;
@@ -449,6 +504,7 @@ def saint_ay(v):
     woodpile = {(20, 11), (21, 11), (20, 12), (21, 12)}           # le tas de bois de g4_enrich reste du bois
     v.recolor_cells(building_cells_all(v) - woodpile, ('decor', 'dessus'),
                     palette(**BUILDING_PALETTES['saint-ay']))
+    forest_trees(v, 'chene')
     v.recolor_refs(is_forest, leaves(lambda h, val: 86 + (h - 120) * 0.3, sat=0.3), layers=('decor', 'dessus'))
     reeds = [v.element('g4-eau', 13, r, 1, 1, cut=True) for r in (91, 92)]
     for i, (x, y) in enumerate([(7, 9), (8, 10), (8, 11), (8, 12), (5, 15), (0, 15)]):
