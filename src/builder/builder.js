@@ -730,6 +730,9 @@ function tilePixels(ref) {
 function objectAt(x, y) {
   const m = state.map;
   if (!inside(x, y)) return null;
+  // Un élément posé en mode simple : exactement ses cases (même collé à un autre objet).
+  const placed = studio.elementCellsAt(x, y);
+  if (placed) return placed;
   const layers = OBJECT_LAYERS.filter((l) => !state.hidden.has(l));
   const atCache = new Map();
   let at = (cx, cy) => {
@@ -776,7 +779,7 @@ function objectAt(x, y) {
     let full = false;
     const k = (py & 15) * TILE + (px & 15);
     for (const e of at(cx, cy)) {
-      if (e.px && e.px[k]) {
+      if (e.px && e.px[k] && joinable(cx, cy, e)) {
         full = true;
         if (!e.taken) {
           e.taken = true;
@@ -787,6 +790,14 @@ function objectAt(x, y) {
     return full;
   };
   const top = at(x, y).at(-1);
+  // Les pixels qui se touchent ne relient que les cases d'un même objet : celles posées avec lui (même ancre dans une
+  // planche ordinaire) ; une case d'une planche rangée sans ordre (cases recolorées…) seulement si l'objet en est fait.
+  // Deux objets collés (une boîte aux lettres contre une maison) restent distincts.
+  const seedPacked = !anchorKey(x, y, top.ref);
+  const joinable = (cx, cy, e) => {
+    const anchor = anchorKey(cx, cy, e.ref);
+    return anchor ? keys.has(anchor) : seedPacked;
+  };
   take(x, y, top.l, top.ref);
   let grew = true;
   while (grew) {
@@ -1240,6 +1251,19 @@ const endDrag = () => {
     if (drag.sel) state.moveSel = { x0: drag.sel.x0 + dx, y0: drag.sel.y0 + dy, x1: drag.sel.x1 + dx, y1: drag.sel.y1 + dy };
     // L'élément lâché reste choisi : Suppr le supprime.
     state.lastMoved = drag.sel ? null : drag.cells.map((c) => ({ ...c, x: c.x + dx, y: c.y + dy }));
+    if ((dx || dy) && !drag.copy) {
+      // Un élément posé en mode simple : sa note suit le dessin. Une porte du jeu dans ce qu'on a déplacé ne bouge pas
+      // avec (elle est dans les données du jeu) : on prévient.
+      if (!drag.sel) studio.elementMoved(drag.start.x, drag.start.y, dx, dy);
+      const b = drag.bounds;
+      assistant.terrain.importantCells().then((points) => {
+        const doors = points.filter(([px, py, what]) => what === 'porte' && px >= b.x0 && px <= b.x1 && py >= b.y0 && py <= b.y1);
+        if (doors.length) {
+          setStatus(`Attention : la porte du jeu en ${doors[0][0]},${doors[0][1]} n'a pas bougé (données du jeu) : `
+            + 'remets la maison en place, ou demande de déplacer la porte.', 'err');
+        }
+      });
+    }
     if (dx || dy) changed();
     else state.undo.pop();                       // simple clic : rien n'a bougé
     updateHistoryButtons();

@@ -17,7 +17,7 @@ const END_OF_DAY = [
 ];
 
 // Arrivée en voiture (fin de Saint-Ay), puis l'ellipse : image d'accueil, Pierre au bord de la mare.
-export const MONTEPILLOY_SPOTS = { pond: { x: 21, y: 16 }, houseDoor: [10, 7] };
+export const MONTEPILLOY_SPOTS = { pond: { x: 21, y: 16 }, houseDoor: [9, 7] };
 export const ARRIVAL = [
   { opening: { postcard: 'montepilloy', text: 'Montépilloy, Oise. Quelques années plus tard…' } },
   { setFlag: FLAGS.ellipseMontepilloy },
@@ -240,7 +240,7 @@ export const DINNER = [
   { black: true },
   { wait: 600 },
   { setFlag: FLAGS.septembre },
-  { travel: { map: 'montepilloy', x: 10, y: 7, facing: 'down' } },
+  { travel: { map: 'montepilloy', x: 9, y: 7, facing: 'down' } },
 ];
 
 // Septembre, devant la maison, au matin : la famille dit au revoir à Pierre, cartable sur le dos.

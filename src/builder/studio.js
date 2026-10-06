@@ -684,7 +684,40 @@ export function createStudio(api) {
     return null;
   }
 
+  // Les cases d'un élément posé en (x, y), au format de l'outil Déplacer ({ x, y, refs }), ou null.
+  function elementCellsAt(x, y) {
+    if (!cat || !state.map?.studio) return null;
+    const m = state.map;
+    const el = occupancy().get(y * m.width + x);
+    const def = el && elementDef(el.id, el.theme);
+    if (!def) return null;
+    const cells = [];
+    def.tiles.forEach((row, j) => row.forEach((k, i) => {
+      const cx = el.x + i;
+      const cy = el.y + j;
+      if (k < 0 || cx < 0 || cy < 0 || cx >= m.width || cy >= m.height) return;
+      const ref = catRef(k);
+      const layer = j >= def.over ? 'decor' : 'dessus';
+      if (stackOf(m.layers[layer][cy * m.width + cx]).includes(ref)) {
+        cells.push({ x: cx, y: cy, refs: { sol: [], decor: layer === 'decor' ? [ref] : [], dessus: layer === 'dessus' ? [ref] : [] } });
+      }
+    }));
+    return cells.length ? cells : null;
+  }
+
+  // Un élément posé déplacé avec l'outil Déplacer (sa case (x, y) d'avant, décalage) : sa note suit.
+  function elementMoved(x, y, dx, dy) {
+    if (!cat || !state.map?.studio) return;
+    const m = state.map;
+    const el = occupancy().get(y * m.width + x);
+    if (!el) return;
+    el.x += dx;
+    el.y += dy;
+    el.prev = (el.prev ?? []).map(([c, v]) => [c + dy * m.width + dx, v]);
+  }
+
   return {
+    elementCellsAt, elementMoved,
     load, render, bind, hover, drawGhost, clickPlace, eraseAt, fillFrom, beginStroke, endStroke,
     paintAt: (x, y) => paintCells(brushCells(x, y, material().kind === 'forest')),
     paintRect: (r) => {

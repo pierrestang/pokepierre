@@ -31,7 +31,7 @@ export const montepilloyMap = {
     'TTTTT....RRRRR.ççç.RRRRR.........TT', // 3
     'TT....ff.RRRRR.ççç.RRRRR.ff......TT', // 4
     'TT.ƀƀ.ff.WWWWW.ççç.WWWWW.ff......TT', // 5
-    'TT......MWDWWW.ççç.WWWWWM........TT', // 6
+    'TT..M...WDWWWW.ççç.WWWWWM........TT', // 6
     'TT.....çççççççççççççDççççç...ƀ...TT', // 7
     'TT.....ççççççççççççççççççç.......TT', // 8
     'TT.............ççç...............TT', // 9
@@ -56,7 +56,7 @@ export const montepilloyMap = {
     'TTTTTTTTTTTTTTTçççTTTTTTTTTTTTTTTTT', // 28
   ]),
   doors: [
-    { x: 10, y: 6, interior: 'montHouse' },
+    { x: 9, y: 6, interior: 'montHouse' },
     // Maison de la voisine : fermée (pas d'intérieur pour l'instant). Porte sur la rangée du soubassement de la maison
     // jaune (on frappe depuis la rue).
     { x: 20, y: 7, lockedDialogue: ['Personne ne répond.'] },
@@ -151,7 +151,7 @@ export const montepilloyMap = {
     { x: 14, y: 2, dialogue: ['Nord : route du collège Bonsecours.'] },
     // Une carte postale de Felix (Saint-Ay).
     {
-      x: 8, y: 6,
+      x: 4, y: 6,
       dialogue: [
         'Une carte postale ! Elle vient de Felix.',
         '« Pierre, la cabane tient toujours. Yanis a oublié le mot de passe, pas nous.',
