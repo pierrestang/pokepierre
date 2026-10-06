@@ -31,7 +31,7 @@ calé sur la grille, la porte sur la dernière rangée. Mobilier (g4-mobilier) :
 transat, grande caisse, massif, table de pique-nique, banc de bois, abri de bois, distributeur, panneau d'affichage ;
 souche (végétation, garde son ombre). Les villes suivantes (Prytanée, Bordeaux, Hull) viendront plus tard.
 
-## Contour des bâtiments
+## Contour des bâtiments et des objets
 
 Tous les bâtiments ont le même contour : un trait d'un pixel gris très foncé (32, 32, 32) autour du dessin, comme la
 maison de bois au toit bleu (scripts/outline_buildings.py, octobre 2026). Le trait remplace le pixel du bord (l'emprise
@@ -40,7 +40,10 @@ Cartes : le script trouve les bâtiments sur l'image des objets de la carte (des
 une ouverture de 10 px, qui efface clôtures et poteaux ; pas sur l'eau), les sépare des traits fins qui les touchent
 (ouverture de 5 px), et ne touche qu'aux cases surtout faites de bâtiment ; les maisons posées en mode simple
 reprennent les cases du catalogue. Exceptions dans SKIP (Prytanée : deux cases où le haut du toit et la clôture
-partagent une case assemblée). Mobilier, clôtures et végétation ne changent pas.
+partagent une case assemblée). Puis les objets (mobilier, clôtures, panneaux, lampadaires, statues…) reçoivent le même
+trait autour de chaque dessin d'un seul tenant, sauf les bateaux et véhicules (planches g4-vehicules, objets,
+jared-bateaux), ce qui est posé sur l'eau, et un objet collé sous une plante qui le contient (pied d'un palmier, plante
+de 16 cases au plus). Le catalogue passe aussi son mobilier par outlined(). La végétation ne change pas.
 
 ## Ombres : seulement la végétation
 

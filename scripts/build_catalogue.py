@@ -333,8 +333,8 @@ def element_entry(pack, eid, name, cat, img, solid_from, place, door=None, theme
     # Bâtiments et mobilier sans ombre portée (scripts/remove_shadows.py) ; la végétation garde la sienne.
     if cat in ('maisons', 'mobilier'):
         img = shadowless(img)
-    # Bâtiments : un trait gris très foncé autour du dessin, le même pour tous (scripts/outline_buildings.py).
-    if cat == 'maisons':
+    # Bâtiments et mobilier : un trait gris très foncé autour du dessin, le même pour tous (scripts/outline_buildings.py).
+    if cat in ('maisons', 'mobilier'):
         img = outlined(img)
     w, h = img.width // TILE, img.height // TILE
     # Un objet fin (mât, pied de réverbère) bloque dès qu'il occupe un peu la case ; un bâtiment, s'il la couvre bien.

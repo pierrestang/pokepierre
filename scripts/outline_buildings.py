@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Contour des bâtiments harmonisé (octobre 2026) : un trait d'un pixel gris très foncé tout autour du dessin (toit,
+"""Contour des bâtiments et des objets harmonisé (octobre 2026) : un trait d'un pixel gris très foncé tout autour du dessin (toit,
 murs, bas de façade), comme la maison de bois au toit bleu de la bibliothèque Gen 4. Le trait remplace la rangée de
 pixels du bord du dessin (l'emprise ne change pas) ; un bord déjà sombre garde sa couleur.
 
@@ -9,6 +9,9 @@ pixels du bord du dessin (l'emprise ne change pas) ; un bord déjà sombre garde
   moins 3 x 3 cases, plein à plus de la moitié, pas sur l'eau ni bateau ou véhicule) reçoit le trait ; ses cases sont
   remplacées par leur version avec contour (cases du catalogue si elles y sont, sinon cases assemblées de la planche
   auto, numéros existants gardés). Le mobilier, les clôtures et la végétation ne changent pas.
+
+Puis les objets (mobilier, clôtures, panneaux, lampadaires…, demandé ensuite) : le même trait autour de chaque dessin
+d'un seul tenant, sauf les bateaux et véhicules et ce qui est posé sur l'eau ; la végétation garde son dessin.
 
 Usage : python3 scripts/outline_buildings.py [id de carte…]   (toutes les cartes par défaut)
 """
@@ -30,6 +33,7 @@ VERBOSE = False
 SKIP = {'prytanee': {(7, 2), (29, 2)}}
 OPEN = 10                      # épaisseur (px) sous laquelle un dessin compte comme fin (clôture, poteau)                      # luminosité sous laquelle un bord est déjà un trait
 NEAR = 5                       # épaisseur (px) sous laquelle un trait qui touche le bâtiment n'en fait pas partie
+NOT_OUTLINED = {'g4-vehicules', 'objets', 'jared-bateaux'}     # bateaux, véhicules, ferry et palmiers
 NOT_BUILDINGS = {'g4-vehicules', 'objets', 'jared-bateaux', 'g4-clotures', 'g4-mobilier', 'g4-ponts'}
 
 
@@ -112,20 +116,27 @@ def main(ids):
         lab, n = ndimage.label(body)
         keep = np.zeros(n + 1, bool)
         sol = m['layers']['sol']
+
+        def on_water(cells):
+            """Le dessin est surtout posé sur l'eau (bateau, rocher dans la mer)."""
+            water = 0
+            for cy, cx in cells:
+                st = sol[cy * W + cx]
+                st = [r for r in (st if isinstance(st, list) else [st]) if r >= 0]
+                if st:
+                    mean = np.array(tile_of(sheets[st[0] // STRIDE], st[0] % STRIDE))[..., :3].reshape(-1, 3).astype(int).mean(0)
+                    water += mean[2] > mean[0] + 40 and mean[2] > mean[1]
+            return water > 0.5 * len(cells)
+
+        def object_tile(sheet, k, img=None):
+            return sheet not in NOT_OUTLINED and is_object(sheet, k, img if img is not None else tile_of(sheet, k))
         for c, sl in enumerate(ndimage.find_objects(lab), 1):
             ys, xs = sl
             h, w = ys.stop - ys.start, xs.stop - xs.start
             if h < 3 * TILE or w < 3 * TILE or (lab[sl] == c).sum() < 0.5 * h * w:
                 continue
             cells = {(y // TILE, x // TILE) for y, x in zip(*np.nonzero(lab[sl] == c)) for y, x in [(y + ys.start, x + xs.start)]}
-            water = 0
-            for cy, cx in cells:
-                s = sol[cy * W + cx]
-                s = [r for r in (s if isinstance(s, list) else [s]) if r >= 0]
-                if s:
-                    mean = np.array(tile_of(sheets[s[0] // STRIDE], s[0] % STRIDE))[..., :3].reshape(-1, 3).astype(int).mean(0)
-                    water += mean[2] > mean[0] + 40 and mean[2] > mean[1]
-            if water > 0.5 * len(cells):
+            if on_water(cells):
                 continue
             keep[c] = True
             if VERBOSE:
@@ -140,49 +151,93 @@ def main(ids):
         core = ndimage.binary_dilation(keep[lab], iterations=2)
         changed = 0
         made = {}                                  # (calque, case) -> cases refaites ici
+
+        def apply(mask, accept, skip=()):
+            nonlocal changed
+            for layer in ('decor', 'dessus'):
+                cells = m['layers'][layer]
+                for i, cell in enumerate(cells):
+                    x, y = i % W, i // W
+                    if (x, y) in skip:
+                        continue
+                    cm = mask[y * TILE:(y + 1) * TILE, x * TILE:(x + 1) * TILE]
+                    if not cm.any():
+                        continue
+                    stack = cell if isinstance(cell, list) else [cell]
+                    new = []
+                    for r in stack:
+                        if r < 0:
+                            new.append(r)
+                            continue
+                        sheet, k = sheets[r // STRIDE], r % STRIDE
+                        img = tile_of(sheet, k)
+                        t = np.array(img)
+                        tm = cm & (t[..., 3] >= 128)
+                        if not tm.any() or not accept(sheet, k, img, t, x, y):
+                            new.append(r)
+                            continue
+                        before = t.copy()
+                        paint(t, tm)
+                        if np.array_equal(before, t):
+                            new.append(r)
+                            continue
+                        changed += 1
+                        clean = Image.fromarray(t)
+                        k2 = cat_by_bytes.get(clean.tobytes()) if sheet == 'catalogue' else None
+                        new.append(ref('catalogue', k2) if k2 is not None else ref('auto', bd.image_tile(clean)))
+                        made.setdefault((layer, i), set()).add(new[-1])
+                    cells[i] = new if len(new) > 1 else (new[0] if new else -1)
+
+        # 1. Bâtiments. Une case qui n'est pas surtout du bâtiment (barreaux de clôture contre un toit) ne change pas.
+        def building_tile(sheet, k, img, t, x, y):
+            mine = t[..., 3] >= 128
+            part = core[y * TILE:(y + 1) * TILE, x * TILE:(x + 1) * TILE][mine].mean() if mine.any() else 0
+            return is_building(sheet, k, img) and part >= 0.3
+        apply(mask, building_tile, SKIP.get(mid, ()))
+
+        # 2. Objets (mobilier, clôtures, panneaux, lampadaires…) : le même trait autour de chaque dessin, sauf les
+        # bateaux et véhicules, et ce qui est posé sur l'eau. Un bord déjà tracé (bâtiment) ne change plus.
+        objs = Image.new('RGBA', (W * TILE, H * TILE))
+        plants = Image.new('RGBA', (W * TILE, H * TILE))
         for layer in ('decor', 'dessus'):
-            cells = m['layers'][layer]
-            for i, cell in enumerate(cells):
-                x, y = i % W, i // W
-                if (x, y) in SKIP.get(mid, ()):
-                    continue
-                cm = mask[y * TILE:(y + 1) * TILE, x * TILE:(x + 1) * TILE]
-                if not cm.any():
-                    continue
-                stack = cell if isinstance(cell, list) else [cell]
-                new = []
-                for r in stack:
+            for i, cell in enumerate(m['layers'][layer]):
+                for r in (cell if isinstance(cell, list) else [cell]):
                     if r < 0:
-                        new.append(r)
                         continue
                     sheet, k = sheets[r // STRIDE], r % STRIDE
                     img = tile_of(sheet, k)
-                    t = np.array(img)
-                    tm = cm & (t[..., 3] >= 128)
-                    # Une case qui n'est pas surtout du bâtiment (barreaux de clôture contre un toit) ne change pas.
-                    mine = t[..., 3] >= 128
-                    part = core[y * TILE:(y + 1) * TILE, x * TILE:(x + 1) * TILE][mine].mean() if mine.any() else 0
-                    if not is_building(sheet, k, img) or not tm.any() or part < 0.3:
-                        new.append(r)
-                        continue
-                    before = t.copy()
-                    paint(t, tm)
-                    if np.array_equal(before, t):
-                        new.append(r)
-                        continue
-                    changed += 1
-                    clean = Image.fromarray(t)
-                    k2 = cat_by_bytes.get(clean.tobytes()) if sheet == 'catalogue' else None
-                    new.append(ref('catalogue', k2) if k2 is not None else ref('auto', bd.image_tile(clean)))
-                    made.setdefault((layer, i), set()).add(new[-1])
-                cells[i] = new if len(new) > 1 else (new[0] if new else -1)
-        # Maisons posées en mode simple : leurs cases refaites deviennent celles du catalogue (la version avec contour),
+                    to = objs if object_tile(sheet, k, img) else plants if sheet != 'lisieres' else None
+                    if to is not None:
+                        to.alpha_composite(img, ((i % W) * TILE, (i // W) * TILE))
+        o_opaque = np.array(objs)[..., 3] >= 128
+        p_opaque = (np.array(plants)[..., 3] >= 128) & ~o_opaque
+        olab, on = ndimage.label(o_opaque, structure=np.ones((3, 3)))
+        # Un objet collé à une plante plus grande que lui et qui tient dans sa largeur en fait partie (pied d'un
+        # palmier) : pas de trait. Une clôture qui longe une haie ou un arbre garde le sien.
+        plab, _ = ndimage.label(p_opaque, structure=np.ones((3, 3)))
+        pboxes = ndimage.find_objects(plab)
+        pareas = np.bincount(plab.ravel())
+        okeep = np.zeros(on + 1, bool)
+        for c, sl in enumerate(ndimage.find_objects(olab), 1):
+            ys, xs = sl
+            px = olab[sl] == c
+            cells = {((y + ys.start) // TILE, (x + xs.start) // TILE) for y, x in zip(*np.nonzero(px))}
+            okeep[c] = not on_water(cells)
+            big_sl = (slice(max(0, ys.start - 1), ys.stop + 1), slice(max(0, xs.start - 1), xs.stop + 1))
+            near = ndimage.binary_dilation(olab[big_sl] == c) & (plab[big_sl] > 0)
+            for pl in np.unique(plab[big_sl][near]):
+                pys, pxs = pboxes[pl - 1]
+                if px.sum() < pareas[pl] <= 16 * TILE * TILE and xs.start >= pxs.start - 4 and xs.stop <= pxs.stop + 4:
+                    okeep[c] = False
+        apply(border(o_opaque) & okeep[olab], lambda sheet, k, img, t, x, y: object_tile(sheet, k, img))
+
+        # Maisons et mobilier posés en mode simple : leurs cases refaites deviennent celles du catalogue (la version avec contour),
         # pour que le créateur les reconnaisse toujours (sélection, gomme, remplacement), même si un objet collé
         # changeait le contour d'un pixel.
         for el in (m.get('studio') or {}).get('elements', []):
             t = catalogue['themes'].get(el['theme']) or catalogue['themes']['libre']
             d = next((e for e in t['elements'] if e['id'] == el['id']), None)
-            if not d or d['cat'] != 'maisons':
+            if not d or d['cat'] not in ('maisons', 'mobilier'):
                 continue
             for j, row in enumerate(d['tiles']):
                 for i2, k in enumerate(row):
