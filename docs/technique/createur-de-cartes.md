@@ -20,6 +20,33 @@ gomme de 1, 2, 3 ou 5 cases de côté ([ et ]) ; Ctrl+D (ou Ctrl+C puis Ctrl+V) 
 souris, chaque clic en pose une (une zone : ses trois calques et ses collisions ; un élément : seul, sans le sol).
 Les cartes actuelles restent en place tant qu'elles ne sont pas refaites dans le créateur.
 
+## Assistant (src/builder/assistant.js), première version
+
+Panneau en haut à droite de la carte. Le principe : on dessine vite et grossièrement, l'assistant range derrière, sous
+contrôle.
+- Portée : la zone choisie avec l'outil Déplacer (M), encadrée sur la carte quel que soit l'outil, ou toute la carte
+  (× ou Échap pour l'oublier).
+- Commandes, par bouton ou par phrase en français (mots-clés, mêmes actions ; une phrase non comprise reçoit des
+  exemples) :
+  - nettoyage : « Régulariser le chemin » (boucher les trous et les coupures d'une case, relier les chemins qui ne se
+    touchent qu'en diagonale, couper les bosses d'une case, refaire les bords) et « Corriger les transitions » (chaque
+    case de chemin, sable, mer, étang ou hautes herbes reçoit le bord qui va avec ses voisines) ;
+  - remplissage : « Semer des hautes herbes » (touffes rondes sur l'herbe libre, à une case des chemins, densité
+    réglable, tirage à graine rejouable) et « Régénérer cette zone » (le dernier semis est retiré, un autre tirage le
+    remplace, rien d'autre ne bouge).
+- Chaque commande ne touche qu'au calque Sol, jamais aux collisions, et tient en un seul pas d'historique (Ctrl+Z) ; une
+  commande qui ne change rien n'en laisse pas. Après chacune, l'assistant vérifie l'accessibilité depuis le départ des
+  cases importantes (carte du jeu : PNJ, portes et case devant, objets, déclencheurs, props) et signale seulement ce que
+  la commande a rendu inatteignable.
+- Les cases peintes ou recolorées à la main (illisibles comme bord : motif de la mer, lagon de Fort-de-France) ne sont
+  jamais remplacées par « Corriger les transitions ».
+- Les bords viennent de la planche « transitions » (scripts/build_transitions.py, masquée dans la palette) : pour chaque
+  matière, les 625 cases de bord possibles, numérotées (matière x 625 + morceaux des quatre quarts en base 5). Le sol
+  d'une case est reconnu d'après sa case d'origine (planche, clé de auto.json, case de transitions), sinon sa couleur.
+  À relancer après build_v2_tiles.py (qui réécrit le catalogue).
+- Limite : sur une carte du jeu, les hautes herbes semées sont un dessin ; le jeu ne cache les jambes de Pierre que sur
+  les cases 'ĥ' de sa grille (data/maps/<ville>.js), et audit_maps.py les signale (herbes_hors_grille).
+
 ## Cartes du jeu refaites en V2 (convert_maps_v2.py)
 
 Versions V2 des cartes de Fort-de-France à Hull : générées par scripts/convert_maps_v2.py (lit les cartes du jeu

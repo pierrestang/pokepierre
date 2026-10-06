@@ -116,6 +116,23 @@
       .float { position: absolute; display: flex; align-items: center; gap: 2px; padding: 3px; background: rgba(27, 30, 37, 0.9);
         border-radius: 10px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); backdrop-filter: blur(6px); }
       #zoombar { right: 12px; bottom: 12px; }
+
+      /* ---------- Assistant (src/builder/assistant.js) ---------- */
+      #assistant { right: 12px; top: 12px; width: 300px; flex-direction: column; align-items: stretch; gap: 6px; padding: 8px 10px; }
+      #assistant.closed > :not(.asst-head) { display: none; }
+      #assistant .asst-head { display: flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer; }
+      #assistant .asst-head small { font-weight: 400; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      #assistant form { display: flex; gap: 4px; }
+      #assistant form input { flex: 1; min-width: 0; }
+      #assistant .asst-cat { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 4px; }
+      #assistant .asst-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+      #assistant .asst-row .btn { background: var(--raise); color: var(--text); padding: 5px 8px; }
+      #assistant .asst-row .btn:hover:not(:disabled) { background: var(--hover); }
+      #assistant input[type=range] { flex: 1; accent-color: var(--accent); }
+      #asst-zone-clear[hidden] { display: none; }
+      #asst-log { margin: 2px 0 0; color: var(--muted); font-size: 12px; min-height: 1.3em; }
+      #asst-log.ok { color: var(--ok); }
+      #asst-log.warn { color: #f0b24a; }
       #erasebar { left: 12px; bottom: 12px; padding: 3px 3px 3px 10px; color: var(--muted); font-size: 12px; }
       #erasebar[hidden], #selbar[hidden] { display: none; }
       #selbar { left: 12px; bottom: 12px; }
@@ -213,6 +230,27 @@
           <div class="float" id="selbar" hidden>
             <button class="btn" id="sel-dup" title="Dupliquer la sélection : la copie suit la souris, clic pour la poser (Ctrl+D)">Dupliquer</button>
             <button class="btn" id="sel-del" title="Supprimer la sélection (Suppr)">Supprimer</button>
+          </div>
+          <div class="float" id="assistant" title="">
+            <div class="asst-head" id="asst-toggle" title="Ouvrir ou replier l'assistant">Assistant <small id="asst-zone">toute la carte</small>
+              <button class="btn icon" id="asst-zone-clear" title="Oublier la zone : les commandes s'appliquent à toute la carte (Échap)" hidden>×</button></div>
+            <form id="asst-form" autocomplete="off">
+              <input type="text" id="asst-input" placeholder="Ex. : sème des hautes herbes, 30 %" title="Demande en français : régulariser le chemin, corriger les transitions, semer des hautes herbes (avec une densité), régénérer" />
+              <button class="btn primary" type="submit">OK</button>
+            </form>
+            <div class="asst-cat">Nettoyage</div>
+            <div class="asst-row">
+              <button class="btn" data-asst="path" title="Boucher trous et coupures, relier les diagonales, couper les bosses d'une case, refaire les bords du chemin">Régulariser le chemin</button>
+              <button class="btn" data-asst="transitions" title="Chaque case de chemin, sable, eau ou hautes herbes reçoit le bord qui va avec ses voisines">Corriger les transitions</button>
+            </div>
+            <div class="asst-cat">Remplissage</div>
+            <div class="asst-row">
+              <button class="btn" data-asst="sow" title="Semer des touffes de hautes herbes sur l'herbe libre de la zone">Semer des hautes herbes</button>
+              <button class="btn" data-asst="regen" title="Retirer le dernier semis et semer un autre tirage, sans toucher au reste" disabled>Régénérer cette zone</button>
+            </div>
+            <div class="asst-row" title="Part de l'herbe libre de la zone couverte de hautes herbes">Densité
+              <input type="range" id="asst-density" min="5" max="60" value="25" step="5" /> <span id="asst-density-val">25 %</span></div>
+            <p id="asst-log">Choisis une zone avec l'outil Déplacer (M), ou rien : toute la carte.</p>
           </div>
           <div class="float" id="zoombar">
             <button class="btn icon" id="zoom-out" title="Dézoomer (−)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>

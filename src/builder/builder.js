@@ -1,6 +1,7 @@
 import {
   TILE, EMPTY, LAYERS, blankMap, slugify, refOf, decodeRef, resizeMap, drawLayers, stackOf, topRef,
 } from './mapModel.js';
+import { createAssistant } from './assistant.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -435,6 +436,8 @@ function stampAt(ax, ay, x, y) {
 }
 
 function draw() {
+  if (!state.map) return;                    // pas encore de carte (premier affichage, rechargement à chaud)
+  showAssistantZone();
   updateSelectionBar();
   const dpr = window.devicePixelRatio || 1;
   const m = state.map;
@@ -543,7 +546,7 @@ function drawCursor(cs) {
     outline(h.x, h.y, clip.w, clip.h, cs);
     return;
   }
-  if (state.tool === 'move' && state.moveSel) {
+  if (state.moveSel) {                       // la zone choisie : celle de l'outil Déplacer et de l'assistant
     const r = state.moveSel;
     outline(r.x0, r.y0, r.x1 - r.x0 + 1, r.y1 - r.y0 + 1, cs);
   }
@@ -608,6 +611,11 @@ function remember() {
   state.undo.push(snapshot());
   if (state.undo.length > HISTORY) state.undo.shift();
   state.redo = [];
+  updateHistoryButtons();
+}
+// Retire le dernier pas d'historique (une commande de l'assistant qui n'a rien changé).
+function forget() {
+  state.undo.pop();
   updateHistoryButtons();
 }
 function restore(from, to) {
@@ -1652,6 +1660,67 @@ function bindUi() {
   new ResizeObserver(fitCanvas).observe(view);
 }
 
+// ---------- Assistant (src/builder/assistant.js) ----------
+// La zone : celle choisie avec l'outil Déplacer (sinon toute la carte). Chaque commande est un seul pas d'historique.
+const assistant = createAssistant({
+  state, base: BASE, colsOf, loadSheet, remember, forget, changed,
+  selection: () => state.moveSel,
+});
+
+function showAssistantZone() {
+  const z = state.moveSel;
+  $('asst-zone').textContent = z ? `zone ${z.x0},${z.y0} → ${z.x1},${z.y1}` : 'toute la carte';
+  $('asst-zone-clear').hidden = !z;
+}
+
+async function runAssistant(command) {
+  if (!command) return;
+  $('asst-log').className = '';
+  $('asst-log').textContent = '…';
+  try {
+    const r = await command();
+    $('asst-log').textContent = r.text;
+    $('asst-log').className = r.kind;
+  } catch (err) {
+    $('asst-log').textContent = `Erreur : ${err.message}`;
+    $('asst-log').className = 'warn';
+  }
+  document.querySelector('[data-asst=regen]').disabled = !assistant.hasSow();
+}
+
+function bindAssistant() {
+  const density = () => Number($('asst-density').value) / 100;
+  const actions = {
+    path: () => assistant.straightenPath(),
+    transitions: () => assistant.fixTransitions(),
+    sow: () => assistant.sowTall(density()),
+    regen: () => assistant.regenerate(density()),
+  };
+  document.querySelectorAll('[data-asst]').forEach((b) => { b.onclick = () => runAssistant(actions[b.dataset.asst]); });
+  $('asst-density').oninput = () => { $('asst-density-val').textContent = `${$('asst-density').value} %`; };
+  $('asst-form').onsubmit = (e) => {
+    e.preventDefault();
+    const text = $('asst-input').value.trim();
+    if (!text) return;
+    const cmd = assistant.parse(text, density());
+    if (!cmd) {
+      $('asst-log').className = 'warn';
+      $('asst-log').textContent = 'Je n\'ai pas compris. Essaie : « régularise le chemin », « corrige les transitions », '
+        + '« sème des hautes herbes, 30 % », « régénère cette zone ».';
+      return;
+    }
+    runAssistant(cmd.run);
+  };
+  $('asst-toggle').onclick = (e) => {
+    if (e.target.closest('button')) return;
+    $('assistant').classList.toggle('closed');
+  };
+  $('asst-zone-clear').onclick = () => {
+    state.moveSel = null;
+    requestDraw();
+  };
+}
+
 async function start() {
   await Promise.all([loadCatalog(), detectProjectSave()]);
   const select = $('sheet');
@@ -1671,6 +1740,7 @@ async function start() {
   }
   buildLayerButtons();
   bindUi();
+  bindAssistant();
   setLayer('sol');
   setAutoLayer(true);
   setTool('brush');
