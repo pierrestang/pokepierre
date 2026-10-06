@@ -140,8 +140,8 @@ export const BENOIT_HIDING = { ...BENOIT_LEFT, x: BENOIT_BARREL[0], y: BENOIT_BA
 
 // ---------- La quête de Jean → Ingéniosité ----------
 
-// Jean, devant le tracteur (le tracteur occupe les cases x 12-13, y 12-13, à droite de la grange) ; l'escalier de la chambre des enfants.
-export const JEAN_AT_TRACTOR = [12, 14];
+// Jean, devant le tracteur (le tracteur occupe les cases x 13-14, y 12-13, à droite de la grange) ; l'escalier de la chambre des enfants.
+export const JEAN_AT_TRACTOR = [13, 14];
 const JEAN_UPSTAIRS_STAIRS = [12, 2];
 
 // Jean, à l'étage de la maison : après l'école, il lance la quête, descend l'escalier et part devant à la ferme (il y

@@ -37,11 +37,11 @@ export const montepilloyMap = {
     'TT.............ççç................TT', // 9
     'TTFFFFFFFFFFFFFççç.RRRRR..TT..TTTTTT', // 10
     'TTF...........Fççç.RRRRR.fTT..TTTTTT', // 11
-    'TTFRRRRRRR....Fççç.WWWWW.f.Dƀ.....TT', // 12
+    'TTFRRRRRRR....Fççç.WWWWW.f..ƀ.....TT', // 12
     'TTFRRRRRRR....Fççç.WWWWW..........TT', // 13
-    'TTFWWWWWWW....Fççççççççççççççç....TT', // 14
-    'TTFWWWWDDW...SFççççççççççççççç....TT', // 15
-    'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ..TT', // 16
+    'TTFWWWWWWW....FççççççççççççDçç....TT', // 14
+    'TTFWWWWD.W...SFççççççççççççççç....TT', // 15
+    'TTF..çççççDççççççç....ĥĥ.f..TTĥĥ..TT', // 16
     'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ..TT', // 17
     'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ..TT', // 18
     'TTF..ççççççççççççç.f~~~~~~..TT..ĥ.TT', // 19
@@ -61,11 +61,10 @@ export const montepilloyMap = {
     // Maison de la voisine : fermée (pas d'intérieur pour l'instant). Porte sur la rangée du soubassement de la maison
     // jaune (on frappe depuis la rue).
     { x: 20, y: 7, lockedDialogue: ['Personne ne répond.'] },
-    // La grange : grande porte de deux cases.
-    { x: 7, y: 15, interior: 'boulyBarn' },
-    { x: 8, y: 15, interior: 'boulyBarn' },
+    // La grange : le grand bâtiment orange (retouché dans le créateur, octobre 2026), sa porte grise en bas.
+    { x: 10, y: 16, interior: 'boulyBarn' },
     // L'école (la verrière) : sa porte dessinée, déplacée dans le créateur.
-    { x: 27, y: 12, interior: 'school' },
+    { x: 27, y: 14, interior: 'school' },
   ],
   // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
   buildings: [],
@@ -84,12 +83,12 @@ export const montepilloyMap = {
     },
     // Le tracteur de M. Bouly : en panne, puis parti faire un tour avec Jean, et de retour en septembre.
     {
-      type: 'tractor', x: 12, y: 12, w: 2, h: 2,
+      type: 'tractor', x: 13, y: 12, w: 2, h: 2,
       unlessFlags: [FLAGS.tracteurRepare],
       dialogue: ['Le tracteur de M. Bouly. Il refuse de démarrer.'],
     },
     {
-      type: 'tractor', x: 12, y: 12, w: 2, h: 2,
+      type: 'tractor', x: 13, y: 12, w: 2, h: 2,
       ifFlags: [FLAGS.septembre],
       dialogue: ['Le tracteur de M. Bouly ronronne.'],
     },
@@ -126,7 +125,7 @@ export const montepilloyMap = {
     },
     // À la sortie de l'école, Margaux lance le cache-cache (voir HIDE_AND_SEEK).
     {
-      id: 'margaux-sortie', name: 'Margaux', x: 25, y: 13, facing: 'left', color: 0xf08080,
+      id: 'margaux-sortie', name: 'Margaux', x: 25, y: 15, facing: 'left', color: 0xf08080,
       ifFlags: [FLAGS.ecoleCm2], unlessFlags: [FLAGS.cacheCache],
       dialogue: ['Dernière partie avant les vacances !'],
     },

@@ -17,7 +17,7 @@ const LAKE_SPOT = { x: 10, y: 14 };
 
 // Arrivée : image d'accueil de Saint-Ay, le ferry a accosté au ponton du lac. Papa et Manon retrouvent Pierre,
 // lui disent de les rejoindre à la clinique et partent devant, l'un derrière l'autre (ils y sont à son arrivée).
-const CLINIC_DOOR = [19, 21];                                  // case devant la porte de la clinique
+const CLINIC_DOOR = [25, 15];                                  // case devant la porte de la clinique
 export const ARRIVAL = [
   { opening: { postcard: 'saintAy', text: 'Saint-Ay, Loiret. Quelque temps plus tard…' } },
   { approach: 'papa' },
@@ -61,7 +61,7 @@ export const FANNY_CRADLE = [
 export const CLINIC_EXIT = [
   { setFlag: FLAGS.familleRentree },
   { talk: 'felix' },
-  { walk: 'felix', to: [18, 13], then: [FLAGS.felixInvite] },
+  { walk: 'felix', to: [17, 15], then: [FLAGS.felixInvite] },
 ];
 
 // Chez Felix : le plan de la cabane. Joshua et Yanis partent chercher planches et corde ; Felix dirige et rappelle ce

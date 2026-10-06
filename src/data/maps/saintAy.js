@@ -48,15 +48,15 @@ export const saintAyMap = {
     'BBBB~==~~ĥĥĥĥ.çç.RRRRR.....ĥĥ.TT', // 9
     'BBBB~==~~~ĥĥĥ.çç.RRRRR....ĥĥĥ.TT', // 10
     '~~~~~==~~~ĥĥ..çç.WWWWW.....ĥĥ.TT', // 11
-    '~~~~~~~~~~ĥĥ..ççMWDWWW......ĥ.TT', // 12
+    '~~~~~~~~~~ĥĥ..ççMW.WWW......ĥ.TT', // 12
     '~~~~~~~~~~ççççççççççççç.......TT', // 13
-    '~~~~~~~~~~ççççççççççççç.......TT', // 14
+    '~~~~~~~~~~ççççççççççççç..D....TT', // 14
     '~~~~~~~......Sçç..............TT', // 15
     'TTTTTTTT...ĥĥ.ççf..........ĥĥ.TT', // 16
     'TTTTTTTT..ĥĥĥĥççf.RRRRR...ĥĥĥ.TT', // 17
     'TTTTTTTT.ĥĥĥĥ.ççf.RRRRR..ĥĥĥĥ.TT', // 18
     'TTTTTTTT..ĥĥĥĥçç..WWWWW...ĥĥĥ.TT', // 19
-    'TT.ĥĥĥĥ....ĥĥ.çç.SWDWWW....ĥĥ.TT', // 20
+    'TT.ĥĥĥĥ....ĥĥ.çç.SWçWWW....ĥĥ.TT', // 20
     'TT.ĥĥĥ........ççççççççç.......TT', // 21
     'TT.ĥĥĥĥ.......ççççççççç.......TT', // 22
     'TT.ĥĥĥĥ..ĥĥ.......ĥĥĥ.........TT', // 23
@@ -69,12 +69,12 @@ export const saintAyMap = {
   doors: [
     { x: 18, y: 6, interior: 'playerHouse' },
     {
-      x: 18, y: 12, interior: 'felixHouse',
+      x: 17, y: 14, interior: 'felixHouse',
       lock: { ifFlags: [FLAGS.felixInvite] },
       lockedDialogue: ['Personne ne répond.'],
     },
     {
-      x: 19, y: 20, interior: 'hospital',
+      x: 25, y: 14, interior: 'hospital',
       lock: { ifFlags: [FLAGS.saArrivee] },
       lockedDialogue: ["La clinique de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
     },
@@ -155,7 +155,7 @@ export const saintAyMap = {
     // t'attendent (voir CLINIC_EXIT).
     {
       // Au départ en voiture : Felix sort de chez lui en courant (voir saintAyStory.js CAR).
-      id: 'felix-voiture', name: 'Felix', x: 17, y: 13, facing: 'up', color: COUSIN_COLORS.felix,
+      id: 'felix-voiture', name: 'Felix', x: 18, y: 15, facing: 'left', color: COUSIN_COLORS.felix,
       ifFlags: [FLAGS.felixVoiture], unlessFlags: [FLAGS.arriveeMontepilloy],
       dialogue: ['Le mot de passe, tu le gardes, hein ?'],
     },

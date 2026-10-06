@@ -31,9 +31,9 @@ export const routeBonsecoursMap = {
     'TT..FƀRRRRRRRƀ..ççƀF..TT', // 8  collège Bonsecours
     'TT..F.RRRRRRR...çç.F..TT', // 9
     'TT..F.WWWWWWW...çç.F..TT', // 10
-    'TT..F.WWWDWWWS..çç.F..TT', // 11
+    'TT..F.WWW.WWWS..çç.F..TT', // 11
     'TT..F.çççççççççççç.F..TT', // 12  allée devant le collège
-    'TT..F.çççççççççççç.F..TT', // 13
+    'TT..F.çççDçççççççç.F..TT', // 13
     'TT..Fffff.çç.......F..TT', // 14
     'TT..Fffff.çç.fff..ƀF..TT', // 15
     'TT..Fffff.çç.fff...F..TT', // 16
@@ -52,7 +52,7 @@ export const routeBonsecoursMap = {
     'TTTTTTTTTTççTTTTTTTTTTTT', // 29
   ]),
   doors: [
-    { x: 9, y: 11, interior: 'bonsecours' },
+    { x: 9, y: 13, interior: 'bonsecours' },
   ],
   // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
   buildings: [],
