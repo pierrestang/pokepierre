@@ -20,6 +20,15 @@ gomme de 1, 2, 3 ou 5 cases de côté ([ et ]) ; Ctrl+D (ou Ctrl+C puis Ctrl+V) 
 souris, chaque clic en pose une (une zone : ses trois calques et ses collisions ; un élément : seul, sans le sol).
 Les cartes actuelles restent en place tant qu'elles ne sont pas refaites dans le créateur.
 
+## Ombres : seulement la végétation
+
+Les bâtiments, le mobilier et les objets n'ont pas d'ombre portée (les planches DPPt en avaient, la bibliothèque Gen 4
+non : ils juraient entre eux). scripts/remove_shadows.py retire l'ombre DPPt (pixels noirs semi-transparents) et l'ombre
+grise opaque de certains bâtiments Gen 4 (le gris relié à l'extérieur du contour) ; arbres, buissons, plantes, fleurs,
+rochers et roseaux gardent la leur. Le catalogue du créateur passe ses maisons et son mobilier par shadowless() ;
+toutes les cartes du créateur ont été traitées (octobre 2026). À relancer sur une carte qui recevrait des cases
+anciennes : python3 scripts/remove_shadows.py <id>.
+
 ## Taille des cartes : toujours paire
 
 Les arbres des bordures font 2 x 2 cases. Sur une carte de largeur ou de hauteur impaire, les bordures de deux côtés
