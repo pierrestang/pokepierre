@@ -488,5 +488,107 @@ def prytanee(v):
     v.notes.append("mur d'enceinte en pierre abandonné pour une haie taillée (pas de mur de pierre à motif répétable)")
 
 
+def retile(v, land, cells):
+    """Sol refait (plage DPPt et mer DS de Fort-de-France) sur `cells`, d'après land(x, y) : plage sur la terre, mer
+    ailleurs, bords d'écume assemblés quart par quart."""
+    from ds_theme import TERRAINS, SEA_TO_DPPT
+    for x, y in cells:
+        name = 'beach' if land(x, y) else 'water'
+        spec = TERRAINS[name]
+        other = (lambda dx, dy: not land(x + dx, y + dy)) if name == 'beach' else (lambda dx, dy: land(x + dx, y + dy))
+        quads = []
+        ox, oy = spec['outer']
+        for q in range(4):
+            qx, qy = q % 2, q // 2
+            dx, dy = (1 if qx else -1), (1 if qy else -1)
+            vv, hh, dd = other(0, dy), other(dx, 0), other(dx, dy)
+            quads.append((ox + 2 * qx, oy + 2 * qy) if vv and hh else (ox + 1, oy + 2 * qy) if vv
+                         else (ox + 2 * qx, oy + 1) if hh else spec['inner'][q] if dd else spec['center'])
+        if all(q == spec['center'] for q in quads) and name == 'water':
+            info = v.bd.objects['mer']
+            tile = ('objets', info['col'] + x % 2, info['row'] + y % 2, 'sea')
+            ref = v.ref('auto', v.bd.composite((tile,), SEA_TO_DPPT))
+        elif all(q == spec['center'] for q in quads):
+            ref = v.ref('dppt', v.bd.index('dppt', *spec['center']))
+        else:
+            ref = v.ref('auto', v.bd.quad_tile('dppt', tuple(quads)))
+        v.set_stack('sol', x, y, [ref])
+
+
+def hibiscus(img):
+    """Arbuste à fleurs roses -> hibiscus rouge vif."""
+    return hsv_map(img, lambda h, s, val: (np.where((h > 290) | (h < 20), 356, h),
+                                           np.where((h > 290) | (h < 20), np.maximum(s, 0.85), s), val))
+
+
+@ville('fort-de-france')
+def fort_de_france(v):
+    """Touches tropicales : lagon turquoise le long de la plage, hibiscus rouges, réverbères roses, un seul modèle de
+    palmier ; la poche laissée par la barque devient une langue de sable reliée à la plage."""
+    W, H = v.W, v.H
+    # Langue de sable : les cases libres sans issue (ancienne barque) et la mer qui les sépare de la plage.
+    spit = {(x, y) for x in range(9, 13) for y in range(26, 30)}
+    for x, y in spit:
+        v.solid0[y * W + x] = 0
+        v.m['solid'][y * W + x] = 0
+        v.clear([(x, y)])
+    water = lambda x, y: not (0 <= x < W and 0 <= y < H) or (v.kinds[y][x] == 'water' and (x, y) not in spit)
+    land = lambda x, y: not water(x, y)
+    around = {(x + dx, y + dy) for x, y in spit for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+              if 0 <= x + dx < W and 0 <= y + dy < H and v.sheet_of(v.stack('sol', x + dx, y + dy)[-1]) != 'g4-mobilier'}
+    retile(v, land, around)
+    for x, y in spit:
+        v.kinds[y][x] = 'other'
+    # Lagon : la mer qui touche la plage, en turquoise clair.
+    shallow = [(x, y) for y in range(H) for x in range(W) if water(x, y) and v.solid(x, y)
+               and any(land(x + dx, y + dy) for dx in range(-2, 3) for dy in range(-2, 3))]
+    shallow += [(x, y) for y in range(H) for x in range(W) if land(x, y)       # bouts d'eau des bords de plage
+                and any(water(x + dx, y + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1))]
+    blue = lambda h, s: (h > 180) & (h < 255) & (s > 0.2)
+    v.recolor_cells(shallow, ('sol',), lambda img: hsv_map(img, lambda h, s, val: (
+        np.where(blue(h, s), 191, h), np.where(blue(h, s), np.minimum(s, 0.62), s),
+        np.where(blue(h, s), np.minimum(1, 0.42 + 0.62 * val), val))))
+    # Réverbères roses à la place des réverbères DPPt de l'allée (même emprise : tête au-dessus, pied bloquant).
+    # Le réverbère DPPt recoloré en rose (le réverbère rose de la planche Clôtures a un pied trop fin pour se lire
+    # comme un obstacle).
+    pink = v.element('dppt', 7, 129, 1, 3, fn=lambda img: hsv_map(img, lambda h, s, val: (
+        np.where((s > 0.12) & (val <= 0.8), 340, np.where(val > 0.8, 45, h)),
+        np.where((s > 0.12) & (val <= 0.8), 0.5, np.where(val > 0.8, 0.35, s)),
+        np.where((s > 0.12) & (val <= 0.8), np.minimum(1, val * 1.35), val))))
+    for x, y in ((13, 12), (17, 12), (13, 19), (17, 19)):
+        v.clear([(x, y), (x, y + 1)], ('dessus',))
+        v.clear([(x, y + 2)], ('decor',))
+        v.place(pink, x, y, solid_from=2)
+    # Un seul palmier : le palmier de plage (g4-arbres, 3 x 3) remplace le grand palmier et le petit palmier.
+    palm = v.bd.images['g4-arbres'].crop((9 * TILE, 153 * TILE, 12 * TILE, 156 * TILE))
+    for x0, y0, x1, y1 in ((24, 17, 27, 19), (18, 20, 21, 22), (8, 9, 10, 12)):
+        cells = [(x, y) for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)]
+        for x, y in cells:
+            for layer in ('decor', 'dessus'):
+                v.set_stack(layer, x, y, [r for r in v.stack(layer, x, y) if v.sheet_of(r) != 'objets'])
+    small = palm.copy()
+    for i in (0, 2):                                      # petit palmier : seul le pied du milieu touche le sol
+        small.paste(Image.new('RGBA', (TILE, TILE)), (i * TILE, 2 * TILE))
+    v.place(palm, 25, 17, solid_from=2)
+    v.place(palm, 19, 20, solid_from=2)
+    v.place(small, 8, 10, solid_from=2)
+    v.clear([(13, 15), (23, 15)])                          # bouts de palme égarés sur le chemin
+    red = v.element('g4-plantes', 5, 38, 1, 2, fn=hibiscus)
+    for x, y in ((22, 6), (5, 11), (29, 16)):
+        v.place(red, x, y, solid_from=1)
+    v.notes.append('langue de sable (9..12, 26..29) : 8 cases libérées et reliées à la plage')
+
+
+@ville('route-de-montepilloy')
+def route_de_montepilloy(v):
+    """Route de campagne : allée de peupliers sur les bas-côtés ; la forêt DPPt d'origine reste (seule carte à la
+    garder). Épouvantail abandonné (absent de la bibliothèque)."""
+    poplar = v.element('g4-arbres', 6, 147, 3, 4, isolate=True)
+    for x, rows in ((9, (4, 8, 11, 16, 20, 24)), (12, (7, 11, 18, 21))):
+        for y in rows:
+            v.place(poplar, x - 1, y - 3, solid_from=3, min_fill=60)
+    v.notes.append('épouvantail abandonné : absent de la bibliothèque')
+
+
 if __name__ == '__main__':
     main()
