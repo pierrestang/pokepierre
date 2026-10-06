@@ -619,9 +619,9 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 |---|---|---|
 | Ousmane | Coloc de Pierre, toujours avec la bande | `f15` |
 | Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `f55` |
-| Romain | Colocataire de Léo | `t3` |
-| Prophecy | Colocataire de Léo | `f53` |
-| Charlotte | De la bande, sérieuse | `f45` |
+| Romain | Colocataire de Léo ; rencontre Pierre chez Léo | `t3` |
+| Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `f53` |
+| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontre Pierre au premier pub | `f45` |
 | Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `f47` |
 | Barman, Barmaid, clients | Les deux pubs | Barman `f38` ; les autres en figurants |
 | Habitué | Adversaire aux fléchettes, et le pari (passage optionnel) | figurant |
@@ -629,11 +629,13 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 
 ### Quêtes, dans l'ordre
 1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite la maison au toit
-   d'ardoise, en haut de Newland Avenue, à droite. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Romain : « Nous,
-   on vous rejoint à l'Asylum. » ; Prophecy : « On a nos propres plans avant. » ; Léo : « Les autres sont déjà au pub, en
+   d'ardoise, en haut de Newland Avenue, à droite. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Léo : « Romain,
+   Prophecy : voilà Pierre, de la promo de KEDGE. » ; Romain : **« Ah, c'est toi, Pierre ! Léo nous a parlé de toi. »** /
+   « Nous, on vous rejoint à l'Asylum. » ; Prophecy : « Salut, Pierre. » / « On a nos propres plans avant. » ; Léo : « Les autres sont déjà au pub, en
    haut de Newland Avenue. On y va ! » ; « La nuit tombe sur Hull. »
 2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** ; Anaïs : « Comme à Bordeaux, mais
-   c'est toi qui régales cette fois ! » Chacun dit sa commande en
+   c'est toi qui régales cette fois ! » ; Charlotte : **« Moi, c'est Charlotte, la coloc d'Anaïs. Alors c'est toi, le
+   fameux Pierre ? »** Chacun dit sa commande en
    français : Léo « Une Guinness, évidemment. », Ousmane « Un cidre, s'il te plaît. », Charlotte « Un gin tonic ! »,
    Anaïs « Un verre de vin rouge. ». Le barman les demande en anglais (« And for Léo? »…), parmi six boissons ; une
    erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : « Le barman pose les verres
@@ -937,9 +939,6 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
   nommé.
 
 ### Répliques contradictoires ou répétées
-- **La bande de Hull** : Ousmane, Léo et Anaïs connaissent Pierre depuis Bordeaux (la soirée d'intégration), mais
-  Romain, Prophecy et Charlotte ne sont jamais présentés avant Hull. L'habitué du pub accueille Pierre d'un « Hey, the
-  new guy! », ce qui est cohérent (il ne le connaît pas).
 - **L'examen de Hull** n'est pas joué : « veille d'examen », révisions, puis « Le lendemain… » directement aux résultats.
 - **Deux diplômes d'anglais** se suivent : « Diplôme d'anglais » (KEDGE, Bordeaux), puis « Diplôme d'anglais de Hull ».
 

@@ -1,6 +1,7 @@
 import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 
-// Scénario de Hull : les années d'études avec la bande (qui connaît déjà Pierre depuis Bordeaux : des retrouvailles).
+// Scénario de Hull : les années d'études avec la bande. Ousmane, Léo et Anaïs connaissent Pierre depuis Bordeaux (des
+// retrouvailles) ; Romain, Prophecy et Charlotte le rencontrent ici.
 //   1. L'arrivée en bus, Ousmane à l'arrêt, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
 //   2. Premier pub : la tournée (chaque commande, puis le barman, en anglais) ; une erreur, on retourne redemander.
 //   3. Deuxième pub : une partie de fléchettes contre un habitué (systems/Darts.js), gagnée ou perdue.
@@ -46,12 +47,14 @@ export const LEO_CALLED = [
   { setFlag: FLAGS.leoAppel },
 ];
 
-// Chez Léo : la soirée est lancée, rendez-vous au pub ; Romain et Prophecy viendront à l'Asylum.
+// Chez Léo : Léo présente Pierre à Romain et Prophecy (ils ne le connaissent pas encore) ; la soirée est lancée,
+// rendez-vous au pub ; Romain et Prophecy viendront à l'Asylum.
 export const LEO_PLAN = [
   { approach: 'leo-maison' },
   { speaker: 'Léo', say: ['Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde !'] },
-  { speaker: 'Romain', say: ['Nous, on vous rejoint à l\'Asylum.'] },
-  { speaker: 'Prophecy', say: ['On a nos propres plans avant.'] },
+  { speaker: 'Léo', say: ['Romain, Prophecy : voilà Pierre, de la promo de KEDGE.'] },
+  { speaker: 'Romain', say: ['Ah, c\'est toi, Pierre ! Léo nous a parlé de toi.', 'Nous, on vous rejoint à l\'Asylum.'] },
+  { speaker: 'Prophecy', say: ['Salut, Pierre.', 'On a nos propres plans avant.'] },
   { speaker: 'Léo', say: ['Les autres sont déjà au pub, en haut de Newland Avenue. On y va !'] },
   { black: true },
   { say: ['La nuit tombe sur Hull.'] },
@@ -75,6 +78,7 @@ const ALL_SERVED = ORDERS.map((o) => o.flag);
 export const PUB_A_WELCOME = [
   { speaker: 'Léo', say: ['Première tournée, c\'est toi qui régales !'] },
   { speaker: 'Anaïs', say: ['Comme à Bordeaux, mais c\'est toi qui régales cette fois !'] },
+  { speaker: 'Charlotte', say: ['Moi, c\'est Charlotte, la coloc d\'Anaïs. Alors c\'est toi, le fameux Pierre ?'] },
   { say: ['Objectif : ramène la tournée. Demande à chacun ce qu\'il veut, puis commande au comptoir.'] },
 ];
 
