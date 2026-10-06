@@ -34,7 +34,12 @@ pour la logique (portes, eau, hautes herbes) ; ses bâtiments Rouge Feu ne sont 
 
 Thème DS (Diamant / Perle, scripts/ds_theme.py) : planche DPPt d'akizakura16 (sols, arbres, clôtures, maisons),
 palmiers de la planche Jungle recolorés, ferry = yacht de Kyle-Dove (planche « objets », détourée par
-build_v2_tiles.py). Appliqué à Fort-de-France.
+build_v2_tiles.py). Appliqué à Fort-de-France, puis refait en octobre 2026 par scripts/fdf_ds_v2.py. Ce script part
+de la carte retouchée et garde ses collisions, son départ, sa côte et ses grands objets. Il refait les sols : chemins
+vers la maison, la cabane et le mémorial, hautes herbes exactement sur les 'ĥ', fleurs et coquillages dans le calque
+Sol (ils se traversent). Il ajoute des objets sur des cases déjà bloquantes : le mémorial en pierre blanche, le drapeau
+martiniquais recoloré, des arbustes, une barque et des voiliers. Il vérifie à la fin que collisions et départ n'ont pas
+bougé.
 
 ## Thème Gen 4 (de Saint-Ay à Hull)
 
