@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """Fort-de-France, refonte DS (octobre 2026) : refait le dessin de src/data/builtMaps/fort-de-france.json.
 
-Part de la carte actuelle (retouchée dans le créateur) et ne touche jamais à sa structure jouable : collisions
-(`solid`), départ, côte (les cases d'eau gardent leurs cases), ponton, maison, cabane, ferry et grands arbres restent
-tels quels. Change le reste, avec les planches Gen 4 seulement :
-- sols (fleurs et coquillages compris, qui se traversent) : herbe DPPt nuancée, plage, chemins de sable DPPt qui guident vers les trois lieux de l'île (la maison, la
-  cabane de pêche, le mémorial), clairière de sable clair autour du mémorial, hautes herbes posées exactement sur les
-  cases 'ĥ' du jeu (les jambes de Pierre s'y cachent), massifs de fleurs, coquillages et étoiles de mer sur la plage ;
-- objets, sur des cases déjà bloquantes : mémorial de l'Anse Caffard (statue sur socle, en pierre blanche), mât au
-  drapeau de la Martinique (rouge, vert, noir) et pot de fleurs, arbustes à baies, buisson rond ; en mer (toujours
-  bloquante) : barque de pêcheur contre le ponton, deux voiliers au large.
+Part de la carte retouchée dans le créateur (tag git avant-refonte-fdf). Garde le départ, les portes, les places des
+PNJ et des événements, le ponton, la maison, la cabane, le ferry et les grands arbres. Change le reste, avec les
+planches Gen 4 seulement :
+- côte et plage arrondies (ISLAND, SHORE : super-ellipses) ; ce qui tombe à l'eau disparaît (palmier du coin) ;
+- sols (fleurs, grandes fleurs tropicales et coquillages compris : ils se traversent) : herbe DPPt nuancée, plage,
+  chemins de sable DPPt vers la maison, la cabane et le mémorial, parvis jusqu'aux murs, raccord direct avec le ponton,
+  clairière de sable clair au mémorial, hautes herbes posées exactement sur les cases 'ĥ' du jeu ;
+- objets sur des cases déjà bloquantes : mémorial (statue en pierre blanche), drapeau de la Martinique entre deux pots,
+  arbustes, buisson ; en mer : barque contre le ponton, deux voiliers ;
+- mobilier qui ajoute des collisions (FURNITURE) : lampadaires, bancs, parasol, clôture, tas de bois.
 
 Les cases assemblées vont dans la planche partagée auto.png (numéros existants gardés, voir convert_maps_v2.Builder).
-Vérifie à la fin que les collisions et le départ sont restés identiques.
+Vérifie à la fin (check_access) que rien d'important n'est devenu inaccessible.
 
 Usage : python3 scripts/fdf_ds_v2.py   (puis python3 scripts/audit_maps.py et node scripts/check_paths.js)
-À lancer sur la carte d'avant la refonte (tag git avant-refonte-fdf) : relancé sur la carte refaite, il retrouve le
-même dessin, mais pas les retouches faites entre-temps dans le créateur.
+À lancer sur la carte d'avant la refonte : git checkout avant-refonte-fdf -- src/data/builtMaps/fort-de-france.json
+public/assets/v2/auto.png public/assets/v2/auto.json (les retouches faites depuis dans le créateur seraient perdues).
 """
 import json
 import random
@@ -26,12 +27,33 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from scipy import ndimage
 
 from convert_maps_v2 import Builder, load_catalog, ROOT, V2, TILE
-from ds_theme import TERRAINS, GRASS, GRASS_BITS
+from ds_theme import TERRAINS, GRASS, GRASS_BITS, SEA_TO_DPPT
 
 MAP = ROOT / 'src' / 'data' / 'builtMaps' / 'fort-de-france.json'
 STRIDE = 100000
+
+# ---------- Contour de l'île (retours d'octobre 2026 : plus ronde) ----------
+# Super-ellipses (centre, demi-axes en cases, exposant : 2 = ellipse, plus grand = plus carré). ISLAND : la côte (hors de
+# la forme : la mer, bloquante) ; SHORE : le bord de l'herbe (entre les deux : la plage, de 2 à 3 cases). Le ponton garde
+# ses cases.
+ISLAND = (17.0, 13.5, 14.9, 12.6, 3.0)
+SHORE = (17.0, 13.0, 12.4, 10.3, 3.0)
+
+
+def inside(shape, x, y):
+    cx, cy, a, b, p = shape
+    return abs((x + 0.5 - cx) / a) ** p + abs((y + 0.5 - cy) / b) ** p <= 1
+
+
+# Grandes fleurs tropicales à droite de l'allée : on les traverse (posées dans le calque Sol, plus bloquantes).
+TALL_FLOWERS = [(19, 12), (20, 12), (19, 13), (20, 13), (19, 14), (20, 14)]
+# Parvis : le sable du chemin va jusqu'aux murs, sous la jardinière et la boîte aux lettres (maison), sous la jardinière
+# et le long de la façade (cabane), même sur ces cases bloquantes.
+FORECOURT = [(13, 7), (14, 7), (16, 7), (17, 7), (13, 8), (14, 8), (17, 8),
+             (24, 14), (25, 14), (27, 14), (28, 14), (27, 15), (28, 15)]
 
 # ---------- Plan des sols (cases libres seulement ; l'eau et le ponton ne changent pas) ----------
 # Allée principale de la maison au ponton (3 cases, centrée sur la porte), parvis devant la maison, branches vers la
@@ -40,6 +62,7 @@ PATHS = (
     [(x, y) for y in range(9, 25) for x in (14, 15, 16)] + [(15, 7), (15, 8), (16, 8)]  # allée, du seuil au ponton
     + [(x, 9) for x in (13, 17)]                                                       # parvis
     + [(x, 15) for x in range(17, 27)] + [(x, 16) for x in range(17, 24)]              # vers la cabane
+    + [(x, 9) for x in (14, 15, 16)]                                                    # parvis de la maison
     + [(x, y) for y in (15, 16) for x in range(10, 14)]                                # vers le mémorial
 )
 # Clairière de sable clair autour du mémorial (on s'y recueille ; la promeneuse s'y tient, en 9, 15).
@@ -94,16 +117,19 @@ FURNITURE = [
     {'el': ('g4-mobilier', 2, 277, 2, 2), 'at': (11, 13), 'solid_from': 1},
     {'el': ('g4-mobilier', 2, 277, 2, 2), 'at': (3, 19), 'solid_from': 1},
     # Parasol et banc blanc sur la plage, à droite du ponton (l'ombre portée tombe dans l'eau : coupée).
-    {'el': ('g4-mobilier', 6, 157, 4, 4), 'at': (22, 22), 'solid_from': 3},
+    {'el': ('g4-mobilier', 6, 157, 4, 4), 'at': (21, 22), 'solid_from': 3},
     # Clôture blanche DPPt devant le jardin fleuri de la maison.
     *[{'el': ('dppt', 1, 128, 1, 1), 'at': (x, 11), 'solid_from': 0} for x in range(18, 22)],
-    # Tas de bois contre la cabane de pêche.
-    {'el': ('g4-mobilier', 1, 117, 2, 2), 'at': (22, 13), 'solid_from': 1},
+    # Tas de bois contre la cabane de pêche (`isolate` : seul le tas, sans le bout de barbecue voisin sur la planche).
+    {'el': ('g4-mobilier', 1, 117, 2, 2), 'at': (22, 13), 'solid_from': 1, 'isolate': True},
 ]
 # Ce que les nouveaux objets remplacent : l'éolienne et son buisson flottant, la souche du mémorial, les fleurs
 # bloquantes (cases du calque Décor / Au-dessus de Pierre vidées).
 CLEAR = {
-    'decor': [(19, 7), (20, 7), (7, 14), (8, 14), (7, 15), (8, 15), (12, 9), (24, 9), (27, 17), (24, 16)],
+    'decor': [(19, 7), (20, 7), (7, 14), (8, 14), (7, 15), (8, 15), (12, 9), (24, 9), (27, 17), (24, 16),
+              # Débris d'un arbre rond effacé lors de retouches (feuille sombre, points d'ombre) : derrière les bûches,
+              # près du palmier de gauche.
+              (22, 13), (8, 11), (5, 11)],
     'dessus': [(19, 4), (20, 4), (19, 5), (20, 5), (19, 6), (20, 6), (20, 3), (21, 3), (21, 4), (7, 13), (8, 13)],
 }
 # Petites fleurs et touffes des retouches précédentes (calque Décor) : remplacées par les massifs ci-dessus.
@@ -155,10 +181,10 @@ def cut_background(img):
     return Image.fromarray(a)
 
 
-def check_access(W, H, solid0, solid1, spawn, points, new_solid, protected):
+def check_access(W, H, solid0, solid1, spawn, points, new_solid, protected, sea=frozenset()):
     """Le mobilier ne bloque rien : aucune case protégée n'est prise, toutes les cases libres qu'on atteignait depuis le
-    point d'arrivée s'atteignent encore, et chaque PNJ, objet, porte ou déclencheur reste atteignable (sa case, ou une
-    case voisine s'il est sur une case bloquante)."""
+    point d'arrivée s'atteignent encore (sauf celles que la nouvelle côte a rendues à la mer, `sea`), et chaque PNJ,
+    objet, porte ou déclencheur reste atteignable (sa case, ou une case voisine s'il est sur une case bloquante)."""
     taken = new_solid & protected
     assert not taken, f'mobilier sur une case protégée : {sorted(taken)}'
 
@@ -173,7 +199,7 @@ def check_access(W, H, solid0, solid1, spawn, points, new_solid, protected):
         return seen
 
     before, after = reach(solid0), reach(solid1)
-    lost = before - after - new_solid
+    lost = before - after - new_solid - sea
     assert not lost, f'cases devenues inaccessibles : {sorted(lost)}'
     for x, y, kind in points:
         near = [(x, y)] + [(x + dx, y + dy) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))]
@@ -210,24 +236,32 @@ def main():
                 out.alpha_composite(tile_img(m['sheets'][ref // STRIDE], ref % STRIDE))
         return out
 
-    # Sol actuel : eau, ponton (gardés), sable ou herbe (refaits).
-    def kind(x, y):
+    # Ponton : ses cases gardent leur dessin. Ailleurs : mer, plage ou herbe d'après le contour de l'île.
+    def is_pier(x, y):
         cell = m['layers']['sol'][y * W + x]
         top = cell[-1] if isinstance(cell, list) else cell
-        if m['sheets'][top // STRIDE] == 'g4-mobilier':
-            return 'pier'
-        r, g, b = np.array(cell_img('sol', x, y))[..., :3].reshape(-1, 3).mean(0)
-        if b > r + 30 and b > g:
-            return 'water'
-        return 'grass' if g > r + 20 else 'beach'
+        return top != -1 and m['sheets'][top // STRIDE] == 'g4-mobilier'
 
-    ground = [[kind(x, y) for x in range(W)] for y in range(H)]
-    keep = {(x, y) for y in range(H) for x in range(W) if ground[y][x] in ('water', 'pier')}
-    for x, y in ((14, 7), (16, 7)):                  # sous les murs de la maison, de part et d'autre de la porte
-        ground[y][x] = 'grass'
+    def was_water(x, y):
+        r, g, b = np.array(cell_img('sol', x, y))[..., :3].reshape(-1, 3).mean(0)
+        return b > r + 30 and b > g
+
+    old_water = {(x, y) for y in range(H) for x in range(W) if not is_pier(x, y) and was_water(x, y)}
+    ground = [['pier' if is_pier(x, y) else 'grass' if inside(SHORE, x, y) else 'beach' if inside(ISLAND, x, y)
+               else 'water' for x in range(W)] for y in range(H)]
+    keep = {(x, y) for y in range(H) for x in range(W) if ground[y][x] == 'pier'}
+    sea = {(x, y) for y in range(H) for x in range(W) if ground[y][x] == 'water'}
+    for x, y in sea:
+        assert (x, y) not in protected or (x, y) in old_water, f'la côte avale un point important : {(x, y)}'
+    # Collisions de base : la mer ; sur terre, celles d'avant (objets), sauf les fleurs hautes, désormais traversables.
+    base = [1 if (x, y) in sea else 0 if (x, y) in old_water or (x, y) in TALL_FLOWERS else solid0[y * W + x]
+            for y in range(H) for x in range(W)]
+    solid = lambda x, y: bool(base[y * W + x])
     for x, y in PATHS:
         if not solid(x, y):
             ground[y][x] = 'path'
+    for x, y in FORECOURT:
+        ground[y][x] = 'path'
     for x, y in CLEARING:
         if not solid(x, y) or (x, y) in ((7, 14), (8, 14), (7, 15), (8, 15)):
             ground[y][x] = 'beach'
@@ -238,6 +272,7 @@ def main():
 
     # ---------- Calques ----------
     stacks = {name: {} for name in ('sol', 'decor', 'dessus')}
+    flowers = {}                                     # fleurs hautes : leurs cases, posées sur le sol plus bas
     for name in ('decor', 'dessus'):
         cleared = set(CLEAR.get(name, []))
         for y in range(H):
@@ -246,13 +281,22 @@ def main():
                     continue
                 cell = m['layers'][name][y * W + x]
                 refs = [r for r in (cell if isinstance(cell, list) else [cell]) if r != -1]
+                # Ce que la nouvelle côte met à l'eau (palmier du coin, rochers de la plage) disparaît avec son ombre.
+                if (x, y) in sea and ((x, y) not in old_water or name == 'dessus'):
+                    continue
+                if (x, y) in sea:                    # en mer : bateaux et rochers restent, pas un bout de feuillage
+                    refs = [r for r in refs if m['sheets'][r // STRIDE] != 'g4-arbres']
+                if (x, y) in TALL_FLOWERS:
+                    flowers.setdefault((x, y), []).extend(refs)
+                    continue
                 if name == 'decor' and not solid(x, y):
                     refs = [r for r in refs if m['sheets'][r // STRIDE] not in OLD_SPRINKLES]
                 for r in refs:
                     stacks[name].setdefault((x, y), []).append(('ref', m['sheets'][r // STRIDE], r % STRIDE))
 
     rnd = random.Random(1830)        # l'année du naufrage de l'Anse Caffard : un tirage fixe, la carte ne bouge pas
-    same_of = {'beach': {'beach', 'water', 'pier', 'path'}, 'path': {'path', 'beach'}, 'tall': {'tall'}}
+    same_of = {'beach': {'beach', 'water', 'pier', 'path'}, 'path': {'path', 'beach', 'pier'}, 'tall': {'tall'},
+               'water': {'water', 'pier'}}
     for y in range(H):
         for x in range(W):
             if (x, y) in keep:
@@ -280,7 +324,11 @@ def main():
                 v, h, d = other(0, dy), other(dx, 0), other(dx, dy)
                 quads.append((ox + 2 * qx, oy + 2 * qy) if v and h else (ox + 1, oy + 2 * qy) if v
                              else (ox + 2 * qx, oy + 1) if h else spec['inner'][q] if d else spec['center'])
-            if all(qd == spec['center'] for qd in quads):
+            if all(qd == spec['center'] for qd in quads) and g == 'water':
+                info = bd.objects['mer']                # la mer DS de Dewitty, aux bleus de DPPt (voir ds_theme)
+                tile = ('objets', info['col'] + x % 2, info['row'] + y % 2, 'sea')
+                stacks['sol'][(x, y)] = [('auto', bd.composite((tile,), SEA_TO_DPPT))]
+            elif all(qd == spec['center'] for qd in quads):
                 stacks['sol'][(x, y)] = [('tile', sheet, *spec['center'])]
             else:
                 stacks['sol'][(x, y)] = [('auto', bd.quad_tile(sheet, tuple(quads)))]
@@ -298,12 +346,21 @@ def main():
         if not solid(x, y) and ground[y][x] == 'beach' and (x, y) not in stacks['decor']:
             stacks['sol'][(x, y)].append(('auto', shells[i % len(shells)]))
 
+    for (x, y), refs in flowers.items():
+        stacks['sol'][(x, y)] += [('ref', m['sheets'][r // STRIDE], r % STRIDE) for r in refs]
+
     # Objets (sur des cases déjà bloquantes), puis mobilier (cases bloquantes nouvelles).
     new_solid = set()
     for obj in OBJECTS + FURNITURE:
         sheet, c0, r0, w, h = obj['el']
         ax, ay = obj['at']
         full = bd.images[sheet].crop((c0 * TILE, r0 * TILE, (c0 + w) * TILE, (r0 + h) * TILE))
+        if obj.get('isolate'):
+            arr = np.array(full)
+            labels, _ = ndimage.label(arr[..., 3] > 0)
+            biggest = np.bincount(labels.ravel())[1:].argmax() + 1
+            arr[labels != biggest] = 0
+            full = Image.fromarray(arr)
         box = None
         if obj.get('tint') == 'martinique':
             arr = np.array(full).astype(int)
@@ -361,10 +418,10 @@ def main():
                 cells[y * W + x] = ref('auto', bd.image_tile(img))
         layers[name] = cells
 
-    solid1 = list(solid0)
+    solid1 = list(base)
     for x, y in new_solid:
         solid1[y * W + x] = 1
-    check_access(W, H, solid0, solid1, spawn0, points, new_solid, protected)
+    check_access(W, H, solid0, solid1, spawn0, points, new_solid, protected, sea)
     out = {**m, 'sheets': sheets, 'layers': layers, 'solid': solid1}
     assert out['spawn'] == spawn0, 'départ changé'
     bd.save_auto_sheet()

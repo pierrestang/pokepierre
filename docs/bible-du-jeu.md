@@ -52,12 +52,14 @@ déjà débloquées.
   plage, et Manon prépare un coup dehors. Ensuite, reviens me voir ! »
 
 ### Décor (refonte DS d'octobre 2026, scripts/fdf_ds_v2.py)
-- Île en assets Diamant / Perle / HeartGold. Une allée de sable relie la maison au ponton ; deux branches mènent à la
+- Île ronde, plage arrondie, en assets Diamant / Perle / HeartGold. Une allée de sable relie la maison au ponton (sans
+  bande d'herbe entre les deux) ; deux branches mènent à la
   cabane de pêche (à droite) et au mémorial (à gauche), au milieu d'une clairière de sable clair.
 - Mémorial de l'Anse Caffard : une statue sur socle en pierre blanche, fleurs roses en offrande. Le texte des panneaux
   parle toujours des six statues.
 - À droite de la maison, le drapeau de la Martinique (rouge, vert, noir) entre deux pots de buis. Jardin fleuri autour
-  de la maison, bordures de fleurs le long de l'allée.
+  de la maison, bordures de fleurs le long de l'allée. Les grandes fleurs tropicales à droite de l'allée se traversent.
+  Devant la maison et la cabane, le sable du chemin va jusqu'aux murs (sous la jardinière et la boîte aux lettres).
 - Plage semée de coquillages et d'étoiles de mer. En mer : la barque du pêcheur contre le ponton et deux voiliers au
   large.
 - Mobilier (deuxième passe) : lampadaires aux deux carrefours de l'allée, un banc le long du chemin du mémorial et un
