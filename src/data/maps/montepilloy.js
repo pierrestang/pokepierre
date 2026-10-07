@@ -27,32 +27,32 @@ export const montepilloyMap = {
   sourceGrid: parseGrid([
     'TTTTTTTTTTTTTT.çççTTTTTTTTTTTTTTTTTT', // 0
     'TTTTTTTTTTTTTT.çççTTTTTTTTTTTTTTTTTT', // 1
-    'TTTTT.........Sççç................TT', // 2
-    'TTTTT....RRRRR.ççç.RRRRR..........TT', // 3
-    'TT....ff.RRRRR.ççç.RRRRR.ff.......TT', // 4
-    'TT.ƀƀ.ff.WWWWW.ççç.WWWWW.ff.......TT', // 5
-    'TT......WDWWMW.ççç.WWWWWM.........TT', // 6
-    'TT.....çççççççççççççDççççç...ƀ....TT', // 7
-    'TT.....ççççççççççççççççççç........TT', // 8
+    'TTTTTĥĥĥ.ĥĥĥĥ.Sççç..ĥ.ĥĥĥĥĥĥĥĥĥĥĥĥTT', // 2
+    'TTTTTĥ...RRRRR.ççç.RRRRR.....ĥĥĥĥĥTT', // 3
+    'TTĥ..ĥff.RRRRR.ççç.RRRRR.ff...ĥĥĥĥTT', // 4
+    'TTĥƀƀ.ff.WWWWW.ççç.WWWWW.ff.....ĥĥTT', // 5
+    'TTĥĥ....WDWWMW.ççç.WWWWWM........ĥTT', // 6
+    'TTĥĥ...çççççççççççççDççççç...ƀ....TT', // 7
+    'TTĥ....ççççççççççççççççççç........TT', // 8
     'TT.............ççç................TT', // 9
     'TTFFFFFFFFFFFFFççç.RRRRR..TT..TTTTTT', // 10
     'TTF...........Fççç.RRRRR.fTT..TTTTTT', // 11
-    'TTFRRRRRRR....Fççç.WWWWW.f..ƀ.....TT', // 12
-    'TTFRRRRRRR....Fççç.WWWWW..........TT', // 13
-    'TTFWWWWWWW....FççççççççççççDçç....TT', // 14
-    'TTFWWWW..W...SFççççççççççççççç....TT', // 15
-    'TTF..çççççDççççççç....ĥĥ.f..TTĥĥ..TT', // 16
-    'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ..TT', // 17
-    'TTF..ççççççççççççç....ĥĥ.f..TTĥĥ..TT', // 18
-    'TTF..ççççççççççççç.f~~~~~~..TT..ĥ.TT', // 19
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.f~~~~~~~.......TT', // 20
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFçççĥ~~~~~~~~.ĥ.....TT', // 21
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.~~~~~~~~...TTTTTT', // 22
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç..~~~~~~.ĥ..TTTTTT', // 23
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç..~~~~~~.ĥ..TTTTTT', // 24
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç....~~~.f.ĥ.....TT', // 25
-    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç....~~~.f.ĥ.....TT', // 26
-    'TTFFFFFFFFFFFFFççç..............ƀƀTT', // 27
+    'TTFRRRRRRR....Fççç.WWWWW.f..ƀ....ĥTT', // 12
+    'TTFRRRRRRR....Fççç.WWWWW.........ĥTT', // 13
+    'TTFWWWWWWW....FççççççççççççDçç..ĥĥTT', // 14
+    'TTFWWWW..W...SFççççççççççççççç..ĥĥTT', // 15
+    'TTF..çççççDççççççç.ĥĥĥ.ĥ.f..TTĥĥĥĥTT', // 16
+    'TTF..ççççççççççççç..ĥĥĥĥĥf..TTĥĥĥĥTT', // 17
+    'TTF..ççççççççççççç...ĥĥĥ.f..TTĥĥ.ĥTT', // 18
+    'TTF..ççççççççççççç.f~~~~~~..TT.ĥĥĥTT', // 19
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.f~~~~~~~......ĥTT', // 20
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFçççĥ~~~~~~~~.......TT', // 21
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFçççĥ~~~~~~~~...TTTTTT', // 22
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFçççĥĥ~~~~~~ĥĥ..TTTTTT', // 23
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFçççĥĥ~~~~~~....TTTTTT', // 24
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.ĥĥ.~~~.f.ĥĥ.ĥĥĥTT', // 25
+    'TTFʬʬʬʬʬʬʬʬʬʬʬFççç.ĥĥ.~~~ĥfĥĥĥĥĥĥĥTT', // 26
+    'TTFFFFFFFFFFFFFççç.ĥĥĥĥĥĥĥĥĥĥĥĥĥƀƀTT', // 27
     'TTTTTTTTTTTTTT.çççTTTTTTTTTTTTTTTTTT', // 28
     'TTTTTTTTTTTTTT.çççTTTTTTTTTTTTTTTTTT', // 29
   ]),

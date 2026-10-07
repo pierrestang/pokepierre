@@ -51,8 +51,8 @@ export const prytaneeMap = {
     'TTFɔɔɔɔɔɔɔɔɔɔɔɔɔɔʘɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔFTT', // 16  place d'armes : drapeau, quatre jardins
     'TTFɔɔɔɔɔɔ....ffɔɔɔɔɔff....ɔɔɔɔɔɔɔFTT', // 17
     'TTFɔRRRRR......ɔɔɔɔɔ......RRRRRRRFTT', // 18  infirmerie, poste de commandement
-    'TTFɔRRRRR......ɔɔɔɔɔ......RRRRRRRFTT', // 19
-    'TTFɔWWWWWƀ.....ɔɔɔɔɔ.....ƀWWWWWWWFTT', // 20
+    'TTFɔRRRRRĥĥĥĥĥĥɔɔɔɔɔ......RRRRRRRFTT', // 19
+    'TTFɔWWWWWƀ..ĥĥĥɔɔɔɔɔĥ....ƀWWWWWWWFTT', // 20
     'TTFSWWDWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔSWWWDWWWFTT', // 21
     'TTFɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔFTT', // 22  allée
     'TTFFFFFFFFFFFFFFɔɔFFFFFFFFFFFFFFFFTT', // 23  porte sud : route de Bonsecours

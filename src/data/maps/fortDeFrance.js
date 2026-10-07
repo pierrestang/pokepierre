@@ -40,9 +40,9 @@ export const fortDeFranceMap = {
     'wwwss....ŦŦŦƨ.ççç.fƒƀ...ƨ....sswww', // 9
     'wwsss.TT......ççç..ƀ.f.......sssww', // 10
     'wwss..TT.f....ççç...ƀ....RRRR.ssww', // 11
-    'wwss..ĥĥĥƚ..S.ççç...TT...RRRR.ssww', // 12
-    'wwss.ĥĥĥĥ.....ççç...TT...WWWW.ssww', // 13
-    'wøss.ɱɱɱɱ..f..ççç........D.WW.ssww', // 14
+    'wwss.ĥĥĥĥƚ..S.ççç...TT...RRRR.ssww', // 12
+    'wwssĥĥĥĥĥĥ....ççç...TT...WWWW.ssww', // 13
+    'wøssĥɱɱɱɱ..f..ççç........D.WW.ssww', // 14
     'wwss.ɱɱɱɱ.....ççç.ŦŦŦf.....ƫƫ.ssww', // 15
     'wwss.ɱɲɲɱ..ƨ..ççç.ŦŦŦ...ƀƒ.ƫƫ.ssww', // 16
     'wwss.ɱɲɲɱ.....ççç.ŦŦŦ.ĥĥ...ƨ..ssww', // 17
