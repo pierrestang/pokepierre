@@ -74,6 +74,11 @@ def rod_rack():
     la plinthe ; les cannes sont des décors posés selon l'histoire (interiors.js RACK_RODS)."""
     img = canvas(2, 2)
     d = ImageDraw.Draw(img)
+    # Panneau de bois sombre derrière les cannes : elles ressortent sur le mur (retour de l'utilisateur, octobre 2026).
+    box(d, 0, 0, 24, 23, (92, 58, 34, 255), (44, 26, 14, 255))
+    for y in (6, 12, 18):
+        d.line((2, y, 22, y), fill=(76, 46, 26, 255))
+    d.line((2, 2, 22, 2), fill=(124, 82, 50, 255))
     d.rectangle((0, 31, 25, 31), fill=(0, 0, 0, 60))
     box(d, 0, 22, 24, 31, (176, 118, 64, 255))
     d.rectangle((1, 23, 23, 25), fill=(206, 152, 92, 255))
@@ -302,11 +307,15 @@ PLANS = {
     # bûches, tonneaux) ; la longue table remplacée par le râtelier des cannes et deux caisses de poisson, la caisse
     # « À DONNER » à gauche, des cartons.
     'ffHut': {
-        'hgss': ('010i_Azalea Houses', 10, 8, 11, 9),
-        'erase': [(2, 2, 3, 1)],
+        # Juste la partie en bois de la maison du charbonnier (sans le four ni le sol de pierre), dégagée : commodes,
+        # comptoir et coussins retirés ; le râtelier des cannes au milieu du mur du fond.
+        'hgss': ('010i_Azalea Houses', 10, 8, 6, 9),
+        'erase': [(0, 1, 2, 2), (0, 2, 6, 5)],
+        # Mur nu (pris à droite, entre la fenêtre et le four) à la place des commodes.
+        'paste': [{'from': ('010i_Azalea Houses', 16, 9, 1, 1), 'to': (x, 1)} for x in (0, 1)],
         'items': [
             ['fsa-ratelier', 2, 2], ['fsa-caisse-poisson', 4, 2], ['fsa-caisse-poisson', 5, 2],
-            ['fsa-caisse-donner', 0, 4], ['fsa-carton', 8, 5], ['fsa-carton', 6, 7],
+            ['fsa-caisse-donner', 0, 4], ['fsa-carton', 5, 6],
         ],
     },
     # Saint-Ay — la maison de la famille : le rez-de-chaussée de Bourg Geon (escalier, télé, cuisine, frigo), le coin

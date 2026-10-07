@@ -34,7 +34,7 @@ const PRINCIPALE = [
 
 // Cannes de la cabane de pêche : [icône, x, y, hauteur gardée] en pixels depuis le coin de la case (voir ffHut).
 // Cannes debout (gaule en x = 14 de l'image) : dans les trous du râtelier (x = 3, 11, 19), le manche caché par le socle.
-const RACK_RODS = [['mega-canne-petite', -11, -34, 26], ['super-canne-petite', -3, -34, 26], ['vieille-canne-petite', 5, -34, 26]];
+const RACK_RODS = [['mega-canne-petite', -11, -20, 26], ['super-canne-petite', -3, -20, 26], ['vieille-canne-petite', 5, -20, 26]];
 const CRATE_RODS = [['super-canne-petite', -10, -17, 19], ['vieille-canne-petite', -4, -17, 19]];
 const OLD_ROD_IN_CRATE = [['vieille-canne-petite', -7, -17, 19]];
 
@@ -243,15 +243,15 @@ export const interiors = {
     name: 'Cabane de pêche',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXX',
-      'XXXXXXXXXXX',
-      'mmψψmmmmmmm',
-      'ooooooommmm',
-      'mooooooooom',
-      'oooooooomoo',
-      'oooooooooom',
-      'mooooomoooo',
-      'mooEooooooo',
+      'XXXXXX',
+      'XXXXXX',
+      'ooψψmm', // le râtelier des cannes au milieu du mur, les caisses de poisson
+      'oooooo',
+      'mooooo', // la caisse « À DONNER »
+      'oooooo',
+      'ooooom', // un carton
+      'mooooo', // tonneaux
+      'mooEoo',
     ]),
     decor: [
       { kind: 'window', x: 2, y: 0 },
@@ -268,7 +268,7 @@ export const interiors = {
     // pêcheur) et la Vieille canne, puis la Vieille seule. Le bas des cannes est coupé (socle, bord de la caisse).
     decals: [
       { x: 2, y: 2, unlessFlags: [FLAGS.papaFait], icons: RACK_RODS },
-      { x: 2, y: 2, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -3, -34, 26]] },
+      { x: 2, y: 2, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -3, -20, 26]] },
       { x: 0, y: 4, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id], icons: CRATE_RODS },
       { x: 0, y: 4, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
       { x: 0, y: 4, ifItems: [ITEMS.canneAPeche.id], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
@@ -307,7 +307,7 @@ export const interiors = {
       { x: 3, y: 2, dialogue: ['La canne que Papa a gardée.'] },
       { x: 4, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
       { x: 5, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
-      ...[[8, 5], [6, 7]].map(([x, y]) => ({ x, y, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] })),
+      { x: 5, y: 6, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] },
       // Caisse « À DONNER » : une canne pour le capitaine du ferry, dès le tri avec Papa.
       { x: 0, y: 4, unlessFlags: [FLAGS.papaFait], dialogue: ['Une caisse marquée « À DONNER ». Elle est encore vide.'] },
       // Dès le tri avec Papa, on peut prendre une des deux cannes (pour le capitaine du ferry).
