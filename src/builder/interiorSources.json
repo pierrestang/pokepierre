@@ -60,12 +60,12 @@
   "label": "HGSS · Goldenrod radio tower · pièce 5"
  },
  "corseParents": {
-  "key": "010i_Azalea Houses#0",
-  "label": "HGSS · Azalea Houses · pièce 1"
+  "key": "001i_Newbark houses#4",
+  "label": "HGSS · Newbark houses · pièce 5"
  },
  "corseVoisins": {
-  "key": "006i_Violet houses#0",
-  "label": "HGSS · Violet houses · pièce 1"
+  "key": "001i_Newbark houses#4",
+  "label": "HGSS · Newbark houses · pièce 5"
  },
  "delhiUniversity": {
   "key": "006i_Violet School#0",
@@ -96,8 +96,8 @@
   "label": "HGSS · Goldenrod radio tower · pièce 6"
  },
  "felixHouse": {
-  "key": "004i_Mr Pokémon House#0",
-  "label": "HGSS · Mr Pokémon House · pièce 1"
+  "key": "001i_Newbark houses#4",
+  "label": "HGSS · Newbark houses · pièce 5"
  },
  "ffHouse": {
   "key": "001i_Newbark houses#4",
@@ -112,8 +112,8 @@
   "label": "HGSS · Azalea Houses · pièce 1"
  },
  "hanoiHome": {
-  "key": "012i_Goldenrod interiors#3",
-  "label": "HGSS · Goldenrod interiors · pièce 4"
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
  },
  "hospital": {
   "key": "001i_Newbark-Lab#0",
@@ -152,8 +152,8 @@
   "label": "HGSS · Violet School · pièce 1"
  },
  "maisonCommune": {
-  "key": "001i_Newbark houses#2",
-  "label": "HGSS · Newbark houses · pièce 3"
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
  },
  "monastere": {
   "key": "006i_Sprout Tower#0",

@@ -436,16 +436,17 @@ export const interiors = {
   felixHouse: {
     name: 'Maison de Felix',
     frlg: true,
-    grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmmmmoommmmm',
-      'oooooooooooo',
-      'oooooooooooo',
-      'ooooommmmooo',
-      'ooooommooooo',
-      'oooooooooooo',
-      'mooEooooooom',
+    grid: parseGrid([ // dessin de la maison familiale (Fort-de-France), sans cartons
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'mmoommmmmmm',   // l'escalier du dessin ne mène nulle part : bloqué
+      'mmoooomoooo',
+      'oooooommoom',
+      'ooooooooooo',
+      'mooooommooo',
+      'oooooommooo',
+      'ooooooooooo',
+      'moEooooooom',
     ]),
     decor: [
       { kind: 'blueShelf', x: 0, y: 1 },
@@ -459,7 +460,7 @@ export const interiors = {
     ],
     // Le cheval que Val sculpte, posé sur la table juste devant lui (art/tileArt.js DECALS.statue).
     decals: [{ kind: 'statue', x: 5, y: 5, ifFlags: [FLAGS.felixInvite] }],
-    spawn: { x: 3, y: 7, facing: 'up' },
+    spawn: { x: 2, y: 8, facing: 'up' },
     npcs: [
       {
         id: 'felix-maison', name: 'Felix', x: 2, y: 6, facing: 'right', color: 0x9060d0,
@@ -476,7 +477,7 @@ export const interiors = {
         ],
       },
       {
-        id: 'joshua', name: 'Joshua', x: 6, y: 4, facing: 'down', color: 0x20a0c0,
+        id: 'joshua', name: 'Joshua', x: 4, y: 4, facing: 'down', color: 0x20a0c0,
         ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.planCabane],
         dialogue: ['Felix a un plan. Il a toujours un plan.'],
       },
@@ -1814,17 +1815,22 @@ export const interiors = {
   // un lit contre le mur de gauche (scripts/interieurs/asie_amsterdam.py).
   hanoiHome: {
     name: 'Ta maison à Hanoï',
-    grid: parseGrid([
-      'XXXXXXXXX',
-      'XXXXXXXXX',
-      'mmmooommm',
-      'ooooooooo',
-      'omooommoo',
-      'omooommoo',
-      'omooooooo',
-      'oooEooooo',
+    grid: parseGrid([ // dessin de la maison de Léo (Hull)
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmoooooooEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'oooommmmooooX',
+      'ooooooooooooX',
+      'moooooooooomX',
+      'XooooooooooXX',
     ]),
-    spawn: { x: 3, y: 6, facing: 'up' },
+    spawn: { x: 10, y: 6, facing: 'left' },
     events: [
       {
         on: 'enter',
@@ -1972,19 +1978,22 @@ export const interiors = {
   // Bourg Geon (HGSS) : bureau et PC, télé, deux lits, tapis ; l'escalier du coin mène à l'étage (fermé).
   maisonCommune: {
     name: 'Maison commune',
-    grid: parseGrid([
-      'XXXXXXXXXX',
-      'XXXXXXXXXX',
-      'XXXXXXXXXX',
-      'mmmoommmmm',
-      'mmoooooooo',
-      'oooooooooo',
-      'oooooooooo',
-      'omoooooomo',
-      'omoooooomo',
-      'omooEooomo',
+    grid: parseGrid([ // dessin de la maison de Léo (Hull)
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmoooooooEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'oooommmmooooX',
+      'ooooooooooooX',
+      'moooooooooomX',
+      'XooooooooooXX',
     ]),
-    spawn: { x: 4, y: 8, facing: 'up' },
+    spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [
       {
         id: 'romain-maison', name: 'Romain', x: 7, y: 4, facing: 'left', color: 0xc0602c,
@@ -2552,19 +2561,19 @@ export const interiors = {
   // Corse — la maison de tes parents.
   corseParents: {
     name: 'Maison de tes parents',
-    grid: parseGrid([
+    grid: parseGrid([ // dessin de la maison familiale (Fort-de-France), sans cartons
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'XXXXXXXXXXX',
-      'mmmmmommmmm',
-      'ooooooommmm',
-      'oooooooooom',
+      'mmoommmmmmm',   // l'escalier du dessin ne mène nulle part : bloqué
+      'mmoooomoooo',
+      'oooooommoom',
       'ooooooooooo',
-      'oooooooooom',
-      'moooooooooo',
-      'mooEooooooo',
+      'mooooommooo',
+      'oooooommooo',
+      'ooooooooooo',
+      'moEooooooom',
     ]),
-    spawn: { x: 3, y: 8, facing: 'up' },
+    spawn: { x: 2, y: 8, facing: 'up' },
     events: [
       {
         on: 'enter',
@@ -2591,17 +2600,19 @@ export const interiors = {
   // Corse — la maison voisine : Léo et Théo.
   corseVoisins: {
     name: 'Maison de Léo et Théo',
-    grid: parseGrid([
-      'XXXXXXXXX',
-      'XXXXXXXXX',
-      'mmmoooomm',
-      'ooooooooo',
-      'ooooommoo',
-      'ooooommoo',
-      'ooooooooo',
-      'oooEooooo',
+    grid: parseGrid([ // dessin de la maison familiale (Fort-de-France), sans cartons
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'mmoommmmmmm',   // l'escalier du dessin ne mène nulle part : bloqué
+      'mmoooomoooo',
+      'oooooommoom',
+      'ooooooooooo',
+      'mooooommooo',
+      'oooooommooo',
+      'ooooooooooo',
+      'moEooooooom',
     ]),
-    spawn: { x: 3, y: 6, facing: 'up' },
+    spawn: { x: 2, y: 8, facing: 'up' },
     npcs: [
       {
         id: 'leo', name: 'Léo', x: 4, y: 4, facing: 'right', color: 0x4c9c5c,
@@ -2610,7 +2621,7 @@ export const interiors = {
         souvenir: { id: 'souvenir-leo', name: 'Souvenir de Léo' },
       },
       {
-        id: 'theo', name: 'Théo', x: 7, y: 4, facing: 'left', color: 0xc07c3c,
+        id: 'theo', name: 'Théo', x: 8, y: 4, facing: 'left', color: 0xc07c3c,
         dialogue: ['[Théo - texte provisoire] Hé ! Ceci est le premier dialogue de Théo.'],
         after: ['[Théo - texte provisoire] Dialogue une fois le souvenir obtenu.'],
         souvenir: { id: 'souvenir-theo', name: 'Souvenir de Théo' },
