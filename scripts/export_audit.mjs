@@ -8,7 +8,7 @@ for (const m of Object.values(MAPS)) {
   const pts = [];
   for (const n of m.npcs ?? []) pts.push({ k: 'npc', id: n.id ?? n.name, x: n.x, y: n.y });
   for (const o of m.objects ?? []) pts.push({ k: 'obj', x: o.x, y: o.y });
-  for (const d of m.doors ?? []) pts.push({ k: 'door', x: d.x, y: d.y });
+  for (const d of m.doors ?? []) pts.push({ k: 'door', x: d.x, y: d.y, when: Boolean(d.when) });   // when : porte d'un décor du jeu (échelle de la cabane)
   for (const t of m.triggers ?? []) pts.push({ k: 'trig', x: t.x, y: t.y });
   for (const p of m.props ?? []) pts.push({ k: 'prop', id: p.type, x: p.x, y: p.y, w: p.w, h: p.h });
   out[m.id] = { file: m.built.id, grid: m.grid.map((r) => r.join('')), source: m.sourceGrid.map((r) => r.join('')),

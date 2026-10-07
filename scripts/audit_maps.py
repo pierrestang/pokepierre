@@ -13,6 +13,9 @@
                       vertes, et au moins 8 % de pixels sombres (14 % au minimum sur les vraies cases 'ĥ'), 0 % pour
                       une touffe d'herbe rase ;
   poche               cases libres qu'on ne peut pas atteindre (ni départ, ni PNJ, ni bord, ni porte).
+  porte_hors_dessin   porte du jeu (map.doors) qui n'est pas sur une porte dessinée : sa case doit porter un dessin
+                      (Décor) et être libre, la case au-dessus bloquée (le mur) ; sinon Pierre entre à côté ou sous
+                      le bâtiment. Déplacer la porte (x, y de doors et 'D' de sourceGrid) sur la porte dessinée.
   taille_impaire      largeur ou hauteur impaire : les arbres des bordures (2 x 2 cases) ne tombent pas sur la même
                       grille des deux côtés (règle : dimensions paires ; une carte sans bordure d'arbres peut l'ignorer).
 
@@ -49,7 +52,7 @@ report={}
 for mid,g in data.items():
     m=json.load(open(R+f"src/data/builtMaps/{g['file']}.json")); W,H=m['width'],m['height']
     src=g['source']; grid=g['grid']; solid=m['solid']
-    res={k:[] for k in ['taille_impaire','mur_invisible','objet_traversable','cache_dessus','trou_sol','herbe_sans_dessin','herbes_hors_grille','fleurs_et_bords','poche']}
+    res={k:[] for k in ['taille_impaire','mur_invisible','objet_traversable','cache_dessus','trou_sol','herbe_sans_dessin','herbes_hors_grille','fleurs_et_bords','poche','porte_hors_dessin']}
     if W % 2 or H % 2: res['taille_impaire'].append((W, H))
     for y in range(H):
         for x in range(W):
@@ -69,6 +72,11 @@ for mid,g in data.items():
             # herbes dessinées hors grille : seulement les cases d'herbe libres au sol texturé sans objet
             if c=='.' and not solid[i] and plant and full(dec)<0.05:
                 res['herbes_hors_grille' if greenish(comp)>=0.9 and dark(comp)>=0.08 else 'fleurs_et_bords'].append((x,y))
+    for p in g['pts']:
+        if p['k']!='door' or p.get('when'): continue          # porte d'un décor du jeu (cabane), pas du dessin
+        x,y=p['x'],p['y']; i=y*W+x
+        if solid[i] or full(layer_img(m,'decor',i))<0.15 or y==0 or not solid[i-W]:
+            res['porte_hors_dessin'].append((x,y))
     # poches : composantes libres sans point d'intérêt ni départ ni bord de carte
     seen=set(); interest={(p['x'],p['y']) for p in g['pts']}; sp=g['spawn']
     for y in range(H):

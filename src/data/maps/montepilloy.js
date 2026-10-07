@@ -31,8 +31,8 @@ export const montepilloyMap = {
     'TTTTTĥ...RRRRR.ççç.RRRRR.....ĥĥĥĥĥTT', // 3
     'TTĥ..ĥff.RRRRR.ççç.RRRRR.ff...ĥĥĥĥTT', // 4
     'TTĥƀƀ.ff.WWWWW.ççç.WWWWW.ff.....ĥĥTT', // 5
-    'TTĥĥ....WDWWMW.ççç.WWWWWM........ĥTT', // 6
-    'TTĥĥ...çççççççççççççDççççç...ƀ....TT', // 7
+    'TTĥĥ....WDWWMW.ççç.WWWWDM........ĥTT', // 6
+    'TTĥĥ...ççççççççççççççççççç...ƀ....TT', // 7
     'TTĥ....ççççççççççççççççççç........TT', // 8
     'TT.............ççç................TT', // 9
     'TTFFFFFFFFFFFFFççç.RRRRR..TT..TTTTTT', // 10
@@ -60,7 +60,7 @@ export const montepilloyMap = {
     { x: 9, y: 6, interior: 'montHouse' },
     // Maison de la voisine : fermée (pas d'intérieur pour l'instant). Porte sur la rangée du soubassement de la maison
     // jaune (on frappe depuis la rue).
-    { x: 20, y: 7, lockedDialogue: ['Personne ne répond.'] },
+    { x: 23, y: 6, lockedDialogue: ['Personne ne répond.'] },
     // La grange : le grand bâtiment orange (retouché dans le créateur, octobre 2026), sa porte grise en bas.
     { x: 10, y: 16, interior: 'boulyBarn' },
     // L'école (la verrière) : sa porte dessinée, déplacée dans le créateur.

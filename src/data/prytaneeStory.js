@@ -15,7 +15,7 @@ export const DORM_DOOR_FRONT = { x: 6, y: 8 };
 export const NORTH_GATE = [[24, 2], [25, 2]];
 export const SOUTH_GATE = [16, 23];
 export const RESULTS_BOARD = { x: 17, y: 19 };              // le panneau de bois du bas de la place
-const COMMAND_POST = [29, 22];
+const COMMAND_POST = [30, 21];                                   // devant la porte du poste de commandement
 const DORM_EXIT = [12, 3];                                        // l'escalier du dortoir qui descend au hall
 
 // ---------- 1. Arrivée et Autonomie ----------

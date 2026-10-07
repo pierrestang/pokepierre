@@ -100,7 +100,7 @@ puis Hanoï. Pas de combats.
   largeur impaire qui traverse une bordure : une bande d'herbe d'une case le long du chemin, pour que la forêt garde
   un nombre pair de cases de chaque côté.
 - Après avoir touché une carte du créateur : `python3 scripts/audit_maps.py` (murs invisibles, objets traversables,
-  hautes herbes de la grille sans dessin, poches inaccessibles). Sous un toit ou une cime (calque « au-dessus de
+  hautes herbes de la grille sans dessin, poches inaccessibles, portes du jeu hors de la porte dessinée). Sous un toit ou une cime (calque « au-dessus de
   Pierre »), le jeu montre la silhouette du joueur (MapScene.updateSilhouette) ; ses jambes dans les hautes herbes sont
   cachées par le bas de la case dessinée, seulement si elle a vraiment des herbes (effects.js GrassCovers).
 - Demander avant d'ajouter une dépendance.

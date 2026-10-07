@@ -53,11 +53,11 @@ export const bordeauxMap = {
     'ƀƀ..WWWW.WWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 7
     'ƀƀ..WWWWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 8
     'ƀƀ.ɔWWWWWWWWWWɔɔWWWWWWWWWWWɔ.ƀƀƀ', // 9
-    '...ɔWDWWWWWDWWɔɔWWWWWWWWWWWɔɔ...', // 10  portes : ton immeuble (5), l'agence (11) ; ouest : Prytanée
+    '...ɔWDWWWWWDWWɔɔWWWWWDWWWWWɔɔ...', // 10  portes : ton immeuble (5), l'agence (11) ; ouest : Prytanée
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWWWWWWWɔɔɔɔɔ', // 11
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWWWWWWɔɔɔɔɔɔ', // 12
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWWWWɔɔɔɔɔƀƀ', // 13
-    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWDWWɔɔɔɔɔ.ƀƀ', // 14  porte du stade
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWW.WWɔɔɔɔɔ.ƀƀ', // 14  porte du stade
     'ƀƀ....ɔɔɔɔ....ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 15
     'ƀƀ.....ɔɔ...WW..ɔɔɔɔɔɔɔɔɔɔ....ƀƀ', // 16
     'ƀƀ.....ɔɔ..............ɔɔ...GGGG', // 17
@@ -94,7 +94,7 @@ export const bordeauxMap = {
     { x: 11, y: 10, interior: 'agence' },                          // la boutique à auvent
     // Le stade (la rotonde) : la remise des diplômes, une fois le semestre de New Delhi terminé.
     {
-      x: 21, y: 14, interior: 'stade',
+      x: 21, y: 10, interior: 'stade',
       lock: { ifFlags: [FLAGS.semestreTermine] },
       lockedDialogue: ["Le stade est fermé : la remise des diplômes n'a pas encore lieu."],
     },

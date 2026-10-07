@@ -41,8 +41,8 @@ export const saintAyMap = {
     'TTTT.....ĥĥ..Sçç..............TT', // 2
     'TTTTfff.ĥĥĥĥ..çç.RRRRR.FFFFFF.TT', // 3
     'TT..fff..ĥĥĥ..çç.RRRRR.F....F.TT', // 4
-    'TT..fff...ĥ...çç.WWWWW.F....F.TT', // 5
-    '~~~.ççççççççççççMWDWWW.F....F.TT', // 6
+    'TT..fff...ĥ...çç.WDWWW.F....F.TT', // 5
+    '~~~.ççççççççççççMW.WWW.F....F.TT', // 6
     '~~~~çççççççççççççççççççFFFçFF.TT', // 7
     '~~~~~==~..ĥĥ..ççççççççççççç...TT', // 8
     'BBBB~==~~ĥĥĥĥ.çç.RRRRR........TT', // 9
@@ -67,7 +67,7 @@ export const saintAyMap = {
   ]),
   // Portes -> intérieur. Au retour, le joueur réapparaît sous la porte. Sans intérieur : porte fermée.
   doors: [
-    { x: 18, y: 6, interior: 'playerHouse' },
+    { x: 18, y: 5, interior: 'playerHouse' },
     // La clinique : la grande maison au toit bleu, en bas de la rue du milieu.
     {
       x: 17, y: 14, interior: 'hospital',

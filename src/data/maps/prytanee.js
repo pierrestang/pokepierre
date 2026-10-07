@@ -52,8 +52,8 @@ export const prytaneeMap = {
     'TTFɔɔɔɔɔɔ....ffɔɔɔɔɔff....ɔɔɔɔɔɔɔFTT', // 17
     'TTFɔRRRRR......ɔɔɔɔɔ......RRRRRRRFTT', // 18  infirmerie, poste de commandement
     'TTFɔRRRRRĥĥĥĥĥĥɔɔɔɔɔ......RRRRRRRFTT', // 19
-    'TTFɔWWWWWƀ..ĥĥĥɔɔɔɔɔĥ....ƀWWWWWWWFTT', // 20
-    'TTFSWWDWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔSWWWDWWWFTT', // 21
+    'TTFɔWWWWWƀ..ĥĥĥɔɔɔɔɔĥ....ƀWWWWDWWFTT', // 20
+    'TTFSWWDWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔSWWW.WWWFTT', // 21
     'TTFɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔFTT', // 22  allée
     'TTFFFFFFFFFFFFFFɔɔFFFFFFFFFFFFFFFFTT', // 23  porte sud : route de Bonsecours
     'TTTTTTTTTTTTTTTTɔɔTTTTTTTTTTTTTTTTTT', // 24
@@ -69,7 +69,7 @@ export const prytaneeMap = {
     { x: 13, y: 7, lockedDialogue: ['Les salles de cours. Fermées à cette heure-ci.'] },
     { x: 29, y: 6, lockedDialogue: ['L\'internat des filles. Fermé aux garçons, même aux plus polis.'] },
     { x: 6, y: 21, lockedDialogue: ['L\'infirmerie. Fermée : personne ne s\'est foulé la cheville aujourd\'hui.'] },
-    { x: 29, y: 21, lockedDialogue: ['Poste de commandement. Accès réservé.'] },
+    { x: 30, y: 20, lockedDialogue: ['Poste de commandement. Accès réservé.'] },
   ],
   npcs: [
     // Le capitaine accueille Pierre devant l'internat, puis repart vers son poste (voir prytaneeStory.js).
