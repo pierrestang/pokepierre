@@ -371,6 +371,12 @@ PATTERNS = [
     ('parquet', 'Planches', 'g4-sols', 1, 42),
     ('terre', 'Terre', 'g4-herbes', 0, 46),
     ('pierres', 'Chemin de pierres', 'g4-herbes', 0, 50),
+    # Ajoutées le 7 octobre 2026 (motif de 2 x 2, ou de la taille donnée : largeur, hauteur).
+    ('rosaces', 'Carrelage à rosaces', 'g4-sols', 8, 80),
+    ('eventail', 'Pavés en éventail', 'g4-sols', 9, 109),
+    ('briques-jaunes', 'Briques jaunes', 'g4-sols', 1, 160),
+    ('briques-sable', 'Briques sable', 'g4-sols', 4, 126, 4, 2),
+    ('pierres-olive', 'Pierres vert olive', 'g4-sols', 17, 110, 4, 2),
 ]
 PAVING_FN = {'gris': lambda img: img, 'blond': I.tint(40, 0.20, 1.1), 'brique': I.tint(16, 0.34, 0.66)}
 FOREST_PATTERN = {'pins': ('g4-arbres', 0, 270, 4, 4, None), 'haie': ('g4-plantes', 5, 10, 1, 1, I.greener(0.72))}
@@ -728,9 +734,10 @@ def main():
             fn = PAVING_FN[t['paving']]
             tiles = [[pack.add_tile(fn(crop(*c))) for c in COBBLE[r * 2:(r + 1) * 2]] for r in range(2)]
             materials.append({'id': 'paves', 'name': 'Pavés', 'kind': 'pattern', 'tiles': tiles, 'solid': 0})
-        for mid, mname, sid, c, r in PATTERNS:
+        for mid, mname, sid, c, r, *size in PATTERNS:
+            pw, ph = size or (2, 2)
             materials.append({'id': mid, 'name': mname, 'kind': 'pattern',
-                              'tiles': [[pack.add_tile(crop(sid, c + i, r + j)) for i in range(2)] for j in range(2)],
+                              'tiles': [[pack.add_tile(crop(sid, c + i, r + j)) for i in range(pw)] for j in range(ph)],
                               'solid': 0})
         # Ponton : un plancher de 2 cases de large (les bords gauche et droit du ponton de Fort-de-France), qu'on peint
         # sur l'eau pour faire un pont ; on marche dessus.

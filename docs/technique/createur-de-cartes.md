@@ -61,6 +61,8 @@ lanterne de jardin, poteau indicateur, bûches, table de jardin, tente, panneau 
 - Matières en motif (2 x 2 cases qui se raccordent, toutes les villes ; build_catalogue.py PATTERNS) : pavés en
   chevrons, dallage doré, dalles de pierre, planches (g4-sols), terre, chemin de pierres (g4-herbes), bitume
   (g4_theme.ASPHALT). Pas de bords automatiques : on les peint comme les pavés.
+- Cinq de plus (7 octobre 2026, g4-sols) : carrelage à rosaces, pavés en éventail, briques jaunes (2 x 2), briques sable
+  et pierres vert olive (motifs de 4 x 2 : PATTERNS accepte une largeur et une hauteur).
 - Arbres (LIS_TREES) : les arbres de la planche des lisières, au format de l'arbre de forêt (4 x 4, bloc de 2 x 2 qui
   bloque) : cerisier, arbre olive, arbre pointu, arbre pointu brun, arbre roux, grand feuillu orange, pin bleu, sapin
   sombre, second palmier. Au moins cinq arbres par ville (MORE_TREES).
