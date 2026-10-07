@@ -169,6 +169,8 @@ export const interiors = {
               "ton père trie ses affaires à sa cabane de pêche, à droite de la plage, et Manon prépare un coup dehors. Ensuite, reviens me voir !",
             ],
           },
+          // Maman retourne à sa place, près de la cuisine : elle ne bloque plus le bas de l'escalier.
+          { walk: 'maman', to: [7, 3], block: true },
           { setFlag: FLAGS.journeeLancee },
         ],
       },
