@@ -173,6 +173,10 @@
       #map-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 10px; border-radius: 7px; cursor: pointer; }
       #map-list li:hover { background: var(--hover); }
       #map-list small { color: var(--muted); }
+      #map-list li { flex-wrap: wrap; }
+      #map-list li.group { cursor: default; font-weight: 700; padding-top: 14px; color: var(--text, inherit); background: none; }
+      #map-list small.reuse { flex-basis: 100%; font-size: 11px; }
+      #map-list small.reuse.shared { color: #e0a64a; }
       .help { color: var(--muted); font-size: 12px; line-height: 1.6; }
 
       @media (max-width: 1200px) {

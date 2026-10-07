@@ -6,6 +6,7 @@ import { createStudio } from './studio.js';
 import { createNpcLayer } from './npcs.js';
 import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
+import { interiorIndex } from './interiorIndex.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -1640,7 +1641,7 @@ async function showOpenDialog() {
   const maps = await listMaps();
   list.innerHTML = '';
   if (!maps.length) list.innerHTML = '<li><small>Aucune carte enregistrée pour l\'instant.</small></li>';
-  for (const entry of maps) {
+  const entryItem = (entry, extra) => {
     const li = document.createElement('li');
     const name = document.createElement('span');
     name.textContent = entry.name;
@@ -1648,12 +1649,38 @@ async function showOpenDialog() {
     meta.textContent = `${entry.width} × ${entry.height} · ${entry.where}${entry.retouche ? ' · retouché' : ''}`
       + `${entry.id === state.base?.id ? ' · ouverte' : ''}`;
     li.append(name, meta);
+    if (extra) li.append(extra);
     li.onclick = async () => {
       $('open-dialog').close();
       if (state.dirty && !window.confirm('Des modifications ne sont pas enregistrées. Ouvrir quand même ?')) return;
       openMap(entry);
     };
-    list.append(li);
+    return li;
+  };
+  for (const entry of maps.filter((e) => e.kind !== 'interieur')) list.append(entryItem(entry));
+  // Intérieurs : rangés par ville (ordre du jeu), avec la pièce HGSS d'origine et les autres intérieurs qui la
+  // réutilisent (src/builder/interiorIndex.js).
+  const rooms = maps.filter((e) => e.kind === 'interieur');
+  if (!rooms.length) return;
+  const idx = interiorIndex();
+  const nameOf = (id) => rooms.find((r) => r.id === id)?.name ?? interiors[id]?.name ?? id;
+  const cities = [...idx.order, 'Autres'].filter((c, i, all) => all.indexOf(c) === i);
+  for (const city of cities) {
+    const inCity = rooms.filter((r) => (idx.city[r.id] ?? 'Autres') === city);
+    if (!inCity.length) continue;
+    const head = document.createElement('li');
+    head.className = 'group';
+    head.textContent = `Intérieurs · ${city} (${inCity.length})`;
+    list.append(head);
+    for (const entry of inCity) {
+      const src = idx.source(entry.id);
+      const shared = idx.sharedWith(entry.id);
+      const info = document.createElement('small');
+      info.className = shared.length ? 'reuse shared' : 'reuse';
+      info.textContent = (src ? src.label : 'source inconnue')
+        + (shared.length ? ` · réutilisée aussi : ${shared.map((o) => `${nameOf(o)} (${idx.city[o] ?? '?'})`).join(', ')}` : ' · unique');
+      list.append(entryItem(entry, info));
+    }
   }
 }
 

@@ -27,6 +27,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent))
 import interieurs_plans as P  # noqa: E402
+import hgss_rooms as HG  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 V2 = ROOT / 'public' / 'assets' / 'v2'
@@ -300,8 +301,32 @@ def build_room(rid, src, plan, pack):
     return built, preview, problems
 
 
+SOURCES = Path(__file__).resolve().parent.parent / 'src' / 'builder' / 'interiorSources.json'
+
+
+def write_sources():
+    """La pièce d'origine de chaque intérieur (src/builder/interiorSources.json, lu par le créateur de cartes) : la pièce
+    HGSS (carte Tiled et numéro de pièce, voir hgss_rooms.rooms) d'où il est tiré, ou « dessinée » ; deux intérieurs de
+    même clé sont une pièce réutilisée."""
+    out = {}
+    for rid, plan in P.PLANS.items():
+        if 'hgss' not in plan:
+            out[rid] = {'key': f'dessinee:{rid}', 'label': 'Pièce dessinée (murs et sol générés)'}
+            continue
+        name, x, y, w, h = plan['hgss']
+        rs = HG.rooms(name)
+        overlap = lambda r: max(0, min(x + w, r[0] + r[2]) - max(x, r[0])) * max(0, min(y + h, r[1] + r[3]) - max(y, r[1]))
+        k = max(range(len(rs)), key=lambda i: overlap(rs[i])) if rs else 0
+        label = name.split('_', 1)[-1].strip()
+        out[rid] = {'key': f'{name.strip()}#{k}', 'label': f'HGSS · {label} · pièce {k + 1}'}
+    SOURCES.write_text(json.dumps(out, ensure_ascii=False, indent=1, sort_keys=True))
+
+
 def main():
     args = sys.argv[1:]
+    if '--sources' in args:                           # seulement l'index des sources (créateur de cartes)
+        write_sources()
+        return
     essai = '--essai' in args                         # aperçus seulement : rien n'est écrit dans le projet
     force = '--force' in args                         # redessine aussi les pièces retouchées dans le créateur
     args = [a for a in args if a not in ('--essai', '--force')]
@@ -335,6 +360,7 @@ def main():
     if essai:
         return
     rows = pack.save()
+    write_sources()
     # Index des pièces dessinées (imports statiques : lisible par Vite et par Node).
     done = sorted(p.stem for p in OUT.glob('*.json'))
     lines = ['// Généré par scripts/build_interiors.py : les intérieurs dessinés en Gen 4 (voir src/data/maps/interiors.js).']

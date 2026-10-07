@@ -1,0 +1,218 @@
+{
+ "agence": {
+  "key": "012i_Goldenrod radio tower#3",
+  "label": "HGSS · Goldenrod radio tower · pièce 4"
+ },
+ "appartRemi": {
+  "key": "012i_Goldenrod interiors#3",
+  "label": "HGSS · Goldenrod interiors · pièce 4"
+ },
+ "appartement": {
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
+ },
+ "baliCabane": {
+  "key": "010i_Azalea Houses#1",
+  "label": "HGSS · Azalea Houses · pièce 2"
+ },
+ "bercy": {
+  "key": "012i_Goldenrod game corner#0",
+  "label": "HGSS · Goldenrod game corner · pièce 1"
+ },
+ "bistro": {
+  "key": "012i_Goldenrod interiors#3",
+  "label": "HGSS · Goldenrod interiors · pièce 4"
+ },
+ "bonsecours": {
+  "key": "012i_Goldenrod radio tower#7",
+  "label": "HGSS · Goldenrod radio tower · pièce 8"
+ },
+ "bonsecoursCasiers": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "bonsecoursFrancais": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "bonsecoursMaths": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "bonsecoursSciences": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "boulyBarn": {
+  "key": "010i_Azalea Houses#0",
+  "label": "HGSS · Azalea Houses · pièce 1"
+ },
+ "cabane": {
+  "key": "010i_Azalea Houses#1",
+  "label": "HGSS · Azalea Houses · pièce 2"
+ },
+ "coffeeShop": {
+  "key": "012i_Goldenrod interiors#1",
+  "label": "HGSS · Goldenrod interiors · pièce 2"
+ },
+ "corning": {
+  "key": "012i_Goldenrod radio tower#4",
+  "label": "HGSS · Goldenrod radio tower · pièce 5"
+ },
+ "corseParents": {
+  "key": "010i_Azalea Houses#0",
+  "label": "HGSS · Azalea Houses · pièce 1"
+ },
+ "corseVoisins": {
+  "key": "006i_Violet houses#0",
+  "label": "HGSS · Violet houses · pièce 1"
+ },
+ "delhiUniversity": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "dortoir": {
+  "key": "012i_Goldenrod radio tower#4",
+  "label": "HGSS · Goldenrod radio tower · pièce 5"
+ },
+ "dortoirEtage2": {
+  "key": "012i_Goldenrod radio tower#4",
+  "label": "HGSS · Goldenrod radio tower · pièce 5"
+ },
+ "dortoirHall": {
+  "key": "012i_Goldenrod interiors#5",
+  "label": "HGSS · Goldenrod interiors · pièce 6"
+ },
+ "entreprise": {
+  "key": "012i_Goldenrod radio tower#7",
+  "label": "HGSS · Goldenrod radio tower · pièce 8"
+ },
+ "entrepriseDirecteur": {
+  "key": "012i_Goldenrod radio tower#3",
+  "label": "HGSS · Goldenrod radio tower · pièce 4"
+ },
+ "entrepriseManager": {
+  "key": "012i_Goldenrod radio tower#5",
+  "label": "HGSS · Goldenrod radio tower · pièce 6"
+ },
+ "felixHouse": {
+  "key": "004i_Mr Pokémon House#0",
+  "label": "HGSS · Mr Pokémon House · pièce 1"
+ },
+ "ffHouse": {
+  "key": "001i_Newbark houses#4",
+  "label": "HGSS · Newbark houses · pièce 5"
+ },
+ "ffHouseUp": {
+  "key": "001i_Newbark houses#2",
+  "label": "HGSS · Newbark houses · pièce 3"
+ },
+ "ffHut": {
+  "key": "010i_Azalea Houses#0",
+  "label": "HGSS · Azalea Houses · pièce 1"
+ },
+ "hanoiHome": {
+  "key": "012i_Goldenrod interiors#3",
+  "label": "HGSS · Goldenrod interiors · pièce 4"
+ },
+ "hospital": {
+  "key": "001i_Newbark-Lab#0",
+  "label": "HGSS · Newbark-Lab · pièce 1"
+ },
+ "hullAsylum": {
+  "key": "012i_Goldenrod game corner#0",
+  "label": "HGSS · Goldenrod game corner · pièce 1"
+ },
+ "hullColoc": {
+  "key": "012i_Goldenrod interiors#3",
+  "label": "HGSS · Goldenrod interiors · pièce 4"
+ },
+ "hullHouse": {
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
+ },
+ "hullLibrary": {
+  "key": "074i_Ruins of Alph Lab#0",
+  "label": "HGSS · Ruins of Alph Lab · pièce 1"
+ },
+ "hullPubA": {
+  "key": "012i_Goldenrod radio tower#7",
+  "label": "HGSS · Goldenrod radio tower · pièce 8"
+ },
+ "hullPubB": {
+  "key": "010i_Azalea Houses#1",
+  "label": "HGSS · Azalea Houses · pièce 2"
+ },
+ "hullUniversity": {
+  "key": "dessinee:hullUniversity",
+  "label": "Pièce dessinée (murs et sol générés)"
+ },
+ "kedge": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "maisonCommune": {
+  "key": "001i_Newbark houses#2",
+  "label": "HGSS · Newbark houses · pièce 3"
+ },
+ "monastere": {
+  "key": "006i_Sprout Tower#0",
+  "label": "HGSS · Sprout Tower · pièce 1"
+ },
+ "montHouse": {
+  "key": "001i_Newbark houses#4",
+  "label": "HGSS · Newbark houses · pièce 5"
+ },
+ "montHouseUp": {
+  "key": "001i_Newbark houses#2",
+  "label": "HGSS · Newbark houses · pièce 3"
+ },
+ "parisAppart": {
+  "key": "004i_Mr Pokémon House#0",
+  "label": "HGSS · Mr Pokémon House · pièce 1"
+ },
+ "playerHouse": {
+  "key": "001i_Newbark houses#5",
+  "label": "HGSS · Newbark houses · pièce 6"
+ },
+ "playerHouseUp": {
+  "key": "001i_Newbark houses#3",
+  "label": "HGSS · Newbark houses · pièce 4"
+ },
+ "school": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "sriLankaTemple": {
+  "key": "006i_Sprout Tower#0",
+  "label": "HGSS · Sprout Tower · pièce 1"
+ },
+ "stade": {
+  "key": "013i_Park-Pokéathlon Gate#0",
+  "label": "HGSS · Park-Pokéathlon Gate · pièce 1"
+ },
+ "studioPaulfit": {
+  "key": "004i_Mr Pokémon House#0",
+  "label": "HGSS · Mr Pokémon House · pièce 1"
+ },
+ "temple": {
+  "key": "006i_Sprout Tower#0",
+  "label": "HGSS · Sprout Tower · pièce 1"
+ },
+ "tente": {
+  "key": "012i_Goldenrod interiors#4",
+  "label": "HGSS · Goldenrod interiors · pièce 5"
+ },
+ "travelAgency": {
+  "key": "012i_Goldenrod radio tower#3",
+  "label": "HGSS · Goldenrod radio tower · pièce 4"
+ },
+ "watInterieur": {
+  "key": "006i_Sprout Tower#0",
+  "label": "HGSS · Sprout Tower · pièce 1"
+ },
+ "yanisAppart": {
+  "key": "012i_Goldenrod interiors#9",
+  "label": "HGSS · Goldenrod interiors · pièce 10"
+ }
+}
