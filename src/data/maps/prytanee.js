@@ -156,7 +156,7 @@ export const prytaneeMap = {
       y: 25,
       ifFlags: [FLAGS.arriveePrytanee],           // on n'y vient que par la route de Bonsecours
       readyDialogue: ['Tu prends la route de Bonsecours.'],
-      warp: { map: 'routeBonsecours', x: 10, y: 1, facing: 'down' },
+      warp: { map: 'routeBonsecours', x: 11, y: 1, facing: 'down' },
     })),
     // La porte nord : derrière le mur, la nuit ; le départ pour Bordeaux, gardé par le capitaine.
     ...NORTH_GATE.map(([x, y]) => ({ x, y, script: NORTH_GATE_SCRIPT })),

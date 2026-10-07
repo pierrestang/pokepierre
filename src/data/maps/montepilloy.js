@@ -78,17 +78,18 @@ export const montepilloyMap = {
     // La caisse à outils de Jean, restée devant le tracteur après la réparation : la cuillère (voir TOOLBOX) ; elle
     // disparaît une fois la cuillère prise.
     {
-      type: 'toolbox', x: JEAN_AT_TRACTOR[0], y: JEAN_AT_TRACTOR[1], w: 1, h: 1,
+      type: 'toolbox', image: 'caisse-outils', x: JEAN_AT_TRACTOR[0], y: JEAN_AT_TRACTOR[1], w: 1, h: 1,
       ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.septembre], unlessItems: [ITEMS.cuillere.id], script: TOOLBOX,
     },
-    // Le tracteur de M. Bouly : en panne, puis parti faire un tour avec Jean, et de retour en septembre.
+    // Le tracteur de M. Bouly (image Gen 4, scripts/build_props.py) : en panne, puis parti faire un tour avec Jean, et de
+    // retour en septembre.
     {
-      type: 'tractor', x: 13, y: 12, w: 2, h: 2,
+      type: 'tractor', image: 'tracteur', x: 13, y: 12, w: 2, h: 2,
       unlessFlags: [FLAGS.tracteurRepare],
       dialogue: ['Le tracteur de M. Bouly. Il refuse de démarrer.'],
     },
     {
-      type: 'tractor', x: 13, y: 12, w: 2, h: 2,
+      type: 'tractor', image: 'tracteur', x: 13, y: 12, w: 2, h: 2,
       ifFlags: [FLAGS.septembre],
       dialogue: ['Le tracteur de M. Bouly ronronne.'],
     },
@@ -127,7 +128,7 @@ export const montepilloyMap = {
     {
       id: 'margaux-sortie', name: 'Margaux', x: 25, y: 15, facing: 'left', color: 0xf08080,
       ifFlags: [FLAGS.ecoleCm2], unlessFlags: [FLAGS.cacheCache],
-      dialogue: ['Dernière partie avant les vacances !'],
+      dialogue: ['Dernière partie de cache-cache avant les vacances !'],
     },
     // Septembre, devant la maison : la famille dit au revoir à Pierre (voir SEPTEMBER_MORNING) ; une fois Pierre
     // allé au collège, elle est rentrée (voir la maison).

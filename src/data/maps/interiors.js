@@ -586,15 +586,15 @@ export const interiors = {
 
   // Montépilloy — la grange de M. Bouly, façon Rouge Feu : établi (longue table de Rubis/Saphir) sous la
   // fenêtre, caisses de légumes, d'oranges et de tomates et une jarre du marché de Slateport (rs-crates.png),
-  // tonneaux (dessinés dans le code). La pièce de tracteur est au fond du tonneau du fond à droite (une fois que
-  // M. Bouly t'en a parlé) ; au cache-cache, Benoît se cache dans celui de gauche.
+  // tonneaux. La pièce de tracteur est sous la botte de paille du fond à droite (une fois que M. Bouly t'en a parlé) ;
+  // au cache-cache, Benoît se cache dans le tonneau de gauche.
   boulyBarn: {
     name: 'Grange de M. Bouly',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
-      'mmmoommOO',   // établi, caisses, tonneaux
+      'mmmoommOO',   // établi, caisses, tonneaux ; la botte de paille dessous, au fond à droite
       'ooooooooO',
       'Ooooooooo',
       'Oooooommo',   // caisse de tomates, jarre
@@ -622,13 +622,13 @@ export const interiors = {
       BENOIT_HIDING,
       { x: 0, y: 4, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
       { x: 0, y: 5, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
-      // Le tonneau du fond à droite cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
-      { x: 8, y: 3, unlessFlags: [FLAGS.boulyDemande], dialogue: ['Un vieux tonneau, plein de bric-à-brac.'] },
+      // La botte de paille du fond à droite cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
+      { x: 8, y: 3, unlessFlags: [FLAGS.boulyDemande], dialogue: ['Une botte de paille. Ça gratte.'] },
       {
         x: 8, y: 3,
         ifFlags: [FLAGS.boulyDemande],
-        dialogue: ['Tu fouilles le bric-à-brac… Au fond du tonneau, une pièce de tracteur !', 'Jean va être content.'],
-        after: ['Il ne reste que du bric-à-brac.'],
+        dialogue: ['Tu soulèves la botte de paille… Dessous, une pièce de tracteur !', 'Jean va être content.'],
+        after: ['Il ne reste que de la paille.'],
         item: ITEMS.pieceTracteur,
         setFlag: FLAGS.pieceTrouvee,
       },
@@ -699,9 +699,10 @@ export const interiors = {
     triggers: [{ x: 9, y: 2, warp: { interior: 'montHouseUp', x: 12, y: 3, facing: 'down' } }],
   },
 
-  // Collège Bonsecours (route de Bonsecours) — le hall : la principale derrière l'accueil, panneaux d'affichage,
-  // et deux escaliers encastrés : la salle de maths (ta classe, la 6e B) à gauche, le couloir des casiers à droite
-  // (puis la salle de français) ; la salle de sciences est au-dessus de la salle de maths.
+  // Collège Bonsecours (route de Bonsecours) — le hall : la principale derrière l'accueil, panneaux d'affichage, et un
+  // seul escalier, à droite. Le collège se parcourt de bas en haut, un étage par salle : hall, couloir des casiers, salle
+  // de maths (ta classe, la 6e B), salle de sciences, salle de français. Chaque escalier qui monte arrive en haut au
+  // même endroit (à droite, puis à gauche, en alternance).
   // Scénario du premier jour : voir data/collegeStory.js.
   bonsecours: {
     name: 'Collège Bonsecours',
@@ -711,7 +712,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'ηommoooommmooη', // escaliers : salle de maths (gauche), couloir des casiers (droite) ; bibliothèque, casiers
+      'oommoooommmooη', // escalier vers le couloir des casiers (droite) ; bibliothèque, casiers
       'oooommmooooooo', // accueil
       'mmoooooooooomm', // étagères contre les murs latéraux
       'mmoooooooooomm',
@@ -732,10 +733,7 @@ export const interiors = {
       { kind: 'plant', x: 13, y: 7 },
     ],
     spawn: { x: 6, y: 7, facing: 'up' },
-    triggers: [
-      { x: 0, y: 2, warp: { interior: 'bonsecoursMaths', x: 13, y: 3, facing: 'down' } },
-      { x: 13, y: 2, warp: { interior: 'bonsecoursCasiers', x: 13, y: 3, facing: 'down' } },
-    ],
+    triggers: [{ x: 13, y: 2, warp: { interior: 'bonsecoursCasiers', x: 13, y: 3, facing: 'down' } }],
     objects: [
       ...[4, 5, 6].map((x) => ({ x, y: 3, script: PRINCIPALE })),
       { x: 4, y: 1, dialogue: ['Emploi du temps de 6e B : maths, français, sciences… et sport le vendredi.'] },
@@ -763,8 +761,8 @@ export const interiors = {
     events: [{ on: 'enter', ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeArrivee], steps: COLLEGE_WELCOME }],
   },
 
-  // Collège Bonsecours — le couloir des casiers (escalier de droite du hall) : six casiers bleus contre le mur ; le 12
-  // (x = 6) sera celui de Pierre… et de Rémy. Escalier de gauche vers la salle de français.
+  // Collège Bonsecours — le couloir des casiers (1er étage, en haut de l'escalier du hall) : six casiers contre le mur ;
+  // le 12 (x = 6) sera celui de Pierre… et de Rémy. À gauche, l'escalier qui monte à la salle de maths.
   // Scénario : voir data/collegeStory.js (l'embrouille du casier, la scène de la fille).
   bonsecoursCasiers: {
     name: 'Couloir des casiers',
@@ -772,7 +770,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'ηooommmmmmomoξ', // salle de français, casiers, placard d'entretien, escalier vers le hall
+      'ηooommmmmmomoξ', // escalier vers la salle de maths, casiers, placard d'entretien, escalier vers le hall
       'oooooooooooooo',
       'oooooooooooooo',
       'moooooooooooom',
@@ -787,7 +785,7 @@ export const interiors = {
     spawn: { x: 13, y: 3, facing: 'down' },
     triggers: [
       { x: 13, y: 2, warp: { interior: 'bonsecours', x: 13, y: 3, facing: 'down' } },
-      { x: 0, y: 2, warp: { interior: 'bonsecoursFrancais', x: 13, y: 3, facing: 'down' } },
+      { x: 0, y: 2, warp: { interior: 'bonsecoursMaths', x: 0, y: 3, facing: 'down' } },
     ],
     objects: [
       { x: 6, y: 2, script: LOCKER },
@@ -809,9 +807,10 @@ export const interiors = {
         id: 'remi-casier', name: 'Rémy', x: LOCKER_SIDE[0], y: LOCKER_SIDE[1], facing: 'left', color: 0xc05c3c,
         ifFlags: [FLAGS.casierPartage], unlessFlags: [FLAGS.remiEnClasse], script: REMI,
       },
-      // Le casier devenu QG : Rémy arrive par l'escalier donner son autocollant à Pierre (voir collegeStory.js LOCKER).
+      // Le casier devenu QG : Rémy descend de la salle de maths donner son autocollant à Pierre (voir collegeStory.js
+      // LOCKER).
       {
-        id: 'remy-autocollant', name: 'Rémy', x: 13, y: 3, facing: 'left', color: 0xc05c3c,
+        id: 'remy-autocollant', name: 'Rémy', x: 0, y: 3, facing: 'right', color: 0xc05c3c,
         ifFlags: [FLAGS.remyAutocollant], unlessFlags: [FLAGS.remyRepart],
         dialogue: ['On a le même autocollant, maintenant !'],
       },
@@ -822,14 +821,15 @@ export const interiors = {
     ],
   },
 
-  // Collège Bonsecours — salle de maths (escalier du hall à droite ; à gauche, l'escalier de la salle de sciences).
+  // Collège Bonsecours — salle de maths (2e étage) : à gauche, l'escalier qui redescend aux casiers ; à droite, celui
+  // qui monte à la salle de sciences.
   bonsecoursMaths: {
     name: 'Salle de maths',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'ηooooommmooooξ', // bureau du professeur, escaliers
+      'ξooooommmooooη', // escalier vers les casiers, bureau du professeur, escalier vers la salle de sciences
       'oooooooooooooo',
       'ommommommommoo', // pupitres
       'oooooooooooooo',
@@ -847,10 +847,10 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 7 },
       { kind: 'plant', x: 13, y: 7 },
     ],
-    spawn: { x: 13, y: 3, facing: 'down' },
+    spawn: { x: 0, y: 3, facing: 'down' },
     triggers: [
-      { x: 13, y: 2, warp: { interior: 'bonsecours', x: 0, y: 3, facing: 'down' } },
-      { x: 0, y: 2, warp: { interior: 'bonsecoursSciences', x: 0, y: 3, facing: 'down' } },
+      { x: 0, y: 2, warp: { interior: 'bonsecoursCasiers', x: 0, y: 3, facing: 'down' } },
+      { x: 13, y: 2, warp: { interior: 'bonsecoursSciences', x: 13, y: 3, facing: 'down' } },
     ],
     objects: [
       { x: 5, y: 1, dialogue: ['Au tableau : « Le carré de l\'hypoténuse est égal à la somme des carrés des deux autres côtés. »'] },
@@ -892,14 +892,14 @@ export const interiors = {
     ],
   },
 
-  // Collège Bonsecours — salle de français (escalier du hall à droite).
+  // Collège Bonsecours — salle de français, tout en haut (4e étage) : l'escalier de gauche redescend en sciences.
   bonsecoursFrancais: {
     name: 'Salle de français',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'oooooommmooooξ', // bureau du professeur, escaliers
+      'ξooooommmooooo', // escalier vers la salle de sciences, bureau du professeur
       'oooooooooooooo',
       'ommommommommoo', // pupitres
       'oooooooooooooo',
@@ -917,8 +917,8 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 7 },
       { kind: 'plant', x: 13, y: 7 },
     ],
-    spawn: { x: 13, y: 3, facing: 'down' },
-    triggers: [{ x: 13, y: 2, warp: { interior: 'bonsecoursCasiers', x: 0, y: 3, facing: 'down' } }],
+    spawn: { x: 0, y: 3, facing: 'down' },
+    triggers: [{ x: 0, y: 2, warp: { interior: 'bonsecoursSciences', x: 0, y: 3, facing: 'down' } }],
     objects: [
       { x: 5, y: 1, dialogue: ['Au tableau : « Rédaction : racontez votre plus beau souvenir de vacances. »'] },
     ],
@@ -938,14 +938,15 @@ export const interiors = {
     ],
   },
 
-  // Collège Bonsecours — salle de sciences, au-dessus de la salle de maths : paillasses et vitrine.
+  // Collège Bonsecours — salle de sciences (3e étage) : paillasses et vitrine ; à droite, l'escalier qui redescend en
+  // maths ; à gauche, celui qui monte à la salle de français.
   bonsecoursSciences: {
     name: 'Salle de sciences',
     frlg: true,
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'ξooooommmoooom', // bureau du professeur, vitrine
+      'ηooooommmoommξ', // escalier vers la salle de français, bureau du professeur, vitrine, escalier vers les maths
       'oooooooooooooo',
       'oommmooommmooo', // paillasses
       'oooooooooooooo',
@@ -956,16 +957,19 @@ export const interiors = {
     decor: [
       { kind: 'window', x: 3, y: 0 },
       { kind: 'chalkboard', x: 5, y: 1 },
-      { kind: 'glassCabinet', x: 13, y: 1 },
+      { kind: 'glassCabinet', x: 11, y: 1 },
       { kind: 'longTable', x: 5, y: 2 },
       ...[[2, 4], [8, 4], [2, 6], [8, 6]].map(([x, y]) => ({ kind: 'longTable', x, y })),
       { kind: 'plant', x: 0, y: 7 },
       { kind: 'plant', x: 13, y: 7 },
     ],
-    spawn: { x: 0, y: 3, facing: 'down' },
-    triggers: [{ x: 0, y: 2, warp: { interior: 'bonsecoursMaths', x: 0, y: 3, facing: 'down' } }],
+    spawn: { x: 13, y: 3, facing: 'down' },
+    triggers: [
+      { x: 13, y: 2, warp: { interior: 'bonsecoursMaths', x: 13, y: 3, facing: 'down' } },
+      { x: 0, y: 2, warp: { interior: 'bonsecoursFrancais', x: 0, y: 3, facing: 'down' } },
+    ],
     objects: [
-      { x: 13, y: 2, dialogue: ['La vitrine : un squelette en plastique, des bocaux et un vieux microscope.'] },
+      ...[11, 12].map((x) => ({ x, y: 2, dialogue: ['La vitrine : un squelette en plastique, des bocaux et un vieux microscope.'] })),
     ],
     npcs: [
       ...collegeStudents([
@@ -974,7 +978,7 @@ export const interiors = {
         [3, 7, 'Au microscope, j\'ai vu une feuille. Une feuille, mais en très gros.'],
         [9, 7, 'Si on mélange tout, ça explose ? … Non ? Dommage.'],
       ]),
-      // Fin de la troisième : Rémy attend ici, tout en haut, pendant le brevet de Pierre (voir collegeStory.js REMI).
+      // Fin de la troisième : Rémy attend ici, à l'étage au-dessus, pendant le brevet de Pierre (voir collegeStory.js REMI).
       {
         id: 'remy-sciences', name: 'Rémy', x: 8, y: 7, facing: 'up', still: true, color: 0xc05c3c,
         ifFlags: [FLAGS.finTroisieme], script: REMI,

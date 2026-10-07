@@ -36,6 +36,11 @@ Platine, HeartGold, SoulSilver), comme les cartes extérieures du créateur.
   au-dessus), `dx` / `dy` (décalage en pixels : un objet posé sur un meuble), `bed` (lit où dort un PNJ `inBed` : le
   bas du lit passe au-dessus des personnages, `built.beds` dit où le coucher ; voir `frlgArt.bedAt`).
 - Pièce : `free` / `block` (cases forcées), `void` (cases noires en plus), `mat` (tapis de sortie).
+- Escaliers (communs à toutes les pièces, `interieurs_plans.stairs_up` / `stairs_down`, style HeartGold/SoulSilver,
+  une case de large) : `escalier-monte` (les marches s'enfoncent dans le mur, posé sur la case η) et `escalier-descend`
+  (trémie dans le sol contre le mur, sur la case ξ), en bois (`-clair` : bois clair) ou en béton (`-gris` : collège,
+  Prytanée). La case reste libre (déclencheur de l'escalier). Au collège, chaque escalier qui monte arrive en haut au
+  même endroit (droite, puis gauche, en alternance).
 
 ## Contrôles
 

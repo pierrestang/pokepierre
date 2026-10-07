@@ -211,7 +211,7 @@ PLANS = {
         'items': [
             ['pb-bibliotheque', 0, 2], ['pb-panneau', 2, 1], ['pb-fenetre', 5, 1],
             ['pb-casier-gris', 7, 2], ['pb-casier-gris-2', 8, 2], ['pb-vitrine', 9, 2],
-            ['pb-escalier-monte', 10, 2],
+            ['escalier-monte-gris', 11, 2],
             ['pb-etagere', 0, 5], ['pb-etagere', 10, 5],
             ['pb-bureau-gris', 4, 4],
             ['pb-plante', 0, 7], ['pb-plante', 11, 7],
@@ -224,7 +224,7 @@ PLANS = {
         'items': [
             ['pb-fenetre', 2, 1], ['pb-panneau', 5, 1], ['pb-fenetre', 7, 1],
             ['pb-lit-metal', 0, 3], ['pb-lit-metal', 3, 3], ['pb-lit-metal', 6, 3], ['pb-lit-metal', 9, 3],
-            ['pb-escalier-monte', 10, 2], ['pb-escalier-descend', 12, 2],
+            ['escalier-monte-gris', 11, 2], ['escalier-descend-gris', 13, 2],
             ['pb-armoire-metal', 0, 6], ['pb-armoire-metal', 1, 6], ['pb-armoire-metal', 12, 6],
             ['pb-armoire-metal', 13, 6],
             ['pb-bureau', 2, 5],
@@ -236,7 +236,7 @@ PLANS = {
         'items': [
             ['pb-fenetre', 2, 1], ['pb-marine', 7, 1], ['pb-fenetre', 10, 1],
             ['pb-lit-metal', 0, 3], ['pb-lit-metal', 3, 3], ['pb-lit-metal', 6, 3], ['pb-lit-metal', 9, 3],
-            ['pb-escalier-descend', 12, 2],
+            ['escalier-descend-gris', 13, 2],
             ['pb-armoire-metal', 0, 6], ['pb-armoire-metal', 1, 6], ['pb-armoire-metal', 12, 6],
             ['pb-armoire-metal', 13, 6],
         ],

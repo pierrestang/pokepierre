@@ -165,6 +165,57 @@ def dartboard():
     return img
 
 
+def _shade(c, k):
+    return tuple(max(0, min(255, int(v * k))) for v in c) + (255,)
+
+
+def _steps(d, y, wood, fade):
+    k = 1.0
+    while y > 6:
+        d.rectangle((2, y - 4, 13, y - 2), fill=_shade(wood, k))         # le giron
+        d.line((2, y - 4, 13, y - 4), fill=_shade(wood, k * 1.18))       # le nez de marche, éclairé
+        d.rectangle((2, y - 1, 13, y), fill=_shade(wood, k * 0.62))      # la contremarche
+        y -= 5
+        k *= fade
+
+
+def _rails(d, top, bottom, rail):
+    for x0, hi in ((0, 1), (14, 14)):
+        d.rectangle((x0, top, x0 + 1, bottom), fill=_shade(rail, 1.0))
+        d.line((hi, top, hi, bottom), fill=_shade(rail, 1.45))
+
+
+def stairs_up(wood=(186, 128, 76), rail=(118, 74, 42)):
+    """Escalier qui monte (comme dans HeartGold/SoulSilver) : une case de large, les marches de bois qui s'enfoncent
+    dans le mur (3 rangées : les deux du mur et la case de l'escalier), plus sombres vers le haut, entre deux limons."""
+    img = Image.new('RGBA', (T, 3 * T))
+    d = ImageDraw.Draw(img)
+    d.rectangle((1, 0, 14, 47), fill=(24, 18, 16, 255))                 # la trémie, dans l'ombre
+    _steps(d, 47, wood, 0.9)
+    _rails(d, 0, 47, rail)
+    for yy in range(10):                                                 # le haut se perd dans l'ombre de l'étage
+        d.line((2, yy, 13, yy), fill=(16, 12, 10, 255 - yy * 18))
+    d.rectangle((0, 44, 1, 47), fill=_shade(rail, 0.7))                  # pieds des limons
+    d.rectangle((14, 44, 15, 47), fill=_shade(rail, 0.7))
+    return img
+
+
+def stairs_down(wood=(186, 128, 76), rail=(118, 74, 42), rim=(200, 176, 140)):
+    """Escalier qui descend : une trémie dans le sol contre le mur (2 rangées : la plinthe et la case de l'escalier),
+    les marches qui s'enfoncent vers le mur en s'assombrissant, une rampe de chaque côté avec sa boule."""
+    img = Image.new('RGBA', (T, 2 * T))
+    d = ImageDraw.Draw(img)
+    d.rectangle((1, 2, 14, 31), fill=(20, 16, 14, 255))
+    _steps(d, 31, wood, 0.82)
+    d.line((1, 31, 14, 31), fill=_shade(rim, 1.0))                       # le bord du plancher
+    _rails(d, 2, 31, rail)
+    for x0 in (0, 14):
+        d.ellipse((x0 - 1, 26, x0 + 2, 29), fill=_shade(rail, 1.3), outline=_shade(rail, 0.6))   # boule de rampe
+    for yy in range(2, 12):
+        d.line((2, yy, 13, yy), fill=(12, 10, 8, 255 - (yy - 2) * 16))
+    return img
+
+
 def beer_taps():
     """Pompes à bière en laiton (posées sur le comptoir)."""
     img = Image.new('RGBA', (T, T))
@@ -212,6 +263,14 @@ ITEMS = {
     'pintes': {'img': pints, 'solid': 0, 'flat': True},
     'tapis-vert': {'img': lambda: rect('jared-bateaux', 198, 1466, 44, 34), 'solid': 0, 'flat': True},
     'cible': {'img': dartboard, 'solid': 0},
+    # Escaliers d'intérieur (une case de large), posés sur la case η (monte) ou ξ (descend), qui reste libre.
+    'escalier-monte': {'img': stairs_up, 'solid': 0, 'flat': True},
+    'escalier-descend': {'img': stairs_down, 'solid': 0, 'flat': True},
+    'escalier-monte-clair': {'img': lambda: stairs_up((214, 172, 120), (150, 104, 62)), 'solid': 0, 'flat': True},
+    'escalier-descend-clair': {'img': lambda: stairs_down((214, 172, 120), (150, 104, 62)), 'solid': 0, 'flat': True},
+    'escalier-monte-gris': {'img': lambda: stairs_up((176, 176, 172), (96, 100, 108)), 'solid': 0, 'flat': True},
+    'escalier-descend-gris': {'img': lambda: stairs_down((176, 176, 172), (96, 100, 108), (190, 190, 190)),
+                              'solid': 0, 'flat': True},
 }
 for _n in (3, 4, 5, 6, 7, 8):
     ITEMS[f'bar-{_n}'] = {'img': (lambda n: lambda: stretch(ITEMS['bar']['img'](), n))(_n), 'solid_top': 1}

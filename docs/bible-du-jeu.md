@@ -311,8 +311,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 ### Quêtes, dans l'ordre (les quêtes 2 et 3 dans n'importe quel ordre après l'école)
 1. **Le dernier jour de CM2** : en entrant à l'école, « C'est le dernier jour de CM2. » Margaux : « Dernier jour de CM2 !
    À la sortie, on fait une partie de cache-cache. La dernière. »
-2. **Le cache-cache.** À la sortie, Margaux : **« Dernière partie avant les vacances. Mais cette fois, dans
-   tout le village ! »** ; écran noir : « … huit, neuf, dix ! »
+2. **Le cache-cache.** À la sortie, Margaux : **« Dernière partie de cache-cache avant les vacances ! Mais cette fois,
+   dans tout le village ! »** ; écran noir : « … huit, neuf, dix ! »
    - Margaux, derrière les bottes de foin de la ferme : « Zut, trouvée ! Les bottes de foin, c'était trop facile… » /
      « L'an prochain, au collège, je me trouverai une cachette imbattable. Je viens avec toi chercher les autres ! »
    - Étienne, dans l'arbre de la prairie : « Des feuilles tombent… Étienne est perché dans l'arbre ! » / « Perdu ! Le
@@ -329,9 +329,11 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
      réparation, « Jean t'attend dans sa chambre. » (sans vertu).
 3. **Le tracteur → Ingéniosité.** Jean, dans la chambre : « Le tracteur de M. Bouly est en panne. Je peux le réparer,
    mais il me faut un assistant. » / « Rejoins-moi à la ferme ! » M. Bouly : « Ah, Jean et son assistant ! Mon tracteur
-   est en panne : il lui manque une pièce. » / « Elle doit traîner quelque part… peut-être dans le tonneau du fond, à
-   droite de la grange ? » Dans le tonneau du fond à droite : « Tu fouilles le bric-à-brac… Au fond du tonneau, une pièce
-   de tracteur ! » / « Jean va être content. » → **Pièce de tracteur**, rapportée à M. Bouly ou à Jean.
+   est en panne : il lui manque une pièce. » / « Elle doit traîner quelque part dans la grange… peut-être sous la botte
+   de paille, au fond à droite ? » Sous la botte de paille du fond à droite (pas dans un tonneau : Benoît se cache dans
+   celui de gauche) : « Tu soulèves la botte de paille… Dessous, une pièce de tracteur ! » / « Jean va être content. » →
+   **Pièce de tracteur**, rapportée à M. Bouly ou à Jean. Le tracteur et la caisse à outils sont des dessins Gen 4
+   (scripts/build_props.py).
    - « Jean ouvre sa caisse à outils et se glisse sous le tracteur. » ; Jean : **« Passe-moi la clé ! »** → trois
      questions (« La clé de 12 ! », « Le tournevis plat ! », « Le marteau… non, le petit ! ») parmi cinq outils ;
      mauvaises réponses : « Ça, c'est une cuillère. Qui a mis une cuillère dans ma caisse ? », « Le gros ? Tu veux
@@ -340,8 +342,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
      bien. » → vertu **Ingéniosité** ; si le cache-cache n'est pas fini, Jean : « Tes copains jouent encore à cache-cache
      dans le village. Va les trouver ! » ; M. Bouly : « Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de
      tracteur ! »
-4. **La fin de la journée** (le cache-cache fini et Ingéniosité reçue) : « Le soleil se couche sur Montépilloy. Il est temps de rentrer à
-   la maison. » ; le dîner : « Le soir, toute la famille est à table. » ; Jean « On a réparé le tracteur de M. Bouly !
+4. **La fin de la journée** (le cache-cache fini et Ingéniosité reçue ; la nuit tombe) : « La nuit tombe sur
+   Montépilloy… Il serait temps de rentrer à la maison. » ; le dîner : « Le soir, toute la famille est à table. » ; Jean « On a réparé le tracteur de M. Bouly !
    Enfin… surtout moi. » ; Papa « Bravo, les garçons. Profitez bien de l'été. » ; Maman « Et en septembre, c'est le
    collège ! »
 5. **Septembre** : carte postale `montepilloySeptembre` (« bois aux Chênes, le matin ») : **« Quelques mois plus tard…
@@ -396,9 +398,11 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 - Carte postale `routeBonsecours` (« parc National, le matin ») : **« Premier jour de collège. »** ; « Le collège
   Bonsecours, au bout de l'allée. Ton premier jour commence ! »
 - Dans le hall, le surveillant : « Bienvenue au collège Bonsecours ! C'est moi le surveillant. » / « Avant le premier
-  cours, va ranger tes affaires dans ton casier : le casier 12, au couloir des casiers, en haut de l'escalier de
-  droite. » / « Ta classe, c'est la 6e B, en salle de maths. » / « La salle de maths, c'est par l'escalier de gauche du
-  hall. »
+  cours, va ranger tes affaires dans ton casier : le casier 12, au couloir des casiers, en haut de l'escalier. » / « Ta
+  classe, c'est la 6e B, en salle de maths : l'étage au-dessus des casiers. » / « Ici, on monte un étage par salle : les
+  casiers, les maths, les sciences, et le français tout en haut. »
+- Le collège se parcourt de bas en haut, un escalier par étage : hall (un seul escalier) → couloir des casiers → salle
+  de maths → salle de sciences → salle de français, tout en haut.
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -413,7 +417,7 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 | Margaux | Cachée dans le placard d'entretien au début (passage optionnel) ; une fois trouvée, en salle de maths : « On est dans la même classe, comme promis ! Enfin… presque promis. » | `g43` |
 | Étienne | Tant que Margaux est cachée, en salle de maths, à sa place : « Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance ! » ; ensuite (ou après l'ellipse), en salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `g108` |
 | Élèves | Une réplique chacun, dans le hall, le couloir et les trois salles | figurants |
-| Sentinelles (2) | Gardent la route du Prytanée : « Halte ! Pour candidater au Prytanée, il faut ton diplôme du brevet. » | `g87` |
+| Militaires (2) | Barrent la route du Prytanée, en haut de la carte : « Halte ! La route du Prytanée est réservée aux candidats. Reviens avec ton diplôme du brevet. » Le brevet obtenu, l'un d'eux s'écarte sur le bas-côté : « Ton brevet ? Garde-à-vous… C'est en règle. » / « Les portes du Prytanée te sont ouvertes. Droit devant, et tiens-toi bien ! » | `g87` |
 
 ### Quêtes, dans l'ordre
 1. **L'embrouille du casier.** « Le casier 12. Le tien, d'après ton papier. Tu poses la main sur la porte… » / « … et un
@@ -422,24 +426,27 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
    que c'est le sien. » ; le surveillant : **« Ça suffit, vous deux ! »** / « Puisque vous le voulez tous les deux, vous
    le partagez. Point. » ; Rémy : « Bon, colocataire, tu mets tes affaires en haut ou en bas ? » (choix « En haut. » /
    « Comme tu veux. » ; dans les deux cas Rémy prend le bas, « c'est plus près de mes chaussures ») ; « Allez, en maths !
-   Par l'escalier de gauche du hall, ça va sonner ! »
+   C'est l'escalier au bout du couloir, ça va sonner ! »
 2. **Camille → Audace** (salle de maths). « La salle de maths. Le cours n'a pas encore commencé : le prof range ses
    copies, ça discute de table en table. » ; Rémy : « Le cours commence dans cinq minutes. Tu vois la fille, au milieu de
    la classe ? Elle est en 6e B avec nous. » / « Elle connaît personne non plus. Va lui dire salut, je viens avec toi. »
    - Trois répliques à choisir, chaque fois une seule bonne : « Salut ! T'es en 6e B ? », « Oui, le village d'à
-     côté ! », « On se met à côté en maths ? ». Une mauvaise réplique fait réagir Camille, puis Rémy : « Rémy, derrière
+     côté ! », « On se met ensemble en français ? ». Une mauvaise réplique fait réagir Camille, puis Rémy : « Rémy, derrière
      toi, chuchote : « Joker. On la refait, tranquille. » ».
    - Camille : « Oui ! Moi, c'est Camille. Tu viens de Montépilloy, toi ? » … « C'est pas loin ! Moi, j'habite juste
-     derrière le collège. » … « Ça marche ! Je suis nulle en calcul, tu m'aideras. » ; « Camille sourit. » ; Rémy :
+     derrière le collège. » … « Ça marche ! En rédaction, je suis forte : je t'aiderai. Et toi, tu m'aides en maths ? » ; « Camille sourit. » ; Rémy :
      **« Trop facile. Je savais que t'allais gérer. »** → vertu **Audace** ; Rémy : « Bon. Notre casier, c'est notre
      QG, maintenant. Et toi, t'es mon pote. »
    - Le prof : **« Pierre ! Rémy ! Vous faites trop de bruit. »** / « Si vous continuez comme ça, vous n'aurez jamais
      votre brevet ! »
 3. **Ellipse et brevet.** **« Quatre ans plus tard… La fin de la troisième. »** ; le prof : « Pierre ! Viens me voir à mon
    bureau : c'est l'heure de ton oral du brevet. » ; Rémy, en salle de sciences : « Le prof veut te voir pour le
-   brevet. Vas-y, c'est toi le roi du calcul mental. »
-   - L'oral : « Prêt ? » → **« Pierre utilise Audace ! »** → « Combien font 7 plus 5 ? » (11 / 12 / 13 ; une erreur :
-     « Hmm… Recompte tranquillement. ») → « Parfait ! Comme quoi, malgré le bruit… Tu as mérité ton diplôme du brevet. »
+   brevet. Français, maths, anglais : t'es prêt, vas-y ! »
+   - L'oral : « Prêt ? » → **« Pierre utilise Audace ! »** → « Trois questions, trois matières. On commence par le
+     français. » : « Français : quel est le participe passé du verbe « prendre » ? » (Prendu / Pris / Prit) ; « Maths :
+     combien font 7 fois 8 ? » (54 / 56 / 64) ; « Anglais : comment dit-on « bonjour, je m'appelle Pierre » ? »
+     (Goodbye, I am Pierre / Hello, my name is Pierre / Hello, I have Pierre). Une erreur ne bloque pas (« Hmm… »,
+     on réessaie) → « Parfait ! Comme quoi, malgré le bruit… Tu as mérité ton diplôme du brevet. »
      → **Diplôme du brevet** (« Tu reçois ton diplôme du brevet ! ») ; « Avec ça, tu peux candidater au Prytanée, au bout
      de la route du nord. Bonne chance ! »
 
@@ -471,11 +478,12 @@ le vide. » ; Margaux ne participe à aucune scène obligatoire.
 Aucune.
 
 ### Mini-jeux
-Dialogue à choix (Camille), calcul mental (une question), le placard de Margaux (optionnel).
+Dialogue à choix (Camille), l'oral du brevet (trois questions : français, maths, anglais), le placard de Margaux
+(optionnel).
 
 ### Départ et trajet
-- **Condition** : le diplôme du brevet. Rémy : « Le Prytanée ? T'es un ouf. Tu m'enverras une photo en uniforme ! » Les
-  sentinelles disparaissent ; route du nord : « Ton brevet en poche, tu prends la route du Prytanée pour y candidater. »
+- **Condition** : le diplôme du brevet. Rémy : « Le Prytanée ? T'es un ouf. Tu m'enverras une photo en uniforme ! » Un
+  militaire s'écarte et annonce que les portes du Prytanée sont ouvertes ; route du nord : « Ton brevet en poche, tu prends la route du Prytanée pour y candidater. »
 - **Pas de scène de trajet** : l'encart « Tu emportes : Audace. » (au premier départ seulement), puis le Prytanée.
 
 ---
@@ -513,7 +521,10 @@ Dialogue à choix (Camille), calcul mental (une question), le placard de Margaux
    - Traverser la cour sans être vu des rondes. Pris : « Hé, toi ! Retour au dortoir ! » (retour devant l'internat).
    - Derrière la porte nord, Tanguy : « T'en as mis du temps ! » ; « Au petit matin, au dortoir. » ; le capitaine entre
      au dortoir : « Trois lits vides cette nuit, d'après la ronde. Qui est sorti ? » → **« Pierre utilise Audace ! »** →
-     « Tu regardes le capitaine droit dans les yeux, sans un mot. » / le capitaine : **« … Je n'ai rien vu non plus. »** ;
+     « Tu te lèves, au garde-à-vous, et tu regardes le capitaine droit dans les yeux. » ; Pierre : **« Personne n'est
+     sorti, mon capitaine. On n'a rien vu, rien entendu. »** ; le capitaine : « Rien vu, rien entendu… Bien. » /
+     **« Alors la prochaine fois que « personne » sort, dites-lui d'essuyer ses rangers : il a laissé de la boue jusqu'à
+     son lit. »** ;
      Geoffrey : **« Personne a rien vu. On remet ça quand vous voulez les gars ! »**
 3. **Le bac.** **« Quelques années plus tard… »** ; Tanguy : « Debout, Pierre ! C'est aujourd'hui : la liste du bac est
    affichée dans la cour. » ; Geoffrey : « On descend voir. Si j'y suis pas, je refais le mur… mais pour de bon. » Au
