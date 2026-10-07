@@ -60,6 +60,14 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   la palette. Enregistrés marqués `retouche` : scripts/build_interiors.py ne les redessine plus sans `--force` (voir
   docs/technique/interieurs-gen4.md). « Tester » ouvre la pièce dans le jeu, dans son contexte (BootScene :
   systems/builtMaps.js gameInteriorOf, useBuiltInterior, cityOfInterior).
+- Intérieurs partagés (modèles, voir docs/technique/interieurs-gen4.md) : une seule ligne par modèle dans « Ouvrir »
+  (son nom de type, « Maison type 1 »), avec à droite les pièces qui le reprennent et leur ville ; par ville, les
+  modèles sont rangés en tête dans « Pièces partagées », par type de pièce dans leur type ; les autres pièces gardent
+  leur ligne. Ouvrir un modèle l'édite pour toutes ses pièces (`/__builder/modeles`, src/data/builtInteriors/modeles) ;
+  les différences propres de chaque pièce restent par-dessus dans le jeu. Le sélecteur « Pièce » (barre du haut)
+  choisit la pièce dont l'outil Personnages montre et place les PNJ (enregistrés dans sa fiche, avec le modèle) et que
+  « Tester » ouvre (modèle + différences de la pièce, builder.js testMap). Une pièce qui reprend un modèle (ancien
+  « dernier ouvert », brouillon) ouvre son modèle.
 - Personnages : outil « Personnages » (touche N ; bouton « Toujours voir les PNJ » dans la barre d'outils),
   src/builder/npcs.js, lecture de l'histoire dans src/builder/questModel.js. Panneau :
   - Quête du lieu : les étapes de l'histoire qui concernent ce lieu (drapeaux de story.js dans l'ordre du jeu, libellés
