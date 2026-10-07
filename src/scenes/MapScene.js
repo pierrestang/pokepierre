@@ -31,7 +31,7 @@ import {
 } from '../systems/effects.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 import { CITY_MUSIC } from '../data/music.js';
-import { applyBuiltLook, hiddenUnderTop } from '../systems/builtMaps.js';
+import { applyBuiltLook, hiddenUnderTop, TOP_DEPTH } from '../systems/builtMaps.js';
 
 const FADE_MS = 150;
 const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`reply`)
@@ -97,7 +97,7 @@ export class MapScene extends Phaser.Scene {
     // Morceaux du décor redessinés par-dessus les personnages qui sont derrière (ex. tables de la cabane) :
     // { sheet, frame(scene), x, y, h } en pixels, triés en profondeur par leur bas.
     for (const o of map.overlays ?? []) {
-      this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(10 + (o.y + o.h) / 10000);
+      this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(o.depth ?? 10 + (o.y + o.h) / 10000);
     }
     if (this.scene.key === 'Overworld' && !map.builder) flags.add(visitedFlag(map.id));    // pour la carte du voyage
     this.canopy = map.built || map.backdrop ? new Set() : canopyTiles(grid);   // un dessin du créateur a ses cimes à lui
@@ -1570,7 +1570,7 @@ export class MapScene extends Phaser.Scene {
       return;
     }
     const img = player.image;
-    this.silhouette ??= this.add.image(0, 0, img.texture.key).setAlpha(0.5).setDepth(110.5);   // juste au-dessus des toits
+    this.silhouette ??= this.add.image(0, 0, img.texture.key).setAlpha(0.5).setDepth(TOP_DEPTH + 0.5);   // juste au-dessus des toits
     this.silhouette.setTexture(img.texture.key, img.frame.name).setOrigin(img.originX, img.originY)
       .setFlipX(img.flipX).setPosition(player.x + img.x, player.y + img.y).setVisible(true);
   }

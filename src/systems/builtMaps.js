@@ -51,8 +51,9 @@ function bakeLayers(scene, data, id) {
   return {
     backdrop: { sheet: `${id}-fond`, frame: () => undefined },
     topLayer: hasTop ? `${id}-dessus` : null,
-    // Le calque « au-dessus de Pierre », par-dessus tous les personnages.
-    overlays: hasTop ? [{ sheet: `${id}-dessus`, frame: () => undefined, x: 0, y: 0, h: 1e6 }] : [],
+    // Le calque « au-dessus de Pierre », par-dessus tous les personnages mais sous le voile de nuit (MapScene
+    // applyAmbience, profondeur 40) : la nuit assombrit aussi les toits et les cimes.
+    overlays: hasTop ? [{ sheet: `${id}-dessus`, frame: () => undefined, x: 0, y: 0, h: 0, depth: TOP_DEPTH }] : [],
   };
 }
 
@@ -61,13 +62,52 @@ export function preloadBuiltLooks(scene, maps) {
   for (const map of Object.values(maps)) if (map.built) preloadBuiltMap(scene, map.built);
 }
 
-// Une carte du jeu dessinée avec le créateur (map.built) : son dessin remplace le rendu Rouge Feu (une seule fois).
+// Une carte du jeu dessinée avec le créateur (map.built) : son dessin remplace le rendu Rouge Feu.
+// Seuls les dessins du lieu affiché restent en mémoire : ceux des autres cartes et pièces sont libérés (et refaits à la
+// prochaine visite). Sans cela, les grands canvas s'accumulaient au fil des portes ; sur téléphone (Safari limite la
+// mémoire des canvas), un nouveau dessin pouvait sortir vide : plus de sol en sortant d'une maison. Un dessin vide ou
+// disparu est refait.
+export const TOP_DEPTH = 30;                      // calque « au-dessus de Pierre » (personnages < 11, nuit 40)
+const baked = new Map();                          // id du lieu -> son objet carte (dessin en mémoire)
+
+function forgetLook(scene, map) {
+  for (const part of ['fond', 'dessus']) {
+    const key = `jeu-${map.id}-${part}`;
+    if (scene.textures.exists(key)) scene.textures.remove(key);
+    for (const id of [...coverCache.keys()]) if (id.startsWith(`${key}:`)) coverCache.delete(id);
+  }
+  if (scene.textures.exists(`surround-${map.id}`)) scene.textures.remove(`surround-${map.id}`);
+  delete map.backdrop;
+  delete map.topLayer;
+  if (map.baseOverlays) map.overlays = map.baseOverlays;
+}
+
+// Le dessin a-t-il été perdu (texture absente, canvas sans contexte ou entièrement transparent) ?
+function lostLook(scene, map) {
+  const key = `jeu-${map.id}-fond`;
+  if (!scene.textures.exists(key)) return true;
+  const source = scene.textures.get(key).getSourceImage();
+  const ctx = source?.width ? source.getContext?.('2d', { willReadFrequently: true }) : null;
+  if (!ctx) return true;
+  const { width: w, height: h } = source;
+  const points = [[w / 2, h / 2], [w / 4, h / 4], [3 * w / 4, h / 4], [w / 4, 3 * h / 4], [3 * w / 4, 3 * h / 4]];
+  return points.every(([x, y]) => ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data[3] === 0);
+}
+
 export function applyBuiltLook(scene, map) {
-  if (map.backdrop) return;
+  for (const [id, other] of baked) {
+    if (id === map.id && other === map) continue;
+    forgetLook(scene, other);
+    baked.delete(id);
+  }
+  if (map.backdrop && !lostLook(scene, map)) return;
+  if (map.backdrop) forgetLook(scene, map);
+  map.baseOverlays ??= map.overlays ?? [];
   const look = bakeLayers(scene, map.built, `jeu-${map.id}`);
   map.backdrop = look.backdrop;
   map.topLayer = look.topLayer;
-  map.overlays = [...(map.overlays ?? []), ...look.overlays];
+  map.overlays = [...map.baseOverlays, ...look.overlays];
+  baked.set(map.id, map);
 }
 
 // Le personnage debout en (x, y) est-il caché par le calque « au-dessus de Pierre » (toit, cime) ? Plus de la moitié
