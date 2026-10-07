@@ -31,6 +31,17 @@ calé sur la grille, la porte sur la dernière rangée. Mobilier (g4-mobilier) :
 transat, grande caisse, massif, table de pique-nique, banc de bois, abri de bois, distributeur, panneau d'affichage ;
 souche (végétation, garde son ombre). Les villes suivantes (Prytanée, Bordeaux, Hull) viendront plus tard.
 
+## Bâtiments de Hull (7 octobre 2026)
+
+Hull redessinée dans le créateur avec sept bâtiments de g4-batiments posés case par case ; ils sont entrés au catalogue
+(build_catalogue.py LIB_BUILDINGS, thème Hull et Libre) : immeuble à jardinières, maison rose à la porte en cœur, maison
+rose aux deux fenêtres, boutique à auvent vert, maison aux vitraux, maison aux volets, boutique au store rayé. Option
+'tile' : le toit passe au rouge tuile commun (TILE_RED, tile_roof : teinte, saturation et luminosité médianes du toit,
+relief gardé) et la palette de la ville ne s'applique pas ; option 'inside' : l'ombre (28, 35, 38) n'est retirée qu'hors
+du cadre du bâtiment (le renfoncement sous l'auvent vert, de la même couleur, reste). La maison aux vitraux est prise
+sans la bande du bâtiment voisin (colonne 15, 13 px). Sur la carte, les cases d'origine ont été remplacées par celles du
+catalogue (sans ombre, liseré, toit rouge tuile ; le dessin descend de quelques pixels, calé sur le bas de la case).
+
 ## Éléments relevés sur les cartes (octobre 2026)
 
 scripts/harvest_map_elements.py découpe l'image des objets de chaque carte en dessins d'un seul tenant (bâtiments,

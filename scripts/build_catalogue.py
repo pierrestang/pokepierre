@@ -129,9 +129,12 @@ BUILDING_NAMES = {
 }
 
 # Bâtiments de la bibliothèque Gen 4 (g4-batiments, choisis en octobre 2026 pour les quatre premières villes) :
-# id : (nom, rectangle en pixels dans la planche, colonne de la porte, couleurs d'ombre opaque propres, thèmes).
+# id : (nom, rectangle en pixels dans la planche, colonne de la porte, couleurs d'ombre opaque propres, thèmes[, options]).
 # Le dessin est pris d'un seul tenant, sans ombre, le bas calé sur la grille ; la porte est sur la dernière rangée.
+# Options : 'inside' (l'ombre n'est retirée qu'autour du bâtiment : un renfoncement sombre de la même couleur, sous un
+# auvent, reste) ; 'tile' (le toit passe au rouge tuile commun, TILE_RED).
 GRAY = (128, 128, 128)
+DARK = (28, 35, 38)
 LIB_BUILDINGS = {
     'toit-orange': ('Case au toit orange', (69, 12257, 54, 79), 1, (), ['fort-de-france']),
     'toit-vert': ('Maison au toit vert d\'eau', (122, 23336, 96, 114), 2, (), ['fort-de-france']),
@@ -148,15 +151,35 @@ LIB_BUILDINGS = {
     'college': ('Grand bâtiment de pierre', (7, 13745, 98, 127), 3, (), ['bonsecours']),
     'internat': ('Bâtiment à colonnes', (163, 16374, 74, 122), 2, (), ['bonsecours']),
     'gymnase': ('Immeuble vitré', (80, 22049, 80, 95), 2, (), ['bonsecours']),
+    # Posés à la main sur Hull (octobre 2026), toits ramenés au même rouge tuile.
+    'jardinieres': ('Immeuble à jardinières', (0, 13584, 112, 160), 3, (), ['hull'], {'tile'}),
+    'rose-coeur': ('Maison rose à la porte en cœur', (208, 22752, 80, 112), 1, [DARK], ['hull'], {'tile'}),
+    'rose-fenetres': ('Maison rose aux deux fenêtres', (192, 22640, 96, 112), 3, [DARK], ['hull'], {'tile'}),
+    'auvent-vert': ('Boutique à auvent vert', (0, 12336, 80, 176), 1, [DARK], ['hull'], {'tile', 'inside'}),
+    'vitraux': ('Maison aux vitraux', (253, 12336, 67, 144), 2, [DARK], ['hull'], {'tile'}),
+    'volets': ('Maison aux volets', (0, 12512, 80, 128), 2, [DARK], ['hull'], {'tile'}),
+    'boutique-store': ('Boutique au store rayé', (80, 12512, 80, 128), 1, [DARK], ['hull'], {'tile'}),
 }
 
 
-def lib_building(box, greys=(), sid='g4-batiments', shadow=False, dark=40):
+def lib_building(box, greys=(), sid='g4-batiments', shadow=False, dark=40, inside=False):
     """Un dessin de la bibliothèque (rectangle en pixels), d'un seul tenant, sans ombre (sauf `shadow` : végétation),
-    le bas calé sur la grille."""
+    le bas calé sur la grille. `inside` : l'ombre n'est retirée qu'hors du cadre du bâtiment (ses pixels qui ne sont
+    pas de la couleur de l'ombre)."""
     x, y, w, h = box
     img = isolate(sheet(sid).crop((x, y, x + w, y + h)))
-    if not shadow:
+    if inside:
+        a = np.array(img)
+        grey = np.zeros(a.shape[:2], bool)
+        for g in greys:
+            grey |= np.abs(a[..., :3].astype(int) - g).sum(-1) < 6
+        ys, xs = np.nonzero((a[..., 3] > 0) & ~grey)
+        frame = np.zeros_like(grey)
+        frame[ys.min():ys.max() + 1, xs.min():xs.max() + 1] = True
+        cut = np.array(shadowless(img, greys=greys, dark=dark))
+        a[~frame] = cut[~frame]
+        img = Image.fromarray(a)
+    elif not shadow:
         img = shadowless(img, greys=greys, dark=dark)
     bx0, by0, bx1, by1 = img.getbbox()
     if sid == 'g4-batiments':
@@ -461,22 +484,56 @@ def roof_hue(img, rows=None):
     return float(edges[hist.argmax()] + 5)
 
 
-def recolour(img, src_hue, dst_hue, spread=24, rows=None):
-    """Les pixels de la teinte `src_hue` (± spread degrés, assez saturés) passent à la teinte `dst_hue` ; seulement dans
-    les `rows` premières lignes de pixels si on le donne (le toit, pas les murs de la même teinte)."""
-    a = np.array(img.convert('RGBA'))
+def roof_pixels(a, src_hue, spread=24, rows=None, min_s=0.2):
+    """Les pixels de la teinte `src_hue` (± spread degrés, assez saturés) ; seulement le toit si on donne `rows` : les
+    zones de cette teinte d'un seul tenant qui touchent le haut de la maison (`rows` premières lignes de pixels) ; les
+    murs de la même teinte, séparés par le liseré, n'en sont pas."""
     h, s, v = _hsv(a)
     dh = (h - src_hue + 180) % 360 - 180
-    sel = (a[..., 3] > 0) & (np.abs(dh) <= spread) & (s > 0.2)
+    sel = (a[..., 3] > 0) & (np.abs(dh) <= spread) & (s > min_s)
     if rows is not None:
-        # Le toit : les zones de cette teinte d'un seul tenant qui touchent le haut de la maison (`rows` premières
-        # lignes) ; les murs de la même teinte, séparés par le liseré, ne changent pas.
         lab, _ = ndimage.label(sel, structure=np.ones((3, 3)))
         top = set(np.unique(lab[:rows][sel[:rows]])) - {0}
         sel = np.isin(lab, list(top))
         bottom = np.nonzero((a[..., 3] > 0).any(1))[0][-1]
         sel[bottom - TILE + 1:] = False                # la rangée du bas (porte, soubassement) garde ses couleurs
+    return sel, dh, s, v
+
+
+def recolour(img, src_hue, dst_hue, spread=24, rows=None):
+    """Les pixels de la teinte `src_hue` passent à la teinte `dst_hue` (le toit seulement avec `rows`, roof_pixels)."""
+    a = np.array(img.convert('RGBA'))
+    sel, dh, s, v = roof_pixels(a, src_hue, spread, rows)
     rgb = _rgb((dst_hue + dh) % 360, s, v)
+    out = a.copy()
+    out[sel, :3] = np.clip(rgb[sel] * 255 + 0.5, 0, 255).astype(np.uint8)
+    return Image.fromarray(out)
+
+
+# Rouge tuile commun des toits de Hull (octobre 2026) : teinte, saturation et luminosité médianes du toit ; le relief
+# (écarts à la médiane) est gardé, un peu adouci sur les toits très contrastés.
+TILE_RED = (11, 0.68, 0.72)
+
+
+def roof_rows(img):
+    """Hauteur en pixels du haut du dessin, où commence le toit."""
+    rows_with = np.nonzero(np.array(img.convert('RGBA'))[..., 3].any(1))[0]
+    top, bottom = int(rows_with[0]), int(rows_with[-1])
+    return top + max(TILE, int((bottom - top) * 0.3))
+
+
+def tile_roof(img):
+    """Le toit (zone de la teinte dominante du haut du dessin) au rouge tuile commun."""
+    rows = roof_rows(img)
+    hue = roof_hue(img, rows)
+    if hue is None:
+        return img
+    a = np.array(img.convert('RGBA'))
+    sel, _, s, v = roof_pixels(a, hue, 24, rows, min_s=0.3)
+    th, ts, tv = TILE_RED
+    ms, mv = np.median(s[sel]), np.median(v[sel])
+    rel_v = np.clip(v / mv, 0, 3) ** 0.8
+    rgb = _rgb(np.full(v.shape, float(th)), np.clip(ts * (s / ms) ** 0.5, 0, 1), np.clip(tv * rel_v, 0, 1))
     out = a.copy()
     out[sel, :3] = np.clip(rgb[sel] * 255 + 0.5, 0, 255).astype(np.uint8)
     return Image.fromarray(out)
@@ -485,10 +542,7 @@ def recolour(img, src_hue, dst_hue, spread=24, rows=None):
 def add_roof_variants(pack, elements, img, solid_from, door):
     """Les autres couleurs de toit d'une maison (thème Libre) : une famille avec la maison de base."""
     base = elements[-1]
-    alpha = np.array(img.convert('RGBA'))[..., 3] > 0
-    rows_with = np.nonzero(alpha.any(1))[0]
-    top, bottom = int(rows_with[0]), int(rows_with[-1])
-    roof = top + max(TILE, int((bottom - top) * 0.3))  # le haut du dessin, où commence le toit
+    roof = roof_rows(img)
     hue = roof_hue(img, roof)
     if hue is not None:
         area = recolour(img, hue, (hue + 180) % 360, rows=roof)
@@ -607,14 +661,17 @@ def main():
                                           door=list(spec['door']), theme_fn=pal))
             if tid == 'libre':
                 add_roof_variants(pack, elements, img, solid_from, list(spec['door']))
-        for bid, (bname, box, door_col, greys, where) in LIB_BUILDINGS.items():
+        for bid, (bname, box, door_col, greys, where, *opts) in LIB_BUILDINGS.items():
+            opts = opts[0] if opts else set()
             if tid != 'libre' and tid not in where:
                 continue
-            img = lib_building(box, greys)
+            img = lib_building(box, greys, inside='inside' in opts)
+            if 'tile' in opts:
+                img = tile_roof(img)
             h = img.height // TILE
             solid_from = max(1, h - math.ceil(h * 0.55))
             elements.append(element_entry(pack, f'maison-{bid}', bname, 'maisons', img, solid_from, 'land',
-                                          door=[door_col, h - 1], theme_fn=pal))
+                                          door=[door_col, h - 1], theme_fn=None if 'tile' in opts else pal))
             if tid == 'libre':
                 add_roof_variants(pack, elements, img, solid_from, [door_col, h - 1])
         # Éléments relevés sur les cartes (scripts/harvest_map_elements.py, choisis et nommés dans
