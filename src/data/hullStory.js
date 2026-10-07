@@ -93,6 +93,10 @@ export const PUB_A_WELCOME = [
   { say: ['Objectif : ramène la tournée. Demande à chacun ce qu\'il veut, puis commande au comptoir.'] },
 ];
 
+// Tapis de sortie des deux pubs (voir interiors.js hullPubA, hullPubB) : Léo y file devant la bande.
+const PUB_A_EXIT = [1, 11];
+const PUB_B_EXIT = [3, 9];
+
 // Ce que chacun dit à table : sa commande (on peut la redemander autant qu'on veut).
 export const orderScript = ({ name, line, flag }) => [
   { ifFlags: [flag], speaker: name, say: ['Merci ! Le reste arrive ?'], end: true },
@@ -106,7 +110,7 @@ const CHEERS = [
   { hop: ['player', ...ORDERS.map((o) => o.id)], times: 2 },
   { speaker: 'Ousmane', say: ['Santé !'] },
   { speaker: 'Léo', say: ['Cheers ! Allez, on finit ça et on file au pub d\'en bas. Je passe devant !'] },
-  { walk: 'leo-pub', to: [4, 7], block: true },
+  { walk: 'leo-pub', to: PUB_A_EXIT, block: true },
   { say: ['Objectif : suis Léo jusqu\'au pub suivant, plus bas dans l\'avenue. La bande te suit.'] },
   { setFlag: FLAGS.tourneeServie },
 ];
@@ -137,7 +141,7 @@ export const PUB_A_BAR = [
 
 // En arrivant, la bande (qui suivait Pierre) s'attable ; l'habitué propose une partie.
 const BAND_PUB = ['leo-pub', 'ousmane-pub', 'charlotte-pub', 'anais-pub'];
-export const PUB_B_SEATS = { 'ousmane-pub': [8, 4], 'charlotte-pub': [6, 6], 'anais-pub': [8, 6] };
+export const PUB_B_SEATS = { 'ousmane-pub': [9, 5], 'charlotte-pub': [6, 6], 'anais-pub': [9, 6] };
 
 // Facultatif : le pari (Audace). Gagné, l'habitué offre une tournée générale (toute la bande saute de joie) ; perdu, il
 // propose une revanche, autant de fois qu'on veut tant qu'on est dans ce pub (ici, puis en lui reparlant, voir
@@ -188,7 +192,7 @@ export const DARTS = [
             ],
           },
           { speaker: 'Léo', say: ['On file à l\'Asylum ! Je passe devant, suivez Pierre !'] },
-          { walk: 'leo-pub', to: [4, 7], block: true },
+          { walk: 'leo-pub', to: PUB_B_EXIT, block: true },
           { say: ['Objectif : suis Léo jusqu\'à l\'Asylum, tout en haut, sur le campus. La bande te suit.'] },
           { setFlag: FLAGS.flechettesJouees },
         ],
@@ -210,7 +214,7 @@ export const PUB_B_ENTER = [
 
 // La bande (qui suivait Pierre) entre derrière lui ; Romain et Prophecy sont déjà là, Léo aussi (entré le premier) ;
 // rejoindre tout le monde sur la piste, dernière chanson, sortie.
-export const ASYLUM_SPOTS = { 'ousmane-pub': [10, 13], 'charlotte-pub': [13, 13], 'anais-pub': [9, 14] };
+export const ASYLUM_SPOTS = { 'ousmane-pub': [11, 13], 'charlotte-pub': [13, 13], 'anais-pub': [10, 14] };
 export const ASYLUM_ENTER = [
   { setFlag: FLAGS.bandeAsylum },
   { walkAll: Object.entries(ASYLUM_SPOTS) },
@@ -220,7 +224,7 @@ export const ASYLUM_ENTER = [
 ];
 const BAND_ASYLUM = ['romain-asylum', 'prophecy-asylum', ...BAND_PUB];
 // La piste de danse de l'Asylum (cases x, y, largeur, hauteur ; voir interiors.js hullAsylum).
-export const DANCE_FLOOR = [8, 6, 8, 5];
+export const DANCE_FLOOR = [6, 7, 9, 5];
 export const ASYLUM_DANCE = [
   { speaker: 'Léo', say: ['C\'est notre chanson ! Venez tous !'] },
   { useTrait: TRAITS.joie },

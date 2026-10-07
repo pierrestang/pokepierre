@@ -42,6 +42,17 @@ Platine, HeartGold, SoulSilver), comme les cartes extérieures du créateur.
   Prytanée). La case reste libre (déclencheur de l'escalier). Au collège, chaque escalier qui monte arrive en haut au
   même endroit (droite, puis gauche, en alternance).
 
+## Hull : vraies pièces HGSS (octobre 2026)
+
+Les pièces de Hull (sauf l'université, retouchée dans le créateur) partent de vraies pièces de HeartGold / SoulSilver
+(scripts/interieurs/hull.py) : premier pub = salon de la tour Radio de Doublonville (comptoir en U : le barman dedans, on
+lui commande par-dessus le comptoir, cases '#' de la grille) ; second pub = maison de Fargas à Écorcia ; The Asylum =
+salon du casino de Doublonville agrandi à 25 x 18 (`stretched` : colonnes et rangées de motif pur insérées, case par case,
+`blocked` rebloque les meubles collés après les cases libérées), avec le bar et le studio de la tour Radio ; bibliothèque
+= labo des Ruines Alpha ; chez Léo = grand salon de Bourg Geon (sortie sur le côté) ; coloc = appartement de Doublonville
+et le lit de la chambre de Bourg Geon. Grilles, PNJ, sorties et piste de danse recalés dans interiors.js et hullStory.js
+(PUB_A_EXIT, PUB_B_EXIT, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR).
+
 ## Retoucher une pièce dans le créateur
 
 « Ouvrir » liste aussi les intérieurs du jeu (« intérieur »). Une pièce s'ouvre en mode case par case, sur le rayon

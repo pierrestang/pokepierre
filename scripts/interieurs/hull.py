@@ -1,11 +1,15 @@
-"""Intérieurs Gen 4 de Hull : les deux pubs, The Asylum, la bibliothèque, l'université, chez Léo, la coloc.
+"""Intérieurs de Hull : les deux pubs, The Asylum, la bibliothèque, l'université, chez Léo, la coloc.
 
-Pubs : la cabine de yacht de terriblejared (bois sombre, fenêtres, fauteuils verts, laiton) ; The Asylum : boîte de nuit
-(mur de briques sombres, néons, cabine de DJ, enceintes, piste de dalles lumineuses, boule à facettes) dessinée ici dans
-le style Gen 4 là où les planches n'ont rien.
+Depuis octobre 2026, ils partent de VRAIES pièces de HeartGold / SoulSilver (pack de SirMaIo, scripts/hgss_rooms.py),
+retouchées par collages d'autres pièces HGSS : le premier pub est le salon de la tour Radio de Doublonville (comptoir en
+U, canapés, tapis rouge), le second la maison de Fargas à Écorcia (boiseries, comptoirs en L), The Asylum le salon du
+casino de Doublonville agrandi (bar et studio de la tour Radio), la bibliothèque le labo des Ruines Alpha, chez Léo le
+grand salon de Bourg Geon, la coloc un appartement de Doublonville. Seule l'université garde son ancien plan (retouchée
+par l'utilisateur dans le créateur). Les dessins plus bas servent encore à l'université et à la cible du second pub.
 """
 from PIL import Image, ImageDraw
 
+import hgss_rooms as HG
 from interieurs_plans import T, meuble, rect, stretch, isolate  # noqa: F401
 
 
@@ -177,65 +181,103 @@ ITEMS = {
 }
 
 
+NB = '001i_Newbark houses'
+GI = '012i_Goldenrod interiors'
+RA = '074i_Ruins of Alph Lab'
+RT = '012i_Goldenrod radio tower'
+GC = '012i_Goldenrod game corner'
+AZ = '010i_Azalea Houses'
+
+
+def stretched(name, cols, rows, pick):
+    """Pièce agrandie case par case. cols / rows : colonnes et rangées de la carte d'origine, dans l'ordre ; une entrée
+    None est insérée ; pick(x, y, ix, iy) donne la case d'origine d'une case insérée (ix / iy : colonne / rangée insérée
+    ou None). Renvoie (collages, cases libres)."""
+    paste, free = [], []
+    for ty, sy in enumerate(rows):
+        for tx, sx in enumerate(cols):
+            src = pick(sx, sy, tx, ty)
+            paste.append({'from': (name, src[0], src[1], 1, 1), 'to': (tx, ty), 'sol': True})
+            r = HG.room(name, src[0], src[1], 1, 1)
+            # Libre : une case d'origine praticable, ou du tapis nu (case insérée, canapé retiré).
+            if r['sol'][0] and (not r['solid'][0] or len(src) > 2):
+                free.append([tx, ty])
+    return paste, free
+
+
+def blocked(pieces):
+    """Cases bloquées par des meubles collés (leurs passages), pour les rebloquer après les cases libérées."""
+    out = []
+    for p in pieces:
+        name, sx, sy, w, h = p['from']
+        r = HG.room(name, sx, sy, w, h)
+        for i in range(w * h):
+            if r['solid'][i] and (r['decor'][i] or r['dessus'][i]):
+                out.append([p['to'][0] + i % w, p['to'][1] + i // w])
+    return out
+
+
+# The Asylum : le salon du casino de Doublonville (17 x 14, colonnes 8-24, rangées 8-21), élargi de 8 colonnes et allongé
+# de 4 rangées insérées au milieu ; une case insérée reprend le motif pur du tapis (colonnes 14-15, rangées 14-15, selon
+# la parité), les murs du haut leur colonne (rideaux et piliers), les murs des côtés leur rangée 14.
+AS_COLS = list(range(8, 14)) + [None] * 8 + list(range(14, 25))
+AS_ROWS = list(range(8, 15)) + [None] * 4 + list(range(15, 22))
+
+
+def _as_pick(sx, sy, tx, ty):
+    """Case d'origine d'une case du salon agrandi ; un 3e élément : tapis nu, toujours praticable."""
+    if sx is None:
+        sx = 14 + (tx - 6) % 2
+        if sy is not None and sy >= 18:
+            return 14, sy                             # le bas : bordure et tapis de sortie seulement en 16-17
+        if sy is None:
+            return sx, 14 + (ty - 7) % 2, 'tapis'
+        if sy in (12, 13, 16, 17):
+            return sx, 14 + sy % 2, 'tapis'
+        return (sx, sy, 'tapis') if 12 <= sy <= 17 else (sx, sy)
+    if sy is None:
+        if sx <= 12 or sx >= 20:
+            return sx, 14
+        return sx, 14 + (ty - 7) % 2, 'tapis'
+    if sx in (15, 16, 17, 18) and sy in (12, 13):    # le canapé du haut laisse la place au DJ
+        return 14 + sx % 2, 14 + sy % 2, 'tapis'
+    if sx in (15, 16, 17) and sy in (14, 15):
+        return sx, sy, 'tapis'
+    return sx, sy
+
+
+_as_paste, _as_free = stretched(GC, AS_COLS, AS_ROWS, _as_pick)
+# Le bar (comptoir de la tour Radio, ses deux bouts) en haut à gauche ; le DJ (console et table à micros du studio de la
+# tour Radio) au milieu du fond ; des guéridons et chaises du salon à droite.
+AS_FURNITURE = [
+    {'from': (RT, 13, 118, 4, 2), 'to': (3, 4)}, {'from': (RT, 20, 118, 4, 2), 'to': (7, 4)},
+    {'from': (RT, 26, 58, 2, 2), 'to': (13, 4)}, {'from': (RT, 29, 58, 3, 2), 'to': (15, 4)},
+    {'from': (GC, 21, 12, 2, 2), 'to': (21, 7)}, {'from': (GC, 21, 12, 2, 2), 'to': (21, 10)},
+]
+
 PLANS = {
-    # Premier pub : le comptoir au fond (rangée 3), le barman derrière (rangée 2), l'étagère à bouteilles au mur ; les
-    # habitués au comptoir (rangée 4) ; deux tables rondes de la bande de chaque côté de l'entrée.
-    'hullPubA': {
-        'wall': 'cabine', 'floor': 'bois-roux',
-        'items': [
-            ['bouteilles-6', 1, 1], ['cible', 8, 0], ['plante-violette', 0, 2], ['lampe-laiton', 9, 2],
-            ['bar-7', 1, 4], ['pompes', 2, 3, {'dy': -6}], ['pompes', 6, 3, {'dy': -6}], ['pintes', 1, 3, {'dy': -8}],
-            ['pintes', 1, 6, {'dy': -4}], ['pintes', 8, 6, {'dy': -4}],
-            ['fauteuil-vert', 0, 6], ['h-table-pub', 1, 6], ['fauteuil-vert', 2, 6],
-            ['fauteuil-vert', 7, 6], ['h-table-pub', 8, 6], ['fauteuil-vert', 9, 6],
-        ],
-    },
-    # Second pub : boiseries sombres, comptoir court au fond à gauche (la barmaid au bout), cible de fléchettes où joue
-    # l'habitué, néon au mur ; cinq tables rondes et leurs tabourets (on s'y assoit), l'allée de l'entrée libre.
-    'hullPubB': {
-        'wall': 'bois-sombre', 'floor': 'bois-roux',
-        'items': [
-            ['bouteilles-3', 0, 1], ['bar-3', 0, 3], ['pompes', 1, 2, {'dy': -6}], ['pintes', 2, 2, {'dy': -8}],
-            ['cible', 5, 0], ['h-neon-rose-verre', 7, 0], ['plante-violette', 9, 2],
-            *[it for x, y in ((1, 4), (4, 4), (7, 4), (1, 6), (7, 6)) for it in (
-                ['h-tabouret-vert', x - 1, y], ['h-table-pub', x, y], ['h-tabouret-vert', x + 1, y])],
-            ['pintes', 1, 6, {'dy': -4}], ['pintes', 4, 4, {'dy': -4}], ['pintes', 7, 4, {'dy': -4}],
-        ],
-    },
-    # The Asylum (24 x 18) : le bar à gauche (bouteilles au mur, comptoir, tabourets ; le barman va et vient derrière),
-    # la cabine du DJ entre deux enceintes au fond (le DJ derrière ses platines), des néons au mur, la grande piste de
-    # dalles lumineuses (x 8-15, y 6-10, où il faut rejoindre la bande) et deux boules à facettes ; les mange-debout et
-    # le coin salon à droite, le vestiaire et des plantes à l'entrée.
+    # Premier pub : le salon de la tour Radio (23 x 12). Le comptoir en U au fond à gauche : le barman dedans, les
+    # clients commandent depuis la rangée 7 (le comptoir en rangée 8) ; la bande aux deux tables basses à canapés, à
+    # droite ; le tapis de sortie en bas à gauche (1, 11).
+    'hullPubA': {'hgss': (RT, 10, 111, 23, 12)},
+    # Second pub : la maison de Fargas (16 x 10). La barmaid derrière le comptoir en L de droite, l'habitué devant la
+    # cible accrochée sous le tableau, la bande autour de la table du milieu ; sortie (3, 9).
+    'hullPubB': {'hgss': (AZ, 10, 25, 16, 10), 'items': [['cible', 7, 2]]},
+    # The Asylum : le salon du casino de Doublonville agrandi (25 x 18, voir _as_pick) ; le bar en haut à gauche, le DJ
+    # au fond, la piste au milieu du grand tapis (x 6-14, y 7-11) ; sortie (16, 16).
     'hullAsylum': {
-        'wall': 'brique', 'floor': 'pierre-sombre',
-        'items': [
-            ['h-piste-grande', 8, 10],
-            ['bouteilles-6', 1, 1], ['bar-6', 1, 4], ['pompes', 2, 3, {'dy': -6}], ['pompes', 5, 3, {'dy': -6}],
-            ['pintes', 4, 3, {'dy': -8}],
-            *[['h-tabouret', x, 4] for x in range(1, 7)],
-            ['h-enceinte', 9, 3, {'solid': 2}], ['h-dj', 10, 3], ['h-enceinte', 13, 3],
-            ['h-neon-rose-verre', 1, 0], ['h-neon-cyan-note', 6, 0], ['h-neon-violet-note', 15, 0],
-            ['h-neon-rose-vague', 19, 0], ['h-neon-cyan-note', 22, 0],
-            *[it for x, y in ((19, 5), (21, 8), (19, 11)) for it in (['h-mange-debout', x, y], ['h-tabouret', x + 1, y])],
-            ['pintes', 21, 8, {'dy': -10}],
-            ['fauteuil-vert', 19, 14], ['h-table-pub', 20, 14], ['h-table-pub', 21, 14], ['fauteuil-vert', 22, 14],
-            ['pintes', 20, 14, {'dy': -4}], ['h-palmier', 23, 15],
-            ['comptoir-caisse', 1, 13],
-            ['h-palmier', 9, 16], ['h-palmier', 15, 16],
-            ['h-boule', 10, 7, {'dx': 8}], ['h-boule', 13, 7, {'dx': 8}],
-        ],
-        'block': [[10, 2]],                 # derrière les platines, on passe seulement par la droite (le DJ)
+        'hgss': (GC, 60, 60, len(AS_COLS), len(AS_ROWS)),
+        'paste': _as_paste + AS_FURNITURE,
+        'free': _as_free,
+        'block': blocked(AS_FURNITURE),
     },
-    # Bibliothèque Brynmor Jones : rayonnages contre le mur de part et d'autre d'une fenêtre, grande table de lecture au
-    # milieu (la bande révise autour), moquette rouge, deux palmiers près de l'entrée.
+    # Bibliothèque Brynmor Jones : le labo des Ruines Alpha (11 x 13), ses machines remplacées par deux tables de
+    # lecture à coussins (appartements de Doublonville), deux rayonnages de plus en haut à gauche ; sortie (3, 11).
     'hullLibrary': {
-        'wall': 'bibliotheque', 'floor': 'moquette-rouge',
-        'items': [
-            ['h-bibliotheque', 0, 2], ['h-bibliotheque', 2, 2], ['h-fenetre', 5, 1],
-            ['h-bibliotheque', 8, 2], ['h-bibliotheque', 10, 2],
-            ['h-table-lecture', 4, 5], ['lampe-laiton', 4, 5, {'dy': -12, 'solid': 0}], ['lampe-laiton', 7, 5, {'dy': -12, 'solid': 0}],
-            ['h-palmier', 0, 7], ['h-palmier', 11, 7],
-        ],
+        'hgss': (RA, 10, 8, 11, 13),
+        'erase': [(3, 4, 8, 6), (2, 3, 1, 1)],
+        'paste': [{'from': (GI, 51, 12, 4, 2), 'to': (3, 5)}, {'from': (GI, 51, 12, 4, 2), 'to': (7, 5)},
+                  {'from': (RA, 17, 8, 4, 3), 'to': (0, 0)}],
     },
     # Université : amphithéâtre ; le tableau vert au mur, une bibliothèque dans chaque coin, le bureau du professeur, deux
     # rangées de pupitres.
@@ -247,20 +289,14 @@ PLANS = {
             *[['h-pupitre', x, y] for y in (5, 7) for x in (1, 4, 7, 10)],
         ],
     },
-    # Chez Léo : cuisine (cuisinière, frigo), fenêtre, étagère, la table au milieu ; Romain, Prophecy et Léo autour.
-    'hullHouse': {
-        'wall': 'creme', 'floor': 'parquet',
-        'items': [
-            ['h-cuisiniere', 0, 2], ['h-fenetre', 3, 1], ['h-etagere', 5, 2], ['h-frigo', 7, 2],
-            ['h-table-basse', 2, 5],
-        ],
-    },
-    # La coloc : le lit de Pierre, la fenêtre, le bureau et son ordinateur, une plante, la table.
+    # Chez Léo : le grand salon de Bourg Geon (13 x 13 : cuisine, télé, canapés autour de la table) ; la sortie est sur
+    # le côté droit (11, 6), comme dans le jeu.
+    'hullHouse': {'hgss': (NB, 29, 10, 13, 13)},
+    # La coloc : un appartement de Doublonville (9 x 8 : cuisine, bibliothèque, table à coussins) et le lit de Pierre
+    # (chambre de Bourg Geon) ; sortie (3, 7).
     'hullColoc': {
-        'wall': 'papier-peint', 'floor': 'parquet-clair',
-        'items': [
-            ['h-lit', 0, 3], ['h-fenetre', 2, 1], ['h-ordinateur', 4, 2], ['h-plante', 7, 2],
-            ['h-table-basse', 4, 5],
-        ],
+        'hgss': (GI, 47, 8, 9, 8),
+        'paste': [{'from': (NB, 10, 40, 2, 3), 'to': (0, 4)}],
+        'block': [[0, 4], [1, 4], [0, 5], [1, 5], [0, 6], [1, 6]],
     },
 }
