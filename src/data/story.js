@@ -208,6 +208,9 @@ export const ITEMS = {
   canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
   vieilleCanne: { id: 'vieille-canne', name: 'Vieille canne' },     // pour pêcher face à l'eau (facultatif)
   planches: { id: 'planches', name: 'Planches' },
+  // Le vélo (mécanique prête, pas encore donné dans l'histoire ; ?velo dans l'adresse pour l'essayer) : voir
+  // systems/bike.js.
+  velo: { id: 'velo', name: 'Vélo' },
   corde: { id: 'corde', name: 'Vieille corde' },
   cuillere: { id: 'cuillere', name: 'Cuillère de Jean' },                     // Montépilloy : objet-souvenir (caisse à outils)
   brevet: { id: 'brevet', name: 'Diplôme du brevet' },                         // collège : remis par le prof

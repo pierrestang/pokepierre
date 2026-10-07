@@ -26,6 +26,7 @@ const ICON_OF_ITEM = {
   'objet-magique-sri-lanka': 'orbe-rouge',
   'objet-magique-thailande': 'orbe-verte',
   'objet-magique-nepal': 'orbe-bleue',
+  velo: 'velo',
 };
 
 // Image de l'atlas pour un objet (null s'il n'a pas d'icône).

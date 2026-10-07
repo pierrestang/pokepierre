@@ -31,6 +31,13 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   eau. « Tu lances ta ligne… » ; 40 % de chances de « Rien ne mord… Tu remballes ta ligne. » ; sinon une prise selon
   l'eau, relâchée : mer (maquereau, sardine, petit bar, dorade), étang (gardon, perche, carpe, poisson-chat), rivière
   (truite, gardon, goujon), ou une vieille botte, « Tu la poses sur la rive. ».
+- **Vélo** (mécanique prête, pas encore donné dans l'histoire ; `?velo` dans l'adresse donne l'objet **Vélo** pour
+  l'essayer) : Pierre monte ou descend avec la touche V (ou B), l'entrée « VÉLO : MONTER / DESCENDRE » du menu Start
+  ou le bouton VÉLO des commandes tactiles ; sonnette en montant, musique du vélo tant qu'il roule ; il va environ
+  trois fois plus vite qu'à pied (Lucas à vélo de Diamant / Perle). Seulement dehors : « Pas de vélo à l'intérieur ! »,
+  et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
+  moment de monter sur ton vélo : on t'accompagne. »), il descend si quelqu'un se met à le suivre ; pendant une
+  scénette, il descend et remonte à la fin. Une partie reprise dehors repart à vélo.
 - **Textes provisoires** : à partir de Hanoï, presque toutes les répliques commencent par « [Texte provisoire] » ou
   « [Nom - texte provisoire] ».
 

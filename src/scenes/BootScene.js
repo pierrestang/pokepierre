@@ -5,6 +5,7 @@ import { preloadFrlgFont } from '../systems/frlgFont.js';
 import { preloadUiIcons } from '../art/uiIcons.js';
 import { preloadBunting } from '../art/bunting.js';
 import { MAPS } from '../data/maps/index.js';
+import { giveBikeForTesting } from '../systems/bike.js';
 import { interiors } from '../data/maps/interiors.js';
 import {
   requestedBuiltMap, loadBuiltMap, preloadBuiltMap, bakeBuiltMap, preloadBuiltLooks, gameMapOf, useBuiltLook, protectSave,
@@ -37,6 +38,7 @@ export class BootScene extends Phaser.Scene {
 
   create() {
     registerSpriteSheets(this);
+    giveBikeForTesting();                          // ?velo dans l'adresse : le vélo, pour l'essayer
     const gameMap = this.builtMap && gameMapOf(MAPS, this.builtMap);
     if (gameMap) {
       useBuiltLook(gameMap, this.builtMap);
