@@ -1,4 +1,6 @@
 import { gameView, safeInsets, touchScreen, FONT } from './screen.js';
+import { hasBike } from './bike.js';
+import { itemEvents } from './items.js';
 
 // Commandes tactiles (téléphone, tablette), façon Game Boy Advance : croix directionnelle, boutons A et B,
 // bouton START. Chaque commande simule une touche du clavier : le reste du jeu n'y voit aucune différence.
@@ -7,7 +9,8 @@ import { gameView, safeInsets, touchScreen, FONT } from './screen.js';
 //   - Paysage : la croix dans la bande de gauche, A, B et START dans celle de droite.
 // La croix suit le pouce : on glisse d'une direction à l'autre sans lever le doigt ; plusieurs doigts à la fois
 // (marcher en courant avec B). B fait aussi « retour » quand le menu Start est ouvert ; toucher l'écran de jeu
-// pendant un dialogue fait comme A.
+// pendant un dialogue fait comme A. Une fois le vélo obtenu, un bouton VÉLO à côté de START (touche V, voir
+// systems/bike.js).
 const KEYS = {
   up: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
   down: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
@@ -16,6 +19,7 @@ const KEYS = {
   a: { key: 'Enter', code: 'Enter', keyCode: 13 },
   run: { key: 'Shift', code: 'ShiftLeft', keyCode: 16 },
   start: { key: 'Escape', code: 'Escape', keyCode: 27 },
+  velo: { key: 'v', code: 'KeyV', keyCode: 86 },
 };
 
 // Commandes sans couleur, façon console : socles presque noirs, boutons gris en relief (liseré sombre, reflet
@@ -41,7 +45,7 @@ export class TouchControls {
     this.pointers = new Map();                    // doigt -> commande tenue ('up'…, 'a', 'b', 'start')
     this.held = new Set();                        // touches enfoncées (noms de KEYS)
     this.gfx = scene.add.graphics().setDepth(120);
-    this.labels = ['A', 'B', 'START'].map((t) => scene.add.text(0, 0, t, { fontFamily: FONT, color: '#c8ccd8', fontStyle: 'bold' })
+    this.labels = ['A', 'B', 'START', 'VÉLO'].map((t) => scene.add.text(0, 0, t, { fontFamily: FONT, color: '#c8ccd8', fontStyle: 'bold' })
       .setOrigin(0.5).setDepth(121));
 
     scene.input.on('pointerdown', (p) => this.onPointer(p, true));
@@ -61,7 +65,10 @@ export class TouchControls {
 
     this.layout();
     scene.scale.on('resize', this.layout, this);
+    const redraw = () => this.draw();                 // le bouton VÉLO apparaît quand on reçoit le vélo
+    itemEvents.on('change', redraw);
     scene.events.once('shutdown', () => {
+      itemEvents.off('change', redraw);
       scene.scale.off('resize', this.layout, this);
       window.removeEventListener('blur', releaseAll);
       document.removeEventListener('visibilitychange', releaseAll);
@@ -87,6 +94,7 @@ export class TouchControls {
       this.a = { x: ax, y: cy - r * 0.75, r };
       this.b = { x: ax - r * 2.3, y: cy + r * 0.75, r };
       this.start = { x: width / 2, y: Math.min(bottom - 22, cy + R + 44), w: Math.max(72, R * 0.95), h: 26 };
+      this.velo = { ...this.start, x: this.start.x + this.start.w * 1.05 };
     } else {
       // Paysage : l'écran de jeu prend toute la hauteur ; les commandes, dans les bandes de chaque côté (sans
       // l'encoche), mordent sur ses bords si elles manquent de place.
@@ -101,6 +109,7 @@ export class TouchControls {
       this.a = { x: cx + r * 1.1, y: cy - r * 0.75, r };
       this.b = { x: cx - r * 1.1, y: cy + r * 0.75, r };
       this.start = { x: cx, y: Math.max(safe.top + 20, cy - R - 30), w: Math.max(64, R * 0.9), h: 24 };
+      this.velo = { ...this.pad, y: Math.max(safe.top + 20, this.pad.y - this.pad.R * 1.2 - 30), w: this.start.w, h: this.start.h };
     }
     // Pas assez de place autour de l'écran de jeu (fenêtre étroite) : les commandes passent dessus, en transparence.
     const over = ({ x, y }, size) => x - size < v.x + v.w && x + size > v.x && y + size > v.y && y - size < v.y + v.h;
@@ -186,6 +195,18 @@ export class TouchControls {
     g.fillStyle(sDown ? COLORS.keyDown : COLORS.key, 1)
       .fillRoundedRect(start.x - sw / 2, start.y - sh / 2 + (sDown ? 1 : 0), sw, sh, sh / 2);
 
+    // VÉLO (une fois le vélo obtenu) : le même petit bouton ovale.
+    const { velo } = this;
+    const bike = hasBike();
+    if (bike) {
+      const vDown = pressed('velo');
+      g.fillStyle(COLORS.keyEdge, 1).fillRoundedRect(velo.x - sw / 2 - 1.5, velo.y - sh / 2 + 1, sw + 3, sh + 3, sh / 2 + 1.5);
+      g.fillStyle(vDown ? COLORS.keyDown : COLORS.key, 1)
+        .fillRoundedRect(velo.x - sw / 2, velo.y - sh / 2 + (vDown ? 1 : 0), sw, sh, sh / 2);
+    }
+    const lv = this.labels[3];
+    lv.setVisible(bike).setPosition(velo.x, velo.y + sh / 2 + 10).setFontSize(11).setColor(`#${COLORS.mark.toString(16)}`)
+      .setAlpha(this.alpha * 0.75);
     const [la, lb, ls] = this.labels;
     const letter = (t, c, down) => t.setPosition(c.x, c.y + (down ? 2 : 0)).setFontSize(Math.round(c.r * 0.8))
       .setColor(`#${(down ? COLORS.markDown : COLORS.mark).toString(16)}`).setAlpha(this.alpha * (down ? 1 : 0.85));
@@ -213,6 +234,8 @@ export class TouchControls {
     const db = Math.hypot(x - b.x, y - b.y) / b.r;
     if (Math.min(da, db) <= 1.45) return da <= db ? 'a' : 'b';
     if (Math.abs(x - start.x) <= start.w / 2 + 12 && Math.abs(y - start.y) <= start.h / 2 + 14) return 'start';
+    const { velo } = this;
+    if (hasBike() && Math.abs(x - velo.x) <= velo.w / 2 + 12 && Math.abs(y - velo.y) <= velo.h / 2 + 14) return 'velo';
     return null;
   }
 

@@ -2,15 +2,16 @@ import { CharacterSprite, DIRECTIONS, tileCenter } from './CharacterSprite.js';
 import { pierreLook } from '../data/characters.js';
 import { sfx } from './audio.js';
 
-// Vitesse de marche façon Pokémon (≈ 220 ms par case), course en maintenant Maj.
+// Vitesse de marche façon Pokémon (≈ 220 ms par case), course en maintenant Maj, vélo (voir systems/bike.js).
 export const WALK_DURATION = 220;
 export const RUN_DURATION = 120;
+export const BIKE_DURATION = 75;
 const BUMP_EVERY = 320;   // ms entre deux « bump » contre un obstacle
 
 const KEY_TO_DIR = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
 
 // Joueur : déplacement case par case, interpolé. Maintenir la flèche = continuer d'avancer,
-// Maj = courir. Contre un obstacle : pas sur place et petit bruit sourd, comme dans Pokémon.
+// Maj = courir, à vélo : plus vite encore. Contre un obstacle : pas sur place et petit bruit sourd, comme dans Pokémon.
 export class Player {
   constructor(scene, { x, y, facing = 'down' }, { isWalkable, onStep, onMoveStart }) {
     this.scene = scene;
@@ -19,6 +20,7 @@ export class Player {
     this.facing = facing;
     this.moving = false;
     this.frozen = false;
+    this.riding = false;              // à vélo (voir systems/bike.js)
     this.isWalkable = isWalkable;
     this.onStep = onStep;
     this.onMoveStart = onMoveStart;
@@ -34,6 +36,12 @@ export class Player {
       const dir = KEY_TO_DIR[e.key];
       if (dir) this.queued = dir;
     });
+  }
+
+  // Monter sur le vélo ou en descendre (l'image et la vitesse ; les règles sont dans systems/bike.js).
+  setRiding(on) {
+    this.riding = on;
+    this.sprite.setBike(on);
   }
 
   // Case située juste devant le joueur.
@@ -73,7 +81,7 @@ export class Player {
       return;
     }
 
-    const duration = this.cursors.shift.isDown ? RUN_DURATION : WALK_DURATION;
+    const duration = this.riding ? BIKE_DURATION : this.cursors.shift.isDown ? RUN_DURATION : WALK_DURATION;
     this.moving = true;
     this.onMoveStart?.(this.tileX, this.tileY, nx, ny, duration);
     const [px, py] = tileCenter(nx, ny);

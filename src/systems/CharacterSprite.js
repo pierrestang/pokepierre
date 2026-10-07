@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { TILE_SIZE } from '../data/tiles.js';
 import { characterTexture, lookFromColor } from '../art/characterArt.js';
-import { sheetOf } from '../art/spriteSheets.js';
+import { sheetOf, BIKE_SHEET, BIKE_PREFIX } from '../art/spriteSheets.js';
 import { BED_LOWER } from '../art/frlgArt.js';
 
 export const DIRECTIONS = {
@@ -73,8 +73,33 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     this.image.setFrame(`${this.prefix}${dir}-0`);
   }
 
-  // Un pas animé de `duration` ms : pied gauche puis pied droit en alternance, retour debout à la fin.
+  // À vélo (le joueur, voir systems/bike.js) : l'image passe à la planche du vélo, et revient à la marche.
+  setBike(on) {
+    if (on === Boolean(this.onBike)) return;
+    if (on) {
+      this.walkLook = { key: this.image.texture.key, prefix: this.prefix };
+      this.prefix = BIKE_PREFIX;
+      this.image.setTexture(BIKE_SHEET);
+      this.pedal = 0;
+    } else {
+      this.prefix = this.walkLook.prefix;
+      this.image.setTexture(this.walkLook.key);
+    }
+    this.onBike = on;
+    this.walkTimer?.remove();
+    this.image.setFrame(`${this.prefix}${this.facing}-0`);
+  }
+
+  // Un pas animé de `duration` ms : pied gauche puis pied droit en alternance, retour debout à la fin. À vélo : les
+  // trois temps de pédalage à la suite, la roue qui tourne tant qu'on roule.
   walkStep(duration) {
+    if (this.onBike) {
+      this.pedal = (this.pedal % 3) + 1;
+      this.image.setFrame(`${this.prefix}${this.facing}-${this.pedal}`);
+      this.walkTimer?.remove();
+      this.walkTimer = this.scene.time.delayedCall(duration * 1.6, () => this.image.setFrame(`${this.prefix}${this.facing}-0`));
+      return;
+    }
     this.foot = 1 - this.foot;
     this.image.setFrame(`${this.prefix}${this.facing}-${1 + this.foot}`);
     this.walkTimer?.remove();

@@ -46,6 +46,10 @@ puis Hanoï. Pas de combats.
   (src/systems/effects.js) ; pas d'autres bulles. Mont Chimnée (Rubis/Saphir) : la gare du téléphérique sert
   de ferme à M. Bouly ; caisses du marché de Slateport dans la cabane de pêche (scripts/extract_rs_buildings.py).
 
+- Vélo (src/systems/bike.js) : Lucas à vélo officiel (scripts/build_bike.py -> public/assets/characters/pierre-velo.png),
+  objet ITEMS.velo pas encore donné dans l'histoire (?velo dans l'adresse pour l'essayer), touche V / menu Start /
+  bouton tactile, seulement dehors et sans suiveur, Pierre descend pendant les scénettes.
+
 - Mobile (src/systems/TouchControls.js, src/systems/screen.js) : écran de jeu le plus grand possible (zoom non
   entier) ; en portrait, en haut, toute la largeur, et les
   commandes dessous ; en paysage, les commandes de chaque côté. `?touch` dans l'adresse force l'affichage tactile

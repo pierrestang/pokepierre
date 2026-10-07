@@ -12,11 +12,12 @@ import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
 import { MAX_TRAITS, TRAITS, traitById } from '../data/story.js';
 import { MAPS } from '../data/maps/index.js';
+import { hasBike, toggleBike } from './bike.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Carte (du voyage),
 // Vertus (le carnet, avec les souvenirs des PNJ), Objets (le sac, avec les icônes), Quêtes (aller au début de la
 // quête d'une ville, pour tester), PNJ (choisir l'apparence de chaque personnage), Sauvegarder, Options (musique,
-// sons), Quitter la partie (retour à l'écran titre), Fermer.
+// sons), Quitter la partie (retour à l'écran titre), Vélo (monter ou descendre, une fois le vélo obtenu), Fermer.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
 const MAIN = { quests: 3, options: 6 };               // place de ces entrées dans le menu principal
@@ -69,6 +70,7 @@ export class StartMenu {
       { label: 'SAUVEGARDER', action: () => this.save() },
       { label: 'OPTIONS', action: () => this.showPage('options', 0) },
       { label: 'QUITTER LA PARTIE', action: () => this.quit() },
+      ...(hasBike() ? [{ label: this.mapScene()?.player?.riding ? 'VÉLO : DESCENDRE' : 'VÉLO : MONTER', action: () => this.useBike() }] : []),
       { label: 'FERMER', action: () => this.close() },
     ];
   }
@@ -107,6 +109,13 @@ export class StartMenu {
     sfx('menu');
     this.isOpen = true;
     this.showPanel(this.itemBag, () => this.close());
+  }
+
+  // Vélo : le menu se ferme, Pierre monte ou descend (voir systems/bike.js).
+  useBike() {
+    this.close();
+    const map = this.mapScene();
+    if (map) toggleBike(map);
   }
 
   close() {

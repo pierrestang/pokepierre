@@ -14,13 +14,23 @@ export const SHEETS = {
 
 const DIRS = ['down', 'up', 'left', 'right'];
 
+// Pierre à vélo : Lucas à vélo de Diamant/Perle (scripts/build_bike.py) ; images `velo-{direction}-{0..3}` de 32 x 32
+// (0 : à l'arrêt, 1 à 3 : les temps de pédalage), dans la texture BIKE_SHEET.
+export const BIKE_SHEET = 'pierre-velo';
+export const BIKE_PREFIX = 'velo-';
+
 export function preloadSpriteSheets(scene) {
   const base = `${import.meta.env.BASE_URL}assets/characters/`;
   for (const sheet of Object.values(SHEETS)) scene.load.image(sheet.key, base + sheet.file);
+  scene.load.image(BIKE_SHEET, `${base}pierre-velo.png`);
 }
 
-// Nomme les images de chaque personnage : une ligne de 12 images par personnage.
+// Nomme les images de chaque personnage : une ligne de 12 images par personnage ; et celles du vélo.
 export function registerSpriteSheets(scene) {
+  const bike = scene.textures.get(BIKE_SHEET);
+  DIRS.forEach((dir, d) => {
+    for (let k = 0; k < 4; k++) if (!bike.has(`${BIKE_PREFIX}${dir}-${k}`)) bike.add(`${BIKE_PREFIX}${dir}-${k}`, 0, (d * 4 + k) * 32, 0, 32, 32);
+  });
   for (const letter of Object.keys(SHEETS)) {
     const sheet = SHEETS[letter];
     const texture = withWalkFrames(scene, sheet);

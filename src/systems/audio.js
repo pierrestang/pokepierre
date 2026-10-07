@@ -408,6 +408,19 @@ const NEPAL_LEAD = [
 ];
 const NEPAL_CHORDS = ['Em', 'C', 'G', 'D', 'Em', 'C', 'D', 'Em'];
 
+// Vélo : air vif et sautillant en ré majeur, pour rouler (voir systems/bike.js). Mélodie originale.
+const VELO_LEAD = [
+  ['D5', 1], ['F#5', 1], ['A5', 2], ['F#5', 1], ['A5', 1], ['D6', 2],
+  ['C#6', 1], ['B5', 1], ['A5', 2], ['G5', 2], ['E5', 2],
+  ['F#5', 1], ['A5', 1], ['B5', 2], ['A5', 1], ['F#5', 1], ['D5', 2],
+  ['E5', 2], ['F#5', 1], ['G5', 1], ['A5', 4],
+  ['B5', 1], ['A5', 1], ['G5', 2], ['B5', 1], ['D6', 1], ['B5', 2],
+  ['A5', 1], ['F#5', 1], ['D5', 2], ['F#5', 2], ['A5', 2],
+  ['G5', 1], ['B5', 1], ['D6', 2], ['C#6', 1], ['B5', 1], ['C#6', 2],
+  ['D6', 2], ['A5', 2], ['D6', 4],
+];
+const VELO_CHORDS = ['D', 'A', 'Bm', 'A', 'G', 'D', 'G', 'D'];
+
 const CHORDS = {
   C: ['C', 'E', 'G'], D: ['D', 'F#', 'A'], E: ['E', 'G#', 'B'], F: ['F', 'A', 'C'], G: ['G', 'B', 'D'], A: ['A', 'C#', 'E'],
   Bb: ['A#', 'D', 'F'], Am: ['A', 'C', 'E'], Gm: ['G', 'A#', 'D'], Bm: ['B', 'D', 'F#'], Dm: ['D', 'F', 'A'], Em: ['E', 'G', 'B'], 'F#m': ['F#', 'A', 'C#'],
@@ -431,6 +444,7 @@ const SONGS = {
   bali: { tempo: 100, lead: BALI_LEAD, chords: BALI_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
   sriLanka: { tempo: 116, lead: SRILANKA_LEAD, chords: SRILANKA_CHORDS, duty: 0.25, drums: 'biguine', leadVol: 0.11, arp: true },
   thailand: { tempo: 108, lead: THAILAND_LEAD, chords: THAILAND_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
+  velo: { tempo: 152, lead: VELO_LEAD, chords: VELO_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
   nepal: { tempo: 84, lead: NEPAL_LEAD, chords: NEPAL_CHORDS, duty: 0.5, drums: false, leadVol: 0.11, arp: true },
 };
 
@@ -587,6 +601,13 @@ const SFX = {
   },
   // On fonce dans un mur
   bump: (t) => tone(sfxBus, { duty: 0.5, f: 150, start: t, dur: 0.09, vol: 0.14, slide: 0.6 }),
+  // Sonnette du vélo : deux « dring » aigus
+  sonnette: (t) => {
+    for (const k of [0, 0.13]) {
+      tone(sfxBus, { duty: 0.5, f: 2350, start: t + k, dur: 0.08, vol: 0.07 });
+      tone(sfxBus, { duty: 0.25, f: 2960, start: t + k + 0.01, dur: 0.07, vol: 0.05 });
+    }
+  },
   // Porte qui s'ouvre, puis pas vers l'intérieur
   door: (t) => {
     noise(sfxBus, { start: t, dur: 0.12, vol: 0.12, filter: 'lowpass', cutoff: 1200 });

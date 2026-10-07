@@ -43,6 +43,7 @@ ICONS = {
     'orbe-bleue': (388, 386, 14, 14),
     'orbe-verte': (404, 386, 14, 14),
     'orbe-turquoise': (365, 305, 18, 19),
+    'velo': (108, 375, 23, 21),             # Bicyclette (objet rare)
 }
 
 

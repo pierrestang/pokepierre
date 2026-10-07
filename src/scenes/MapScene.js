@@ -30,6 +30,7 @@ import {
   startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay,
 } from '../systems/effects.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
+import { toggleBike, resumeBike, checkBike, pauseBike, unpauseBike } from '../systems/bike.js';
 import { CITY_MUSIC } from '../data/music.js';
 import { applyBuiltLook, hiddenUnderTop } from '../systems/builtMaps.js';
 
@@ -106,9 +107,7 @@ export class MapScene extends Phaser.Scene {
     const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
     startSeaShimmer(this, map);             // reflets des étangs et rivières (la mer est animée, voir addSeaLayer)
     // Musique du lieu et ressac près de la mer.
-    // Une musique par ville, la même dans ses intérieurs (voir data/music.js) ; `music` la remplace pour un lieu.
-    const music = map.music && meetsConditions(map.music) ? map.music : null;
-    playMusic(music?.song ?? CITY_MUSIC[this.fromMap ?? map.id] ?? 'island', music?.volume);
+    this.playPlaceMusic();
     const hasSea = seaAround || grid.some((row) => row.includes('w'));
     setSeaAmbience(hasSea);
     // Vie de l'île : mouettes, poissons, fenêtres éclairées le soir.
@@ -154,12 +153,16 @@ export class MapScene extends Phaser.Scene {
       },
     });
     this.refreshActors();
+    resumeBike(this);                               // à vélo si on roulait (dehors), voir systems/bike.js
     this.savePosition();
     this.registry.set('city', this.cityName());
     this.registry.set('cityId', this.fromMap ?? this.map.id);   // compteur de traits de la ville (UIScene)
 
     this.input.keyboard.on('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') this.tryInteract(e);
+      // Vélo : V (ou B), à l'arrêt, hors dialogue, menu et scénette.
+      if (['v', 'V', 'b', 'B'].includes(e.key) && !e.repeat && !this.dialog?.isOpen && !this.menuOpen && !this.scripting
+        && !this.transitioning) toggleBike(this);
     });
 
     const cam = this.cameras.main;
@@ -426,6 +429,7 @@ export class MapScene extends Phaser.Scene {
       FOLLOWERS.filter(meetsConditions),
       (id) => leftAt[id] ?? this.takeEmerged(id) ?? (arriving ? { x: tileX, y: tileY, facing } : this.besidePlayer()),
     );
+    checkBike(this);                                // quelqu'un suit Pierre : il descend de vélo
   }
 
   // Un personnage caché (ex. au cache-cache) sort de sa cachette : il apparaît sur la première case de `from` qui
@@ -499,6 +503,7 @@ export class MapScene extends Phaser.Scene {
   async runScript(steps) {
     this.scripting = true;
     this.player.frozen = true;
+    const onBike = pauseBike(this);                 // Pierre descend de vélo le temps de la scène
     try {
       await this.runSteps(steps, true);
     } catch (error) {
@@ -506,6 +511,7 @@ export class MapScene extends Phaser.Scene {
     } finally {
       this.scripting = false;
       if (!this.transitioning) this.player.frozen = false;
+      if (onBike) unpauseBike(this);
     }
   }
 
@@ -1374,6 +1380,13 @@ export class MapScene extends Phaser.Scene {
       this.goTo('Ferry', { deck, road: car, plane, carry, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
     }
     else this.goTo('Overworld', { mapId: map, spawn });
+  }
+
+  // Une musique par ville, la même dans ses intérieurs (voir data/music.js) ; `music` la remplace pour un lieu.
+  playPlaceMusic() {
+    const { map } = this;
+    const music = map.music && meetsConditions(map.music) ? map.music : null;
+    playMusic(music?.song ?? CITY_MUSIC[this.fromMap ?? map.id] ?? 'island', music?.volume);
   }
 
   goTo(sceneKey, data) {
