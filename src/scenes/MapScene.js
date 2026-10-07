@@ -13,7 +13,7 @@ import { Followers } from '../systems/Followers.js';
 import { Patrols } from '../systems/Patrols.js';
 import { playDarts } from '../systems/Darts.js';
 import { lookOf } from '../data/characters.js';
-import { bedAt, familyCarImage, G4_CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
+import { bedAt, familyCarImage, cabaneFrame, CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
 import { interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
@@ -354,14 +354,13 @@ export class MapScene extends Phaser.Scene {
     for (const data of wantedProps) {
       if (this.props.some((p) => p.data === data)) continue;
       // La voiture de la famille est une image (voir frlgArt.familyCarImage), posée au milieu du bas de son emprise.
-      // La cabane perchée des cousins, en Gen 4 (g4-cabane.png, scripts/build_saintay_props.py) : l'emprise bloquante
-      // couvre la plateforme, l'échelle descend sur la case sous son 2e rang, où l'on monte (porte `when` de la carte).
+      // La cabane des cousins (voir frlgArt, rs-cabane.png ; retour à l'ancienne cabane demandé par l'utilisateur,
+      // octobre 2026) : l'emprise bloquante couvre la plateforme, l'échelle descend sur la case sous son 2e rang, où l'on
+      // monte (porte `when` de la carte).
       if (data.type === 'cabane') {
         const bottom = (data.y + data.h + 1) * TILE_SIZE;
-        // Elle est perchée dans les sapins : au-dessus de leurs cimes (calque « au-dessus de Pierre » de la carte, voir
-        // builtMaps.js), sinon les feuillages couperaient son toit et ses murs.
-        const graphics = this.add.image((data.x + 1) * TILE_SIZE - G4_CABANE_LADDER_X, bottom, FRLG_SHEETS.g4Cabane)
-          .setOrigin(0, 1).setDepth(10 + 1e6 / 10000 + 1);
+        const graphics = this.add.image((data.x + 1) * TILE_SIZE - CABANE_LADDER_X, bottom, FRLG_SHEETS.cabane, cabaneFrame(this, 'hut'))
+          .setOrigin(0, 1).setDepth(10 + bottom / 10000);
         this.props.push({ data, graphics });
         continue;
       }
