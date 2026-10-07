@@ -31,21 +31,34 @@ calé sur la grille, la porte sur la dernière rangée. Mobilier (g4-mobilier) :
 transat, grande caisse, massif, table de pique-nique, banc de bois, abri de bois, distributeur, panneau d'affichage ;
 souche (végétation, garde son ombre). Les villes suivantes (Prytanée, Bordeaux, Hull) viendront plus tard.
 
-## Intérieurs et PNJ dans le créateur (octobre 2026)
+## Intérieurs et personnages dans le créateur (octobre 2026)
 
 - Intérieurs : « Ouvrir » liste aussi les intérieurs du jeu (src/data/builtInteriors, `/__builder/interieurs` dans
-  vite.config.js). Ouverts en case par case, rayon « Intérieurs » de la palette. Enregistrés marqués `retouche` :
-  scripts/build_interiors.py ne les redessine plus sans `--force` (voir docs/technique/interieurs-gen4.md). « Tester »
-  ouvre la pièce dans le jeu, dans son contexte (BootScene : systems/builtMaps.js gameInteriorOf, useBuiltInterior,
-  cityOfInterior).
-- PNJ : outil « PNJ » (touche N ; bouton « Toujours voir les PNJ » dans la barre d'outils), src/builder/npcs.js. Les PNJ
-  de la carte ou de l'intérieur du jeu qui porte ce dessin (même identifiant) s'affichent avec leur apparence : anneau
-  doré et étoile = PNJ de l'histoire (scénette, conditions, objet, souvenir… : npcEdits.js isStoryNpc), anneau gris =
-  figurant du code, anneau turquoise et « + » = figurant ajouté dans le créateur. On glisse un PNJ pour le déplacer
-  (pointillés jusqu'à sa place d'origine, « Remettre à sa place ») ; plusieurs PNJ sur une case (les étapes de l'histoire
-  d'un personnage) : un chiffre, et un clic les fait défiler ; panneau : direction, conditions d'apparition.
-  « Ajouter un figurant » puis un clic sur la carte : nom, apparence (`g{n}` ou au hasard), réplique, direction ;
-  « Supprimer ce figurant ». Les PNJ de l'histoire ne se créent ni ne se suppriment ici (ils ont des scénettes).
+  vite.config.js), rangés par ville dans l'ordre du jeu (src/builder/interiorIndex.js : la carte dont une porte y mène,
+  puis les étages de proche en proche, sinon le voyage qui y emmène). Chaque intérieur montre sa pièce HGSS d'origine
+  et, en orange, les autres intérieurs qui la réutilisent (src/builder/interiorSources.json, écrit par
+  build_interiors.py ; `--sources` pour seulement le réécrire). Réutiliser une pièce est permis pour les logements,
+  pas pour les bâtiments spécifiques (boîte de nuit, pub, collège…). Ouverts en case par case, rayon « Intérieurs » de
+  la palette. Enregistrés marqués `retouche` : scripts/build_interiors.py ne les redessine plus sans `--force` (voir
+  docs/technique/interieurs-gen4.md). « Tester » ouvre la pièce dans le jeu, dans son contexte (BootScene :
+  systems/builtMaps.js gameInteriorOf, useBuiltInterior, cityOfInterior).
+- Personnages : outil « Personnages » (touche N ; bouton « Toujours voir les PNJ » dans la barre d'outils),
+  src/builder/npcs.js, lecture de l'histoire dans src/builder/questModel.js. Panneau :
+  - Quête du lieu : les étapes de l'histoire qui concernent ce lieu (drapeaux de story.js dans l'ordre du jeu, libellés
+    = leurs commentaires) et qui les fait avancer (« par Papa », « ailleurs : Cabane de pêche ») ; choisir une étape
+    (clic, ◀ ▶) ne montre que les personnages présents à ce moment-là ; « Toutes » : tous (un chiffre compte ceux d'une
+    même case, un clic les fait défiler). Conditions d'objets et de souvenirs ignorées.
+  - Présents : un bouton par personnage ; ★ doré = de l'histoire (npcEdits.js isStoryNpc), ● gris = figurant du code,
+    + turquoise = figurant ajouté ici.
+  - Fiche : apparence, rôle, position, direction (4 flèches), quand il arrive et part, ce qu'il fait (répliques, choix,
+    objets donnés, vertus, marches, étapes qu'il fait avancer, conditions de chaque passage), ce qu'il débloque dans le
+    lieu (clic : voir l'étape) et qui le fait venir.
+  - Sur la carte : le nom de chacun, et pour le choisi ses marches (flèches bleues numérotées, `walk` des scènes du
+    lieu) et ce qu'il débloque (traits dorés : + apparaît, − disparaît).
+  Déplacer : glisser, ou flèches du clavier (une case) ; Maj + flèche : direction ; Tab / Maj + Tab : personnage
+  suivant ; Échap : aucun. Pointillés jusqu'à sa place d'origine, « Remettre à sa place ». « + Figurant » puis un clic
+  sur la carte : nom, apparence (`g{n}` ou au hasard), réplique, direction ; « Supprimer ce figurant ». Les personnages
+  de l'histoire ne se créent ni ne se suppriment ici, et leurs scènes restent dans le code (lecture seule).
 - Enregistrement : `npcEdits` dans le JSON de la carte ({ moved: { id: { x, y, facing? } }, extras: [...] }), appliqué
   par src/data/maps/npcEdits.js au chargement des données (maps/index.js, interiors.js) et à l'essai : le jeu,
   check_paths.js et les scripts d'export voient les mêmes places. Après avoir déplacé un PNJ de l'histoire : Tester et

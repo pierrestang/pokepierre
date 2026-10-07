@@ -659,6 +659,7 @@ function restore(from, to) {
   syncFields();
   studio.render();
   changed();
+  npcs.renderPanel();
   updateHistoryButtons();
 }
 function updateHistoryButtons() {
@@ -1812,6 +1813,7 @@ function bindUi() {
     if ((e.ctrlKey || e.metaKey) && k === 'v') { if (startPasting()) e.preventDefault(); return; }
     if ((e.ctrlKey || e.metaKey) && k === 'd') { e.preventDefault(); duplicateSelection(); return; }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (npcs.keyDown(e)) return;              // outil Personnages : flèches, Tab, Échap
     if (e.key === ' ') { spaceDown = true; view.classList.add('pan'); e.preventDefault(); return; }
     const arrows = { ArrowLeft: [1, 0], ArrowRight: [-1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
     if (arrows[e.key]) {
