@@ -26,9 +26,9 @@ const FAREWELL_TIME = { ifItems: [ITEMS.diplomeHull.id], unlessFlags: [FLAGS.adi
 
 // Hull (Angleterre), 40 x 50 cases, redessinée dans le créateur (octobre 2026 ; la grille du jeu est tirée du dessin).
 // En haut, le campus : la bibliothèque Brynmor Jones (immeuble à jardinières), l'université (manoir de pierre) et
-// The Asylum (boutique au store rayé), avec le panneau des résultats. Newland Avenue descend tout droit : le premier
-// pub (longère au toit d'ardoise) et, en face, le second pub, chez Léo (avec Romain et Prophecy) et un café ; plus bas,
-// la coloc de Pierre et Ousmane, celle de Charlotte et Anaïs. La grande rue est-ouest mène à l'aéroport par ses deux
+// The Asylum (boutique au store rayé), avec le panneau des résultats. Newland Avenue descend tout droit : chez Léo (avec
+// Romain et Prophecy, la longère au toit d'ardoise) et, en face, un café et le premier pub ; plus bas, la coloc de Pierre
+// et Ousmane, celle de Charlotte et Anaïs, et le second pub. Les pubs sont les immeubles à jardinières de l'avenue. La grande rue est-ouest mène à l'aéroport par ses deux
 // bouts ; le square et sa fontaine, le quai, l'estuaire de la Humber. Il pleut (le jour) ; la ville passe en nuit
 // pendant la soirée de Léo, puis au petit matin à la sortie de l'Asylum.
 // Scénario : voir data/hullStory.js.
@@ -103,21 +103,17 @@ export const hullMap = {
       lockedDialogue: ["The Asylum, la boîte de l'université. Ça ouvre à 22 h !"],
     },
     {
-      x: 9, y: 20, interior: 'hullPubA',                          // la longère au toit d'ardoise
-      lock: { ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.asylumFini] },
-      lockedDialogue: ["The pub is closed. Le pub n'ouvre que le soir."],
-    },
-    {
-      x: 22, y: 20, interior: 'hullPubB',                         // en face, de l'autre côté de l'avenue
-      lock: { ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.asylumFini] },
-      lockedDialogue: ["The pub is closed. Le pub n'ouvre que le soir."],
-    },
-    {
-      x: 28, y: 20, interior: 'hullHouse',                        // chez Léo, avec Romain et Prophecy
+      x: 9, y: 20, interior: 'hullHouse',                         // chez Léo, avec Romain et Prophecy : la longère
       lock: { ifFlags: [FLAGS.leoAppel] },
       lockedDialogue: ["La maison de Léo, Romain et Prophecy. Personne ne répond pour l'instant."],
     },
-    { x: 33, y: 20, lockedDialogue: ['Un café de Newland Avenue. Fermé pour la journée.'] },
+    { x: 22, y: 20, lockedDialogue: ['Un café de Newland Avenue. Fermé pour la journée.'] },
+    {
+      x: 28, y: 20, interior: 'hullPubA',                         // l'immeuble à jardinières, en haut de l'avenue
+      lock: { ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.asylumFini] },
+      lockedDialogue: ["The pub is closed. Le pub n'ouvre que le soir."],
+    },
+    { x: 33, y: 20, lockedDialogue: NOT_HOME },
     {
       x: 11, y: 31, interior: 'hullColoc',                        // la coloc de Pierre et Ousmane
       lock: { ifFlags: [FLAGS.hullAccueil] },
@@ -125,7 +121,11 @@ export const hullMap = {
     },
     { x: 22, y: 31, lockedDialogue: ['La coloc de Charlotte et Anaïs. Personne ne répond.'] },
     { x: 27, y: 31, lockedDialogue: NOT_HOME },
-    { x: 33, y: 31, lockedDialogue: NOT_HOME },
+    {
+      x: 33, y: 31, interior: 'hullPubB',                         // l'immeuble à jardinières, plus bas
+      lock: { ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.asylumFini] },
+      lockedDialogue: ["The pub is closed. Le pub n'ouvre que le soir."],
+    },
   ],
   // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
   buildings: [],
@@ -162,18 +162,18 @@ export const hullMap = {
       dialogue: ['Les résultats sont sur le panneau. Va voir !'],
     },
     // Les adieux, devant chez Léo : chacun part en échange (voir hullStory.js FAREWELL).
-    ...[['leo-adieux', 'Léo', 27, 21, 'down'], ['ousmane-adieux', 'Ousmane', 29, 21, 'down'],
-      ['charlotte-adieux', 'Charlotte', 25, 22, 'right'], ['anais-adieux', 'Anaïs', 24, 21, 'right'],
-      ['prophecy-adieux', 'Prophecy', 30, 22, 'left'], ['romain-adieux', 'Romain', 24, 22, 'right']].map(([id, name, x, y, facing]) => ({
+    ...[['leo-adieux', 'Léo', 8, 21, 'down'], ['ousmane-adieux', 'Ousmane', 10, 21, 'down'],
+      ['charlotte-adieux', 'Charlotte', 7, 22, 'right'], ['anais-adieux', 'Anaïs', 6, 21, 'right'],
+      ['prophecy-adieux', 'Prophecy', 11, 22, 'left'], ['romain-adieux', 'Romain', 6, 22, 'right']].map(([id, name, x, y, facing]) => ({
       id, name, x, y, facing, ...FAREWELL_TIME, script: FAREWELL,
     })),
     // Léo et Ousmane restent à Hull : ils gardent la maison.
     {
-      id: 'leo-maison-garde', name: 'Léo', x: 27, y: 21, facing: 'down',
+      id: 'leo-maison-garde', name: 'Léo', x: 8, y: 21, facing: 'down',
       ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], dialogue: ['Hanoï, hein. Nous on garde la maison.'],
     },
     {
-      id: 'ousmane-maison-garde', name: 'Ousmane', x: 29, y: 21, facing: 'down',
+      id: 'ousmane-maison-garde', name: 'Ousmane', x: 10, y: 21, facing: 'down',
       ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], dialogue: ['Reviens avec des histoires.'],
     },
   ],
@@ -187,7 +187,7 @@ export const hullMap = {
   // La grande rue mène à l'aéroport par ses deux bouts.
   triggers: [32, 33, 34, 35].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),
   // Les deux pubs, l'Asylum et l'université éclairés pendant la soirée.
-  night: { ...NIGHT, lights: [[9, 19, 0xffc060], [22, 19, 0xffc060], [29, 7, 0xd070ff], [17, 7, 0xffe0a0]] },
+  night: { ...NIGHT, lights: [[28, 19, 0xffc060], [33, 30, 0xffc060], [29, 7, 0xd070ff], [17, 7, 0xffe0a0]] },
   dawn: DAWN_TIME,
   rain: {},
   surroundings: { outside, border: 'ƀ', borderSkip: ['ɔ', '~'] },

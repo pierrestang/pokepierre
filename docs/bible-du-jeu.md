@@ -649,9 +649,9 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 ### La carte (redessinée en octobre 2026, 40 x 50)
 En haut, le campus : la bibliothèque Brynmor Jones (immeuble à jardinières, à gauche), l'université (manoir de pierre,
 au centre, avec le panneau des résultats devant), The Asylum (boutique au store rayé, à droite). Newland Avenue descend
-au milieu : le premier pub (longère au toit d'ardoise, à gauche) ; en face, le second pub, chez Léo (immeuble à
-jardinières) et un café. Plus bas : la coloc de Pierre et Ousmane, celle de Charlotte et Anaïs, deux maisons fermées
-(« Ce n'est pas chez toi. »). La grande rue, est-ouest, mène à l'aéroport par ses deux bouts ; le square et sa fontaine,
+au milieu : chez Léo (longère au toit d'ardoise, à gauche) ; en face, un café et le premier pub (immeuble à
+jardinières). Plus bas : la coloc de Pierre et Ousmane, celle de Charlotte et Anaïs, le second pub (immeuble à
+jardinières) et deux maisons fermées (« Ce n'est pas chez toi. »). Les pubs sont les immeubles à deux étages. La grande rue, est-ouest, mène à l'aéroport par ses deux bouts ; le square et sa fontaine,
 le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The Deep.
 
 ### PNJ présents
@@ -668,8 +668,8 @@ le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The De
 | Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `g138` |
 
 ### Quêtes, dans l'ordre
-1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite le grand immeuble
-   à jardinières, en haut de Newland Avenue, à droite. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Léo : « Romain,
+1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite la maison au toit
+   d'ardoise, en haut de Newland Avenue, à gauche. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Léo : « Romain,
    Prophecy : voilà Pierre, de la promo de KEDGE. » ; Romain : **« Ah, c'est toi, Pierre ! Léo nous a parlé de toi. »** /
    « Nous, on vous rejoint à l'Asylum. » ; Prophecy : « Salut, Pierre. » / « On a nos propres plans avant. » ; Léo : « Les autres sont déjà au pub, en
    haut de Newland Avenue. On y va ! » ; « La nuit tombe sur Hull. »
@@ -680,7 +680,7 @@ le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The De
    Anaïs « Un verre de vin rouge. ». Le barman les demande en anglais (« And for Léo? »…), parmi six boissons ; une
    erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : « Le barman pose les verres
    sur un plateau. Tu rapportes la tournée à la table. » ; Ousmane « Santé ! » ; Léo « Cheers ! Allez, on finit ça et on
-   file au pub d'en face. »
+   file au pub d'en bas. »
 3. **Deuxième pub : les fléchettes.** L'habitué : « Hey, the new guy! Tu joues ? » ; choix « Allez ! » / « Pas
    maintenant. » ; le pari (voir le passage optionnel), puis une partie de trois lancers, gagnée ou perdue ; Léo : « On
    file à l'Asylum ! » (l'histoire continue dans les deux cas).
@@ -705,7 +705,7 @@ le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The De
 
 ### Objectifs affichés
 « Objectif : rejoins la bande au pub, en haut de Newland Avenue. » → « Objectif : ramène la tournée. Demande à chacun ce
-qu'il veut, puis commande au comptoir. » → « Objectif : suis la bande au pub suivant, de l'autre côté de l'avenue. » →
+qu'il veut, puis commande au comptoir. » → « Objectif : suis la bande au pub suivant, plus bas dans l'avenue. » →
 « Objectif : rejoins la bande à l'Asylum, tout en haut, sur le campus. » → « Objectif : rentre dormir à la coloc. » →
 « Objectif : rejoins la bande à la bibliothèque Brynmor Jones, sur le campus. » → « Objectif : va voir les résultats
 demain, devant l'université. » → « Objectif : va voir les résultats devant l'université. » → « Objectif : retrouve la

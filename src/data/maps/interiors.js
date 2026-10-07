@@ -1528,7 +1528,7 @@ export const interiors = {
     ],
   },
 
-  // Hull — chez Léo, avec Romain et Prophecy (l'immeuble à jardinières, en haut de Newland Avenue). Scénario : data/hullStory.js.
+  // Hull — chez Léo, avec Romain et Prophecy (la maison au toit d'ardoise, en haut de Newland Avenue). Scénario : data/hullStory.js.
   hullHouse: {
     name: 'Chez Léo',
     frlg: true,

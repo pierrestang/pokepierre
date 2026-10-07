@@ -42,7 +42,7 @@ export const OUSMANE_WALK = [{ walk: 'ousmane-arrivee', to: HULL_SPOTS.colocDoor
 // Dans la coloc : Léo a appelé.
 export const LEO_CALLED = [
   { approach: 'ousmane-coloc' },
-  { speaker: 'Ousmane', say: ['Au fait, Léo a appelé. Il veut te voir, il a un plan.', 'Il habite le grand immeuble à jardinières, en haut de Newland Avenue, à droite.'] },
+  { speaker: 'Ousmane', say: ['Au fait, Léo a appelé. Il veut te voir, il a un plan.', 'Il habite la maison au toit d\'ardoise, en haut de Newland Avenue, à gauche.'] },
   { setFlag: FLAGS.leoAppel },
 ];
 
@@ -92,8 +92,8 @@ const CHEERS = [
   { say: ['Le barman pose les verres sur un plateau. Tu rapportes la tournée à la table.'] },
   { hop: ['player', ...ORDERS.map((o) => o.id)], times: 2 },
   { speaker: 'Ousmane', say: ['Santé !'] },
-  { speaker: 'Léo', say: ['Cheers ! Allez, on finit ça et on file au pub d\'en face.'] },
-  { say: ['Objectif : suis la bande au pub suivant, de l\'autre côté de l\'avenue.'] },
+  { speaker: 'Léo', say: ['Cheers ! Allez, on finit ça et on file au pub d\'en bas.'] },
+  { say: ['Objectif : suis la bande au pub suivant, plus bas dans l\'avenue.'] },
   { setFlag: FLAGS.tourneeServie },
 ];
 export const PUB_A_BAR = [
