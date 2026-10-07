@@ -8,6 +8,7 @@ import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
 import {
   requestedBuiltMap, loadBuiltMap, preloadBuiltMap, bakeBuiltMap, preloadBuiltLooks, gameMapOf, useBuiltLook, protectSave,
+  gameInteriorOf, useBuiltInterior, cityOfInterior,
 } from '../systems/builtMaps.js';
 
 // Point d'entrée : charge les images, puis affiche l'écran titre (qui lance ensuite l'interface et la partie).
@@ -41,6 +42,16 @@ export class BootScene extends Phaser.Scene {
       useBuiltLook(gameMap, this.builtMap);
       this.scene.launch('UI');
       this.scene.start('Overworld', { mapId: gameMap.id, spawn: this.builtMap.spawn });
+      return;
+    }
+    // Un intérieur du jeu retouché dans le créateur : il s'ouvre dans son contexte (PNJ, scénettes), on en sort dans
+    // sa ville.
+    const room = this.builtMap && gameInteriorOf(interiors, this.builtMap);
+    if (room) {
+      useBuiltInterior(room, this.builtMap);
+      this.scene.launch('UI');
+      this.scene.start('Interior', { interior: this.builtMap.id, fromMap: cityOfInterior(MAPS, this.builtMap.id),
+        spawn: this.builtMap.spawn });
       return;
     }
     if (this.builtMap) {

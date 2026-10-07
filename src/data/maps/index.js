@@ -1,4 +1,5 @@
 import { fortDeFranceMap } from './fortDeFrance.js';
+import { applyNpcEdits } from './npcEdits.js';
 import { saintAyMap } from './saintAy.js';
 import { routeMontepilloyMap } from './routeMontepilloy.js';
 import { montepilloyMap } from './montepilloy.js';
@@ -45,5 +46,8 @@ export const MAPS = {
   [thailandMap.id]: thailandMap,
   [nepalMap.id]: nepalMap,
 };
+
+// PNJ placés dans le créateur de cartes (déplacés, figurants ajoutés : voir npcEdits.js).
+for (const map of Object.values(MAPS)) if (map.built) applyNpcEdits(map, map.built);
 
 export const START_MAP = fortDeFranceMap.id;

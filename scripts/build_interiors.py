@@ -10,8 +10,12 @@ leur dessin remplace le rendu Rouge Feu.
 Toutes les cases utilisées sont copiées dans une planche à part, public/assets/v2/interieurs.png (masquée dans le
 créateur) : refaire la bibliothèque Gen 4 ne déplace rien. Les cases déjà dans la planche gardent leur numéro.
 
-Usage : python3 scripts/build_interiors.py [id…] [--apercu <dossier>] [--essai]   (toutes les pièces par défaut ;
---essai : aperçus seulement, rien n'est écrit dans le projet)
+Une pièce retouchée à la main dans le créateur de cartes (marquée `retouche` par le serveur de dev, voir
+vite.config.js) n'est plus redessinée, sauf avec --force ; les PNJ placés dans le créateur (`npcEdits`) sont toujours
+gardés.
+
+Usage : python3 scripts/build_interiors.py [id…] [--apercu <dossier>] [--essai] [--force]   (toutes les pièces par
+défaut ; --essai : aperçus seulement, rien n'est écrit dans le projet ; --force : redessine aussi les pièces retouchées)
 """
 import json
 import subprocess
@@ -229,7 +233,8 @@ def build_room(rid, src, plan, pack):
 def main():
     args = sys.argv[1:]
     essai = '--essai' in args                         # aperçus seulement : rien n'est écrit dans le projet
-    args = [a for a in args if a != '--essai']
+    force = '--force' in args                         # redessine aussi les pièces retouchées dans le créateur
+    args = [a for a in args if a not in ('--essai', '--force')]
     apercu = None
     if '--apercu' in args:
         i = args.index('--apercu')
@@ -244,7 +249,14 @@ def main():
         if rid not in rooms:
             print(f'{rid} : intérieur inconnu')
             continue
+        old_file = OUT / f'{rid}.json'
+        old = json.loads(old_file.read_text()) if old_file.exists() else {}
+        if old.get('retouche') and not force and not essai:
+            print(f'{rid} : retouchée dans le créateur, gardée (--force pour la redessiner)')
+            continue
         built, preview, problems = build_room(rid, rooms[rid], P.PLANS[rid], pack)
+        if old.get('npcEdits'):                       # PNJ placés dans le créateur : gardés
+            built['npcEdits'] = old['npcEdits']
         if not essai:
             (OUT / f'{rid}.json').write_text(json.dumps(built, ensure_ascii=False, separators=(',', ':')))
         if apercu:

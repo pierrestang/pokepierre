@@ -37,6 +37,19 @@ Platine, HeartGold, SoulSilver), comme les cartes extérieures du créateur.
   bas du lit passe au-dessus des personnages, `built.beds` dit où le coucher ; voir `frlgArt.bedAt`).
 - Pièce : `free` / `block` (cases forcées), `void` (cases noires en plus), `mat` (tapis de sortie).
 
+## Retoucher une pièce dans le créateur
+
+« Ouvrir » liste aussi les intérieurs du jeu (« intérieur »). Une pièce s'ouvre en mode case par case, sur le rayon
+« Intérieurs » de la palette (planche « interieurs », g4-int-sols, g4-int-meubles, et les planches d'origine dppt-int,
+hgss-int, jesus-3, jared-bateaux). « Enregistrer » l'écrit dans src/data/builtInteriors/<id>.json (serveur de dev,
+`/__builder/interieurs`, même protection contre l'écrasement que les cartes) et la marque `retouche: true` :
+`build_interiors.py` ne la redessine plus (il l'annonce), sauf avec `--force`. On ne crée pas d'intérieur dans le
+créateur : la pièce doit exister dans src/data/maps/interiors.js. « Tester » ouvre la pièce dans le jeu, dans son contexte
+(PNJ, scénettes ; on en sort dans sa ville).
+
+Les PNJ placés dans le créateur (outil PNJ, voir createur-de-cartes.md) sont enregistrés dans `npcEdits` du JSON ;
+`build_interiors.py` les garde toujours, même avec `--force`.
+
 ## Contrôles
 
 `python3 scripts/build_interiors.py [id…] [--essai] [--apercu <dossier>]` signale, pour chaque pièce : PNJ sur une case
