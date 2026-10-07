@@ -38,19 +38,32 @@ SHEET = 'interieurs'
 STRIDE = 100000
 
 
+def no_shadow(tile):
+    """La case sans ombre portée (pixels noirs semi-transparents : calques Shadow des pièces HGSS, ombres des meubles) :
+    l'intérieur a la même direction artistique que l'extérieur, sans ombres (voir scripts/remove_shadows.py)."""
+    a = np.array(tile.convert('RGBA'))
+    shadow = (a[..., 3] > 0) & (a[..., 3] < 255) & (a[..., :3].astype(int).sum(-1) < 40)
+    if not shadow.any():
+        return tile
+    a[shadow] = 0
+    return Image.fromarray(a)
+
+
 class Packer:
-    """Cases de la planche « interieurs » : les anciennes gardent leur numéro, les nouvelles s'ajoutent à la fin."""
+    """Cases de la planche « interieurs » : les anciennes gardent leur numéro, les nouvelles s'ajoutent à la fin. Toutes
+    sans ombre (no_shadow), anciennes comprises : les pièces retouchées dans le créateur le sont aussi."""
     def __init__(self):
         self.tiles, self.index = [], {}
         old = V2 / f'{SHEET}.png'
         if old.exists():
             img = Image.open(old).convert('RGBA')
             for k in range(img.width // TILE * (img.height // TILE)):
-                t = img.crop(((k % COLS) * TILE, (k // COLS) * TILE, (k % COLS + 1) * TILE, (k // COLS + 1) * TILE))
+                t = no_shadow(img.crop(((k % COLS) * TILE, (k // COLS) * TILE, (k % COLS + 1) * TILE, (k // COLS + 1) * TILE)))
                 self.index.setdefault(t.tobytes(), k)
                 self.tiles.append(t)
 
     def add(self, tile):
+        tile = no_shadow(tile)
         if not np.array(tile)[..., 3].any():
             return -1
         key = tile.tobytes()
@@ -162,6 +175,7 @@ def build_room(rid, src, plan, pack):
     inside = lambda x, y: 0 <= x < W and 0 <= y < H and (x, y) not in void
 
     def put(layer, x, y, tile):
+        tile = no_shadow(tile)
         k = pack.add(tile)
         if k >= 0:
             layer[y * W + x].append(STRIDE * 0 + k)

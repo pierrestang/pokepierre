@@ -79,3 +79,11 @@ Planches de ASSETTILESPOKEMONV2 (voir son README et `credits/`) : DPPt d'akizaku
 yacht de terriblejared (pubs : bois sombre, fenêtres, fauteuils verts, laiton), JesusCarrasco, ultimatetraveler.
 Ce qui manque est dessiné dans les fichiers de groupe, dans le style Gen 4 (cible de fléchettes, pompes à bière,
 néons, cabine de DJ, piste lumineuse, boule à facettes…).
+
+## Sans ombres (octobre 2026)
+
+Même direction artistique qu'à l'extérieur (scripts/remove_shadows.py) : aucune ombre portée. build_interiors.py
+(`no_shadow`) retire les pixels noirs semi-transparents de chaque case (calques Shadow des pièces HGSS, ombres sous les
+meubles et les objets dessinés) ; le Packer nettoie aussi les cases déjà dans la planche `interieurs`, si bien que les
+pièces retouchées dans le créateur en profitent sans être redessinées. Les planches d'intérieurs de la palette du
+créateur (dppt-int, hgss-int, jesus-3) sont nettoyées de la même façon par build_v2_tiles.py (NO_SHADOW).

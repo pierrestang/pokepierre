@@ -265,6 +265,18 @@ def build_autotiles():
             'cols': cols, 'rows': rows, 'empty': empty_tiles(sheet), 'author': 'Gen 4 Pack (voir CREDITS)', 'gen': 4}
 
 
+# Planches d'intérieurs de la palette du créateur : sans ombres portées (pixels noirs semi-transparents), comme les
+# intérieurs du jeu (build_interiors.py no_shadow) et l'extérieur (remove_shadows.py) : une seule direction artistique.
+NO_SHADOW = {'dppt-int', 'hgss-int', 'jesus-3'}
+
+
+def without_shadows(img):
+    a = np.array(img)
+    shadow = (a[..., 3] > 0) & (a[..., 3] < 255) & (a[..., :3].astype(int).sum(-1) < 40)
+    a[shadow] = 0
+    return Image.fromarray(a)
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     catalog = []
@@ -279,6 +291,8 @@ def main():
         padded = Image.new('RGBA', (cols * TILE, rows * TILE))
         padded.paste(img, (0, 0))
         img = padded
+        if sheet_id in NO_SHADOW:
+            img = without_shadows(img)
         empty = empty_tiles(img)
         img.save(OUT / f'{sheet_id}.png', optimize=True)
         catalog.append({'id': sheet_id, 'name': name, 'file': f'{sheet_id}.png', 'cols': cols, 'rows': rows,
