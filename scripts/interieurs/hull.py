@@ -151,6 +151,7 @@ ITEMS = {
     'h-dj': {'img': dj_booth, 'solid': 1},
     'h-boule': {'img': disco_ball, 'solid': 0, 'top': True},
     'h-piste': {'img': lambda: dance_floor(4, 3), 'solid': 0, 'flat': True},
+    'h-piste-grande': {'img': lambda: dance_floor(8, 5), 'solid': 0, 'flat': True},
     'h-tabouret': {'img': bar_stool, 'solid': 0, 'flat': True},
     'h-tabouret-vert': {'img': lambda: bar_stool((70, 150, 90)), 'solid': 0, 'flat': True},
     'h-mange-debout': {'img': high_table, 'solid': 1},
@@ -201,21 +202,29 @@ PLANS = {
             ['pintes', 1, 6, {'dy': -4}], ['pintes', 4, 4, {'dy': -4}], ['pintes', 7, 4, {'dy': -4}],
         ],
     },
-    # The Asylum : le bar à gauche (bouteilles, tabourets), la cabine de DJ entre deux enceintes au fond, des néons au
-    # mur, la piste de dalles lumineuses (où il faut rejoindre la bande) et la boule à facettes ; des mange-debout à droite.
+    # The Asylum (24 x 18) : le bar à gauche (bouteilles au mur, comptoir, tabourets ; le barman va et vient derrière),
+    # la cabine du DJ entre deux enceintes au fond (le DJ derrière ses platines), des néons au mur, la grande piste de
+    # dalles lumineuses (x 8-15, y 6-10, où il faut rejoindre la bande) et deux boules à facettes ; les mange-debout et
+    # le coin salon à droite, le vestiaire et des plantes à l'entrée.
     'hullAsylum': {
         'wall': 'brique', 'floor': 'pierre-sombre',
         'items': [
-            ['h-piste', 4, 6],
-            ['bouteilles-3', 0, 1], ['bar-3', 0, 3], ['pompes', 1, 2, {'dy': -6}],
-            ['h-tabouret', 1, 3], ['h-tabouret', 2, 3],
-            ['h-enceinte', 3, 2], ['h-dj', 4, 2], ['h-enceinte', 7, 2],
-            ['h-neon-rose-verre', 0, 0], ['h-neon-cyan-note', 5, 0], ['h-neon-violet-note', 8, 0], ['h-neon-rose-vague', 10, 0],
-            *[it for y in (3, 5, 7) for it in (['h-mange-debout', 10, y], ['h-tabouret', 11, y])],
-            ['pintes', 10, 5, {'dy': -10}],
-            ['h-boule', 5, 3, {'dx': 8}],
+            ['h-piste-grande', 8, 10],
+            ['bouteilles-6', 1, 1], ['bar-6', 1, 4], ['pompes', 2, 3, {'dy': -6}], ['pompes', 5, 3, {'dy': -6}],
+            ['pintes', 4, 3, {'dy': -8}],
+            *[['h-tabouret', x, 4] for x in range(1, 7)],
+            ['h-enceinte', 9, 3, {'solid': 2}], ['h-dj', 10, 3], ['h-enceinte', 13, 3],
+            ['h-neon-rose-verre', 1, 0], ['h-neon-cyan-note', 6, 0], ['h-neon-violet-note', 15, 0],
+            ['h-neon-rose-vague', 19, 0], ['h-neon-cyan-note', 22, 0],
+            *[it for x, y in ((19, 5), (21, 8), (19, 11)) for it in (['h-mange-debout', x, y], ['h-tabouret', x + 1, y])],
+            ['pintes', 21, 8, {'dy': -10}],
+            ['fauteuil-vert', 19, 14], ['h-table-pub', 20, 14], ['h-table-pub', 21, 14], ['fauteuil-vert', 22, 14],
+            ['pintes', 20, 14, {'dy': -4}], ['h-palmier', 23, 15],
+            ['comptoir-caisse', 1, 13],
+            ['h-palmier', 9, 16], ['h-palmier', 15, 16],
+            ['h-boule', 10, 7, {'dx': 8}], ['h-boule', 13, 7, {'dx': 8}],
         ],
-        'free': [[8, 2], [9, 2], [10, 2], [11, 2]],
+        'block': [[10, 2]],                 # derrière les platines, on passe seulement par la droite (le DJ)
     },
     # Bibliothèque Brynmor Jones : rayonnages contre le mur de part et d'autre d'une fenêtre, grande table de lecture au
     # milieu (la bande révise autour), moquette rouge, deux palmiers près de l'entrée.

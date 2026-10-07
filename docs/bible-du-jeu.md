@@ -665,12 +665,19 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
   déjà là. Toute la promo de KEDGE a atterri ici. » / « Viens, je te montre la coloc. » Il pleut à Hull tant qu'il fait jour.
 
 ### La carte (redessinée en octobre 2026, 40 x 50)
-En haut, le campus : la bibliothèque Brynmor Jones (immeuble à jardinières, à gauche), l'université (manoir de pierre,
-au centre, avec le panneau des résultats devant), The Asylum (boutique au store rayé, à droite). Newland Avenue descend
-au milieu : chez Léo (longère au toit d'ardoise, à gauche) ; en face, un café et le premier pub (immeuble à
-jardinières). Plus bas : la coloc de Pierre et Ousmane, celle de Charlotte et Anaïs, le second pub (immeuble à
-jardinières) et deux maisons fermées (« Ce n'est pas chez toi. »). Les pubs sont les immeubles à deux étages. La grande rue, est-ouest, mène à l'aéroport par ses deux bouts ; le square et sa fontaine,
-le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The Deep.
+En haut, le campus : les bureaux de l'université (immeuble à jardinières, à gauche, fermés : « Les bureaux de
+l'université. Fermés, sauf pour les inscriptions. »), l'université (manoir de pierre, au centre ; le jour des résultats,
+le panneau « EXAM » est dressé à sa droite, comme celui du bac au Prytanée), The Asylum (boutique au store rayé, à
+droite). Newland Avenue descend au milieu : la bibliothèque Brynmor Jones (longère au toit d'ardoise, à gauche) ; en face,
+un café, le premier pub (immeuble à jardinières) et chez Léo, Romain et Prophecy (la petite maison juste après le pub).
+Plus bas : la coloc de Pierre et Ousmane, celle de Charlotte et Anaïs, le second pub (immeuble à jardinières) et une
+maison fermée (« Ce n'est pas chez toi. »). Les pubs sont les immeubles à deux étages. La grande rue, est-ouest, mène à
+l'aéroport par ses deux bouts ; le square et sa fontaine, le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull
+Minster ni de The Deep.
+
+The Asylum (24 x 18) : le bar à gauche (barman, habitués sur les tabourets), le DJ derrière ses platines entre deux
+enceintes, la grande piste lumineuse et ses boules à facettes, les mange-debout et le coin salon à droite, le vestiaire
+et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, clients).
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -681,16 +688,21 @@ le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The De
 | Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `g94` |
 | Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontre Pierre au premier pub | `g44` |
 | Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `g107` |
-| Barman, Barmaid, clients | Les deux pubs | Barman `g101` ; les autres en figurants |
+| Barman, Barmaid, clients | Les deux pubs, l'Asylum | Barman `g101` ; les autres en figurants |
+| DJ, videur, vestiaire, danseurs, étudiants | The Asylum | figurants |
 | Habitué | Adversaire aux fléchettes, et le pari (passage optionnel) | figurant |
 | Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `g138` |
 
 ### Quêtes, dans l'ordre
-1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite la maison au toit
-   d'ardoise, en haut de Newland Avenue, à gauche. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Léo : « Romain,
+1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite en haut de
+   Newland Avenue, à droite : la petite maison juste après le pub. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Léo : « Romain,
    Prophecy : voilà Pierre, de la promo de KEDGE. » ; Romain : **« Ah, c'est toi, Pierre ! Léo nous a parlé de toi. »** /
-   « Nous, on vous rejoint à l'Asylum. » ; Prophecy : « Salut, Pierre. » / « On a nos propres plans avant. » ; Léo : « Les autres sont déjà au pub, en
-   haut de Newland Avenue. On y va ! » ; « La nuit tombe sur Hull. »
+   « Nous, on vous rejoint à l'Asylum. » ; Prophecy : « Salut, Pierre. » / « Il me faut au moins une heure pour choisir
+   mes chaussures. Romain m'attend. » ; Léo : « Les autres sont déjà au pub, juste à côté. Je passe devant, suis-moi ! » ;
+   « La nuit tombe sur Hull. »
+   **La tournée des bars** : à chaque étape (de chez Léo au premier pub, puis au second, puis à l'Asylum), Léo sort le
+   premier, part devant en éclaireur (il attend Pierre s'il traîne) et entre le premier ; Pierre le suit ; à partir du
+   premier pub, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu, puis s'attablent en arrivant.
 2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** ; Anaïs : « Comme à Bordeaux, mais
    c'est toi qui régales cette fois ! » ; Charlotte : **« Moi, c'est Charlotte, la coloc d'Anaïs. Alors c'est toi, le
    fameux Pierre ? »** Chacun dit sa commande en
@@ -698,10 +710,11 @@ le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The De
    Anaïs « Un verre de vin rouge. ». Le barman les demande en anglais (« And for Léo? »…), parmi six boissons ; une
    erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : « Le barman pose les verres
    sur un plateau. Tu rapportes la tournée à la table. » ; Ousmane « Santé ! » ; Léo « Cheers ! Allez, on finit ça et on
-   file au pub d'en bas. »
+   file au pub d'en bas. Je passe devant ! » (il sort ; les autres se lèvent et suivent Pierre).
 3. **Deuxième pub : les fléchettes.** L'habitué : « Hey, the new guy! Tu joues ? » ; choix « Allez ! » / « Pas
-   maintenant. » ; le pari (voir le passage optionnel), puis une partie de trois lancers, gagnée ou perdue ; Léo : « On
-   file à l'Asylum ! » (l'histoire continue dans les deux cas).
+   maintenant. » ; le pari (voir le passage optionnel), puis une partie de trois lancers (écran façon jeu Pokémon : la
+   cible où se plantent les fléchettes, la liste des lancers et le total, la jauge de visée), gagnée ou perdue ; Léo :
+   « On file à l'Asylum ! Je passe devant, suivez Pierre ! » (l'histoire continue dans les deux cas).
 4. **L'Asylum, l'aube → Insouciance.** Romain : « Vous en avez mis du temps ! » ; Léo : « Tout le monde sur la piste ! » /
    « C'est notre chanson ! Venez tous ! » → **« Pierre utilise Joie de vivre ! »** → « Tu entraînes toute la bande sur la
    piste, comme Maman au salon. » ; « Toute la bande danse sur la piste. » ; « La musique ralentit… Dernière
@@ -709,12 +722,17 @@ le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The De
    **« Ok guys, zis night was very, very beautiful. Now we go 'ome. Follow me, I know ze way! »** (il part du mauvais
    côté) ; Ousmane « Léo… c'est de l'autre côté. » ; Charlotte « Au fait… les exams, c'est après-demain. » ; Anaïs « Ne
    dis pas ça maintenant. » ; Léo « Demain, bibliothèque. Tout le monde. » → vertu **Insouciance** (phrase du
-   carnet : « Profiter du moment, sans penser à demain. »).
-5. **Dormir** : « Tu t'écroules sur ton lit. » ; « Le lendemain, veille d'examen… »
+   carnet : « Profiter du moment, sans penser à demain. »). « Tout le monde rentre se coucher. » : la bande disparaît
+   (chacun chez soi : Léo, Romain et Prophecy chez eux, Ousmane à la coloc).
+5. **Dormir** : Ousmane, déjà rentré : « Enfin ! Allez, au lit. » ; « Tu t'écroules sur ton lit. » ; « Le lendemain,
+   veille d'examen… » ; Ousmane réveille Pierre : « Debout ! Les exams, c'est demain. Toute la bande révise à la
+   bibliothèque Brynmor Jones. » / « C'est la longère au toit d'ardoise, en haut de Newland Avenue, à gauche. On se
+   retrouve là-bas ! »
 6. **Les révisions** (bibliothèque Brynmor Jones) : « La bande révise autour d'une table. Tour de table ! » Trois questions
    sans mauvaise réponse bloquante : Léo (« J'ai checké le planning, on a un meeting ASAP. »), Charlotte (le present
    perfect), Prophecy (« si je dis « ze » au lieu de « the », ça passe ? »). Charlotte : **« T'es prêt. »**
-7. **Les résultats** : « Le lendemain… » ; « Les résultats de l'examen d'anglais sont affichés. Tu cherches ton nom… » ;
+7. **Les résultats**, sur le panneau « EXAM » dressé devant l'université : « Le lendemain… » ; « Les résultats de
+   l'examen d'anglais sont affichés. Tu cherches ton nom… » ;
    Léo : **« Diplôme de Hull, bro ! »** → **Diplôme d'anglais de Hull** (« Diplôme obtenu : Anglais de Hull ! »).
 8. **Les adieux**, devant chez Léo : « Toute la bande est là, devant chez Léo. Chacun part en échange. » ; Charlotte « Moi,
    c'est le Canada ! » ; Anaïs « Bali ! » ; Prophecy « Les États-Unis. Je vais enfin parler anglais pour de vrai. » ;
@@ -722,23 +740,23 @@ le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The De
    Ousmane « Reviens avec des histoires. »
 
 ### Objectifs affichés
-« Objectif : rejoins la bande au pub, en haut de Newland Avenue. » → « Objectif : ramène la tournée. Demande à chacun ce
-qu'il veut, puis commande au comptoir. » → « Objectif : suis la bande au pub suivant, plus bas dans l'avenue. » →
-« Objectif : rejoins la bande à l'Asylum, tout en haut, sur le campus. » → « Objectif : rentre dormir à la coloc. » →
-« Objectif : rejoins la bande à la bibliothèque Brynmor Jones, sur le campus. » → « Objectif : va voir les résultats
+« Objectif : suis Léo jusqu'au pub, juste à côté. » → « Objectif : ramène la tournée. Demande à chacun ce
+qu'il veut, puis commande au comptoir. » → « Objectif : suis Léo jusqu'au pub suivant, plus bas dans l'avenue. La bande
+te suit. » → « Objectif : suis Léo jusqu'à l'Asylum, tout en haut, sur le campus. La bande te suit. » → « Objectif :
+rentre dormir à la coloc. » → (Ousmane, au réveil, envoie Pierre à la bibliothèque) → « Objectif : va voir les résultats
 demain, devant l'université. » → « Objectif : va voir les résultats devant l'université. » → « Objectif : retrouve la
 bande devant chez Léo. » → « Objectif : va à l'aéroport, au bout de la grande rue. »
 
 ### Passage optionnel : le pari des fléchettes (Audace)
-Avant la partie, l'habitué : « Un pari ? Si tu gagnes, mes fléchettes sont à toi. » → **« Pierre utilise Audace ! »** →
-« Tu tends la main. Pari tenu. »
-- Gagné : **« Well played, mate! Un pari, c'est un pari. »** → **Fléchettes de l'habitué** (« Tu reçois les fléchettes
-  de l'habitué ! »).
+Avant la partie, l'habitué : « Un pari ? Si tu gagnes, je paie une tournée à toute ta bande. » → **« Pierre utilise
+Audace ! »** → « Tu tends la main. Pari tenu. »
+- Gagné : **« Well played, mate! Un pari, c'est un pari. »** ; **« A round for everyone! Une tournée générale, c'est moi
+  qui offre ! »** : toute la bande saute de joie (notes et cœurs) ; Ousmane : « Pierre, t'es une légende. » Pas d'objet.
 - Perdu : « Not bad! La prochaine fois, peut-être. », puis l'habitué : « Revanche ? » (Oui / Pas maintenant). On peut
   rejouer le pari autant qu'on veut tant que le pub est ouvert : en enchaînant les revanches, ou en reparlant à
   l'habitué (« Revanche ? »). Audace n'est utilisée qu'au premier pari.
-- Une fois les fléchettes obtenues : « Good game, mate! ». Si on les a déjà en commençant la partie, elle se joue sans
-  pari (« Well played, mate! Tu reviens quand tu veux. » ou « Not bad! La prochaine fois, peut-être. »).
+- Une fois le pari gagné : « Good game, mate! Cheers! ». Une nouvelle partie se joue alors sans pari (« Well played,
+  mate! Tu reviens quand tu veux. » ou « Not bad! La prochaine fois, peut-être. »).
 
 ### Vertus
 - **Gagnée** : Insouciance (l'aube devant l'Asylum).
@@ -746,7 +764,7 @@ Avant la partie, l'habitué : « Un pari ? Si tu gagnes, mes fléchettes sont à
   **Audace**, pour le pari des fléchettes (optionnel).
 
 ### Objet optionnel
-- **Fléchettes de l'habitué**, gagnées au pari (voir le passage optionnel).
+Aucun (le pari gagné offre une tournée générale).
 
 ### Boîte aux lettres
 Aucune.

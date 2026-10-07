@@ -91,13 +91,20 @@ export const FLAGS = {
   ousmaneRentre: 'ousmane-rentre',              //        Ousmane est rentré à la coloc (devant toi)
   leoAppel: 'leo-appel',                        //        Ousmane : « Léo a appelé, il a un plan »
   leoPlan: 'leo-plan',                          //        chez Léo : la soirée commence (la nuit tombe)
+  leoEntrePubA: 'leo-entre-pub-a',              //        Léo, en éclaireur, est entré le premier au pub
   servieLeo: 'servie-leo',                      //        premier pub, la tournée : la commande de Léo servie
   servieOusmane: 'servie-ousmane',              //          … d'Ousmane
   servieCharlotte: 'servie-charlotte',          //          … de Charlotte
   servieAnais: 'servie-anais',                  //          … d'Anaïs
-  tourneeServie: 'tournee-servie',              //        toute la tournée rapportée : on trinque, la bande file au pub d'en face
+  tourneeServie: 'tournee-servie',              //        toute la tournée rapportée : on trinque, la bande file au pub suivant
+  leoEntrePubB: 'leo-entre-pub-b',              //        Léo, en éclaireur, est entré le premier au second pub
+  bandePubB: 'bande-pub-b',                     //        la bande (derrière Pierre) est entrée au second pub et s'attable
+  tourneeOfferte: 'tournee-offerte',            //        fléchettes : pari gagné, l'habitué offre une tournée générale
   flechettesJouees: 'flechettes-jouees',        //        deuxième pub : partie de fléchettes jouée, direction l'Asylum
+  leoEntreAsylum: 'leo-entre-asylum',           //        Léo, en éclaireur, est entré le premier à l'Asylum
+  bandeAsylum: 'bande-asylum',                  //        la bande (derrière Pierre) est entrée à l'Asylum
   asylumFini: 'asylum-fini',                    //        dernière chanson à l'Asylum : sortie au petit matin
+  bandeRentree: 'bande-rentree',                //        au petit matin, chacun est rentré chez soi
   lendemainHull: 'lendemain-hull',              //        rentré dormir : le lendemain, veille d'examen
   revisions: 'revisions',                       //        révisions à la bibliothèque : « T'es prêt. »
   jourResultats: 'jour-resultats',              //        le lendemain : les résultats affichés devant l'université
@@ -224,7 +231,6 @@ export const ITEMS = {
   diplomeHull: { id: 'diplome-hull', name: 'Diplôme d\'anglais de Hull' },
   insigne: { id: 'insigne-prytanee', name: 'Insigne du Prytanée' },          // Prytanée : objet-souvenir (le nouveau)
   photoSoiree: { id: 'photo-soiree', name: 'Photo de la soirée' },           // Bordeaux : objet-souvenir (le rangement)
-  flechettes: { id: 'flechettes-habitue', name: 'Fléchettes de l\'habitué' }, // Hull : objet-souvenir (le pari)
   objetChance: { id: 'objet-chance', name: 'Objet de chance' },
   marchandise: { id: 'marchandise', name: 'Marchandise' },
   billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },
@@ -255,4 +261,12 @@ export const FOLLOWERS = [
   { id: 'touriste-2', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   // Chemin de Saint-Jacques : Yanis marche avec toi jusqu'à Saint-Jacques.
   { id: 'yanis', color: 0xc0b040, ifFlags: [FLAGS.caminoEnCours], unlessFlags: [FLAGS.caminoFini] },
+  // Hull, la tournée des bars : Léo part devant en éclaireur ; Ousmane, Charlotte et Anaïs suivent Pierre à la queue
+  // leu leu, du premier pub au second, puis du second à l'Asylum (mêmes id que leurs PNJ dans les bars : ils partent de
+  // leur place à table, et s'y rassoient en arrivant, voir hullStory.js et interiors.js).
+  ...[[FLAGS.tourneeServie, FLAGS.bandePubB], [FLAGS.flechettesJouees, FLAGS.bandeAsylum]].flatMap(([from, until]) => [
+    { id: 'ousmane-pub', name: 'Ousmane', ifFlags: [from], unlessFlags: [until] },
+    { id: 'charlotte-pub', name: 'Charlotte', ifFlags: [from], unlessFlags: [until] },
+    { id: 'anais-pub', name: 'Anaïs', ifFlags: [from], unlessFlags: [until] },
+  ]),
 ];
