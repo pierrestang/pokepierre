@@ -2840,6 +2840,11 @@ export const interiors = {
 for (const [id, built] of Object.entries(BUILT_INTERIORS)) {
   const room = interiors[id];
   if (!room) continue;
+  // Un dessin d'une autre taille que la grille (pièce refaite, grille pas encore recalée) : on garde l'ancien rendu.
+  if (room.grid.length !== built.height || room.grid[0].length !== built.width) {
+    console.warn(`Intérieur ${id} : dessin ${built.width} x ${built.height}, grille ${room.grid[0].length} x ${room.grid.length}`);
+    continue;
+  }
   room.built = built;
   room.frlg = false;
   delete room.backdrop;                   // l'image d'un seul tenant (cabane) et ses tables redessinées

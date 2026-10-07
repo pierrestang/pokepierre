@@ -85,18 +85,77 @@ def load_rooms():
     return json.loads(data)
 
 
+def hgss_base(plan):
+    """Pièce partie d'une vraie pièce HGSS (scripts/hgss_rooms.py) : {'sol', 'decor', 'dessus', 'solid', 'w', 'h'},
+    retouchée par plan['erase'] (rectangles vidés de leurs meubles, sol gardé et praticable) et plan['paste'] (morceaux
+    d'autres pièces HGSS collés : {'from': (carte, x, y, w, h), 'to': (x, y), 'sol': False})"""
+    import hgss_rooms as HG
+    name, x0, y0, w, h = plan['hgss']
+    r = HG.room(name, x0, y0, w, h)
+    for ex, ey, ew, eh in plan.get('erase', []):
+        for y in range(ey, ey + eh):
+            for x in range(ex, ex + ew):
+                i = y * w + x
+                r['decor'][i], r['dessus'][i] = [], []
+                r['solid'][i] = 0 if r['sol'][i] else 1
+    for p in plan.get('paste', []):
+        sname, sx, sy, sw, sh = p['from']
+        piece = HG.room(sname, sx, sy, sw, sh)
+        tx, ty = p['to']
+        for y in range(sh):
+            for x in range(sw):
+                X, Y = tx + x, ty + y
+                if not (0 <= X < w and 0 <= Y < h):
+                    continue
+                j, i = y * sw + x, Y * w + X
+                if not (piece['decor'][j] or piece['dessus'][j] or (p.get('sol') and piece['sol'][j])):
+                    continue
+                if p.get('sol') and piece['sol'][j]:
+                    r['sol'][i] = piece['sol'][j]
+                r['decor'][i] = r['decor'][i] + piece['decor'][j]
+                r['dessus'][i] = r['dessus'][i] + piece['dessus'][j]
+                r['solid'][i] = 1 if (piece['solid'][j] and (piece['decor'][j] or piece['dessus'][j])) else r['solid'][i]
+    return r
+
+
+def suggested_grid(base):
+    """Grille logique proposée pour une pièce HGSS : 'X' hors du sol, 'm' bloqué, 'o' libre, 'E' sur le tapis rouge
+    de sortie (case libre de la dernière rangée de sol, au dessin surtout rouge)."""
+    w, h = base['w'], base['h']
+    rows = []
+    for y in range(h):
+        row = ''
+        for x in range(w):
+            i = y * w + x
+            c = 'X' if not base['sol'][i] else ('m' if base['solid'][i] else 'o')
+            last = y == h - 1 or not base['sol'][(y + 1) * w + x]
+            if c == 'o' and last and base['decor'][i]:
+                a = np.array(base['decor'][i][-1].convert('RGBA')).astype(int)
+                vis = a[..., 3] > 0
+                if vis.sum() > 40 and ((a[..., 0] > a[..., 1] + 60) & vis).sum() > 0.4 * vis.sum():
+                    c = 'E'
+            row += c
+        rows.append(row)
+    return rows
+
+
 def build_room(rid, src, plan, pack):
     """Calques et collisions d'une pièce. Renvoie (carte, image d'aperçu, problèmes)."""
     grid = src['grid']
     H, W = len(grid), len(grid[0])
+    base = hgss_base(plan) if 'hgss' in plan else None
+    size_problem = None
+    if base and (base['w'], base['h']) != (W, H):
+        size_problem = (f"taille {base['w']} x {base['h']} différente de la grille du jeu ({W} x {H}) ; grille proposée :\n      "
+                        + '\n      '.join(f"'{r}'," for r in suggested_grid(base)))
+        W, H = base['w'], base['h']
+        grid = suggested_grid(base)
     sol = [[] for _ in range(W * H)]
     decor = [[] for _ in range(W * H)]
     dessus = [[] for _ in range(W * H)]
     solid = [0] * (W * H)
     preview = Image.new('RGBA', (W * TILE, H * TILE), (0, 0, 0, 255))
     top_preview = Image.new('RGBA', (W * TILE, H * TILE))
-    wall = P.wall(plan['wall'])
-    floor = P.floor(plan['floor'])
     void = {(x, y) for y in range(H) for x in range(W) if grid[y][x] == 'X'}
     void |= {tuple(c) for c in plan.get('void', [])}
     inside = lambda x, y: 0 <= x < W and 0 <= y < H and (x, y) not in void
@@ -107,8 +166,19 @@ def build_room(rid, src, plan, pack):
             layer[y * W + x].append(STRIDE * 0 + k)
             (top_preview if layer is dessus else preview).alpha_composite(tile, (x * TILE, y * TILE))
 
+    if base:
+        # Vraie pièce HGSS : ses calques et ses collisions tels quels (son tapis de sortie compris).
+        for i in range(W * H):
+            for layer, k in ((sol, 'sol'), (decor, 'decor'), (dessus, 'dessus')):
+                for t in base[k][i]:
+                    put(layer, i % W, i // W, t)
+            solid[i] = base['solid'][i]
+        inside = lambda x, y: 0 <= x < W and 0 <= y < H and bool(base['sol'][y * W + x])
+    else:
+        wall = P.wall(plan['wall'])
+        floor = P.floor(plan['floor'])
     # Sol, murs (deux rangées au-dessus du sol : la face, puis la plinthe), vide noir ailleurs.
-    for y in range(H):
+    for y in range(H if not base else 0):
         for x in range(W):
             if inside(x, y):
                 put(sol, x, y, floor[y % len(floor)][x % len(floor[0])])
@@ -122,7 +192,7 @@ def build_room(rid, src, plan, pack):
                 solid[y * W + x] = 1
     # Tapis de sortie.
     exits = sorted((x, y) for y in range(H) for x in range(W) if grid[y][x] == 'E')
-    if exits and plan.get('mat', 'rouge'):
+    if exits and plan.get('mat', None if base else 'rouge'):
         mat = tiles_of(P.mat(plan.get('mat', 'rouge'), len(exits)))
         x0, y0 = exits[0]
         for i, t in enumerate(mat[0]):
@@ -176,7 +246,7 @@ def build_room(rid, src, plan, pack):
     for x, y in plan.get('block', []):
         solid[y * W + x] = 1
     # Contrôles : PNJ sur une case libre, sorties libres, objets qu'on peut regarder.
-    problems = []
+    problems = [size_problem] if size_problem else []
     for n in src['npcs']:
         if solid[n['y'] * W + n['x']] and n['id'] not in plan.get('npc_on_solid', []):
             problems.append(f"PNJ {n['id']} sur une case bloquée ({n['x']}, {n['y']})")

@@ -78,6 +78,17 @@ def stretch(img, n, edge=6):
     return out
 
 
+def sirmaio(sheet, c, r, w=1, h=1, iso=False):
+    """Morceau d'une planche du pack HGSS de SirMaIo (ASSETTILESPOKEMONV2/tilesets/interieurs/hgss-sirmaio/<sheet>.png,
+    cases de 32 px, fond rose ou jaune retiré), ramené à l'échelle du jeu (cases de 16 px). Crédit : SirMaIo."""
+    path = V2.parent.parent.parent / 'ASSETTILESPOKEMONV2' / 'tilesets' / 'interieurs' / 'hgss-sirmaio' / f'{sheet}.png'
+    a = np.array(Image.open(path).convert('RGBA'))
+    for key in ((240, 91, 161), (255, 245, 104), (255, 0, 255)):
+        a[(a[..., 0] == key[0]) & (a[..., 1] == key[1]) & (a[..., 2] == key[2])] = 0
+    img = Image.fromarray(a).crop((c * 32, r * 32, (c + w) * 32, (r + h) * 32)).resize((w * T, h * T), Image.NEAREST)
+    return isolate(img) if iso else img
+
+
 def meuble(i):
     """Élément n° i de la planche g4-int-meubles (voir g4-int-meubles.elements.json)."""
     import json
