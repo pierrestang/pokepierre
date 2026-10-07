@@ -5,3 +5,6 @@ dist
 *.psd
 _archive/
 assets-source/elements-cartes/candidats/
+
+# Copies de travail des agents (git worktree)
+.claude/worktrees/
