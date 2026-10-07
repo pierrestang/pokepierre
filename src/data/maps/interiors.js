@@ -67,7 +67,7 @@ const elevator = (room) => ELEVATORS[room].doors.map((x) => ({
 
 // Cartons de déménagement de la maison de Fort-de-France, posés çà et là sans gêner le passage (cases 'm' des grilles).
 const FF_CARTONS = [[3, 3], [0, 6], [9, 4], [9, 8]];
-const FF_UP_CARTONS = [[7, 4], [9, 4], [0, 7], [1, 7], [5, 7], [9, 7]];
+const FF_UP_CARTONS = [[7, 4], [9, 4], [0, 7], [1, 7], [5, 7]];
 
 // Papa, ses cannes rangées, envoie Pierre au salon une fois la quête de Manon finie aussi (tant que Maman n'a pas
 // dansé).
@@ -199,7 +199,7 @@ export const interiors = {
       'mmooomomom',   // le lit de Pierre (à gauche), le tabouret, des cartons
       'mmoomooooo',
       'mmoooooooo',
-      'mmmoomooom',   // des cartons
+      'mmooomooom',   // des cartons
     ]),
     decor: [
       { kind: 'painting', x: 0, y: 0 },
@@ -214,8 +214,9 @@ export const interiors = {
     spawn: { x: 2, y: 5, facing: 'left' },             // au réveil, à côté du lit
     triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
     objects: [
-      { x: 5, y: 3, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
+      { x: 6, y: 3, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
       ...FF_UP_CARTONS.map(([x, y]) => ({ x, y, dialogue: ['Des cartons à moitié faits.'] })),
+      { x: 9, y: 7, dialogue: ['Une petite plante verte.'] },
     ],
     // Image d'accueil de l'île et bruit des vagues, puis la chambre apparaît et Maman appelle d'en bas.
     events: [
@@ -323,14 +324,14 @@ export const interiors = {
   playerHouse: {
     name: 'Maison de la famille',
     frlg: true,
-    grid: parseGrid([
+    grid: parseGrid([ // même maison qu'à Fort-de-France (dessin repris, sans les cartons)
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
       'ηηoommmmmmm',
       'mmoooomoooo',
       'oooooommoom',
       'ooooooooooo',
-      'oooooommooo',
+      'mooooommooo',
       'oooooommooo',
       'ooooooooooo',
       'moEooooooom',
@@ -398,17 +399,15 @@ export const interiors = {
   playerHouseUp: {
     name: 'Chambre des enfants',
     frlg: true,
-    grid: parseGrid([
+    grid: parseGrid([ // même maison qu'à Fort-de-France (dessin repris, sans les cartons)
       'XXXXXXXXXX',
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'ξξooommmmm',
+      'ξξoommmmmm',
+      'mmooomoooo',
+      'mmoomooooo',
       'mmoooooooo',
-      'mooooooooo',
-      'oooooooooo',
-      'ooooooommm',
-      'ooooooommm',
-      'ooooooommm',
+      'ooooooooom',
     ]),
     decor: [
       ...[0, 3, 6].map((x) => ({ kind: 'bed', x, y: 2 })),
@@ -420,12 +419,12 @@ export const interiors = {
     spawn: { x: 2, y: 4, facing: 'down' },
     triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'playerHouse', x: 2, y: 2, facing: 'down' } })),
     objects: [
-      { x: 9, y: 9, dialogue: ['Une petite plante verte.'] },
+      { x: 9, y: 7, dialogue: ['Une petite plante verte.'] },
     ],
     // Fanny bébé, couchée dans son lit, de la sortie de la clinique jusqu'à l'ellipse (ensuite, elle joue au salon).
     npcs: [
       {
-        id: 'fanny-lit', name: 'Fanny', x: 8, y: 7, facing: 'down', still: true, inBed: true, child: true,
+        id: 'fanny-lit', name: 'Fanny', x: 1, y: 4, facing: 'down', still: true, inBed: true, child: true,
         ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.ellipseSaintAy],
         dialogue: ['Fanny dort, son petit poing serré. Elle sourit dans son sommeil.'],
       },
@@ -643,15 +642,15 @@ export const interiors = {
   montHouse: {
     name: 'Maison de Montépilloy',
     frlg: true,
-    grid: parseGrid([
+    grid: parseGrid([ // même maison qu'à Fort-de-France (dessin repris, sans les cartons)
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
       'ηηoommmmmmm',
       'mmoooomoooo',
       'oooooommoom',
       'ooooooooooo',
-      'ooooommoooo',
-      'ooooommoooo',
+      'mooooommooo',
+      'oooooommooo',
       'ooooooooooo',
       'moEooooooom',
     ]),
@@ -1013,17 +1012,15 @@ export const interiors = {
   montHouseUp: {
     name: 'Chambre des enfants',
     frlg: true,
-    grid: parseGrid([
+    grid: parseGrid([ // même maison qu'à Fort-de-France (dessin repris, sans les cartons)
       'XXXXXXXXXX',
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'ξξooommmmm',
+      'ξξoommmmmm',
+      'mmooomoooo',
+      'mmoomooooo',
       'mmoooooooo',
-      'oooooooooo',
-      'oooooooooo',
-      'mmmooooooo',   // un seul lit
-      'mmmooooooo',
-      'mmmoooooom',
+      'ooooooooom',
     ]),
     decor: [
       { kind: 'bed', x: 0, y: 2 },
@@ -1053,8 +1050,8 @@ export const interiors = {
       },
     ],
     objects: [
-      { x: 9, y: 9, dialogue: ['Une petite plante verte.'] },
-      ...[5, 6, 7].map((x) => ({ x, y: 3, dialogue: ['Des livres de classe, des BD et les jouets de Fanny.'] })),
+      { x: 9, y: 7, dialogue: ['Une petite plante verte.'] },
+      ...[6, 7].map((x) => ({ x, y: 3, dialogue: ['Des livres de classe, des BD et les jouets de Fanny.'] })),
     ],
   },
 
