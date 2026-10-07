@@ -6,7 +6,7 @@ HeartGold / SoulSilver (pack de SirMaIo, scripts/hgss_rooms.py) :
   (Violet School), vidée ou garnie selon la pièce ; le collège garde ainsi les mêmes murs d'un étage à l'autre ;
 - hall du collège : le hall de la Tour Radio de Doublonville (accueil en U, tapis rouge, salon, escalier qui monte) ;
 - maison de Montépilloy et chambre des enfants : le salon et la chambre de la maison du héros à Bourg Geon ;
-- grange de M. Bouly : la maison de Fargas à Écorce (bois, établi, poêle), avec le foin de la ferme Meumeu et les
+- grange de M. Bouly : la maison de Fargas à Écorce (bois, établi ; sans le four ni les meubles hauts), avec le foin de la ferme Meumeu et les
   caisses de l'entrepôt de Doublonville.
 Escaliers, casiers (armoires métalliques), caisses : planches du pack (interieurs_plans.sirmaio). Seuls les tonneaux,
 que le pack n'a pas (Benoît se cache dans l'un d'eux), sont dessinés ici, aux couleurs du bois de Fargas.
@@ -80,12 +80,21 @@ WALL_RIGHT = [wall_column(CLEAN_WALL, 8, x) for x in (13, 14)]
 
 
 PLANS = {
-    # Grange de M. Bouly (maison de Fargas, 11 x 10) : l'établi et les étagères au fond à gauche, le vieux poêle au fond
-    # à droite ; tonneaux à gauche (Benoît dans le premier), caisses de légumes au milieu, grand tas de foin en bas à
+    # Grange de M. Bouly (maison de Fargas, 11 x 10) : l'établi au fond à gauche, le fond à droite dégagé (sacs de
+    # charbon) ; tonneaux à gauche (Benoît dans le premier), caisses de légumes au milieu, grand tas de foin en bas à
     # droite (la pièce du tracteur dessous), bidon de lait.
+    # Sans le four en briques ni les deux meubles hauts du fond à gauche (on aurait dit des enceintes), demande de
+    # l'utilisateur : le mur nu remis derrière le four.
     'boulyBarn': {
         'hgss': ('010i_Azalea Houses', 10, 7, 11, 10),
-        'erase': [[1, 6, 1, 1], [4, 5, 1, 1], [10, 7, 1, 1]],
+        'erase': [[1, 6, 1, 1], [4, 5, 1, 1], [10, 7, 1, 1], [6, 1, 4, 5], [0, 2, 2, 2]],
+        'paste': [{'from': ('010i_Azalea Houses', 14, 7, 1, 3), 'to': (x, 0), 'sol': True, 'only': ('Floor', 'Wall')}
+                  for x in (6, 7, 8, 9)]
+                 + [{'from': ('010i_Azalea Houses', 14, 9, 1, 1), 'to': (0, 2), 'sol': True, 'only': ('Floor', 'Wall')},
+                    {'from': ('010i_Azalea Houses', 13, 9, 1, 1), 'to': (1, 2), 'sol': True, 'only': ('Floor', 'Wall')}]
+                 # sol de pierre uni à la place du socle du four
+                 + [{'from': ('010i_Azalea Houses', 15, 15, 1, 1), 'to': (x, y), 'sol': True, 'only': ('Floor',)}
+                    for x in range(6, 11) for y in range(3, 7)],
         'items': [
             ['mc-tonneau', 0, 5], ['mc-tonneau', 0, 6], ['mc-tonneau', 1, 5],
             ['mc-caisses', 4, 6], ['mc-foin', 7, 9], ['mc-bidon', 6, 9],

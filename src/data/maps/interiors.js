@@ -590,7 +590,7 @@ export const interiors = {
   },
 
   // Montépilloy — la grange de M. Bouly (dessin : la maison de Fargas d'HGSS, voir scripts/interieurs/
-  // montepilloy_college.py) : établi et étagères, vieux poêle, tonneaux, caisses, bidon de lait, grand tas de foin. La
+  // montepilloy_college.py) : établi, tonneaux, caisses, bidon de lait, grand tas de foin. La
   // pièce de tracteur est sous le tas de foin (une fois que M. Bouly t'en a parlé) ; au cache-cache, Benoît se cache
   // dans le premier tonneau de gauche.
   boulyBarn: {
@@ -600,8 +600,8 @@ export const interiors = {
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmmmmommmmm',
-      'ooooooommmm',
+      'oommmooooom',
+      'oooooooooom',
       'mmoommoooom',
       'mooommooooo',
       'ooooooommmm',
@@ -620,7 +620,6 @@ export const interiors = {
     spawn: { x: 3, y: 8, facing: 'up' },
     objects: [
       ...[0, 1, 2].map((x) => ({ x, y: 3, dialogue: ["L'établi de M. Bouly : des outils, des boulons… pas la pièce qu'il lui faut."] })),
-      ...[7, 8, 9].map((x) => ({ x, y: 4, dialogue: ['Le vieux poêle de M. Bouly. En été, il reste froid.'] })),
       { x: 4, y: 6, dialogue: ['Une caisse de salades du potager.'] },
       { x: 5, y: 6, dialogue: ["Une caisse d'oranges."] },
       { x: 4, y: 5, dialogue: ['Une caisse de tomates bien mûres.'] },
