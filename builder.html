@@ -134,7 +134,19 @@
       #asst-log.ok { color: var(--ok); }
       #asst-log.warn { color: #f0b24a; }
       #erasebar { left: 12px; bottom: 12px; padding: 3px 3px 3px 10px; color: var(--muted); font-size: 12px; }
-      #erasebar[hidden], #selbar[hidden] { display: none; }
+      #erasebar[hidden], #selbar[hidden], #npcbar[hidden], #npc-detail[hidden], #npc-extra[hidden] { display: none; }
+      #npcbar { left: 12px; top: 12px; width: 260px; flex-direction: column; align-items: stretch; gap: 6px; padding: 8px 10px; }
+      #npcbar .npc-head { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+      #npcbar .npc-head small { flex: 1; font-weight: 400; opacity: 0.7; }
+      #npcbar .help { margin: 0; font-size: 11px; opacity: 0.8; }
+      #npcbar label { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 4px; }
+      #npcbar label input, #npcbar label select { flex: 1; min-width: 0; }
+      #npcbar #npc-detail, #npcbar #npc-extra { display: flex; flex-direction: column; gap: 2px; }
+      #npcbar [hidden] { display: none !important; }
+      #npcbar small { opacity: 0.7; font-size: 11px; }
+      #npcbar .npc-kind { font-size: 11px; font-weight: 600; }
+      .npc-story { color: #f2c14e; } .npc-fig { color: #9aa3b5; } .npc-extra { color: #4fd1c5; }
+      #npc-add.on { outline: 2px solid #4fd1c5; }
       #selbar { left: 12px; bottom: 12px; }
       #erasebar button { min-width: 28px; justify-content: center; padding: 5px 6px; }
       #erasebar button.on { background: var(--accent-soft); color: var(--accent); }
@@ -267,9 +279,11 @@
           <button class="tool" data-tool="move" title="Déplacer — glisser un élément ; ailleurs (ou avec Maj), tracer une zone puis la glisser ; avec Alt : copier ; Ctrl+D : dupliquer ; Suppr ou lâcher hors de la carte : supprimer (M)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/><path d="M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></svg></button>
           <hr />
           <button class="tool detail-only" data-tool="solid" title="Collisions — clic : bloquer / libérer (C)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M6.5 6.5l11 11"/></svg></button>
+          <button class="tool" data-tool="npc" title="PNJ — glisser un PNJ pour le déplacer ; ajouter des figurants (N). ★ doré : PNJ de l'histoire ; gris : figurant du jeu ; + turquoise : figurant ajouté ici"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></button>
           <button class="tool" data-tool="spawn" title="Départ de Pierre (S)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4"/><path d="M6 4h11l-2.5 4L17 12H6"/></svg></button>
           <hr />
           <button class="tool" id="grid" title="Grille (H)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9.3h16M4 14.7h16M9.3 4v16M14.7 4v16"/></svg></button>
+          <button class="tool" id="show-npcs" title="Toujours voir les PNJ"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A5 5 0 0 1 21 19v1"/></svg></button>
           <button class="tool" id="show-solid" title="Toujours voir les collisions (V)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </nav>
 
@@ -277,6 +291,24 @@
           <canvas id="map"></canvas>
           <div class="float" id="erasebar" hidden title="Taille de la gomme ([ et ] pour la changer)">Gomme
             <button class="btn" data-erase="1">1</button><button class="btn" data-erase="2">2</button><button class="btn" data-erase="3">3</button><button class="btn" data-erase="5">5</button>
+          </div>
+          <div class="float" id="npcbar" hidden>
+            <div class="npc-head">PNJ <small id="npc-where"></small>
+              <button class="btn" id="npc-add" title="Puis clique sur la carte : un figurant (une réplique) à cet endroit">Ajouter un figurant</button></div>
+            <p class="help">Glisse un PNJ pour le déplacer. <b class="npc-story">★</b> histoire · <b class="npc-fig">●</b> figurant du jeu · <b class="npc-extra">+</b> ajouté ici. Plusieurs sur une case : clique pour les faire défiler.</p>
+            <div id="npc-detail" hidden>
+              <div class="npc-kind" id="npc-kind"></div>
+              <div id="npc-title"></div>
+              <small id="npc-conds"></small>
+              <label>Direction <select id="npc-facing"><option value="down">bas</option><option value="up">haut</option><option value="left">gauche</option><option value="right">droite</option></select></label>
+              <div id="npc-extra" hidden>
+                <label>Nom <input type="text" id="npc-name" /></label>
+                <label>Apparence <select id="npc-sprite"><option value="">au hasard (figurant)</option></select></label>
+                <label>Réplique <input type="text" id="npc-line" /></label>
+                <button class="btn" id="npc-delete">Supprimer ce figurant</button>
+              </div>
+              <button class="btn" id="npc-reset" hidden title="Le PNJ revient à la place prévue dans le code">Remettre à sa place</button>
+            </div>
           </div>
           <div class="float" id="selbar" hidden>
             <button class="btn" id="sel-dup" title="Dupliquer la sélection : la copie suit la souris, clic pour la poser (Ctrl+D)">Dupliquer</button>

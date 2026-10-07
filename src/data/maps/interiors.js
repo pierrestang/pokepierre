@@ -1,5 +1,6 @@
 import { parseGrid } from './parseGrid.js';
 import { interiorGrid } from './builtGrid.js';
+import { applyNpcEdits } from './npcEdits.js';
 import { BUILT_INTERIORS } from '../builtInteriors/index.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
@@ -2820,4 +2821,5 @@ for (const [id, built] of Object.entries(BUILT_INTERIORS)) {
   delete room.overlays;
   room.sourceGrid = room.grid;
   room.grid = interiorGrid(room.grid, built);
+  applyNpcEdits(room, built);                // PNJ placés dans le créateur (npcEdits.js)
 }

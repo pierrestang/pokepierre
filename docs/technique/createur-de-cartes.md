@@ -31,6 +31,26 @@ calé sur la grille, la porte sur la dernière rangée. Mobilier (g4-mobilier) :
 transat, grande caisse, massif, table de pique-nique, banc de bois, abri de bois, distributeur, panneau d'affichage ;
 souche (végétation, garde son ombre). Les villes suivantes (Prytanée, Bordeaux, Hull) viendront plus tard.
 
+## Intérieurs et PNJ dans le créateur (octobre 2026)
+
+- Intérieurs : « Ouvrir » liste aussi les intérieurs du jeu (src/data/builtInteriors, `/__builder/interieurs` dans
+  vite.config.js). Ouverts en case par case, rayon « Intérieurs » de la palette. Enregistrés marqués `retouche` :
+  scripts/build_interiors.py ne les redessine plus sans `--force` (voir docs/technique/interieurs-gen4.md). « Tester »
+  ouvre la pièce dans le jeu, dans son contexte (BootScene : systems/builtMaps.js gameInteriorOf, useBuiltInterior,
+  cityOfInterior).
+- PNJ : outil « PNJ » (touche N ; bouton « Toujours voir les PNJ » dans la barre d'outils), src/builder/npcs.js. Les PNJ
+  de la carte ou de l'intérieur du jeu qui porte ce dessin (même identifiant) s'affichent avec leur apparence : anneau
+  doré et étoile = PNJ de l'histoire (scénette, conditions, objet, souvenir… : npcEdits.js isStoryNpc), anneau gris =
+  figurant du code, anneau turquoise et « + » = figurant ajouté dans le créateur. On glisse un PNJ pour le déplacer
+  (pointillés jusqu'à sa place d'origine, « Remettre à sa place ») ; plusieurs PNJ sur une case (les étapes de l'histoire
+  d'un personnage) : un chiffre, et un clic les fait défiler ; panneau : direction, conditions d'apparition.
+  « Ajouter un figurant » puis un clic sur la carte : nom, apparence (`g{n}` ou au hasard), réplique, direction ;
+  « Supprimer ce figurant ». Les PNJ de l'histoire ne se créent ni ne se suppriment ici (ils ont des scénettes).
+- Enregistrement : `npcEdits` dans le JSON de la carte ({ moved: { id: { x, y, facing? } }, extras: [...] }), appliqué
+  par src/data/maps/npcEdits.js au chargement des données (maps/index.js, interiors.js) et à l'essai : le jeu,
+  check_paths.js et les scripts d'export voient les mêmes places. Après avoir déplacé un PNJ de l'histoire : Tester et
+  `node scripts/check_paths.js` (une scénette peut le faire marcher depuis sa place).
+
 ## Bâtiments de Hull (7 octobre 2026)
 
 Hull redessinée dans le créateur avec sept bâtiments de g4-batiments posés case par case ; ils sont entrés au catalogue

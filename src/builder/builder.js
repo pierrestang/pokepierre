@@ -3,6 +3,7 @@ import {
 } from './mapModel.js';
 import { createAssistant } from './assistant.js';
 import { createStudio } from './studio.js';
+import { createNpcLayer } from './npcs.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -16,6 +17,7 @@ const PAN_STEP = 96;                         // déplacement aux flèches, en pi
 const HISTORY = 100;
 const ERASE_SIZES = [1, 2, 3, 5];            // côté du carré gommé, en cases
 // Rayons de la palette, dans l'ordre (le rayon de chaque planche : `group` dans catalog.json).
+const INTERIOR_SHEETS = ['interieurs', 'dppt-int', 'hgss-int', 'jesus-3', 'jared-bateaux'];
 const PALETTE_GROUPS = ['Sols et chemins', 'Eau', 'Végétation', 'Relief', 'Bâtiments', 'Mobilier urbain', 'Décor',
   'Intérieurs', 'Cases assemblées'];
 const KEYS = {
@@ -511,6 +513,7 @@ function draw() {
   ctx.textBaseline = 'middle';
   ctx.fillText('P', (sp.x + 0.5) * cs, (sp.y + 0.53) * cs);
 
+  npcs.draw(ctx, cs);
   drawCursor(cs);
   if (state.mode === 'simple') studio.drawGhost(ctx, cs);
 }
@@ -631,7 +634,7 @@ const rectOf = (a, b) => ({ x0: Math.min(a.x, b.x), y0: Math.min(a.y, b.y), x1: 
 function snapshot() {
   const m = state.map;
   return JSON.stringify({ layers: m.layers, solid: m.solid, spawn: m.spawn, sheets: m.sheets, width: m.width, height: m.height,
-    studio: m.studio ?? null });
+    studio: m.studio ?? null, npcEdits: m.npcEdits ?? null });
 }
 function remember() {
   state.undo.push(snapshot());
@@ -1128,6 +1131,11 @@ canvas.addEventListener('pointerdown', (e) => {
   }
   if (e.button !== 0) return;
   const tool = state.tool;
+  if (tool === 'npc') {                       // PNJ : choisir, glisser, poser un figurant (src/builder/npcs.js)
+    npcs.pointerDown(c);
+    requestDraw();
+    return;
+  }
   if (state.mode === 'simple' && tool === 'place') {
     studio.clickPlace().then((r) => { if (r) setStatus(r.text, r.kind); requestDraw(); });
     return;
@@ -1190,6 +1198,11 @@ canvas.addEventListener('pointermove', (e) => {
     return;
   }
   const c = cellAt(e);
+  if (npcs.pointerMove(c)) {
+    state.hover = inside(c.x, c.y) ? c : null;
+    $('coords').textContent = state.hover ? `x ${c.x}, y ${c.y}` : '—';
+    return;
+  }
   const moved = !state.hover || state.hover.x !== c.x || state.hover.y !== c.y;
   state.hover = inside(c.x, c.y) ? c : null;
   $('coords').textContent = state.hover ? `x ${c.x}, y ${c.y}` : '—';
@@ -1227,6 +1240,10 @@ canvas.addEventListener('pointerleave', () => {
   requestDraw();
 });
 const endDrag = () => {
+  if (npcs.dragging()) {
+    npcs.pointerUp();
+    return;
+  }
   const drag = state.drag;
   state.drag = null;
   view.classList.remove('pan');
@@ -1389,6 +1406,7 @@ function setTool(tool) {
   state.tool = tool;
   $('erasebar').hidden = tool !== 'erase';
   document.querySelectorAll('[data-tool]').forEach((b) => b.classList.toggle('on', b.dataset.tool === tool));
+  npcs.renderPanel();
   requestDraw();
 }
 
@@ -1491,6 +1509,7 @@ function loadMap(map, { base = null, dirty = false } = {}) {
   syncFields();
   centerMap();
   store.set(KEYS.current, map);
+  npcs.reset();
   studio.load().then(() => studio.render());
   if (dirty) setStatus('Brouillon repris : modifications non enregistrées');
 }
@@ -1501,6 +1520,11 @@ function setBase(base) {
 }
 
 // ---------- Enregistrer, ouvrir, tester ----------
+
+// Deux collections dans le projet (voir vite.config.js) : les cartes, et les intérieurs du jeu (dessinés par
+// scripts/build_interiors.py, qu'on retouche ici ; une pièce enregistrée ici est marquée « retouchée »).
+const API = (kind) => (kind === 'interieur' ? '/__builder/interieurs' : '/__builder/maps');
+const isInterior = () => state.base?.kind === 'interieur';
 
 async function detectProjectSave() {
   try {
@@ -1524,7 +1548,7 @@ async function save({ force = false } = {}) {
     try {
       const headers = { 'Content-Type': 'application/json', 'If-Match': state.base?.etag ?? 'none' };
       if (force) headers['X-Force'] = '1';
-      res = await fetch(`/__builder/maps/${m.id}`, { method: 'POST', headers, body: JSON.stringify(m) });
+      res = await fetch(`${API(state.base?.kind)}/${m.id}`, { method: 'POST', headers, body: JSON.stringify(m) });
       out = await res.json();
     } catch (error) {
       setStatus(`Échec de l'enregistrement : ${error.message}`, 'err');
@@ -1543,8 +1567,9 @@ async function save({ force = false } = {}) {
       setStatus(`Échec de l'enregistrement : ${out.error}`, 'err');
       return;
     }
-    setBase({ id: m.id, etag: out.etag });
-    setStatus(`Enregistrée dans le projet : ${out.file}`, 'ok');
+    setBase({ id: m.id, etag: out.etag, kind: state.base?.kind });
+    if (isInterior()) m.retouche = true;
+    setStatus(`Enregistrée dans le projet : ${out.file}${isInterior() ? ' (retouchée : build_interiors.py la garde)' : ''}`, 'ok');
   } else {
     const library = store.get(KEYS.library) ?? {};
     if (library[m.id] && state.base?.id !== m.id && !force
@@ -1564,16 +1589,19 @@ async function listMaps() {
   if (!state.projectSave) return local;
   try {
     const project = (await (await fetch('/__builder/maps')).json()).map((m) => ({ ...m, where: 'projet' }));
-    return [...project, ...local.filter((l) => !project.some((p) => p.id === l.id))];
+    const rooms = await fetch('/__builder/interieurs').then((r) => (r.ok ? r.json() : [])).catch(() => []);
+    const interiors = rooms.map((m) => ({ ...m, where: 'intérieur', kind: 'interieur' }))
+      .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+    return [...project, ...local.filter((l) => !project.some((p) => p.id === l.id)), ...interiors];
   } catch {
     return local;
   }
 }
 
 // Une carte du projet et sa version, ou null.
-async function fetchProjectMap(id) {
+async function fetchProjectMap(id, kind) {
   try {
-    const res = await fetch(`/__builder/maps/${id}`);
+    const res = await fetch(`${API(kind)}/${id}`);
     return res.ok ? { map: await res.json(), etag: res.headers.get('ETag') } : null;
   } catch {
     return null;
@@ -1581,14 +1609,19 @@ async function fetchProjectMap(id) {
 }
 
 async function openMap(entry) {
-  if (entry.where === 'projet') {
-    const found = await fetchProjectMap(entry.id);
-    if (found) loadMap(found.map, { base: { id: entry.id, etag: found.etag } });
+  if (entry.where === 'projet' || entry.kind === 'interieur') {
+    const found = await fetchProjectMap(entry.id, entry.kind);
+    if (found) loadMap(found.map, { base: { id: entry.id, etag: found.etag, kind: entry.kind } });
   } else {
     const map = (store.get(KEYS.library) ?? {})[entry.id];
     if (map) loadMap(map, { base: { id: entry.id, etag: null } });
   }
-  if (state.base?.id === entry.id) setStatus(`Carte ouverte : ${state.map.name}`, 'ok');
+  if (state.base?.id === entry.id && entry.kind === 'interieur') {
+    setMode('detail');                     // un intérieur se retouche case par case (planches « Intérieurs »)
+    const first = $('sheet').querySelector('option[value="interieurs"]');
+    if (first) { $('sheet').value = 'interieurs'; showSheet('interieurs'); }
+    setStatus(`Intérieur ouvert : ${state.map.name}${entry.retouche ? ' (déjà retouché)' : ''}. Planches : rayon Intérieurs.`, 'ok');
+  } else if (state.base?.id === entry.id) setStatus(`Carte ouverte : ${state.map.name}`, 'ok');
 }
 
 async function showOpenDialog() {
@@ -1603,7 +1636,8 @@ async function showOpenDialog() {
     const name = document.createElement('span');
     name.textContent = entry.name;
     const meta = document.createElement('small');
-    meta.textContent = `${entry.width} × ${entry.height} · ${entry.where}${entry.id === state.base?.id ? ' · ouverte' : ''}`;
+    meta.textContent = `${entry.width} × ${entry.height} · ${entry.where}${entry.retouche ? ' · retouché' : ''}`
+      + `${entry.id === state.base?.id ? ' · ouverte' : ''}`;
     li.append(name, meta);
     li.onclick = async () => {
       $('open-dialog').close();
@@ -1745,7 +1779,7 @@ function bindUi() {
       pan(arrows[e.key][0] * step, arrows[e.key][1] * step);
       return;
     }
-    const tools = { b: 'brush', r: 'rect', g: 'fill', e: 'erase', i: 'pick', m: 'move', c: 'solid', s: 'spawn' };
+    const tools = { b: 'brush', r: 'rect', g: 'fill', e: 'erase', i: 'pick', m: 'move', c: 'solid', s: 'spawn', n: 'npc' };
     if (e.key === 'Escape') {
       stopPasting();
       state.moveSel = null;
@@ -1796,6 +1830,8 @@ const studio = createStudio({
   state, base: BASE, loadSheet, colsOf, remember, changed, requestDraw, terrain: assistant.terrain,
   setTool: (t) => setTool(t), objectAt, liftObject, setStatus,
 });
+
+const npcs = createNpcLayer({ state, base: BASE, remember, changed, requestDraw, setStatus });
 
 function setMode(mode) {
   state.mode = mode;
@@ -1871,8 +1907,11 @@ async function start() {
   // Planches rangées par rayon (bibliothèque Gen 4 par type d'élément, voir scripts/build_g4_library.py CATEGORIES),
   // puis les cases assemblées. Les planches d'origine masquées (remplacées par les planches par type) restent chargées
   // pour dessiner les cartes, mais ne sont pas proposées.
-  const shown = state.catalog.sheets.filter((sh) => !sh.hidden);
-  const groupOf = (sh) => sh.group ?? (sh.id === 'auto' ? 'Cases assemblées' : 'Autres planches');
+  // Les planches d'intérieur d'origine (masquées) restent proposées dans le rayon « Intérieurs », avec les cases des
+  // intérieurs du jeu (planche « interieurs », scripts/build_interiors.py) : pour retoucher une pièce.
+  const shown = state.catalog.sheets.filter((sh) => !sh.hidden || INTERIOR_SHEETS.includes(sh.id));
+  const groupOf = (sh) => (INTERIOR_SHEETS.includes(sh.id) ? 'Intérieurs'
+    : sh.group ?? (sh.id === 'auto' ? 'Cases assemblées' : 'Autres planches'));
   const groups = [...PALETTE_GROUPS, ...new Set(shown.map(groupOf))].filter((g, i, all) => all.indexOf(g) === i);
   for (const label of groups) {
     const sheets = shown.filter((sh) => groupOf(sh) === label);
@@ -1886,6 +1925,7 @@ async function start() {
   bindUi();
   bindAssistant();
   studio.bind();
+  npcs.bind();
   document.querySelectorAll('#mode-switch button').forEach((b) => { b.onclick = () => setMode(b.dataset.mode); });
   setMode(store.get(KEYS.mode) ?? 'simple');
   if (state.mode === 'simple') $('assistant').classList.add('closed');      // replié : la carte d'abord
@@ -1902,13 +1942,13 @@ async function start() {
   const draft = store.get(KEYS.current);
   const dirty = Boolean(store.get(KEYS.dirty));
   const base = store.get(KEYS.base);
-  const project = draft && state.projectSave ? await fetchProjectMap(base?.id ?? draft.id) : null;
+  const project = draft && state.projectSave ? await fetchProjectMap(base?.id ?? draft.id, base?.kind) : null;
   if (!draft) loadMap(blankMap());
-  else if (project && !dirty) loadMap(project.map, { base: { id: base?.id ?? draft.id, etag: project.etag } });
+  else if (project && !dirty) loadMap(project.map, { base: { id: base?.id ?? draft.id, etag: project.etag, kind: base?.kind } });
   else if (project && base?.etag !== project.etag
     && !window.confirm(`Ton brouillon de « ${draft.name} » n'est pas enregistré, mais la carte a changé dans le projet `
       + 'depuis (régénérée par un script ?).\n\nOK : garder ton brouillon.\nAnnuler : reprendre la version du projet.')) {
-    loadMap(project.map, { base: { id: base?.id ?? draft.id, etag: project.etag } });
+    loadMap(project.map, { base: { id: base?.id ?? draft.id, etag: project.etag, kind: base?.kind } });
   } else loadMap(draft, { base, dirty });
   if (!state.projectSave) setStatus('Les cartes sont enregistrées dans ce navigateur');
 }

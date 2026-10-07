@@ -1,5 +1,6 @@
 import { TILE, LAYERS, drawLayers, stackOf } from '../builder/mapModel.js';
-import { builtGrid } from '../data/maps/builtGrid.js';
+import { builtGrid, interiorGrid } from '../data/maps/builtGrid.js';
+import { applyNpcEdits } from '../data/maps/npcEdits.js';
 
 // Cartes faites avec le créateur de cartes (builder.html), jouables dans le jeu :
 // - enregistrées dans le projet : src/data/builtMaps/<id>.json ;
@@ -105,6 +106,31 @@ export function useBuiltLook(map, data) {
   map.built = data;
   map.grid = builtGrid(map.sourceGrid, data);
   delete map.backdrop;
+  applyNpcEdits(map, data);
+}
+
+// L'intérieur du jeu dessiné avec ce dessin (même identifiant que l'intérieur : hullPubA…), ou null.
+export function gameInteriorOf(interiors, data) {
+  const room = interiors[data.id];
+  return room?.sourceGrid && room.built ? room : null;
+}
+
+// Essai d'un intérieur depuis le créateur : le dessin en cours remplace le sien (grille et PNJ recalculés).
+export function useBuiltInterior(room, data) {
+  room.built = data;
+  room.grid = interiorGrid(room.sourceGrid, data);
+  applyNpcEdits(room, data);
+}
+
+// La carte dont une porte mène à cet intérieur (pour en sortir pendant l'essai), sinon la première carte.
+export function cityOfInterior(maps, interiorId) {
+  const leads = (node, seen = new Set()) => {
+    if (!node || typeof node !== 'object' || seen.has(node)) return false;
+    seen.add(node);
+    if (node.interior === interiorId) return true;
+    return Object.values(node).some((v) => leads(v, seen));
+  };
+  return Object.values(maps).find((m) => leads(m.doors) || leads(m.triggers))?.id ?? Object.keys(maps)[0];
 }
 
 // Pendant un essai depuis le créateur, la partie est lue (drapeaux, objets : l'histoire là où on en est) mais rien
