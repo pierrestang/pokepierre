@@ -356,11 +356,12 @@ export class MapScene extends Phaser.Scene {
       // La voiture de la famille est une image (voir frlgArt.familyCarImage), posée au milieu du bas de son emprise.
       // La cabane des cousins (voir frlgArt, rs-cabane.png ; retour à l'ancienne cabane demandé par l'utilisateur,
       // octobre 2026) : l'emprise bloquante couvre la plateforme, l'échelle descend sur la case sous son 2e rang, où l'on
-      // monte (porte `when` de la carte).
+      // monte (porte `when` de la carte). Elle est perchée dans les arbres : au-dessus de leurs cimes (calque « au-dessus
+      // de Pierre », TOP_DEPTH), sinon elles cachent son toit ; sous la nuit.
       if (data.type === 'cabane') {
         const bottom = (data.y + data.h + 1) * TILE_SIZE;
         const graphics = this.add.image((data.x + 1) * TILE_SIZE - CABANE_LADDER_X, bottom, FRLG_SHEETS.cabane, cabaneFrame(this, 'hut'))
-          .setOrigin(0, 1).setDepth(10 + bottom / 10000);
+          .setOrigin(0, 1).setDepth(TOP_DEPTH + 0.2);
         this.props.push({ data, graphics });
         continue;
       }

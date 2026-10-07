@@ -357,7 +357,8 @@ def fields(outdoor):
 
 
 # Voitures de pinkscales : 2 colonnes (vers la gauche, vers la droite) x 5 couleurs, cases de 96 x 64 px,
-# voiture de 84 x 60 px à partir de (4, 4). Dessinées pour des cases de 32 px : réduites de moitié (un pixel
+# voiture de 84 x 60 px à partir de (4, 4) dans la colonne de gauche, de (8, 4) dans celle de droite (décalée dans
+# sa case : la prendre en (4, 4) coupait l'avant de la voiture). Dessinées pour des cases de 32 px : réduites de moitié (un pixel
 # sur deux, décalé de 1 pour garder les contours).
 CAR_W, CAR_H = 42, 30
 
@@ -404,8 +405,8 @@ def family_car():
     sheet = Image.open(ROOT / 'assets-source' / 'fan' / 'pinkscales-frlg-cars.png').convert('RGBA')
     out = Image.new('RGBA', (3 * CAR_W, CAR_H), (0, 0, 0, 0))
     blue = 4
-    for col in range(2):
-        car = sheet.crop((col * 96 + 4, blue * 64 + 4, col * 96 + 88, blue * 64 + 64))
+    for col, left in enumerate((4, 8)):
+        car = sheet.crop((col * 96 + left, blue * 64 + 4, col * 96 + left + 84, blue * 64 + 64))
         px = car.load()
         for y in range(CAR_H):
             for x in range(CAR_W):
