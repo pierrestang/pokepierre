@@ -20,6 +20,24 @@ function interiorRefs(root, { deep }) {
   return out;
 }
 
+// Type de chaque pièce (« Ouvrir » : classer par type, pour voir toutes les chambres, toutes les cabanes…), dans l'ordre.
+export const TYPES = [
+  ['salon', 'Rez-de-chaussée et salons', ['ffHouse', 'playerHouse', 'montHouse', 'felixHouse', 'hullHouse', 'corseParents',
+    'corseVoisins', 'hanoiHome', 'maisonCommune']],
+  ['chambre', 'Chambres et dortoirs', ['ffHouseUp', 'playerHouseUp', 'montHouseUp', 'dortoir', 'dortoirEtage2']],
+  ['appartement', 'Appartements et colocs', ['appartement', 'studioPaulfit', 'appartRemi', 'hullColoc', 'parisAppart', 'yanisAppart']],
+  ['cabane', 'Cabanes et tentes', ['cabane', 'baliCabane', 'tente']],
+  ['atelier', 'Ateliers et granges', ['ffHut', 'boulyBarn']],
+  ['ecole', 'Écoles et universités', ['school', 'bonsecours', 'bonsecoursCasiers', 'bonsecoursMaths', 'bonsecoursFrancais',
+    'bonsecoursSciences', 'dortoirHall', 'kedge', 'hullUniversity', 'hullLibrary', 'delhiUniversity']],
+  ['bureau', 'Bureaux et agences', ['agence', 'travelAgency', 'corning', 'entreprise', 'entrepriseManager', 'entrepriseDirecteur']],
+  ['sortie', 'Bars, cafés et salles', ['hullPubA', 'hullPubB', 'hullAsylum', 'coffeeShop', 'bistro', 'bercy', 'stade']],
+  ['temple', 'Temples', ['temple', 'sriLankaTemple', 'watInterieur', 'monastere']],
+  ['sante', 'Santé', ['hospital']],
+];
+const TYPE_OF = Object.fromEntries(TYPES.flatMap(([, label, ids]) => ids.map((id) => [id, label])));
+export const typeOf = (id) => TYPE_OF[id] ?? 'Autres';
+
 let cache = null;
 export function interiorIndex() {
   if (cache) return cache;

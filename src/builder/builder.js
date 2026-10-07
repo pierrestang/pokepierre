@@ -6,7 +6,7 @@ import { createStudio } from './studio.js';
 import { createNpcLayer } from './npcs.js';
 import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
-import { interiorIndex } from './interiorIndex.js';
+import { interiorIndex, TYPES, typeOf } from './interiorIndex.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -26,7 +26,8 @@ const PALETTE_GROUPS = ['Sols et chemins', 'Eau', 'Végétation', 'Relief', 'Bâ
 const KEYS = {
   mode: 'pokepierre.builder.mode',
   lastOpen: 'pokepierre.builder.lastOpen',
-  foldedCities: 'pokepierre.builder.foldedCities', // villes repliées dans « Ouvrir » (intérieurs)   // le dernier ouvert de chaque espace ({ ext, int } : entrées de « Ouvrir »)
+  foldedCities: 'pokepierre.builder.foldedCities', // groupes repliés dans « Ouvrir » (intérieurs)
+  openSort: 'pokepierre.builder.openSort',   // « Ouvrir » (intérieurs) : rangés par 'ville' ou par 'type'   // le dernier ouvert de chaque espace ({ ext, int } : entrées de « Ouvrir »)
   current: 'pokepierre.builder.current',     // la carte en cours (rouverte au rechargement de la page)
   dirty: 'pokepierre.builder.dirty',         // la carte en cours a des modifications non enregistrées
   base: 'pokepierre.builder.base',           // version enregistrée d'où vient la carte en cours ({ id, etag }), ou null
@@ -1699,6 +1700,7 @@ async function showOpenDialog(sp = space()) {
   list.innerHTML = '<li><small>Chargement…</small></li>';
   document.querySelectorAll('#open-space button').forEach((b) => b.classList.toggle('on', b.dataset.space === sp));
   $('open-title').textContent = sp === 'int' ? 'Ouvrir un intérieur' : 'Ouvrir une carte';
+  $('open-sort').hidden = sp !== 'int';
   if (!$('open-dialog').open) $('open-dialog').showModal();
   const maps = (await listMaps()).filter((e) => (sp === 'int') === (e.kind === 'interieur'));
   list.innerHTML = '';
@@ -1720,16 +1722,22 @@ async function showOpenDialog(sp = space()) {
     return li;
   };
   for (const entry of maps.filter((e) => e.kind !== 'interieur')) list.append(entryItem(entry));
-  // Intérieurs : rangés par ville (ordre du jeu) ; un clic sur une ville la replie (mémorisé). Une ligne par pièce :
-  // son nom et, s'il y en a, les autres pièces qui reprennent le même dessin (src/builder/interiorIndex.js).
+  // Intérieurs : rangés par ville (ordre du jeu) ou par type de pièce (chambres, cabanes…), au choix (mémorisé) ; un
+  // clic sur un groupe le replie (mémorisé). Une ligne par pièce : son nom (sa ville, rangé par type) et, s'il y en a,
+  // les autres pièces qui reprennent le même dessin (src/builder/interiorIndex.js).
   const rooms = maps.filter((e) => e.kind === 'interieur');
+  $('open-sort').hidden = !rooms.length;
   if (!rooms.length) return;
   const idx = interiorIndex();
+  const byType = store.get(KEYS.openSort) === 'type';
+  document.querySelectorAll('#open-sort button').forEach((b) => b.classList.toggle('on', (b.dataset.sort === 'type') === byType));
   const nameOf = (id) => rooms.find((r) => r.id === id)?.name ?? interiors[id]?.name ?? id;
   const folded = new Set(store.get(KEYS.foldedCities) ?? []);
-  const cities = [...idx.order, 'Autres'].filter((c, i, all) => all.indexOf(c) === i);
+  const groupOfRoom = (r) => (byType ? typeOf(r.id) : idx.city[r.id] ?? 'Autres');
+  const groupsAll = byType ? [...TYPES.map(([, label]) => label), 'Autres'] : [...idx.order, 'Autres'];
+  const cities = groupsAll.filter((c, i, all) => all.indexOf(c) === i);
   for (const city of cities) {
-    const inCity = rooms.filter((r) => (idx.city[r.id] ?? 'Autres') === city);
+    const inCity = rooms.filter((r) => groupOfRoom(r) === city);
     if (!inCity.length) continue;
     const head = document.createElement('li');
     head.className = `group${folded.has(city) ? ' folded' : ''}`;
@@ -1749,6 +1757,11 @@ async function showOpenDialog(sp = space()) {
       li.className = 'room';
       const name = document.createElement('span');
       name.textContent = entry.name;
+      if (byType) {
+        const where = document.createElement('em');
+        where.textContent = ` ${idx.city[entry.id] ?? ''}`;
+        name.append(where);
+      }
       li.append(name);
       const shared = idx.sharedWith(entry.id);
       if (shared.length) {
@@ -2048,6 +2061,9 @@ async function start() {
   showSheet(select.querySelector('option').value);          // la première planche proposée (Sols et chemins)
   document.querySelectorAll('#space-switch button').forEach((b) => { b.onclick = () => switchSpace(b.dataset.space); });
   document.querySelectorAll('#open-space button').forEach((b) => { b.onclick = () => showOpenDialog(b.dataset.space); });
+  document.querySelectorAll('#open-sort button').forEach((b) => {
+    b.onclick = () => { store.set(KEYS.openSort, b.dataset.sort); showOpenDialog('int'); };
+  });
   applySpace();
   fitCanvas();
   // Le brouillon du navigateur, s'il a des modifications ; sinon la version enregistrée (les cartes générées par

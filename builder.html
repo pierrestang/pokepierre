@@ -217,6 +217,10 @@
       #map-list li.room > span { white-space: nowrap; flex: none; }
       #map-list li.room small.also { color: #e0a64a; text-align: right; }
       #map-list li.room.current span { color: var(--accent); }
+      #map-list li.room em { font-style: normal; font-size: 11px; color: var(--muted); margin-left: 6px; }
+      .open-sort { display: flex; align-items: center; gap: 8px; margin: -4px 0 8px; font-size: 12px; color: var(--muted); }
+      .open-sort[hidden] { display: none; }
+      #open-sort button.on { background: var(--accent-soft); color: var(--accent); }
       .help { color: var(--muted); font-size: 12px; line-height: 1.6; }
 
       @media (max-width: 1200px) {
@@ -442,6 +446,7 @@
     <dialog id="open-dialog">
       <h3 id="open-title">Ouvrir une carte</h3>
       <div class="seg" id="open-space"><button data-space="ext">Extérieurs</button><button data-space="int">Intérieurs</button></div>
+      <div class="open-sort" id="open-sort" hidden>Classer par <span class="seg"><button data-sort="ville">ville</button><button data-sort="type">type de pièce</button></span></div>
       <ul id="map-list"></ul>
       <div class="actions"><button class="btn" id="open-cancel">Fermer</button></div>
     </dialog>
