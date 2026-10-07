@@ -109,6 +109,8 @@ def kind(name, level):
         return 'decor'
     if name.startswith('Floor'):
         return 'sol'
+    if name.startswith('Shadow'):
+        return None                 # pas d'ombres portées (même direction artistique que l'extérieur)
     return 'decor' if level <= 1 else 'dessus'
 
 

@@ -12,11 +12,13 @@ from interieurs_plans import T, rect, stretch, meuble, sheet  # noqa: F401
 
 
 def hgss_piece(name, x, y, w, h, floor=False):
-    """Un meuble pris dans une vraie pièce HGSS (pack de SirMaIo) : ses calques décor et au-dessus (et le sol si
-    `floor`), sur fond transparent, pour le poser comme un meuble (par exemple un lit où dort un PNJ)."""
+    """Un meuble pris dans une vraie pièce HGSS (pack de SirMaIo) : ses calques décor et au-dessus, sur fond
+    transparent, pour le poser comme un meuble (par exemple un lit où dort un PNJ). Ni le sol ni le tapis de la pièce
+    d'origine, ni les ombres (calques Shadow) : le meuble se pose sur le sol de la pièce, sans halo ni ombre (même
+    direction artistique que l'extérieur). `floor` n'est plus utilisé (gardé pour les plans)."""
     r = HG.room(name, x, y, w, h)
     img = Image.new('RGBA', (w * T, h * T))
-    for k in (('sol',) if floor else ()) + ('decor', 'dessus'):
+    for k in ('decor', 'dessus'):
         for i, stack in enumerate(r[k]):
             for t in stack:
                 img.alpha_composite(t, ((i % w) * T, (i // w) * T))
