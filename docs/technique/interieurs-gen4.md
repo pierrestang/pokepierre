@@ -87,3 +87,24 @@ Même direction artistique qu'à l'extérieur (scripts/remove_shadows.py) : aucu
 meubles et les objets dessinés) ; le Packer nettoie aussi les cases déjà dans la planche `interieurs`, si bien que les
 pièces retouchées dans le créateur en profitent sans être redessinées. Les planches d'intérieurs de la palette du
 créateur (dppt-int, hgss-int, jesus-3) sont nettoyées de la même façon par build_v2_tiles.py (NO_SHADOW).
+
+## Catalogue des intérieurs du créateur (octobre 2026)
+
+Le mode simple du créateur a son propre catalogue pour les pièces, sur le modèle de celui des extérieurs
+(catalogue.json) : public/assets/v2/catalogue-int.json et sa planche catalogue-int.png (entrée « catalogue-int » de
+catalog.json), écrits par `python3 scripts/build_interior_catalogue.py [--apercu <dossier>]` à partir des données curées
+de scripts/interieurs/catalogue_int.py. Vérification : `python3 scripts/check_interior_catalogue.py`.
+
+- Thèmes par type de pièce : libre (« Tout »), maison, ecole, bureau, cafe, boutique, atelier, temple, sante.
+- Matières : 17 sols (`kind: 'pattern'`, motif 2 x 2) et 9 murs (`kind: 'wall'`, bande de 2 colonnes x 2-3 rangées, du
+  haut du mur à la plinthe, posée d'un coup à partir de la rangée cliquée), pris dans les calques Floor et Wall_A des
+  pièces HGSS.
+- Éléments (175) : lits, assises, rangements, cuisine, electro, plantes, tapis, deco (murale), acces (escaliers, tapis de
+  sortie), metier (pupitres, comptoirs, bar, autels…), divers. Sources : les meubles des calques Props des cartes Tiled
+  du pack HGSS de SirMaIo, isolés au pixel près (`('hg', carte, x, y, w, h)` : le morceau d'un seul tenant dont les
+  cases font ce rectangle ; `'hgmur'` pour la déco des calques Wall_B…), et une sélection des objets dessinés pour le
+  projet (`('item', nom)`, interieurs_plans.ITEMS). Collisions des meubles HGSS : le calque passages sur les cases
+  occupées ; rangées du haut qui ne bloquent pas = au-dessus de Pierre (`over`).
+- Règles : aucune ombre portée (no_shadow), rien d'identifiable Pokémon (machines du labo, PC, Poké Balls, statues).
+- Planche qui ne fait que grandir (les numéros déjà utilisés par des pièces retouchées ne bougent pas) ; relancer le
+  script ne change rien si les données n'ont pas changé.
