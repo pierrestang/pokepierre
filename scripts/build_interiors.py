@@ -330,6 +330,8 @@ def build_room(rid, src, plan, pack):
 
 
 SOURCES = Path(__file__).resolve().parent.parent / 'src' / 'builder' / 'interiorSources.json'
+# Pièces dont le dessin est repris tel quel d'une autre (copie du JSON retouché, voir l'historique) : même source.
+SAME_DRAWING = {'playerHouse': 'ffHouse', 'montHouse': 'ffHouse', 'playerHouseUp': 'ffHouseUp', 'montHouseUp': 'ffHouseUp'}
 
 
 def write_sources():
@@ -347,6 +349,9 @@ def write_sources():
         k = max(range(len(rs)), key=lambda i: overlap(rs[i])) if rs else 0
         label = name.split('_', 1)[-1].strip()
         out[rid] = {'key': f'{name.strip()}#{k}', 'label': f'HGSS · {label} · pièce {k + 1}'}
+    for rid, same in SAME_DRAWING.items():
+        if same in out:
+            out[rid] = dict(out[same])
     SOURCES.write_text(json.dumps(out, ensure_ascii=False, indent=1, sort_keys=True))
 
 

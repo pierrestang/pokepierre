@@ -172,12 +172,12 @@
   "label": "HGSS · Mr Pokémon House · pièce 1"
  },
  "playerHouse": {
-  "key": "001i_Newbark houses#5",
-  "label": "HGSS · Newbark houses · pièce 6"
+  "key": "001i_Newbark houses#4",
+  "label": "HGSS · Newbark houses · pièce 5"
  },
  "playerHouseUp": {
-  "key": "001i_Newbark houses#3",
-  "label": "HGSS · Newbark houses · pièce 4"
+  "key": "001i_Newbark houses#2",
+  "label": "HGSS · Newbark houses · pièce 3"
  },
  "school": {
   "key": "006i_Violet School#0",

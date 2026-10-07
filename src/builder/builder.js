@@ -25,7 +25,8 @@ const PALETTE_GROUPS = ['Sols et chemins', 'Eau', 'Végétation', 'Relief', 'Bâ
   'Intérieurs', 'Cases assemblées'];
 const KEYS = {
   mode: 'pokepierre.builder.mode',
-  lastOpen: 'pokepierre.builder.lastOpen',   // le dernier ouvert de chaque espace ({ ext, int } : entrées de « Ouvrir »)
+  lastOpen: 'pokepierre.builder.lastOpen',
+  foldedCities: 'pokepierre.builder.foldedCities', // villes repliées dans « Ouvrir » (intérieurs)   // le dernier ouvert de chaque espace ({ ext, int } : entrées de « Ouvrir »)
   current: 'pokepierre.builder.current',     // la carte en cours (rouverte au rechargement de la page)
   dirty: 'pokepierre.builder.dirty',         // la carte en cours a des modifications non enregistrées
   base: 'pokepierre.builder.base',           // version enregistrée d'où vient la carte en cours ({ id, etag }), ou null
@@ -1719,28 +1720,52 @@ async function showOpenDialog(sp = space()) {
     return li;
   };
   for (const entry of maps.filter((e) => e.kind !== 'interieur')) list.append(entryItem(entry));
-  // Intérieurs : rangés par ville (ordre du jeu), avec la pièce HGSS d'origine et les autres intérieurs qui la
-  // réutilisent (src/builder/interiorIndex.js).
+  // Intérieurs : rangés par ville (ordre du jeu) ; un clic sur une ville la replie (mémorisé). Une ligne par pièce :
+  // son nom et, s'il y en a, les autres pièces qui reprennent le même dessin (src/builder/interiorIndex.js).
   const rooms = maps.filter((e) => e.kind === 'interieur');
   if (!rooms.length) return;
   const idx = interiorIndex();
   const nameOf = (id) => rooms.find((r) => r.id === id)?.name ?? interiors[id]?.name ?? id;
+  const folded = new Set(store.get(KEYS.foldedCities) ?? []);
   const cities = [...idx.order, 'Autres'].filter((c, i, all) => all.indexOf(c) === i);
   for (const city of cities) {
     const inCity = rooms.filter((r) => (idx.city[r.id] ?? 'Autres') === city);
     if (!inCity.length) continue;
     const head = document.createElement('li');
-    head.className = 'group';
-    head.textContent = `Intérieurs · ${city} (${inCity.length})`;
+    head.className = `group${folded.has(city) ? ' folded' : ''}`;
+    head.innerHTML = `<span><i>▾</i> ${city}</span><small>${inCity.length}</small>`;
+    head.title = 'Replier ou déplier';
+    const lines = [];
+    head.onclick = () => {
+      const now = !folded.has(city);
+      if (now) folded.add(city); else folded.delete(city);
+      store.set(KEYS.foldedCities, [...folded]);
+      head.classList.toggle('folded', now);
+      lines.forEach((li) => { li.hidden = now; });
+    };
     list.append(head);
     for (const entry of inCity) {
-      const src = idx.source(entry.id);
+      const li = document.createElement('li');
+      li.className = 'room';
+      const name = document.createElement('span');
+      name.textContent = entry.name;
+      li.append(name);
       const shared = idx.sharedWith(entry.id);
-      const info = document.createElement('small');
-      info.className = shared.length ? 'reuse shared' : 'reuse';
-      info.textContent = (src ? src.label : 'source inconnue')
-        + (shared.length ? ` · réutilisée aussi : ${shared.map((o) => `${nameOf(o)} (${idx.city[o] ?? '?'})`).join(', ')}` : ' · unique');
-      list.append(entryItem(entry, info));
+      if (shared.length) {
+        const also = document.createElement('small');
+        also.className = 'also';
+        also.textContent = `aussi : ${shared.map((o) => `${nameOf(o)} (${idx.city[o] ?? '?'})`).join(', ')}`;
+        li.append(also);
+      }
+      if (entry.id === state.base?.id) li.classList.add('current');
+      li.hidden = folded.has(city);
+      li.onclick = async () => {
+        $('open-dialog').close();
+        if (state.dirty && !window.confirm('Des modifications ne sont pas enregistrées. Ouvrir quand même ?')) return;
+        openMap(entry);
+      };
+      lines.push(li);
+      list.append(li);
     }
   }
 }

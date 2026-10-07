@@ -203,14 +203,20 @@
       dialog .row { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
       dialog .row input[type=number] { width: 60px; }
       dialog .actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 16px; }
-      #map-list { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow: auto; }
+      #open-dialog { width: min(600px, 92vw); }
+      #map-list { list-style: none; margin: 0; padding: 0; height: 60vh; overflow: auto; }
       #map-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 10px; border-radius: 7px; cursor: pointer; }
       #map-list li:hover { background: var(--hover); }
       #map-list small { color: var(--muted); }
-      #map-list li { flex-wrap: wrap; }
-      #map-list li.group { cursor: default; font-weight: 700; padding-top: 14px; color: var(--text, inherit); background: none; }
-      #map-list small.reuse { flex-basis: 100%; font-size: 11px; }
-      #map-list small.reuse.shared { color: #e0a64a; }
+      #map-list li[hidden] { display: none; }
+      #map-list li.group { cursor: pointer; font-weight: 700; margin-top: 6px; padding: 5px 10px; background: var(--raise);
+        position: sticky; top: 0; z-index: 1; }
+      #map-list li.group i { display: inline-block; width: 12px; font-style: normal; transition: transform .1s; }
+      #map-list li.group.folded i { transform: rotate(-90deg); }
+      #map-list li.room { padding: 3px 10px 3px 24px; align-items: baseline; }
+      #map-list li.room > span { white-space: nowrap; flex: none; }
+      #map-list li.room small.also { color: #e0a64a; text-align: right; }
+      #map-list li.room.current span { color: var(--accent); }
       .help { color: var(--muted); font-size: 12px; line-height: 1.6; }
 
       @media (max-width: 1200px) {
