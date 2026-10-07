@@ -86,6 +86,7 @@ export const FLAGS = {
   litFaitBordeaux: 'lit-fait-bordeaux',         //       … le lit fait
   soireeFinie: 'soiree-finie',                  //   en sortant : « Quelques mois plus tard » (l'oral d'anglais)
   remiKedge: 'remi-kedge',                      //   Rémi, devant KEDGE : « T'inquiète, c'est easy. »
+  veloCherche: 'velo-cherche',                  //   facultatif : le cycliste du quai a perdu la clé de son antivol
   arriveeHull: 'arrivee-hull',                  // arrivé à Hull (Angleterre)
   hullAccueil: 'hull-accueil',                  // Hull : Ousmane t'a accueilli au bout de la grande rue
   ousmaneRentre: 'ousmane-rentre',              //        Ousmane est rentré à la coloc (devant toi)
@@ -215,8 +216,9 @@ export const ITEMS = {
   canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
   vieilleCanne: { id: 'vieille-canne', name: 'Vieille canne' },     // pour pêcher face à l'eau (facultatif)
   planches: { id: 'planches', name: 'Planches' },
-  // Le vélo (mécanique prête, pas encore donné dans l'histoire ; ?velo dans l'adresse pour l'essayer) : voir
-  // systems/bike.js.
+  // Bordeaux, facultatif : la clé d'antivol du cycliste, perdue dans les hautes herbes ; en remerciement, son vieux vélo,
+  // réparé sur place (Ingéniosité). Voir bordeauxStory.js CYCLIST, systems/bike.js.
+  cleAntivol: { id: 'cle-antivol', name: "Clé d'antivol" },
   velo: { id: 'velo', name: 'Vélo' },
   corde: { id: 'corde', name: 'Vieille corde' },
   cuillere: { id: 'cuillere', name: 'Cuillère de Jean' },                     // Montépilloy : objet-souvenir (caisse à outils)

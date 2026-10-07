@@ -228,3 +228,42 @@ export const FLIGHT_TO_HULL = [
   { setFlag: FLAGS.arriveeHull },
   { travel: { map: 'hull', x: 1, y: 35, facing: 'right', plane: true } },
 ];
+
+// ---------- Facultatif : le vélo ----------
+
+// Le cycliste du quai nord, assis sur son vélo : il a perdu la clé de son antivol en coupant par l'herbe, au bord de la
+// Garonne côté KEDGE (les hautes herbes du recoin sud-ouest, voir maps/bordeaux.js). Rapportée, il offre son vieux vélo,
+// chaîne sautée : Pierre le répare sur place (Ingéniosité) et l'enfourche. Voir systems/bike.js.
+export const CYCLIST = [
+  { ifItems: [ITEMS.velo.id], speaker: 'Cycliste', say: ['Il te va bien, ce vélo ! Bordeaux, ça se découvre à deux roues.'], end: true },
+  {
+    ifItems: [ITEMS.cleAntivol.id],
+    steps: [
+      { speaker: 'Cycliste', say: ['Ma clé ! Tu l\'as retrouvée ! Merci, sans elle je ne pouvais plus attacher mon vélo.'] },
+      { take: ITEMS.cleAntivol.id },
+      { speaker: 'Cycliste', say: [
+        'Pour te remercier… j\'ai un vieux vélo, attaché au lampadaire, là. La chaîne a sauté, il ne roule plus.',
+        'Il est à toi, si tu arrives à en tirer quelque chose !',
+      ] },
+      { useTrait: TRAITS.ingeniosite },
+      { say: ['Tu remets la chaîne sur le pignon, tu resserres la selle et tu regonfles les pneus. Il roule comme neuf !'] },
+      { give: ITEMS.velo, text: 'Tu reçois le Vélo !' },
+      { speaker: 'Cycliste', say: ['Eh ben ! T\'as des doigts de fée, toi.'] },
+      { say: ['Appuie sur V (ou sur le bouton VÉLO) pour monter dessus. Dans les bâtiments, on le laisse dehors.'] },
+    ],
+    end: true,
+  },
+  { ifFlags: [FLAGS.veloCherche], speaker: 'Cycliste', say: ['Ma clé doit être dans les hautes herbes, au bord de l\'eau, du côté de KEDGE.'], end: true },
+  { speaker: 'Cycliste', say: [
+    'Oh non, oh non… J\'ai perdu la clé de mon antivol en coupant par l\'herbe.',
+    'C\'était au bord de la Garonne, de l\'autre côté, vers KEDGE. Tu pourrais jeter un œil ?',
+  ] },
+  { setFlag: FLAGS.veloCherche },
+];
+
+// Dans les hautes herbes du recoin, la clé.
+export const ANTITHEFT_KEY = [
+  { say: ['Tu fouilles les hautes herbes… Quelque chose brille !'] },
+  { give: ITEMS.cleAntivol, text: 'Tu trouves la clé d\'antivol du cycliste !' },
+];
+

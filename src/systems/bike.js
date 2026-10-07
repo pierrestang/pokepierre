@@ -3,7 +3,8 @@ import { ITEMS } from '../data/story.js';
 import { sfx, playMusic } from './audio.js';
 
 // Le vélo de Pierre, comme dans Pokémon : il roule bien plus vite qu'il ne court (Player.BIKE_DURATION).
-// - Il faut l'objet Vélo (ITEMS.velo) ; pas encore donné dans l'histoire : ?velo dans l'adresse le donne pour essayer.
+// - Il faut l'objet Vélo (ITEMS.velo) : à Bordeaux, le cycliste du quai l'offre (facultatif, bordeauxStory.js CYCLIST) ;
+//   ?velo dans l'adresse le donne pour essayer.
 // - Monter ou descendre : touche V (ou B), entrée VÉLO du menu Start, bouton VÉLO des commandes tactiles.
 // - Seulement dehors : dans un bâtiment on descend (et on reste à pied en ressortant, comme dans Diamant / Perle) ;
 //   pas quand quelqu'un suit Pierre (on descend s'il se met à le suivre) ; pendant une scénette, Pierre descend et
@@ -29,7 +30,7 @@ function remember(on) {
   }
 }
 
-// Donne le vélo pour l'essayer (?velo dans l'adresse), en attendant qu'il arrive dans l'histoire.
+// Donne le vélo pour l'essayer (?velo dans l'adresse).
 export function giveBikeForTesting() {
   if (new URLSearchParams(window.location.search).has('velo')) items.add(ITEMS.velo);
 }

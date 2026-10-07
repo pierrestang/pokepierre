@@ -26,6 +26,7 @@ const ICON_OF_ITEM = {
   'objet-magique-sri-lanka': 'orbe-rouge',
   'objet-magique-thailande': 'orbe-verte',
   'objet-magique-nepal': 'orbe-bleue',
+  'cle-antivol': 'cles',
   velo: 'velo',
 };
 

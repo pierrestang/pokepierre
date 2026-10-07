@@ -47,7 +47,7 @@ puis Hanoï. Pas de combats.
   de ferme à M. Bouly ; caisses du marché de Slateport dans la cabane de pêche (scripts/extract_rs_buildings.py).
 
 - Vélo (src/systems/bike.js) : Lucas à vélo officiel (scripts/build_bike.py -> public/assets/characters/pierre-velo.png),
-  objet ITEMS.velo pas encore donné dans l'histoire (?velo dans l'adresse pour l'essayer), touche V / menu Start /
+  objet ITEMS.velo offert à Bordeaux par le cycliste du quai (facultatif, bordeauxStory.js CYCLIST ; ?velo dans l'adresse pour l'essayer), touche V / menu Start /
   bouton tactile, seulement dehors et sans suiveur, Pierre descend pendant les scénettes.
 
 - Mobile (src/systems/TouchControls.js, src/systems/screen.js) : écran de jeu le plus grand possible (zoom non

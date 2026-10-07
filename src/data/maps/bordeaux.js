@@ -7,7 +7,7 @@ import { builtGrid } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
-  ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE,
+  ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST, ANTITHEFT_KEY,
 } from '../bordeauxStory.js';
 
 // Les gardiens des sorties est : leurs répliques, et l'arrêt quand Pierre passe à côté d'eux (il se tourne vers lui, parle,
@@ -64,8 +64,8 @@ export const bordeauxMap = {
     'ƀƀƀGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 18
     'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 19
     'ƀƀIIIIIɔɔGGGGGGGGGGGGGGIIGGGGGGG', // 20
-    'ƀƀ.....ɔɔ......WW.WWW..ɔɔ.WGGGGG', // 21
-    'ƀƀ.....ɔɔ..............ɔɔ.WGGGGG', // 22
+    'ƀƀĥĥĥĥ.ɔɔ......WW.WWW..ɔɔ.WGGGGG', // 21  hautes herbes du recoin (x 2-5) : la clé du cycliste
+    'ƀƀĥĥĥĥ.ɔɔ..............ɔɔ.WGGGGG', // 22
     'ƀƀ..ɔɔɔɔɔɔɔɔɔɔ........ɔɔɔɔ......', // 23
     'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 24
     'ƀƀ.ɔWWWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀƀ', // 25
@@ -128,6 +128,8 @@ export const bordeauxMap = {
       id: 'ouvrier-route', name: 'Ouvrier', sprite: 'g79', x: 30, y: 27, facing: 'left',
       unlessFlags: [FLAGS.diplomeBordeaux], dialogue: ROAD_WORKER,
     },
+    // Le cycliste du quai nord, assis sur son vélo (facultatif : le vélo de Pierre, voir bordeauxStory.js CYCLIST).
+    { id: 'cycliste', name: 'Cycliste', sprite: 'g18', x: 17, y: 12, facing: 'down', script: CYCLIST },
     // Rémi, devant KEDGE le jour de l'oral.
     {
       id: 'remi-kedge', name: 'Rémi', x: 9, y: 30, facing: 'left',
@@ -155,6 +157,10 @@ export const bordeauxMap = {
       x: 30, y, unlessFlags: [FLAGS.diplomeBordeaux],
       script: stopped('ouvrier-route', 'Ouvrier', ROAD_WORKER, y < 27 ? 'up' : 'down', [29, y]),
     })),
+    // La clé d'antivol du cycliste, dans les hautes herbes du recoin sud-ouest (une fois qu'il en a parlé).
+    {
+      x: 3, y: 21, ifFlags: [FLAGS.veloCherche], unlessItems: [ITEMS.cleAntivol.id, ITEMS.velo.id], script: ANTITHEFT_KEY,
+    },
     // Devant la porte de l'immeuble : Ousmane (voir bordeauxStory.js FRONT_DOOR).
     { x: 5, y: 7, script: FRONT_DOOR },
     // Devant KEDGE, le jour de l'oral : Rémi.

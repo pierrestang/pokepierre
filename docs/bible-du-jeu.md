@@ -31,8 +31,8 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   eau. « Tu lances ta ligne… » ; 40 % de chances de « Rien ne mord… Tu remballes ta ligne. » ; sinon une prise selon
   l'eau, relâchée : mer (maquereau, sardine, petit bar, dorade), étang (gardon, perche, carpe, poisson-chat), rivière
   (truite, gardon, goujon), ou une vieille botte, « Tu la poses sur la rive. ».
-- **Vélo** (mécanique prête, pas encore donné dans l'histoire ; `?velo` dans l'adresse donne l'objet **Vélo** pour
-  l'essayer) : Pierre monte ou descend avec la touche V (ou B), l'entrée « VÉLO : MONTER / DESCENDRE » du menu Start
+- **Vélo** (offert à Bordeaux par le cycliste du quai, passage optionnel ; `?velo` dans l'adresse donne l'objet **Vélo**
+  pour l'essayer) : Pierre monte ou descend avec la touche V (ou B), l'entrée « VÉLO : MONTER / DESCENDRE » du menu Start
   ou le bouton VÉLO des commandes tactiles ; sonnette en montant, musique du vélo tant qu'il roule ; il va environ
   trois fois plus vite qu'à pied (Lucas à vélo de Diamant / Perle). Seulement dehors : « Pas de vélo à l'intérieur ! »,
   et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
@@ -651,13 +651,24 @@ seul ? »** / « Tiens, j'ai retrouvé ça sous les confettis. » → **Photo de
 On peut aussi sortir tout de suite : « Quelques mois plus tard… » ; l'appartement est alors rangé, Ousmane n'est plus
 couché, et la photo n'est plus disponible.
 
+### Passage optionnel : le vélo du cycliste (Ingéniosité)
+Sur le quai nord, près du banc, un cycliste assis sur son vélo (sprite Cycliste de Diamant / Perle) : **« Oh non, oh non…
+J'ai perdu la clé de mon antivol en coupant par l'herbe. »** / « C'était au bord de la Garonne, de l'autre côté, vers
+KEDGE. Tu pourrais jeter un œil ? » (ensuite : « Ma clé doit être dans les hautes herbes, au bord de l'eau, du côté de
+KEDGE. »). Dans les hautes herbes du recoin sud-ouest (entre la Garonne et KEDGE) : « Tu fouilles les hautes herbes…
+Quelque chose brille ! » → **Clé d'antivol**. Rapportée : « Ma clé ! Tu l'as retrouvée ! » ; il offre son vieux vélo,
+chaîne sautée → **« Pierre utilise Ingéniosité ! »** → « Tu remets la chaîne sur le pignon, tu resserres la selle et tu
+regonfles les pneus. Il roule comme neuf ! » → **Vélo** ; « Eh ben ! T'as des doigts de fée, toi. » ; « Appuie sur V (ou
+sur le bouton VÉLO) pour monter dessus. » Ensuite : « Il te va bien, ce vélo ! Bordeaux, ça se découvre à deux roues. »
+
 ### Vertus
 - **Gagnée** : aucune. Le compteur de vertus n'est pas affiché à Bordeaux.
-- **Utilisées** : **Ingéniosité**, pendant la coupure ; **Audace**, avant l'oral d'anglais ; **Autonomie**, pour le
-  rangement (optionnel).
+- **Utilisées** : **Ingéniosité**, pendant la coupure et pour réparer le vélo du cycliste (optionnel) ; **Audace**, avant
+  l'oral d'anglais ; **Autonomie**, pour le rangement (optionnel).
 
 ### Objet optionnel
-- **Photo de la soirée**, donnée par Ousmane au réveil (voir le passage optionnel). L'enceinte et les gobelets, eux, sont
+- **Photo de la soirée**, donnée par Ousmane au réveil (voir le passage optionnel).
+- **Vélo**, offert par le cycliste du quai (voir le passage optionnel) ; la **Clé d'antivol** lui est rendue. L'enceinte et les gobelets, eux, sont
   obligatoires et repris au début de la soirée.
 
 ### Boîte aux lettres
