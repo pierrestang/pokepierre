@@ -287,6 +287,7 @@ SLEEP = {'bed': True, 'cover': 99, 'pillow': 6}
 # Octobre 2026 : chaque pièce part d'une vraie pièce HGSS (pack de SirMaIo, scripts/hgss_rooms.py), retouchée :
 # 'hgss' (carte, x0, y0, w, h) ; 'paste' : morceaux d'autres pièces HGSS ; 'items' : meubles posés par-dessus.
 NB = '001i_Newbark houses'
+LAB = '001i_Newbark-Lab'
 HGSS_DIR = Path(__file__).resolve().parents[2] / 'ASSETTILESPOKEMONV2' / 'tilesets' / 'interieurs' / 'hgss-sirmaio'
 # Parquet nu de la chambre de Bourg Geon (4 x 2 cases), collé sur le tapis pour faire de la place aux lits.
 PARQUET = (NB, 10, 38, 4, 2)
@@ -295,6 +296,8 @@ ITEMS.update({
     # parquet (chambres de Bourg Geon), ou seul (sur un autre sol).
     # Cabane de pêche, en vrais objets HGSS : caisse en bois et carton (port d'Oliville), bouée de sauvetage au mur.
     'fsa-caisse-hgss': {'img': lambda: hgss_sheet_px('i_Olivine-Port', 62, 94, 26, 22), 'solid': 1},
+    # Tableau de paysage (maison de Fargas, HGSS), accroché au mur de la clinique.
+    'fsa-tableau': {'img': lambda: hgss_sheet_px('i_Kurt-House', 65, 30, 30, 13, width=2, align='top'), 'flat': True, 'solid': 0},
     'fsa-carton-hgss': {'img': lambda: hgss_sheet_px('i_Olivine-Port', 65, 159, 16, 17), 'solid': 1},
     'fsa-bouee': {'img': lambda: hgss_sheet_px('i_Olivine-Port', 77, 44, 22, 18, width=2, align='top'), 'flat': True},
     # (posée à la main dans la cabane retouchée, 8 px sous le haut du mur : voir ffHut.json)
@@ -374,21 +377,20 @@ PLANS = {
         'paste': [{'from': ('010i_Azalea Houses', 13, 29, 1, 1), 'to': (5, 4)}],
         'items': [['fsa-ourson', 5, 5, {'dy': -6}], ['fsa-ourson-rose', 6, 5, {'dy': -5}]],
     },
-    # Saint-Ay — la clinique : le labo d'Orme (machines, ordinateur, carrelage vert d'eau) ; les vitrines du bas
-    # remplacées par trois lits (Maman et Fanny y dorment).
+    # Saint-Ay — la clinique, refaite (demande de l'utilisateur, octobre 2026) : 12 x 8, murs crème et carrelage vert
+    # d'eau du labo d'Orme vidés de tout (rien de Pokémon) ; trois lits contre le mur du fond (Maman, Fanny, un libre),
+    # le bureau d'accueil et son ordinateur à gauche, une plante, un tableau au-dessus des lits ; la sortie en bas.
     'hospital': {
-        # 10 x 10 (raccourcie, demande de l'utilisateur) : le haut du labo (murs, notes, bureau et ordinateur,
-        # poubelle), puis la rangée des trois lits, puis la sortie. Sans rien de Pokémon (machine à Poké Balls, machine
-        # de transfert, PC orange effacés).
-        'hgss': ('001i_Newbark-Lab', 11, 8, 10, 10),
-        'splice': [{'from': ('001i_Newbark-Lab', 11, 4, 10, 4), 'to': (0, 0)},
-                   {'from': ('001i_Newbark-Lab', 11, 18, 10, 1), 'to': (0, 9)}],
-        'erase': [(0, 1, 2, 3), (4, 3, 1, 1), (5, 1, 3, 3), (8, 1, 2, 3), (0, 4, 10, 3)],
-        # Mur nu (la colonne du labo entre le bureau et la poubelle) là où étaient les machines ; sol des lits.
-        'paste': [{'from': ('001i_Newbark-Lab', 14, 5, 1, 2), 'to': (x, 1), 'sol': True, 'only': ('Floor', 'Wall')}
-                  for x in (0, 1, 5, 6, 7, 8, 9)]
-                 + [{'from': ('001i_Newbark-Lab', 11, 15, 6, 2), 'to': (x, y), 'sol': True} for x in (0, 4) for y in (4, 5)],
-        'items': [['fsa-lit-hgss', 0, 6, SLEEP], ['fsa-lit-hgss', 3, 6, SLEEP], ['fsa-lit-hgss', 6, 6]],
+        'hgss': (LAB, 10, 4, 12, 8),
+        'splice': [{'from': (LAB, 10, 17, 12, 2), 'to': (0, 6)}],            # bande de parquet et tapis de sortie
+        'erase': [(0, 1, 12, 5), (0, 6, 1, 1), (11, 6, 1, 1)],               # machines, notes, plantes coupées
+        # Mur nu (sans les meubles posés devant), carrelage uni, le bureau et une plante du labo.
+        'paste': [{'from': (LAB, 14, 5, 1, 2), 'to': (x, 1), 'sol': True, 'only': ('Floor', 'Wall')} for x in range(12)]
+                 + [{'from': (LAB, 16, 15, 2, 2), 'to': (x, y), 'sol': True, 'only': ('Floor',)}
+                    for x in range(0, 12, 2) for y in (3, 4)]
+                 + [{'from': (LAB, 13, 6, 2, 2), 'to': (1, 2)}, {'from': (LAB, 10, 7, 1, 2), 'to': (0, 4)}],
+        'items': [['fsa-lit-hgss', 3, 4, SLEEP], ['fsa-lit-hgss', 6, 4, SLEEP], ['fsa-lit-hgss', 9, 4],
+                  ['fsa-tableau', 6, 1, {'dx': 8, 'flat': True, 'solid': 0}]],
         'npc_on_solid': ['maman-hopital', 'fanny-hopital'],
     },
 }

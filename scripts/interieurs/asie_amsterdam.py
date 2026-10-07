@@ -59,9 +59,21 @@ PLANS = {
         'items': [['aa-tapis', 5, 10]],
         'block': [[5, 4], [6, 4], [7, 4]],
     },
-    # Corning : un étage de bureaux de la Tour Radio ; Laurent au bout de la table de réunion.
+    # Corning : un étage de bureaux de la Tour Radio ; Laurent au bout de la table de réunion. Sans les escaliers
+    # (demande de l'utilisateur) : mur nu à leur place, une seconde armoire au fond à droite, un troisième poste de
+    # travail (bureau, ordinateur, chaise) à gauche.
     'corning': {
         'hgss': (RADIO, 10, 51, 14, 12),
+        'erase': [(0, 0, 2, 6), (12, 0, 2, 4)],                             # escaliers (et l'armoire, recollée)
+        'paste': [{'from': (RADIO, 20, 51, 1, 2), 'to': (x, 0), 'sol': True, 'only': ('Floor', 'Wall_A')} for x in (0, 1, 13)]
+                 + [{'from': (RADIO, 22, 51, 1, 2), 'to': (12, 0), 'sol': True, 'only': ('Floor', 'Wall')}]   # la fenêtre
+                 # sol à motif, pris au même pas du motif (parité de x et de y)
+                 + [{'from': (RADIO, 12 + x % 2, 59 + y % 2, 1, 1), 'to': (x, y), 'sol': True, 'only': ('Floor',)}
+                    for x in (0, 1, 12, 13) for y in (2, 3)]
+                 # l'armoire de gauche (sans le bas de l'escalier posé dessus), et sa jumelle au fond à droite
+                 + [{'from': (RADIO, 10, 55, 2, 2), 'to': to, 'only': ('Props_A',)} for to in ((0, 4), (12, 2))]
+                 + [{'from': (RADIO, 14, 55, 2, 2), 'to': (1, 6)},           # un poste de travail
+                    {'from': (RADIO, 14, 57, 1, 1), 'to': (1, 8)}],          # et sa chaise
         'items': [['aa-tapis', 5, 11]],
     },
     # Coffee shop : la fleuriste de Doublonville ; le vendeur derrière le bureau fleuri du fond.
