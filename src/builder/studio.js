@@ -137,6 +137,7 @@ export function createStudio(api) {
   }
 
   const occupancyCells = (el) => [...occupancy()].filter(([, e]) => e === el).map(([k]) => k);
+  const occupancyCellsOf = occupancyCells;
 
   // La maison sous (x, y) : une maison posée, ou une maison de la carte (un objet d'au moins 3 x 3) ; sa porte (la
   // porte du jeu dans son emprise, sinon le milieu de son bas) et ses cases.
@@ -708,12 +709,72 @@ export function createStudio(api) {
   }
 
   // Les cases d'un élément posé en (x, y), au format de l'outil Déplacer ({ x, y, refs }), ou null.
-  function elementCellsAt(x, y) {
-    if (!cat || !state.map?.studio) return null;
+  // Les éléments du catalogue qui contiennent la case k : [{ def, theme, i, j }] (pour reconnaître un élément d'après
+  // son dessin, même si sa fiche est périmée ou absente).
+  let tileIndex = null;
+  function elementsWithTile(k) {
+    if (!tileIndex) {
+      tileIndex = new Map();
+      for (const [tid, t] of Object.entries(cat.themes)) {
+        for (const def of t.elements) {
+          def.tiles.forEach((row, j) => row.forEach((kk, i) => {
+            if (kk < 0) return;
+            if (!tileIndex.has(kk)) tileIndex.set(kk, []);
+            tileIndex.get(kk).push({ def, theme: tid, i, j });
+          }));
+        }
+      }
+    }
+    return tileIndex.get(k) ?? [];
+  }
+
+  // L'élément du catalogue dessiné en (x, y), reconnu à ses cases (au moins 70 % de celles dans la carte, chacune dans
+  // son calque) : { def, theme, x, y } ou null.
+  function recognize(x, y) {
     const m = state.map;
-    const el = occupancy().get(y * m.width + x);
-    const def = el && elementDef(el.id, el.theme);
-    if (!def) return null;
+    const slot = m.sheets.indexOf('catalogue');
+    if (slot < 0) return null;
+    let best = null;
+    for (const l of ['dessus', 'decor']) {
+      for (const ref of stackOf(m.layers[l][y * m.width + x])) {
+        if (Math.floor(ref / 100000) !== slot) continue;
+        for (const { def, theme: tid, i, j } of elementsWithTile(ref % 100000)) {
+          const x0 = x - i;
+          const y0 = y - j;
+          let n = 0;
+          let ok = 0;
+          def.tiles.forEach((row, jj) => row.forEach((kk, ii) => {
+            const cx = x0 + ii;
+            const cy = y0 + jj;
+            if (kk < 0 || cx < 0 || cy < 0 || cx >= m.width || cy >= m.height) return;
+            n++;
+            if (stackOf(m.layers[jj >= def.over ? 'decor' : 'dessus'][cy * m.width + cx]).includes(slot * 100000 + kk)) ok++;
+          }));
+          if (n && ok >= 0.7 * n && (!best || ok > best.ok)) best = { def, theme: tid, x: x0, y: y0, ok };
+        }
+      }
+    }
+    return best;
+  }
+
+  function elementCellsAt(x, y) {
+    if (!cat || !state.map) return null;
+    const m = state.map;
+    let el = state.map.studio ? occupancy().get(y * m.width + x) : null;
+    let def = el && elementDef(el.id, el.theme);
+    if (!def) {
+      // Pas de fiche à jour : l'élément reconnu à son dessin ; sa fiche est réparée (ou créée) au passage.
+      const found = recognize(x, y);
+      if (!found) return null;
+      const d = data();
+      el = d.elements.find((e) => e.id === found.def.id && e.x === found.x && e.y === found.y);
+      if (!el) {
+        el = d.elements.find((e) => e.id === found.def.id && !occupancyCellsOf(e).length);
+        if (el) Object.assign(el, { theme: found.theme, x: found.x, y: found.y, prev: [] });
+        else d.elements.push(el = { id: found.def.id, theme: found.theme, x: found.x, y: found.y, prev: [] });
+      }
+      def = found.def;
+    }
     const cells = [];
     def.tiles.forEach((row, j) => row.forEach((k, i) => {
       const cx = el.x + i;
@@ -725,7 +786,9 @@ export function createStudio(api) {
         cells.push({ x: cx, y: cy, refs: { sol: [], decor: layer === 'decor' ? [ref] : [], dessus: layer === 'dessus' ? [ref] : [] } });
       }
     }));
-    return cells.length ? cells : null;
+    if (!cells.length) return null;
+    cells.element = true;                         // la forme exacte d'un élément : pas de limite de taille
+    return cells;
   }
 
   // Un élément posé déplacé avec l'outil Déplacer (sa case (x, y) d'avant, décalage) : sa note suit.

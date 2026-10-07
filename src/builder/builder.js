@@ -577,7 +577,7 @@ function drawCursor(cs) {
     const key = `${h.x},${h.y},${[...state.hidden]}`;
     if (hoverObject.key !== key) Object.assign(hoverObject, { key, cells: objectAt(h.x, h.y) });
     const { cells } = hoverObject;
-    if (cells?.length && cells.length <= MAX_OBJECT_CELLS) {
+    if (cells?.length && (cells.length <= MAX_OBJECT_CELLS || cells.element)) {
       const b = boundsOf(cells);
       outline(b.x0, b.y0, b.x1 - b.x0 + 1, b.y1 - b.y0 + 1, cs);
     } else if (!state.moveSel) outline(h.x, h.y, 1, 1, cs);
@@ -1160,7 +1160,7 @@ canvas.addEventListener('pointerdown', (e) => {
     // Maj : toujours tracer une zone, même en partant d'un objet.
     let cells = inSel ? objectsIn(sel) : e.shiftKey ? null : objectAt(c.x, c.y);
     // Un « objet » démesuré (des objets collés les uns aux autres) : on trace une zone plutôt que de tout emporter.
-    if (!inSel && cells?.length > MAX_OBJECT_CELLS) cells = null;
+    if (!inSel && cells?.length > MAX_OBJECT_CELLS && !cells.element) cells = null;
     if (cells?.length) {
       remember();
       // Alt : on en pose une copie (l'original reste en place, avec ses collisions).

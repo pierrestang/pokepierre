@@ -102,7 +102,10 @@ d'une case le long du chemin (Montépilloy, 36 x 30 : x 14 aux deux sorties).
   d'après leur place dans leur planche) ; ailleurs, ou avec Maj, on trace une zone : seulement le rectangle tracé.
 - Pour ne pas emporter des objets sans rapport : les planches rangées sans ordre (auto, catalogue, transitions) ne
   regroupent pas par place dans la planche ; un objet ne déborde pas sur la forêt qui le touche (sauf si on prend la
-  forêt) ; au-delà de 80 cases, ce n'est plus un objet : on trace une zone.
+  forêt) ; au-delà de 80 cases, ce n'est plus un objet : on trace une zone. Un élément du catalogue (mode simple) est
+  pris par sa forme exacte, sans limite de taille (la rotonde fait 97 cases), et reconnu à son dessin (au moins 70 % de
+  ses cases dans leur calque) même si sa fiche est périmée ou absente ; la fiche est alors réparée (studio.js
+  recognize). Une fiche périmée n'occupe plus de cases (occupancy : seulement là où le dessin est encore).
 
 ## Mode simple (src/builder/studio.js), écran par défaut
 
