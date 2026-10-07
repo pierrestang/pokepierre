@@ -417,7 +417,11 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
   classe, c'est la 6e B, en salle de maths : l'étage au-dessus des casiers. » / « Ici, on monte un étage par salle : les
   casiers, les maths, les sciences, et le français tout en haut. »
 - Le collège se parcourt de bas en haut, un escalier par étage : hall (un seul escalier) → couloir des casiers → salle
-  de maths → salle de sciences → salle de français, tout en haut.
+  de maths → salle de sciences → salle de français, tout en haut. Les escaliers sont dans les coins du haut (une rampe
+  rouge qui monte, une trémie qui descend) ; on les prend par leur dernière marche. Le couloir des casiers est un couloir
+  fin : six casiers d'école bleus (le 12, celui de Pierre et de Rémy, au milieu), le placard d'entretien.
+- KEDGE (Bordeaux) est la même école, pièce pour pièce : hall (l'accueil indique la salle), couloir des casiers, salles
+  1 à 3 ; l'oral d'anglais a lieu en salle 1.
 
 ### PNJ présents
 | Nom | Rôle | Sprite |

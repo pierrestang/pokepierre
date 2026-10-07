@@ -21,6 +21,9 @@ import {
   LIBRARY, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
 } from '../hullStory.js';
 
+// L'accueil de KEDGE (Bordeaux) : on lui parle par-dessus le comptoir.
+const KEDGE_DESK = ['Bienvenue à KEDGE ! L\'oral d\'anglais, c\'est en salle 1 : le couloir des casiers, puis l\'étage au-dessus.'];
+
 // Soirée de Hull : la bande, d'une étape à l'autre (premier pub, deuxième pub, Asylum).
 const PUB_A_TIME = { ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.tourneeServie] };
 const PUB_B_TIME = { ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.flechettesJouees] };
@@ -743,7 +746,7 @@ export const interiors = {
       { kind: 'plant', x: 13, y: 7 },
     ],
     spawn: { x: 1, y: 10, facing: 'up' },
-    triggers: [23, 24].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursCasiers', x: 13, y: 3, facing: 'down' } })),
+    triggers: [23, 24].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursCasiers', x: 13, y: 4, facing: 'down' } })),
     objects: [
       // On parle à la principale par-dessus le comptoir d'accueil (en U).
       ...[4, 5, 6, 7, 8, 9, 10, 11, 12].map((x) => ({ x, y: 8, script: PRINCIPALE })),
@@ -772,35 +775,25 @@ export const interiors = {
     events: [{ on: 'enter', ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeArrivee], steps: COLLEGE_WELCOME }],
   },
 
-  // Collège Bonsecours — le couloir des casiers (1er étage, en haut de l'escalier du hall) : six casiers contre le mur ;
-  // le 12 (x = 6) sera celui de Pierre… et de Rémy. À gauche, l'escalier qui monte à la salle de maths.
+  // Collège Bonsecours — le couloir des casiers (1er étage, en haut de l'escalier du hall), un couloir fin (15 x 6) :
+  // six casiers contre le mur ; le 12 (x = 6) sera celui de Pierre… et de Rémy. À gauche, l'escalier qui monte à la salle
+  // de maths ; à droite, celui qui redescend au hall. On passe un escalier par sa dernière marche (rangée 3).
   // Scénario : voir data/collegeStory.js (l'embrouille du casier, la scène de la fille).
   bonsecoursCasiers: {
     name: 'Couloir des casiers',
     frlg: true,
-    grid: parseGrid([
+    grid: parseGrid([ // escaliers (dernière marche), casiers x 4-9, placard x 10-12
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'ηηoommmmmmmmmξξ',
+      'mmoommmmmmmmmmm',
+      'ηηoooooooooooξξ',
       'ooooooooooooooo',
       'ooooooooooooooo',
-      'ooooooooooooooo',
-      'ooooooooooooooo',
-      'ooooooooooooooo',
-      'ooooooooooooooo',
-      'ooooooooooooooo',
-      'mooooooooooooom',
     ]),
-    decor: [
-      ...Array.from({ length: 6 }, (_, i) => ({ kind: 'locker', x: 4 + i, y: 2 })),
-      { kind: 'cabinet', x: 11, y: 1 },                 // le placard d'entretien (poignée cassée)
-      { kind: 'pottedPlant', x: 0, y: 5 },
-      { kind: 'pottedPlant', x: 13, y: 5 },
-    ],
-    spawn: { x: 13, y: 3, facing: 'down' },
+    spawn: { x: 13, y: 4, facing: 'down' },
     triggers: [
-      ...[13, 14].map((x) => ({ x, y: 2, warp: { interior: 'bonsecours', x: 23, y: 3, facing: 'down' } })),
-      ...[0, 1].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursMaths', x: 0, y: 3, facing: 'down' } })),
+      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'bonsecours', x: 23, y: 3, facing: 'down' } })),
+      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursMaths', x: 0, y: 4, facing: 'down' } })),
     ],
     objects: [
       { x: 6, y: 2, script: LOCKER },
@@ -815,7 +808,7 @@ export const interiors = {
       // Rémy arrive en courant par l'escalier quand Pierre touche le casier 12 (voir collegeStory.js LOCKER_FIGHT),
       // puis, l'embrouille réglée, file en salle de maths.
       {
-        id: 'remi', name: 'Rémy', x: 13, y: 3, facing: 'left', color: 0xc05c3c,
+        id: 'remi', name: 'Rémy', x: 12, y: 4, facing: 'left', color: 0xc05c3c,
         ifFlags: [FLAGS.remiArrive], unlessFlags: [FLAGS.casierPartage],
       },
       {
@@ -825,7 +818,7 @@ export const interiors = {
       // Le casier devenu QG : Rémy descend de la salle de maths donner son autocollant à Pierre (voir collegeStory.js
       // LOCKER).
       {
-        id: 'remy-autocollant', name: 'Rémy', x: 0, y: 3, facing: 'right', color: 0xc05c3c,
+        id: 'remy-autocollant', name: 'Rémy', x: 1, y: 4, facing: 'right', color: 0xc05c3c,
         ifFlags: [FLAGS.remyAutocollant], unlessFlags: [FLAGS.remyRepart],
         dialogue: ['On a le même autocollant, maintenant !'],
       },
@@ -844,30 +837,20 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'ξξoooooooooooηη',
-      'oooommmoooooooo',
+      'mmooooooooooomm',
+      'ξξoommmooooooηη',
       'ooooooooooooooo',
-      'oommmommmoooomm',
-      'ooooooooooooomm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
       'oommmommmoooooo',
       'ooooooooooooooo',
       'ooooooooooooooo',
       'mooooooooooooom',
     ]),
-    decor: [
-      { kind: 'window', x: 3, y: 0 },
-      { kind: 'chalkboard', x: 5, y: 1 },
-      { kind: 'window', x: 10, y: 0 },
-      { kind: 'longTable', x: 5, y: 2 },
-      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'paperDesk' : 'schoolDesk', x, y: 4 })),
-      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'schoolDesk' : 'paperDesk', x, y: 6 })),
-      { kind: 'plant', x: 0, y: 7 },
-      { kind: 'plant', x: 13, y: 7 },
-    ],
-    spawn: { x: 0, y: 3, facing: 'down' },
+    spawn: { x: 0, y: 4, facing: 'down' },
     triggers: [
-      ...[0, 1].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursCasiers', x: 0, y: 3, facing: 'down' } })),
-      ...[13, 14].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursSciences', x: 13, y: 3, facing: 'down' } })),
+      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursCasiers', x: 0, y: 4, facing: 'down' } })),
+      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursSciences', x: 13, y: 4, facing: 'down' } })),
     ],
     objects: [
       ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Le carré de l\'hypoténuse est égal à la somme des carrés des deux autres côtés. »'] })),
@@ -916,28 +899,18 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'ξξooooooommmmmm',
-      'oooommmoooooooo',
+      'mmooooooommmmoo',
+      'ξξoommmoooooooo',
       'ooooooooooooooo',
-      'oommmommmoooomm',
-      'ooooooooooooomm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
       'oommmommmoooooo',
       'ooooooooooooooo',
       'ooooooooooooooo',
       'mooooooooooooom',
     ]),
-    decor: [
-      { kind: 'window', x: 1, y: 0 },
-      { kind: 'chalkboard', x: 5, y: 1 },
-      { kind: 'window', x: 10, y: 0 },
-      { kind: 'longTable', x: 5, y: 2 },
-      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'paperDesk' : 'schoolDesk', x, y: 4 })),
-      ...[1, 4, 7, 10].map((x, i) => ({ kind: i % 2 ? 'schoolDesk' : 'paperDesk', x, y: 6 })),
-      { kind: 'plant', x: 0, y: 7 },
-      { kind: 'plant', x: 13, y: 7 },
-    ],
-    spawn: { x: 0, y: 3, facing: 'down' },
-    triggers: [0, 1].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursSciences', x: 0, y: 3, facing: 'down' } })),
+    spawn: { x: 0, y: 4, facing: 'down' },
+    triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursSciences', x: 0, y: 4, facing: 'down' } })),
     objects: [
       ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Rédaction : racontez votre plus beau souvenir de vacances. »'] })),
     ],
@@ -965,8 +938,8 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'ηηoooooooooooξξ',
-      'oooommmoooooooo',
+      'mmooooooooooomm',
+      'ηηoommmooooooξξ',
       'ooooooooooooooo',
       'oommmommmoommmm',
       'ooooooooooommmm',
@@ -975,19 +948,10 @@ export const interiors = {
       'ooooooooooooooo',
       'mooooooooooooom',
     ]),
-    decor: [
-      { kind: 'window', x: 3, y: 0 },
-      { kind: 'chalkboard', x: 5, y: 1 },
-      { kind: 'glassCabinet', x: 11, y: 1 },
-      { kind: 'longTable', x: 5, y: 2 },
-      ...[[2, 4], [8, 4], [2, 6], [8, 6]].map(([x, y]) => ({ kind: 'longTable', x, y })),
-      { kind: 'plant', x: 0, y: 7 },
-      { kind: 'plant', x: 13, y: 7 },
-    ],
-    spawn: { x: 13, y: 3, facing: 'down' },
+    spawn: { x: 13, y: 4, facing: 'down' },
     triggers: [
-      ...[13, 14].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursMaths', x: 13, y: 3, facing: 'down' } })),
-      ...[0, 1].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursFrancais', x: 0, y: 3, facing: 'down' } })),
+      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursMaths', x: 13, y: 4, facing: 'down' } })),
+      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursFrancais', x: 0, y: 4, facing: 'down' } })),
     ],
     objects: [
       ...[[11, 5], [12, 5], [13, 5], [14, 5]].map(([x, y]) => ({ x, y, dialogue: ['La vitrine : un squelette en plastique, des bocaux et un vieux microscope.'] })),
@@ -1469,31 +1433,143 @@ export const interiors = {
     ],
   },
 
-  // Bordeaux — l'école KEDGE : l'oral d'anglais (voir data/bordeauxStory.js ENGLISH_ORAL).
+  // Bordeaux — l'école KEDGE : la même école que le collège Bonsecours, pièce pour pièce (dessins identiques,
+  // scripts/interieurs/montepilloy_college.py) : le hall (on y entre depuis Bordeaux), le couloir des casiers, puis trois
+  // salles de cours, un étage par salle. L'oral d'anglais a lieu en salle 1 (voir data/bordeauxStory.js ENGLISH_ORAL).
   kedge: {
     name: 'KEDGE',
-    frlg: true,
-    // Pièce HGSS (salle de classe de l'école d'Écorcia, scripts/interieurs/prytanee_bordeaux.py) : tableau vert, le bureau
-    // de la professeure (x 4-6, rangée 3 : on lui parle par-dessus, '#'), deux rangées de tables, coin carrelé à droite.
+    grid: parseGrid([ // comme le hall du collège : accueil en U, coin salon, escalier en haut à droite
+      'XXXXXXXXXXXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXXXXXXXXXXX',
+      'moooommmommmoooooooooooηη',
+      'ooooooooooooooooooooooooo',
+      'ooooooooooooooooooooooooo',
+      'ooooooooooooooooommmmooom',
+      'ooooooooooooooooommmmooom',
+      'oooooooooooooooooooooooom',
+      'ooom#########moooooooooom',
+      'ooomooooooooomooommmmooom',
+      'ooomooooooooomooommmmoooo',
+      'oEomooooooooomoooooooooom',
+    ]),
+    spawn: { x: 1, y: 10, facing: 'up' },
+    triggers: [23, 24].map((x) => ({ x, y: 2, warp: { interior: 'kedgeCasiers', x: 13, y: 4, facing: 'down' } })),
+    objects: [
+      // On parle à l'accueil par-dessus le comptoir (en U), comme à la principale du collège.
+      ...[4, 5, 6, 7, 8, 9, 10, 11, 12].map((x) => ({ x, y: 8, script: [{ speaker: 'Accueil', say: KEDGE_DESK }] })),
+      { x: 0, y: 2, dialogue: ['Un distributeur de café. Trois euros le gobelet : bienvenue en école de commerce.'] },
+      ...[[17, 5], [18, 5], [19, 5], [20, 5], [17, 9], [18, 9], [19, 9], [20, 9]].map(([x, y]) => ({
+        x, y, dialogue: ['Le coin salon : des magazines d\'économie, des ordinateurs portables oubliés.'],
+      })),
+    ],
+    npcs: [
+      {
+        id: 'accueil-kedge', name: 'Accueil', x: 9, y: 9, facing: 'up', color: 0x5c7cb0,
+        dialogue: KEDGE_DESK,
+      },
+    ],
+  },
+
+  // KEDGE — le couloir des casiers (dessin du couloir du collège) : l'escalier de gauche monte en salle 1.
+  kedgeCasiers: {
+    name: 'Couloir de KEDGE',
+    grid: parseGrid([ // escaliers (dernière marche), casiers x 4-9, placard x 10-12
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'mmoommmmmmmmmmm',
+      'ηηoooooooooooξξ',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+    ]),
+    spawn: { x: 13, y: 4, facing: 'down' },
+    triggers: [
+      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'kedge', x: 23, y: 3, facing: 'down' } })),
+      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle1', x: 0, y: 4, facing: 'down' } })),
+    ],
+    objects: [
+      ...[4, 5, 6, 7, 8, 9].map((x) => ({ x, y: 2, dialogue: ['Un casier d\'étudiant, fermé par un cadenas à code.'] })),
+      { x: 11, y: 2, dialogue: ['Le placard d\'entretien. Fermé à clé, celui-là.'] },
+    ],
+  },
+
+  // KEDGE — salle 1 (dessin de la salle de maths du collège) : l'oral d'anglais.
+  kedgeSalle1: {
+    name: 'KEDGE - salle 1',
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmmoooooooooomm',
-      'oooo###oooooooo',
+      'mmooooooooooomm',
+      'ξξoommmooooooηη',
       'ooooooooooooooo',
-      'oommmommmoooomm',
-      'ooooooooooooomm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
       'oommmommmoooooo',
       'ooooooooooooooo',
       'ooooooooooooooo',
-      'mooooEoooooooom',
+      'mooooooooooooom',
     ]),
-    spawn: { x: 5, y: 9, facing: 'up' },
+    spawn: { x: 0, y: 4, facing: 'down' },
+    triggers: [
+      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'kedgeCasiers', x: 0, y: 4, facing: 'down' } })),
+      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle2', x: 13, y: 4, facing: 'down' } })),
+    ],
+    objects: [
+      ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Oral exam today. Good luck! »'] })),
+    ],
     npcs: [
       {
         id: 'prof-anglais', name: "Professeure d'anglais", x: 5, y: 2, facing: 'down', color: 0xb04c6c,
         script: ENGLISH_ORAL,
       },
+    ],
+  },
+
+  // KEDGE — salle 2 (dessin de la salle de sciences du collège).
+  kedgeSalle2: {
+    name: 'KEDGE - salle 2',
+    grid: parseGrid([
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'mmooooooooooomm',
+      'ηηoommmooooooξξ',
+      'ooooooooooooooo',
+      'oommmommmoommmm',
+      'ooooooooooommmm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooooooooooom',
+    ]),
+    spawn: { x: 13, y: 4, facing: 'down' },
+    triggers: [
+      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle1', x: 13, y: 4, facing: 'down' } })),
+      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle3', x: 0, y: 4, facing: 'down' } })),
+    ],
+    objects: [
+      ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : un graphique d\'offre et de demande, et « Partiel lundi ».'] })),
+    ],
+  },
+
+  // KEDGE — salle 3, tout en haut (dessin de la salle de français du collège).
+  kedgeSalle3: {
+    name: 'KEDGE - salle 3',
+    grid: parseGrid([
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'mmooooooommmmoo',
+      'ξξoommmoooooooo',
+      'ooooooooooooooo',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooooooooooom',
+    ]),
+    spawn: { x: 0, y: 4, facing: 'down' },
+    triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle2', x: 0, y: 4, facing: 'down' } })),
+    objects: [
+      ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Marketing : the 4 P. Product, Price, Place, Promotion. »'] })),
     ],
   },
 
