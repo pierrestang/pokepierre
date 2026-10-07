@@ -100,10 +100,12 @@ PLANS = {
     },
     # Chambre des enfants (chambre du héros, Bourg Geon, 10 x 10) : l'escalier qui descend en haut à gauche, bureau et
     # ordinateur, télé ; quatre lits côte à côte en bas (Pierre, Manon, Jean, Fanny), le tapis au milieu.
+    # Un seul lit (le lit d'origine de la chambre), quel que soit le nombre d'enfants (demande de l'utilisateur), sans le
+    # petit tapis clair dessous.
     'montHouseUp': {
         'hgss': (NEWBARK, 10, 33, 10, 10),
-        'paste': [{'from': (NEWBARK, 10, 40, 2, 3), 'to': (x, 7)} for x in (2, 4, 6)],
-        'block': [[x, y] for x in range(8) for y in (7, 8, 9)],
+        'paste': [{'from': (NEWBARK, 10, 38, 4, 2), 'to': (0, y), 'sol': True} for y in (7, 8)],
+        'block': [[x, y] for x in range(3) for y in (7, 8, 9)],
         'free': [[0, 3], [1, 3]],
     },
     # École de Montépilloy : la salle de classe de Mauville telle quelle (tableau, bureau du maître, pupitres).
