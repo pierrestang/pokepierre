@@ -7,7 +7,20 @@ dessiné ici, dans les tons Gen 4 (contour brun sombre, deux nuances, reflet cla
 """
 from PIL import Image, ImageDraw
 
+import hgss_rooms as HG
 from interieurs_plans import T, rect, stretch, meuble, sheet  # noqa: F401
+
+
+def hgss_piece(name, x, y, w, h, floor=False):
+    """Un meuble pris dans une vraie pièce HGSS (pack de SirMaIo) : ses calques décor et au-dessus (et le sol si
+    `floor`), sur fond transparent, pour le poser comme un meuble (par exemple un lit où dort un PNJ)."""
+    r = HG.room(name, x, y, w, h)
+    img = Image.new('RGBA', (w * T, h * T))
+    for k in (('sol',) if floor else ()) + ('decor', 'dessus'):
+        for i, stack in enumerate(r[k]):
+            for t in stack:
+                img.alpha_composite(t, ((i % w) * T, (i // w) * T))
+    return img
 
 M = 'g4-int-meubles'
 OUT = (58, 40, 30, 255)            # contour brun sombre des dessins faits ici
@@ -246,105 +259,91 @@ SLEEP = {'bed': True, 'cover': 99, 'pillow': 6}
 
 
 # ---------- Pièces ----------
+# Octobre 2026 : chaque pièce part d'une vraie pièce HGSS (pack de SirMaIo, scripts/hgss_rooms.py), retouchée :
+# 'hgss' (carte, x0, y0, w, h) ; 'paste' : morceaux d'autres pièces HGSS ; 'items' : meubles posés par-dessus.
+NB = '001i_Newbark houses'
+# Parquet nu de la chambre de Bourg Geon (4 x 2 cases), collé sur le tapis pour faire de la place aux lits.
+PARQUET = (NB, 10, 38, 4, 2)
+ITEMS.update({
+    # Le lit de la chambre du héros de Bourg Geon (3 x 3 cases, halo compris), pour y coucher un PNJ : avec son
+    # parquet (chambres de Bourg Geon), ou seul (sur un autre sol).
+    'fsa-lit-hgss': {'img': lambda: hgss_piece(NB, 10, 40, 3, 3), 'solid': 3},
+    'fsa-lit-hgss-sol': {'img': lambda: hgss_piece(NB, 10, 40, 3, 3, floor=True), 'solid': 3},
+})
+
+
+def rug_to_parquet(x0, y0):
+    """Le tapis bleu des chambres de Bourg Geon (4 x 4 cases à partir de (x0, y0)) recouvert de parquet nu."""
+    return [{'from': PARQUET, 'to': (x0, y0), 'sol': True}, {'from': PARQUET, 'to': (x0, y0 + 2), 'sol': True}]
+
+
 PLANS = {
-    # Fort-de-France — maison familiale, rez-de-chaussée : murs jaune pâle, parquet clair ; étagère et vitrine, la télé
-    # et la console de Manon, la cuisine (un carton posé sur le plan de travail) et le frigo au mur du fond ; la table
-    # du salon et sa coupe de fruits ; l'escalier qui monte, à droite ; des cartons partout.
+    # Fort-de-France — maison familiale, rez-de-chaussée : le rez-de-chaussée de la maison du héros de Bourg Geon
+    # (escalier en haut à gauche, télé, cuisine, frigo, table et tabourets sur le tapis, plantes), avec des cartons de
+    # déménagement prêts pour Saint-Ay.
     'ffHouse': {
-        'wall': 'jaune', 'floor': 'parquet-clair',
-        'items': [
-            ['fsa-etagere', 0, 2], ['fsa-vitrine', 1, 2], ['fsa-fenetre', 3, 1], ['fsa-tele', 3, 2],
-            ['fsa-meuble-bas', 4, 2], ['fsa-console', 4, 2, {'dy': -9}], ['fsa-plage', 9, 1],
-            ['fsa-cuisine', 5, 2], ['fsa-carton-pose', 5, 2, {'dy': -8}], ['fsa-frigo', 8, 2],
-            ['escalier-monte-clair', 10, 2],
-            ['fsa-plante-haute', 0, 5, {'solid': 2}],
-            ['fsa-table-salle', 4, 5], ['fsa-fruits', 5, 4, {'dy': -6}],
-            ['fsa-carton', 1, 3], ['fsa-carton', 2, 7],
-            ['fsa-plante-grasse', 10, 7, {'flat': True}], ['fsa-carton', 10, 6],
-        ],
+        'hgss': (NB, 10, 53, 11, 10),
+        'block': [(6, 6), (7, 6), (6, 7), (7, 7)],
+        'items': [['fsa-carton', x, y] for x, y in ((3, 3), (0, 6), (9, 4), (9, 8))],
     },
-    # Fort-de-France — la chambre de Pierre et Manon : deux lits (bleu, rose), le bureau avec l'ordinateur et un petit
-    # carton dessus, une plante ; l'escalier qui descend ; des cartons.
+    # Fort-de-France — la chambre de Pierre et Manon : la chambre du héros de Bourg Geon (escalier qui descend, bureau
+    # et ordinateur, télé, plante), son lit et un second lit pour Manon à la place du tapis ; des cartons.
     'ffHouseUp': {
-        'wall': 'creme', 'floor': 'parquet-clair',
+        'hgss': (NB, 10, 33, 10, 10),
+        'paste': rug_to_parquet(4, 5),
+        'block': [(x, y) for x in range(3) for y in range(7, 10)],
         'items': [
-            ['fsa-tableau', 0, 1], ['fsa-fenetre', 4, 1],
-            ['fsa-lit-bleu', 0, 3], ['fsa-bureau-pc', 2, 2], ['fsa-carton-pose', 3, 2, {'dy': -12}],
-            ['fsa-lit-rose', 4, 3], ['fsa-plante-grasse', 6, 2],
-            ['fsa-carton', 6, 3], ['escalier-descend-clair', 8, 2],
-            ['fsa-carton', 0, 5], ['fsa-carton', 3, 5], ['fsa-carton', 8, 5],
+            ['fsa-lit-hgss-sol', 3, 9],
+            ['fsa-carton-pose', 6, 3, {'dy': -9}],
+            *[['fsa-carton', x, y] for x, y in ((0, 5), (4, 5), (8, 5), (7, 8))],
         ],
     },
-    # Fort-de-France — la cabane de pêche de Papa : planches, fenêtre et panneau ; le râtelier des cannes à gauche,
-    # caisses de poisson et carton au fond, la caisse « À DONNER » en bas à gauche, une plante.
+    # Fort-de-France — la cabane de pêche de Papa : la maison du charbonnier d'Écorcia (lambris, plancher, poêle,
+    # bûches, tonneaux) ; la longue table remplacée par le râtelier des cannes et deux caisses de poisson, la caisse
+    # « À DONNER » à gauche, des cartons.
     'ffHut': {
-        'wall': 'bois', 'floor': 'planches-sombres',
+        'hgss': ('010i_Azalea Houses', 10, 8, 11, 9),
+        'erase': [(2, 2, 3, 1)],
         'items': [
-            ['fsa-fenetre', 2, 1], ['fsa-note', 4, 1], ['fsa-ratelier', 0, 2],
-            ['fsa-caisse-poisson', 3, 2], ['fsa-caisse-poisson', 4, 2], ['fsa-carton', 5, 2],
-            ['fsa-plante-haute', 6, 4, {'solid': 2}],
-            ['fsa-caisse-donner', 0, 4], ['fsa-carton', 6, 5],
+            ['fsa-ratelier', 2, 2], ['fsa-caisse-poisson', 4, 2], ['fsa-caisse-poisson', 5, 2],
+            ['fsa-caisse-donner', 0, 4], ['fsa-carton', 8, 5], ['fsa-carton', 6, 7],
         ],
     },
-    # Saint-Ay — la maison de la famille : murs crème, parquet ; la cuisine et le frigo à gauche, une fenêtre, la télé à
-    # droite et l'escalier qui monte ; la table de la salle à manger au milieu, deux plantes.
+    # Saint-Ay — la maison de la famille : le rez-de-chaussée de Bourg Geon (escalier, télé, cuisine, frigo), le coin
+    # repas pris dans la maison voisine (tatami, table orange et ses tabourets) à la place du tapis bleu.
     'playerHouse': {
-        'wall': 'creme', 'floor': 'parquet',
-        'items': [
-            ['fsa-cuisine-2', 0, 2], ['fsa-frigo', 2, 2], ['fsa-fenetre', 4, 1],
-            ['fsa-plante-grasse', 6, 2], ['fsa-tele', 7, 2], ['escalier-monte', 9, 2],
-            ['fsa-table-salle', 3, 5], ['fsa-fruits', 4, 4, {'dy': -6}],
-            ['fsa-plante-haute', 0, 5], ['fsa-plante-haute', 9, 5],
-        ],
+        'hgss': (NB, 31, 53, 11, 10),
+        'paste': [{'from': (NB, 13, 13, 6, 4), 'to': (4, 5), 'sol': True}],
+        'block': [(6, 6), (7, 6), (6, 7), (7, 7)],
     },
-    # Saint-Ay — la chambre des enfants : trois lits (Pierre en bleu, Manon en rose, Fanny dans son petit lit), fenêtre
-    # et tableau, deux plantes ; l'escalier qui descend.
+    # Saint-Ay — la chambre des enfants : la chambre de Bourg Geon, le lit de Pierre, celui de Manon et le petit lit de
+    # Fanny (où elle dort) à la place du tapis.
     'playerHouseUp': {
-        'wall': 'papier-peint', 'floor': 'parquet-clair',
-        'items': [
-            ['fsa-fenetre', 2, 1], ['fsa-tableau', 7, 1],
-            ['fsa-lit-bleu', 0, 3], ['fsa-lit-rose', 3, 3], ['fsa-lit-enfant', 6, 3, SLEEP],
-            ['escalier-descend', 9, 2],
-            ['fsa-plante-grasse', 0, 5], ['fsa-plante-grasse', 9, 5],
-        ],
+        'hgss': (NB, 31, 33, 10, 10),
+        'paste': rug_to_parquet(4, 5),
+        'block': [(x, y) for x in range(3) for y in range(7, 10)],
+        'items': [['fsa-lit-hgss-sol', 3, 9], ['fsa-lit-hgss-sol', 7, 7, SLEEP]],
         'npc_on_solid': ['fanny-lit'],
     },
-    # Saint-Ay — la maison de Felix : murs menthe, damier de bois ; armoire et étagère, la télé et la console, une
-    # fenêtre, la bibliothèque ; la table au milieu, une plante.
+    # Saint-Ay — la maison de Felix : le salon de M. Pokémon (vitrine, canapé et tapis violet, enceintes, bibliothèque,
+    # bureau et ordinateur, table, plantes).
     'felixHouse': {
-        'wall': 'menthe', 'floor': 'damier-bois',
-        'items': [
-            ['fsa-armoire', 0, 2], ['fsa-etagere', 1, 2], ['fsa-tele', 4, 2],
-            ['fsa-meuble-bas', 5, 2], ['fsa-console', 5, 2, {'dy': -9}], ['fsa-fenetre', 6, 1], ['fsa-bibliotheque', 8, 2],
-            ['fsa-table-salle', 3, 5], ['fsa-plante-haute', 0, 6, {'solid': 2}],
-        ],
+        'hgss': ('004i_Mr Pokémon House', 10, 8, 12, 9),
     },
-    # Saint-Ay — la cabane des cousins : planches ; la commode et sa plante contre le mur, un tableau ; deux longues
-    # tables (Felix derrière la première, Joshua et Yanis derrière la seconde) avec des peluches entre elles ; un tapis
-    # et deux gros coussins.
+    # Saint-Ay — la cabane des cousins, leur QG : la maison de Fargas à Écorcia (lambris, tatamis, grande table basse,
+    # coussins, établi) ; des peluches sur la table.
     'cabane': {
-        'wall': 'bois', 'floor': 'bois-roux',
-        'items': [
-            ['fsa-tableau', 1, 1], ['fsa-carte', 5, 1],
-            ['fsa-meuble-bas', 3, 2], ['fsa-meuble-bas', 4, 2], ['fsa-plante-grasse', 4, 2, {'dy': -9, 'flat': True}],
-            ['fsa-tapis', 2, 6],
-            ['fsa-table-3', 0, 3], ['fsa-coussins', 3, 3], ['fsa-ourson', 3, 3, {'dy': -6}],
-            ['fsa-coussins', 4, 3], ['fsa-ourson-rose', 4, 3, {'dy': -6}], ['fsa-table-3', 5, 3],
-            ['fsa-coussin-rouge', 0, 5], ['fsa-coussin-bleu', 7, 5],
-        ],
+        'hgss': ('010i_Azalea Houses', 10, 25, 16, 10),
+        'items': [['fsa-ourson', 7, 5, {'dy': -6}], ['fsa-ourson-rose', 8, 5, {'dy': -5}]],
     },
-    # Saint-Ay — la clinique : murs vert d'eau, carrelage blanc ; trois lits (Maman, Fanny, un lit libre), une fenêtre et
-    # le panneau d'affichage ; le poste d'accueil avec son ordinateur à droite ; la table de la salle d'attente, des
-    # plantes.
+    # Saint-Ay — la clinique : le labo d'Orme (machines, ordinateur, carrelage vert d'eau) ; les vitrines du bas
+    # remplacées par trois lits (Maman et Fanny y dorment).
     'hospital': {
-        'wall': 'menthe', 'floor': 'carrelage',
-        'items': [
-            ['fsa-fenetre', 3, 1], ['fsa-affiche', 10, 1], ['fsa-tableau', 7, 1],
-            ['fsa-lit-blanc', 0, 3, SLEEP], ['fsa-lit-blanc', 3, 3, SLEEP], ['fsa-lit-lavande', 6, 3],
-            ['fsa-pc-accueil', 12, 2],
-            ['fsa-table-attente', 5, 6],
-            ['fsa-plante-haute', 0, 7, {'solid': 2}], ['fsa-plante-haute', 13, 7, {'solid': 2}],
-        ],
+        'hgss': ('001i_Newbark-Lab', 10, 4, 12, 15),
+        'erase': [(0, 8, 3, 3), (5, 8, 7, 3)],
+        'paste': [{'from': ('001i_Newbark-Lab', 11, 15, 6, 2), 'to': (x, y), 'sol': True}
+                  for x in (0, 6) for y in (8, 9)],
+        'items': [['fsa-lit-hgss', 0, 10, SLEEP], ['fsa-lit-hgss', 3, 10, SLEEP], ['fsa-lit-hgss', 6, 10]],
         'npc_on_solid': ['maman-hopital', 'fanny-hopital'],
     },
 }

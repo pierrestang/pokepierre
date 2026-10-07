@@ -16,7 +16,6 @@ import {
   SURVEILLANT, COLLEGE_WELCOME, LOCKER, REMI, REMI_INVITE, REMI_SEAT, CAMILLE, PROF, LOCKER_SIDE, SURVEILLANT_SPOT, CLOSET,
 } from '../collegeStory.js';
 import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING, DINNER } from '../montepilloyStory.js';
-import { FRLG_SHEETS, cabaneFrame, cabaneOverlay } from '../../art/frlgArt.js';
 import {
   LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
   LIBRARY, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
@@ -61,8 +60,8 @@ const ELEVATOR = [10, 11].map((x) => ({
 }));
 
 // Cartons de déménagement de la maison de Fort-de-France, posés çà et là sans gêner le passage (cases 'm' des grilles).
-const FF_CARTONS = [[5, 2], [1, 3], [2, 7], [10, 6]];
-const FF_UP_CARTONS = [[6, 3], [0, 5], [3, 5], [8, 5]];
+const FF_CARTONS = [[3, 3], [0, 6], [9, 4], [9, 8]];
+const FF_UP_CARTONS = [[0, 5], [4, 5], [8, 5], [7, 8]];
 
 // Papa, ses cannes rangées, envoie Pierre au salon une fois la quête de Manon finie aussi (tant que Maman n'a pas
 // dansé).
@@ -118,12 +117,14 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmmmmmmmmoη',
-      'omooooooooo',
-      'mooommmmooo',
-      'mooommmmooo',
-      'oooooooooom',
-      'oomoEEoooom',
+      'ηηoommmmmmm',
+      'mmomoomoooo',
+      'oooooommomm',
+      'ooooooooooo',
+      'mooooommooo',
+      'oooooommooo',
+      'ooooooooomo',
+      'moEooooooom',
     ]),
     decor: [
       { kind: 'blueShelf', x: 0, y: 1 },
@@ -139,12 +140,12 @@ export const interiors = {
       // Cartons de déménagement, prêts pour Saint-Ay.
       ...FF_CARTONS.map(([x, y]) => ({ kind: 'carton', x, y })),
     ],
-    spawn: { x: 4, y: 6, facing: 'up' },
-    triggers: [{ x: 10, y: 2, warp: { interior: 'ffHouseUp', x: 8, y: 3, facing: 'down' } }],
+    spawn: { x: 2, y: 8, facing: 'up' },
+    triggers: [0, 1].map((x) => ({ x, y: 2, warp: { interior: 'ffHouseUp', x: 2, y: 3, facing: 'down' } })),
     objects: [
-      { x: 3, y: 2, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
-      { x: 4, y: 2, dialogue: ['[Texte provisoire] La console de Manon. Elle a encore battu ton record…'] },
-      { x: 8, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
+      { x: 4, y: 2, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
+      { x: 5, y: 2, dialogue: ['[Texte provisoire] La console de Manon. Elle a encore battu ton record…'] },
+      { x: 10, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
       ...FF_CARTONS.map(([x, y]) => ({ x, y, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] })),
     ],
     // En descendant pour la première fois, Maman pose le cadre de la journée.
@@ -183,12 +184,16 @@ export const interiors = {
     name: 'Chambre de Pierre',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXX',
-      'XXXXXXXXX',
-      'mmmmmmmoξ',   // lit de Pierre, bureau, lit de Manon, plante
-      'mmoommmoo',   // devant le bureau (sans tabouret) : libre ; carton devant la plante
-      'ooooooooo',
-      'moomoooom',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'ξξooommmmm',
+      'mmoooooooo',
+      'mooomooomo',
+      'oooooooooo',
+      'mmmmmmoooo',
+      'mmmmmmomoo',
+      'mmmmmmooom',
     ]),
     decor: [
       { kind: 'painting', x: 0, y: 0 },
@@ -200,11 +205,11 @@ export const interiors = {
       { kind: 'pottedPlant', x: 6, y: 2 },
       ...FF_UP_CARTONS.map(([x, y]) => ({ kind: 'carton', x, y })),
     ],
-    spawn: { x: 1, y: 4, facing: 'up' },
-    triggers: [{ x: 8, y: 2, warp: { interior: 'ffHouse', x: 10, y: 3, facing: 'down' } }],
+    spawn: { x: 6, y: 6, facing: 'left' },
+    triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
     objects: [
-      { x: 2, y: 2, dialogue: ['Un carton marqué « CHAMBRE — FRAGILE ». Il est déjà scotché.'] },
-      { x: 3, y: 2, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
+      { x: 6, y: 3, dialogue: ['Un carton marqué « CHAMBRE — FRAGILE ». Il est déjà scotché.'] },
+      { x: 5, y: 3, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
       ...FF_UP_CARTONS.map(([x, y]) => ({ x, y, dialogue: ['Des cartons à moitié faits.'] })),
     ],
     // Image d'accueil de l'île et bruit des vagues, puis la chambre apparaît et Maman appelle d'en bas.
@@ -230,12 +235,15 @@ export const interiors = {
     name: 'Cabane de pêche',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXX',
-      'XXXXXXX',
-      'ψψommmo',   // râtelier, caisses, carton
-      'oooooom',
-      'mooooom',
-      'oooEoom',   // carton dans le coin
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'mmψψmmmmmmm',
+      'ooooooommmm',
+      'mooooooooom',
+      'oooooooomoo',
+      'oooooooooom',
+      'mooooomoooo',
+      'mooEooooooo',
     ]),
     decor: [
       { kind: 'window', x: 2, y: 0 },
@@ -251,13 +259,13 @@ export const interiors = {
     // Vieille), puis la Méga Canne que Papa garde ; dans la caisse « À DONNER », la Super Canne (offerte au
     // pêcheur) et la Vieille canne, puis la Vieille seule. Le bas des cannes est coupé (socle, bord de la caisse).
     decals: [
-      { x: 0, y: 2, unlessFlags: [FLAGS.papaFait], icons: RACK_RODS },
-      { x: 0, y: 2, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -3, -34, 26]] },
+      { x: 2, y: 2, unlessFlags: [FLAGS.papaFait], icons: RACK_RODS },
+      { x: 2, y: 2, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -3, -34, 26]] },
       { x: 0, y: 4, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id], icons: CRATE_RODS },
       { x: 0, y: 4, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
       { x: 0, y: 4, ifItems: [ITEMS.canneAPeche.id], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
     ],
-    spawn: { x: 3, y: 4, facing: 'up' },
+    spawn: { x: 3, y: 7, facing: 'up' },
     npcs: [
       {
         id: 'papa', name: 'Papa', x: 1, y: 4, facing: 'left', color: 0x3f6fd8, still: true,
@@ -285,13 +293,13 @@ export const interiors = {
       },
     ],
     objects: [
-      { x: 0, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
-      { x: 1, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
-      { x: 0, y: 2, dialogue: ['La canne que Papa a gardée.'] },
-      { x: 1, y: 2, dialogue: ['La canne que Papa a gardée.'] },
-      { x: 3, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
+      { x: 2, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
+      { x: 3, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
+      { x: 2, y: 2, dialogue: ['La canne que Papa a gardée.'] },
+      { x: 3, y: 2, dialogue: ['La canne que Papa a gardée.'] },
       { x: 4, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
-      ...[[5, 2], [6, 5]].map(([x, y]) => ({ x, y, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] })),
+      { x: 5, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
+      ...[[8, 5], [6, 7]].map(([x, y]) => ({ x, y, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] })),
       // Caisse « À DONNER » : une canne pour le capitaine du ferry, dès le tri avec Papa.
       { x: 0, y: 4, unlessFlags: [FLAGS.papaFait], dialogue: ['Une caisse marquée « À DONNER ». Elle est encore vide.'] },
       // Dès le tri avec Papa, on peut prendre une des deux cannes (pour le capitaine du ferry).
@@ -321,14 +329,16 @@ export const interiors = {
     name: 'Maison de la famille',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XXXXXXXXXX',
-      'mmmooommoη',   // escalier vers la chambre des enfants (étage), contre le mur de droite
-      'oooooooooo',
-      'ooommmmooo',
-      'moommmmoom',
-      'oooooooooo',
-      'ooooEEoooo',
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'ηηoommmmmmm',
+      'mmoooomoooo',
+      'oooooommoom',
+      'ooooooooooo',
+      'oooooommooo',
+      'oooooommooo',
+      'ooooooooooo',
+      'moEooooooom',
     ]),
     decor: [
       { kind: 'kitchen', x: 0, y: 1 },
@@ -340,14 +350,14 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 5 },
       { kind: 'plant', x: 9, y: 5 },
     ],
-    spawn: { x: 4, y: 6, facing: 'up' },
-    triggers: [{ x: 9, y: 2, warp: { interior: 'playerHouseUp', x: 9, y: 3, facing: 'down' } }],
+    spawn: { x: 2, y: 8, facing: 'up' },
+    triggers: [0, 1].map((x) => ({ x, y: 2, warp: { interior: 'playerHouseUp', x: 2, y: 3, facing: 'down' } })),
     objects: [
-      { x: 7, y: 2, dialogue: ['La télé. Les nouvelles de la région passent en boucle.'] },
+      { x: 4, y: 2, dialogue: ['La télé. Les nouvelles de la région passent en boucle.'] },
     ],
     npcs: [
       {
-        id: 'papa-maison', name: 'Papa', x: 2, y: 4, facing: 'right', color: 0x3f6fd8,
+        id: 'papa-maison', name: 'Papa', x: 5, y: 6, facing: 'right', color: 0x3f6fd8,
         ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.arriveeMontepilloy], still: true,
         script: [
           { unlessFlags: [FLAGS.planCabane], speaker: 'Papa', say: ['Fanny dort enfin. File voir tes cousins, ils viennent d\'emménager !'], end: true },
@@ -357,7 +367,7 @@ export const interiors = {
         ],
       },
       {
-        id: 'maman-maison', name: 'Maman', x: 7, y: 4, facing: 'left', color: 0xe86fa0,
+        id: 'maman-maison', name: 'Maman', x: 8, y: 6, facing: 'left', color: 0xe86fa0,
         ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.arriveeMontepilloy], still: true,
         script: [
           { unlessFlags: [FLAGS.ellipseSaintAy], speaker: 'Maman', say: ['Chut… Fanny dort à l\'étage. Va plutôt jouer avec tes cousins !'], end: true },
@@ -366,7 +376,7 @@ export const interiors = {
         ],
       },
       {
-        id: 'manon-maison', name: 'Manon', x: 8, y: 3, facing: 'down', color: 0xf0a030,
+        id: 'manon-maison', name: 'Manon', x: 8, y: 7, facing: 'left', color: 0xf0a030,
         ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.arriveeMontepilloy],
         script: [
           { unlessFlags: [FLAGS.ellipseSaintAy], speaker: 'Manon', say: ['Fanny pleure toute la nuit… Mais elle est trop mignonne.'], end: true },
@@ -376,7 +386,7 @@ export const interiors = {
       },
       // Quelques années plus tard, Fanny a grandi : elle joue dans le salon.
       {
-        id: 'fanny-maison', name: 'Fanny', x: 6, y: 3, facing: 'down', color: 0xf0c0c0,
+        id: 'fanny-maison', name: 'Fanny', x: 5, y: 7, facing: 'right', color: 0xf0c0c0,
         ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.arriveeMontepilloy],
         script: [
           { ifFlags: [FLAGS.annonceMutation], speaker: 'Fanny', say: ['C\'est loin, Montépilloy ? Il y aura des poules ?'], end: true },
@@ -396,10 +406,14 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'mmommommoξ',   // trois lits, escalier vers le salon contre le mur de droite
-      'mmommommoo',
-      'oooooooooo',
-      'moooooooom',   // plantes
+      'XXXXXXXXXX',
+      'ξξooommmmm',
+      'mmoooooooo',
+      'ooooooommm',
+      'ooooooommm',
+      'mmmmmmommm',
+      'mmmmmmoooo',
+      'mmmmmmooom',
     ]),
     decor: [
       ...[0, 3, 6].map((x) => ({ kind: 'bed', x, y: 2 })),
@@ -408,15 +422,15 @@ export const interiors = {
       { kind: 'pottedPlant', x: 0, y: 5 },
       { kind: 'pottedPlant', x: 9, y: 5 },
     ],
-    spawn: { x: 9, y: 3, facing: 'down' },
-    triggers: [{ x: 9, y: 2, warp: { interior: 'playerHouse', x: 9, y: 3, facing: 'down' } }],
+    spawn: { x: 2, y: 4, facing: 'down' },
+    triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'playerHouse', x: 2, y: 2, facing: 'down' } })),
     objects: [
-      ...[0, 9].map((x) => ({ x, y: 5, dialogue: ['Une petite plante verte.'] })),
+      { x: 9, y: 9, dialogue: ['Une petite plante verte.'] },
     ],
     // Fanny bébé, couchée dans son lit, de la sortie de la clinique jusqu'à l'ellipse (ensuite, elle joue au salon).
     npcs: [
       {
-        id: 'fanny-lit', name: 'Fanny', x: 6, y: 3, facing: 'down', still: true, inBed: true, child: true,
+        id: 'fanny-lit', name: 'Fanny', x: 8, y: 7, facing: 'down', still: true, inBed: true, child: true,
         ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.ellipseSaintAy],
         dialogue: ['Fanny dort, son petit poing serré. Elle sourit dans son sommeil.'],
       },
@@ -429,14 +443,15 @@ export const interiors = {
     name: 'Maison de Felix',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XXXXXXXXXX',
-      'mmoommoomm',
-      'oooooooooo',
-      'ooommmmooo',
-      'moommmmooo',
-      'mooooooooo',
-      'ooooEEoooo',
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'mmmmmoommmmm',
+      'oooooooooooo',
+      'oooooooooooo',
+      'ooooommmmooo',
+      'ooooommooooo',
+      'oooooooooooo',
+      'mooEooooooom',
     ]),
     decor: [
       { kind: 'blueShelf', x: 0, y: 1 },
@@ -449,8 +464,8 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 5 },
     ],
     // Le cheval que Val sculpte, posé sur la table juste devant lui (art/tileArt.js DECALS.statue).
-    decals: [{ kind: 'statue', x: 5, y: 4, ifFlags: [FLAGS.felixInvite] }],
-    spawn: { x: 5, y: 6, facing: 'up' },
+    decals: [{ kind: 'statue', x: 5, y: 5, ifFlags: [FLAGS.felixInvite] }],
+    spawn: { x: 3, y: 7, facing: 'up' },
     npcs: [
       {
         id: 'felix-maison', name: 'Felix', x: 2, y: 6, facing: 'right', color: 0x9060d0,
@@ -458,7 +473,7 @@ export const interiors = {
         script: FELIX_CHANTIER,
       },
       {
-        id: 'val', name: 'Val', x: 5, y: 3, facing: 'down', color: 0x5cb85c, still: true,
+        id: 'val', name: 'Val', x: 5, y: 4, facing: 'down', color: 0x5cb85c, still: true,
         ifFlags: [FLAGS.felixInvite],
         script: [
           { say: ['Sur la table, Val sculpte une statue : un cheval en bois. Des copeaux partout.'] },
@@ -467,12 +482,12 @@ export const interiors = {
         ],
       },
       {
-        id: 'joshua', name: 'Joshua', x: 6, y: 3, facing: 'down', color: 0x20a0c0,
+        id: 'joshua', name: 'Joshua', x: 6, y: 4, facing: 'down', color: 0x20a0c0,
         ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.planCabane],
         dialogue: ['Felix a un plan. Il a toujours un plan.'],
       },
       {
-        id: 'yanis', name: 'Yanis', x: 1, y: 3, facing: 'right', color: 0xc0b040,
+        id: 'yanis', name: 'Yanis', x: 1, y: 4, facing: 'right', color: 0xc0b040,
         ifFlags: [FLAGS.felixInvite], unlessFlags: [FLAGS.planCabane],
         dialogue: ['Salut, cousin !'],
       },
@@ -487,35 +502,35 @@ export const interiors = {
   // tables (redessinées par-dessus eux) ; on leur parle par-dessus la table.
   cabane: {
     name: 'Cabane',
-    backdrop: { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, 'room') },
-    overlays: [cabaneOverlay('tableLeft'), cabaneOverlay('tableRight')],
     grid: parseGrid([
-      'XXXXXXXX',
-      'XXXXXXXX',   // mur du fond (tableau)
-      'XoommooX',   // places derrière les tables ; commode et plante au milieu
-      'mmmmmmmm',   // tables et peluches
-      'oooooooo',
-      'moooooom',   // coussins
-      'oooooooo',
-      'oooEEooo',   // tapis de sortie (l'échelle)
+      'XXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXX',
+      'mmmmmmmmmmmmmmmm',   // lambris, armoires, radio, commodes, établi
+      'mmmmmmooommmmmmm',
+      'moooooooooommmmm',   // coussin de Felix
+      'moooooommoomooom',   // table basse du QG (peluches), coussins de Yanis et à droite
+      'ooooooommoomooom',   // coussin de Joshua
+      'oooooooooooooooo',
+      'oooooooooooooooo',
+      'oooEoooooooooooo',   // tapis de sortie (l'échelle)
     ]),
-    spawn: { x: 3, y: 6, facing: 'up' },
+    spawn: { x: 3, y: 8, facing: 'up' },
     objects: [
-      { x: 1, y: 3, script: FELIX_AT_CABANE },
-      { x: 5, y: 3, script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe. « {motDePasse|QG} ». Chut !'] }] },
-      { x: 6, y: 3, script: [{ speaker: 'Yanis', say: ['« {motDePasse|QG} »… Je l\'ai écrit sur ma main, pour pas l\'oublier.'] }] },
-      { x: 0, y: 3, dialogue: ['La table du QG des cousins.'] },
-      { x: 2, y: 3, dialogue: ['La table du QG des cousins.'] },
-      { x: 7, y: 3, dialogue: ['La table du QG des cousins.'] },
-      { x: 3, y: 3, dialogue: ['Des peluches de Pokémon, alignées entre les deux tables.'] },
-      { x: 4, y: 3, dialogue: ['Des peluches de Pokémon, alignées entre les deux tables.'] },
-      { x: 0, y: 5, dialogue: ['Un coussin moelleux.'] },
-      { x: 7, y: 5, dialogue: ['Un coussin moelleux.'] },
+      ...[7, 8].map((x) => ({ x, y: 5, dialogue: ['Des peluches de Pokémon, posées sur la table du QG.'] })),
+      ...[7, 8].map((x) => ({ x, y: 6, dialogue: ['La table du QG des cousins.'] })),
+      { x: 14, y: 5, dialogue: ['Un coussin moelleux.'] },
     ],
+    // Les cousins, chacun sur son coussin autour de la table basse : on leur parle en face.
     npcs: [
-      { id: 'felix-cabane', name: 'Felix', x: 1, y: 2, facing: 'down', color: 0x9060d0, still: true, ifFlags: [FLAGS.cabaneFinie] },
-      { id: 'joshua-cabane', name: 'Joshua', x: 5, y: 2, facing: 'down', color: 0x20a0c0, still: true, ifFlags: [FLAGS.cabaneFinie] },
-      { id: 'yanis-cabane', name: 'Yanis', x: 6, y: 2, facing: 'down', color: 0xc0b040, still: true, ifFlags: [FLAGS.cabaneFinie] },
+      { id: 'felix-cabane', name: 'Felix', x: 3, y: 4, facing: 'down', color: 0x9060d0, still: true, ifFlags: [FLAGS.cabaneFinie], script: FELIX_AT_CABANE },
+      {
+        id: 'joshua-cabane', name: 'Joshua', x: 9, y: 6, facing: 'left', color: 0x20a0c0, still: true, ifFlags: [FLAGS.cabaneFinie],
+        script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe. « {motDePasse|QG} ». Chut !'] }],
+      },
+      {
+        id: 'yanis-cabane', name: 'Yanis', x: 12, y: 5, facing: 'down', color: 0xc0b040, still: true, ifFlags: [FLAGS.cabaneFinie],
+        script: [{ speaker: 'Yanis', say: ['« {motDePasse|QG} »… Je l\'ai écrit sur ma main, pour pas l\'oublier.'] }],
+      },
     ],
     // La cabane toute neuve : les quatre cousins s'y installent (une seule fois).
     events: [{ on: 'enter', ifFlags: [FLAGS.cabaneFinie], unlessSouvenirs: [TRAITS.espritEquipe.id], steps: CABANE_FETE }],
@@ -526,15 +541,21 @@ export const interiors = {
     name: 'Clinique',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXX',
-      'mmommommoooomm', // lits, ordinateur
-      'mmommommoooooo',
-      'oooooooooooooo',
-      'ooooommmmooooo', // accueil
-      'mooommmmooooom',
-      'moooooooooooom',
-      'ooooooEEoooooo',
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'XmmmmmmmmmmX',
+      'mmmmmmmmmmmm',
+      'mmmooommmoom',
+      'oooooooooooo',
+      'oooooooooooo',
+      'oooooooooooo',
+      'mmmmmmmmmooo',
+      'mmmmmmmmmooo',
+      'mmmmmmmmmooo',
+      'oooooooooooo',
+      'oooooooooooo',
+      'moooooooooom',
+      'XooEoooooooX',
     ]),
     decor: [
       { kind: 'bed', x: 0, y: 2 },
@@ -548,16 +569,16 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 6 },
       { kind: 'plant', x: 13, y: 6 },
     ],
-    spawn: { x: 7, y: 7, facing: 'up' },
+    spawn: { x: 3, y: 13, facing: 'up' },
     objects: [
-      { x: 1, y: 3, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Maman se repose, les yeux mi-clos.'] },
-      { x: 4, y: 3, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Fanny dort, son petit poing serré.'] },
-      { x: 12, y: 2, dialogue: ['Un ordinateur. Des noms de bébés défilent à l\'écran.'] },
+      { x: 0, y: 10, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Maman se repose, les yeux mi-clos.'] },
+      { x: 3, y: 10, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Fanny dort, son petit poing serré.'] },
+      { x: 3, y: 3, dialogue: ['Un ordinateur. Des noms de bébés défilent à l\'écran.'] },
     ],
     // Maman et Fanny sont couchées chacune dans un lit ; Papa et Manon entre les deux.
     npcs: [
       {
-        id: 'maman-hopital', name: 'Maman', x: 0, y: 3, facing: 'down', color: 0xe86fa0, still: true, inBed: true,
+        id: 'maman-hopital', name: 'Maman', x: 1, y: 10, facing: 'down', color: 0xe86fa0, still: true, inBed: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         script: [
           { unlessFlags: [FLAGS.fannyMain], speaker: 'Maman', say: ['Va dire bonjour à Fanny, dans son berceau. Tends-lui la main.'], end: true },
@@ -566,17 +587,17 @@ export const interiors = {
       },
       // Le berceau : la main de Fanny (voir FANNY_CRADLE).
       {
-        id: 'fanny-hopital', name: 'Fanny', x: 3, y: 3, facing: 'down', still: true, inBed: true, child: true,
+        id: 'fanny-hopital', name: 'Fanny', x: 4, y: 10, facing: 'down', still: true, inBed: true, child: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         script: FANNY_CRADLE,
       },
       {
-        id: 'papa-hopital', name: 'Papa', x: 2, y: 4, facing: 'up', color: 0x3f6fd8,
+        id: 'papa-hopital', name: 'Papa', x: 2, y: 11, facing: 'up', color: 0x3f6fd8,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         dialogue: ['Une petite sœur… Te voilà grand frère, maintenant.'],
       },
       {
-        id: 'manon-hopital', name: 'Manon', x: 5, y: 4, facing: 'left', color: 0xf0a030,
+        id: 'manon-hopital', name: 'Manon', x: 5, y: 11, facing: 'left', color: 0xf0a030,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         dialogue: ['Je pourrai jouer avec elle, moi aussi ? Plus tard ? Bon…'],
       },

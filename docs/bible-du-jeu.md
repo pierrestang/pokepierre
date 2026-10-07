@@ -220,7 +220,9 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
    passe. » ; Yanis « On a un mot de passe ? » ; Felix « Pas encore. Pierre, à toi de le choisir ! » → le joueur écrit
    le mot de passe (8 lettres au plus, « QG » par défaut) ; Felix « « {mot} »… Parfait. Personne ne le saura. » ; Joshua
    « {mot}. Retenu. » ; Felix : **« Où que tu ailles après, cette cabane restera la nôtre. On est une équipe. »** → vertu
-   **Esprit d'équipe**. Pour remonter dans la cabane, il faut redonner le mot de passe.
+   **Esprit d'équipe**. Pour remonter dans la cabane, il faut redonner le mot de passe. (Le QG : lambris, tatamis,
+   établi, une table basse avec deux peluches ; Felix, Joshua et Yanis sont chacun sur leur coussin, on leur parle en
+   face.)
 6. **Ellipse et annonce.** « Quelques années plus tard… » : Pierre au bord du lac ; Manon : « Ah, te voilà ! Papa a une
    nouvelle à nous annoncer. Viens vite à la maison ! » À la maison : « Papa est assis à la table, une lettre à la main.
    Fanny a bien grandi : elle court partout dans le salon. » ; Papa « J'ai reçu ma nouvelle affectation. On part à
