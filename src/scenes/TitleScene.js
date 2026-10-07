@@ -27,7 +27,7 @@ export class TitleScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0x4078e0);
     renderMap(this, map);
     // Autour de l'île, la même mer animée qu'en jeu (ajoutée par renderMap).
-    startSeaShimmer(this, map, false);
+    startSeaShimmer(this, map);
     startFallingLeaves(this, map);
     const background = [...this.children.list];
 

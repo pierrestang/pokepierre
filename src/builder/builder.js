@@ -1,9 +1,8 @@
 import {
-  TILE, EMPTY, LAYERS, blankMap, slugify, refOf, decodeRef, resizeMap, drawLayers, stackOf, topRef,
+  TILE, EMPTY, LAYERS, blankMap, slugify, refOf, decodeRef, resizeMap, drawLayers, stackOf, topRef, cellOf, hiddenEdges,
 } from './mapModel.js';
 import { createAssistant } from './assistant.js';
 import { createStudio } from './studio.js';
-import { hiddenEdges } from './mapModel.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -674,8 +673,7 @@ function putTile(x, y, tile, placement) {
   const stack = stackOf(cells[i]);
   if (isOpaque(tile) || !stack.length) cells[i] = ref;
   else if (stack[stack.length - 1] !== ref) {
-    const next = [...stack, ref].slice(-4);
-    cells[i] = next;
+    cells[i] = cellOf([...stack, ref]);
   }
   if (solid === 1) m.solid[i] = 1;
   else if (solid === 0 && (layer !== 'sol' || !stackOf(m.layers.decor[i]).length)) m.solid[i] = 0;
@@ -690,7 +688,7 @@ function eraseTile(x, y) {
   const layer = order.find((id) => !state.hidden.has(id) && stackOf(m.layers[id][i]).length);
   if (!layer) return;
   const stack = stackOf(m.layers[layer][i]).slice(0, -1);
-  m.layers[layer][i] = stack.length > 1 ? stack : stack.length ? stack[0] : EMPTY;
+  m.layers[layer][i] = cellOf(stack);
   if (layer === 'decor' && !stack.length) m.solid[i] = groundBlocks(i) ? 1 : 0;   // un bateau ôté : l'eau bloque encore
 }
 
@@ -735,11 +733,12 @@ function tilePixels(ref) {
 }
 
 // L'élément sous (x, y) : [{ x, y, refs: { decor: [...], dessus: [...] } }], ou null.
-function objectAt(x, y) {
+// `repair` : au clic (pas au survol), la fiche d'un élément reconnu à son dessin est réparée.
+function objectAt(x, y, repair = false) {
   const m = state.map;
   if (!inside(x, y)) return null;
   // Un élément posé en mode simple : exactement ses cases (même collé à un autre objet).
-  const placed = studio.elementCellsAt(x, y);
+  const placed = studio.elementCellsAt(x, y, repair);
   if (placed) return placed;
   const layers = OBJECT_LAYERS.filter((l) => !state.hidden.has(l));
   const atCache = new Map();
@@ -763,7 +762,7 @@ function objectAt(x, y) {
   if (!at(x, y).length) return null;
   const W = m.width * TILE;
   const taken = new Map();                         // « x,y,calque,ref » -> { x, y, l, ref }
-  const visited = new Uint8Array(W * m.height * TILE);
+  const visited = new Set();                      // pixels vus (un objet n'en touche que quelques milliers)
   const keys = new Set();
   const pixels = [];
   const box = { x0: x, y0: y, x1: x, y1: y };
@@ -813,14 +812,14 @@ function objectAt(x, y) {
     // Parcours des pixels pleins qui se touchent.
     while (pixels.length) {
       const p = pixels.pop();
-      if (visited[p]) continue;
-      visited[p] = 1;
+      if (visited.has(p)) continue;
+      visited.add(p);
       if (!fillPixel(p)) continue;
       const px = p % W;
       if (px > 0) pixels.push(p - 1);
       if (px < W - 1) pixels.push(p + 1);
       if (p >= W) pixels.push(p - W);
-      if (p + W < visited.length) pixels.push(p + W);
+      if (p + W < W * m.height * TILE) pixels.push(p + W);
     }
     // Couches posées avec celles déjà prises (même ancre) : ombres, morceaux détachés, tout près de l'élément.
     for (let cy = Math.max(0, box.y0 - 4); cy <= Math.min(m.height - 1, box.y1 + 4); cy++) {
@@ -872,7 +871,7 @@ function groundBlocks(i) {
   return tile.sheet === 'dppt' && row >= 5 && row < 17;          // eau de la planche DPPt
 }
 
-const setStack = (cells, i, stack) => { cells[i] = stack.length > 1 ? stack.slice(-4) : stack.length ? stack[0] : EMPTY; };
+const setStack = (cells, i, stack) => { cells[i] = cellOf(stack); };
 
 // Enlève l'élément de la carte (gardé avec ses collisions, pour le reposer).
 function liftObject(cells) {
@@ -881,7 +880,10 @@ function liftObject(cells) {
     const i = c.y * m.width + c.x;
     for (const l of OBJECT_LAYERS) {
       const stack = [...stackOf(m.layers[l][i])];
-      for (const r of c.refs[l]) stack.splice(stack.lastIndexOf(r), 1);
+      for (const r of c.refs[l]) {
+        const k = stack.lastIndexOf(r);
+        if (k >= 0) stack.splice(k, 1);                 // une réf absente (pile déjà tronquée) : rien à retirer
+      }
       setStack(m.layers[l], i, stack);
     }
     if (c.refs.sol.length && !stackOf(m.layers.sol[i]).length) m.layers.sol[i] = groundAround(c.x, c.y, cells);
@@ -1035,7 +1037,7 @@ function duplicateSelection() {
 
 function updateSelectionBar() {
   const show = state.tool === 'move' && !state.pasting && Boolean(state.moveSel || state.lastMoved?.length);
-  $('selbar').hidden = !show;
+  if ($('selbar').hidden === show) $('selbar').hidden = !show;     // le DOM seulement s'il change
 }
 
 // Décalage de déplacement, l'élément restant entièrement dans la carte.
@@ -1158,7 +1160,7 @@ canvas.addEventListener('pointerdown', (e) => {
     const sel = state.moveSel;
     const inSel = sel && c.x >= sel.x0 && c.x <= sel.x1 && c.y >= sel.y0 && c.y <= sel.y1;
     // Maj : toujours tracer une zone, même en partant d'un objet.
-    let cells = inSel ? objectsIn(sel) : e.shiftKey ? null : objectAt(c.x, c.y);
+    let cells = inSel ? objectsIn(sel) : e.shiftKey ? null : objectAt(c.x, c.y, true);
     // Un « objet » démesuré (des objets collés les uns aux autres) : on trace une zone plutôt que de tout emporter.
     if (!inSel && cells?.length > MAX_OBJECT_CELLS && !cells.element) cells = null;
     if (cells?.length) {
@@ -1807,8 +1809,9 @@ function setMode(mode) {
 
 function showAssistantZone() {
   const z = state.moveSel;
-  $('asst-zone').textContent = z ? `zone ${z.x0},${z.y0} → ${z.x1},${z.y1}` : 'toute la carte';
-  $('asst-zone-clear').hidden = !z;
+  const text = z ? `zone ${z.x0},${z.y0} → ${z.x1},${z.y1}` : 'toute la carte';
+  if ($('asst-zone').textContent !== text) $('asst-zone').textContent = text;   // le DOM seulement s'il change
+  if ($('asst-zone-clear').hidden !== !z) $('asst-zone-clear').hidden = !z;
 }
 
 async function runAssistant(command) {

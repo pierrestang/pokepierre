@@ -218,10 +218,15 @@ function ruleSurroundings(scene, map, { outside, border, borderSkip = [] }) {
   const H = grid.length;
   const key = `surround-${map.id}`;
   let image = null;
+  let done = '';
 
   return {
     resize(viewW, viewH) {
       const { x0, y0, x1, y1 } = visibleTiles(map, viewW, viewH);
+      // Même zone qu'au dernier dessin (l'écran du jeu a une taille fixe) : rien à refaire.
+      const zone = `${x0},${y0},${x1},${y1}`;
+      if (zone === done && image?.active) return;
+      done = zone;
       const inMap = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
       const base = (x, y) => (inMap(x, y) ? grid[y][x] : outside(x, y, grid));
       const onEdge = (x, y) => x === x0 || x === x1 || y === y0 || y === y1;

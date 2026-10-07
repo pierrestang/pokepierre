@@ -45,8 +45,8 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 //   objects:  [{ x, y, name?, dialogue, after?, souvenir?, item?, setFlag?, ifFlags?, unlessFlags?, ifItems? }]
 //             (à examiner, sans sprite ; le premier dont les conditions sont remplies répond)
 //             un objet avec `warp` (ex. bateau) se comporte comme un déclencheur ci-dessous
-//   triggers: [{ x, y, dialogue, requiresSouvenirs?, ifFlags?, unlessFlags?, ifItems?, readyDialogue?, item?, warp?, setFlags? }]
-//             déclenchés en marchant dessus ; si `requiresSouvenirs` et les drapeaux sont remplis,
+//   triggers: [{ x, y, dialogue, ifFlags?, unlessFlags?, ifItems?, readyDialogue?, item?, warp?, setFlags? }]
+//             déclenchés en marchant dessus ; si leurs conditions sont remplies,
 //             affiche `readyDialogue`, lève `setFlags` puis téléporte vers `warp` { map, x, y, facing }.
 //   props:    [{ type, x, y, w, h, dialogue?, ifFlags?, unlessFlags? }] — obstacles dessinés comme un
 //             bâtiment (voir art/buildingArt.js), bloquants tant que leurs conditions sont remplies
@@ -66,8 +66,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 const FLOOR_PROPS = { planks: drawPlanksPile, toolbox: drawToolbox, pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
 
 // Clés de conditions d'une étape (voir systems/flags.js meetsConditions).
-const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenirs', 'ifItems', 'unlessItems',
-  'requiresSouvenirs'];
+const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenirs', 'ifItems', 'unlessItems'];
 
 // Un PNJ déplacé pendant la visite (voir stepTo) reprend sa place de départ.
 function restoreHome(d) {
@@ -105,7 +104,7 @@ export class MapScene extends Phaser.Scene {
     this.startWaterSparkles();
     this.grassCovers = new GrassCovers(this, map);
     const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
-    startSeaShimmer(this, map, false);      // reflets des étangs et rivières (la mer est animée, voir addSeaLayer)
+    startSeaShimmer(this, map);             // reflets des étangs et rivières (la mer est animée, voir addSeaLayer)
     // Musique du lieu et ressac près de la mer.
     // Une musique par ville, la même dans ses intérieurs (voir data/music.js) ; `music` la remplace pour un lieu.
     const music = map.music && meetsConditions(map.music) ? map.music : null;
@@ -703,6 +702,7 @@ export class MapScene extends Phaser.Scene {
       up = true;
       await drive({ y: car.y - 12 * TILE_SIZE }, 1800, 'Quad.easeIn');
     }
+    shake.stop();
     smoke.remove();
   }
 
@@ -982,7 +982,8 @@ export class MapScene extends Phaser.Scene {
   startRain() {
     const g = this.add.graphics().setDepth(42).setScrollFactor(0);
     const drops = Array.from({ length: 70 }, () => ({ x: Math.random() * 400, y: Math.random() * 260, v: 3 + Math.random() * 2 }));
-    this.events.on('update', () => {
+    // Retiré à l'arrêt de la scène (les écouteurs de `events` survivent d'une carte à l'autre).
+    const fall = () => {
       // Fixé à l'écran : avec le zoom, la zone visible est centrée sur le milieu de la caméra.
       const cam = this.cameras.main;
       const vw = cam.width / cam.zoom;
@@ -997,7 +998,9 @@ export class MapScene extends Phaser.Scene {
         if (d.y > vh) { d.y = -6; d.x = Math.random() * (vw + 40); }
         g.lineBetween(ox + d.x, oy + d.y, ox + d.x - 2, oy + d.y + 6);
       }
-    });
+    };
+    this.events.on('update', fall);
+    this.events.once('shutdown', () => this.events.off('update', fall));
   }
 
   // Vrai si, un PNJ venu de `from` se tenant en (x, y), le joueur peut encore aller loin : jusqu'à une sortie
@@ -1337,8 +1340,7 @@ export class MapScene extends Phaser.Scene {
       if (meetsConditions(trigger)) await this.runScript(trigger.script);
       return;
     }
-    const ready =
-      (trigger.requiresSouvenirs ?? []).every((id) => souvenirs.has(id)) && meetsConditions(trigger);
+    const ready = meetsConditions(trigger);
     if (!ready) {
       if (trigger.dialogue) await this.dialog.open(trigger.dialogue);
       return;
@@ -1451,15 +1453,17 @@ export class MapScene extends Phaser.Scene {
   // de temps en temps ; chacun à son rythme.
   startDancing(sprite, data) {
     const seed = [...data.id].reduce((n, c) => n + c.charCodeAt(0), 0);
-    this.tweens.add({
+    const hop = this.tweens.add({
       targets: sprite.image, y: sprite.image.y - 2, duration: 160 + (seed % 5) * 20, yoyo: true, repeat: -1,
       delay: (seed * 37) % 400, ease: 'Sine.easeOut',
     });
     const dirs = ['down', 'left', 'down', 'right'];
-    this.time.addEvent({
+    const turn = this.time.addEvent({
       delay: 700 + (seed % 7) * 90, loop: true,
       callback: () => { if (!this.scripting) sprite.setFacing(dirs[Math.floor(Math.random() * dirs.length)]); },
     });
+    // Le PNJ retiré (fin de la soirée sans quitter la pièce) : sa danse s'arrête avec lui.
+    sprite.once('destroy', () => { hop.stop(); turn.remove(); });
   }
 
   // Tout le monde se tourne vers le PNJ `id` (ex. le prof qui interpelle la classe) : vers le haut ou le bas s'il est

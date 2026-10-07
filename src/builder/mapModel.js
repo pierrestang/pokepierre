@@ -13,6 +13,11 @@
 export const TILE = 16;
 export const SHEET_STRIDE = 100000;
 export const EMPTY = -1;
+// Une pile garde au plus MAX_STACK cases (les plus hautes).
+export const MAX_STACK = 6;
+
+// Ce qu'on range dans une case pour une pile [réf…] : -1 si vide, la réf seule, sinon la pile (bornée).
+export const cellOf = (stack) => (stack.length > 1 ? stack.slice(-MAX_STACK) : stack.length ? stack[0] : EMPTY);
 
 // Calques, du bas vers le haut. `dessus` est dessiné par-dessus les personnages (ex. le haut des arbres).
 export const LAYERS = [

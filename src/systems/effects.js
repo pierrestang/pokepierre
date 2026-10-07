@@ -22,6 +22,8 @@ export class GrassCovers {
     this.map = map;
     this.at = (x, y) => map.grid[y]?.[x];
     this.covers = new Map();
+    // Pas de hautes herbes ni de blé sur la carte (intérieurs, villes) : rien à faire à chaque image.
+    this.any = map.grid.some((row) => row.some((c) => TALL_PLANTS.includes(c)));
   }
 
   cover(x, y) {
@@ -71,6 +73,7 @@ export class GrassCovers {
 
   // Affiche les touffes des cases occupées par les personnages (`sprites`), cache les autres.
   update(sprites) {
+    if (!this.any) return;
     const shown = new Set();
     for (const sprite of sprites) {
       for (const { x, y } of sprite.tiles()) {
@@ -141,14 +144,14 @@ export function startFallingLeaves(scene, map) {
 // ---------- Mer animée ----------
 
 // Vaguelettes claires qui défilent lentement sur toutes les cases d'eau (carte et décor autour),
-// par-dessus les vagues dessinées : la mer ondule. `outsideIsSea` : le décor autour de la carte est la mer.
-export function startSeaShimmer(scene, map, outsideIsSea) {
+// par-dessus les vagues dessinées : la mer ondule.
+export function startSeaShimmer(scene, map) {
   const { grid } = map;
   const W = grid[0].length * S;
   const H = grid.length * S;
   const water = [];
   grid.forEach((row, y) => row.forEach((c, x) => { if (WATER.includes(c)) water.push([x, y]); }));
-  if (!water.length && !outsideIsSea) return;
+  if (!water.length) return;
 
   if (!scene.textures.exists('sea-shimmer')) {
     const g = scene.make.graphics({}, false);
@@ -168,13 +171,8 @@ export function startSeaShimmer(scene, map, outsideIsSea) {
   const shape = scene.make.graphics({}, false);
   shape.fillStyle(0xffffff);
   water.forEach(([x, y]) => shape.fillRect(x * S, y * S, S, S));
-  if (outsideIsSea) {
-    shape.fillRect(-margin, -margin, W + 2 * margin, margin);
-    shape.fillRect(-margin, H, W + 2 * margin, margin);
-    shape.fillRect(-margin, 0, margin, H);
-    shape.fillRect(W, 0, margin, H);
-  }
   layer.setMask(shape.createGeometryMask());
+  scene.events.once('shutdown', () => shape.destroy());     // hors de la liste de la scène : à détruire soi-même
 
   // Défilement lent en diagonale, par pixels entiers (rendu net), avec une respiration de l'opacité.
   let t = 0;

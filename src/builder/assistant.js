@@ -1,4 +1,4 @@
-import { refOf, decodeRef, stackOf, EMPTY } from './mapModel.js';
+import { refOf, decodeRef, stackOf, cellOf, EMPTY } from './mapModel.js';
 import { roundTreePieces, treeOrder } from './forestLayout.js';
 
 // Assistant du créateur de cartes : des commandes qui rangent derrière le dessinateur, sous son contrôle.
@@ -609,7 +609,7 @@ export function createAssistant(api) {
       }
       const clean = (layer, i) => {
         const rest = stackOf(m.layers[layer][i]).filter((r) => !isForestRef(r));
-        m.layers[layer][i] = rest.length > 1 ? rest : rest.length ? rest[0] : EMPTY;
+        m.layers[layer][i] = cellOf(rest);
       };
       let removed = 0;
       const grassRef = refOf(m, 'dppt', 4);

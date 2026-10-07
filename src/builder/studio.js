@@ -1,4 +1,4 @@
-import { refOf, decodeRef, stackOf, EMPTY, TILE } from './mapModel.js';
+import { refOf, decodeRef, stackOf, cellOf, EMPTY, SHEET_STRIDE, TILE } from './mapModel.js';
 import { layoutForest, roundTreePieces, treeOrder } from './forestLayout.js';
 
 // Mode simple du créateur de cartes : on peint des matières et on pose des éléments entiers, dans le thème d'une ville.
@@ -50,12 +50,12 @@ export function createStudio(api) {
   const push = (layer, i, ref) => {
     const m = state.map;
     const stack = stackOf(m.layers[layer][i]);
-    m.layers[layer][i] = stack.length ? [...stack, ref].slice(-6) : ref;
+    m.layers[layer][i] = cellOf([...stack, ref]);
   };
   const removeRefs = (layer, i, test) => {
     const m = state.map;
     const rest = stackOf(m.layers[layer][i]).filter((r) => !test(r));
-    m.layers[layer][i] = rest.length > 1 ? rest : rest.length ? rest[0] : EMPTY;
+    m.layers[layer][i] = cellOf(rest);
   };
   const isFlower = (r) => {
     const t = decodeRef(state.map, r);
@@ -81,7 +81,7 @@ export function createStudio(api) {
         const y = el.y + j;
         if (k < 0 || x < 0 || y < 0 || x >= m.width || y >= m.height || !(j >= def.over || def.solid[j][i])) return;
         const c = y * m.width + x;
-        if (!stackOf(m.layers[j >= def.over ? 'decor' : 'dessus'][c]).includes(slot * 100000 + k)) return;
+        if (!stackOf(m.layers[j >= def.over ? 'decor' : 'dessus'][c]).includes(slot * SHEET_STRIDE + k)) return;
         occ.set(c, el);
       }));
     }
@@ -122,7 +122,7 @@ export function createStudio(api) {
           const d = elementDef(el.id, el.theme);
           if (d?.cat === 'maisons') return { ok: false, why: `chevauche une maison en ${x},${y}` };
           clear.set(`e${data().elements.indexOf(el)}`, { el, name: d?.name });
-          occupancyCells(el).forEach((c) => cleared.add(c));
+          occupancyCells(el, occ).forEach((c) => cleared.add(c));
           continue;
         }
         if (!(def.solid[j][i] && def.place === 'land' && m.solid[k])) continue;
@@ -138,8 +138,8 @@ export function createStudio(api) {
     return { ok: true, clear: [...clear.values()] };
   }
 
-  const occupancyCells = (el) => [...occupancy()].filter(([, e]) => e === el).map(([k]) => k);
-  const occupancyCellsOf = occupancyCells;
+  // Les cases d'un élément posé (`occ` : une occupation déjà calculée, pour ne pas la refaire dans une boucle).
+  const occupancyCells = (el, occ = occupancy()) => [...occ].filter(([, e]) => e === el).map(([k]) => k);
 
   // La maison sous (x, y) : une maison posée, ou une maison de la carte (un objet d'au moins 3 x 3) ; sa porte (la
   // porte du jeu dans son emprise, sinon le milieu de son bas) et ses cases.
@@ -237,7 +237,7 @@ export function createStudio(api) {
         const at = stack.lastIndexOf(ref);
         if (at >= 0) {
           stack.splice(at, 1);
-          m.layers[layer][c] = stack.length > 1 ? stack : stack.length ? stack[0] : EMPTY;
+          m.layers[layer][c] = cellOf(stack);
           break;
         }
       }
@@ -785,8 +785,8 @@ export function createStudio(api) {
     let best = null;
     for (const l of ['dessus', 'decor']) {
       for (const ref of stackOf(m.layers[l][y * m.width + x])) {
-        if (Math.floor(ref / 100000) !== slot) continue;
-        for (const { def, theme: tid, i, j } of elementsWithTile(ref % 100000)) {
+        if (Math.floor(ref / SHEET_STRIDE) !== slot) continue;
+        for (const { def, theme: tid, i, j } of elementsWithTile(ref % SHEET_STRIDE)) {
           const x0 = x - i;
           const y0 = y - j;
           let n = 0;
@@ -796,7 +796,7 @@ export function createStudio(api) {
             const cy = y0 + jj;
             if (kk < 0 || cx < 0 || cy < 0 || cx >= m.width || cy >= m.height) return;
             n++;
-            if (stackOf(m.layers[jj >= def.over ? 'decor' : 'dessus'][cy * m.width + cx]).includes(slot * 100000 + kk)) ok++;
+            if (stackOf(m.layers[jj >= def.over ? 'decor' : 'dessus'][cy * m.width + cx]).includes(slot * SHEET_STRIDE + kk)) ok++;
           }));
           if (n && ok >= 0.7 * n && (!best || ok > best.ok)) best = { def, theme: tid, x: x0, y: y0, ok };
         }
@@ -805,23 +805,25 @@ export function createStudio(api) {
     return best;
   }
 
-  function elementCellsAt(x, y) {
+  // `repair` : la fiche d'un élément reconnu à son dessin est réparée (au clic seulement, pas au survol).
+  function elementCellsAt(x, y, repair = false) {
     if (!cat || !state.map) return null;
     const m = state.map;
     let el = state.map.studio ? occupancy().get(y * m.width + x) : null;
     let def = el && elementDef(el.id, el.theme);
     if (!def) {
-      // Pas de fiche à jour : l'élément reconnu à son dessin ; sa fiche est réparée (ou créée) au passage.
+      // Pas de fiche à jour : l'élément reconnu à son dessin ; au clic, sa fiche est réparée (ou créée).
       const found = recognize(x, y);
       if (!found) return null;
-      const d = data();
-      el = d.elements.find((e) => e.id === found.def.id && e.x === found.x && e.y === found.y);
-      if (!el) {
-        el = d.elements.find((e) => e.id === found.def.id && !occupancyCellsOf(e).length);
-        if (el) Object.assign(el, { theme: found.theme, x: found.x, y: found.y, prev: [] });
-        else d.elements.push(el = { id: found.def.id, theme: found.theme, x: found.x, y: found.y, prev: [] });
-      }
       def = found.def;
+      el = { id: def.id, theme: found.theme, x: found.x, y: found.y, prev: [] };
+      if (repair) {
+        const d = data();
+        const kept = d.elements.find((e) => e.id === def.id && e.x === el.x && e.y === el.y)
+          ?? d.elements.find((e) => e.id === def.id && !occupancyCells(e).length);
+        if (kept) el = Object.assign(kept, el);
+        else d.elements.push(el);
+      }
     }
     const cells = [];
     def.tiles.forEach((row, j) => row.forEach((k, i) => {

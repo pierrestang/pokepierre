@@ -69,6 +69,9 @@ export class OverworldScene extends MapScene {
         await this.dialog.open(['Non, c\'est pas ça !'], { speaker });
         if (tries % 3 === 0) await this.dialog.open([`Psst… c'est « ${expected} ».`], { speaker: hint });
       }
+    } catch (err) {
+      this.player.frozen = false;                  // la saisie a échoué : le joueur n'est pas laissé gelé
+      throw err;
     } finally {
       this.scripting = false;
     }
