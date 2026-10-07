@@ -97,7 +97,9 @@ for (const { id, map, kind } of places) {
       const cells = t.cells ?? [];
       if (!t.cells) for (let dx = 0; dx < (t.w ?? 1); dx++) cells.push([t.x + dx, t.y]);
       return cells.some(([x, y]) => (t.onTile && reach.has(`${x},${y}`))
-        || [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => reach.has(`${x + dx},${y + dy}`)));
+        || [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => reach.has(`${x + dx},${y + dy}`)
+          // Par-dessus un comptoir ('#') : on parle à la personne de l'autre côté (MapScene.tryInteract).
+          || (grid[y + dy]?.[x + dx] === '#' && reach.has(`${x + 2 * dx},${y + 2 * dy}`))));
     };
     const report = (msg) => {
       const key = `${kind} ${id}: ${msg}`;

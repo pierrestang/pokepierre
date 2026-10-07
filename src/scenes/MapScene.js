@@ -22,6 +22,7 @@ import { items } from '../systems/items.js';
 import { ITEM_ICONS } from '../art/uiIcons.js';
 import { addBunting } from '../art/bunting.js';
 import { propKey } from '../art/propImages.js';
+import { MESS_SHEET, messFrame } from '../art/partyMess.js';
 import { savePosition } from '../systems/save.js';
 import { memo } from '../systems/memo.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
@@ -396,6 +397,15 @@ export class MapScene extends Phaser.Scene {
         this.props.push({ data, graphics });
         continue;
       }
+      // Objet posé au sol, en image (ex. le désordre du lendemain de soirée, art/partyMess.js) : `image`, le nom du
+      // dessin, posé en bas de sa case ; trié en profondeur avec les personnages.
+      if (data.type === 'image') {
+        const bottom = (data.y + 1) * TILE_SIZE;
+        const graphics = this.add.image(data.x * TILE_SIZE + (data.dx ?? 0), bottom + (data.dy ?? 0), MESS_SHEET, messFrame(this, data.image))
+          .setOrigin(0, 1).setDepth(10 + bottom / 10000);
+        this.props.push({ data, graphics });
+        continue;
+      }
       if (data.type === 'familyCar') {
         const bottom = (data.y + data.h) * TILE_SIZE - 1;
         const graphics = familyCarImage(this, (data.x + data.w / 2) * TILE_SIZE, bottom, data.facing)
@@ -427,6 +437,13 @@ export class MapScene extends Phaser.Scene {
         for (const [frame, dx, dy, keep] of data.icons) {
           graphics.add(this.add.image(dx, dy, ITEM_ICONS, frame).setOrigin(0).setCrop(0, 0, 32, keep));
         }
+        this.decals.push({ data, graphics });
+        continue;
+      }
+      // Décor en image (ex. confettis, couette en vrac : art/partyMess.js), en haut à gauche de sa case.
+      if (data.image) {
+        const graphics = this.add.image(data.x * TILE_SIZE + (data.dx ?? 0), data.y * TILE_SIZE + (data.dy ?? 0), MESS_SHEET, messFrame(this, data.image))
+          .setOrigin(0).setDepth(depth);
         this.decals.push({ data, graphics });
         continue;
       }
@@ -1306,7 +1323,10 @@ export class MapScene extends Phaser.Scene {
       dialog.open(prop.data.dialogue);
       return;
     }
-    const npc = this.npcAt(x, y);
+    // Par-dessus un comptoir ('#'), comme au Centre Pokémon : on parle à la personne de l'autre côté.
+    const across = this.grid[y]?.[x] === '#' && !this.npcAt(x, y)
+      ? this.npcAt(2 * x - this.player.tileX, 2 * y - this.player.tileY) : null;
+    const npc = this.npcAt(x, y) ?? across;
     if (npc?.data.push) {
       this.runScript([{ push: npc.data.id }]);
       return;
@@ -1357,7 +1377,10 @@ export class MapScene extends Phaser.Scene {
   async runAsk(ask, speaker) {
     // La question elle-même peut avoir des conditions (ex. unlessFlags : n'être posée qu'une fois).
     if (!meetsConditions(ask)) return;
-    const choices = ask.choices.filter(meetsConditions);
+    // `notWhen` : une réponse cachée quand ces conditions-là sont remplies (ex. une destination déjà proposée ailleurs).
+    const choices = ask.choices.filter((c) => meetsConditions(c) && !(c.notWhen && meetsConditions(c.notWhen)));
+    // Une seule réponse, qui ouvre une autre question (ex. « Autre ») : on passe directement à celle-ci.
+    if (choices.length === 1 && choices[0].ask) return this.runAsk(choices[0].ask, speaker);
     const index = await this.dialog.choose(ask.question, choices.map((c) => c.label), { speaker });
     const choice = choices[index];
     if (!choice) return;
@@ -1369,6 +1392,7 @@ export class MapScene extends Phaser.Scene {
     }
     if (choice.warp) this.travel(choice.warp);
     if (choice.steps) await this.runScript(choice.steps);
+    if (choice.ask) await this.runAsk(choice.ask, speaker);            // une sous-question (ex. « Autre »)
   }
 
   // Sauvegarde où se trouve le joueur (appelé à l'arrivée et à chaque pas).

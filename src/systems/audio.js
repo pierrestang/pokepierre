@@ -624,6 +624,10 @@ const SFX = {
     [0, 0.16, 0.3, 0.42, 0.52, 0.6, 0.67, 0.73].forEach((d) => noise(sfxBus, { start: t + d, dur: 0.07, vol: 0.12, filter: 'lowpass', cutoff: 260 }));
   },
   rustle: (t) => noise(sfxBus, { start: t, dur: 0.09, vol: 0.09, filter: 'bandpass', cutoff: 3200 }),
+  // Avion en vol : souffle grave et continu des réacteurs, qui monte puis s'apaise (le trajet en avion).
+  jet: (t) => {
+    for (let i = 0; i < 12; i++) noise(sfxBus, { start: t + i * 0.3, dur: 0.5, vol: 0.05 + 0.03 * Math.sin((i / 11) * Math.PI), filter: 'lowpass', cutoff: 420 });
+  },
   // Objet ou souvenir obtenu : petite fanfare
   item: (t) => {
     [['C5', 0], ['E5', 0.1], ['G5', 0.2], ['C6', 0.3]].forEach(([n, d]) =>

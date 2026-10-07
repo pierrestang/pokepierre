@@ -10,6 +10,17 @@ import {
   ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE,
 } from '../bordeauxStory.js';
 
+// Les gardiens des sorties est : leurs répliques, et l'arrêt quand Pierre passe à côté d'eux (il se tourne vers lui, parle,
+// et Pierre recule d'un pas).
+const AIRPORT_GUARD = ["Halte ! Par ici, c'est l'aéroport.", "Pas de diplôme d'anglais, pas d'avion. L'oral, c'est à KEDGE, de l'autre côté de la Garonne."];
+const ROAD_WORKER = ['Holà ! Travaux sur la route de Paris, personne ne passe.', 'Reviens plus tard. On aura peut-être fini… peut-être.'];
+const stopped = (id, speaker, lines, facing, back) => [
+  { face: { [id]: facing } },
+  { emote: id, kind: 'surprise' },
+  { speaker, say: lines },
+  { goTo: back, facing: 'right' },
+];
+
 // Hors de la carte (bandes qui complètent l'écran) : la Garonne, les rues et les trottoirs
 // de chaque rangée se prolongent ; ailleurs, herbe près de l'eau, sol de ville sinon.
 function outside(x, y, grid) {
@@ -106,6 +117,17 @@ export const bordeauxMap = {
       id: 'ousmane-rappel', name: 'Ousmane', x: 6, y: 7, facing: 'left',
       ifFlags: [FLAGS.preparatifs], unlessFlags: [FLAGS.soiree], script: OUSMANE_REMINDS,
     },
+    // L'agent de sécurité garde le chemin de l'aéroport (x 30, rangées 6-8) tant que Pierre n'a pas son diplôme
+    // d'anglais ; l'ouvrier, la route de Paris (x 30, rangées 26-29) jusqu'au diplôme de Bordeaux. Passer à côté :
+    // ils arrêtent Pierre, qui recule (voir triggers).
+    {
+      id: 'agent-aeroport', name: 'Agent de sécurité', sprite: 'g87', x: 30, y: 7, facing: 'left',
+      unlessItems: [ITEMS.diplomeAnglais.id], dialogue: AIRPORT_GUARD,
+    },
+    {
+      id: 'ouvrier-route', name: 'Ouvrier', sprite: 'g79', x: 30, y: 27, facing: 'left',
+      unlessFlags: [FLAGS.diplomeBordeaux], dialogue: ROAD_WORKER,
+    },
     // Rémi, devant KEDGE le jour de l'oral.
     {
       id: 'remi-kedge', name: 'Rémi', x: 9, y: 30, facing: 'left',
@@ -124,6 +146,15 @@ export const bordeauxMap = {
     ...[22, 24].map((x) => ({ x, y: 29, dialogue: ['Sur la porte : « RÉMI ».'] })),
   ],
   triggers: [
+    // À côté de l'agent et de l'ouvrier : ils arrêtent Pierre, qui recule d'un pas.
+    ...[6, 8].map((y) => ({
+      x: 30, y, unlessItems: [ITEMS.diplomeAnglais.id],
+      script: stopped('agent-aeroport', 'Agent de sécurité', AIRPORT_GUARD, y < 7 ? 'up' : 'down', [29, y]),
+    })),
+    ...[26, 28, 29].map((y) => ({
+      x: 30, y, unlessFlags: [FLAGS.diplomeBordeaux],
+      script: stopped('ouvrier-route', 'Ouvrier', ROAD_WORKER, y < 27 ? 'up' : 'down', [29, y]),
+    })),
     // Devant la porte de l'immeuble : Ousmane (voir bordeauxStory.js FRONT_DOOR).
     { x: 5, y: 7, script: FRONT_DOOR },
     // Devant KEDGE, le jour de l'oral : Rémi.
@@ -151,14 +182,6 @@ export const bordeauxMap = {
       ifItems: [ITEMS.diplomeAnglais.id],
       dialogue: ["L'aéroport ! Il te faut ton diplôme d'anglais pour partir : l'oral, c'est à KEDGE."],
     })),
-  ],
-  // Voiture en panne qui bloque la rue sud (vers Paris) jusqu'à la remise du diplôme de Bordeaux.
-  props: [
-    {
-      type: 'brokenCar', x: 29, y: 27, w: 2, h: 2,
-      unlessFlags: [FLAGS.diplomeBordeaux],
-      dialogue: ['Une voiture en panne bloque la route. Impossible de passer pour l\'instant.'],
-    },
   ],
   // Arbres seulement tout au bord de l'écran, sauf là où passent la rivière et les rues.
   surroundings: { outside, border: 'ƀ', borderSkip: ['G', 'ɐ'] },
