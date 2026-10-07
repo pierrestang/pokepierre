@@ -23,9 +23,9 @@ function interiorRefs(root, { deep }) {
 // Type de chaque pièce (« Ouvrir » : classer par type, pour voir toutes les chambres, toutes les cabanes…), dans l'ordre.
 export const TYPES = [
   ['salon', 'Rez-de-chaussée et salons', ['ffHouse', 'playerHouse', 'montHouse', 'felixHouse', 'hullHouse', 'corseParents',
-    'corseVoisins', 'hanoiHome', 'maisonCommune']],
+    'corseVoisins', 'hanoiHome', 'maisonCommune', 'appartement', 'studioPaulfit', 'appartRemi', 'hullColoc', 'parisAppart',
+    'yanisAppart']],
   ['chambre', 'Chambres et dortoirs', ['ffHouseUp', 'playerHouseUp', 'montHouseUp', 'dortoir', 'dortoirEtage2']],
-  ['appartement', 'Appartements et colocs', ['appartement', 'studioPaulfit', 'appartRemi', 'hullColoc', 'parisAppart', 'yanisAppart']],
   ['cabane', 'Cabanes et tentes', ['cabane', 'baliCabane', 'tente']],
   ['atelier', 'Ateliers et granges', ['ffHut', 'boulyBarn']],
   ['ecole', 'Écoles et universités', ['school', 'bonsecours', 'bonsecoursCasiers', 'bonsecoursMaths', 'bonsecoursFrancais',
