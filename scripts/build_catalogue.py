@@ -22,7 +22,7 @@ from scipy import ndimage
 
 import identites as I
 from fdf_ds_v2 import tint_stone, tint_martinique
-from g4_theme import ASPHALT, BUILDINGS, COBBLE, FENCES
+from g4_theme import ASPHALT, BUILDINGS, COBBLE, FENCES, PIER
 from remove_shadows import shadowless
 from outline_buildings import outlined
 
@@ -529,6 +529,11 @@ def main():
             materials.append({'id': mid, 'name': mname, 'kind': 'pattern',
                               'tiles': [[pack.add_tile(crop(sid, c + i, r + j)) for i in range(2)] for j in range(2)],
                               'solid': 0})
+        # Ponton : un plancher de 2 cases de large (les bords gauche et droit du ponton de Fort-de-France), qu'on peint
+        # sur l'eau pour faire un pont ; on marche dessus.
+        materials.append({'id': 'ponton', 'name': 'Ponton', 'kind': 'pattern',
+                          'tiles': [[pack.add_tile(crop(*PIER[j][i])) for i in (0, 2)] for j in range(2)],
+                          'solid': 0})
         materials.append({'id': 'bitume', 'name': 'Bitume', 'kind': 'pattern',
                           'tiles': [[pack.add_tile(crop(*ASPHALT[j * 2 + i])) for i in range(2)] for j in range(2)],
                           'solid': 0})

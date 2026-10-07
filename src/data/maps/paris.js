@@ -116,7 +116,7 @@ export const parisMap = {
       x: 0,
       y,
       readyDialogue: ['Tu reprends la route de Bordeaux.'],
-      warp: { map: 'bordeaux', x: 30, y: 22, facing: 'left' },
+      warp: { map: 'bordeaux', x: 30, y: 26, facing: 'left' },
     })),
     // Est : l'aéroport.
     toAirport(31, 6),

@@ -24,7 +24,8 @@ function outside(x, y, grid) {
   return distance <= 4 ? '.' : 'ɔ';
 }
 
-// Bordeaux — grande ville traversée par la Garonne, 32 x 26 cases. Scénario : voir data/bordeauxStory.js.
+// Bordeaux — grande ville traversée par la Garonne, 32 x 36 cases (redessinée dans le créateur, octobre 2026 ; la grille
+// du jeu est tirée du dessin). Scénario : voir data/bordeauxStory.js.
 // Légende : voir src/data/tiles.js (A = rue, C = trottoir/quai, G = rivière, I = pont)
 export const bordeauxMap = {
   id: 'bordeaux',
@@ -32,80 +33,82 @@ export const bordeauxMap = {
   built: BUILT,
   sourceGrid: parseGrid([
     'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  arbres : bord de l'écran
-    'ɔɔɔRRRRRɔɔRRRRRRRRRRRRRRRRRRRRɔɔ', // 1  ton immeuble, l'agence, le studio de Paulfit, le stade
-    'ɔɔɔRRRRRɔɔRRRRRRRRRRRRRRRRRRRRɔɔ', // 2
-    'ɔɔɔWWWWWɔɔWWWWWWWWWWWWWWWWWWWWɔɔ', // 3
-    'ɔɔɔWDWWWɔɔWDWWWWDWWWWWWWDWWWWWɔɔ', // 4  portes (stade : grande entrée)
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 5  trottoir
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  avenue (ouest : Prytanée, est : aéroport)
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ>ɔ', // 8  panneaux aéroport
-    '..ƀ...ƀɔɔ.ƀ...ƀ...ƀ...ƀɔɔ.ƀ...ƀ.', // 9  quai arboré (herbe près de l'eau)
-    '.......ɔɔ..............ɔɔ.......', // 10
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 11 quai
-    'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 12 la Garonne et ses deux ponts
-    'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 13
-    'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 14
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 15 quai sud
-    '....ƀ..ɔɔ...ƀ...ƀ...ƀ..ɔɔ...ƀ...', // 16
-    'ɔɔRRRRRɔɔɔɔRRRRRRRRRɔRRRRRɔɔɔɔɔɔ', // 17 immeuble, KEDGE, l'appartement de Rémi
-    'ɔɔRRRRRɔɔɔɔRRRRRRRRRɔRRRRRɔɔɔɔɔɔ', // 18
-    'ɔɔWWWWWɔɔɔɔWWWWWWWWWɔWWWWWɔɔɔɔɔɔ', // 19
-    'ɔɔWDWWWɔɔɔɔWWWWDWWWWɔWWDWWɔɔɔɔɔɔ', // 20 portes
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 21
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 22 rue sud (vers Paris, bloquée par une voiture en panne)
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 23
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 24
-    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 25 arbres : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 1
+    'ƀƀ.............ɔɔɔɔɔɔɔɔɔɔɔɔ...ƀƀ', // 2
+    'ƀƀ..WWWW.WWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 3
+    'ƀƀ..WWWWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 4
+    'ƀƀ.ɔWWWWWWWWWWɔɔWWWWWWWWWWWɔ.ƀƀƀ', // 5
+    '...ɔWDWWWWWDWWɔɔWWWWWWWWWWWɔɔ...', // 6  portes : ton immeuble (5), l'agence (11) ; ouest : Prytanée
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWWWWWWWɔɔɔɔɔ', // 7
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWWWWWWɔɔɔɔɔɔ', // 8
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWWWWɔɔɔɔɔƀƀ', // 9
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWDWWɔɔɔɔɔ.ƀƀ', // 10  porte du stade
+    'ƀƀ....ɔɔɔɔ....ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 11
+    'ƀƀ.....ɔɔ...WW..ɔɔɔɔɔɔɔɔɔɔ....ƀƀ', // 12
+    'ƀƀ.....ɔɔ..............ɔɔ...GGGG', // 13
+    '.......ɔɔ.WWW.WWW.WWW..ɔɔ.WWGGGG', // 14
+    'GGGGGGGIIGGGGGGGGGGGGGGɔɔGGGGGGG', // 15  la Garonne et ses deux ponts (x 7-8, 23-24)
+    'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 16
+    'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 17
+    'ƀƀƀGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 18
+    'GGGGGGGIIGGGGGGGGGGGGGGIIGGGGGGG', // 19
+    'ƀƀIIIIIɔɔGGGGGGGGGGGGGGIIGGGGGGG', // 20
+    'ƀƀ.....ɔɔ......WW.WWW..ɔɔ.WGGGGG', // 21
+    'ƀƀ.....ɔɔ..............ɔɔ.WGGGGG', // 22
+    'ƀƀ..ɔɔɔɔɔɔɔɔɔɔ........ɔɔɔɔ......', // 23
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 24
+    'ƀƀ.ɔWWWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀƀ', // 25
+    'ƀƀ.ɔWWWWWWWWWɔɔɔWWWWɔɔWWWWɔɔɔɔɔɔ', // 26
+    'ƀƀ.ɔWWWWWWWWWɔɔɔWWWWɔɔWWWWWɔɔɔɔɔ', // 27
+    'ƀƀ.ɔWWWWWWWWWɔɔɔWWWWɔɔWWWWWɔɔɔɔɔ', // 28
+    'ƀƀ.ɔɔɔɔɔDWɔɔɔɔɔɔWDWWɔɔWDWWWɔ....', // 29  portes : KEDGE (8), le studio de Paulfit (17), Rémi (23) ; est : route de Paris
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..ƀƀ', // 30
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔ...ɔɔɔɔɔɔɔɔ....ƀƀ', // 31
+    'ƀƀ..ɔɔɔɔɔɔɔɔɔɔ................ƀƀ', // 32
+    'ƀƀ............................ƀƀ', // 33
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 34  arbres : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 35
   ]),
   doors: [
-    // Ton immeuble : il faut les clés de l'agence.
+    // Ton immeuble (en haut à gauche) : il faut les clés de l'agence.
     {
-      x: 4, y: 4, interior: 'appartement',
+      x: 5, y: 6, interior: 'appartement',
       lock: { ifItems: [ITEMS.clesAppartement.id] },
       lockedDialogue: ["C'est ton futur immeuble, mais tu n'as pas les clés. Va à l'agence."],
     },
-    { x: 11, y: 4, interior: 'agence' },
-    { x: 16, y: 4, interior: 'studioPaulfit' },                   // le studio de Paulfit
-    // Le stade : la remise des diplômes, une fois le semestre de New Delhi terminé.
+    { x: 11, y: 6, interior: 'agence' },                          // la boutique à auvent
+    // Le stade (la rotonde) : la remise des diplômes, une fois le semestre de New Delhi terminé.
     {
-      x: 24, y: 4, interior: 'stade',
+      x: 21, y: 10, interior: 'stade',
       lock: { ifFlags: [FLAGS.semestreTermine] },
       lockedDialogue: ["Le stade est fermé : la remise des diplômes n'a pas encore lieu."],
     },
-    { x: 3, y: 20, lockedDialogue: ['Ce n\'est pas chez toi.'] },
-    // KEDGE : l'oral d'anglais, quelques mois après la soirée.
+    // KEDGE (le grand bâtiment de pierre, en bas à gauche) : l'oral d'anglais, quelques mois après la soirée.
     {
-      x: 15, y: 20, interior: 'kedge',
+      x: 8, y: 29, interior: 'kedge',
       lock: { ifFlags: [FLAGS.soireeFinie] },
       lockedDialogue: ["L'oral d'anglais, c'est pas aujourd'hui."],
     },
-    { x: 23, y: 20, interior: 'appartRemi' },                     // l'appartement de Rémi, près du campus
+    { x: 17, y: 29, interior: 'studioPaulfit' },                  // le studio de Paulfit
+    { x: 23, y: 29, interior: 'appartRemi' },                     // l'appartement de Rémi, près du campus
   ],
   // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
   buildings: [],
-  sourceBuildings: [
-    { type: 'slateHouse', x: 3, y: 1 },
-    { type: 'agence',   x: 10, y: 1 },
-    { type: 'frontierHouse', x: 15, y: 1 },
-    { type: 'stadium',  x: 18, y: 1 },
-    { type: 'house', x: 2, y: 17 },
-    { type: 'kedge',    x: 11, y: 17 },
-    { type: 'purpleHouse', x: 21, y: 17 },
-  ],
+  // Redessinée à la main (octobre 2026) : plus de bâtiments d'origine à convertir.
+  sourceBuildings: [],
   npcs: [
     // Ousmane, le coloc : devant l'immeuble à l'arrivée, puis pendant les préparatifs de la soirée.
     {
-      id: 'ousmane-porte', name: 'Ousmane', x: 5, y: 5, facing: 'left',
+      id: 'ousmane-porte', name: 'Ousmane', x: 6, y: 7, facing: 'left',
       ifFlags: [FLAGS.bordeauxOuverture], unlessFlags: [FLAGS.ousmaneRencontre], script: OUSMANE_AT_DOOR,
     },
     {
-      id: 'ousmane-rappel', name: 'Ousmane', x: 5, y: 5, facing: 'left',
+      id: 'ousmane-rappel', name: 'Ousmane', x: 6, y: 7, facing: 'left',
       ifFlags: [FLAGS.preparatifs], unlessFlags: [FLAGS.soiree], script: OUSMANE_REMINDS,
     },
     // Rémi, devant KEDGE le jour de l'oral.
     {
-      id: 'remi-kedge', name: 'Rémi', x: 16, y: 21, facing: 'left',
+      id: 'remi-kedge', name: 'Rémi', x: 9, y: 30, facing: 'left',
       ifFlags: [FLAGS.soireeFinie], unlessItems: [ITEMS.diplomeAnglais.id], dialogue: ['T\'inquiète, c\'est easy.'],
     },
   ],
@@ -116,24 +119,24 @@ export const bordeauxMap = {
   ],
   // Panneaux « Aéroport » à côté des sorties ; les noms sur les portes.
   objects: [
-    airportSign(30, 8, true),
-    ...[15, 17].map((x) => ({ x, y: 4, dialogue: ['Sur la porte : « PAULFIT ».'] })),
-    ...[22, 24].map((x) => ({ x, y: 20, dialogue: ['Sur la porte : « RÉMI ».'] })),
+    airportSign(29, 5, true),
+    ...[16, 18].map((x) => ({ x, y: 29, dialogue: ['Sur la porte : « PAULFIT ».'] })),
+    ...[22, 24].map((x) => ({ x, y: 29, dialogue: ['Sur la porte : « RÉMI ».'] })),
   ],
   triggers: [
     // Devant la porte de l'immeuble : Ousmane (voir bordeauxStory.js FRONT_DOOR).
-    { x: 4, y: 5, script: FRONT_DOOR },
+    { x: 5, y: 7, script: FRONT_DOOR },
     // Devant KEDGE, le jour de l'oral : Rémi.
-    { x: 15, y: 21, ifFlags: [FLAGS.soireeFinie], unlessFlags: [FLAGS.remiKedge], script: REMI_AT_KEDGE },
+    { x: 8, y: 30, ifFlags: [FLAGS.soireeFinie], unlessFlags: [FLAGS.remiKedge], script: REMI_AT_KEDGE },
     // Ouest : retour au Prytanée (arrivée à sa porte nord).
-    ...[6, 7].map((y) => ({
+    ...[6, 7, 8, 9].map((y) => ({
       x: 0,
       y,
       readyDialogue: ['Tu retournes au Prytanée.'],
       warp: { map: 'prytanee', x: 24, y: 1, facing: 'down' },
     })),
     // Sud-est : la route de Paris, libre une fois le diplôme de Bordeaux en poche.
-    ...[22, 23].map((y) => ({
+    ...[26, 27, 28, 29].map((y) => ({
       x: 31,
       y,
       ifFlags: [FLAGS.diplomeBordeaux],
@@ -143,7 +146,7 @@ export const bordeauxMap = {
       warp: { map: 'paris', x: 1, y: 6, facing: 'right' },
     })),
     // Est : l'aéroport, débloqué par le diplôme d'anglais.
-    ...[6, 7].map((y) => ({
+    ...[6, 7, 8].map((y) => ({
       ...toAirport(31, y),
       ifItems: [ITEMS.diplomeAnglais.id],
       dialogue: ["L'aéroport ! Il te faut ton diplôme d'anglais pour partir : l'oral, c'est à KEDGE."],
@@ -152,7 +155,7 @@ export const bordeauxMap = {
   // Voiture en panne qui bloque la rue sud (vers Paris) jusqu'à la remise du diplôme de Bordeaux.
   props: [
     {
-      type: 'brokenCar', x: 29, y: 22, w: 2, h: 2,
+      type: 'brokenCar', x: 29, y: 27, w: 2, h: 2,
       unlessFlags: [FLAGS.diplomeBordeaux],
       dialogue: ['Une voiture en panne bloque la route. Impossible de passer pour l\'instant.'],
     },
