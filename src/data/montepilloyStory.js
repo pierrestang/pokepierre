@@ -12,7 +12,7 @@ const DAY_DONE = { ifFlags: [FLAGS.copainsPartent], ifSouvenirs: [TRAITS.ingenio
 
 // La dernière des deux quêtes finie (cache-cache ou tracteur) : la journée se termine, Pierre rentre dîner (DINNER).
 const END_OF_DAY = [
-  { ...DAY_DONE, say: ['Le soleil se couche sur Montépilloy. Il est temps de rentrer à la maison.'] },
+  { ...DAY_DONE, say: ['La nuit tombe sur Montépilloy… Il serait temps de rentrer à la maison.'] },
   { ...DAY_DONE, setFlag: FLAGS.finJournee },
 ];
 
@@ -75,7 +75,7 @@ export const LAST_DAY = [
 // qui ferme les yeux).
 export const HIDE_AND_SEEK = [
   { approach: 'margaux-sortie' },
-  { speaker: 'Margaux', say: ['Dernière partie avant les vacances. Mais cette fois, dans tout le village !'] },
+  { speaker: 'Margaux', say: ['Dernière partie de cache-cache avant les vacances ! Mais cette fois, dans tout le village !'] },
   { black: true },
   { wait: 500 },
   { say: ['… huit, neuf, dix !'] },
@@ -120,8 +120,9 @@ export const FOUND_ETIENNE = [
   GAME_OVER,
 ];
 
-// Benoît, dans le tonneau du fond à gauche de la grange (pas celui de la pièce du tracteur, au fond à droite) : le
-// couvercle ne s'ouvre qu'à plusieurs, une fois Margaux et Étienne trouvés (ils suivent Pierre) : Esprit d'équipe.
+// Benoît, dans le tonneau du fond à gauche de la grange (la pièce du tracteur, elle, est sous la botte de paille, au
+// fond à droite) : le couvercle ne s'ouvre qu'à plusieurs, une fois Margaux et Étienne trouvés (ils suivent Pierre) :
+// Esprit d'équipe.
 const BENOIT_LEFT = { ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveBenoit] };
 const STUCK = 'Le couvercle ne bouge pas. On dirait qu\'on le retient de l\'intérieur… Il faudrait être plusieurs pour le soulever. Trouve d\'abord les autres.';
 export const BENOIT_BARREL = [0, 4];
@@ -196,11 +197,11 @@ export const BOULY = [
     unlessFlags: [FLAGS.boulyDemande], speaker: 'M. Bouly',
     say: [
       'Ah, Jean et son assistant ! Mon tracteur est en panne : il lui manque une pièce.',
-      'Elle doit traîner quelque part… peut-être dans le tonneau du fond, à droite de la grange ?',
+      'Elle doit traîner quelque part dans la grange… peut-être sous la botte de paille, au fond à droite ?',
     ],
   },
   { unlessFlags: [FLAGS.boulyDemande], setFlag: FLAGS.boulyDemande, end: true },
-  { speaker: 'M. Bouly', say: ['La pièce doit être dans un des tonneaux de la grange.'] },
+  { speaker: 'M. Bouly', say: ['La pièce doit être sous la botte de paille, au fond de la grange.'] },
 ];
 
 // Jean, sous le tracteur : il attend la pièce ; on peut aussi la lui donner directement.
@@ -260,7 +261,7 @@ export const NORTH_EXIT = [
   { ifFlags: [FLAGS.departCollege], say: ['Tu prends la route du collège, ton cartable sur le dos.'] },
   // Le premier départ : l'encart des vertus emportées, comme à la fin des trajets.
   { ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeOuverture], say: [carryText('montepilloy')] },
-  { ifFlags: [FLAGS.departCollege], travel: { map: 'routeBonsecours', x: 10, y: 27, facing: 'up' }, end: true },
+  { ifFlags: [FLAGS.departCollege], travel: { map: 'routeBonsecours', x: 11, y: 27, facing: 'up' }, end: true },
   { ...DAY_DONE, say: ['Il se fait tard : rentre plutôt dîner à la maison.'], end: true },
   { say: ['Ta journée n\'est pas finie.'] },
   { unlessFlags: [FLAGS.ecoleCm2], say: ['C\'est le dernier jour de CM2 : file à l\'école, en bas de la grand-rue !'], end: true },

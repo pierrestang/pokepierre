@@ -21,6 +21,7 @@ import { visitedFlag } from '../systems/RegionMap.js';
 import { items } from '../systems/items.js';
 import { ITEM_ICONS } from '../art/uiIcons.js';
 import { addBunting } from '../art/bunting.js';
+import { propKey } from '../art/propImages.js';
 import { savePosition } from '../systems/save.js';
 import { memo } from '../systems/memo.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
@@ -366,6 +367,14 @@ export class MapScene extends Phaser.Scene {
       if (data.type === 'bigTree') {
         const bottom = (data.y + 1) * TILE_SIZE;
         const graphics = this.add.image((data.x - 1) * TILE_SIZE, bottom, FRLG_SHEETS.bigTree).setOrigin(0, 1).setDepth(10 + (bottom - 1) / 10000);
+        this.props.push({ data, graphics });
+        continue;
+      }
+      // Objet en image (art/propImages.js, style Gen 4) : au milieu du bas de son emprise, trié en profondeur.
+      if (data.image) {
+        const bottom = (data.y + data.h) * TILE_SIZE;
+        const graphics = this.add.image((data.x + data.w / 2) * TILE_SIZE, bottom, propKey(data.image))
+          .setOrigin(0.5, 1).setDepth(10 + (bottom - 1) / 10000);
         this.props.push({ data, graphics });
         continue;
       }

@@ -142,8 +142,9 @@ export const BEHIND_THE_WALL = [
   { travel: { interior: 'dortoir', x: 7, y: 4, facing: 'left' } },
 ];
 
-// Au dortoir, au petit matin : le capitaine monte demander qui est sorti (Audace) ; puis l'ellipse jusqu'aux
-// résultats du bac.
+// Au dortoir, au petit matin : le capitaine monte demander qui est sorti ; Pierre (Audace) affirme sans ciller que
+// personne n'est sorti et qu'ils n'ont rien vu ; le capitaine acquiesce et repart sur un bon mot. Puis l'ellipse
+// jusqu'aux résultats du bac.
 export const MORNING = [
   { say: ['Au petit matin, au dortoir.'] },
   { sound: 'door' },
@@ -151,8 +152,10 @@ export const MORNING = [
   { face: { 'capitaine-matin': 'left', player: 'right' } },
   { speaker: 'Capitaine', say: ['Trois lits vides cette nuit, d\'après la ronde. Qui est sorti ?'] },
   { useTrait: TRAITS.audace },
-  { say: ['Tu regardes le capitaine droit dans les yeux, sans un mot.'] },
-  { speaker: 'Capitaine', say: ['… Je n\'ai rien vu non plus.'] },
+  { say: ['Tu te lèves, au garde-à-vous, et tu regardes le capitaine droit dans les yeux.'] },
+  { speaker: 'Pierre', say: ['Personne n\'est sorti, mon capitaine. On n\'a rien vu, rien entendu.'] },
+  { speaker: 'Capitaine', say: ['Rien vu, rien entendu… Bien.'] },
+  { speaker: 'Capitaine', say: ['Alors la prochaine fois que « personne » sort, dites-lui d\'essuyer ses rangers : il a laissé de la boue jusqu\'à son lit.'] },
   { walk: 'capitaine-matin', to: DORM_EXIT, block: true },
   { speaker: 'Geoffrey', say: ['Personne a rien vu. On remet ça quand vous voulez les gars !'] },
   { setFlag: FLAGS.murMatin },

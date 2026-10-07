@@ -29,30 +29,30 @@ export const COLLEGE_ARRIVAL = [
 ];
 
 // Première entrée dans le hall : le surveillant accueille Pierre et l'envoie à son casier, puis monte au couloir des
-// casiers (escalier de droite du hall), où on le retrouve.
-const HALL_STAIRS_RIGHT = [13, 2];
+// casiers (l'escalier du hall), où on le retrouve.
+const HALL_STAIRS = [13, 2];
 export const COLLEGE_WELCOME = [
   { approach: 'surveillant-hall' },
   {
     speaker: 'Surveillant',
     say: [
       'Bienvenue au collège Bonsecours ! C\'est moi le surveillant.',
-      'Avant le premier cours, va ranger tes affaires dans ton casier : le casier 12, au couloir des casiers, en haut de l\'escalier de droite.',
-      'Ta classe, c\'est la 6e B, en salle de maths.',
-      'La salle de maths, c\'est par l\'escalier de gauche du hall.',
+      'Avant le premier cours, va ranger tes affaires dans ton casier : le casier 12, au couloir des casiers, en haut de l\'escalier.',
+      'Ta classe, c\'est la 6e B, en salle de maths : l\'étage au-dessus des casiers.',
+      'Ici, on monte un étage par salle : les casiers, les maths, les sciences, et le français tout en haut.',
     ],
   },
-  { walk: 'surveillant-hall', to: HALL_STAIRS_RIGHT, block: true },
+  { walk: 'surveillant-hall', to: HALL_STAIRS, block: true },
   { setFlag: FLAGS.collegeArrivee },
 ];
 
 // L'embrouille du casier : Pierre et Rémy posent la main sur le casier 12 en même temps ; le surveillant tranche,
 // ils le partagent. Rémy le prend à la rigolade.
-// Places dans le couloir des casiers : à droite du casier 12 (Rémy), la place du surveillant, l'escalier vers le hall
-// (par où Rémy file en classe).
+// Places dans le couloir des casiers : à droite du casier 12 (Rémy), la place du surveillant, l'escalier qui monte à la
+// salle de maths (par où Rémy file en classe).
 export const LOCKER_SIDE = [7, 3];
 export const SURVEILLANT_SPOT = [12, 5];
-const CORRIDOR_STAIRS = [13, 2];
+const CORRIDOR_STAIRS = [0, 2];
 const LOCKER_FIGHT = [
   { say: ['Le casier 12. Le tien, d\'après ton papier. Tu poses la main sur la porte…'] },
   { setFlag: FLAGS.remiArrive },
@@ -77,7 +77,7 @@ const LOCKER_FIGHT = [
     ],
   },
   { say: ['Rémy rigole. Toi, tu hausses les épaules : il a l\'air d\'un sacré numéro, celui-là.'] },
-  { speaker: 'Rémy', say: ['Allez, en maths ! Par l\'escalier de gauche du hall, ça va sonner !'] },
+  { speaker: 'Rémy', say: ['Allez, en maths ! C\'est l\'escalier au bout du couloir, ça va sonner !'] },
   { walk: 'remi-casier', to: CORRIDOR_STAIRS, block: true, then: [FLAGS.remiEnClasse] },
 ];
 
@@ -103,7 +103,7 @@ export const LOCKER = [
   { unlessSouvenirs: [TRAITS.audace.id], say: ['Le casier 12, à Rémy et toi. Tes affaires en haut, les siennes en bas.'], end: true },
   { ifItems: [ITEMS.autocollant.id], say: ['Le casier 12 : votre QG, à Rémy et toi. L\'autocollant de Rémy brille sur la porte.'], end: true },
   { say: ['Le casier 12 : votre QG, à Rémy et toi. Rémy a collé un autocollant de Pokémon à l\'intérieur de la porte.'] },
-  // Rémy arrive par l'escalier, vient à côté de Pierre, lui donne le sien, puis repart en classe.
+  // Rémy descend de la salle de maths, vient à côté de Pierre, lui donne le sien, puis remonte en classe.
   { setFlag: FLAGS.remyAutocollant },
   { approach: 'remy-autocollant' },
   { speaker: 'Rémy', say: ['Ah, tu l\'as vu ? Il m\'en restait un. Tiens, pour toi : comme ça, on a le même.'] },
@@ -116,7 +116,7 @@ export const LOCKER = [
 // casier devient leur QG ; à la fin de la troisième, il encourage Pierre pour le brevet.
 export const REMI = [
   { ifItems: [ITEMS.brevet.id], speaker: 'Rémy', say: ['Le Prytanée ? T\'es un ouf. Tu m\'enverras une photo en uniforme !'], end: true },
-  { ifFlags: [FLAGS.finTroisieme], speaker: 'Rémy', say: ['Le prof veut te voir pour le brevet. Vas-y, c\'est toi le roi du calcul mental.'], end: true },
+  { ifFlags: [FLAGS.finTroisieme], speaker: 'Rémy', say: ['Le prof veut te voir pour le brevet. Français, maths, anglais : t\'es prêt, vas-y !'], end: true },
   { ifSouvenirs: [TRAITS.audace.id], speaker: 'Rémy', say: ['Le casier, c\'est notre QG. On se retrouve là à chaque récré !'], end: true },
   { speaker: 'Rémy', say: ['Vas-y, je te suis. Le cours va bientôt commencer.'] },
 ];
@@ -127,7 +127,7 @@ const RELAX = 'Rémy, derrière toi, chuchote : « Joker. On la refait, tranquil
 const line = (question, choices, answer, wrong) => ({ quiz: { question, choices, answer, wrong: { ...wrong, default: [RELAX] } } });
 export const CAMILLE = [
   { unlessFlags: [FLAGS.remiInvite], say: ['Une fille de ta classe sort ses cahiers.'], end: true },
-  { ifSouvenirs: [TRAITS.audace.id], speaker: 'Camille', say: ['On se met à côté, comme promis ! Moi, les maths, c\'est pas mon fort.'], end: true },
+  { ifSouvenirs: [TRAITS.audace.id], speaker: 'Camille', say: ['En français, on se met ensemble, c\'est promis ! D\'ici là, je survis aux maths.'], end: true },
   { comeBeside: 'remi-classe' },
   { faceTo: 'camille' },
   { say: ['Rémy te suit, l\'air de rien.', 'La fille sort ses cahiers. Elle lève les yeux vers toi.'] },
@@ -141,11 +141,11 @@ export const CAMILLE = [
     'Oui, j\'y suis célèbre.': ['Camille hoche la tête, pas très convaincue. « Ah… d\'accord. »', RELAX],
   }),
   { speaker: 'Camille', say: ['C\'est pas loin ! Moi, j\'habite juste derrière le collège.'] },
-  line('Et maintenant ?', ['On mange ensemble, promis ?', 'Bon… au revoir.', 'On se met à côté en maths ?'], 'On se met à côté en maths ?', {
+  line('Et maintenant ?', ['On mange ensemble, promis ?', 'Bon… au revoir.', 'On se met ensemble en français ?'], 'On se met ensemble en français ?', {
     'Bon… au revoir.': ['Camille cligne des yeux. « Déjà ? On vient à peine de… bon. »', RELAX],
     'On mange ensemble, promis ?': ['« Promis » ? Camille recule d\'un pas. « On verra… »', RELAX],
   }),
-  { speaker: 'Camille', say: ['Ça marche ! Je suis nulle en calcul, tu m\'aideras.'] },
+  { speaker: 'Camille', say: ['Ça marche ! En rédaction, je suis forte : je t\'aiderai. Et toi, tu m\'aides en maths ?'] },
   { say: ['Camille sourit.'] },
   { speaker: 'Rémy', say: ['Trop facile. Je savais que t\'allais gérer.'] },
   { trait: TRAITS.audace },
@@ -181,17 +181,24 @@ export const CLOSET = [
 ];
 
 // Le prof de maths : à la fin de la troisième (après l'ellipse), l'oral du brevet, en face à face à son bureau. « Prêt ? »,
-// Pierre utilise Audace, puis un seul calcul (une erreur ne bloque pas : il fait recompter) ; il remet le diplôme du
-// brevet, qui ouvre la route du Prytanée.
-const calcul = (question, choices, answer) => ({
-  quiz: { speaker: 'Professeur', question, choices, answer, wrong: { default: ['Hmm… Recompte tranquillement.'] } },
+// Pierre utilise Audace, puis trois questions, une par matière : français, maths, anglais (une erreur ne bloque pas : il
+// fait réfléchir) ; il remet le diplôme du brevet, qui ouvre la route du Prytanée.
+const question = (subject, text, choices, answer, hint) => ({
+  quiz: { speaker: 'Professeur', question: `${subject} : ${text}`, choices, answer, wrong: { default: [hint] } },
 });
 export const PROF = [
   { ifItems: [ITEMS.brevet.id], speaker: 'Professeur', say: ['Avec ton brevet, tu peux candidater au Prytanée. Bonne chance, Pierre !'], end: true },
   { unlessFlags: [FLAGS.finTroisieme], speaker: 'Professeur', say: ['Sors ton cahier, Pierre : aujourd\'hui, calcul mental !'], end: true },
   { speaker: 'Professeur', say: ['Prêt ?'] },
   { useTrait: TRAITS.audace },
-  calcul('Combien font 7 plus 5 ?', ['11', '12', '13'], '12'),
+  { speaker: 'Professeur', say: ['Trois questions, trois matières. On commence par le français.'] },
+  question('Français', 'quel est le participe passé du verbe « prendre » ?', ['Prendu', 'Pris', 'Prit'], 'Pris',
+    'Hmm… « J\'ai… mon cartable. » Réfléchis.'),
+  { speaker: 'Professeur', say: ['Très bien. Maintenant, les maths : mon rayon.'] },
+  question('Maths', 'combien font 7 fois 8 ?', ['54', '56', '64'], '56', 'Hmm… Recompte tranquillement.'),
+  { speaker: 'Professeur', say: ['Et pour finir, l\'anglais. Ça pourra te servir, un jour.'] },
+  question('Anglais', 'comment dit-on « bonjour, je m\'appelle Pierre » ?', ['Goodbye, I am Pierre', 'Hello, my name is Pierre', 'Hello, I have Pierre'],
+    'Hello, my name is Pierre', 'Hmm… Pas tout à fait. Relis bien.'),
   { speaker: 'Professeur', say: ['Parfait ! Comme quoi, malgré le bruit… Tu as mérité ton diplôme du brevet.'] },
   { give: ITEMS.brevet, text: 'Tu reçois ton diplôme du brevet !' },
   { setFlag: FLAGS.bonsecoursFini },

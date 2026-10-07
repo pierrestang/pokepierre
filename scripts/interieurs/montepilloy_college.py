@@ -325,7 +325,7 @@ PLANS = {
             ['mc-fenetre', 3, 0], ['mc-liege', 6, 0], ['mc-horloge', 6, 1, {'dy': -2}],
             ['mc-etabli', 0, 2], ['mc-outils', 0, 2, {'dy': -9}],
             ['mc-caisse-salades', 5, 2], ['mc-caisse-oranges', 6, 2],
-            ['mc-tonneau', 7, 2], ['mc-tonneau', 8, 2], ['mc-tonneau', 8, 3],
+            ['mc-tonneau', 7, 2], ['mc-tonneau', 8, 2], ['mc-paille', 8, 3],
             ['mc-tonneau', 0, 4], ['mc-tonneau', 0, 5],
             ['mc-caisse-tomates', 6, 5], ['mc-miel', 7, 5],
             ['mc-brins', 2, 4], ['mc-brins', 5, 6], ['mc-brins', 7, 7], ['mc-brins', 3, 3], ['mc-brins', 1, 7],
@@ -338,7 +338,7 @@ PLANS = {
         'items': [
             ['mc-cuisine', 0, 2], ['mc-fenetre-rideaux', 4, 1], ['mc-frigo', 6, 2],
             ['mc-meuble-tele', 7, 2], ['mc-tele', 7, 1, {'dy': -1}], ['mc-cadre', 2, 1, {'dy': -2}],
-            ['mc-escalier-monte', 8, 1],
+            ['escalier-monte', 9, 2],
             ['mc-tapis-bleu', 3, 6], ['mc-table-4', 3, 5],
             ['mc-arbuste', 0, 6], ['mc-arbuste', 9, 6],
         ],
@@ -350,7 +350,7 @@ PLANS = {
         'items': [
             ['mc-lit-bleu', 0, 3], ['mc-lit-ciel', 3, 3], ['mc-lit-rose', 6, 3], ['mc-lit-blanc', 9, 3],
             ['mc-fenetre-petite', 2, 0], ['mc-cadre', 8, 1, {'dy': -2}], ['mc-affiche-a', 5, 0], ['mc-affiche-b', 11, 0],
-            ['mc-escalier-descend', 12, 1],
+            ['escalier-descend', 12, 2],
             ['mc-plante', 0, 5], ['mc-bibliotheque', 10, 6],
             ['mc-tapis-rouge', 5, 6],
         ],
@@ -369,12 +369,12 @@ PLANS = {
         ],
     },
     # Collège Bonsecours, le hall : comptoir d'accueil de la principale au milieu, panneaux de liège, bibliothèque,
-    # fenêtre, trois casiers, deux vitrines à livres sur les côtés, arbres en pot à l'entrée ; un escalier qui monte à
-    # chaque bout.
+    # fenêtre, trois casiers, deux vitrines à livres sur les côtés, arbres en pot à l'entrée ; un seul escalier, à droite,
+    # qui monte au couloir des casiers (le collège se parcourt de bas en haut, un étage par salle).
     'bonsecours': {
         'wall': 'menthe', 'floor': 'carrelage',
         'items': [
-            ['mc-escalier-monte', 0, 1], ['mc-escalier-monte', 12, 1],
+            ['escalier-monte-gris', 13, 2],
             ['mc-bibliotheque-haute', 2, 2], ['mc-liege', 4, 1, {'dy': -6}], ['mc-fenetre', 6, 0],
             ['mc-casier', 8, 2], ['mc-casier-vert', 9, 2], ['mc-casier-rouge', 10, 2], ['mc-liege', 11, 1, {'dy': -6}],
             ['mc-accueil', 4, 4],
@@ -383,49 +383,52 @@ PLANS = {
         ],
     },
     # Le couloir des casiers : une rangée de casiers de couleurs, l'armoire du surveillant, des fenêtres et un panneau
-    # d'affichage ; escalier qui monte à gauche, qui descend à droite.
+    # d'affichage ; l'escalier qui monte à la salle de maths à gauche, celui qui redescend au hall à droite.
     'bonsecoursCasiers': {
         'wall': 'gris', 'floor': 'carrelage-gris', 'mat': None,
         'items': [
-            ['mc-escalier-monte', 0, 1], ['mc-fenetre-petite', 2, 0], ['mc-fenetre-petite', 3, 0],
+            ['escalier-monte-gris', 0, 2], ['mc-fenetre-petite', 2, 0], ['mc-fenetre-petite', 3, 0],
             ['mc-casier', 4, 2], ['mc-casier-vert', 5, 2], ['mc-casier', 6, 2], ['mc-casier-rouge', 7, 2],
             ['mc-casier', 8, 2], ['mc-casier-vert', 9, 2],
             ['mc-liege', 10, 1, {'dy': -6}], ['mc-armoire', 11, 2], ['mc-fenetre-petite', 12, 0],
-            ['mc-escalier-descend', 13, 1],
+            ['escalier-descend-gris', 13, 2],
             ['mc-plante', 0, 5], ['mc-plante', 13, 5],
         ],
     },
     # Salle de maths : tableau vert couvert d'équations, bureau du professeur, quatre rangées de pupitres, fenêtres,
-    # horloge et affiches ; escaliers aux deux bouts.
+    # horloge et affiches ; l'escalier qui redescend aux casiers à gauche, celui qui monte en sciences à droite.
     'bonsecoursMaths': {
         'wall': 'creme', 'floor': 'carrelage',
         'items': [
-            ['mc-escalier-monte', 0, 1], ['mc-fenetre', 2, 0], ['mc-tableau-vert', 5, 1], ['mc-horloge', 9, 0],
-            ['mc-fenetre', 10, 0], ['mc-escalier-descend', 13, 1],
+            ['escalier-descend-gris', 0, 2], ['mc-fenetre', 2, 0], ['mc-tableau-vert', 5, 1], ['mc-horloge', 9, 0],
+            ['mc-fenetre', 10, 0], ['escalier-monte-gris', 13, 2],
             ['mc-bureau-prof', 6, 2],
             ['mc-pupitre-livres', 1, 4], ['mc-pupitre-copies', 4, 4], ['mc-pupitre-livres', 7, 4], ['mc-pupitre-copies', 10, 4],
             ['mc-pupitre-copies', 1, 6], ['mc-pupitre-livres', 4, 6], ['mc-pupitre-copies', 7, 6], ['mc-pupitre-livres', 10, 6],
             ['mc-arbuste', 0, 8], ['mc-arbuste', 13, 8],
         ],
     },
-    # Salle de français : bibliothèques au mur de chaque côté du tableau, tableau vert, bureau, pupitres, plantes.
+    # Salle de français, tout en haut : bibliothèques au mur de chaque côté du tableau, tableau vert, bureau, pupitres,
+    # plantes ; l'escalier qui redescend en sciences à gauche.
     'bonsecoursFrancais': {
         'wall': 'bibliotheque', 'floor': 'parquet',
         'items': [
-            ['mc-bibliotheque', 0, 1], ['mc-bibliotheque', 2, 1], ['mc-tableau-vert-2', 5, 1],
-            ['mc-bibliotheque', 9, 1], ['mc-bibliotheque', 11, 1], ['mc-escalier-descend', 13, 1],
+            ['escalier-descend', 0, 2], ['mc-bibliotheque', 1, 1], ['mc-bibliotheque', 3, 1], ['mc-tableau-vert-2', 5, 1],
+            ['mc-bibliotheque', 9, 1], ['mc-bibliotheque', 11, 1],
             ['mc-bureau-prof', 6, 2],
             ['mc-pupitre-copies', 1, 4], ['mc-pupitre-livres', 4, 4], ['mc-pupitre-copies', 7, 4], ['mc-pupitre-livres', 10, 4],
             ['mc-pupitre-livres', 1, 6], ['mc-pupitre-copies', 4, 6], ['mc-pupitre-livres', 7, 6], ['mc-pupitre-copies', 10, 6],
             ['mc-arbuste', 0, 8], ['mc-arbuste', 13, 8],
         ],
     },
-    # Salle de sciences : paillasses noires avec évier et éprouvettes, vitrine du labo, tableau vert, appareils.
+    # Salle de sciences : paillasses noires avec évier et éprouvettes, vitrines du labo, tableau vert, appareils ;
+    # l'escalier qui monte en français à gauche, celui qui redescend en maths à droite.
     'bonsecoursSciences': {
         'wall': 'gris', 'floor': 'carrelage-gris',
         'items': [
-            ['mc-escalier-descend', 0, 1], ['mc-fenetre', 2, 0], ['mc-tableau-vert-3', 5, 1], ['mc-affiche-a', 10, 0],
-            ['mc-affiche-b', 11, 0], ['mc-vitrine-labo', 13, 2],
+            ['escalier-monte-gris', 0, 2], ['mc-fenetre', 2, 0], ['mc-tableau-vert-3', 5, 1], ['mc-affiche-a', 9, 0],
+            ['mc-affiche-b', 10, 0], ['mc-vitrine-labo', 11, 2], ['mc-plante', 12, 2],
+            ['escalier-descend-gris', 13, 2],
             ['mc-bureau-prof', 6, 2],
             ['mc-paillasse', 2, 4], ['mc-paillasse', 8, 4], ['mc-paillasse', 2, 6], ['mc-paillasse', 8, 6],
             ['mc-arbuste', 0, 8], ['mc-arbuste', 13, 8],
