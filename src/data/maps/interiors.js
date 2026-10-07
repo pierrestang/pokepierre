@@ -18,7 +18,7 @@ import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING, DINNER } fro
 import { FRLG_SHEETS, cabaneFrame, cabaneOverlay } from '../../art/frlgArt.js';
 import {
   LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
-  LIBRARY,
+  LIBRARY, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
 } from '../hullStory.js';
 
 // Soirée de Hull : la bande, d'une étape à l'autre (premier pub, deuxième pub, Asylum).
@@ -1530,7 +1530,8 @@ export const interiors = {
     ],
   },
 
-  // Hull — chez Léo, avec Romain et Prophecy (la maison au toit d'ardoise, en haut de Newland Avenue). Scénario : data/hullStory.js.
+  // Hull — chez Léo, avec Romain et Prophecy (la petite maison juste après le premier pub, en haut de Newland Avenue).
+  // Scénario : data/hullStory.js.
   hullHouse: {
     name: 'Chez Léo',
     frlg: true,
@@ -1566,7 +1567,7 @@ export const interiors = {
       {
         id: 'prophecy', name: 'Prophecy', x: 6, y: 4, facing: 'left', color: 0x3c8cb0,
         unlessFlags: [FLAGS.leoPlan],
-        dialogue: ['On a nos propres plans avant.'],
+        dialogue: ['Il me faut une heure pour choisir mes chaussures. Au moins.'],
       },
       // Après la soirée : de retour chez eux.
       ...[['leo-apres', 'Léo', 6, 6, 'J\'ai lu la même page six fois… hier. Et aujourd\'hui aussi.'],
@@ -1605,14 +1606,20 @@ export const interiors = {
         id: 'ousmane-coloc', name: 'Ousmane', x: 1, y: 5, facing: 'right',
         ifFlags: [FLAGS.ousmaneRentre], unlessFlags: [FLAGS.leoPlan],
         script: [
-          { ifFlags: [FLAGS.leoAppel], speaker: 'Ousmane', say: ['Léo t\'attend chez lui, la maison au toit d\'ardoise en haut de Newland Avenue.'], end: true },
+          { ifFlags: [FLAGS.leoAppel], speaker: 'Ousmane', say: ['Léo t\'attend chez lui : en haut de Newland Avenue, à droite, la petite maison juste après le pub.'], end: true },
           { speaker: 'Ousmane', say: ['Bienvenue à la coloc !'] },
         ],
+      },
+      // Au petit matin, Ousmane est rentré avant Pierre ; au réveil, il l'envoie à la bibliothèque (hullStory.js SLEEP).
+      {
+        id: 'ousmane-nuit', name: 'Ousmane', x: 1, y: 5, facing: 'right',
+        ifSouvenirs: [INSOUCIANCE], unlessFlags: [FLAGS.lendemainHull],
+        dialogue: ['Au lit. Demain, bibliothèque.'],
       },
       {
         id: 'ousmane-apres', name: 'Ousmane', x: 1, y: 5, facing: 'right',
         ifFlags: [FLAGS.lendemainHull], unlessFlags: [FLAGS.revisions],
-        dialogue: ['Les exams… Allez, on va y arriver. Tout le monde est déjà à la bibliothèque.'],
+        dialogue: ['La bibliothèque, c\'est la longère au toit d\'ardoise, en haut de Newland Avenue, à gauche. J\'arrive !'],
       },
     ],
     events: [
@@ -1722,71 +1729,74 @@ export const interiors = {
       // L'habitué, près de la cible : la partie de fléchettes (voir hullStory.js DARTS).
       { id: 'habitue', name: 'Habitué', x: 5, y: 2, facing: 'down', ...PUB_B_TIME, script: DARTS },
       { id: 'habitue-apres', name: 'Habitué', x: 5, y: 2, facing: 'down', ifFlags: [FLAGS.flechettesJouees], script: HABITUE_AFTER },
-      // La bande, à la table du fond à droite.
-      ...[['leo-pubb', 'Léo', 6, 4, 'right', 'Une partie de fléchettes, et on file à l\'Asylum !'],
-        ['ousmane-pubb', 'Ousmane', 8, 4, 'left', 'Vas-y, montre-lui !'],
-        ['charlotte-pubb', 'Charlotte', 6, 6, 'right', 'Vise le milieu. Ou pas, c\'est plus drôle.'],
-        ['anais-pubb', 'Anaïs', 8, 6, 'left', 'Il joue tous les soirs, celui-là.']].map(([id, name, x, y, facing, line]) => ({
-        id, name, x, y, facing, still: true, ...PUB_B_TIME, dialogue: [line],
+      // La bande, à la table du fond à droite : Léo, entré le premier, attend ; les autres suivaient Pierre et
+      // s'attablent en arrivant (mêmes id que leurs suiveurs, voir hullStory.js PUB_B_ENTER).
+      { id: 'leo-pub', name: 'Léo', x: 6, y: 4, facing: 'right', still: true, ...PUB_B_TIME, dialogue: ['Une partie de fléchettes, et on file à l\'Asylum !'] },
+      ...[['ousmane-pub', 'Ousmane', 'left', 'Vas-y, montre-lui !'],
+        ['charlotte-pub', 'Charlotte', 'right', 'Vise le milieu. Ou pas, c\'est plus drôle.'],
+        ['anais-pub', 'Anaïs', 'left', 'Il joue tous les soirs, celui-là.']].map(([id, name, facing, line]) => ({
+        id, name, x: PUB_B_SEATS[id][0], y: PUB_B_SEATS[id][1], facing, still: true,
+        ifFlags: [FLAGS.tourneeServie, FLAGS.bandePubB], unlessFlags: [FLAGS.flechettesJouees], dialogue: [line],
       })),
     ],
-    events: [{ on: 'enter', ...PUB_B_TIME, steps: [{ approach: 'habitue' }, ...DARTS] }],
+    events: [
+      { on: 'enter', ...PUB_B_TIME, unlessFlags: [FLAGS.flechettesJouees, FLAGS.bandePubB], steps: PUB_B_ENTER },
+      { on: 'enter', ifFlags: [FLAGS.tourneeServie, FLAGS.bandePubB], unlessFlags: [FLAGS.flechettesJouees], steps: [{ approach: 'habitue' }, ...DARTS] },
+    ],
     objects: [
       ...[[1, 4], [4, 4], [7, 4], [1, 6], [7, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une table ronde, quelques ronds de bière.'] })),
     ],
   },
 
-  // Hull — The Asylum, la boîte de l'université : toute la bande, la piste de danse, la dernière chanson.
+  // Hull — The Asylum, la boîte de l'université (24 x 18) : le bar à gauche (barmans, bouteilles, habitués sur les
+  // tabourets), la cabine du DJ entre deux enceintes au fond, néons au mur, la grande piste de dalles lumineuses et ses
+  // boules à facettes au milieu, le coin salon et les mange-debout à droite, le vestiaire et le videur à l'entrée.
+  // Plan Gen 4 : scripts/interieurs/hull.py ; lumière tamisée et halos colorés (night).
   hullAsylum: {
     name: 'The Asylum',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmmmmmmmoooo',
-      'ommooooooomm',
-      'oooooooooooo',
-      'oooooooooomm',
-      'oooooooooooo',
-      'oooooooooomm',
-      'oooooEEooooo',
+      'XXXXXXXXXXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXXXXXXXXXX',
+      ...Array(15).fill('oooooooooooooooooooooooo'),
+      'oooooooooooEEooooooooooo',
     ]),
-    // Boîte de nuit : cabine de DJ entre deux enceintes au fond, néons au mur, boule à facettes au-dessus de la
-    // piste ; le bar à gauche (comptoir, bouteilles, tabourets), des tables hautes à droite. Lumière tamisée
-    // et halos colorés (night).
-    decor: [
-      { kind: 'speaker', x: 3, y: 2 },
-      { kind: 'djBooth', x: 4, y: 2 },
-      { kind: 'speaker', x: 7, y: 2 },
-      { kind: 'neonPink', x: 3, y: 0, dy: -12 },
-      { kind: 'neonCyan', x: 6, y: 0, dy: -12 },
-      { kind: 'neonPink', x: 9, y: 0, dy: -8 },
-      { kind: 'bottleShelf', x: 0, y: 1 },
-      { kind: 'barCounterL', x: 0, y: 2 },
-      { kind: 'barCounter', x: 1, y: 2 },
-      { kind: 'barCounterR', x: 2, y: 2 },
-      { kind: 'beerTaps', x: 1, y: 2, dy: -9 },
-      { kind: 'barStool', x: 1, y: 3 },
-      { kind: 'barStool', x: 2, y: 3 },
-      ...[3, 5, 7].flatMap((y) => [{ kind: 'pubTable', x: 10, y }, { kind: 'barStool', x: 11, y }]),
-      { kind: 'pintPair', x: 10, y: 5, dy: -14 },
-      { kind: 'discoBall', x: 5, y: 3, dx: 8, dy: -6 },
-    ],
-    // La piste de danse (dalles lumineuses, cases x 4-7, y 4-6), où il faut rejoindre tout le monde : dans le dessin Gen 4.
-    night: { lights: [[5, 3, 0xff60c0], [7, 4, 0x40d8ff], [4, 6, 0xa060ff], [7, 6, 0xff60c0], [1, 0, 0xff60c0], [6, 0, 0x40d8ff], [9, 0, 0xa060ff], [11, 0, 0xff60c0], [1, 2, 0xffc060], [10, 4, 0xa060ff]] },
-    spawn: { x: 5, y: 7, facing: 'up' },
+    night: {
+      lights: [[11, 2, 0xff60c0], [9, 7, 0xff60c0], [13, 7, 0x40d8ff], [10, 10, 0xa060ff], [14, 10, 0xff60c0],
+        [2, 0, 0xff60c0], [7, 0, 0x40d8ff], [16, 0, 0xa060ff], [21, 0, 0xff60c0], [3, 2, 0xffc060],
+        [20, 5, 0xa060ff], [21, 14, 0xffc060], [3, 12, 0xffc060]],
+    },
+    spawn: { x: 11, y: 16, facing: 'up' },
     npcs: [
-      { id: 'romain-asylum', name: 'Romain', x: 2, y: 4, facing: 'right', ...ASYLUM_TIME, dialogue: ['Sur la piste, tout le monde !'] },
-      { id: 'prophecy-asylum', name: 'Prophecy', x: 9, y: 4, facing: 'left', ...ASYLUM_TIME, dialogue: ['Enfin au complet !'] },
-      { id: 'leo-asylum', name: 'Léo', x: 9, y: 6, facing: 'left', ...ASYLUM_TIME, dialogue: ['Allez, sur la piste !'] },
-      { id: 'ousmane-asylum', name: 'Ousmane', x: 2, y: 6, facing: 'right', ...ASYLUM_TIME, dialogue: ['Quelle soirée !'] },
-      { id: 'charlotte-asylum', name: 'Charlotte', x: 8, y: 7, facing: 'up', ...ASYLUM_TIME, dialogue: ['On danse !'] },
-      { id: 'anais-asylum', name: 'Anaïs', x: 3, y: 7, facing: 'up', ...ASYLUM_TIME, dialogue: ['J\'adore cette chanson !'] },
+      // La bande : Romain et Prophecy déjà là, Léo entré le premier ; les autres arrivent derrière Pierre (ils le
+      // suivaient) et s'installent au bord de la piste (voir hullStory.js ASYLUM_ENTER).
+      { id: 'romain-asylum', name: 'Romain', x: 7, y: 9, facing: 'right', ...ASYLUM_TIME, dialogue: ['Sur la piste, tout le monde !'] },
+      { id: 'prophecy-asylum', name: 'Prophecy', x: 16, y: 8, facing: 'left', ...ASYLUM_TIME, dialogue: ['Enfin au complet ! Et j\'ai les bonnes chaussures.'] },
+      { id: 'leo-pub', name: 'Léo', x: 16, y: 10, facing: 'left', ...ASYLUM_TIME, dialogue: ['Allez, sur la piste !'] },
+      ...[['ousmane-pub', 'Ousmane', 'Quelle soirée !'], ['charlotte-pub', 'Charlotte', 'On danse !'],
+        ['anais-pub', 'Anaïs', 'J\'adore cette chanson !']].map(([id, name, line]) => ({
+        id, name, x: ASYLUM_SPOTS[id][0], y: ASYLUM_SPOTS[id][1], facing: 'up',
+        ifFlags: [FLAGS.flechettesJouees, FLAGS.bandeAsylum], dialogue: [line],
+      })),
+      // Le monde de la boîte.
+      { id: 'barman-asylum', name: 'Barman', x: 3, y: 2, facing: 'down', pace: [[1, 2], [6, 2]], dialogue: ['Last orders at two!'] },
+      { id: 'dj-asylum', name: 'DJ', x: 11, y: 2, facing: 'down', dancing: true, dialogue: ['Make some noise!'] },
+      { id: 'videur-asylum', name: 'Videur', x: 13, y: 16, facing: 'left', still: true, dialogue: ['Pas de bagarre, pas de souci. Bonne soirée.'] },
+      { id: 'vestiaire-asylum', name: 'Vestiaire', x: 2, y: 11, facing: 'down', still: true, dialogue: ['Ton manteau ? Numéro 42. Ne le perds pas.'] },
+      ...[[2, 4, 'Two pints, cheers!'], [4, 4, 'Ce DJ passe que des tubes.'], [5, 4, 'Je danse pas. Enfin… pas encore.']]
+        .map(([x, y, line], i) => ({ id: `client-asylum-${i}`, name: 'Client', x, y, facing: 'up', fidget: true, dialogue: [line] })),
+      ...[[9, 7, 'Woohoo!'], [12, 6, 'Cette chanson !'], [14, 8, 'On ne s\'arrête plus !'], [11, 9, 'Je danse comme ça depuis 22 h.'],
+        [15, 6, 'Best night ever!'], [8, 10, 'Tu viens danser ?'], [13, 10, 'Le DJ est en feu ce soir !']]
+        .map(([x, y, line], i) => ({ id: `danseur-asylum-${i}`, name: i % 2 ? 'Danseuse' : 'Danseur', x, y, facing: 'down', dancing: true, dialogue: [line] })),
+      ...[[20, 5, 'Exams ? Quels exams ?'], [22, 8, 'On se croirait à Londres.'], [20, 11, 'Il fait chaud ici !'],
+        [19, 14, 'Le coin calme, enfin.'], [22, 14, 'Tu fais quoi comme études ?']]
+        .map(([x, y, line], i) => ({ id: `etudiant-asylum-${i}`, name: i % 2 ? 'Étudiante' : 'Étudiant', x, y, facing: i < 3 ? 'left' : 'down', fidget: true, dialogue: [line] })),
     ],
-    events: [{ on: 'enter', ...ASYLUM_TIME, unlessFlags: [FLAGS.asylumFini], steps: ASYLUM_ENTER }],
-    triggers: [4, 5, 6, 7].flatMap((x) => [4, 5, 6].map((y) => ({
-      x, y, ...ASYLUM_TIME, unlessFlags: [FLAGS.asylumFini], script: ASYLUM_DANCE,
-    }))),
+    events: [{ on: 'enter', ...ASYLUM_TIME, unlessFlags: [FLAGS.asylumFini, FLAGS.bandeAsylum], steps: ASYLUM_ENTER }],
+    // La piste de danse (voir hullStory.js DANCE_FLOOR) : y entrer lance la dernière chanson avec la bande.
+    triggers: Array.from({ length: DANCE_FLOOR[2] * DANCE_FLOOR[3] }, (_, i) => ({
+      x: DANCE_FLOOR[0] + (i % DANCE_FLOOR[2]), y: DANCE_FLOOR[1] + Math.floor(i / DANCE_FLOOR[2]),
+      ...ASYLUM_TIME, unlessFlags: [FLAGS.asylumFini], script: ASYLUM_DANCE,
+    })),
   },
 
   // Hull — la bibliothèque Brynmor Jones : les révisions, la veille de l'examen (tour de table, voir hullStory.js).

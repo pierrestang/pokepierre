@@ -4,17 +4,23 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 // retrouvailles) ; Romain, Prophecy et Charlotte le rencontrent ici.
 //   1. L'arrivée, Ousmane au bout de la grande rue, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
 //   2. Premier pub : la tournée (chaque commande, puis le barman, en anglais) ; une erreur, on retourne redemander.
-//   3. Deuxième pub : une partie de fléchettes contre un habitué (systems/Darts.js), gagnée ou perdue.
+//   3. Deuxième pub : une partie de fléchettes contre un habitué (systems/Darts.js) ; pari gagné : tournée générale.
+//   De chez Léo au premier pub, puis d'un bar à l'autre jusqu'à l'Asylum, Léo part devant en éclaireur et entre le
+//   premier ; Pierre le suit, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu (data/story.js FOLLOWERS).
 //   4. L'Asylum (Joie de vivre), puis le petit matin devant la boîte : Insouciance ; rentrer dormir.
 //   5. La veille de l'examen, les révisions à la bibliothèque (tour de table, choix sans mauvaise réponse bloquante).
 //   6. Le lendemain, les résultats devant l'université : le diplôme d'anglais de Hull.
 //   7. Les adieux devant chez Léo : chacun part en échange ; Léo et Ousmane restent. Puis l'avion pour Hanoï.
-// Pas de PNJ qui suit Pierre : la bande l'attend à chaque étape. Scénettes partagées par la carte et les intérieurs.
+// Scénettes partagées par la carte et les intérieurs.
 
-// Bout ouest de la grande rue (l'arrivée) ; la coloc (case devant la porte).
+// Bout ouest de la grande rue (l'arrivée) ; la coloc (case devant la porte) ; les portes de la soirée, où Léo entre
+// le premier (voir maps/hull.js) : le premier pub, le second, l'Asylum.
 export const HULL_SPOTS = {
   arrival: [4, 34],
   colocDoor: [11, 32],
+  pubADoor: [28, 20],
+  pubBDoor: [33, 31],
+  asylumDoor: [29, 8],
 };
 
 // ---------- 1. L'arrivée ----------
@@ -42,7 +48,7 @@ export const OUSMANE_WALK = [{ walk: 'ousmane-arrivee', to: HULL_SPOTS.colocDoor
 // Dans la coloc : Léo a appelé.
 export const LEO_CALLED = [
   { approach: 'ousmane-coloc' },
-  { speaker: 'Ousmane', say: ['Au fait, Léo a appelé. Il veut te voir, il a un plan.', 'Il habite la maison au toit d\'ardoise, en haut de Newland Avenue, à gauche.'] },
+  { speaker: 'Ousmane', say: ['Au fait, Léo a appelé. Il veut te voir, il a un plan.', 'Il habite en haut de Newland Avenue, à droite : la petite maison juste après le pub.'] },
   { setFlag: FLAGS.leoAppel },
 ];
 
@@ -53,14 +59,20 @@ export const LEO_PLAN = [
   { speaker: 'Léo', say: ['Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde !'] },
   { speaker: 'Léo', say: ['Romain, Prophecy : voilà Pierre, de la promo de KEDGE.'] },
   { speaker: 'Romain', say: ['Ah, c\'est toi, Pierre ! Léo nous a parlé de toi.', 'Nous, on vous rejoint à l\'Asylum.'] },
-  { speaker: 'Prophecy', say: ['Salut, Pierre.', 'On a nos propres plans avant.'] },
-  { speaker: 'Léo', say: ['Les autres sont déjà au pub, en haut de Newland Avenue. On y va !'] },
+  { speaker: 'Prophecy', say: ['Salut, Pierre.', 'Il me faut au moins une heure pour choisir mes chaussures. Romain m\'attend.'] },
+  { speaker: 'Léo', say: ['Les autres sont déjà au pub, juste à côté. Je passe devant, suis-moi !'] },
   { black: true },
   { say: ['La nuit tombe sur Hull.'] },
   { setFlag: FLAGS.leoPlan },
   { black: false },
-  { say: ['Objectif : rejoins la bande au pub, en haut de Newland Avenue.'] },
+  { say: ['Objectif : suis Léo jusqu\'au pub, juste à côté.'] },
 ];
+
+// Dehors, à chaque étape de la soirée : Léo part devant jusqu'à la porte du bar suivant et entre le premier (il attend
+// Pierre s'il traîne) ; la bande suit Pierre (voir maps/hull.js, events).
+export const LEO_SCOUT_A = [{ walk: 'leo-pub', to: HULL_SPOTS.pubADoor, lead: true, then: [FLAGS.leoEntrePubA] }];
+export const LEO_SCOUT_B = [{ walk: 'leo-pub', to: HULL_SPOTS.pubBDoor, lead: true, then: [FLAGS.leoEntrePubB] }];
+export const LEO_SCOUT_ASYLUM = [{ walk: 'leo-pub', to: HULL_SPOTS.asylumDoor, lead: true, then: [FLAGS.leoEntreAsylum] }];
 
 // ---------- 2. Premier pub : la tournée ----------
 
@@ -88,12 +100,14 @@ export const orderScript = ({ name, line, flag }) => [
 ];
 
 // Le comptoir : le barman demande chaque commande en anglais ; une erreur, et la personne concernée proteste.
+// Tout servi : on trinque ; Léo file devant vers le pub suivant, les autres se lèvent et suivent Pierre.
 const CHEERS = [
   { say: ['Le barman pose les verres sur un plateau. Tu rapportes la tournée à la table.'] },
   { hop: ['player', ...ORDERS.map((o) => o.id)], times: 2 },
   { speaker: 'Ousmane', say: ['Santé !'] },
-  { speaker: 'Léo', say: ['Cheers ! Allez, on finit ça et on file au pub d\'en bas.'] },
-  { say: ['Objectif : suis la bande au pub suivant, plus bas dans l\'avenue.'] },
+  { speaker: 'Léo', say: ['Cheers ! Allez, on finit ça et on file au pub d\'en bas. Je passe devant !'] },
+  { walk: 'leo-pub', to: [4, 7], block: true },
+  { say: ['Objectif : suis Léo jusqu\'au pub suivant, plus bas dans l\'avenue. La bande te suit.'] },
   { setFlag: FLAGS.tourneeServie },
 ];
 export const PUB_A_BAR = [
@@ -121,10 +135,20 @@ export const PUB_A_BAR = [
 
 // ---------- 3. Deuxième pub : les fléchettes ----------
 
-// Facultatif : le pari (Audace). Gagné, les fléchettes de l'habitué (objet-souvenir de Hull) ; perdu, il propose une
-// revanche, autant de fois qu'on veut tant qu'on est dans ce pub (ici, puis en lui reparlant, voir HABITUE_AFTER).
+// En arrivant, la bande (qui suivait Pierre) s'attable ; l'habitué propose une partie.
+const BAND_PUB = ['leo-pub', 'ousmane-pub', 'charlotte-pub', 'anais-pub'];
+export const PUB_B_SEATS = { 'ousmane-pub': [8, 4], 'charlotte-pub': [6, 6], 'anais-pub': [8, 6] };
+
+// Facultatif : le pari (Audace). Gagné, l'habitué offre une tournée générale (toute la bande saute de joie) ; perdu, il
+// propose une revanche, autant de fois qu'on veut tant qu'on est dans ce pub (ici, puis en lui reparlant, voir
+// HABITUE_AFTER).
 const LOST = ['Not bad! La prochaine fois, peut-être.'];
-const BET_WON = [{ give: ITEMS.flechettes, text: 'Tu reçois les fléchettes de l\'habitué !' }];
+const BET_WON = [
+  { speaker: 'Habitué', say: ['A round for everyone! Une tournée générale, c\'est moi qui offre !'] },
+  { cheer: ['player', ...BAND_PUB] },
+  { speaker: 'Ousmane', say: ['Pierre, t\'es une légende.'] },
+  { setFlag: FLAGS.tourneeOfferte },
+];
 const betGame = (rematches) => ({
   darts: {
     opponent: 'Habitué', win: ['Well played, mate! Un pari, c\'est un pari.'], lose: LOST,
@@ -140,7 +164,7 @@ function rematch(rematches) {
 }
 const REMATCHES = 8;                              // revanches enchaînées sans reparler à l'habitué
 export const HABITUE_AFTER = [
-  { ifItems: [ITEMS.flechettes.id], speaker: 'Habitué', say: ['Good game, mate!'], end: true },
+  { ifFlags: [FLAGS.tourneeOfferte], speaker: 'Habitué', say: ['Good game, mate! Cheers!'], end: true },
   ...rematch(REMATCHES),
 ];
 
@@ -152,19 +176,20 @@ export const DARTS = [
       {
         label: 'Allez !',
         steps: [
-          // Les fléchettes déjà gagnées : la partie, sans pari.
-          { ifItems: [ITEMS.flechettes.id], darts: { opponent: 'Habitué', win: ['Well played, mate! Tu reviens quand tu veux.'], lose: LOST } },
+          // Le pari déjà gagné : la partie, sans pari.
+          { ifFlags: [FLAGS.tourneeOfferte], darts: { opponent: 'Habitué', win: ['Well played, mate! Tu reviens quand tu veux.'], lose: LOST } },
           {
-            unlessItems: [ITEMS.flechettes.id],
+            unlessFlags: [FLAGS.tourneeOfferte],
             steps: [
-              { speaker: 'Habitué', say: ['Un pari ? Si tu gagnes, mes fléchettes sont à toi.'] },
+              { speaker: 'Habitué', say: ['Un pari ? Si tu gagnes, je paie une tournée à toute ta bande.'] },
               { useTrait: TRAITS.audace },
               { say: ['Tu tends la main. Pari tenu.'] },
               betGame(REMATCHES),
             ],
           },
-          { speaker: 'Léo', say: ['On file à l\'Asylum !'] },
-          { say: ['Objectif : rejoins la bande à l\'Asylum, tout en haut, sur le campus.'] },
+          { speaker: 'Léo', say: ['On file à l\'Asylum ! Je passe devant, suivez Pierre !'] },
+          { walk: 'leo-pub', to: [4, 7], block: true },
+          { say: ['Objectif : suis Léo jusqu\'à l\'Asylum, tout en haut, sur le campus. La bande te suit.'] },
           { setFlag: FLAGS.flechettesJouees },
         ],
       },
@@ -173,20 +198,34 @@ export const DARTS = [
   },
 ];
 
+// En entrant au second pub derrière Léo : la bande qui suivait Pierre s'attable, puis l'habitué l'aborde.
+export const PUB_B_ENTER = [
+  { setFlag: FLAGS.bandePubB },
+  { walkAll: Object.entries(PUB_B_SEATS) },
+  { approach: 'habitue' },
+  ...DARTS,
+];
+
 // ---------- 4. L'Asylum, puis le petit matin ----------
 
-// Romain et Prophecy sont déjà là ; rejoindre tout le monde sur la piste, dernière chanson, sortie.
+// La bande (qui suivait Pierre) entre derrière lui ; Romain et Prophecy sont déjà là, Léo aussi (entré le premier) ;
+// rejoindre tout le monde sur la piste, dernière chanson, sortie.
+export const ASYLUM_SPOTS = { 'ousmane-pub': [10, 13], 'charlotte-pub': [13, 13], 'anais-pub': [9, 14] };
 export const ASYLUM_ENTER = [
+  { setFlag: FLAGS.bandeAsylum },
+  { walkAll: Object.entries(ASYLUM_SPOTS) },
   { approach: 'romain-asylum' },
   { speaker: 'Romain', say: ['Vous en avez mis du temps !'] },
   { speaker: 'Léo', say: ['Tout le monde sur la piste !'] },
 ];
-const BAND_ASYLUM = ['romain-asylum', 'prophecy-asylum', 'leo-asylum', 'ousmane-asylum', 'charlotte-asylum', 'anais-asylum'];
+const BAND_ASYLUM = ['romain-asylum', 'prophecy-asylum', ...BAND_PUB];
+// La piste de danse de l'Asylum (cases x, y, largeur, hauteur ; voir interiors.js hullAsylum).
+export const DANCE_FLOOR = [8, 6, 8, 5];
 export const ASYLUM_DANCE = [
   { speaker: 'Léo', say: ['C\'est notre chanson ! Venez tous !'] },
   { useTrait: TRAITS.joie },
   { say: ['Tu entraînes toute la bande sur la piste, comme Maman au salon.'] },
-  { gather: BAND_ASYLUM, area: [4, 4, 4, 3] },
+  { gather: BAND_ASYLUM, area: DANCE_FLOOR },
   { say: ['Toute la bande danse sur la piste.'] },
   { dance: BAND_ASYLUM },
   { say: ['La musique ralentit… Dernière chanson.'] },
@@ -201,24 +240,39 @@ export const DAWN = [
   { say: ['Ciel bleuté, les réverbères s\'éteignent. Toute la bande est devant l\'Asylum.'] },
   { approach: 'leo-aube' },
   { speaker: 'Léo', say: ['Ok guys, zis night was very, very beautiful. Now we go \'ome. Follow me, I know ze way!'] },
-  { walk: 'leo-aube', to: [36, 11], block: true },
+  { walk: 'leo-aube', to: [21, 11], block: true },
   { speaker: 'Ousmane', say: ['Léo… c\'est de l\'autre côté.'] },
   { speaker: 'Charlotte', say: ['Au fait… les exams, c\'est après-demain.'] },
   { speaker: 'Anaïs', say: ['Ne dis pas ça maintenant.'] },
   { speaker: 'Léo', say: ['Demain, bibliothèque. Tout le monde.'] },
   { trait: TRAITS.insouciance },
+  // Chacun rentre chez soi : la bande quitte la rue (Léo, Romain et Prophecy chez eux, Ousmane à la coloc).
+  { say: ['Tout le monde rentre se coucher.'] },
+  { black: true },
+  { wait: 500 },
+  { setFlag: FLAGS.bandeRentree },
+  { black: false },
   { say: ['Objectif : rentre dormir à la coloc.'] },
 ];
 
-// Rentré à la coloc : on dort ; le lendemain, veille d'examen.
+// Rentré à la coloc (Ousmane y est déjà) : on dort ; le lendemain, veille d'examen, Ousmane te réveille et t'envoie à la
+// bibliothèque.
 export const SLEEP = [
+  { speaker: 'Ousmane', say: ['Enfin ! Allez, au lit.'] },
   { say: ['Tu t\'écroules sur ton lit.'] },
   { black: true },
   { wait: 800 },
   { say: ['Le lendemain, veille d\'examen…'] },
   { setFlag: FLAGS.lendemainHull },
   { black: false },
-  { say: ['Objectif : rejoins la bande à la bibliothèque Brynmor Jones, sur le campus.'] },
+  { approach: 'ousmane-apres' },
+  {
+    speaker: 'Ousmane',
+    say: [
+      'Debout ! Les exams, c\'est demain. Toute la bande révise à la bibliothèque Brynmor Jones.',
+      'C\'est la longère au toit d\'ardoise, en haut de Newland Avenue, à gauche. On se retrouve là-bas !',
+    ],
+  },
 ];
 
 // ---------- 5. Les révisions ----------
