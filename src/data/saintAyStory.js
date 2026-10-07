@@ -95,7 +95,7 @@ export const FELIX_CHANTIER = [
   { setFlag: FLAGS.cabaneFinie },
   // Pierre arrive à sa place, au bout de la table basse du QG (la scène le fait ressortir) : `cutscene` pour
   // scripts/check_paths.js.
-  { travel: { interior: 'cabane', x: 6, y: 5, facing: 'right', cutscene: true } },
+  { travel: { interior: 'cabane', x: 4, y: 5, facing: 'right', cutscene: true } },
 ];
 
 // Dans la cabane toute neuve (voir interiors.cabane) : les quatre cousins assis derrière les deux longues

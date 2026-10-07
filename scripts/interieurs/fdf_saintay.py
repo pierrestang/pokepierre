@@ -341,9 +341,12 @@ PLANS = {
     },
     # Saint-Ay — la cabane des cousins, leur QG : la maison de Fargas à Écorcia (lambris, tatamis, grande table basse,
     # coussins, établi) ; des peluches sur la table.
+    # Moitié de la pièce (demande de l'utilisateur) : armoires, radio, tableau, caisses, table basse ; un coussin de plus
+    # au-dessus de la table pour Yanis.
     'cabane': {
-        'hgss': ('010i_Azalea Houses', 10, 25, 16, 10),
-        'items': [['fsa-ourson', 7, 5, {'dy': -6}], ['fsa-ourson-rose', 8, 5, {'dy': -5}]],
+        'hgss': ('010i_Azalea Houses', 12, 25, 8, 10),
+        'paste': [{'from': ('010i_Azalea Houses', 13, 29, 1, 1), 'to': (5, 4)}],
+        'items': [['fsa-ourson', 5, 5, {'dy': -6}], ['fsa-ourson-rose', 6, 5, {'dy': -5}]],
     },
     # Saint-Ay — la clinique : le labo d'Orme (machines, ordinateur, carrelage vert d'eau) ; les vitrines du bas
     # remplacées par trois lits (Maman et Fanny y dorment).

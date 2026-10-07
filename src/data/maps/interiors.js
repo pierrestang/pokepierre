@@ -511,32 +511,31 @@ export const interiors = {
   cabane: {
     name: 'Cabane',
     grid: parseGrid([
-      'XXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXX',
-      'mmmmmmmmmmmmmmmm',   // lambris, armoires, radio, commodes, établi
-      'mmmmmmooommmmmmm',
-      'moooooooooommmmm',   // coussin de Felix
-      'moooooommoomooom',   // table basse du QG (peluches), coussins de Yanis et à droite
-      'ooooooommoomooom',   // coussin de Joshua
-      'oooooooooooooooo',
-      'oooooooooooooooo',
-      'oooEoooooooooooo',   // tapis de sortie (l'échelle)
+      'XXXXXXXX',
+      'XXXXXXXX',
+      'mmmmmmmm',   // lambris, armoires, radio, caisses
+      'mmmmooom',
+      'oooooooo',   // coussins de Felix et de Yanis
+      'ooooommo',   // table basse du QG (peluches)
+      'ooooommo',   // coussin de Joshua
+      'oooooooo',
+      'oooooooo',
+      'oEoooooo',   // tapis de sortie (l'échelle)
     ]),
-    spawn: { x: 3, y: 8, facing: 'up' },
+    spawn: { x: 1, y: 8, facing: 'up' },
     objects: [
-      ...[7, 8].map((x) => ({ x, y: 5, dialogue: ['Des peluches de Pokémon, posées sur la table du QG.'] })),
-      ...[7, 8].map((x) => ({ x, y: 6, dialogue: ['La table du QG des cousins.'] })),
-      { x: 14, y: 5, dialogue: ['Un coussin moelleux.'] },
+      ...[5, 6].map((x) => ({ x, y: 5, dialogue: ['Des peluches de Pokémon, posées sur la table du QG.'] })),
+      ...[5, 6].map((x) => ({ x, y: 6, dialogue: ['La table du QG des cousins.'] })),
     ],
     // Les cousins, chacun sur son coussin autour de la table basse : on leur parle en face.
     npcs: [
-      { id: 'felix-cabane', name: 'Felix', x: 3, y: 4, facing: 'down', color: 0x9060d0, still: true, ifFlags: [FLAGS.cabaneFinie], script: FELIX_AT_CABANE },
+      { id: 'felix-cabane', name: 'Felix', x: 1, y: 4, facing: 'down', color: 0x9060d0, still: true, ifFlags: [FLAGS.cabaneFinie], script: FELIX_AT_CABANE },
       {
-        id: 'joshua-cabane', name: 'Joshua', x: 9, y: 6, facing: 'left', color: 0x20a0c0, still: true, ifFlags: [FLAGS.cabaneFinie],
+        id: 'joshua-cabane', name: 'Joshua', x: 7, y: 6, facing: 'left', color: 0x20a0c0, still: true, ifFlags: [FLAGS.cabaneFinie],
         script: [{ speaker: 'Joshua', say: ['Personne n\'entre sans le mot de passe. « {motDePasse|QG} ». Chut !'] }],
       },
       {
-        id: 'yanis-cabane', name: 'Yanis', x: 12, y: 5, facing: 'down', color: 0xc0b040, still: true, ifFlags: [FLAGS.cabaneFinie],
+        id: 'yanis-cabane', name: 'Yanis', x: 5, y: 4, facing: 'down', color: 0xc0b040, still: true, ifFlags: [FLAGS.cabaneFinie],
         script: [{ speaker: 'Yanis', say: ['« {motDePasse|QG} »… Je l\'ai écrit sur ma main, pour pas l\'oublier.'] }],
       },
     ],
