@@ -40,4 +40,7 @@ Ordre de reconstruction : `build_v2_tiles.py`, puis `convert_maps_v2.py` et `bui
 | `build_ds_ui.py` | Icônes d'objets et cartes postales. |
 | `build_fanions.py` | Guirlandes de fanions. |
 | `build_icons.py` | Logo et icônes d'écran d'accueil. |
+| `build_airport.py` | L'aéroport en Gen 4 : `src/data/builtMaps/airport.json` et sa planche `aeroport.png` (avions, guichet, salle d'attente ; meubles de TobalCR). À relancer après `build_travel_art.py` (l'avion du tarmac). |
+| `build_travel_art.py` | Trajet en avion : l'avion de ligne, les nuages, l'océan vu d'altitude (`public/assets/travel/`). |
+| `build_party_mess.py` | Le désordre du lendemain de soirée à Bordeaux (`public/assets/props/desordre.png`). |
 | `pixels.py` | Petits outils de détourage partagés. |

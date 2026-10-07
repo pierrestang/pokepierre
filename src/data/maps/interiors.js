@@ -1332,14 +1332,27 @@ export const interiors = {
     decals: [
       { kind: 'meter', x: 5, y: 0, unlessFlags: [FLAGS.coupureReparee] },
       { kind: 'meter', x: 5, y: 0, on: true, ifFlags: [FLAGS.coupureReparee] },
-      // Le lendemain de la soirée : le désordre à ranger (gobelets, salon).
-      { kind: 'partyCups', x: 3, y: 4, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.gobeletsRanges] },
-      { kind: 'partyMess', x: 8, y: 6, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.salonRange] },
+      // Le lendemain de la soirée : confettis partout (avec le salon), la couette en vrac sur ton lit (art/partyMess.js).
+      ...[[6, 6], [3, 6], [8, 4], [5, 8], [10, 7], [1, 5]].map(([x, y]) => ({
+        image: 'confettis', x, y, floor: true, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.salonRange],
+      })),
+      { image: 'couette', x: 10, y: 2, dx: 1, dy: 6, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.litFaitBordeaux] },
     ],
     // Dans le noir tant que le compteur n'est pas relevé.
     dark: { ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.coupureReparee], radius: 34 },
     // L'enceinte de Paulfit au milieu du salon, pendant la soirée.
-    props: [{ type: 'partySpeaker', x: 6, y: 5, w: 1, h: 1, ...PARTY_TIME, dialogue: ['L\'enceinte de Paulfit. Elle envoie !'] }],
+    props: [
+      { type: 'partySpeaker', x: 6, y: 5, w: 1, h: 1, ...PARTY_TIME, dialogue: ['L\'enceinte de Paulfit. Elle envoie !'] },
+      // Le lendemain matin, facultatif : le désordre à ranger, par catégorie (ramasser un objet range toute sa catégorie).
+      ...[[3, 4], [9, 5], [2, 7]].map(([x, y]) => ({
+        type: 'image', image: 'gobelets', x, y, w: 1, h: 1,
+        ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.gobeletsRanges], script: TIDY_CUPS,
+      })),
+      ...[['pizza', 5, 6], ['canettes', 8, 7], ['chips', 4, 7], ['bouteilles', 10, 6]].map(([image, x, y]) => ({
+        type: 'image', image, x, y, w: 1, h: 1,
+        ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.salonRange], script: TIDY_LIVING_ROOM,
+      })),
+    ],
     spawn: { x: 6, y: 8, facing: 'up' },
     npcs: [
       // Ousmane, pendant la coupure (il sort ensuite attendre devant l'immeuble).
@@ -1373,9 +1386,7 @@ export const interiors = {
     // Le tableau électrique : au fond, sans bulle « ! » (on le cherche dans le noir).
     objects: [
       { x: 5, y: 1, hidden: true, script: METER },
-      // Le lendemain matin, facultatif : les gobelets, le salon, ton lit (celui de droite).
-      { x: 3, y: 4, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.gobeletsRanges], script: TIDY_CUPS },
-      { x: 8, y: 6, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.salonRange], script: TIDY_LIVING_ROOM },
+      // Le lendemain matin, facultatif : ton lit (celui de droite) ; les gobelets et le salon sont des objets au sol (props).
       ...[10, 11].map((x) => ({ x, y: 3, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.litFaitBordeaux], script: TIDY_BED })),
     ],
     // En quittant la fête (devant la porte) : le lendemain matin.

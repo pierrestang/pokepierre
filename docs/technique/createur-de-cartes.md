@@ -303,3 +303,17 @@ Calque automatique (builder.js placementOf) : pour la bibliothèque Gen 4, chaqu
 séparés au pixel près, fichiers g4-<type>.elements.json) ; calque et collisions selon le type et la rangée de la case
 dans l'élément (cime d'arbre et toit au-dessus de Pierre, pied bloquant, ponts et fleurs franchissables, eau
 bloquante, bords de sol par-dessus le sol), quelle que soit la sélection. Autres planches : d'après la sélection.
+
+## L'aéroport (octobre 2026)
+
+L'aéroport (à Bordeaux) est une carte du créateur dessinée par scripts/build_airport.py (src/data/builtMaps/airport.json,
+planche public/assets/v2/aeroport.png, masquée dans le créateur) : le tarmac et deux avions (l'avion du trajet,
+scripts/build_travel_art.py), la baie vitrée et le tableau des départs, le tapis à bagages, le guichet, la file à
+cordons, la salle d'attente, les portes vitrées. Meubles : planches DPPt et l'aéroport de TobalCR
+(ASSETTILESPOKEMONV2/tilesets/interieurs/aeroport_tobalcr.png, crédit dans credits/tobalcr.txt). Le script réécrit la
+carte : une retouche faite dans le créateur serait perdue au prochain passage.
+Comptoir : une case '#' de la grille ; on parle à la personne de l'autre côté (MapScene.tryInteract, aussi compris par
+check_paths.js). L'hôtesse : une question à deux choix (le vol de la suite de l'histoire, « Autre ») ; une réponse peut
+ouvrir une sous-question (`ask`) et être cachée quand d'autres conditions sont remplies (`notWhen`) ; seule, une
+sous-question s'ouvre directement (MapScene.runAsk).
+

@@ -4,7 +4,7 @@ import { FRLG_SHEETS, familyCarImage, roadStripTexture, ROAD_TOP } from '../art/
 import { sheetOf } from '../art/spriteSheets.js';
 import { lookOf } from '../data/characters.js';
 import { carryText } from '../data/story.js';
-import { drawBuilding } from '../art/buildingArt.js';
+import { sfx } from '../systems/audio.js';
 
 // Traversée en ferry, comme l'écran de voyage des îles Sevii dans Rouge Feu : entre deux bandes noires,
 // la mer défile vers la gauche et le ferry file vers la droite dans son sillage, en tanguant.
@@ -20,6 +20,8 @@ const DURATION = 3600;
 const FADE_MS = 400;
 const BAND = 36;            // hauteur des bandes noires (en pixels de l'écran de jeu)
 const SPEED = 3;            // défilement de la mer, en pixels par image
+// Les trois nuages de public/assets/travel/nuages.png (x, y, largeur, hauteur ; voir scripts/build_travel_art.py).
+const CLOUD_FRAMES = [[0, 0, 72, 30], [72, 6, 52, 24], [124, 12, 36, 18]];
 
 // Pont du ferry
 const SKY_H = 26;           // ciel au-dessus de l'horizon
@@ -36,6 +38,14 @@ const FAMILY = [
 export class FerryScene extends Phaser.Scene {
   constructor() {
     super('Ferry');
+  }
+
+  // Images du trajet en avion (scripts/build_travel_art.py).
+  preload() {
+    const base = `${import.meta.env.BASE_URL}assets/travel/`;
+    if (!this.textures.exists('travel-avion')) this.load.image('travel-avion', `${base}avion.png`);
+    if (!this.textures.exists('travel-nuages')) this.load.image('travel-nuages', `${base}nuages.png`);
+    if (!this.textures.exists('travel-ocean')) this.load.image('travel-ocean', `${base}ocean.png`);
   }
 
   create({ next, deck, road, plane, carry }) {
@@ -72,34 +82,40 @@ export class FerryScene extends Phaser.Scene {
     });
   }
 
-  // Trajet en avion : ciel bleu, nuages qui défilent vers la gauche, l'avion (vu de haut) file vers la droite.
+  // Trajet en avion, comme celui du ferry : entre les deux bandes noires, l'océan et ses îles défilent loin dessous, des
+  // nuages passent sous l'avion puis par-dessus (plus vite, plus près), l'avion de ligne (vu de trois quarts, comme le
+  // ferry) file vers la droite en tanguant, deux traînées de condensation derrière lui. Images :
+  // scripts/build_travel_art.py (public/assets/travel/).
   playPlane() {
     const h = SCREEN_H - 2 * BAND;
-    const key = 'travel-clouds';
-    if (!this.textures.exists(key)) {
-      const tex = this.textures.createCanvas(key, SCREEN_W, h);
-      const ctx = tex.getContext();
-      ctx.fillStyle = '#86c4ee';
-      ctx.fillRect(0, 0, SCREEN_W, h);
-      // Nuages : grappes de disques blancs, ombre bleutée dessous (positions fixes, pas d'aléatoire), dessinés aussi
-      // une largeur plus loin à gauche et à droite pour que le défilement en boucle ne les coupe pas.
-      const puffs = [[30, 20], [120, 70], [210, 30], [300, 90], [70, 120], [260, 140], [170, 150], [340, 15]];
-      for (const [cx, cy] of puffs.flatMap(([x, py]) => [[x - SCREEN_W, py], [x, py], [x + SCREEN_W, py]])) {
-        for (const [dx, dy, r] of [[0, 0, 9], [10, -3, 11], [21, 1, 8], [8, 5, 9]]) {
-          ctx.fillStyle = '#6aa8d8';
-          ctx.beginPath(); ctx.arc(cx + dx, cy + dy + 3, r, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#f8fbff';
-          ctx.beginPath(); ctx.arc(cx + dx, cy + dy, r, 0, Math.PI * 2); ctx.fill();
-        }
-      }
-      tex.refresh();
-    }
-    this.sea = this.add.tileSprite(0, BAND, SCREEN_W, h, key).setOrigin(0);
-    this.seaSpeed = { x: SPEED + 1, y: 0 };
-    const plane = this.add.graphics().setDepth(2);
-    drawBuilding(plane, { type: 'plane', x: 0, y: 0 });
-    plane.setPosition(SCREEN_W / 2 - 40, SCREEN_H / 2 - 24);
-    this.tweens.add({ targets: plane, y: plane.y + 2, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    this.sea = this.add.tileSprite(0, BAND, SCREEN_W, h, 'travel-ocean').setOrigin(0);
+    this.seaSpeed = { x: 1.2, y: 0 };
+    const clouds = this.textures.get('travel-nuages');
+    if (!clouds.has('c0')) CLOUD_FRAMES.forEach(([x, y, w, ch], i) => clouds.add(`c${i}`, 0, x, y, w, ch));
+    // Deux couches de nuages : sous l'avion (lents, un peu transparents), au-dessus (rapides, plus gros).
+    this.cloudLayers = [
+      { depth: 1, speed: 2.2, alpha: 0.9, scale: 1, count: 4 },
+      { depth: 4, speed: 4.5, alpha: 0.96, scale: 1.4, count: 2 },
+    ].map((layer) => ({
+      ...layer,
+      sprites: Array.from({ length: layer.count }, (_, i) => this.add.image(
+        (i + 0.5) * (SCREEN_W / layer.count) + Phaser.Math.Between(-30, 30),
+        Phaser.Math.Between(BAND + 10, SCREEN_H - BAND - 10),
+        'travel-nuages', `c${Phaser.Math.Between(0, CLOUD_FRAMES.length - 1)}`,
+      ).setDepth(layer.depth).setAlpha(layer.alpha).setScale(layer.scale)),
+    }));
+    const plane = this.add.image(SCREEN_W / 2 + 24, SCREEN_H / 2, 'travel-avion').setDepth(3);
+    this.tweens.add({ targets: plane, y: plane.y + 3, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    this.tweens.add({ targets: plane, angle: { from: -1.5, to: 1.5 }, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    // Traînées : des bouffées blanches qui partent du réacteur et de la queue, filent vers l'arrière et s'effacent.
+    const trail = (dx, dy) => {
+      const puff = this.add.rectangle(plane.x + dx, plane.y + dy, 4, 3, 0xf8fbff).setDepth(2).setAlpha(0.9);
+      this.tweens.add({
+        targets: puff, x: puff.x - 90, scaleX: 3, scaleY: 1.6, alpha: 0, duration: 900, onComplete: () => puff.destroy(),
+      });
+    };
+    this.time.addEvent({ delay: 40, loop: true, callback: () => { trail(-8, 16); trail(-52, -2); } });
+    sfx('jet');
   }
 
   // Trajet en voiture : la campagne défile, la voiture roule au milieu de la route.
@@ -197,5 +213,16 @@ export class FerryScene extends Phaser.Scene {
     if (!this.sea) return;
     this.sea.tilePositionX += this.seaSpeed.x;
     this.sea.tilePositionY += this.seaSpeed.y;
+    // Nuages du trajet en avion : ils filent vers la gauche et reviennent par la droite, à une autre hauteur.
+    for (const layer of this.cloudLayers ?? []) {
+      for (const c of layer.sprites) {
+        c.x -= layer.speed;
+        if (c.x < -c.displayWidth / 2) {
+          c.x = SCREEN_W + c.displayWidth / 2 + Phaser.Math.Between(0, 60);
+          c.y = Phaser.Math.Between(BAND + 10, SCREEN_H - BAND - 10);
+          c.setFrame(`c${Phaser.Math.Between(0, CLOUD_FRAMES.length - 1)}`);
+        }
+      }
+    }
   }
 }

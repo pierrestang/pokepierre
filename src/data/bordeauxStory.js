@@ -65,7 +65,8 @@ export const METER = [
     say: [
       'Bon. Les nouveaux élèves de KEDGE arrivent, on fait la soirée ici. Il nous manque tout.',
       'Paulfit a une enceinte, Rémi a des gobelets.',
-      'Paulfit habite le studio au nord, Rémi l\'appart près du campus.',
+      'Ils habitent tous les deux de l\'autre côté de la Garonne : passe un pont, c\'est en bas.',
+      'Paulfit, c\'est la maison du milieu ; Rémi, celle de droite, juste à côté.',
     ],
   },
   { walk: 'ousmane-coupure', to: [6, 9], block: true, then: [FLAGS.preparatifs] },
@@ -122,8 +123,8 @@ const BOTH = [ITEMS.enceinte.id, ITEMS.gobelets.id];
 export const OUSMANE_REMINDS = [
   { ifItems: BOTH, steps: PARTY_START, end: true },
   { speaker: 'Ousmane', say: ['Alors, ça avance ?'] },
-  { unlessItems: [ITEMS.enceinte.id], speaker: 'Ousmane', say: ['Il manque l\'enceinte : Paulfit, le studio au nord.'] },
-  { unlessItems: [ITEMS.gobelets.id], speaker: 'Ousmane', say: ['Et les gobelets : Rémi, l\'appart près du campus.'] },
+  { unlessItems: [ITEMS.enceinte.id], speaker: 'Ousmane', say: ['Il manque l\'enceinte : Paulfit, la maison du milieu, de l\'autre côté de la Garonne.'] },
+  { unlessItems: [ITEMS.gobelets.id], speaker: 'Ousmane', say: ['Et les gobelets : Rémi, la maison de droite, juste à côté de chez Paulfit.'] },
 ];
 
 // La case devant la porte de l'immeuble : la rencontre avec Ousmane (avec les clés), puis le début de la soirée.
@@ -153,11 +154,11 @@ export const PARTY_END = [
   { wait: 600 },
   { setFlag: FLAGS.lendemainSoiree },
   { black: false },
-  { say: ['Le lendemain matin. L\'appartement est sens dessus dessous. Ousmane dort sur le canapé.'] },
+  { say: ['Le lendemain matin. L\'appartement est sens dessus dessous : gobelets, canettes, pizza froide, confettis…', 'Ousmane dort encore, tout habillé.'] },
 ];
 const TIDY_FLAGS = [FLAGS.gobeletsRanges, FLAGS.salonRange, FLAGS.litFaitBordeaux];
 const OUSMANE_WAKES = [
-  { speaker: 'Ousmane', say: ['Attends… t\'as tout rangé ? Tout seul ?', 'Tiens, j\'ai trouvé ça sous le canapé.'] },
+  { speaker: 'Ousmane', say: ['Attends… t\'as tout rangé ? Tout seul ?', 'Tiens, j\'ai retrouvé ça sous les confettis.'] },
   { give: ITEMS.photoSoiree, text: 'Tu reçois la photo de la soirée !' },
 ];
 // Une tâche du rangement (la première : Autonomie), puis le réveil d'Ousmane si c'était la dernière.
@@ -167,12 +168,12 @@ const tidy = (text, flag) => [
   { setFlag: flag },
   { ifFlags: TIDY_FLAGS, steps: OUSMANE_WAKES },
 ];
-export const TIDY_CUPS = tidy('Pierre ramasse les gobelets.', FLAGS.gobeletsRanges);
-export const TIDY_LIVING_ROOM = tidy('Pierre range le salon.', FLAGS.salonRange);
-export const TIDY_BED = tidy('Pierre fait son lit.', FLAGS.litFaitBordeaux);
+export const TIDY_CUPS = tidy('Pierre ramasse tous les gobelets qui traînent et les empile dans un sac.', FLAGS.gobeletsRanges);
+export const TIDY_LIVING_ROOM = tidy('Pierre jette la pizza, les canettes, les chips et les bouteilles, et balaie les confettis.', FLAGS.salonRange);
+export const TIDY_BED = tidy('Pierre secoue la couette et fait son lit.', FLAGS.litFaitBordeaux);
 export const OUSMANE_ASLEEP = [
   { ifItems: [ITEMS.photoSoiree.id], speaker: 'Ousmane', say: ['Attends… t\'as tout rangé ? Tout seul ?'], end: true },
-  { say: ['Ousmane dort sur le canapé.'] },
+  { say: ['Ousmane dort à poings fermés. Il ronfle.'] },
 ];
 
 // En sortant de la soirée : quelques mois plus tard.

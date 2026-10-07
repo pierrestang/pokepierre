@@ -1,0 +1,8 @@
+« POKEMON BW AIRPORT TILESET FOR POKEMON FANGAMES », par TobalCR (DeviantArt), téléchargé le 7 octobre 2026 :
+https://www.deviantart.com/tobalcr/art/POKEMON-BW-AIRPORT-TILESET-FOR-POKEMON-FANGAMES-1100161967
+
+Conditions de l'auteur : « FREE TO USE WITH CREDITS TO "TobalCR" » ; « These tiles are for NON-COMERCIAL USE ONLY. You
+can edit them, put them in your fangames, and anything else like that. »
+
+tilesets/interieurs/aeroport_tobalcr.png   TobalCR (valises, portique de sécurité, tapis à bagages, comptoirs, poteaux
+                                           à cordon de l'aéroport : scripts/build_airport.py)

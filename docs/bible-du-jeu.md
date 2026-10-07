@@ -40,8 +40,12 @@ Fort-de-France → Saint-Ay → (route de Montépilloy) → Montépilloy → rou
 Bordeaux → Hull → Hanoï → Amsterdam → Hull (retour) → New Delhi → Rajasthan → Bordeaux (stade) → Paris → Toulon
 (Chemin de Saint-Jacques, Corse) → Bali → Sri Lanka → Thaïlande → Népal → « Nouveau pays » (non ouvert).
 
-Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux), où l'hôtesse (`g64`) propose les destinations
-déjà débloquées.
+Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux, redessiné en Gen 4 : tarmac et avions derrière la
+baie vitrée, tableau des départs, guichet, file à cordons, salle d'attente). L'hôtesse (`g64`), derrière son comptoir
+(on lui parle par-dessus), propose deux choix : la destination de la suite de l'histoire et « Autre » (les lieux déjà
+visités, et « Rester ici ») ; sans vol de l'histoire en attente, la liste « Autre » s'ouvre directement. Chaque vol joue
+le **trajet en avion** : l'avion de ligne file au-dessus de l'océan et de ses îles, entre deux couches de nuages, deux
+traînées derrière lui, au bruit des réacteurs.
 
 ---
 
@@ -570,6 +574,8 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 | Étudiants (13) | À la soirée d'intégration | figurants |
 | Professeure d'anglais | L'oral à KEDGE | `g106` |
 | Hôtesse | Guichet de l'aéroport | `g64` |
+| Agent de sécurité | Garde le chemin de l'aéroport (sortie est) tant que Pierre n'a pas son diplôme d'anglais | `g87` |
+| Ouvrier | Travaux sur la route de Paris (sortie sud-est), jusqu'au diplôme de Bordeaux | `g79` |
 
 ### Quêtes, dans l'ordre
 1. **Les clés.** À l'agence → **Clés de l'appartement**. Devant l'immeuble, Ousmane : **« Salut, moi c'est Ousmane, ton
@@ -579,8 +585,9 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
    au fond de la pièce : « Le compteur électrique. Le disjoncteur est tombé… Tu le relèves. » ; Ousmane : **« T'es
    sérieux, tu savais faire ça ? »** (sans vertu).
 3. **La soirée d'intégration.** Ousmane : « Bon. Les nouveaux élèves de KEDGE arrivent, on fait la soirée ici. Il nous
-   manque tout. » / « Paulfit a une enceinte, Rémi a des gobelets. » / « Paulfit habite le studio au nord, Rémi l'appart
-   près du campus. »
+   manque tout. » / « Paulfit a une enceinte, Rémi a des gobelets. » / « Ils habitent tous les deux de l'autre côté de
+   la Garonne : passe un pont, c'est en bas. » / « Paulfit, c'est la maison du milieu ; Rémi, celle de droite, juste à
+   côté. »
    - Paulfit : « L'enceinte ? Ok, mais tu la portes comme un vrai, dos droit. » ; choix « Dos droit, genoux pliés. » /
      « À une main, tranquille. » / « Tu me la portes ? » ; dans tous les cas → **Enceinte**.
    - Rémi : « C'est so random, les gobelets sont dans le closet. » ; choix « Le closet ? » / « Thanks, bro. » / « Parle
@@ -590,9 +597,9 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
    - Parmi les invités, Léo : **« Moi c'est Léo, aussi à KEDGE. Paraît qu'on part tous à Hull l'an prochain pour
      l'échange… Ça va être quelque chose. »** (ensuite : « La prochaine soirée, c'est à Hull ! ») ; Anaïs : **« Anaïs, de ta
      promo ! Léo dit qu'à Hull il pleut tout le temps. J'espère qu'il exagère. »** (ensuite : « À Hull, alors ! »).
-   - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous.
-     Ousmane dort sur le canapé. »** (Ousmane est couché dans le lit de gauche ; des gobelets et du désordre au sol). Voir
-     le passage optionnel.
+   - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous :
+     gobelets, canettes, pizza froide, confettis… »** / « Ousmane dort encore, tout habillé. » (couché dans le lit de
+     gauche). Voir le passage optionnel.
 4. **Le diplôme d'anglais.** En sortant de l'appartement : « Quelques mois plus tard… ». Rémi, devant KEDGE : **« T'inquiète, c'est
    easy. »** La professeure : « Welcome to your English oral! Three questions. Ready? » → **« Pierre utilise
    Audace ! »** → trois traductions (« Je suis en
@@ -604,14 +611,25 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 « Objectif : récupère les clés à l'agence. » → « Objectif : va à l'appartement. » → « Objectif : trouve le compteur
 électrique. » → « Objectif : récupère l'enceinte chez Paulfit et les gobelets chez Rémi. » → « Objectif : passe l'oral
 d'anglais à KEDGE. » → « Objectif : va à l'aéroport, sortie est. » Ousmane rappelle aussi : « Il manque l'enceinte :
-Paulfit, le studio au nord. » / « Et les gobelets : Rémi, l'appart près du campus. »
+Paulfit, la maison du milieu, de l'autre côté de la Garonne. » / « Et les gobelets : Rémi, la maison de droite, juste à
+côté de chez Paulfit. »
+
+### Les gardiens des sorties est
+- Chemin de l'aéroport (en haut à droite), tant que Pierre n'a pas son diplôme d'anglais : l'agent de sécurité. Passer à
+  côté de lui : il se tourne vers Pierre (« ! »), **« Halte ! Par ici, c'est l'aéroport. »** / « Pas de diplôme
+  d'anglais, pas d'avion. L'oral, c'est à KEDGE, de l'autre côté de la Garonne. », et Pierre recule d'un pas.
+- Route de Paris (en bas à droite), jusqu'au diplôme de Bordeaux : l'ouvrier, de la même façon : **« Holà ! Travaux sur la
+  route de Paris, personne ne passe. »** / « Reviens plus tard. On aura peut-être fini… peut-être. »
 
 ### Passage optionnel : le rangement après la soirée (Autonomie)
-Le lendemain matin, dans l'appartement. Trois interactions dans n'importe quel ordre : les gobelets (« Pierre ramasse les
-gobelets. »), le salon (« Pierre range le salon. »), le lit de droite (« Pierre fait son lit. ») ; à la première :
-**« Pierre utilise Autonomie ! »**. Avant, Ousmane : « Ousmane dort sur le canapé. » Une fois les trois faites, Ousmane
-se réveille : **« Attends… t'as tout rangé ? Tout seul ? »** / « Tiens, j'ai trouvé ça sous le canapé. » → **Photo de la
-soirée** (« Tu reçois la photo de la soirée ! »). Ensuite : « Attends… t'as tout rangé ? Tout seul ? »
+Le lendemain matin, dans l'appartement, le désordre est au sol (dessiné au style DS) : trois gobelets rouges renversés, une
+boîte de pizza entamée, un paquet de chips, des canettes écrasées, des bouteilles, des confettis partout, et la couette en
+vrac sur le lit de Pierre. Trois tâches, dans n'importe quel ordre ; ramasser un objet range toute sa catégorie : les
+gobelets (« Pierre ramasse tous les gobelets qui traînent et les empile dans un sac. »), le salon (« Pierre jette la
+pizza, les canettes, les chips et les bouteilles, et balaie les confettis. »), le lit de droite (« Pierre secoue la
+couette et fait son lit. ») ; à la première : **« Pierre utilise Autonomie ! »**. Avant, Ousmane : « Ousmane dort à
+poings fermés. Il ronfle. » Une fois les trois faites, Ousmane se réveille : **« Attends… t'as tout rangé ? Tout
+seul ? »** / « Tiens, j'ai retrouvé ça sous les confettis. » → **Photo de la soirée** (« Tu reçois la photo de la soirée ! »). Ensuite : « Attends… t'as tout rangé ? Tout seul ? »
 On peut aussi sortir tout de suite : « Quelques mois plus tard… » ; l'appartement est alors rangé, Ousmane n'est plus
 couché, et la photo n'est plus disponible.
 
@@ -631,9 +649,10 @@ Aucune.
 Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit, Rémi) ; oral d'anglais (trois questions).
 
 ### Départ et trajet
-- **Condition** : le diplôme d'anglais. La sortie est mène à l'aéroport ; Ousmane devant le guichet : « Le guichet, c'est
-  juste là. Prends ton billet pour Hull. » ; vol « Hull (Angleterre) » : Ousmane : **« Hull, hein. Je pars une semaine avant
-  toi, je te garde une place à la coloc. »**
+- **Condition** : le diplôme d'anglais (l'agent de sécurité laisse alors passer). La sortie est mène à l'aéroport ;
+  Ousmane devant le guichet : « Le guichet, c'est juste là. Prends ton billet pour Hull. » ; l'hôtesse propose « Hull
+  (Angleterre) » et « Autre » ; Ousmane : **« Hull, hein. Je pars une semaine avant toi, je te garde une place à la
+  coloc. »**
 - **Trajet en avion**, sans encart « Tu emportes ».
 
 ---
@@ -761,7 +780,7 @@ choix.
   4. La directrice : « Merci pour ton travail, les touristes sont ravis ! » / « C'est bon, c'est terminé : tu peux
      partir. »
 - **Vertus** : aucune. **Objet optionnel, boîte aux lettres, mini-jeu** : aucun.
-- **Départ** : vol « Amsterdam (Pays-Bas) » à l'aéroport, une fois le travail terminé. Pas de scène de trajet.
+- **Départ** : vol « Amsterdam (Pays-Bas) » à l'aéroport, une fois le travail terminé, avec le trajet en avion.
 
 ## 9. Amsterdam (Pays-Bas) : textes provisoires
 
@@ -805,8 +824,8 @@ choix.
   cérémonie ! Monte sur le podium pour recevoir ton diplôme. » ; douze diplômés (« Félicitations à nous tous ! »…).
 - Sur le podium : « Tu montes sur le podium sous les applaudissements ! » / « Le directeur te remet ton diplôme. » →
   **Diplôme de Bordeaux**.
-- **Départ** : la voiture en panne qui bloquait la rue sud disparaît ; « Ton diplôme de Bordeaux en poche, tu prends la
-  route de Paris ! » Pas de scène de trajet.
+- **Départ** : l'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton diplôme de Bordeaux en poche, tu
+  prends la route de Paris ! » Pas de scène de trajet.
 
 ## 13. Paris : textes provisoires
 
