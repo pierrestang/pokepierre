@@ -1127,15 +1127,16 @@ export const interiors = {
     // Comme le hall du collège : mur du fond (bibliothèque, drapeau, casiers des internes, vitrine des trophées), étagères
     // contre les murs latéraux, l'accueil au centre ; le passage vers l'escalier et la sortie reste dégagé.
     // Pièce HGSS (hall de la gare de Doublonville, scripts/interieurs/prytanee_bordeaux.py) : mur de trois rangées, la
-    // bibliothèque (x 1-2) et le bureau de l'accueil (x 4-5) au fond, l'escalier au fond à droite (η en x 9).
+    // bibliothèque (x 1-2) et le bureau de l'accueil (x 4-5) au fond ; l'escalier qui monte longe le mur de droite, sa
+    // marche du bas (η en x 9-10, rangée 3) s'aborde par la gauche.
     grid: parseGrid([
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmmommoommm', // plante, bibliothèque, bureau de l'accueil ; escalier
-      'oooooooommm',
-      'oooooooommm',
-      'mooooooomηm',
+      'mmmommoooηη', // plante, bibliothèque, bureau de l'accueil ; le bas de l'escalier
+      'ooooooooomm',
+      'ooooooooooo',
+      'moooooooooo',
       'ooooooooooo',
       'ooooooooooo',
       'moooEooooom',
@@ -1144,7 +1145,7 @@ export const interiors = {
     spawn: { x: 4, y: 8, facing: 'up' },
     // La nuit du mur : le hall est dans le noir et vide (tout le monde dort).
     night: PRYTANEE_NIGHT,
-    triggers: [{ x: 9, y: 6, warp: { interior: 'dortoir', x: 12, y: 4, facing: 'down' } }],
+    triggers: [9, 10].map((x) => ({ x, y: 3, warp: { interior: 'dortoir', x: 12, y: 4, facing: 'down' } })),
     // Le capitaine, reparti vers son poste pendant que Pierre entrait : il n'est plus devant la porte.
     events: [{ on: 'enter', ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.capitaineAccueil], steps: [{ setFlag: FLAGS.capitaineAccueil }] }],
     objects: [
@@ -1170,8 +1171,8 @@ export const interiors = {
     ]),
   },
 
-  // Prytanée — l'internat des garçons, 1er étage : la chambre de Pierre, Tanguy et Geoffrey, façon Rouge Feu : quatre
-  // lits contre le mur, armoires, un bureau ; deux escaliers (vers le hall, vers le 2e étage). Le lit de Pierre est celui
+  // Prytanée — l'internat des garçons, 1er étage : la chambre de Pierre, Tanguy et Geoffrey : quatre lits contre le mur,
+  // une commode de chaque côté, une bibliothèque, un bureau, un tapis ; deux escaliers (vers le hall, vers le 2e étage). Le lit de Pierre est celui
   // du milieu, son armoire celle de droite (voir data/prytaneeStory.js).
   dortoir: {
     name: 'Dortoir',
@@ -1195,7 +1196,7 @@ export const interiors = {
       'mooooooooooooo',
     ]),
     triggers: [
-      { x: 12, y: 3, warp: { interior: 'dortoirHall', x: 9, y: 7, facing: 'down' } },
+      { x: 12, y: 3, warp: { interior: 'dortoirHall', x: 8, y: 3, facing: 'left' } },   // au pied de l'escalier du hall
       { x: 1, y: 3, warp: { interior: 'dortoirEtage2', x: 2, y: 3, facing: 'right' } },
     ],
     spawn: { x: 12, y: 4, facing: 'down' },
@@ -1245,6 +1246,7 @@ export const interiors = {
       ...[2, 3].map((x) => ({ x, y: 8, ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.affairesPretes], script: PREPARE_DESK })),
       ...[2, 3].map((x) => ({ x, y: 8, dialogue: ['Tes affaires pour demain, prêtes sur le bureau.'] })),
       ...[[0, 8], [1, 8], [1, 7]].map(([x, y]) => ({ x, y, dialogue: ['L\'armoire de Tanguy et Geoffrey. Pliée au carré, elle aussi.'] })),
+      ...[0, 1].map((x) => ({ x, y: 5, dialogue: ['Des manuels de prépa et les BD de Geoffrey.'] })),
       ...[3, 4, 5, 6, 10, 11].map((x) => ({ x, y: 4, dialogue: ['Un lit au carré. Pas un pli.'] })),
     ],
     events: [
@@ -1258,7 +1260,8 @@ export const interiors = {
   dortoirEtage2: {
     name: 'Dortoir des terminales',
     frlg: true,
-    // Même pièce HGSS que le 1er étage : l'escalier de gauche redescend (ξ en x 1) ; l'encadrement de droite est fermé.
+    // Exactement le même dessin que le 1er étage (bureau compris) : l'escalier de gauche redescend (ξ en x 1) ;
+    // l'encadrement de droite est fermé.
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
@@ -1268,7 +1271,7 @@ export const interiors = {
       'mmoooooooooooo',
       'oooooooooooomm',
       'mmoooooooooomm',
-      'mmoooooooooooo',
+      'mmmmoooooooooo',
       'oooooooooooooo',
       'oooooooooooooo',
       'mooooooooooooo',
@@ -1279,6 +1282,8 @@ export const interiors = {
     objects: [
       ...[3, 4, 5, 6, 8, 9, 10, 11].map((x) => ({ x, y: 4, dialogue: ['Un lit au carré. Les terminales, ça ne rigole pas.'] })),
       ...[[0, 8], [1, 8], [12, 6], [13, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une armoire. Un poster de rugby scotché à l\'intérieur de la porte.'] })),
+      ...[2, 3].map((x) => ({ x, y: 8, dialogue: ['Des annales du bac, cornées à toutes les pages.'] })),
+      ...[0, 1].map((x) => ({ x, y: 5, dialogue: ['Des BD et des manuels de terminale, rangés n\'importe comment.'] })),
     ],
     npcs: PRYTANEE_DAY.flatMap((when) => [
       // Internat des garçons : des garçons (apparences imposées, les figurants au hasard comptent aussi des filles).
