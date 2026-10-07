@@ -867,7 +867,7 @@ export function createStudio(api) {
 
   // `repair` : la fiche d'un élément reconnu à son dessin est réparée (au clic seulement, pas au survol).
   function elementCellsAt(x, y, repair = false) {
-    if (!cat || !state.map) return null;
+    if (!catExt || !state.map) return null;
     const m = state.map;
     let el = state.map.studio ? occupancy().get(y * m.width + x) : null;
     let def = el && elementDef(el.id, el.theme);
@@ -903,7 +903,7 @@ export function createStudio(api) {
 
   // Un élément posé déplacé avec l'outil Déplacer (sa case (x, y) d'avant, décalage) : sa note suit.
   function elementMoved(x, y, dx, dy) {
-    if (!cat || !state.map?.studio) return;
+    if (!catExt || !state.map?.studio) return;
     const m = state.map;
     const el = occupancy().get(y * m.width + x);
     if (!el) return;
