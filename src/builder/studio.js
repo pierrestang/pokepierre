@@ -64,16 +64,23 @@ export function createStudio(api) {
   // ---------- Éléments posés ----------
 
   // Cases occupées par les éléments posés : index -> élément.
+  // Les cases occupées par les éléments posés. Seulement là où le dessin de l'élément est encore sur la carte : une fiche
+  // périmée (élément effacé, remplacé ou redessiné case par case) n'empêche plus de peindre de l'eau ou de la forêt.
   function occupancy() {
     const m = state.map;
     const occ = new Map();
+    const slot = m.sheets.indexOf('catalogue');
+    if (slot < 0) return occ;
     for (const el of data().elements) {
       const def = elementDef(el.id, el.theme);
       if (!def) continue;
       def.tiles.forEach((row, j) => row.forEach((k, i) => {
         const x = el.x + i;
         const y = el.y + j;
-        if (k >= 0 && x >= 0 && y >= 0 && x < m.width && y < m.height && (j >= def.over || def.solid[j][i])) occ.set(y * m.width + x, el);
+        if (k < 0 || x < 0 || y < 0 || x >= m.width || y >= m.height || !(j >= def.over || def.solid[j][i])) return;
+        const c = y * m.width + x;
+        if (!stackOf(m.layers[j >= def.over ? 'decor' : 'dessus'][c]).includes(slot * 100000 + k)) return;
+        occ.set(c, el);
       }));
     }
     return occ;
