@@ -67,7 +67,7 @@ const elevator = (room) => ELEVATORS[room].doors.map((x) => ({
 
 // Cartons de déménagement de la maison de Fort-de-France, posés çà et là sans gêner le passage (cases 'm' des grilles).
 const FF_CARTONS = [[3, 3], [0, 6], [9, 4], [9, 8]];
-const FF_UP_CARTONS = [[0, 5], [4, 5], [8, 5], [7, 8]];
+const FF_UP_CARTONS = [[7, 4], [9, 4], [0, 7], [1, 7], [5, 7], [9, 7]];
 
 // Papa, ses cannes rangées, envoie Pierre au salon une fois la quête de Manon finie aussi (tant que Maman n'a pas
 // dansé).
@@ -185,8 +185,8 @@ export const interiors = {
     ],
   },
 
-  // Fort-de-France — la chambre de Pierre et Manon, à l'étage (invisible de l'extérieur), façon Rouge Feu :
-  // deux lits, bureau avec ordinateur, plante, escalier qui descend, et des cartons partout.
+  // Fort-de-France — la chambre de Pierre, à l'étage (invisible de l'extérieur), 10 x 8 (refaite dans le créateur) :
+  // un lit, bureau avec ordinateur, télé, plante, escalier qui descend, et des cartons partout.
   // Nouvelle partie : Pierre s'y réveille, le dernier matin à Fort-de-France.
   ffHouseUp: {
     name: 'Chambre de Pierre',
@@ -195,13 +195,11 @@ export const interiors = {
       'XXXXXXXXXX',
       'XXXXXXXXXX',
       'XXXXXXXXXX',
-      'ξξoommmmmm',
+      'ξξoommmmmm',   // escalier qui descend, bureau et ordinateur, télé
+      'mmooomomom',   // le lit de Pierre (à gauche), le tabouret, des cartons
       'mmoomooooo',
-      'mooomooooo',
-      'ooooooooom',
-      'mmmooooooo',
-      'mmmoooomoo',
-      'mmmoooomom',
+      'mmoooooooo',
+      'mmmoomooom',   // des cartons
     ]),
     decor: [
       { kind: 'painting', x: 0, y: 0 },
@@ -213,10 +211,9 @@ export const interiors = {
       { kind: 'pottedPlant', x: 6, y: 2 },
       ...FF_UP_CARTONS.map(([x, y]) => ({ kind: 'carton', x, y })),
     ],
-    spawn: { x: 6, y: 6, facing: 'left' },
+    spawn: { x: 2, y: 5, facing: 'left' },             // au réveil, à côté du lit
     triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
     objects: [
-      { x: 6, y: 3, dialogue: ['Un carton marqué « CHAMBRE — FRAGILE ». Il est déjà scotché.'] },
       { x: 5, y: 3, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
       ...FF_UP_CARTONS.map(([x, y]) => ({ x, y, dialogue: ['Des cartons à moitié faits.'] })),
     ],
