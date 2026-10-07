@@ -18,6 +18,7 @@ Usage : python3 scripts/build_interiors.py [id…] [--apercu <dossier>] [--essai
 défaut ; --essai : aperçus seulement, rien n'est écrit dans le projet ; --force : redessine aussi les pièces retouchées)
 """
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -389,6 +390,8 @@ def main():
         built, preview, problems = build_room(rid, rooms[rid], P.PLANS[rid], pack)
         if old.get('npcEdits'):                       # PNJ placés dans le créateur : gardés
             built['npcEdits'] = old['npcEdits']
+        if old.get('name'):                           # nom donné dans le créateur : gardé, sans « - à modifier »
+            built['name'] = re.sub(r'\s*-\s*à (modifier|refaire|remplacer.*)$', '', old['name']).strip() or built['name']
         if not essai:
             (OUT / f'{rid}.json').write_text(json.dumps(built, ensure_ascii=False, separators=(',', ':')))
         if apercu:
