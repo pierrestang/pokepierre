@@ -1344,6 +1344,11 @@ const HORSE_STATUE_C = {
 // Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene), case (x, y)
 // en pixels px, py. Les cannes à pêche sont des images à part (voir art/uiIcons.js ROD_DECALS).
 const DECALS = {
+  // Mémorial de l'Anse Caffard (Cap 110) : les six statues de pierre blanche, comme sur la carte d'origine (voir
+  // capStatues), posées sur une carte du créateur (Fort-de-France). (x, y) : coin du groupe, comme le plateau 'ɱ'.
+  capStatues(g, px, py) {
+    capStatues(g, px, py);
+  },
   // Tablier du pont ferroviaire de Newland Avenue, au-dessus de la rue : poutre d'acier bleu avec le nom de la
   // rue peint dessus, rails sur le dessus. (x, y) : case en haut à gauche ; `w` cases de large.
   railBridge(g, px, py, { w = 6 } = {}) {
@@ -1476,35 +1481,6 @@ const DECALS = {
 
 export function drawDecal(g, kind, px, py, options) {
   DECALS[kind]?.(g, px, py, options);
-}
-
-// Tas de planches de la ferme (Saint-Ay), posé sur l'herbe (sol Rouge Feu dessous).
-// Tas de planches de la ferme : quatre planches empilées en quinconce, veinées, bouts clairs (bois scié) à
-// droite, contour sombre, ombre au sol.
-const PLANKS = [
-  '................',
-  '...kkkkkkkkkkkk.',
-  '..kLLLLLLLLLLLEk',
-  '..kWWwWWWWwWWWEk',
-  '.kkkkkkkkkkkkkkk',
-  '.kLLLLLLLLLLLLEk',
-  '.kWWWWwWWWWWwWEk',
-  'kkkkkkkkkkkkkkk.',
-  'kLLLLLLLLLLLLEk.',
-  'kWWwWWWWwWWWWEk.',
-  'kDDDDDDDDDDDDDk.',
-  '.kkkkkkkkkkkkkkk',
-  '.kLLLLLLLLLLLLEk',
-  '.kWWWwWWWWWwWWEk',
-  '.kDDDDDDDDDDDDDk',
-  '..kkkkkkkkkkkkk.',
-];
-const PLANK_COLORS = { k: 0x3c2818, L: 0xe0b070, W: 0xc08850, w: 0x9c6838, D: 0x7c5028, E: 0xf0d8a8 };
-// Le tas seul, sans sol (décor qui disparaît une fois les planches ramassées, voir MapScene).
-export function drawPlanksPile(g, px, py) {
-  g.fillStyle(0x000000, 0.2);
-  g.fillRect(px + 2, py + 15, 14, 1);
-  sprite(g, PLANKS, PLANK_COLORS, px, py);
 }
 
 // Caisse à outils de Jean (Montépilloy), posée par terre, d'après l'icône de la Boîte Jetons de HeartGold (couvercle

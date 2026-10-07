@@ -16,8 +16,9 @@ export const CABANE_SPOT = { x: 4, y: 19 };
 const LAKE_SPOT = { x: 10, y: 14 };
 
 // Arrivée : image d'accueil de Saint-Ay, le ferry a accosté au ponton du lac. Papa et Manon retrouvent Pierre,
-// lui disent de les rejoindre à la clinique et partent devant, l'un derrière l'autre (ils y sont à son arrivée).
-const CLINIC_DOOR = [25, 15];                                  // case devant la porte de la clinique
+// lui disent de les rejoindre à la clinique ; Manon revient se placer à côté de Papa, puis ils partent devant
+// ensemble, l'un derrière l'autre (ils y sont à son arrivée).
+const CLINIC_DOOR = [17, 15];                                  // case devant la porte de la clinique (grande maison bleue)
 export const ARRIVAL = [
   { opening: { postcard: 'saintAy', text: 'Saint-Ay, Loiret. Quelque temps plus tard…' } },
   { approach: 'papa' },
@@ -25,11 +26,12 @@ export const ARRIVAL = [
     speaker: 'Papa',
     say: [
       'Te voilà enfin ! On te cherche partout.',
-      'Maman est à la clinique : le bébé est arrivé ! Rejoins-nous là-bas, c\'est le bâtiment au toit d\'ardoise, en bas du village.',
+      'Maman est à la clinique : le bébé est arrivé ! Rejoins-nous là-bas, c\'est la grande maison au toit bleu, en bas du village.',
     ],
   },
   { approach: 'manon' },
   { speaker: 'Manon', say: ['Vite, dépêche-toi !'] },
+  { join: 'manon', to: 'papa' },
   { setFlag: FLAGS.saArrivee },
   { walkLine: ['papa', 'manon'], to: CLINIC_DOOR, then: [FLAGS.familleSuit] },
 ];
@@ -61,7 +63,7 @@ export const FANNY_CRADLE = [
 export const CLINIC_EXIT = [
   { setFlag: FLAGS.familleRentree },
   { talk: 'felix' },
-  { walk: 'felix', to: [17, 15], then: [FLAGS.felixInvite] },
+  { walk: 'felix', to: [25, 15], then: [FLAGS.felixInvite] },                // chez lui, la petite maison au toit bleu
 ];
 
 // Chez Felix : le plan de la cabane. Joshua et Yanis partent chercher planches et corde ; Felix dirige et rappelle ce
@@ -166,11 +168,13 @@ export const FELIX_AT_CABANE = [
   { speaker: 'Joshua', say: ['Montépilloy, c\'est pas le bout du monde.'] },
   { speaker: 'Yanis', say: ['C\'est où, Montépilloy ?'] },
   { speaker: 'Felix', say: ['La cabane t\'attendra. Et le mot de passe ne change pas : « {motDePasse|QG} ».'] },
+  { speaker: 'Joshua', say: ['Tu nous écriras ? Une vraie lettre, avec un timbre et tout.'] },
+  { speaker: 'Yanis', say: ['Et s\'il y a des poules là-bas, tu nous préviens. Maintenant, on sait faire.'] },
   { setFlag: FLAGS.adieuCousins },
   { speaker: 'Felix', say: ['Allez, file, ta famille t\'attend à la voiture, devant ta maison.'] },
 ];
 
-// L'annonce, en rentrant à la maison au toit de chaume avec les deux traits.
+// L'annonce, en rentrant à la maison (toit rouge, en haut de la rue) avec les deux traits.
 // Quelques années ont passé (voir CABANE_FETE) : Fanny court partout et coupe Papa une fois.
 export const ANNOUNCEMENT = [
   { say: ['Papa est assis à la table, une lettre à la main. Fanny a bien grandi : elle court partout dans le salon.'] },
@@ -213,7 +217,6 @@ export const CAR = [
   { speaker: 'Manon', say: ['Regarde, Fanny dort déjà. Elle rate tout.'] },
   { speaker: 'Fanny', say: ['… les poules…'] },
   { speaker: 'Manon', say: ['Elle rêve des poules de l\'enclos.'] },
-  { say: ['Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît derrière les arbres.'] },
   { speaker: 'Papa', say: ['Allez. Montépilloy nous attend.'] },
   { setFlag: FLAGS.arriveeMontepilloy },
   { travel: { map: 'montepilloy', ...MONTEPILLOY_SPOTS.pond, facing: 'down', car: true, carry: carryText('saintAy') } },

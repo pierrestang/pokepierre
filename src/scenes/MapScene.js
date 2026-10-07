@@ -5,7 +5,7 @@ import { FOLLOWERS } from '../data/story.js';
 import { CATCHES, FISHING_ROD } from '../data/fishing.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
-import { drawDecal, drawPlanksPile, drawPulleyFixed, drawPulleyStuck, drawToolbox } from '../art/tileArt.js';
+import { drawDecal, drawPulleyFixed, drawPulleyStuck, drawToolbox } from '../art/tileArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
@@ -13,7 +13,7 @@ import { Followers } from '../systems/Followers.js';
 import { Patrols } from '../systems/Patrols.js';
 import { playDarts } from '../systems/Darts.js';
 import { lookOf } from '../data/characters.js';
-import { bedAt, familyCarImage, cabaneFrame, CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
+import { bedAt, familyCarImage, G4_CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
 import { interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
@@ -65,7 +65,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // `surroundingTile` (tuile de remplissage par défaut).
 // Objets posés au sol, dessinés dans le code : le tas de planches de la ferme (Saint-Ay), la caisse à outils de Jean
 // (Montépilloy).
-const FLOOR_PROPS = { planks: drawPlanksPile, toolbox: drawToolbox, pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
+const FLOOR_PROPS = { toolbox: drawToolbox, pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
 
 // Clés de conditions d'une étape (voir systems/flags.js meetsConditions).
 const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenirs', 'ifItems', 'unlessItems'];
@@ -353,12 +353,23 @@ export class MapScene extends Phaser.Scene {
     for (const data of wantedProps) {
       if (this.props.some((p) => p.data === data)) continue;
       // La voiture de la famille est une image (voir frlgArt.familyCarImage), posée au milieu du bas de son emprise.
-      // La cabane des cousins (voir frlgArt, rs-cabane.png) : l'emprise bloquante couvre la plateforme, l'échelle
-      // descend sur la case sous son 2e rang, où l'on monte (porte `when` de la carte).
+      // La cabane perchée des cousins, en Gen 4 (g4-cabane.png, scripts/build_saintay_props.py) : l'emprise bloquante
+      // couvre la plateforme, l'échelle descend sur la case sous son 2e rang, où l'on monte (porte `when` de la carte).
       if (data.type === 'cabane') {
         const bottom = (data.y + data.h + 1) * TILE_SIZE;
-        const graphics = this.add.image((data.x + 1) * TILE_SIZE - CABANE_LADDER_X, bottom, FRLG_SHEETS.cabane, cabaneFrame(this, 'hut'))
-          .setOrigin(0, 1).setDepth(10 + bottom / 10000);
+        // Elle est perchée dans les sapins : au-dessus de leurs cimes (calque « au-dessus de Pierre » de la carte, voir
+        // builtMaps.js), sinon les feuillages couperaient son toit et ses murs.
+        const graphics = this.add.image((data.x + 1) * TILE_SIZE - G4_CABANE_LADDER_X, bottom, FRLG_SHEETS.g4Cabane)
+          .setOrigin(0, 1).setDepth(10 + 1e6 / 10000 + 1);
+        this.props.push({ data, graphics });
+        continue;
+      }
+      // Le tas de planches de l'enclos à poules : le « tas de bois » Gen 4, détouré (g4-planches.png), centré sur
+      // le bas de son emprise.
+      if (data.type === 'planks') {
+        const bottom = (data.y + data.h) * TILE_SIZE;
+        const graphics = this.add.image((data.x + data.w / 2) * TILE_SIZE, bottom, FRLG_SHEETS.g4Planches)
+          .setOrigin(0.5, 1).setDepth(10 + (bottom - 1) / 10000);
         this.props.push({ data, graphics });
         continue;
       }
@@ -495,6 +506,8 @@ export class MapScene extends Phaser.Scene {
     sprite.walkStep(WALK_DURATION);
     d.x = x;
     d.y = y;
+    // Un personnage qui entre dans les hautes herbes les fait frémir aussi (sans bruit : seul Pierre en fait).
+    if (TALL_PLANTS.includes(this.grid[y]?.[x])) this.grassCovers?.rustle(x, y, { sound: false });
     const [px, py] = tileCenter(x, y);
     return new Promise((resolve) => this.tweens.add({
       targets: sprite, x: px, y: py, duration: WALK_DURATION,
@@ -531,6 +544,8 @@ export class MapScene extends Phaser.Scene {
   //   { approach: npcId }                le PNJ s'avance jusqu'au joueur et ils se font face
   //   { comeBeside: npcId }              le PNJ vient sur une case libre à côté du joueur (même s'il l'enferme le temps
   //                                      de la scène : la scénette doit le faire repartir), tourné vers lui
+  //   { join: npcId, to: autreId }       le PNJ vient sur une case libre à côté de l'autre PNJ (pas celle du joueur),
+  //                                      et regarde du même côté que lui (ex. Manon rejoint Papa avant de partir)
   //   { faceTo: npcId }                  le joueur et le PNJ se tournent l'un vers l'autre
   //   { allFace: npcId }                 tout le monde dans la pièce (Pierre, PNJ, suiveurs) se tourne vers ce PNJ
   //   { goTo: [x, y], facing? }          Pierre marche jusqu'à la case (plus court chemin), puis se tourne
@@ -619,6 +634,7 @@ export class MapScene extends Phaser.Scene {
       if (step.say) await this.dialog.open(step.say.map(memo.fill), { speaker: step.speaker });
       if (step.approach) await this.approach(step.approach);
       if (step.comeBeside) await this.comeBeside(step.comeBeside);
+      if (step.join) await this.joinNpc(step.join, step.to);
       if (step.faceTo) {
         const npc = this.npcById(step.faceTo);
         if (npc) this.faceEachOther(npc.sprite, npc.data);
@@ -764,6 +780,26 @@ export class MapScene extends Phaser.Scene {
     }
     npc.data.facing = this.directionTo(npc.data, me);
     npc.sprite.setFacing(npc.data.facing);
+  }
+
+  // Le PNJ `id` vient se placer à côté du PNJ `targetId` (la case libre la plus proche de lui parmi les quatre voisines,
+  // jamais celle du joueur), puis regarde du même côté que lui.
+  async joinNpc(id, targetId) {
+    const npc = this.npcById(id);
+    const target = this.npcById(targetId);
+    if (!npc || !target) return;
+    const t = target.data;
+    const me = { x: this.player.tileX, y: this.player.tileY };
+    const spots = Object.values(DIRECTIONS)
+      .map(({ dx, dy }) => [t.x + dx, t.y + dy])
+      .filter(([x, y]) => (x === npc.data.x && y === npc.data.y)
+        || (this.tileWalkable(x, y) && !this.npcAt(x, y) && !this.propAt(x, y) && !(x === me.x && y === me.y)))
+      .sort((a, b) => Math.abs(a[0] - npc.data.x) + Math.abs(a[1] - npc.data.y) - Math.abs(b[0] - npc.data.x) - Math.abs(b[1] - npc.data.y));
+    if (!spots.length) return;
+    const [x, y] = spots[0];
+    if (x !== npc.data.x || y !== npc.data.y) await this.walkNpc(id, [x, y]);
+    npc.data.facing = t.facing;
+    npc.sprite.setFacing(t.facing);
   }
 
   // Le joueur et un personnage (image `sprite`, position `d`) se tournent l'un vers l'autre.

@@ -86,8 +86,8 @@ export class GrassCovers {
   }
 
   // Frémissement quand on entre dans une case : les touffes se couchent un instant, des brins s'envolent.
-  rustle(x, y) {
-    sfx('rustle');
+  rustle(x, y, { sound = true } = {}) {
+    if (sound) sfx('rustle');
     const image = this.cover(x, y);
     this.scene.tweens.killTweensOf(image);
     image.setScale(1, 1).setY(y * S + GRASS_COVER_TOP);

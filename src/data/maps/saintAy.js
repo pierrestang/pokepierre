@@ -14,8 +14,8 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 
 // Saint-Ay (Loiret) — petit village de campagne, 32 x 28 cases, façon Rouge Feu, bâtiments resserrés autour
 // de la route de Montépilloy (nord-sud) : rue des maisons (chaumière de la famille et, à côté, l'enclos à
-// poules, ouvert vers le bas par une seule case au bout de la rue ; planches gardées par les poules), rue du milieu (maison de
-// Felix, chaumière comme celle de la famille), et au sud la clinique (toit d'ardoise) sur la route du bas. Prés de hautes herbes aux formes irrégulières. À l'ouest, le lac
+// poules, ouvert vers le bas par une seule case au bout de la rue ; planches gardées par les poules), en bas de la rue du
+// milieu la clinique (grande maison au toit bleu) et, à sa droite, la maison de Felix (petite maison au toit bleu). Prés de hautes herbes aux formes irrégulières. À l'ouest, le lac
 // (rives de terre) touche le bord de la carte : petit ponton et ferry ; au sud du lac, la cabane des cousins
 // posée sur deux sapins de la forêt. Au sud-ouest, un coin de hautes herbes caché où traîne la vieille corde
 // pendant le chantier de la cabane. Ceinture d'arbres ailleurs.
@@ -68,15 +68,17 @@ export const saintAyMap = {
   // Portes -> intérieur. Au retour, le joueur réapparaît sous la porte. Sans intérieur : porte fermée.
   doors: [
     { x: 18, y: 6, interior: 'playerHouse' },
+    // La clinique : la grande maison au toit bleu, en bas de la rue du milieu.
     {
-      x: 17, y: 14, interior: 'felixHouse',
-      lock: { ifFlags: [FLAGS.felixInvite] },
-      lockedDialogue: ['Personne ne répond.'],
-    },
-    {
-      x: 25, y: 14, interior: 'hospital',
+      x: 17, y: 14, interior: 'hospital',
       lock: { ifFlags: [FLAGS.saArrivee] },
       lockedDialogue: ["La clinique de Saint-Ay. Tu n'as rien à y faire pour l'instant."],
+    },
+    // Chez Felix et ses frères : la petite maison au toit bleu, à droite de la clinique.
+    {
+      x: 25, y: 14, interior: 'felixHouse',
+      lock: { ifFlags: [FLAGS.felixInvite] },
+      lockedDialogue: ['Personne ne répond.'],
     },
     // L'échelle de la cabane : on y monte (porte sans case 'D', ouverte une fois la cabane construite), en donnant
     // chaque fois le mot de passe du QG (voir saintAyStory.js CABANE_FETE).
@@ -90,15 +92,16 @@ export const saintAyMap = {
   buildings: [],
   sourceBuildings: [
     { type: 'cottage', x: 17, y: 3 },
-    { type: 'cottage', x: 17, y: 9 },          // maison des cousins : même extérieur que celle de Pierre
-    { type: 'slateHouse', x: 18, y: 17 },      // la clinique : toit d'ardoise, porte rouge
+    { type: 'cottage', x: 17, y: 9 },
+    { type: 'slateHouse', x: 18, y: 17 },
     { type: 'ferry', x: BOAT_POS.x, y: BOAT_POS.y },
   ],
   // Obstacles qui dépendent de l'histoire.
   props: [
-    // Le tas de planches de l'enclos à poules, gardé par les poules ; il disparaît une fois les planches ramassées.
+    // Le tas de planches de l'enclos à poules (2 cases), gardé par les poules ; il disparaît une fois les planches
+    // ramassées.
     {
-      type: 'planks', x: 25, y: 4, w: 1, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
+      type: 'planks', x: 24, y: 4, w: 2, h: 1, unlessItems: [ITEMS.planches.id], unlessFlags: [FLAGS.cabaneFinie],
       script: PLANKS,
     },
     // La cabane des cousins, une fois construite, perchée dans les sapins au sud du lac.
@@ -121,7 +124,6 @@ export const saintAyMap = {
   objects: [
     { x: 13, y: 2, dialogue: ['Nord : route de Montépilloy.'] },
     { x: 13, y: 15, dialogue: ['Saint-Ay, Loiret. Bienvenue au village !'] },
-    { x: 17, y: 20, dialogue: ['Clinique de Saint-Ay.'] },
     // Une carte postale du capitaine du ferry (Fort-de-France).
     {
       x: 16, y: 6,
@@ -131,7 +133,6 @@ export const saintAyMap = {
         'Reviens quand tu veux, le ferry connaît le chemin. Le capitaine. »',
       ],
     },
-    { x: 16, y: 12, dialogue: ['La boîte aux lettres de Felix et de ses frères et sœur.'] },
     // Le ferry qui a amené la famille de Fort-de-France.
     ...Array.from({ length: (BOAT_POS.w + 1) * BOAT_POS.h }, (_, i) => ({
       x: BOAT_POS.x + (i % (BOAT_POS.w + 1)),
@@ -147,7 +148,7 @@ export const saintAyMap = {
       dialogue: ['Maman est à la clinique, en bas du village. Rejoins-nous !'],
     },
     {
-      id: 'manon', name: 'Manon', x: 11, y: 6, facing: 'left', color: 0xf0a030,
+      id: 'manon', name: 'Manon', x: 11, y: 7, facing: 'left', color: 0xf0a030,
       ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit, FLAGS.familleArrivee],
       dialogue: ['Vite, à la clinique !'],
     },
@@ -155,7 +156,7 @@ export const saintAyMap = {
     // t'attendent (voir CLINIC_EXIT).
     {
       // Au départ en voiture : Felix sort de chez lui en courant (voir saintAyStory.js CAR).
-      id: 'felix-voiture', name: 'Felix', x: 18, y: 15, facing: 'left', color: COUSIN_COLORS.felix,
+      id: 'felix-voiture', name: 'Felix', x: 24, y: 15, facing: 'left', color: COUSIN_COLORS.felix,
       ifFlags: [FLAGS.felixVoiture], unlessFlags: [FLAGS.arriveeMontepilloy],
       dialogue: ['Le mot de passe, tu le gardes, hein ?'],
     },
@@ -163,7 +164,7 @@ export const saintAyMap = {
       id: 'felix', name: 'Felix', x: 17, y: 21, facing: 'right', color: COUSIN_COLORS.felix,
       ifFlags: [FLAGS.fannyMain], unlessFlags: [FLAGS.felixInvite],
       dialogue: [
-        'Cousin ! Ça y est, on a emménagé ! La maison au toit de chaume, sur la rue du milieu, juste sous la vôtre.',
+        'Cousin ! Ça y est, on a emménagé ! La petite maison au toit bleu, juste à côté de la clinique.',
         'Rejoins-nous là-bas, les autres t\'attendent !',
       ],
     },
@@ -206,7 +207,7 @@ export const saintAyMap = {
       dialogue: HEN_STUCK, push: henPush(FLAGS.pouleEnfuie2),
     },
     { id: 'poule-2b', name: 'Poule', x: 25, y: 9, facing: 'left', ifFlags: [FLAGS.pouleEnfuie2], dialogue: ['Cot… cot.'] },
-    { id: 'poule-3', name: 'Poule', x: 24, y: 4, facing: 'right', dialogue: ['Cot cot ! Celle-là ne bougera pas de son coin.'] },
+    { id: 'poule-3', name: 'Poule', x: 24, y: 5, facing: 'up', dialogue: ['Cot cot ! Celle-là ne bougera pas de son coin.'] },
     { id: 'poule-4', name: 'Poule', x: 27, y: 5, facing: 'left', dialogue: ['Cot cot ! Elle picore tranquillement dans son coin.'] },
   ],
   events: [
