@@ -1414,25 +1414,29 @@ export const interiors = {
     frlg: true,
     // Pièce HGSS (séjour de la maison de M. Pokémon, scripts/interieurs/prytanee_bordeaux.py) : vitrine, canapé, chaîne
     // hi-fi, étagère au fond, table et ordinateur au milieu ; les haltères au sol (dessinés par le jeu).
-    grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmmmmoommmmm',
-      'oooooooooooo',
-      'oooooooooooo',
-      'ooooommmmooo',
-      'oomoommoomoo', // haltères (x 2 et x 9)
-      'oooooooooooo',
-      'mooEooooooom',
+    grid: parseGrid([ // dessin de la maison de Pierre à Amsterdam (maison de Léo, Hull)
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmooooomoEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'oooommmmooooX',
+      'oomoooooooooX',
+      'moooooooooomX',
+      'XooooooooooXX',
     ]),
     decals: [
       { kind: 'dumbbells', x: 9, y: 6 },
-      { kind: 'dumbbells', x: 2, y: 6 },
+      { kind: 'dumbbells', x: 2, y: 10 },
     ],
-    spawn: { x: 3, y: 7, facing: 'up' },
-    npcs: [{ id: 'paulfit', name: 'Paulfit', x: 5, y: 3, facing: 'down', script: PAULFIT }],
+    spawn: { x: 10, y: 6, facing: 'left' },
+    npcs: [{ id: 'paulfit', name: 'Paulfit', x: 5, y: 4, facing: 'down', script: PAULFIT }],
     objects: [
-      ...[[9, 6], [2, 6]].map(([x, y]) => ({ x, y, dialogue: ['Des haltères. Bien trop lourds pour toi.'] })),
+      ...[[9, 6], [2, 10]].map(([x, y]) => ({ x, y, dialogue: ['Des haltères. Bien trop lourds pour toi.'] })),
     ],
   },
 
@@ -1442,21 +1446,26 @@ export const interiors = {
     frlg: true,
     // Pièce HGSS (maison de Doublonville, scripts/interieurs/prytanee_bordeaux.py) : cuisine, bibliothèque, plante au fond,
     // table au milieu, le lit de Rémi à gauche ; le drapeau américain au mur (dessiné par le jeu).
-    grid: parseGrid([
-      'XXXXXXXXX',
-      'XXXXXXXXX',
-      'mmmooommm',
-      'ooooooooo',
-      'mmooommoo',
-      'mmooommoo',
-      'mmooooooo',
-      'oooEooooo',
+    grid: parseGrid([ // dessin de la maison de Pierre à Amsterdam (maison de Léo, Hull)
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmoooooooEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'oooommmmooooX',
+      'ooooooooooooX',
+      'moooooooooomX',
+      'XooooooooooXX',
     ]),
-    decals: [{ kind: 'usFlag', x: 3, y: 0 }],
-    spawn: { x: 3, y: 6, facing: 'up' },
+    decals: [{ kind: 'usFlag', x: 11, y: 2, dx: -8 }],  // au mur, à droite du meuble vitré
+    spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [{ id: 'remi-gobelets', name: 'Rémi', x: 4, y: 3, facing: 'down', script: REMI_CUPS }],
     objects: [
-      ...[3, 4].map((x) => ({ x, y: 1, dialogue: ['Un drapeau américain. « Souvenir de mon échange aux USA », d\'après Rémi.'] })),
+      ...[10].map((x) => ({ x, y: 3, dialogue: ['Un drapeau américain. « Souvenir de mon échange aux USA », d\'après Rémi.'] })),
     ],
   },
 
@@ -1590,17 +1599,22 @@ export const interiors = {
   // Hull — la coloc de Pierre et Ousmane, sur Newland Avenue.
   hullColoc: {
     name: 'La coloc',
-    grid: parseGrid([
-      'XXXXXXXXX',
-      'XXXXXXXXX',
-      'mmmooommm',
-      'ooooooooo',
-      'mmooommoo',
-      'mmooommoo',
-      'mmooooooo',
-      'oooEooooo',
+    grid: parseGrid([ // dessin de la maison de Pierre à Amsterdam (maison de Léo, Hull)
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmoooooooEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'oooommmmooooX',
+      'ooooooooooooX',
+      'moooooooooomX',
+      'XooooooooooXX',
     ]),
-    spawn: { x: 3, y: 6, facing: 'up' },
+    spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [
       {
         id: 'ousmane-coloc', name: 'Ousmane', x: 3, y: 4, facing: 'down',
@@ -2254,16 +2268,20 @@ export const interiors = {
   // Paris — ton appartement (immeuble en haut à droite) : l'ordinateur pour chercher un travail.
   parisAppart: {
     name: 'Ton appartement',
-    grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmmmmoommmmm',
-      'oooooooooooo',
-      'oooooooooooo',
-      'ooooommmmooo',
-      'ooooommooooo',
-      'oooooooooooo',
-      'mooEooooooom',
+    grid: parseGrid([ // dessin de la maison de Pierre à Amsterdam (maison de Léo, Hull)
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmoooooooEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'oooommmmooooX',
+      'ooooooooooooX',
+      'moooooooooomX',
+      'XooooooooooXX',
     ]),
     decor: [
       { kind: 'bed', x: 0, y: 2 },
@@ -2272,7 +2290,7 @@ export const interiors = {
       { kind: 'painting', x: 7, y: 0 },
       { kind: 'pottedPlant', x: 0, y: 5 },
     ],
-    spawn: { x: 3, y: 7, facing: 'up' },
+    spawn: { x: 10, y: 6, facing: 'left' },
     events: [
       {
         on: 'enter',
@@ -2282,7 +2300,7 @@ export const interiors = {
     ],
     objects: [
       {
-        x: 7, y: 5,
+        x: 5, y: 3,                 // l'ordinateur (sur le meuble télé)
         unlessFlags: [FLAGS.rechercheTravail],
         ask: {
           question: 'Chercher un travail ?',
@@ -2300,7 +2318,7 @@ export const interiors = {
         },
       },
       {
-        x: 7, y: 5,
+        x: 5, y: 3,                 // l'ordinateur (sur le meuble télé)
         ifFlags: [FLAGS.rechercheTravail],
         dialogue: ["[Texte provisoire] Ton rendez-vous : l'entreprise, à droite de la tour Eiffel."],
       },
@@ -2518,17 +2536,22 @@ export const interiors = {
   // Toulon — l'appartement de Yanis.
   yanisAppart: {
     name: 'Appartement de Yanis',
-    grid: parseGrid([
-      'XXXXXXXXX',
-      'XXXXXXXXX',
-      'mmmooommm',
-      'ooooooooo',
-      'ooooommoo',
-      'ooooommoo',
-      'ooooooooo',
-      'oooEooooo',
+    grid: parseGrid([ // dessin de la maison de Pierre à Amsterdam (maison de Léo, Hull)
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmoooooooEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'oooommmmooooX',
+      'ooooooooooooX',
+      'moooooooooomX',
+      'XooooooooooXX',
     ]),
-    spawn: { x: 3, y: 6, facing: 'up' },
+    spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [
       {
         id: 'yanis-toulon', name: 'Yanis', x: 7, y: 4, facing: 'left', color: 0xc0b040,

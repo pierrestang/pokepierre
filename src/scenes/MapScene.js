@@ -454,7 +454,7 @@ export class MapScene extends Phaser.Scene {
         continue;
       }
       const graphics = this.add.graphics().setDepth(depth);
-      drawDecal(graphics, data.kind, data.x * TILE_SIZE, data.y * TILE_SIZE, data);
+      drawDecal(graphics, data.kind, data.x * TILE_SIZE + (data.dx ?? 0), data.y * TILE_SIZE + (data.dy ?? 0), data);
       this.decals.push({ data, graphics });
     }
 

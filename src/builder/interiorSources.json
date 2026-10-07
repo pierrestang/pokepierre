@@ -4,8 +4,8 @@
   "label": "HGSS · Goldenrod radio tower · pièce 4"
  },
  "appartRemi": {
-  "key": "012i_Goldenrod interiors#3",
-  "label": "HGSS · Goldenrod interiors · pièce 4"
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
  },
  "appartement": {
   "key": "001i_Newbark houses#1",
@@ -124,8 +124,8 @@
   "label": "HGSS · Goldenrod game corner · pièce 1"
  },
  "hullColoc": {
-  "key": "012i_Goldenrod interiors#3",
-  "label": "HGSS · Goldenrod interiors · pièce 4"
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
  },
  "hullHouse": {
   "key": "001i_Newbark houses#1",
@@ -168,8 +168,8 @@
   "label": "HGSS · Newbark houses · pièce 3"
  },
  "parisAppart": {
-  "key": "004i_Mr Pokémon House#0",
-  "label": "HGSS · Mr Pokémon House · pièce 1"
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
  },
  "playerHouse": {
   "key": "001i_Newbark houses#4",
@@ -192,8 +192,8 @@
   "label": "HGSS · Park-Pokéathlon Gate · pièce 1"
  },
  "studioPaulfit": {
-  "key": "004i_Mr Pokémon House#0",
-  "label": "HGSS · Mr Pokémon House · pièce 1"
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
  },
  "temple": {
   "key": "006i_Sprout Tower#0",
@@ -212,7 +212,7 @@
   "label": "HGSS · Sprout Tower · pièce 1"
  },
  "yanisAppart": {
-  "key": "012i_Goldenrod interiors#9",
-  "label": "HGSS · Goldenrod interiors · pièce 10"
+  "key": "001i_Newbark houses#1",
+  "label": "HGSS · Newbark houses · pièce 2"
  }
 }

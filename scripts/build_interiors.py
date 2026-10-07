@@ -333,7 +333,9 @@ SOURCES = Path(__file__).resolve().parent.parent / 'src' / 'builder' / 'interior
 # Pièces dont le dessin est repris tel quel d'une autre (copie du JSON retouché, voir l'historique) : même source.
 SAME_DRAWING = {'playerHouse': 'ffHouse', 'montHouse': 'ffHouse', 'playerHouseUp': 'ffHouseUp', 'montHouseUp': 'ffHouseUp',
                 'felixHouse': 'ffHouse', 'corseParents': 'ffHouse', 'corseVoisins': 'ffHouse',
-                'maisonCommune': 'hullHouse', 'hanoiHome': 'hullHouse'}
+                'maisonCommune': 'hullHouse', 'hanoiHome': 'hullHouse',
+                'appartRemi': 'hullHouse', 'yanisAppart': 'hullHouse', 'hullColoc': 'hullHouse',
+                'studioPaulfit': 'hullHouse', 'parisAppart': 'hullHouse'}
 
 
 def write_sources():
