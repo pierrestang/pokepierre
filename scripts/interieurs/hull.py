@@ -7,6 +7,10 @@ casino de Doublonville agrandi (bar et studio de la tour Radio), la bibliothèqu
 grand salon de Bourg Geon, la coloc un appartement de Doublonville. Seule l'université garde son ancien plan (retouchée
 par l'utilisateur dans le créateur). Les dessins plus bas servent encore à l'université et à la cible du second pub.
 """
+import json
+from functools import lru_cache
+from pathlib import Path
+
 from PIL import Image, ImageDraw
 
 import hgss_rooms as HG
@@ -181,12 +185,79 @@ ITEMS = {
 }
 
 
+# ---------- Meubles du catalogue des intérieurs (public/assets/v2/catalogue-int.json) ----------
+# Un élément du catalogue (cases de la planche catalogue-int, sans ombre) comme meuble de plan : 'ci-<id>', ses
+# collisions d'après le catalogue. Les tabourets et chaises sont « à plat » (sous les personnages assis dessus).
+_V2 = Path(__file__).resolve().parents[2] / 'public' / 'assets' / 'v2'
+
+
+@lru_cache(None)
+def _catalogue_int():
+    c = json.loads((_V2 / 'catalogue-int.json').read_text())
+    return {e['id']: e for e in c['themes']['libre']['elements']}, Image.open(_V2 / 'catalogue-int.png').convert('RGBA'), c['cols']
+
+
+def ci_img(eid):
+    els, sheet_img, cols = _catalogue_int()
+    e = els[eid]
+    out = Image.new('RGBA', (e['w'] * T, e['h'] * T))
+    for j, row in enumerate(e['tiles']):
+        for i, k in enumerate(row):
+            if k >= 0:
+                out.alpha_composite(sheet_img.crop(((k % cols) * T, (k // cols) * T, (k % cols + 1) * T, (k // cols + 1) * T)),
+                                    (i * T, j * T))
+    return out
+
+
+def _ci_item(eid, **opts):
+    els, _, _ = _catalogue_int()
+    return {'img': lambda: ci_img(eid), 'solid': els[eid]['solid'], **opts}
+
+
+for _eid in ('comptoir-bar', 'etagere-bouteilles', 'table-rouge-g', 'table-rouge-d', 'table-pub', 'table-bois',
+             'tonneau', 'lampe-laiton', 'canape-brun', 'long-comptoir', 'mange-debout', 'cible', 'plante-grasse'):
+    ITEMS[f'ci-{_eid}'] = _ci_item(_eid)
+for _eid in ('pompes-biere', 'pintes', 'menu'):                     # posés sur le comptoir
+    ITEMS[f'ci-{_eid}'] = _ci_item(_eid, solid=0)
+for _eid in ('tabouret-bar', 'tabouret-bar-vert'):
+    ITEMS[f'ci-{_eid}'] = _ci_item(_eid, solid=0, flat=True)
+
+
 NB = '001i_Newbark houses'
 GI = '012i_Goldenrod interiors'
 RA = '074i_Ruins of Alph Lab'
 RT = '012i_Goldenrod radio tower'
 GC = '012i_Goldenrod game corner'
 AZ = '010i_Azalea Houses'
+
+
+# Les pubs : la maison de Fargas à Écorcia (AZ, coin (10, 25), 16 x 10) ; boiseries aux rangées 0-2, tatamis aux
+# rangées 3-6, marche rouge en 7, plancher aux rangées 8-9 (le tapis de sortie en (3, 9)).
+def _cols(width):
+    return list(range(width)) if isinstance(width, int) else list(width)
+
+
+def fargas_floor(width, rows):
+    """Plancher (rangées 8-9 de la maison de Fargas) sur les rangées `rows`, colonne par colonne (`width` : largeur, ou
+    la colonne d'origine de chaque colonne de la pièce)."""
+    out = []
+    for tx, sx in enumerate(_cols(width)):
+        for ty in rows:
+            row = 33 + ty % 2
+            src = sx + 4 if row == 34 and 2 <= sx <= 4 else sx          # la rangée 9 sans le tapis de sortie
+            out.append({'from': (AZ, 10 + src, row, 1, 1), 'to': (tx, ty), 'sol': True, 'only': ('Floor',)})
+    return out
+
+
+def fargas_wall_base(width):
+    """Le bas des boiseries (rangée 2) remis après l'effacement du mobilier."""
+    return [{'from': (AZ, 10 + sx, 27, 1, 1), 'to': (tx, 2), 'only': ('Wall',)} for tx, sx in enumerate(_cols(width))]
+
+
+# Premier pub : la maison de Fargas élargie (20 x 11) : 4 colonnes de boiseries nues insérées après la 8e (colonnes
+# 5 et 6 d'origine), une rangée de plancher en plus.
+PUB_A_COLS = list(range(8)) + [5, 6, 5, 6] + list(range(8, 16))
+PUB_A_ROWS = list(range(9)) + [8, 9]
 
 
 def stretched(name, cols, rows, pick):
@@ -247,6 +318,43 @@ def _as_pick(sx, sy, tx, ty):
 
 
 _as_paste, _as_free = stretched(GC, AS_COLS, AS_ROWS, _as_pick)
+# Le mur du fond, désencombré (retour de l'utilisateur) : le mur nu du casino (calque Wall_A, sans rideaux, statues
+# derrière vitre ni tableau), en rythme régulier : le mur d'origine entier (colonnes 10-22 : pilier, fenêtre en arc,
+# niche, fenêtre, pilier), puis encore une fenêtre et une niche (10-17) ; le pilier de la colonne 22 et celui de la 10
+# se raccordent en un seul.
+AS_BACK = dict(zip(range(2, 23), list(range(10, 23)) + list(range(10, 18))))
+for _p in _as_paste:
+    _tx, _ty = _p['to']
+    if _ty <= 2 and _tx in AS_BACK:
+        _p['from'] = (GC, AS_BACK[_tx], _p['from'][2], 1, 1)
+        _p['only'] = ('Floor', 'Wall_A')
+    if _ty == 3 and _tx in (2, 22):                  # les pots des plantes d'angle (leur feuillage était au mur)
+        _p['only'] = ('Floor', 'Wall')
+    # Les petits murs des recoins du bas (arches d'angle, rangées 12-14) : au-dessus, le vide noir du casino laisse
+    # place au bord de la salle et au sol, comme les rangées voisines (le haut du petit mur n'est plus noir).
+    if _ty == 11 and _tx in (2, 3, 21, 22):
+        _p['from'] = (GC, AS_COLS[_tx], 14, 1, 1)
+    if _ty == 12 and _tx in (2, 3, 21, 22):          # le haut du petit mur : sa corniche est un meuble (plus bas)
+        _p['only'] = ('Floor',)
+# … et le sol de la salle derrière ce haut de mur (le casino n'en a pas là).
+_as_paste += [{'from': (GC, AS_COLS[tx], 14, 1, 1), 'to': (tx, 12), 'sol': True, 'only': ('Floor',)}
+              for tx in (2, 3, 21, 22)]
+
+
+def wall_top_no_ceiling(sx, sy):
+    """Haut d'un petit mur du casino sans le bord du plafond (noir pur) dessiné dans la case : la corniche seule."""
+    import numpy as np
+    r = HG.room(GC, sx, sy, 1, 1, only=('Wall',))
+    img = Image.new('RGBA', (T, T))
+    for t in r['decor'][0] + r['dessus'][0]:
+        img.alpha_composite(t)
+    a = np.array(img)
+    a[(a[..., 0] == 0) & (a[..., 1] == 0) & (a[..., 2] == 0)] = 0
+    return Image.fromarray(a)
+
+
+for _tx in (2, 3, 21, 22):
+    ITEMS[f'h-corniche-{_tx}'] = {'img': (lambda sx=AS_COLS[_tx]: wall_top_no_ceiling(sx, 16)), 'solid': 1, 'flat': True}
 # Le bar (comptoir de la tour Radio, ses deux bouts) en haut à gauche ; le DJ (console et table à micros du studio de la
 # tour Radio) au milieu du fond ; des guéridons et chaises du salon à droite.
 AS_FURNITURE = [
@@ -259,10 +367,55 @@ PLANS = {
     # Premier pub : le salon de la tour Radio (23 x 12). Le comptoir en U au fond à gauche : le barman dedans, les
     # clients commandent depuis la rangée 7 (le comptoir en rangée 8) ; la bande aux deux tables basses à canapés, à
     # droite ; le tapis de sortie en bas à gauche (1, 11).
-    'hullPubA': {'hgss': (RT, 10, 111, 23, 12)},
-    # Second pub : la maison de Fargas (16 x 10). La barmaid derrière le comptoir en L de droite, l'habitué devant la
-    # cible accrochée sous le tableau, la bande autour de la table du milieu ; sortie (3, 9).
-    'hullPubB': {'hgss': (AZ, 10, 25, 16, 10), 'items': [['cible', 7, 2]]},
+    'hullPubA': {
+        'hgss': (AZ, 10, 25, 20, 11),
+        'splice': [{'from': (AZ, 10 + sx, 25 + sy, 1, 1), 'to': (tx, ty)}
+                   for ty, sy in enumerate(PUB_A_ROWS) for tx, sx in enumerate(PUB_A_COLS)],
+        'erase': [(0, 2, 20, 9)],
+        'paste': fargas_floor(PUB_A_COLS, range(2, 10)) + fargas_wall_base(PUB_A_COLS),
+        'items': [
+            # Le bar : long comptoir (on commande par-dessus, la rangée 5 ; le barman derrière, rangée 4), étagères à
+            # bouteilles au mur, pompes et pintes dessus, tonneaux aux deux bouts (on ne passe pas derrière).
+            ['ci-etagere-bouteilles', 2, 2], ['ci-etagere-bouteilles', 6, 2],
+            ['ci-long-comptoir', 2, 5, {'solid': [[0] * 7, [1] * 7]}],
+            ['ci-pompes-biere', 3, 4], ['ci-pompes-biere', 6, 4], ['ci-pintes', 4, 4], ['ci-pintes', 8, 4],
+            ['ci-tonneau', 1, 4], ['ci-tonneau', 1, 3], ['ci-tonneau', 9, 4], ['ci-lampe-laiton', 9, 3],
+            *[['ci-tabouret-bar', x, 6] for x in (3, 5, 7)],
+            # Les deux tables de la bande (une commande chacun), tabourets autour.
+            ['ci-table-bois', 13, 6], ['ci-table-bois', 13, 9],
+            *[['ci-tabouret-bar', x, y] for x in (12, 15) for y in (5, 8)],
+            # Banquettes le long du mur de droite, petites tables rondes près de l'entrée, la cible au mur.
+            ['ci-table-rouge-g', 16, 5], ['ci-table-rouge-d', 18, 5],
+            ['ci-table-rouge-g', 16, 9], ['ci-table-rouge-d', 18, 9],
+            ['ci-table-pub', 7, 9], ['ci-tabouret-bar', 6, 9], ['ci-tabouret-bar', 8, 9],
+            ['ci-table-pub', 10, 7], ['ci-tabouret-bar', 9, 7], ['ci-tabouret-bar', 11, 7],
+            ['cible', 11, 2], ['ci-tonneau', 0, 9], ['ci-tonneau', 19, 10],
+        ],
+    },
+    # Second pub : la maison de Fargas (16 x 10), en pub anglais. Boiseries et fenêtres d'origine ; plancher partout (plus
+    # de tatamis) ; le comptoir en U de droite, nu, est le bar (barmaid dedans), l'étagère à bouteilles au mur derrière,
+    # pompes à bière et pintes dessus ; deux banquettes rouges à gauche (des habitués), la table de la bande au milieu
+    # (tabourets), la cible au mur (l'habitué devant), deux petites tables rondes près de l'entrée, des tonneaux ;
+    # sortie (3, 9).
+    'hullPubB': {
+        'hgss': (AZ, 10, 25, 16, 10),
+        'erase': [(0, 2, 16, 8)],
+        'paste': fargas_floor(16, range(2, 9)) + fargas_wall_base(16) + [
+            {'from': (AZ, 21, 28, 5, 4), 'to': (11, 3), 'only': ('Props_A_1',)},     # le bar en U
+            {'from': (AZ, 17, 30, 2, 2), 'to': (7, 5), 'only': ('Props_A_1',)},      # la table de la bande
+        ],
+        'items': [
+            ['ci-etagere-bouteilles', 11, 2], ['ci-pompes-biere', 12, 3], ['ci-pompes-biere', 14, 3],
+            ['ci-pintes', 13, 3], ['ci-pintes', 11, 4], ['cible', 7, 2],
+            ['ci-table-rouge-g', 0, 5], ['ci-table-rouge-d', 2, 5],
+            ['ci-table-rouge-g', 0, 8], ['ci-table-rouge-d', 2, 8],
+            *[['ci-tabouret-bar', x, y] for x, y in ((6, 5), (9, 5), (6, 6), (9, 6))],
+            ['ci-table-pub', 6, 8], ['ci-tabouret-bar', 5, 8], ['ci-tabouret-bar', 7, 8],
+            ['ci-table-pub', 10, 8], ['ci-tabouret-bar', 9, 8], ['ci-tabouret-bar', 11, 8],
+            ['ci-tonneau', 15, 8], ['ci-tonneau', 15, 9], ['ci-tonneau', 14, 9],
+        ],
+        'free': [[x, y] for x in (12, 13, 14) for y in (5, 6)],                     # dans le bar
+    },
     # The Asylum : le salon du casino de Doublonville agrandi (25 x 18, voir _as_pick) ; le bar en haut à gauche, le DJ
     # au fond, la piste au milieu du grand tapis (x 6-14, y 7-11) ; sortie (16, 16).
     'hullAsylum': {
@@ -270,6 +423,7 @@ PLANS = {
         'paste': _as_paste + AS_FURNITURE,
         'free': _as_free,
         'block': blocked(AS_FURNITURE),
+        'items': [[f'h-corniche-{tx}', tx, 12] for tx in (2, 3, 21, 22)],
     },
     # Bibliothèque Brynmor Jones : le labo des Ruines Alpha (11 x 13), ses machines remplacées par deux tables de
     # lecture à coussins (appartements de Doublonville), deux rayonnages de plus en haut à gauche ; sortie (3, 11).

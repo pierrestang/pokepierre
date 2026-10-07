@@ -1643,74 +1643,81 @@ export const interiors = {
     ],
   },
 
-  // Hull — premier pub de Newland Avenue : un vrai pub anglais. Long comptoir en bois et ses pompes à bière, étagères
-  // à bouteilles au mur derrière le barman (qui va et vient), tabourets où les habitués sont accoudés, tables rondes,
-  // cible de fléchettes (art/frlgArt.js, meubles de bar). On commande sa pinte au barman par-dessus le comptoir.
-  // Les tabourets ne bloquent pas : on s'y assoit (les PNJ s'y posent).
+  // Hull — premier pub de Newland Avenue, un vrai pub anglais (dessin : la maison de Fargas d'HGSS élargie, voir
+  // scripts/interieurs/hull.py) : boiseries et plancher, long comptoir contre le mur du fond (étagères à bouteilles
+  // derrière, pompes et pintes dessus, tonneaux aux bouts) ; le barman va et vient derrière, on lui commande par-dessus
+  // le comptoir ('#'), des habitués accoudés sur les tabourets. La bande aux deux tables de bois à droite, des
+  // banquettes le long du mur, des petites tables rondes, la cible au mur. Les tabourets ne bloquent pas.
   hullPubA: {
     name: 'Pub',
     grid: parseGrid([
-      'XXXXXXXXXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXXXXXXXXX',
-      'moooommmommmooooooooooo',
-      'ooooooooooooooooooooooo',
-      'ooooooooooooooooooooooo',
-      'ooooooooooooooooommmmoo',
-      'ooooooooooooooooommmmoo',
-      'ooooooooooooooooooooooo',
-      'ooo###########ooooooooo',
-      'ooomooooooooomooommmmoo',
-      'ooomooooooooomooommmmoo',
-      'oEomooooooooomooooooooo',
+      'XXXXXXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXXXXXX',
+      'omooooooomoooooooooo',   // derrière le bar (tonneaux, lampe aux bouts)
+      'omooooooomooooooommo',   // le barman ; banquettes à droite
+      'oo#######oooommoommo',   // le comptoir (on commande par-dessus) ; la première table de la bande
+      'ooooooooooooommooooo',   // tabourets au comptoir
+      'oooooooooomooooooooo',   // une table ronde
+      'ooooooooooooommoommo',   // la seconde table de la bande, banquettes
+      'moooooomooooommoommo',
+      'oooEooooooooooooooom',
     ]),
-    spawn: { x: 1, y: 10, facing: 'up' },
+    spawn: { x: 3, y: 9, facing: 'up' },
     objects: [
-      ...[4, 5, 6, 7, 8, 9, 10, 11, 12].map((x) => ({ x, y: 8, script: PUB_A_BAR })),
-      ...[[18, 5], [19, 9]].map(([x, y]) => ({ x, y, dialogue: ['Une table basse, quelques ronds de bière.'] })),
+      ...[2, 3, 4, 5, 6, 7, 8].map((x) => ({ x, y: 5, script: PUB_A_BAR })),
+      ...[[13, 5], [14, 9]].map(([x, y]) => ({ x, y, dialogue: ['Une table de bois, quelques ronds de bière.'] })),
+      ...[[1, 4], [9, 4], [0, 9], [19, 10]].map(([x, y]) => ({ x, y, dialogue: ['Des tonneaux de bière. Ça sent le houblon.'] })),
+      ...[[17, 4], [17, 8]].map(([x, y]) => ({ x, y, dialogue: ['Une banquette de pub, le cuir un peu usé.'] })),
     ],
     npcs: [
-      // Le barman, dans le comptoir en U : on lui commande par-dessus le comptoir ('#'), ou au comptoir quand il est loin.
-      { id: 'barman-a', name: 'Barman', x: 8, y: 9, facing: 'up', pace: [[5, 9], [11, 9]], script: PUB_A_BAR },
-      { id: 'client-a1', name: 'Client', x: 5, y: 7, facing: 'down', fidget: true, dialogue: ['Cheers, mate!'] },
-      { id: 'client-a2', name: 'Cliente', x: 11, y: 7, facing: 'down', fidget: true, dialogue: ['La Guinness est bonne, ce soir.'] },
+      // Le barman, derrière le comptoir : on lui commande par-dessus le comptoir ('#'), ou au comptoir quand il est loin.
+      { id: 'barman-a', name: 'Barman', x: 5, y: 4, facing: 'down', pace: [[2, 4], [8, 4]], script: PUB_A_BAR },
+      { id: 'client-a1', name: 'Client', x: 3, y: 6, facing: 'up', fidget: true, dialogue: ['Cheers, mate!'] },
+      { id: 'client-a2', name: 'Cliente', x: 7, y: 6, facing: 'up', fidget: true, dialogue: ['La Guinness est bonne, ce soir.'] },
+      { id: 'client-a3', name: 'Client', x: 16, y: 4, facing: 'right', fidget: true, dialogue: ['Le quiz du pub, c\'est mon équipe qui gagne. Toujours.'] },
+      { id: 'client-a4', name: 'Cliente', x: 19, y: 4, facing: 'left', fidget: true, dialogue: ['On garde la banquette, on attend des amis.'] },
+      { id: 'client-a5', name: 'Client', x: 19, y: 9, facing: 'left', fidget: true, dialogue: ['Une autre pinte et je rentre. Promis.'] },
       // La bande, aux deux tables : chacun sa commande (voir hullStory.js ORDERS).
       ...ORDERS.map((order, i) => ({
-        id: order.id, name: order.name, ...[[16, 5, 'right'], [21, 5, 'left'], [16, 9, 'right'], [21, 9, 'left']].map(([x, y, facing]) => ({ x, y, facing }))[i],
+        id: order.id, name: order.name, ...[[12, 5, 'right'], [15, 5, 'left'], [12, 8, 'right'], [15, 8, 'left']].map(([x, y, facing]) => ({ x, y, facing }))[i],
         ...PUB_A_TIME, still: true, script: orderScript(order),
       })),
     ],
     events: [{ on: 'enter', ...PUB_A_TIME, steps: PUB_A_WELCOME }],
   },
 
-  // Hull — deuxième pub : comptoir et étagère à bouteilles au fond à gauche, trois tables rondes par rangée avec un
-  // tabouret de chaque côté (les tabourets ne bloquent pas), des habitués ; la bande à la table du fond à droite, un
-  // habitué près de la cible propose une partie de fléchettes.
+  // Hull — deuxième pub (dessin : la maison de Fargas d'HGSS en pub anglais, scripts/interieurs/hull.py) : boiseries,
+  // plancher, le bar en U à droite (la barmaid dedans, étagère à bouteilles derrière, pompes et pintes), deux banquettes
+  // rouges à gauche (des habitués), la table de la bande au milieu, la cible au mur (l'habitué devant propose une partie
+  // de fléchettes), deux petites tables rondes et des tonneaux près de l'entrée.
   hullPubB: {
     name: 'Pub',
     grid: parseGrid([
       'XXXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXXX',
       'mmmmmmmmmmmmmmmm',
-      'mmmmmmooommmmmmm',
-      'moooooooooommmmm',
-      'moooooommoomooom',
+      'ooooooooooommmmm',   // le haut du bar en U
+      'ommoooooooommmmm',   // banquettes à gauche
+      'ommoooommoomooom',   // la table de la bande, la barmaid dans le bar
       'ooooooommoomooom',
-      'oooooooooooooooo',
-      'oooooooooooooooo',
-      'oooEoooooooooooo',
+      'ommooooooooooooo',
+      'ommooomooomoooom',   // tables rondes, tonneaux
+      'oooEoooooooooomm',
     ]),
-    spawn: { x: 3, y: 8, facing: 'up' },
+    spawn: { x: 4, y: 8, facing: 'up' },
     npcs: [
       { id: 'barman-b', name: 'Barmaid', x: 13, y: 5, facing: 'down', fidget: true, dialogue: ['Your friend booked the table at the back!'] },
-      { id: 'client-b1', name: 'Client', x: 2, y: 5, facing: 'right', fidget: true, dialogue: ['Another round, please!'] },
-      { id: 'client-b2', name: 'Cliente', x: 4, y: 5, facing: 'left', fidget: true, dialogue: ['Quiz night, c\'est jeudi. Tu viens ?'] },
+      { id: 'client-b1', name: 'Client', x: 0, y: 5, facing: 'right', fidget: true, dialogue: ['Another round, please!'] },
+      { id: 'client-b2', name: 'Cliente', x: 3, y: 5, facing: 'left', fidget: true, dialogue: ['Quiz night, c\'est jeudi. Tu viens ?'] },
       { id: 'client-b3', name: 'Client', x: 13, y: 7, facing: 'up', fidget: true, dialogue: ['Hull City a gagné, ce soir !'] },
-      { id: 'client-b4', name: 'Cliente', x: 1, y: 7, facing: 'right', fidget: true, dialogue: ['Cheers!'] },
+      { id: 'client-b4', name: 'Cliente', x: 0, y: 8, facing: 'right', fidget: true, dialogue: ['Cheers!'] },
+      { id: 'client-b5', name: 'Client', x: 7, y: 8, facing: 'left', fidget: true, dialogue: ['Le meilleur fish and chips de Hull, ici.'] },
       // L'habitué, près de la cible : la partie de fléchettes (voir hullStory.js DARTS).
       { id: 'habitue', name: 'Habitué', x: 7, y: 3, facing: 'down', ...PUB_B_TIME, script: DARTS },
       { id: 'habitue-apres', name: 'Habitué', x: 7, y: 3, facing: 'down', ifFlags: [FLAGS.flechettesJouees], script: HABITUE_AFTER },
-      // La bande, à la table du fond à droite : Léo, entré le premier, attend ; les autres suivaient Pierre et
-      // s'attablent en arrivant (mêmes id que leurs suiveurs, voir hullStory.js PUB_B_ENTER).
+      // La bande, à la table du milieu : Léo, entré le premier, attend ; les autres suivaient Pierre et s'attablent en
+      // arrivant (mêmes id que leurs suiveurs, voir hullStory.js PUB_B_ENTER).
       { id: 'leo-pub', name: 'Léo', x: 6, y: 5, facing: 'right', still: true, ...PUB_B_TIME, dialogue: ['Une partie de fléchettes, et on file à l\'Asylum !'] },
       ...[['ousmane-pub', 'Ousmane', 'left', 'Vas-y, montre-lui !'],
         ['charlotte-pub', 'Charlotte', 'right', 'Vise le milieu. Ou pas, c\'est plus drôle.'],
@@ -1725,6 +1732,8 @@ export const interiors = {
     ],
     objects: [
       ...[[7, 5], [8, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une table de bois, quelques ronds de bière.'] })),
+      ...[[15, 8], [14, 9]].map(([x, y]) => ({ x, y, dialogue: ['Des tonneaux de bière. Ça sent le houblon.'] })),
+      ...[[1, 4], [1, 7]].map(([x, y]) => ({ x, y, dialogue: ['Une banquette de pub, le cuir un peu usé.'] })),
     ],
   },
 
