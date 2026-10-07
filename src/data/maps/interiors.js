@@ -1854,27 +1854,20 @@ export const interiors = {
   },
 
 
-  // Hanoï — ta maison (maison-tube rose, 2e en haut à gauche).
+  // Hanoï — ta maison (maison-tube rose, 2e en haut à gauche) : la petite maison de Doublonville (HGSS),
+  // un lit contre le mur de gauche (scripts/interieurs/asie_amsterdam.py).
   hanoiHome: {
     name: 'Ta maison à Hanoï',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXX',
-      'XXXXXXXX',
-      'mmoommoo', // lit, table basse
-      'mmoooooo',
-      'moooooom',
-      'oooooooo',
-      'oooooooo',
-      'oooEEooo',
+      'XXXXXXXXX',
+      'XXXXXXXXX',
+      'mmmooommm',
+      'ooooooooo',
+      'omooommoo',
+      'omooommoo',
+      'omooooooo',
+      'oooEooooo',
     ]),
-    decor: [
-      { kind: 'bed', x: 0, y: 2 },
-      { kind: 'window', x: 2, y: 0 },
-      { kind: 'kitchen', x: 4, y: 1 },
-      { kind: 'pottedPlant', x: 0, y: 4 },
-      { kind: 'pottedPlant', x: 7, y: 4 },
-    ],
     spawn: { x: 3, y: 6, facing: 'up' },
     events: [
       {
@@ -1885,34 +1878,28 @@ export const interiors = {
     ],
   },
 
-  // Hanoï — l'agence de voyage : ton nouveau travail commence (étape 1).
+  // Hanoï — l'agence de voyage : ton nouveau travail commence (étape 1). Le bureau du directeur de la Tour
+  // Radio (HGSS) : la directrice derrière son grand bureau, sur le tapis.
   travelAgency: {
     name: 'Agence de voyage',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XXXXXXXXXX',
-      'mmoooooomm',
-      'ooommmmooo', // comptoir
-      'oooooooooo',
-      'moooooooom',
-      'oooooooooo',
-      'ooooEEoooo',
+      'XXXXXXXXX',
+      'XXXXXXXXX',
+      'mmooooomm',
+      'mmooooooo',
+      'ooooooooo',
+      'mommoooom',
+      'ooooooooo',
+      'mooooooom',
+      'ooommmooo',
+      'moommmoom',
+      'ooooooooo',
+      'moooEooom',
     ]),
-    decor: [
-      { kind: 'bookshelf', x: 0, y: 0 },
-      { kind: 'window', x: 4, y: 0 },
-      { kind: 'notice', x: 7, y: 0 },
-      { kind: 'bookshelf', x: 8, y: 0 },
-      { kind: 'longTable', x: 3, y: 3 },
-      { kind: 'crtTv', x: 6, y: 3 },
-      { kind: 'pottedPlant', x: 0, y: 5 },
-      { kind: 'pottedPlant', x: 9, y: 5 },
-    ],
-    spawn: { x: 4, y: 6, facing: 'up' },
+    spawn: { x: 4, y: 10, facing: 'up' },
     npcs: [
       {
-        id: 'patron-agence', name: 'Directrice', x: 4, y: 4, facing: 'down', color: 0xc83c5c,
+        id: 'patron-agence', name: 'Directrice', x: 4, y: 7, facing: 'down', color: 0xc83c5c,
         unlessFlags: [FLAGS.visiteTerminee],
         dialogue: [
           "[Directrice - texte provisoire] Bienvenue dans l'équipe de l'agence !",
@@ -1923,7 +1910,7 @@ export const interiors = {
       },
       // Après la visite du temple : elle te remercie et te laisse partir.
       {
-        id: 'patron-agence-fin', name: 'Directrice', x: 4, y: 4, facing: 'down', color: 0xc83c5c,
+        id: 'patron-agence-fin', name: 'Directrice', x: 4, y: 7, facing: 'down', color: 0xc83c5c,
         ifFlags: [FLAGS.visiteTerminee],
         dialogue: [
           '[Directrice - texte provisoire] Merci pour ton travail, les touristes sont ravis !',
@@ -1935,78 +1922,56 @@ export const interiors = {
     ],
   },
 
-  // Hanoï — l'intérieur de la pagode : l'objet de chance est sur l'autel.
+  // Hanoï — l'intérieur de la pagode : l'objet de chance est sur l'autel. Le dernier étage de la tour
+  // Chétiflor (HGSS) ; l'autel, la table dorée, entre les statues du fond.
   temple: {
     name: 'Temple',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XXXXXXXXXX',
-      'moommmmoom', // autel au centre
-      'oooooooooo',
-      'oooooooooo',
-      'moooooooom', // piliers
-      'oooooooooo',
-      'moooooooom',
-      'ooooEEoooo',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'mmoomooomoomm',
+      'mmoommmmmoomm',
+      'mooooooooooom',
+      'mooooooooooom',
+      'mooooooooooom',
+      'mmooooooooomm',
+      'mmooooooooomm',
+      'moooooEooooom',
     ]),
-    decor: [
-      { kind: 'pottedPlant', x: 0, y: 2 },
-      { kind: 'painting', x: 4, y: 0 },
-      { kind: 'longTable', x: 3, y: 2 },
-      { kind: 'pottedPlant', x: 6, y: 2 },
-      { kind: 'pottedPlant', x: 9, y: 2 },
-      { kind: 'plant', x: 0, y: 4 },
-      { kind: 'plant', x: 9, y: 4 },
-      { kind: 'pottedPlant', x: 0, y: 7 },
-      { kind: 'pottedPlant', x: 9, y: 7 },
-    ],
-    spawn: { x: 4, y: 7, facing: 'up' },
-    // Les quatre cases de l'autel réagissent quand on leur fait face.
-    objects: [3, 4, 5, 6].map((x) => ({
+    spawn: { x: 6, y: 9, facing: 'up' },
+    // Les trois cases de l'autel réagissent quand on leur fait face.
+    objects: [5, 6, 7].map((x) => ({
       x,
-      y: 2,
+      y: 4,
       dialogue: ["[Texte provisoire] Sur l'autel, tu trouves un objet de chance."],
       after: ["[Texte provisoire] L'autel est paisible."],
       item: ITEMS.objetChance,
     })),
   },
 
-  // Amsterdam — le bureau CORNING : Laurent, le patron, te lance dans ton nouveau stage.
+  // Amsterdam — le bureau CORNING : Laurent, le patron, te lance dans ton nouveau stage. Un étage de bureaux de
+  // la Tour Radio (HGSS) : table de réunion, postes informatiques ; Laurent près des fenêtres.
   corning: {
     name: 'Corning',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmoooooooomm',
-      'oooommmmoooo', // bureau du patron
-      'oooooooooooo',
-      'mmoommoommoo', // postes de travail
-      'oooooooooooo',
-      'mmoommoommoo',
-      'oooooooooooo',
-      'oooooooooooo',
-      'ooooooEEoooo',
+      'XXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXX',
+      'mmoooooooooomm',
+      'mmoooooooooomm',
+      'mmoooooooooooo',
+      'mmoommoooooooo',
+      'ooooooooommooo',
+      'ooooooooommooo',
+      'oooommooommooo',
+      'oooooooooooooo',
+      'oooooooooooooo',
+      'moooooEooooooo',
     ]),
-    decor: [
-      { kind: 'bookshelf', x: 0, y: 0 },
-      { kind: 'window', x: 3, y: 0 },
-      { kind: 'notice', x: 6, y: 0 },
-      { kind: 'bookshelf', x: 10, y: 0 },
-      { kind: 'longTable', x: 4, y: 3 },
-      { kind: 'crtTv', x: 7, y: 3 },
-      { kind: 'paperDesk', x: 0, y: 5 },
-      { kind: 'paperDesk', x: 4, y: 5 },
-      { kind: 'paperDesk', x: 8, y: 5 },
-      { kind: 'paperDesk', x: 0, y: 7 },
-      { kind: 'paperDesk', x: 4, y: 7 },
-      { kind: 'paperDesk', x: 8, y: 7 },
-    ],
-    spawn: { x: 6, y: 9, facing: 'up' },
+    spawn: { x: 6, y: 10, facing: 'up' },
     npcs: [
       {
-        id: 'laurent', name: 'Laurent', x: 6, y: 4, facing: 'down', color: 0x2c4c8c,
+        id: 'laurent', name: 'Laurent', x: 10, y: 4, facing: 'down', color: 0x2c4c8c,
         dialogue: [
           '[Laurent - texte provisoire] Bienvenue chez Corning ! Je suis Laurent, le patron.',
           'Ton stage commence aujourd\'hui. Bienvenue dans l\'équipe !',
@@ -2017,36 +1982,25 @@ export const interiors = {
     ],
   },
 
-  // Amsterdam — le coffee shop : on t'y vend la marchandise pour Romain.
+  // Amsterdam — le coffee shop : on t'y vend la marchandise pour Romain. La fleuriste de Doublonville (HGSS),
+  // des plantes partout ; le vendeur derrière la grande table verte.
   coffeeShop: {
     name: 'Coffee shop',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXX',
-      'XXXXXXXX',
-      'mmmmmmmm', // comptoir
-      'oooooooo',
-      'mooooomm',
-      'oooooooo',
-      'moooooom',
-      'oooEEooo',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'mmmooooomm',
+      'oooooooooo',
+      'mmooommmom',
+      'ooooommmoo',
+      'mmmoooooom',
+      'oooooooooo',
+      'mmooEooomm',
     ]),
-    decor: [
-      { kind: 'kitchen', x: 0, y: 1 },
-      { kind: 'kitchen', x: 2, y: 1 },
-      { kind: 'fridge', x: 4, y: 1 },
-      { kind: 'blueShelf', x: 5, y: 1 },
-      { kind: 'glassCabinet', x: 6, y: 1 },
-      { kind: 'cabinet', x: 7, y: 1 },
-      { kind: 'pottedPlant', x: 0, y: 4 },
-      { kind: 'paperDesk', x: 6, y: 4 },
-      { kind: 'pottedPlant', x: 0, y: 6 },
-      { kind: 'pottedPlant', x: 7, y: 6 },
-    ],
-    spawn: { x: 3, y: 6, facing: 'up' },
+    spawn: { x: 4, y: 7, facing: 'up' },
     npcs: [
       {
-        id: 'vendeur', name: 'Vendeur', x: 3, y: 3, facing: 'down', color: 0x3c9c4c,
+        id: 'vendeur', name: 'Vendeur', x: 6, y: 2, facing: 'down', color: 0x3c9c4c,
         dialogue: [
           '[Vendeur - texte provisoire] Salut ! Tu viens pour la commande de Romain ?',
           'Voilà, tu as acheté la marchandise.',
@@ -2058,31 +2012,26 @@ export const interiors = {
     ],
   },
 
-  // Amsterdam — la maison commune : Romain t'attend pour récupérer la marchandise.
+  // Amsterdam — la maison commune : Romain t'attend pour récupérer la marchandise. La chambre du héros de
+  // Bourg Geon (HGSS) : bureau et PC, télé, deux lits, tapis ; l'escalier du coin mène à l'étage (fermé).
   maisonCommune: {
     name: 'Maison commune',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXX',
-      'XXXXXXXX',
-      'mmommomm', // deux lits, table
-      'mmoooomm',
-      'oooooooo',
-      'moooooou', // ordinateur à droite
-      'oooooooo',
-      'oooEEooo',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'mmmoommmmm',
+      'mmoooooooo',
+      'oooooooooo',
+      'oooooooooo',
+      'omoooooomo',
+      'omoooooomo',
+      'omooEooomo',
     ]),
-    decor: [
-      { kind: 'bed', x: 0, y: 2 },
-      { kind: 'computerDesk', x: 3, y: 2 },
-      { kind: 'bed', x: 6, y: 2 },
-      { kind: 'window', x: 2, y: 0 },
-      { kind: 'pottedPlant', x: 0, y: 5 },
-    ],
-    spawn: { x: 3, y: 6, facing: 'up' },
+    spawn: { x: 4, y: 8, facing: 'up' },
     npcs: [
       {
-        id: 'romain-maison', name: 'Romain', x: 5, y: 5, facing: 'left', color: 0xc0602c,
+        id: 'romain-maison', name: 'Romain', x: 7, y: 4, facing: 'left', color: 0xc0602c,
         dialogue: ["[Romain - texte provisoire] Alors, tu es passé au coffee shop ?"],
         after: ['[Romain - texte provisoire] Merci encore !'],
         receive: {
@@ -2095,15 +2044,15 @@ export const interiors = {
         },
       },
     ],
-    // L'ordinateur (bureau à droite) : le mail n'arrive qu'après toutes les étapes d'Amsterdam.
+    // L'ordinateur (sur le bureau du fond) : le mail n'arrive qu'après toutes les étapes d'Amsterdam.
     objects: [
       {
-        x: 7, y: 5,
+        x: 5, y: 3,
         unlessFlags: [FLAGS.marchandiseDonnee],
         dialogue: ["[Texte provisoire] C'est ton ordinateur. Aucun nouveau mail pour l'instant."],
       },
       {
-        x: 7, y: 5,
+        x: 5, y: 3,
         ifFlags: [FLAGS.marchandiseDonnee],
         dialogue: [
           '[Texte provisoire] Nouveau mail ! « Merci de retourner à l\'université de Hull',
@@ -2115,41 +2064,27 @@ export const interiors = {
     ],
   },
 
-  // New Delhi — l'université : ton échange universitaire commence.
+  // New Delhi — l'université : ton échange universitaire commence. La classe de l'école de Mauville (HGSS) :
+  // tableau, bureau du professeur, pupitres et chaises rouges, coin carrelé avec bibliothèque.
   delhiUniversity: {
     name: 'Université de Delhi',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXX', // tableau
-      'XXXXXXXXXXXX',
-      'mmoooooooomm',
-      'ooooommmoooo', // bureau du professeur
-      'oooooooooooo',
-      'ommommommomm',
-      'oooooooooooo',
-      'ommommommomm',
-      'oooooooooooo',
-      'oooooooooooo',
-      'ooooooEEoooo',
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'mmmoooooooooomm',
+      'oooommmoooooooo',
+      'ooooooooooooooo',
+      'oommmommmoooomm',
+      'ooooooooooooomm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooEoooooooom',
     ]),
-    decor: [
-      { kind: 'bookshelf', x: 0, y: 0 },
-      { kind: 'chalkboard', x: 4, y: 1 },
-      { kind: 'bookshelf', x: 10, y: 0 },
-      { kind: 'longTable', x: 5, y: 3 },
-      { kind: 'paperDesk', x: 1, y: 5 },
-      { kind: 'schoolDesk', x: 4, y: 5 },
-      { kind: 'paperDesk', x: 7, y: 5 },
-      { kind: 'schoolDesk', x: 10, y: 5 },
-      { kind: 'schoolDesk', x: 1, y: 7 },
-      { kind: 'paperDesk', x: 4, y: 7 },
-      { kind: 'schoolDesk', x: 7, y: 7 },
-      { kind: 'paperDesk', x: 10, y: 7 },
-    ],
-    spawn: { x: 6, y: 9, facing: 'up' },
+    spawn: { x: 5, y: 9, facing: 'up' },
     npcs: [
       {
-        id: 'prof-delhi', name: 'Professeure', x: 6, y: 4, facing: 'down', color: 0xd06020,
+        id: 'prof-delhi', name: 'Professeure', x: 5, y: 2, facing: 'down', color: 0xd06020,
         unlessFlags: [FLAGS.potionDonnee],
         dialogue: [
           '[Professeure - texte provisoire] Namaste ! Bienvenue à l\'université.',
@@ -2160,7 +2095,7 @@ export const interiors = {
       },
       // Au retour du désert : fin du semestre.
       {
-        id: 'prof-delhi-fin', name: 'Professeure', x: 6, y: 4, facing: 'down', color: 0xd06020,
+        id: 'prof-delhi-fin', name: 'Professeure', x: 5, y: 2, facing: 'down', color: 0xd06020,
         ifFlags: [FLAGS.potionDonnee],
         dialogue: [
           '[Professeure - texte provisoire] Félicitations pour ton semestre !',
@@ -2172,32 +2107,26 @@ export const interiors = {
     ],
   },
 
-  // Rajasthan — la tente rayée : la potion magique est posée sur le coffre du fond.
+  // Rajasthan — la tente : la potion magique est posée sur la table dorée du fond. La tente de la diseuse de
+  // bonne aventure de Doublonville (HGSS) : rideaux violets, tapis rond.
   tente: {
     name: 'Tente',
-    frlg: true,
     grid: parseGrid([
-      'XXXXXXXX',
-      'XXXXXXXX',
-      'moommoom', // coffre au centre
-      'oooooooo',
-      'oooooooo',
-      'moooooom',
-      'oooEEooo',
+      'XXXXXXXXX',
+      'mmmmmmmmm',
+      'ooooooooo',
+      'ooommmooo',
+      'ooooooooo',
+      'ooooooooo',
+      'omooooomo',
+      'ooooEoooo',
     ]),
-    decor: [
-      { kind: 'pottedPlant', x: 0, y: 2 },
-      { kind: 'schoolDesk', x: 3, y: 2 },
-      { kind: 'pottedPlant', x: 7, y: 2 },
-      { kind: 'pottedPlant', x: 0, y: 5 },
-      { kind: 'pottedPlant', x: 7, y: 5 },
-    ],
-    spawn: { x: 3, y: 5, facing: 'up' },
-    objects: [3, 4].map((x) => ({
+    spawn: { x: 4, y: 6, facing: 'up' },
+    objects: [3, 4, 5].map((x) => ({
       x,
-      y: 2,
-      dialogue: ['[Texte provisoire] Sur le coffre, une fiole scintille : la potion magique !'],
-      after: ['[Texte provisoire] Le coffre est vide.'],
+      y: 3,
+      dialogue: ['[Texte provisoire] Sur la table, une fiole scintille : la potion magique !'],
+      after: ['[Texte provisoire] La table est vide.'],
       item: ITEMS.potionMagique,
     })),
   },
