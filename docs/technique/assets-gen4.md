@@ -104,7 +104,7 @@ supprimé : les 23 planches gardées, régénérées depuis leur nouvel emplacem
 | torii_by_magiscarf_db7prw6-375w-2x.jpg | 528 x 176 | JPEG avec pertes, aperçu DeviantArt rééchantillonné (grille de pixels cassée) |
 | victorian_variations_by_magiscarf_dbjvf6f-fullview.jpg | 944 x 544 | JPEG avec pertes |
 | yangtze_city_by_wesleyfg_dimkcpm-300w-2x.jpg | 600 x 625 | JPEG avec pertes, aperçu DeviantArt rééchantillonné (grille de pixels cassée), carte d'exemple (pas un tileset) |
-| bw_personnages | 196 fichiers | Gen 5 : 196 sprites de personnages Noir / Blanc (régénérables par scripts/extract_bw_characters.py ; 5 doublons exacts) |
+| bw_personnages | 196 fichiers | Gen 5 : 196 sprites de personnages Noir / Blanc (dans _archive, hors dépôt ; 5 doublons exacts) |
 | Gen 4 OWs - Vanilla Sunshine/trchar052.png | 256 x 256 | doublon exact (sprite identique au pixel près) |
 | Gen 4 OWs - Vanilla Sunshine/trchar164.png | 256 x 256 | doublon exact (sprite identique au pixel près) |
 | Gen 4 OWs - Vanilla Sunshine/trchar165.png | 256 x 256 | doublon exact (sprite identique au pixel près) |

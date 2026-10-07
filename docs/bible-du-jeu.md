@@ -281,7 +281,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 ## 3. Montépilloy (Oise)
 
 ### La carte
-- 35 x 29 cases (agrandie de 3 x 3 en octobre 2026, scripts/grow_montepilloy.py) : la grand-rue nord-sud sur trois
+- 35 x 29 cases (agrandie de 3 x 3 en octobre 2026, script ponctuel retiré depuis) : la grand-rue nord-sud sur trois
   cases, la ferme de M. Bouly et la prairie élargies, le champ et la mare allongés ; ceinture d'arbres entiers.
 - 36 x 30 cases depuis les retouches d'octobre 2026 dans le créateur. La grange de M. Bouly est le grand bâtiment
   orange (porte grise en (10, 16)) ; le tracteur est à sa droite (x 13-14, y 12-13), Jean devant lui (13, 14), M. Bouly

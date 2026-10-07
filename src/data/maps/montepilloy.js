@@ -11,7 +11,7 @@ import {
 } from '../montepilloyStory.js';
 
 // Montépilloy (Oise) — village de campagne façon Rouge Feu, 36 x 30 cases (agrandie en octobre 2026 : scripts/
-// grow_montepilloy.py ; dimensions paires pour la bordure d'arbres). Chemins de terre : la grand-rue nord-sud, sur trois cases (la route du collège au nord, la route de Saint-Ay au sud), la rue des maisons et la rue de l'école. Les maisons
+// script ponctuel, retiré depuis ; dimensions paires pour la bordure d'arbres). Chemins de terre : la grand-rue nord-sud, sur trois cases (la route du collège au nord, la route de Saint-Ay au sud), la rue des maisons et la rue de l'école. Les maisons
 // bordent la grand-rue de chaque côté : la famille à gauche, la voisine à droite, l'école à droite en dessous. À
 // gauche, la ferme de M. Bouly, un enclos rectangulaire à clôture blanche ouvert à droite sur la grand-rue (deux
 // cases, panneau juste à l'intérieur) : la grange (toit orange de Rubis/Saphir, tonneaux à l'intérieur) et le
