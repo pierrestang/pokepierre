@@ -21,7 +21,9 @@ export function createStudio(api) {
   const { state } = api;
   let cat = null;                                  // catalogue.json
   let lis = null;                                  // lisieres.json
-  const ui = { material: 'chemin', element: null, size: 2 };
+  // variant : la couleur choisie de chaque famille (id de la famille -> id de l'élément) ; openGroup : la famille dont
+  // les teintes sont ouvertes dans le panneau.
+  const ui = { material: 'chemin', element: null, size: 2, variant: {}, openGroup: null };
 
   async function load() {
     if (cat) return;
@@ -604,13 +606,52 @@ export function createStudio(api) {
       els.append(h);
       const grid = document.createElement('div');
       grid.className = 'studio-grid';
+      // Une famille de couleurs (même élément, autres teintes) : une seule vignette, celle de la teinte choisie, avec une
+      // pastille « couleur » qui ouvre les autres.
+      const families = new Map();
+      for (const def of list) if (def.group) families.set(def.group, [...(families.get(def.group) ?? []), def]);
       for (const def of list) {
+        const family = def.group ? families.get(def.group) : null;
+        const shown = family && family.length > 1 ? family.find((d) => d.id === ui.variant[def.group]) ?? family[0] : def;
+        if (def !== shown) continue;
+        const cell = document.createElement('div');
+        cell.className = 'elem-cell';
         const b = document.createElement('button');
-        b.className = `elem${ui.element === def.id ? ' on' : ''}`;
+        const chosen = family && family.length > 1 ? family.some((d) => d.id === ui.element) : ui.element === def.id;
+        b.className = `elem${chosen ? ' on' : ''}`;
         b.title = `${def.name} (${def.w} × ${def.h})`;
         b.append(thumb(def));
-        b.onclick = () => { ui.element = def.id; api.setTool('place'); render(); };
-        grid.append(b);
+        b.onclick = () => { ui.element = def.id; ui.openGroup = null; api.setTool('place'); render(); };
+        cell.append(b);
+        if (family && family.length > 1) {
+          const badge = document.createElement('button');
+          badge.className = 'colour-badge';
+          badge.title = `Couleur : ${family.length} teintes (on peut aussi cliquer sur un élément posé de cette famille pour changer sa couleur)`;
+          badge.style.background = `conic-gradient(${family.map((d) => d.colour ?? '#888').join(', ')})`;
+          badge.onclick = (e) => { e.stopPropagation(); ui.openGroup = ui.openGroup === def.group ? null : def.group; render(); };
+          cell.append(badge);
+          if (ui.openGroup === def.group) {
+            const pop = document.createElement('div');
+            pop.className = 'colour-pop';
+            for (const d of family) {
+              const sw = document.createElement('button');
+              sw.className = `colour-swatch${d.id === shown.id ? ' on' : ''}`;
+              sw.title = d.name;
+              sw.style.background = d.colour ?? '#888';
+              sw.onclick = (e) => {
+                e.stopPropagation();
+                ui.variant[def.group] = d.id;
+                ui.element = d.id;
+                ui.openGroup = null;
+                api.setTool('place');
+                render();
+              };
+              pop.append(sw);
+            }
+            cell.append(pop);
+          }
+        }
+        grid.append(cell);
       }
       els.append(grid);
     }
@@ -645,16 +686,22 @@ export function createStudio(api) {
   async function hover(x, y) {
     const def = ui.element && theme().elements.find((e) => e.id === ui.element);
     if (!def) { ghost = null; return; }
-    const target = def.cat === 'maisons' ? await houseAt(x, y) : null;
-    const x0 = target ? target.door[0] - def.door[0] : x - Math.floor(def.w / 2);
-    const y0 = target ? target.door[1] - def.door[1] : y - def.h + 1;
+    // Un élément posé de la même famille de couleurs sous la souris : on change sa couleur (même place).
+    const under = def.group ? occupancy().get(y * state.map.width + x) : null;
+    const underDef = under && elementDef(under.id, under.theme);
+    const recolour = underDef && underDef.group === def.group && under.id !== def.id
+      ? { el: under, ignore: new Set(occupancyCells(under)), name: underDef.name, recolour: true, at: [under.x, under.y] } : null;
+    const target = recolour ?? (def.cat === 'maisons' ? await houseAt(x, y) : null);
+    const x0 = target?.at ? target.at[0] : target ? target.door[0] - def.door[0] : x - Math.floor(def.w / 2);
+    const y0 = target?.at ? target.at[1] : target ? target.door[1] - def.door[1] : y - def.h + 1;
     if (ghost && ghost.x === x0 && ghost.y === y0 && Boolean(ghost.replace) === Boolean(target)) return;
     ghost = { x: x0, y: y0, ok: true, pending: true, replace: target };
     const r = await canPlace(def, x0, y0, target?.ignore);
     if (ghost && ghost.x === x0 && ghost.y === y0) {
       ghost = { x: x0, y: y0, ...r, replace: target };
       const extra = r.clear?.length ? ` ; dégage ${r.clear.length} petit(s) objet(s)` : '';
-      api.setStatus(r.ok ? (target ? `Clic : remplacer ${target.name} par ${def.name}${extra}` : `Clic : poser ${def.name}${extra}`)
+      api.setStatus(r.ok ? (target?.recolour ? `Clic : changer la couleur (${def.name})`
+        : target ? `Clic : remplacer ${target.name} par ${def.name}${extra}` : `Clic : poser ${def.name}${extra}`)
         : `${def.name} : pas ici, ${r.why}`, r.ok ? '' : 'err');
       api.requestDraw();
     }
@@ -695,7 +742,8 @@ export function createStudio(api) {
     api.changed();
     const qc = api.terrain.verdict(before, await api.terrain.check());
     ghost = null;
-    const done = target ? `${target.name} remplacée par ${def.name}` : `${def.name} posé${def.cat === 'maisons' ? 'e' : ''}`;
+    const done = target?.recolour ? `Couleur changée : ${def.name}`
+      : target ? `${target.name} remplacée par ${def.name}` : `${def.name} posé${def.cat === 'maisons' ? 'e' : ''}`;
     const extra = r.clear.length ? ` (${r.clear.length} petit(s) objet(s) dégagé(s))` : '';
     return { text: `${done}${extra}. ${qc.text}`, kind: qc.ok ? 'ok' : 'warn' };
   }

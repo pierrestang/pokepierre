@@ -256,6 +256,13 @@ ELEMENTS = {
     'buches': ('Bûches', 'mobilier', lambda: lib_building((101, 4236, 22, 20), sid='g4-mobilier'), -1, 'land'),
     'table-jardin': ('Table de jardin', 'mobilier', lambda: lib_building((115, 4613, 89, 43), sid='g4-mobilier'), -2, 'land'),
     'tente': ('Tente', 'mobilier', lambda: lib_building((258, 2012, 59, 68), sid='g4-mobilier'), -3, 'land'),
+    'tente-brune': ('Tente brune', 'mobilier', lambda: lib_building((130, 2013, 59, 67), sid='g4-mobilier'), -3, 'land'),
+    'tente-violette': ('Tente violette', 'mobilier', lambda: lib_building((194, 2013, 59, 67), sid='g4-mobilier'), -3, 'land'),
+    # Boîtes aux lettres de couleur (une famille : une pastille « couleur »).
+    'boite-orange': ('Boîte aux lettres orange', 'mobilier', lambda: lib_building((16, 1576, 14, 26), sid='g4-mobilier'), -1, 'land'),
+    'boite-verte': ('Boîte aux lettres verte', 'mobilier', lambda: lib_building((32, 1576, 14, 26), sid='g4-mobilier'), -1, 'land'),
+    'boite-jaune': ('Boîte aux lettres jaune', 'mobilier', lambda: lib_building((48, 1576, 14, 26), sid='g4-mobilier'), -1, 'land'),
+    'boite-bleue': ('Boîte aux lettres bleue', 'mobilier', lambda: lib_building((64, 1576, 14, 26), sid='g4-mobilier'), -1, 'land'),
     'panneau-bois': ('Panneau en bois', 'mobilier', lambda: lib_building((294, 4177, 20, 31), sid='g4-mobilier'), -1, 'land'),
     'oriflamme': ('Oriflamme', 'mobilier', lambda: lib_building((68, 4120, 23, 56), sid='g4-mobilier'), -1, 'land'),
     'reverbere-rouge': ('Réverbère rouge', 'mobilier', lambda: lib_building((274, 3396, 16, 40), sid='g4-mobilier'), -1, 'land'),
@@ -280,7 +287,8 @@ def lis_tree(vid):
 LIS_ROUND = {v['id']: v['roundRow'] for v in json.loads((V2 / 'lisieres.json').read_text())['variants']}
 
 # ---------- Thèmes ----------
-COMMON = ['buisson', 'baies', 'arbuste-rose', 'rocher', 'panneau', 'boite-lettres', 'banc', 'jardiniere-rouge',
+COMMON = ['buisson', 'baies', 'arbuste-rose', 'rocher', 'panneau', 'boite-lettres', 'boite-orange', 'boite-verte',
+          'boite-jaune', 'boite-bleue', 'banc', 'jardiniere-rouge',
           'jardiniere-orange', 'jardiniere-rose', 'pot', 'nenuphar', 'rocher-mer', 'barque', 'voilier']
 THEMES = {
     'libre': {'name': 'Libre (toutes les couleurs d\'origine)', 'forest': 'dppt', 'paving': 'gris', 'lamp': 'reverbere',
@@ -296,7 +304,8 @@ THEMES = {
                            'arbre-olive', 'arbre-pointu', 'fougere', 'champignon', 'tronc-mousse', 'iris']},
     'route-de-montepilloy': {'name': 'Route de campagne', 'forest': 'dppt', 'paving': None, 'lamp': None,
                              'extra': ['arbre-foret', 'peuplier', 'poteau-indicateur', 'tente', 'feu', 'buches',
-                                       'arbre-pointu', 'arbre-pointu-brun', 'champignon', 'tronc-mousse', 'baies-sombres']},
+                                       'arbre-pointu', 'arbre-pointu-brun', 'champignon', 'tronc-mousse', 'baies-sombres',
+                                       'tente-brune', 'tente-violette']},
     'montepilloy': {'name': 'Montépilloy (village agricole)', 'forest': 'automne', 'paving': None, 'lamp': None,
                     'extra': ['arbre-foret', 'puits', 'bois', 'banc-bois', 'abri-bois', 'souche',
                               'caisse', 'feu', 'buches', 'poteau-indicateur', 'table-jardin', 'poubelle-rouge',
@@ -403,6 +412,139 @@ def solid_mask(img, solid_from, thin=False):
     return mask
 
 
+# ---------- Couleurs (octobre 2026) ----------
+# Un élément qui n'existe qu'en plusieurs couleurs n'apparaît qu'une fois dans le panneau, avec une pastille « couleur »
+# qui ouvre ses teintes (studio.js) : les éléments d'une même famille ont `group` (l'id du premier) et `colour` (la
+# couleur de leur pastille). Familles : même rayon, même taille et même silhouette (pixels pleins à 90 % communs).
+ROOF_HUES = {'rouge': 0, 'orange': 28, 'vert': 120, 'bleu': 215, 'violet': 275}
+ROOF_NAMES = {'rouge': 'toit rouge', 'orange': 'toit orange', 'vert': 'toit vert', 'bleu': 'toit bleu', 'violet': 'toit violet'}
+
+
+def _hsv(a):
+    rgb = a[..., :3].astype(float) / 255
+    mx, mn = rgb.max(-1), rgb.min(-1)
+    d = mx - mn
+    h = np.zeros(mx.shape)
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    m = d > 0
+    rm = m & (mx == r)
+    gm = m & (mx == g) & ~rm
+    bm = m & ~rm & ~gm
+    h[rm] = ((g - b)[rm] / d[rm]) % 6
+    h[gm] = (b - r)[gm] / d[gm] + 2
+    h[bm] = (r - g)[bm] / d[bm] + 4
+    s = np.where(mx > 0, d / np.where(mx > 0, mx, 1), 0)
+    return h * 60, s, mx
+
+
+def _rgb(h, s, v):
+    c = v * s
+    hp = (h / 60) % 6
+    x = c * (1 - np.abs(hp % 2 - 1))
+    z = np.zeros_like(h)
+    k = np.floor(hp).astype(int)
+    r = np.select([k == 0, k == 1, k == 2, k == 3, k == 4, k == 5], [c, x, z, z, x, c])
+    g = np.select([k == 0, k == 1, k == 2, k == 3, k == 4, k == 5], [x, c, c, x, z, z])
+    b = np.select([k == 0, k == 1, k == 2, k == 3, k == 4, k == 5], [z, z, x, c, c, x])
+    mm = v - c
+    return np.stack([r + mm, g + mm, b + mm], -1)
+
+
+def roof_hue(img, rows=None):
+    """La teinte dominante des pixels saturés du haut de l'image (le toit), ou None."""
+    a = np.array(img.convert('RGBA'))[:rows]
+    h, s, v = _hsv(a)
+    sel = (a[..., 3] > 0) & (s > 0.3) & (v > 0.25)
+    if sel.sum() < 40:
+        return None
+    hist, edges = np.histogram(h[sel], bins=36, range=(0, 360))
+    return float(edges[hist.argmax()] + 5)
+
+
+def recolour(img, src_hue, dst_hue, spread=24, rows=None):
+    """Les pixels de la teinte `src_hue` (± spread degrés, assez saturés) passent à la teinte `dst_hue` ; seulement dans
+    les `rows` premières lignes de pixels si on le donne (le toit, pas les murs de la même teinte)."""
+    a = np.array(img.convert('RGBA'))
+    h, s, v = _hsv(a)
+    dh = (h - src_hue + 180) % 360 - 180
+    sel = (a[..., 3] > 0) & (np.abs(dh) <= spread) & (s > 0.2)
+    if rows is not None:
+        # Le toit : les zones de cette teinte d'un seul tenant qui touchent le haut de la maison (`rows` premières
+        # lignes) ; les murs de la même teinte, séparés par le liseré, ne changent pas.
+        lab, _ = ndimage.label(sel, structure=np.ones((3, 3)))
+        top = set(np.unique(lab[:rows][sel[:rows]])) - {0}
+        sel = np.isin(lab, list(top))
+        bottom = np.nonzero((a[..., 3] > 0).any(1))[0][-1]
+        sel[bottom - TILE + 1:] = False                # la rangée du bas (porte, soubassement) garde ses couleurs
+    rgb = _rgb((dst_hue + dh) % 360, s, v)
+    out = a.copy()
+    out[sel, :3] = np.clip(rgb[sel] * 255 + 0.5, 0, 255).astype(np.uint8)
+    return Image.fromarray(out)
+
+
+def add_roof_variants(pack, elements, img, solid_from, door):
+    """Les autres couleurs de toit d'une maison (thème Libre) : une famille avec la maison de base."""
+    base = elements[-1]
+    alpha = np.array(img.convert('RGBA'))[..., 3] > 0
+    rows_with = np.nonzero(alpha.any(1))[0]
+    top, bottom = int(rows_with[0]), int(rows_with[-1])
+    roof = top + max(TILE, int((bottom - top) * 0.3))  # le haut du dessin, où commence le toit
+    hue = roof_hue(img, roof)
+    if hue is not None:
+        area = recolour(img, hue, (hue + 180) % 360, rows=roof)
+        changed = (np.array(area) != np.array(img.convert('RGBA'))).any(-1).sum()
+        a0 = np.array(img.convert('RGBA'))
+        roof_px = (np.array(area) != a0).any(-1)
+        if changed < 0.15 * (a0[..., 3] > 0).sum() or _hsv(a0)[1][roof_px].mean() < 0.35:
+            hue = None                                 # pas de grand toit bien coloré (toit gris…) : pas de variantes
+    if hue is None:
+        return
+    for cname, dst in ROOF_HUES.items():
+        if min(abs(dst - hue), 360 - abs(dst - hue)) < 40:
+            continue                                   # déjà de cette couleur
+        entry = element_entry(pack, f"{base['id']}-{cname}", f"{base['name']} ({ROOF_NAMES[cname]})", 'maisons',
+                              recolour(img, hue, dst, rows=roof), solid_from, 'land', door=door)
+        entry['group'] = base['id']
+        elements.append(entry)
+    if elements[-1] is not base:
+        base['group'] = base['id']
+
+
+def group_colours(elements, pack):
+    """Familles de couleurs : `group` et `colour` (pastille) sur les éléments d'une même silhouette."""
+    def image(e):
+        a = np.zeros((e['h'] * TILE, e['w'] * TILE, 4), np.uint8)
+        for j, row in enumerate(e['tiles']):
+            for i, k in enumerate(row):
+                if k >= 0:
+                    a[j * TILE:(j + 1) * TILE, i * TILE:(i + 1) * TILE] = np.array(pack.tiles[k])
+        return a
+    imgs = {e['id']: image(e) for e in elements}
+    for e in elements:
+        a = imgs[e['id']]
+        h, s, v = _hsv(a)
+        sel = (a[..., 3] > 0) & (s > 0.25) & (v > 0.2)
+        px = a[sel][:, :3] if sel.sum() >= 10 else a[a[..., 3] > 0][:, :3]
+        if len(px):
+            # La couleur la plus fréquente parmi les pixels colorés (arrondie), pour la pastille.
+            q = (px // 24) * 24 + 12
+            vals, counts = np.unique(q, axis=0, return_counts=True)
+            r, g, b = vals[counts.argmax()]
+            e['colour'] = f'#{int(r):02x}{int(g):02x}{int(b):02x}'
+    for i, e in enumerate(elements):
+        if e.get('group'):
+            continue
+        mask = imgs[e['id']][..., 3] > 0
+        for f in elements[i + 1:]:
+            if f.get('group') or f['cat'] != e['cat'] or (f['w'], f['h']) != (e['w'], e['h']):
+                continue
+            m2 = imgs[f['id']][..., 3] > 0
+            inter = (mask & m2).sum()
+            if inter >= 0.9 * max(mask.sum(), m2.sum()) and not np.array_equal(imgs[e['id']], imgs[f['id']]):
+                e['group'] = e['id']
+                f['group'] = e['id']
+
+
 def element_entry(pack, eid, name, cat, img, solid_from, place, door=None, theme_fn=None):
     if theme_fn:
         img = theme_fn(img)
@@ -463,6 +605,8 @@ def main():
             solid_from = max(1, h - math.ceil(h * 0.55))
             elements.append(element_entry(pack, f'maison-{bid}', bname, 'maisons', img, solid_from, 'land',
                                           door=list(spec['door']), theme_fn=pal))
+            if tid == 'libre':
+                add_roof_variants(pack, elements, img, solid_from, list(spec['door']))
         for bid, (bname, box, door_col, greys, where) in LIB_BUILDINGS.items():
             if tid != 'libre' and tid not in where:
                 continue
@@ -471,6 +615,8 @@ def main():
             solid_from = max(1, h - math.ceil(h * 0.55))
             elements.append(element_entry(pack, f'maison-{bid}', bname, 'maisons', img, solid_from, 'land',
                                           door=[door_col, h - 1], theme_fn=pal))
+            if tid == 'libre':
+                add_roof_variants(pack, elements, img, solid_from, [door_col, h - 1])
         # Éléments relevés sur les cartes (scripts/harvest_map_elements.py, choisis et nommés dans
         # assets-source/elements-cartes/elements.json) : dans le thème de leur carte et dans Libre ; l'image vient de la
         # carte (sans ombre, avec contour), les collisions aussi.
@@ -546,6 +692,7 @@ def main():
             img = crop(sid, c, r, w, h)
             materials.append({'id': 'foret', 'name': 'Forêt' if t['forest'] == 'pins' else 'Haie d\'enceinte',
                               'kind': 'pattern', 'tiles': pack.add(fn(img) if fn else img), 'solid': 1})
+        group_colours(elements, pack)
         themes[tid] = {'name': t['name'], 'lamp': t['lamp'], 'materials': materials, 'elements': elements}
     rows = pack.save()
     (V2 / 'catalogue.json').write_text(json.dumps({'cols': COLS, 'themes': themes}, ensure_ascii=False))

@@ -57,6 +57,18 @@ lanterne de jardin, poteau indicateur, bûches, table de jardin, tente, panneau 
   taillé, tronc moussu, petit oranger, iris bleus, buisson à fleurs orange. Ils gardent leurs couleurs dans les villes
   à feuillage recoloré (KEEP_COLOURS).
 
+## Familles de couleurs (octobre 2026)
+
+Un élément qui n'existe qu'en plusieurs couleurs n'apparaît qu'une fois dans le panneau du mode simple, dans la teinte
+choisie, avec une pastille « couleur » (en haut à droite de la vignette) qui ouvre ses teintes. Choisir une teinte puis
+cliquer sur un élément posé de la même famille change sa couleur sur place (studio.js hover / clickPlace,
+`recolour`). Dans catalogue.json, les éléments d'une famille ont `group` (l'id du premier) ; chaque élément a `colour`
+(la couleur de sa pastille). build_catalogue.py group_colours forme les familles toutes seules : même rayon, même
+taille, même silhouette à 90 %. Teintes de toit (thème Libre seulement, pour la taille de la planche) :
+add_roof_variants décale la teinte du toit (la zone de la teinte dominante, d'un seul tenant, qui touche le haut du
+dessin ; la rangée du bas garde ses couleurs) vers rouge, orange, vert, bleu et violet ; pas de variantes pour un toit
+gris ou trop petit.
+
 ## Contour des bâtiments et des objets
 
 Tous les bâtiments ont le même contour : un trait d'un pixel gris très foncé (32, 32, 32) autour du dessin, comme la

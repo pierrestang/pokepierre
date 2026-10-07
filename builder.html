@@ -187,6 +187,15 @@
       .studio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; }
       .elem { justify-content: center; min-height: 64px; }
       .elem canvas { image-rendering: pixelated; max-width: 100%; }
+      .elem-cell { position: relative; display: flex; }
+      .elem-cell .elem { flex: 1; }
+      .colour-badge { position: absolute; top: 3px; right: 3px; width: 14px; height: 14px; border-radius: 50%;
+        border: 2px solid #fff; padding: 0; cursor: pointer; box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
+      .colour-pop { position: absolute; top: 20px; right: 0; z-index: 20; display: flex; flex-wrap: wrap; gap: 4px;
+        padding: 6px; max-width: 150px; background: #1f2128; border: 1px solid #3a3d47; border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(0,0,0,.5); }
+      .colour-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; padding: 0; cursor: pointer; }
+      .colour-swatch.on { border-color: #fff; }
     </style>
   </head>
   <body>
