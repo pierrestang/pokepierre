@@ -36,6 +36,8 @@ export const FRLG_SHEETS = {
   townMap: 'frlg-townmap',
   car: 'frlg-car',
   cabane: 'rs-cabane',
+  g4Cabane: 'g4-cabane',          // la cabane perchée des cousins, en Gen 4 (scripts/build_saintay_props.py)
+  g4Planches: 'g4-planches',      // le tas de planches de l'enclos à poules (idem)
   bigTree: 'rs-bigtree',
   farm: 'rs-farm',
   crates: 'rs-crates',
@@ -636,6 +638,9 @@ const CABANE_FRAMES = {
   tableRight: [64 + 78, 42, 48, 16],
 };
 export const CABANE_LADDER_X = 32;
+// Cabane perchée Gen 4 (g4-cabane.png) : décalage du bord gauche de la case de l'échelle dans l'image (écrit par
+// scripts/build_saintay_props.py).
+export const G4_CABANE_LADDER_X = 38;
 export function cabaneFrame(scene, name) {
   const tex = scene.textures.get(FRLG_SHEETS.cabane);
   if (!tex.has(name)) tex.add(name, 0, ...CABANE_FRAMES[name]);

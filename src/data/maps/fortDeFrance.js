@@ -7,6 +7,9 @@ import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON } from '../fortDeFran
 import BUILT from '../builtMaps/fort-de-france.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 
+// Les cases bloquées par les statues du mémorial (décor `capStatues` ancré en (6, 14)).
+const MEMORIAL_CELLS = [[6, 14], [7, 14], [8, 14], [9, 14], [7, 15], [8, 15]];
+
 // Le ferry amarré au ponton : départ vers Saint-Ay une fois tout réuni (voir data/fortDeFranceStory.js).
 const BOAT_POS = { x: 17, y: 27, w: 4, h: 2 };   // une case d'eau entre le ponton et le ferry
 
@@ -72,11 +75,10 @@ export const fortDeFranceMap = {
   objects: [
     { x: 12, y: 12, dialogue: ['Fort-de-France — Martinique. Bienvenue sur l\'île !'] },
     { x: 17, y: 8, dialogue: ['La boîte aux lettres de la famille.', "Rien aujourd'hui… Peut-être une carte postale de Saint-Ay, un jour ?"] },
-    // Mémorial de l'Anse Caffard (Cap 110) : six statues de pierre blanche tournées vers la mer, en trois
-    // rangées (une, deux, trois), au fond d'un petit plateau rocheux herbeux de 4 x 4 cases ; on monte
-    // par l'escalier (blanc) jusqu'à l'herbe devant les statues.
-    ...Array.from({ length: 8 }, (_, i) => ({
-      x: 5 + (i % 4), y: 14 + Math.floor(i / 4),
+    // Mémorial de l'Anse Caffard (Cap 110) : six statues de pierre blanche tournées vers la mer, en trois rangées
+    // (trois derrière, deux au milieu, une devant), sur la clairière de sable (décor `capStatues`, plus bas).
+    ...MEMORIAL_CELLS.map(([x, y]) => ({
+      x, y,
       dialogue: ["Mémorial de l'Anse Caffard. En mémoire des captifs morts en 1830 et des victimes de l'esclavage."],
     })),
     // Chaque case du bateau réagit quand on lui fait face (Entrée / Espace), et aussi l'eau entre le ponton
@@ -122,21 +124,26 @@ export const fortDeFranceMap = {
       script: FISHER_AT_FERRY,
     },
   ],
-  // En sortant de la maison pour la première fois, Manon vient te parler.
+  // En sortant de la maison pour la première fois, Manon vient te parler : elle se place à ta droite (16, 8), sans te
+  // barrer le chemin de l'allée.
   events: [
     {
       on: 'enter',
       ifFlags: [FLAGS.journeeLancee],
       unlessFlags: [FLAGS.manonDemande, FLAGS.departFortDeFrance],
-      steps: [{ talk: 'manon' }],
+      steps: [{ walk: 'manon', to: [16, 8], block: true }, { talk: 'manon' }],
     },
   ],
   // Guirlande de fanions (art/bunting.js) du faîte du toit au haut du mât, et le long de l'avant-toit : elle apparaît
   // quand Pierre reçoit la Joie de vivre (la danse avec Maman, voir data/fortDeFranceStory.js). Points en pixels.
-  decals: [{
-    kind: 'fanions', x: 15, y: 6, ifSouvenirs: [TRAITS.joie.id],
-    cords: [[262, 47, 309, 58, 7], [206, 90, 290, 90, 2, 17]],
-  }],
+  decals: [
+    {
+      kind: 'fanions', x: 15, y: 6, ifSouvenirs: [TRAITS.joie.id],
+      cords: [[262, 47, 309, 58, 7], [206, 90, 290, 90, 2, 17]],
+    },
+    // Le mémorial de l'Anse Caffard : les six statues d'origine (art/tileArt.js capStatues).
+    { kind: 'capStatues', x: 6, y: 14 },
+  ],
   // Autour de l'île, l'écran est rempli de mer.
   surroundings: 'w',
   spawn: { x: 15, y: 10, facing: 'down' },

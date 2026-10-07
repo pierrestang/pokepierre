@@ -8,8 +8,6 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 // Scénettes partagées par la carte de l'île et les intérieurs (étapes : voir MapScene.runSteps).
 
 const CAPITAINE = 'Capitaine du ferry';
-// Les trois scènes de la famille faites : le tri des cannes, le coquillage de Manon, la danse de Maman.
-const FAMILY_DONE = { ifFlags: [FLAGS.papaFait, FLAGS.secretManon], ifSouvenirs: [TRAITS.joie.id] };
 
 // Départ, dès la canne offerte : fondu au noir, puis pont du ferry et traversée (FerryScene, `deck`).
 export const DEPARTURE = [
@@ -18,35 +16,17 @@ export const DEPARTURE = [
   { travel: { map: 'saintAy', x: 5, y: 10, facing: 'left', ferry: true, deck: true } },
 ];
 
-// Ce qu'il reste à faire, rappelé par le capitaine tant qu'une scène de la famille manque.
-const REMINDERS = [
-  {
-    unlessSouvenirs: [TRAITS.joie.id], speaker: CAPITAINE,
-    say: ["Ta mère t'attend au salon avant qu'on éteigne la musique."],
-  },
-  {
-    unlessFlags: [FLAGS.papaFait], speaker: CAPITAINE,
-    say: ["Ton père est encore à sa cabane, il a besoin d'un coup de main."],
-  },
-  {
-    unlessFlags: [FLAGS.secretManon], speaker: CAPITAINE,
-    say: ["Ta sœur te cherchait tout à l'heure, elle avait l'air de préparer un coup."],
-  },
-];
+// Tant que la famille n'a pas fini sa journée (Papa, Manon, puis la danse de Maman), le capitaine ne parle pas de sa
+// canne : il envoie seulement Pierre voir sa mère.
+const GO_SEE_MOM = { speaker: CAPITAINE, say: ["Ah, le petit ! Ta mère te cherche. File la voir à la maison."] };
 
 // Le capitaine, au bout du ponton, avant la scène de Papa.
-export const FISHER_AT_PIER_END = [
-  {
-    speaker: CAPITAINE,
-    say: ["Ça mord bien ce matin ! Tu vois ce ferry ? C'est moi qui le pilote cet après-midi : je vous emmène à Saint-Ay, toute la famille."],
-  },
-  ...REMINDERS,
-];
+export const FISHER_AT_PIER_END = [GO_SEE_MOM];
 
 // Le capitaine devant le ferry, sa canne cassée à la main (après la scène de Papa). Les étapes sont
-// testées dans l'ordre ; `end` arrête la scénette. Il explique d'abord que le ferry ne part pas sans sa canne (même si
-// Pierre en a déjà une). Il n'accepte la canne qu'une fois les trois scènes de la famille faites (avant, il rappelle ce
-// qu'il reste à faire) : « Oui », il la reçoit et on embarque aussitôt.
+// testées dans l'ordre ; `end` arrête la scénette. Tant que la famille n'a pas fini (la danse de Maman vient en
+// dernier), il envoie seulement Pierre voir sa mère. Ensuite, il montre sa canne cassée : le ferry ne part pas sans
+// elle (même si Pierre en a déjà une) ; « Oui », il reçoit la canne de la caisse et on embarque aussitôt.
 const HAS_ROD = { ifItems: [ITEMS.canneAPeche.id] };
 // « Oui » : la canne de la caisse « À DONNER », puis le départ.
 const GIVE_ROD = [
@@ -62,6 +42,7 @@ const GIVE_ROD = [
   ...DEPARTURE,
 ];
 export const FISHER_AT_FERRY = [
+  { unlessSouvenirs: [TRAITS.joie.id], ...GO_SEE_MOM, end: true },
   // La canne cassée : le ferry est bloqué.
   {
     unlessFlags: [FLAGS.canneMontree], speaker: CAPITAINE,
@@ -70,22 +51,18 @@ export const FISHER_AT_FERRY = [
   { ifFlags: [FLAGS.canneMontree], say: ['Le capitaine te montre sa canne, cassée en deux.'] },
   { speaker: CAPITAINE, say: ['Pas de canne, pas de capitaine. Le ferry ne part pas sans moi.'] },
   { setFlag: FLAGS.canneMontree },
-  // Avec la canne de la caisse et la famille prête : il demande, on choisit.
-  { ...HAS_ROD, ...FAMILY_DONE, speaker: CAPITAINE, say: ['Hm ? Tu as quelque chose pour moi ?'] },
+  // Avec la canne de la caisse : il demande, on choisit.
+  { ...HAS_ROD, speaker: CAPITAINE, say: ['Hm ? Tu as quelque chose pour moi ?'] },
   {
     ...HAS_ROD,
-    ...FAMILY_DONE,
     choose: 'Tu lui donnes la canne à pêche ?',
     choices: [
       { label: 'Oui', steps: GIVE_ROD },
       { label: 'Non', steps: [{ speaker: CAPITAINE, say: ['Ah… Bon. Le ferry attendra, alors.'] }, { end: true }] },
     ],
   },
-  // Avec la canne, mais une scène de la famille manque : ce qu'il reste à faire.
-  { ...HAS_ROD, steps: REMINDERS, end: true },
   // Sans canne : il pousse Pierre à en chercher une.
   { speaker: CAPITAINE, say: ["Ton père en a toute une collection, dans sa cabane de pêche. Il en aurait pas une en trop, des fois ?"] },
-  ...REMINDERS,
 ];
 
 // Le ferry, face au joueur : on embarque par le capitaine, une fois la canne offerte.
@@ -152,7 +129,7 @@ export const MAMAN_FDF = [
     say: ['Le capitaine du ferry avait l\'air embêté, au ponton. Passe le voir.'], end: true,
   },
   // La danse, une fois les deux autres scènes faites.
-  { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['Te voilà ! Ton père et ta sœur m\'ont tout raconté.', 'Tu entends cette chanson ? Viens danser avec moi !'] },
+  { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['Te voilà ! Tu as l\'air tout content… Tu as donné un coup de main à tout le monde, toi.', 'Tu entends cette chanson ? Viens danser avec moi !'] },
   { ifFlags: OTHERS_DONE, dance: 'maman' },
   { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['On part cet après-midi, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi.'] },
   { ifFlags: OTHERS_DONE, trait: TRAITS.joie, end: true },

@@ -60,8 +60,8 @@ déjà débloquées.
 - Île ronde, plage arrondie, en assets Diamant / Perle / HeartGold. Une allée de sable relie la maison au ponton (sans
   bande d'herbe entre les deux) ; deux branches mènent à la
   cabane de pêche (à droite) et au mémorial (à gauche), au milieu d'une clairière de sable clair.
-- Mémorial de l'Anse Caffard : une statue sur socle en pierre blanche, fleurs roses en offrande. Le texte des panneaux
-  parle toujours des six statues.
+- Mémorial de l'Anse Caffard : les six statues de pierre blanche d'origine, en trois rangées tournées vers la mer (trois
+  derrière, deux au milieu, une devant), sur la clairière de sable (décor `capStatues`, octobre 2026).
 - À droite de la maison, le drapeau de la Martinique (rouge, vert, noir) entre deux pots de buis. Jardin fleuri autour
   de la maison, bordures de fleurs le long de l'allée. Les grandes fleurs tropicales à droite de l'allée se traversent.
   Devant la maison et la cabane, le sable du chemin va jusqu'aux murs (sous la jardinière et la boîte aux lettres).
@@ -86,7 +86,7 @@ déjà débloquées.
 | Gamin | Sur la plage : « J'ai vu des poissons sauter près des rochers ! » / « Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ? » | `g59` |
 
 ### Quêtes, dans l'ordre (les trois premières dans n'importe quel ordre)
-1. **Manon : le coquillage.** En sortant de la maison, Manon vient parler à Pierre : « Psst. Viens. » / « J'ai caché un
+1. **Manon : le coquillage.** En sortant de la maison, Manon vient se placer à droite de Pierre (sans lui barrer l'allée) : « Psst. Viens. » / « J'ai caché un
    truc sur l'île avant qu'on parte. Personne ne le sait. Même pas Papa. » / « Surtout pas Papa, il le mettrait dans la
    caisse « À DONNER ». » / « C'est dans les hautes herbes, dans le petit pré, à côté des statues. Trouve-le. » / « Passe dans les touffes une par une. Et ne dis rien à personne ! »
    - Indice si on revient la voir : « C'est dans les hautes herbes. Un indice : le petit pré, à côté des statues. »
@@ -104,16 +104,16 @@ déjà débloquées.
    - Dans les deux cas : « Papa en garde une et jette les deux autres dans une caisse marquée « À DONNER ». » / « Voilà.
      Déménagement terminé. » (sans vertu). Le capitaine se déplace alors devant le ferry. Si le coquillage n'est pas encore
      partagé, Papa ajoute (tout de suite, puis à chaque fois) : « Ta sœur te cherchait dehors, du côté du petit pré. »
-3. **Le capitaine : la canne cassée** (ouverte par la quête de Papa). Devant le ferry : « Ah, te voilà… Regarde-moi ça.
+3. **Le capitaine : la canne cassée** (une fois la journée de la famille finie : le tri, le coquillage et la danse ;
+   avant, au bout du ponton puis devant le ferry, il dit seulement : « Ah, le petit ! Ta mère te cherche. File la voir à
+   la maison. »). Devant le ferry : « Ah, te voilà… Regarde-moi ça.
    Trente ans qu'elle tenait. Elle a choisi aujourd'hui pour me lâcher. » / **« Pas de canne, pas de capitaine. Le
    ferry ne part pas sans moi. »** / « Ton père en a toute une collection, dans sa cabane de pêche. Il en aurait pas une
    en trop, des fois ? »
    - Dans la caisse « À DONNER » : **Canne à pêche** (« Tu prends une canne à pêche dans la caisse. » ; Papa : « Tu vois.
      « À donner », ça veut dire à donner. »).
-   - Le capitaine n'accepte la canne qu'une fois le tri, le coquillage et la danse faits. Avant, même si Pierre a la canne, il
-     rappelle seulement ce qu'il reste à faire (voir « Objectifs affichés »).
 4. **Maman : la danse** (une fois le tri des cannes et le coquillage faits ; Papa et Manon disent alors « Maman t'attend au
-   salon. »). « Te voilà ! Ton père et ta sœur m'ont tout raconté. » / « Tu entends cette chanson ? Viens danser avec
+   salon. »). « Te voilà ! Tu as l'air tout content… Tu as donné un coup de main à tout le monde, toi. » / « Tu entends cette chanson ? Viens danser avec
    moi ! » → danse → **« On part cet après-midi, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi. »**
    → vertu **Joie de vivre**. Ensuite : « Le capitaine du ferry avait l'air embêté, au ponton. Passe le voir. »
 5. **La canne au capitaine** (le tri, le coquillage et la danse faits, la canne en poche) : « Hm ? Tu as quelque chose pour moi ? » /
@@ -125,9 +125,8 @@ déjà débloquées.
 - Maman, avant la danse : « Ton père trie ses affaires à sa cabane de pêche, à droite de la plage. Va lui
   donner un coup de main. » / « Ta sœur mijote quelque chose dehors… Va voir ce qu'elle prépare. » / « Après, reviens
   me voir. »
-- Le capitaine (au bout du ponton, puis devant le ferry) : « Ta mère t'attend au salon avant qu'on éteigne la
-  musique. » / « Ton père est encore à sa cabane, il a besoin d'un coup de main. » / « Ta sœur te cherchait tout à
-  l'heure, elle avait l'air de préparer un coup. »
+- Le capitaine (au bout du ponton, puis devant le ferry), tant que la famille n'a pas fini : « Ah, le petit ! Ta mère te
+  cherche. File la voir à la maison. »
 - Le ferry, tant que tout n'est pas réuni : « Le ferry n'embarque pas encore. Le capitaine, sur le ponton, sait ce
   qu'il te reste à faire. »
 
@@ -164,8 +163,9 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
 - Carte postale `saintAy` (la même illustration que Fort-de-France : « bois aux Chênes, le matin ») : **« Saint-Ay,
   Loiret. Quelque temps plus tard… »**
 - Au bord du lac, Papa : « Te voilà enfin ! On te cherche partout. » / **« Maman est à la clinique : le bébé est
-  arrivé ! Rejoins-nous là-bas, c'est le bâtiment au toit d'ardoise, en bas du village. »** ; Manon : « Vite,
-  dépêche-toi ! ». Ils partent devant à la clinique.
+  arrivé ! Rejoins-nous là-bas, c'est la grande maison au toit bleu, en bas du village. »** ; Manon : « Vite,
+  dépêche-toi ! ». Manon revient se placer à côté de Papa, et ils partent devant ensemble, l'un derrière l'autre, à la
+  clinique (la grande maison au toit bleu ; les cousins habitent la petite maison bleue, à sa droite).
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -177,7 +177,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
 | Yanis | Cousin : la corde des hautes herbes | `g96` |
 | Val | Cousin·e, sculpte un cheval en bois dans la maison de Felix : « Regarde, il commence à ressembler à quelque chose. La crinière, c'est le plus dur. » / « Il me faudra encore quelques semaines. Il doit être parfait. » | `g42` |
 | Vieux pêcheur | Méfiant, au bord du lac (objet optionnel) | `g67` |
-| Poules | Gardent le tas de planches | dessinées dans le code |
+| Poules | Gardent le tas de planches | dessinées dans le code, au style des sprites DS |
 
 ### Quêtes, dans l'ordre
 1. **La naissance de Fanny** (clinique). Papa : « Te voilà ! Maman est là-bas. » ; « Maman est allongée dans son lit. Dans
@@ -188,7 +188,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
      lâche pas tout de suite. » / Maman : **« Elle a de la poigne, celle-là. »** / **« À partir d'aujourd'hui, tu vas
      veiller sur elle. »** (sans vertu).
 2. **Felix et le plan de la cabane.** En sortant de la clinique, Felix vient chercher Pierre : « Cousin ! Ça y est, on a
-   emménagé ! La maison au toit de chaume, sur la rue du milieu, juste sous la vôtre. » / « Rejoins-nous là-bas, les
+   emménagé ! La petite maison au toit bleu, juste à côté de la clinique. » / « Rejoins-nous là-bas, les
    autres t'attendent ! » Chez lui : **« Bienvenue chez nous ! J'ai un plan : on construit une cabane. Rien que pour
    nous. »** ; Joshua : « Il faut des planches. Il y en a plein dans l'enclos à poules… mais il y a les poules. » ;
    Yanis : « Et une corde pour les tenir. J'en ai vu une dans les hautes herbes, tout au sud-ouest. » (au bord du lac,
@@ -219,8 +219,9 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
    ferry. On prend la voiture. » / « Pierre, va annoncer la nouvelle à tes cousins. Ils sont à la cabane. »
 7. **L'adieu aux cousins** (cabane). Felix « Alors c'est vrai, tu pars ? » ; Joshua « Montépilloy, c'est pas le bout du
    monde. » ; Yanis « C'est où, Montépilloy ? » ; Felix « La cabane t'attendra. Et le mot de passe ne change pas :
-   « {mot} ». » / **« Allez, file, ta famille t'attend à la voiture, devant ta maison. »** (dit tout de suite, et quand
-   on lui reparle).
+   « {mot} ». » ; Joshua « Tu nous écriras ? Une vraie lettre, avec un timbre et tout. » ; Yanis « Et s'il y a des poules
+   là-bas, tu nous préviens. Maintenant, on sait faire. » ; Felix **« Allez, file, ta famille t'attend à la voiture,
+   devant ta maison. »** (dit tout de suite, et quand on lui reparle).
 
 ### Objectifs affichés (rappels des PNJ)
 - Felix pendant le chantier : « Il nous faut encore les planches : Joshua t'attend devant l'enclos à poules. Écarte les
@@ -269,8 +270,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
   montes à l'arrière, à côté de Manon et de Fanny. »
 - **Trajet en voiture** (écran noir) : « La voiture s'éloigne de Saint-Ay. À l'arrière, tu es serré entre Manon et le siège
   de Fanny. » ; Manon « Regarde, Fanny dort déjà. Elle rate tout. » ; Fanny (endormie) « … les poules… » ; Manon « Elle
-  rêve des poules de l'enclos. » ; « Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît
-  derrière les arbres. » ; Papa **« Allez. Montépilloy nous attend. »** Encart : « Tu emportes : Esprit d'équipe. »
+  rêve des poules de l'enclos. » ; Papa **« Allez. Montépilloy nous attend. »** Encart : « Tu emportes : Esprit d'équipe. »
 - Ensuite, la **route de Montépilloy** se parcourt à pied entre les deux villages. Une promeneuse (`g82`) : « Le blé est
   haut cette année. » / « Quand le vent souffle, on dirait la mer, en jaune. » ; un gamin (`g59`) : « J'ai perdu mon
   cerf-volant dans les champs… » / « Si tu le vois, il est rouge. Ou bleu. Je sais plus. » (aucun cerf-volant n'est
