@@ -11,6 +11,11 @@ import { layoutForest, roundTreePieces, treeOrder } from './forestLayout.js';
 // - Thème : les matières et les éléments de la ville choisie (ses pavés, sa forêt, ses maisons dans sa palette) ;
 //   « Libre » propose tout. Catalogue : public/assets/v2/catalogue.json (scripts/build_catalogue.py).
 //
+// Deux espaces (api.space()) : « ext », les extérieurs (catalogue.json, thèmes par ville) ; « int », les intérieurs
+// (catalogue-int.json, planche catalogue-int, thèmes par type de pièce : scripts/build_interior_catalogue.py) : sols,
+// murs (pinceau « wall » : la bande entière du mur, de la rangée cliquée vers le bas) et meubles ; la gomme y retire les
+// meubles (sans repeindre d'herbe).
+//
 // Ce que le mode simple a posé est noté dans la carte (`studio` : thème, cases de forêt, éléments posés), pour refaire
 // la lisière et reprendre un élément ; le jeu l'ignore.
 
@@ -19,18 +24,27 @@ const SIZES = [1, 2, 3, 5];
 
 export function createStudio(api) {
   const { state } = api;
-  let cat = null;                                  // catalogue.json
+  let catExt = null;                               // catalogue.json
+  let catInt = null;                               // catalogue-int.json (intérieurs)
   let lis = null;                                  // lisieres.json
+  const inside = () => api.space() === 'int';
+  const CS = () => (inside() ? 'catalogue-int' : 'catalogue');           // la planche du catalogue de l'espace
+  const EMPTY_CAT = { cols: 16, themes: { libre: { name: 'Tout', materials: [], elements: [] } } };
   // variant : la couleur choisie de chaque famille (id de la famille -> id de l'élément) ; openGroup : la famille dont
   // les teintes sont ouvertes dans le panneau.
   const ui = { material: 'chemin', element: null, size: 2, variant: {}, openGroup: null };
 
   async function load() {
-    if (cat) return;
-    [cat, lis] = await Promise.all(['catalogue', 'lisieres'].map((id) => fetch(`${api.base}assets/v2/${id}.json`).then((r) => r.json())));
+    if (catExt) return;
+    const get = (id) => fetch(`${api.base}assets/v2/${id}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    [catExt, lis, catInt] = await Promise.all(['catalogue', 'lisieres', 'catalogue-int'].map(get));
+    catInt ??= EMPTY_CAT;
     await Promise.all(['catalogue', 'lisieres', 'dppt', 'autotiles-g4', 'transitions', 'auto'].map((id) => api.loadSheet(id)));
+    if (catInt !== EMPTY_CAT) await api.loadSheet('catalogue-int').catch(() => {});
     await api.terrain.ready();
   }
+  // Le catalogue de l'espace en cours (extérieurs ou intérieurs).
+  const catOf = () => (inside() ? catInt : catExt);
 
   const data = () => {
     const m = state.map;
@@ -39,12 +53,20 @@ export function createStudio(api) {
     return m.studio;
   };
   function guessTheme(m) {
-    return cat.themes[m.id] ? m.id : 'libre';
+    if (inside()) {
+      const id = m.id ?? '';
+      const guess = [[/house|home|appart|coloc|maison/i, 'maison'], [/school|bonsecours|kedge|universit|library|dortoir/i, 'ecole'],
+        [/pub|bistro|coffee|asylum|cafe/i, 'cafe'], [/agence|entreprise|corning|agency/i, 'bureau'],
+        [/temple|wat|monastere/i, 'temple'], [/hospital/i, 'sante'], [/barn|hut|cabane|tente/i, 'atelier']]
+        .find(([re]) => re.test(id))?.[1];
+      return guess && catInt.themes[guess] ? guess : 'libre';
+    }
+    return catExt.themes[m.id] ? m.id : 'libre';
   }
-  const theme = () => cat.themes[data().theme] ?? cat.themes.libre;
-  const material = () => theme().materials.find((x) => x.id === ui.material) ?? theme().materials[0];
-  const elementDef = (id, themeId) => (cat.themes[themeId] ?? cat.themes.libre).elements.find((e) => e.id === id);
-  const catRef = (k) => refOf(state.map, 'catalogue', k);
+  const theme = () => catOf().themes[data().theme] ?? catOf().themes.libre;
+  const material = () => theme().materials.find((x) => x.id === ui.material) ?? theme().materials[0] ?? { kind: 'none' };
+  const elementDef = (id, themeId) => (catOf().themes[themeId] ?? catOf().themes.libre).elements.find((e) => e.id === id);
+  const catRef = (k) => refOf(state.map, CS(), k);
 
   // ---------- Petites aides sur les piles de cases ----------
   const push = (layer, i, ref) => {
@@ -71,7 +93,7 @@ export function createStudio(api) {
   function occupancy() {
     const m = state.map;
     const occ = new Map();
-    const slot = m.sheets.indexOf('catalogue');
+    const slot = m.sheets.indexOf(CS());
     if (slot < 0) return occ;
     for (const el of data().elements) {
       const def = elementDef(el.id, el.theme);
@@ -255,9 +277,9 @@ export function createStudio(api) {
     const m = state.map;
     const W = m.width;
     const d = data();
-    const fm = forestMaterial() ?? cat.themes.libre.materials.find((x) => x.kind === 'forest');
+    const fm = forestMaterial() ?? catExt.themes.libre.materials.find((x) => x.kind === 'forest');
     const fillRefs = new Set();
-    for (const t of Object.values(cat.themes)) {
+    for (const t of Object.values(catExt.themes)) {
       for (const x of t.materials) if (x.kind === 'forest') x.tiles.flat().forEach((k) => fillRefs.add(catRef(k)));
     }
     const mine = (r) => fillRefs.has(r) || sheetOf(r) === 'lisieres';
@@ -305,7 +327,7 @@ export function createStudio(api) {
   // Toutes les cases de clôture posées (des deux styles), pour les retrouver dans le Décor.
   const fenceRefs = () => {
     const out = new Set();
-    for (const t of Object.values(cat.themes)) {
+    for (const t of Object.values(catExt.themes)) {
       for (const x of t.materials) if (x.kind === 'fence') Object.values(x.pieces).forEach((k) => out.add(refOf(state.map, 'dppt', k)));
     }
     return out;
@@ -317,7 +339,7 @@ export function createStudio(api) {
     const m = state.map;
     const W = m.width;
     const d = data();
-    const fm = theme().materials.find((x) => x.kind === 'fence') ?? cat.themes.libre.materials.find((x) => x.kind === 'fence');
+    const fm = theme().materials.find((x) => x.kind === 'fence') ?? catExt.themes.libre.materials.find((x) => x.kind === 'fence');
     const set = new Set(d.fence.map(([x, y]) => y * W + x));
     const refs = fenceRefs();
     const around = new Set();
@@ -386,6 +408,8 @@ export function createStudio(api) {
     const m = state.map;
     const W = m.width;
     const mat = erase ? theme().materials[0] : material();
+    if (!mat || mat.kind === 'none') return;
+    if (mat.kind === 'wall') { paintWall(cells, mat); return; }
     const d = data();
     const fresh = [];
     for (const [x, y] of cells) {
@@ -443,7 +467,7 @@ export function createStudio(api) {
         if (mat.solid) {
           const g = refOf(m, 'dppt', 4);
           m.layers.sol[c] = sol.length > 1 ? [g, ...sol.slice(1)] : g;
-          removeRefs('decor', c, (r) => sheetOf(r) === 'catalogue');
+          removeRefs('decor', c, (r) => sheetOf(r) === CS());
           push('decor', c, catRef(k));
           stroke.cls[c] = 'grass';
         } else {
@@ -526,10 +550,10 @@ export function createStudio(api) {
     cv.height = Math.ceil(def.h * TILE * k);
     const g = cv.getContext('2d');
     g.imageSmoothingEnabled = false;
-    const img = state.images.catalogue;
+    const img = state.images[CS()];
     def.tiles.forEach((row, j) => row.forEach((t, i) => {
       if (t < 0 || !img) return;
-      g.drawImage(img, (t % cat.cols) * TILE, Math.floor(t / cat.cols) * TILE, TILE, TILE, i * TILE * k, j * TILE * k, TILE * k, TILE * k);
+      g.drawImage(img, (t % catOf().cols) * TILE, Math.floor(t / catOf().cols) * TILE, TILE, TILE, i * TILE * k, j * TILE * k, TILE * k, TILE * k);
     }));
     return cv;
   }
@@ -558,25 +582,31 @@ export function createStudio(api) {
       grass();
       draw('dppt', mat.pieces.h, 0, 8);
       draw('dppt', mat.pieces.tr, 16, 8);
+    } else if (mat.kind === 'wall') {
+      for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) draw(CS(), mat.tiles[Math.min(j + 1, mat.tiles.length - 1)][i % mat.tiles[0].length], i * 16, j * 16);
     } else if (mat.kind === 'overlay') {
       grass();
       for (const [x, y] of [[0, 0], [16, 0], [0, 16], [16, 16]]) draw(mat.tile[0], mat.tile[1], x, y);
     } else {
-      grass();
+      if (!inside()) grass();
       const rows = mat.tiles;
-      for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) draw('catalogue', rows[j % rows.length][i % rows[0].length], i * 16, j * 16);
+      for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) draw(CS(), rows[j % rows.length][i % rows[0].length], i * 16, j * 16);
     }
     return cv;
   }
 
-  const CATS = [['maisons', 'Maisons'], ['arbres', 'Arbres'], ['plantes', 'Plantes'], ['mobilier', 'Mobilier'], ['eau', 'Sur l\'eau']];
+  const CATS_EXT = [['maisons', 'Maisons'], ['arbres', 'Arbres'], ['plantes', 'Plantes'], ['mobilier', 'Mobilier'], ['eau', 'Sur l\'eau']];
+  const CATS_INT = [['lits', 'Lits'], ['assises', 'Tables et sièges'], ['rangements', 'Rangements'], ['cuisine', 'Cuisine'],
+    ['electro', 'Télé, ordinateur, radio'], ['plantes', 'Plantes'], ['tapis', 'Tapis'], ['deco', 'Déco murale'],
+    ['acces', 'Escaliers et sorties'], ['metier', 'Mobilier de métier'], ['divers', 'Divers']];
 
   function render() {
     const root = document.getElementById('studio');
-    if (!root || !cat || !state.map) return;
+    if (!root || !catExt || !state.map) return;
+    document.getElementById('studio-theme-label').textContent = inside() ? 'Pièce' : 'Ville';
     const d = data();
     const sel = document.getElementById('studio-theme');
-    sel.innerHTML = Object.entries(cat.themes).map(([id, t]) => `<option value="${id}">${t.name}</option>`).join('');
+    sel.innerHTML = Object.entries(catOf().themes).map(([id, t]) => `<option value="${id}">${t.name}</option>`).join('');
     sel.value = d.theme;
     const trees = document.getElementById('studio-trees');
     trees.innerHTML = '<option value="">selon la ville</option>'
@@ -597,7 +627,7 @@ export function createStudio(api) {
     }
     const els = document.getElementById('studio-elements');
     els.innerHTML = '';
-    for (const [cid, cname] of CATS) {
+    for (const [cid, cname] of (inside() ? CATS_INT : CATS_EXT)) {
       const list = theme().elements.filter((e) => e.cat === cid);
       if (!list.length) continue;
       const h = document.createElement('div');
@@ -662,7 +692,7 @@ export function createStudio(api) {
     document.getElementById('studio-theme').addEventListener('change', (e) => {
       api.remember();
       data().theme = e.target.value;
-      if (!theme().materials.some((x) => x.id === ui.material)) ui.material = 'chemin';
+      if (!theme().materials.some((x) => x.id === ui.material)) ui.material = theme().materials[0]?.id ?? 'chemin';
       ui.element = null;
       api.changed();
       render();
@@ -710,10 +740,10 @@ export function createStudio(api) {
   function drawGhost(ctx, cs) {
     const def = ui.element && theme().elements.find((e) => e.id === ui.element);
     if (!def || !ghost || state.tool !== 'place') return;
-    const img = state.images.catalogue;
+    const img = state.images[CS()];
     ctx.globalAlpha = 0.8;
     def.tiles.forEach((row, j) => row.forEach((t, i) => {
-      if (t >= 0 && img) ctx.drawImage(img, (t % cat.cols) * TILE, Math.floor(t / cat.cols) * TILE, TILE, TILE, (ghost.x + i) * cs, (ghost.y + j) * cs, cs, cs);
+      if (t >= 0 && img) ctx.drawImage(img, (t % catOf().cols) * TILE, Math.floor(t / catOf().cols) * TILE, TILE, TILE, (ghost.x + i) * cs, (ghost.y + j) * cs, cs, cs);
     }));
     ctx.globalAlpha = 1;
     ctx.lineWidth = 2;
@@ -752,8 +782,38 @@ export function createStudio(api) {
   function eraseAt(x, y) {
     const el = occupancy().get(y * state.map.width + x);
     if (el) { removeElement(el); stroke = null; return el; }
+    if (inside()) {                                // intérieur : les meubles et objets de la case partent, le sol reste
+      const m = state.map;
+      for (const [cx, cy] of brushCells(x, y, false, true)) {
+        const c = cy * m.width + cx;
+        m.layers.decor[c] = EMPTY;
+        m.layers.dessus[c] = EMPTY;
+        m.solid[c] = 0;
+      }
+      return null;
+    }
     paintCells(brushCells(x, y, false, true), true);
     return null;
+  }
+
+  // Mur (intérieurs) : chaque colonne touchée reçoit la bande entière du mur (h rangées), à partir de la rangée où le
+  // coup de pinceau a commencé ; le mur bloque.
+  function paintWall(cells, mat) {
+    const m = state.map;
+    stroke.wallY0 ??= Math.min(...cells.map(([, y]) => y));
+    const h = mat.tiles.length;
+    const w = mat.tiles[0].length;
+    for (const x of new Set(cells.map(([cx]) => cx))) {
+      for (let j = 0; j < h; j++) {
+        const y = stroke.wallY0 + j;
+        if (y < 0 || y >= m.height) continue;
+        const c = y * m.width + x;
+        m.layers.sol[c] = catRef(mat.tiles[j][((x % w) + w) % w]);
+        m.layers.decor[c] = EMPTY;
+        m.layers.dessus[c] = EMPTY;
+        m.solid[c] = 1;
+      }
+    }
   }
 
   // Les cases d'un élément posé en (x, y), au format de l'outil Déplacer ({ x, y, refs }), ou null.
@@ -763,7 +823,7 @@ export function createStudio(api) {
   function elementsWithTile(k) {
     if (!tileIndex) {
       tileIndex = new Map();
-      for (const [tid, t] of Object.entries(cat.themes)) {
+      for (const [tid, t] of Object.entries(catOf().themes)) {
         for (const def of t.elements) {
           def.tiles.forEach((row, j) => row.forEach((kk, i) => {
             if (kk < 0) return;
@@ -780,7 +840,7 @@ export function createStudio(api) {
   // son calque) : { def, theme, x, y } ou null.
   function recognize(x, y) {
     const m = state.map;
-    const slot = m.sheets.indexOf('catalogue');
+    const slot = m.sheets.indexOf(CS());
     if (slot < 0) return null;
     let best = null;
     for (const l of ['dessus', 'decor']) {

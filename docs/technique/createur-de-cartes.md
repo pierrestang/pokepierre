@@ -31,6 +31,24 @@ calé sur la grille, la porte sur la dernière rangée. Mobilier (g4-mobilier) :
 transat, grande caisse, massif, table de pique-nique, banc de bois, abri de bois, distributeur, panneau d'affichage ;
 souche (végétation, garde son ombre). Les villes suivantes (Prytanée, Bordeaux, Hull) viendront plus tard.
 
+## Deux espaces : extérieurs et intérieurs (octobre 2026)
+
+Le créateur sépare les extérieurs (villes, routes) et les intérieurs (pièces) : bouton « Extérieurs / Intérieurs » en
+haut à gauche (src/builder/builder.js `space`, `applySpace`, `switchSpace`). L'espace suit ce qui est ouvert ; le
+bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`), sinon sa liste « Ouvrir ».
+- « Ouvrir » : deux onglets ; les intérieurs y sont rangés par ville (voir plus bas).
+- Case par case : chaque espace a ses planches. Intérieurs : planches d'intérieur (dppt-int, hgss-int, jesus-3,
+  jared-bateaux, g4-int-sols, g4-int-meubles), les cases des intérieurs du jeu (`interieurs`) et le catalogue des
+  intérieurs (`catalogue-int`) ; extérieurs : tout le reste.
+- Mode simple : chaque espace a son catalogue (studio.js `catOf`). Extérieurs : catalogue.json, thèmes par ville.
+  Intérieurs : catalogue-int.json (scripts/build_interior_catalogue.py, liste dans scripts/interieurs/catalogue_int.py),
+  thèmes par type de pièce (Tout, Maison, École et collège, Bureaux, Bar/pub/café, Boutiques, Grange et atelier,
+  Temples, Clinique), deviné d'après l'identifiant de la pièce. Matières : sols (`pattern`) et murs (`wall` : la bande
+  entière du mur, h rangées, de la case cliquée vers le bas ; bloque). Éléments : lits, tables et sièges, rangements,
+  cuisine, télé/ordinateur/radio, plantes, tapis, déco murale, escaliers et sorties, mobilier de métier, divers. Gomme :
+  retire les meubles de la case, garde le sol (pas d'herbe). « Nouvelle », l'assistant et la bordure d'arbres sont
+  réservés aux extérieurs.
+
 ## Intérieurs et personnages dans le créateur (octobre 2026)
 
 - Intérieurs : « Ouvrir » liste aussi les intérieurs du jeu (src/data/builtInteriors, `/__builder/interieurs` dans

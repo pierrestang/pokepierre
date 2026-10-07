@@ -25,6 +25,7 @@ const PALETTE_GROUPS = ['Sols et chemins', 'Eau', 'Végétation', 'Relief', 'Bâ
   'Intérieurs', 'Cases assemblées'];
 const KEYS = {
   mode: 'pokepierre.builder.mode',
+  lastOpen: 'pokepierre.builder.lastOpen',   // le dernier ouvert de chaque espace ({ ext, int } : entrées de « Ouvrir »)
   current: 'pokepierre.builder.current',     // la carte en cours (rouverte au rechargement de la page)
   dirty: 'pokepierre.builder.dirty',         // la carte en cours a des modifications non enregistrées
   base: 'pokepierre.builder.base',           // version enregistrée d'où vient la carte en cours ({ id, etag }), ou null
@@ -1521,7 +1522,7 @@ function loadMap(map, { base = null, dirty = false } = {}) {
   centerMap();
   store.set(KEYS.current, map);
   npcs.reset();
-  studio.load().then(() => studio.render());
+  studio.load().then(() => applySpace());
   if (dirty) setStatus('Brouillon repris : modifications non enregistrées');
 }
 
@@ -1536,6 +1537,60 @@ function setBase(base) {
 // scripts/build_interiors.py, qu'on retouche ici ; une pièce enregistrée ici est marquée « retouchée »).
 const API = (kind) => (kind === 'interieur' ? '/__builder/interieurs' : '/__builder/maps');
 const isInterior = () => state.base?.kind === 'interieur';
+
+// ---------- Deux espaces : extérieurs et intérieurs ----------
+// L'espace suit ce qui est ouvert (une carte : extérieurs ; un intérieur du jeu : intérieurs). Chacun a ses planches
+// (case par case), son catalogue (mode simple : catalogue.json par ville, catalogue-int.json par type de pièce, voir
+// studio.js) et sa liste dans « Ouvrir ». Le bouton Extérieurs / Intérieurs rouvre le dernier ouvert de l'autre espace.
+const space = () => (isInterior() ? 'int' : 'ext');
+const INTERIOR_PALETTE = [...INTERIOR_SHEETS, 'g4-int-sols', 'g4-int-meubles', 'catalogue-int'];
+
+// Planches de la palette (case par case), rangées par rayon (bibliothèque Gen 4 par type d'élément, voir
+// scripts/build_g4_library.py CATEGORIES), puis les cases assemblées ; seulement celles de l'espace. Les planches
+// d'origine masquées restent chargées pour dessiner les cartes, mais ne sont pas proposées ; dans les intérieurs : les
+// planches d'intérieur, les cases des intérieurs du jeu (« interieurs », scripts/build_interiors.py) et le catalogue
+// des intérieurs.
+function buildSheetSelect() {
+  const select = $('sheet');
+  if (!state.catalog || select.dataset.space === space()) return;
+  select.dataset.space = space();
+  select.innerHTML = '';
+  const shown = state.catalog.sheets.filter((sh) => (space() === 'int'
+    ? INTERIOR_PALETTE.includes(sh.id) : !sh.hidden && !INTERIOR_PALETTE.includes(sh.id)));
+  const groupOf = (sh) => (INTERIOR_PALETTE.includes(sh.id) ? 'Intérieurs'
+    : sh.group ?? (sh.id === 'auto' ? 'Cases assemblées' : 'Autres planches'));
+  const groups = [...PALETTE_GROUPS, ...new Set(shown.map(groupOf))].filter((g, i, all) => all.indexOf(g) === i);
+  for (const label of groups) {
+    const sheets = shown.filter((sh) => groupOf(sh) === label);
+    if (!sheets.length) continue;
+    const group = document.createElement('optgroup');
+    group.label = label;
+    for (const sh of sheets) group.append(new Option(sh.name, sh.id));
+    select.append(group);
+  }
+  const first = select.querySelector('option');
+  if (first && state.sheet && !select.querySelector(`option[value="${state.sheet}"]`)) {
+    select.value = first.value;
+    showSheet(first.value);
+  } else if (state.sheet) select.value = state.sheet;
+}
+
+function applySpace() {
+  const sp = space();
+  document.body.classList.toggle('space-int', sp === 'int');
+  document.querySelectorAll('#space-switch button').forEach((b) => b.classList.toggle('on', b.dataset.space === sp));
+  buildSheetSelect();
+  studio.render();
+}
+
+// Passer à l'autre espace : le dernier ouvert de cet espace, sinon la liste « Ouvrir » de cet espace.
+async function switchSpace(sp) {
+  if (sp === space()) return;
+  const last = (store.get(KEYS.lastOpen) ?? {})[sp];
+  if (!last) { showOpenDialog(sp); return; }
+  if (state.dirty && !window.confirm('Des modifications ne sont pas enregistrées. Changer quand même ?')) return;
+  await openMap(last);
+}
 
 async function detectProjectSave() {
   try {
@@ -1627,21 +1682,26 @@ async function openMap(entry) {
     const map = (store.get(KEYS.library) ?? {})[entry.id];
     if (map) loadMap(map, { base: { id: entry.id, etag: null } });
   }
+  if (state.base?.id === entry.id || (entry.where === 'navigateur' && state.map?.id === entry.id)) {
+    const last = store.get(KEYS.lastOpen) ?? {};
+    last[space()] = { id: entry.id, name: entry.name, where: entry.where, kind: entry.kind };
+    store.set(KEYS.lastOpen, last);
+  }
   if (state.base?.id === entry.id && entry.kind === 'interieur') {
-    setMode('detail');                     // un intérieur se retouche case par case (planches « Intérieurs »)
-    const first = $('sheet').querySelector('option[value="interieurs"]');
-    if (first) { $('sheet').value = 'interieurs'; showSheet('interieurs'); }
-    setStatus(`Intérieur ouvert : ${state.map.name}${entry.retouche ? ' (déjà retouché)' : ''}. Planches : rayon Intérieurs.`, 'ok');
+    setStatus(`Intérieur ouvert : ${state.map.name}${entry.retouche ? ' (déjà retouché)' : ''}`, 'ok');
   } else if (state.base?.id === entry.id) setStatus(`Carte ouverte : ${state.map.name}`, 'ok');
 }
 
-async function showOpenDialog() {
+async function showOpenDialog(sp = space()) {
+  if (typeof sp !== 'string') sp = space();       // clic sur le bouton : l'espace en cours
   const list = $('map-list');
   list.innerHTML = '<li><small>Chargement…</small></li>';
-  $('open-dialog').showModal();
-  const maps = await listMaps();
+  document.querySelectorAll('#open-space button').forEach((b) => b.classList.toggle('on', b.dataset.space === sp));
+  $('open-title').textContent = sp === 'int' ? 'Ouvrir un intérieur' : 'Ouvrir une carte';
+  if (!$('open-dialog').open) $('open-dialog').showModal();
+  const maps = (await listMaps()).filter((e) => (sp === 'int') === (e.kind === 'interieur'));
   list.innerHTML = '';
-  if (!maps.length) list.innerHTML = '<li><small>Aucune carte enregistrée pour l\'instant.</small></li>';
+  if (!maps.length) list.innerHTML = '<li><small>Rien à ouvrir ici pour l\'instant.</small></li>';
   const entryItem = (entry, extra) => {
     const li = document.createElement('li');
     const name = document.createElement('span');
@@ -1733,7 +1793,7 @@ function bindUi() {
         ? ' — carte du jeu décalée : les portes, objets et PNJ définis dans le code sont à recaler' : ''));
   };
   $('save').onclick = save;
-  $('open').onclick = showOpenDialog;
+  $('open').onclick = () => showOpenDialog();
   $('open-cancel').onclick = () => $('open-dialog').close();
   $('new').onclick = () => $('new-dialog').showModal();
   $('new-dialog').addEventListener('close', () => {
@@ -1871,7 +1931,7 @@ const assistant = createAssistant({
 
 const studio = createStudio({
   state, base: BASE, loadSheet, colsOf, remember, changed, requestDraw, terrain: assistant.terrain,
-  setTool: (t) => setTool(t), objectAt, liftObject, setStatus,
+  setTool: (t) => setTool(t), objectAt, liftObject, setStatus, space: () => space(),
 });
 
 const npcs = createNpcLayer({ state, base: BASE, remember, changed, requestDraw, setStatus });
@@ -1947,23 +2007,7 @@ function bindAssistant() {
 async function start() {
   await Promise.all([loadCatalog(), detectProjectSave()]);
   const select = $('sheet');
-  // Planches rangées par rayon (bibliothèque Gen 4 par type d'élément, voir scripts/build_g4_library.py CATEGORIES),
-  // puis les cases assemblées. Les planches d'origine masquées (remplacées par les planches par type) restent chargées
-  // pour dessiner les cartes, mais ne sont pas proposées.
-  // Les planches d'intérieur d'origine (masquées) restent proposées dans le rayon « Intérieurs », avec les cases des
-  // intérieurs du jeu (planche « interieurs », scripts/build_interiors.py) : pour retoucher une pièce.
-  const shown = state.catalog.sheets.filter((sh) => !sh.hidden || INTERIOR_SHEETS.includes(sh.id));
-  const groupOf = (sh) => (INTERIOR_SHEETS.includes(sh.id) ? 'Intérieurs'
-    : sh.group ?? (sh.id === 'auto' ? 'Cases assemblées' : 'Autres planches'));
-  const groups = [...PALETTE_GROUPS, ...new Set(shown.map(groupOf))].filter((g, i, all) => all.indexOf(g) === i);
-  for (const label of groups) {
-    const sheets = shown.filter((sh) => groupOf(sh) === label);
-    if (!sheets.length) continue;
-    const group = document.createElement('optgroup');
-    group.label = label;
-    for (const sh of sheets) group.append(new Option(sh.name, sh.id));
-    select.append(group);
-  }
+  buildSheetSelect();
   buildLayerButtons();
   bindUi();
   bindAssistant();
@@ -1977,6 +2021,9 @@ async function start() {
   setTool('brush');
   $('grid').classList.add('on');
   showSheet(select.querySelector('option').value);          // la première planche proposée (Sols et chemins)
+  document.querySelectorAll('#space-switch button').forEach((b) => { b.onclick = () => switchSpace(b.dataset.space); });
+  document.querySelectorAll('#open-space button').forEach((b) => { b.onclick = () => showOpenDialog(b.dataset.space); });
+  applySpace();
   fitCanvas();
   // Le brouillon du navigateur, s'il a des modifications ; sinon la version enregistrée (les cartes générées par
   // scripts/convert_maps_v2.py peuvent avoir changé depuis, et leurs cases assemblées avec).
