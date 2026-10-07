@@ -38,11 +38,11 @@ export const prytaneeMap = {
     'TTF.RRRRRRR.RRRRRRRRRRRƀɔɔRRRRRRRFTT', // 3  internat des garçons, salles de cours, internat des filles
     'TTF.RRRRRRR.RRRRRRRRRRR.ɔɔRRRRRRRFTT', // 4
     'TTF.RRRRRRR.RRRRRRRRRRR.ɔɔRRRRRRRFTT', // 5
-    'TTF.WWWWWWW.WWWWWWWWWWW.ɔɔWWWWWWWFTT', // 6
-    'TTF.WWWWWWW.WWWWWWWWWWW.ɔɔWWWWWWWFTT', // 7
+    'TTF.WWWWWWW.WWWWWWWWWWW.ɔɔWWWDWWWFTT', // 6
+    'TTF.WWDWWWW.WDWWWWWWWWW.ɔɔWWWWWWWFTT', // 7
     'TTF.WWWWWWW.WWWWWWWWWWW.ɔɔWWWWWWWFTT', // 8
     'TTF.WWWWWWW.ffffWWWffff.ɔɔWWWWWWWFTT', // 9
-    'TTF.WWWDWWWSffffWDWffffSɔɔWWWDWWWFTT', // 10
+    'TTF.WWW.WWWSffffW.WffffSɔɔWWW.WWWFTT', // 10
     'TTFɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔFTT', // 11  allée
     'TTFɔɔɔɔɔɔƀ.....ɔɔɔɔɔ.....ƀɔɔɔɔɔɔɔFTT', // 12
     'TTFɔɔɔɔɔɔ......ɔɔɔɔɔ......ɔɔɔɔɔɔɔFTT', // 13
@@ -62,12 +62,12 @@ export const prytaneeMap = {
   doors: [
     // L'internat des garçons : ouvert dès que le capitaine a parlé.
     {
-      x: 7, y: 10, interior: 'dortoirHall',
+      x: 6, y: 7, interior: 'dortoirHall',
       lock: { ifFlags: [FLAGS.capitaineParle] },
       lockedDialogue: ['Le capitaine t\'attend devant l\'internat.'],
     },
-    { x: 17, y: 10, lockedDialogue: ['Les salles de cours. Fermées à cette heure-ci.'] },
-    { x: 29, y: 10, lockedDialogue: ['L\'internat des filles. Fermé aux garçons, même aux plus polis.'] },
+    { x: 13, y: 7, lockedDialogue: ['Les salles de cours. Fermées à cette heure-ci.'] },
+    { x: 29, y: 6, lockedDialogue: ['L\'internat des filles. Fermé aux garçons, même aux plus polis.'] },
     { x: 6, y: 21, lockedDialogue: ['L\'infirmerie. Fermée : personne ne s\'est foulé la cheville aujourd\'hui.'] },
     { x: 29, y: 21, lockedDialogue: ['Poste de commandement. Accès réservé.'] },
   ],
@@ -97,7 +97,7 @@ export const prytaneeMap = {
         dialogue: ['Le drapeau ne touche jamais le sol. Jamais. Même quand il pleut.'],
       },
       {
-        id: 'militaire-cour', name: 'Militaire', sprite: 'g87', x: 4, y: 22, facing: 'right', route: [[4, 22], [15, 22], [15, 16], [8, 16], [8, 17], [3, 17]], ...when,
+        id: 'militaire-cour', name: 'Militaire', sprite: 'g87', x: 12, y: 22, facing: 'right', route: [[12, 22], [15, 22], [15, 16], [8, 16], [8, 17], [6, 17]], ...when,
         dialogue: ['Lever des couleurs tous les matins à 7 h. Même le dimanche. Surtout le dimanche.'],
       },
     ]),
@@ -143,11 +143,11 @@ export const prytaneeMap = {
     { type: 'lab', x: 26, y: 18 },                  // poste de commandement
   ],
   objects: [
-    { x: 11, y: 10, dialogue: ['Internat des garçons.'] },
-    { x: 23, y: 10, dialogue: ['Internat des filles. Au nord : la porte du Prytanée.'] },
-    { x: 3, y: 21, dialogue: ['Infirmerie.'] },
-    { x: 25, y: 21, dialogue: ['Poste de commandement.'] },
-    { x: 17, y: 16, dialogue: ['Le drapeau tricolore flotte en haut du mât.'] },
+    { x: 8, y: 7, dialogue: ['Internat des garçons.'] },
+    { x: 28, y: 6, dialogue: ['Internat des filles. Au nord : la porte du Prytanée.'] },
+    { x: 4, y: 21, dialogue: ['Infirmerie.'] },
+    { x: 25, y: 20, dialogue: ['Poste de commandement.'] },
+    { x: 17, y: 13, dialogue: ['Le drapeau tricolore flotte en haut du mât.'] },
   ],
   triggers: [
     // Porte sud : la route de Bonsecours.

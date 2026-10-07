@@ -38,7 +38,7 @@ export const fortDeFranceMap = {
     'wwss..TT.f....ççç...ƀ....RRRR.ssww', // 11
     'wwss..ĥĥĥƚ..S.ççç...TT...RRRR.ssww', // 12
     'wwss.ĥĥĥĥ.....ççç...TT...WWWW.ssww', // 13
-    'wøss.ɱɱɱɱ..f..ççç........WDWW.ssww', // 14
+    'wøss.ɱɱɱɱ..f..ççç........D.WW.ssww', // 14
     'wwss.ɱɱɱɱ.....ççç.ŦŦŦf.....ƫƫ.ssww', // 15
     'wwss.ɱɲɲɱ..ƨ..ççç.ŦŦŦ...ƀƒ.ƫƫ.ssww', // 16
     'wwss.ɱɲɲɱ.....ççç.ŦŦŦ.ĥĥ...ƨ..ssww', // 17
@@ -60,7 +60,7 @@ export const fortDeFranceMap = {
   ]),
   doors: [
     { x: 15, y: 7, interior: 'ffHouse' },
-    { x: 26, y: 14, interior: 'ffHut' },
+    { x: 25, y: 14, interior: 'ffHut' },
   ],
   // Les bâtiments (maison, cabane, ferry) sont dans le dessin ; la liste d'origine sert à la conversion.
   buildings: [],

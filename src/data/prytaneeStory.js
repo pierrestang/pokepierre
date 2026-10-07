@@ -11,10 +11,10 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 
 // Places sur la carte : devant l'internat des garçons, la porte nord (derrière le mur), la porte sud, le poste de
 // commandement, le panneau des résultats ; dans la chambre (1er étage) : la case sous l'escalier qui descend au hall.
-export const DORM_DOOR_FRONT = { x: 7, y: 11 };
+export const DORM_DOOR_FRONT = { x: 6, y: 8 };
 export const NORTH_GATE = [[24, 2], [25, 2]];
 export const SOUTH_GATE = [16, 23];
-export const RESULTS_BOARD = { x: 16, y: 12 };
+export const RESULTS_BOARD = { x: 17, y: 19 };              // le panneau de bois du bas de la place
 const COMMAND_POST = [29, 22];
 const DORM_EXIT = [13, 3];                                        // sous l'escalier du dortoir
 
@@ -125,8 +125,8 @@ export const PATROLS = {
   ...NIGHT,
   guards: [
     // Chacun fait le tour d'un circuit, en boucle, et balaie les côtés à chaque angle.
-    { id: 'ronde-1', path: [[8, 11], [15, 11], [15, 16], [8, 16]] },                // autour du jardin nord-ouest
-    { id: 'ronde-2', sprite: 'g8', path: [[26, 16], [19, 16], [19, 11], [26, 11]] }, // une militaire, autour du jardin nord-est
+    { id: 'ronde-1', path: [[4, 9], [16, 9], [16, 15], [4, 15]] },                  // autour des jardins ouest et du milieu
+    { id: 'ronde-2', sprite: 'g8', path: [[29, 15], [19, 15], [19, 9], [29, 9]] },   // une militaire, autour du jardin est
     { id: 'ronde-3', path: [[23, 9], [23, 5], [25, 5], [25, 9]] },                 // dans l'allée de la porte nord
   ],
   caught: { speaker: 'Militaire', say: ['Hé, toi ! Retour au dortoir !'], back: { ...DORM_DOOR_FRONT, facing: 'down' } },

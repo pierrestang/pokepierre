@@ -50,7 +50,7 @@ export const saintAyMap = {
     '~~~~~==~~~ĥĥ..çç.WWWWW.....ĥĥ.TT', // 11
     '~~~~~~~~~~ĥĥ..ççMW.WWW......ĥ.TT', // 12
     '~~~~~~~~~~ççççççççççççç.......TT', // 13
-    '~~~~~~~~~~ççççççççççççç..D....TT', // 14
+    '~~~~~~~~~~çççççççDççççç..D....TT', // 14
     '~~~~~~~......Sçç..............TT', // 15
     'TTTTTTTT...ĥĥ.ççf..........ĥĥ.TT', // 16
     'TTTTTTTT..ĥĥĥĥççf.RRRRR...ĥĥĥ.TT', // 17
@@ -207,7 +207,7 @@ export const saintAyMap = {
     },
     { id: 'poule-2b', name: 'Poule', x: 25, y: 9, facing: 'left', ifFlags: [FLAGS.pouleEnfuie2], dialogue: ['Cot… cot.'] },
     { id: 'poule-3', name: 'Poule', x: 24, y: 4, facing: 'right', dialogue: ['Cot cot ! Celle-là ne bougera pas de son coin.'] },
-    { id: 'poule-4', name: 'Poule', x: 27, y: 6, facing: 'left', dialogue: ['Cot cot ! Elle picore tranquillement dans son coin.'] },
+    { id: 'poule-4', name: 'Poule', x: 27, y: 5, facing: 'left', dialogue: ['Cot cot ! Elle picore tranquillement dans son coin.'] },
   ],
   events: [
     // Arrivée après la traversée : écran noir, puis Papa et Manon te trouvent au bord du lac.
