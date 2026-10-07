@@ -120,7 +120,7 @@ traînées derrière lui, au bruit des réacteurs.
    avant, au bout du ponton puis devant le ferry, il dit seulement : « Ah, le petit ! Ta mère te cherche. File la voir à
    la maison. »). Devant le ferry : « Ah, te voilà… Regarde-moi ça.
    Trente ans qu'elle tenait. Elle a choisi aujourd'hui pour me lâcher. » / **« Pas de canne, pas de capitaine. Le
-   ferry ne part pas sans moi. »** / « Ton père en a toute une collection, dans sa cabane de pêche. Il en aurait pas une
+   ferry ne part pas sans moi. »** / « Ton père en a toute une collection, dans son atelier. Il en aurait pas une
    en trop, des fois ? »
    - Dans la caisse « À DONNER » : **Canne à pêche** (« Tu prends une canne à pêche dans la caisse. » ; Papa : « Tu vois.
      « À donner », ça veut dire à donner. »).
