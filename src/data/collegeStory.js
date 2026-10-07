@@ -30,7 +30,7 @@ export const COLLEGE_ARRIVAL = [
 
 // Première entrée dans le hall : le surveillant accueille Pierre et l'envoie à son casier, puis monte au couloir des
 // casiers (l'escalier du hall), où on le retrouve.
-const HALL_STAIRS = [13, 2];
+const HALL_STAIRS = [23, 2];
 export const COLLEGE_WELCOME = [
   { approach: 'surveillant-hall' },
   {
@@ -83,7 +83,7 @@ const LOCKER_FIGHT = [
 
 // En salle de maths, une fois Rémy arrivé : le cours n'a pas commencé (le prof range ses copies) ; Rémy vient voir Pierre
 // et le pousse à aller dire salut à Camille, nouvelle elle aussi (il l'accompagne).
-export const REMI_SEAT = [8, 5];                                  // derrière son pupitre, face au tableau
+export const REMI_SEAT = [8, 6];                                  // derrière son pupitre, face au tableau
 export const REMI_INVITE = [
   { say: ['La salle de maths. Le cours n\'a pas encore commencé : le prof range ses copies, ça discute de table en table.'] },
   { approach: 'remi-classe' },

@@ -342,9 +342,9 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
      réparation, « Jean t'attend dans sa chambre. » (sans vertu).
 3. **Le tracteur → Ingéniosité.** Jean, dans la chambre : « Le tracteur de M. Bouly est en panne. Je peux le réparer,
    mais il me faut un assistant. » / « Rejoins-moi à la ferme ! » M. Bouly : « Ah, Jean et son assistant ! Mon tracteur
-   est en panne : il lui manque une pièce. » / « Elle doit traîner quelque part dans la grange… peut-être sous la botte
-   de paille, au fond à droite ? » Sous la botte de paille du fond à droite (pas dans un tonneau : Benoît se cache dans
-   celui de gauche) : « Tu soulèves la botte de paille… Dessous, une pièce de tracteur ! » / « Jean va être content. » →
+   est en panne : il lui manque une pièce. » / « Elle doit traîner quelque part dans la grange… peut-être sous le gros
+   tas de foin, en bas à droite ? » Sous le tas de foin (pas dans un tonneau : Benoît se cache dans celui de gauche) :
+   « Tu fouilles le tas de foin… Dessous, une pièce de tracteur ! » / « Jean va être content. » →
    **Pièce de tracteur**, rapportée à M. Bouly ou à Jean. Le tracteur et la caisse à outils sont des dessins Gen 4
    (scripts/build_props.py).
    - « Jean ouvre sa caisse à outils et se glisse sous le tracteur. » ; Jean : **« Passe-moi la clé ! »** → trois
