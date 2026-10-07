@@ -1155,56 +1155,44 @@ export const interiors = {
     frlg: true,
     // Comme le hall du collège : mur du fond (bibliothèque, drapeau, casiers des internes, vitrine des trophées), étagères
     // contre les murs latéraux, l'accueil au centre ; le passage vers l'escalier et la sortie reste dégagé.
+    // Pièce HGSS (hall de la gare de Doublonville, scripts/interieurs/prytanee_bordeaux.py) : mur de trois rangées, la
+    // bibliothèque (x 1-2) et le bureau de l'accueil (x 4-5) au fond, l'escalier au fond à droite (η en x 9).
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmooooommmmη', // bibliothèque ; casiers, vitrine ; escalier vers le 1er étage
-      'oooooooooooo',
-      'mmoommmooomm', // étagères contre les murs latéraux ; bureau de l'accueil
-      'mmoooooooomm',
-      'oooooooooooo',
-      'mooooEEoooom',
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'mmmommoommm', // plante, bibliothèque, bureau de l'accueil ; escalier
+      'oooooooommm',
+      'oooooooommm',
+      'mooooooomηm',
+      'ooooooooooo',
+      'ooooooooooo',
+      'moooEooooom',
     ]),
-    decor: [
-      { kind: 'bookshelf', x: 0, y: 0 },
-      { kind: 'notice', x: 2, y: 0 },
-      { kind: 'window', x: 5, y: 0 },
-      ...[7, 8].map((x) => ({ kind: 'locker', x, y: 2 })),
-      { kind: 'glassCabinet', x: 9, y: 1 },
-      { kind: 'shelf', x: 0, y: 4 },
-      { kind: 'shelf', x: 10, y: 4 },
-      { kind: 'longTable', x: 4, y: 4 },
-      { kind: 'pottedPlant', x: 0, y: 7 },
-      { kind: 'pottedPlant', x: 11, y: 7 },
-    ],
-    decals: [{ kind: 'frFlag', x: 3, y: 0 }],
-    spawn: { x: 5, y: 6, facing: 'up' },
+    decals: [{ kind: 'frFlag', x: 6, y: 0 }],
+    spawn: { x: 4, y: 8, facing: 'up' },
     // La nuit du mur : le hall est dans le noir et vide (tout le monde dort).
     night: PRYTANEE_NIGHT,
-    triggers: [{ x: 11, y: 2, warp: { interior: 'dortoir', x: 13, y: 3, facing: 'down' } }],
+    triggers: [{ x: 9, y: 6, warp: { interior: 'dortoir', x: 12, y: 4, facing: 'down' } }],
     // Le capitaine, reparti vers son poste pendant que Pierre entrait : il n'est plus devant la porte.
     events: [{ on: 'enter', ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.capitaineAccueil], steps: [{ setFlag: FLAGS.capitaineAccueil }] }],
     objects: [
-      { x: 2, y: 1, dialogue: ['Au tableau : « Extinction des feux à 22 h. Inspection des chambres chaque matin. »'] },
-      ...[3, 4].map((x) => ({ x, y: 1, dialogue: ['Le drapeau tricolore. Il est repassé tous les dimanches.'] })),
-      ...[0, 1].map((x) => ({ x, y: 2, dialogue: ['Des manuels de maths et des règlements intérieurs.'] })),
-      ...[7, 8].map((x) => ({ x, y: 2, dialogue: ['Les casiers des internes. Dans chacun, une photo de famille scotchée à l\'intérieur.'] })),
-      ...[9, 10].map((x) => ({ x, y: 2, dialogue: ['La vitrine des trophées : cross, rugby… et la coupe de la chambrée la mieux rangée.'] })),
-      ...[[0, 4], [1, 4], [0, 5], [1, 5]].map(([x, y]) => ({ x, y, dialogue: ['Des boîtes de cirage et des brosses. Les rangers brillent, ou c\'est la corvée.'] })),
-      ...[[10, 4], [11, 4], [10, 5], [11, 5]].map(([x, y]) => ({ x, y, dialogue: ['Le courrier des internes, trié par chambre. Rien pour toi aujourd\'hui.'] })),
+      ...[6, 7].map((x) => ({ x, y: 2, dialogue: ['Le drapeau tricolore. Il est repassé tous les dimanches.'] })),
+      ...[1, 2].map((x) => ({ x, y: 3, dialogue: ['Des manuels de maths et des règlements intérieurs.'] })),
+      ...[4, 5].map((x) => ({ x, y: 3, dialogue: ['Le registre des sorties, et le courrier des internes trié par chambre. Rien pour toi aujourd\'hui.'] })),
     ],
     npcs: PRYTANEE_DAY.flatMap((when) => [
       {
-        id: 'planton', name: 'Élève', sprite: 'g55', x: 5, y: 3, facing: 'down', still: true, ...when,
+        id: 'planton', name: 'Élève', sprite: 'g55', x: 4, y: 4, facing: 'down', still: true, ...when,
         dialogue: ['Salut ! Ta chambre est au premier, l\'escalier au fond à droite.'],
       },
       {
-        id: 'eleve-hall', name: 'Élève', sprite: 'g56', x: 8, y: 5, facing: 'left', ...when,
+        id: 'eleve-hall', name: 'Élève', sprite: 'g56', x: 7, y: 7, facing: 'left', ...when,
         dialogue: ['Le deuxième étage, c\'est les terminales. Ils se croient chez eux.'],
       },
       // Facultatif, jusqu'au bac : le nouveau qui a le mal du pays (voir prytaneeStory.js HOMESICK).
       {
-        id: 'nouveau', name: 'Nouveau', sprite: 'g58', x: 2, y: 5, facing: 'right', still: true, ...when,
+        id: 'nouveau', name: 'Nouveau', sprite: 'g58', x: 1, y: 6, facing: 'right', still: true, ...when,
         unlessFlags: [...(when.unlessFlags ?? []), FLAGS.ellipseBac],
         script: HOMESICK,
       },
@@ -1217,76 +1205,76 @@ export const interiors = {
   dortoir: {
     name: 'Dortoir',
     frlg: true,
+    // Pièce HGSS (étage de bureaux de la Tour Radio, scripts/interieurs/prytanee_bordeaux.py) : escalier de gauche vers
+    // le 2e étage (η en x 1), encadrement de droite vers le hall (ξ en x 12) ; lits par paires (x 3-6, x 8-11 ; celui de
+    // Pierre en x 8-9), commodes (gauche x 0-1, rangées 7-8 ; celle de Pierre à droite, x 12-13, rangées 5-6), bureau
+    // (x 2-3, rangée 8).
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'mmommommommηoξ', // lits ; escalier vers le 2e étage, escalier vers le hall
-      'mmommommommooo',
-      'oooooooooooooo',
-      'mmmmoooooooomm', // armoires, bureau (contre les armoires de gauche)
+      'mmommmmommmmmm',
+      'mηommmmommmmξm',
+      'mmommmmommmmoo',
+      'mmoooooooooooo',
+      'oooooooooooomm',
       'mmoooooooooomm',
+      'mmmmoooooooooo',
       'oooooooooooooo',
+      'oooooooooooooo',
+      'mooooooooooooo',
     ]),
     triggers: [
-      { x: 13, y: 2, warp: { interior: 'dortoirHall', x: 11, y: 3, facing: 'down' } },
-      { x: 11, y: 2, warp: { interior: 'dortoirEtage2', x: 13, y: 3, facing: 'down' } },
+      { x: 12, y: 3, warp: { interior: 'dortoirHall', x: 9, y: 7, facing: 'down' } },
+      { x: 1, y: 3, warp: { interior: 'dortoirEtage2', x: 2, y: 3, facing: 'right' } },
     ],
-    decor: [
-      ...[0, 3, 6, 9].map((x) => ({ kind: 'bed', x, y: 2 })),
-      { kind: 'window', x: 2, y: 0 },
-      { kind: 'notice', x: 5, y: 0 },
-      { kind: 'window', x: 7, y: 0 },              // l'escalier qui monte est en x = 11 : pas de fenêtre devant
-      ...[0, 1, 12, 13].map((x) => ({ kind: 'wardrobe', x, y: 5 })),
-      { kind: 'schoolDesk', x: 2, y: 5 },
-    ],
-    spawn: { x: 13, y: 3, facing: 'down' },
+    spawn: { x: 12, y: 4, facing: 'down' },
     // Le soir du mur, jusqu'au retour : la nuit tombe dans la chambre (au petit matin, il fait jour).
     night: { ifFlags: [FLAGS.soirMur], unlessFlags: [FLAGS.murReussi] },
     npcs: [
       // Déjà dans la chambre à l'arrivée, au milieu de la pièce (pas devant un lit ni un meuble) ; ils sortent faire le mur
       // le soir même.
-      { id: 'tanguy', name: 'Tanguy', x: 5, y: 6, facing: 'right', color: 0x8c6c3c, unlessFlags: [FLAGS.murPropose], script: TANGUY_GUIDE },
-      { id: 'geoffrey', name: 'Geoffrey', x: 9, y: 6, facing: 'left', color: 0x4c7cb0, unlessFlags: [FLAGS.murPropose], script: GEOFFREY_GUIDE },
+      { id: 'tanguy', name: 'Tanguy', x: 5, y: 7, facing: 'right', color: 0x8c6c3c, unlessFlags: [FLAGS.murPropose], script: TANGUY_GUIDE },
+      { id: 'geoffrey', name: 'Geoffrey', x: 9, y: 7, facing: 'left', color: 0x4c7cb0, unlessFlags: [FLAGS.murPropose], script: GEOFFREY_GUIDE },
       // L'inspection.
       {
-        id: 'capitaine-inspection', name: 'Capitaine', x: 13, y: 3, facing: 'down', color: 0x3c5c2c,   // en haut de l'escalier
+        id: 'capitaine-inspection', name: 'Capitaine', x: 13, y: 4, facing: 'down', color: 0x3c5c2c,   // au pied de l'escalier
         ifFlags: [FLAGS.chambrePrete], unlessFlags: [FLAGS.inspection],
       },
       // Au petit matin, de retour du mur : le capitaine monte au dortoir (voir prytaneeStory.js MORNING).
       {
-        id: 'capitaine-matin', name: 'Capitaine', x: 13, y: 3, facing: 'down', color: 0x3c5c2c,   // en haut de l'escalier
+        id: 'capitaine-matin', name: 'Capitaine', x: 13, y: 4, facing: 'down', color: 0x3c5c2c,   // au pied de l'escalier
         ifFlags: [FLAGS.murReussi], unlessFlags: [FLAGS.murMatin],
       },
       {
-        id: 'tanguy-matin', name: 'Tanguy', x: 5, y: 6, facing: 'right', color: 0x8c6c3c,
+        id: 'tanguy-matin', name: 'Tanguy', x: 5, y: 7, facing: 'right', color: 0x8c6c3c,
         ifFlags: [FLAGS.murReussi], unlessFlags: [FLAGS.ellipseBac], dialogue: ['On remet ça quand tu veux.'],
       },
       {
-        id: 'geoffrey-matin', name: 'Geoffrey', x: 9, y: 6, facing: 'left', color: 0x4c7cb0,
+        id: 'geoffrey-matin', name: 'Geoffrey', x: 9, y: 7, facing: 'left', color: 0x4c7cb0,
         ifFlags: [FLAGS.murReussi], unlessFlags: [FLAGS.ellipseBac], dialogue: ['Personne a rien vu.'],
       },
       // Quelques années plus tard, le jour des résultats du bac : ils réveillent Pierre et descendent voir la liste.
       {
-        id: 'tanguy-jourj', name: 'Tanguy', x: 5, y: 6, facing: 'right', color: 0x8c6c3c,
+        id: 'tanguy-jourj', name: 'Tanguy', x: 5, y: 7, facing: 'right', color: 0x8c6c3c,
         ifFlags: [FLAGS.ellipseBac], unlessFlags: [FLAGS.bacDescente], dialogue: ['On descend, viens !'],
       },
       {
-        id: 'geoffrey-jourj', name: 'Geoffrey', x: 9, y: 6, facing: 'left', color: 0x4c7cb0,
+        id: 'geoffrey-jourj', name: 'Geoffrey', x: 9, y: 7, facing: 'left', color: 0x4c7cb0,
         ifFlags: [FLAGS.ellipseBac], unlessFlags: [FLAGS.bacDescente], dialogue: ['J\'ai pas dormi de la nuit.'],
       },
     ],
     objects: [
       // Les trois tâches de la chambre, dans n'importe quel ordre.
-      ...[6, 7].map((x) => ({ x, y: 3, ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.litFait], script: MAKE_BED })),
-      ...[6, 7].map((x) => ({ x, y: 3, dialogue: ['Ton lit, fait au carré.'] })),
-      ...[[12, 5], [13, 5], [12, 6]].map(([x, y]) => ({
+      ...[8, 9].map((x) => ({ x, y: 4, ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.litFait], script: MAKE_BED })),
+      ...[8, 9].map((x) => ({ x, y: 4, dialogue: ['Ton lit, fait au carré.'] })),
+      ...[[12, 6], [13, 6], [12, 7]].map(([x, y]) => ({
         x, y, ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.armoireRangee], script: TIDY_WARDROBE,
       })),
-      ...[[12, 5], [13, 5], [12, 6]].map(([x, y]) => ({ x, y, dialogue: ['Ton armoire. Tout est plié, rangé.'] })),
-      ...[2, 3].map((x) => ({ x, y: 5, ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.affairesPretes], script: PREPARE_DESK })),
-      ...[2, 3].map((x) => ({ x, y: 5, dialogue: ['Tes affaires pour demain, prêtes sur le bureau.'] })),
-      ...[[0, 5], [1, 5], [1, 6]].map(([x, y]) => ({ x, y, dialogue: ['L\'armoire de Tanguy et Geoffrey. Pliée au carré, elle aussi.'] })),
-      ...[0, 1, 3, 4, 9, 10].map((x) => ({ x, y: 3, dialogue: ['Un lit au carré. Pas un pli.'] })),
+      ...[[12, 6], [13, 6], [12, 7]].map(([x, y]) => ({ x, y, dialogue: ['Ton armoire. Tout est plié, rangé.'] })),
+      ...[2, 3].map((x) => ({ x, y: 8, ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.affairesPretes], script: PREPARE_DESK })),
+      ...[2, 3].map((x) => ({ x, y: 8, dialogue: ['Tes affaires pour demain, prêtes sur le bureau.'] })),
+      ...[[0, 8], [1, 8], [1, 7]].map(([x, y]) => ({ x, y, dialogue: ['L\'armoire de Tanguy et Geoffrey. Pliée au carré, elle aussi.'] })),
+      ...[3, 4, 5, 6, 10, 11].map((x) => ({ x, y: 4, dialogue: ['Un lit au carré. Pas un pli.'] })),
     ],
     events: [
       // Le capitaine, reparti vers son poste pendant que Pierre entrait : il n'est plus devant la porte.
@@ -1299,34 +1287,32 @@ export const interiors = {
   dortoirEtage2: {
     name: 'Dortoir des terminales',
     frlg: true,
+    // Même pièce HGSS que le 1er étage : l'escalier de gauche redescend (ξ en x 1) ; l'encadrement de droite est fermé.
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'mmommommommooξ', // lits ; escalier vers le 1er étage
-      'mmommommommooo',
-      'oooooooooooooo',
-      'mmoooooooooomm', // armoires
+      'mmommmmommmmmm',
+      'mξommmmommmmmm',
+      'mmommmmommmmoo',
+      'mmoooooooooooo',
+      'oooooooooooomm',
       'mmoooooooooomm',
+      'mmoooooooooooo',
       'oooooooooooooo',
+      'oooooooooooooo',
+      'mooooooooooooo',
     ]),
-    decor: [
-      ...[0, 3, 6, 9].map((x) => ({ kind: 'bed', x, y: 2 })),
-      { kind: 'window', x: 2, y: 0 },
-      { kind: 'painting', x: 7, y: 0 },
-      { kind: 'window', x: 10, y: 0 },
-      ...[0, 1, 12, 13].map((x) => ({ kind: 'wardrobe', x, y: 5 })),
-    ],
-    spawn: { x: 13, y: 3, facing: 'down' },
+    spawn: { x: 2, y: 3, facing: 'right' },
     night: PRYTANEE_NIGHT,                          // la nuit du mur : dans le noir, et ils dorment (pas de PNJ debout)
-    triggers: [{ x: 13, y: 2, warp: { interior: 'dortoir', x: 11, y: 3, facing: 'down' } }],
+    triggers: [{ x: 1, y: 3, warp: { interior: 'dortoir', x: 2, y: 3, facing: 'right' } }],
     objects: [
-      ...[0, 1, 3, 4, 6, 7, 9, 10].map((x) => ({ x, y: 3, dialogue: ['Un lit au carré. Les terminales, ça ne rigole pas.'] })),
-      ...[[0, 5], [1, 5], [12, 5], [13, 5]].map(([x, y]) => ({ x, y, dialogue: ['Une armoire. Un poster de rugby scotché à l\'intérieur de la porte.'] })),
+      ...[3, 4, 5, 6, 8, 9, 10, 11].map((x) => ({ x, y: 4, dialogue: ['Un lit au carré. Les terminales, ça ne rigole pas.'] })),
+      ...[[0, 8], [1, 8], [12, 6], [13, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une armoire. Un poster de rugby scotché à l\'intérieur de la porte.'] })),
     ],
     npcs: PRYTANEE_DAY.flatMap((when) => [
       // Internat des garçons : des garçons (apparences imposées, les figurants au hasard comptent aussi des filles).
-      { id: 'terminale-1', name: 'Élève', sprite: 'g88', x: 2, y: 4, facing: 'right', ...when, dialogue: ['Vous êtes la chambre du dessous ? Vous ronflez.'] },
-      { id: 'terminale-2', name: 'Élève', sprite: 'g89', x: 7, y: 4, facing: 'down', ...when, dialogue: ['Le bac, c\'est dans un an. Ou dans deux. Je sais plus.'] },
+      { id: 'terminale-1', name: 'Élève', sprite: 'g88', x: 4, y: 6, facing: 'left', ...when, dialogue: ['Vous êtes la chambre du dessous ? Vous ronflez.'] },
+      { id: 'terminale-2', name: 'Élève', sprite: 'g89', x: 7, y: 5, facing: 'down', ...when, dialogue: ['Le bac, c\'est dans un an. Ou dans deux. Je sais plus.'] },
       { id: 'terminale-3', name: 'Élève', sprite: 'g23', x: 10, y: 6, facing: 'left', ...when, dialogue: ['Mon lit n\'est jamais assez au carré pour le capitaine. Jamais.'] },
     ]),
   },
@@ -1335,27 +1321,26 @@ export const interiors = {
   agence: {
     name: 'Agence immobilière',
     frlg: true,
+    // Pièce HGSS (bureau du directeur de la Tour Radio, scripts/interieurs/prytanee_bordeaux.py) : escalier au fond à
+    // gauche, ordinateur (x 2-3), grand bureau (x 3-5, rangées 8-9), plantes le long des murs ; l'agent à côté du bureau.
     grid: parseGrid([
-      'XXXXXXXX',
-      'XXXXXXXX',
-      'mmoooomm',
-      'oommmooo', // bureau
-      'oooooooo',
-      'oooooooo',
-      'oooooooo',
-      'oooEEooo',
+      'XXXXXXXXX',
+      'XXXXXXXXX',
+      'mmooooomm',
+      'mmooooooo',
+      'ooooooooo',
+      'mommoooom',
+      'ooooooooo',
+      'mooooooom',
+      'ooommmooo',
+      'moommmoom',
+      'ooooooooo',
+      'moooEooom',
     ]),
-    decor: [
-      { kind: 'blueShelf', x: 0, y: 1 },
-      { kind: 'cabinet', x: 1, y: 1 },
-      { kind: 'window', x: 3, y: 0 },
-      { kind: 'bookshelf', x: 6, y: 0 },
-      { kind: 'longTable', x: 2, y: 3 },
-    ],
-    spawn: { x: 3, y: 6, facing: 'up' },
+    spawn: { x: 4, y: 10, facing: 'up' },
     npcs: [
       {
-        id: 'agent', name: 'Agent immobilier', x: 3, y: 4, facing: 'down', color: 0x3c4c6c,
+        id: 'agent', name: 'Agent immobilier', x: 6, y: 8, facing: 'left', color: 0x3c4c6c,
         script: AGENT_KEYS,
       },
     ],
@@ -1366,33 +1351,32 @@ export const interiors = {
   appartement: {
     name: 'Appartement',
     frlg: true,
+    // Pièce HGSS (salon de la grande maison de Bourg Geon, scripts/interieurs/prytanee_bordeaux.py) : cuisine, télé et
+    // étagères au fond (le tableau électrique au mur en x 4), coin repas bleu à gauche, table et fauteuils sur le tapis,
+    // la porte à droite (E en x 11) ; lits en bas (Ousmane à gauche, Pierre à droite, x 10-11).
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmooooommomm', // lits, bureau ; le tableau électrique au mur du fond (x = 5)
-      'mmooooommomm',
-      'oooooooooooo',
-      'oooooooooooo', // salon
-      'oooooooooooo',
-      'oooooooooooo',
-      'oooooooooooo',
-      'ooooooEEoooo',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmoooooooEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'mmoommmmoommX',
+      'mmoooooooommX',
+      'mmoooooooommX',
+      'XooooooooooXX',
     ]),
-    decor: [
-      { kind: 'bed', x: 0, y: 2 },
-      { kind: 'window', x: 3, y: 0 },
-      { kind: 'computerDesk', x: 7, y: 2 },
-      { kind: 'bed', x: 10, y: 2 },
-      { kind: 'painting', x: 9, y: 0 },
-    ],
     decals: [
-      { kind: 'meter', x: 5, y: 0, unlessFlags: [FLAGS.coupureReparee] },
-      { kind: 'meter', x: 5, y: 0, on: true, ifFlags: [FLAGS.coupureReparee] },
+      { kind: 'meter', x: 4, y: 1, unlessFlags: [FLAGS.coupureReparee] },
+      { kind: 'meter', x: 4, y: 1, on: true, ifFlags: [FLAGS.coupureReparee] },
       // Le lendemain de la soirée : confettis partout (avec le salon), la couette en vrac sur ton lit (art/partyMess.js).
-      ...[[6, 6], [3, 6], [8, 4], [5, 8], [10, 7], [1, 5]].map(([x, y]) => ({
+      ...[[6, 7], [3, 10], [8, 5], [5, 11], [9, 7], [1, 5]].map(([x, y]) => ({
         image: 'confettis', x, y, floor: true, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.salonRange],
       })),
-      { image: 'couette', x: 10, y: 2, dx: 1, dy: 6, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.litFaitBordeaux] },
+      { image: 'couette', x: 10, y: 9, dx: 1, dy: 6, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.litFaitBordeaux] },
     ],
     // Dans le noir tant que le compteur n'est pas relevé.
     dark: { ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.coupureReparee], radius: 34 },
@@ -1400,16 +1384,16 @@ export const interiors = {
     props: [
       { type: 'partySpeaker', x: 6, y: 5, w: 1, h: 1, ...PARTY_TIME, dialogue: ['L\'enceinte de Paulfit. Elle envoie !'] },
       // Le lendemain matin, facultatif : le désordre à ranger, par catégorie (ramasser un objet range toute sa catégorie).
-      ...[[3, 4], [9, 5], [2, 7]].map(([x, y]) => ({
+      ...[[2, 7], [9, 10], [4, 10]].map(([x, y]) => ({
         type: 'image', image: 'gobelets', x, y, w: 1, h: 1,
         ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.gobeletsRanges], script: TIDY_CUPS,
       })),
-      ...[['pizza', 5, 6], ['canettes', 8, 7], ['chips', 4, 7], ['bouteilles', 10, 6]].map(([image, x, y]) => ({
+      ...[['pizza', 6, 10], ['canettes', 9, 8], ['chips', 3, 8], ['bouteilles', 10, 5]].map(([image, x, y]) => ({
         type: 'image', image, x, y, w: 1, h: 1,
         ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.salonRange], script: TIDY_LIVING_ROOM,
       })),
     ],
-    spawn: { x: 6, y: 8, facing: 'up' },
+    spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [
       // Ousmane, pendant la coupure (il sort ensuite attendre devant l'immeuble).
       {
@@ -1418,35 +1402,35 @@ export const interiors = {
         dialogue: ['On n\'y voit rien… Il est où, ce compteur ? Pas près de la porte, en tout cas.'],
       },
       // Le lendemain matin : Ousmane dort, dans son lit (celui de gauche).
-      { id: 'ousmane-lit', name: 'Ousmane', x: 0, y: 3, facing: 'down', still: true, inBed: true, ...MORNING_AFTER, script: OUSMANE_ASLEEP },
+      { id: 'ousmane-lit', name: 'Ousmane', x: 1, y: 10, facing: 'down', still: true, inBed: true, ...MORNING_AFTER, script: OUSMANE_ASLEEP },
       // La soirée : Ousmane et Rémi dans la foule.
       { id: 'ousmane-fete', name: 'Ousmane', x: 7, y: 6, facing: 'left', ...PARTY_TIME, dancing: true, dialogue: ['Regarde-moi ça ! Et dire que tout à l\'heure on était dans le noir.'] },
       { id: 'remi-fete', name: 'Rémi', x: 5, y: 6, facing: 'right', ...PARTY_TIME, dancing: true, dialogue: ['This party is so lit ! Enfin… grâce à toi, littéralement.'] },
       // Léo et Anaïs, de KEDGE, qu'on retrouve à Hull (sprites de Hull, par leur nom : voir characters.js).
-      { id: 'leo-fete', name: 'Léo', x: 4, y: 5, facing: 'right', ...PARTY_TIME, dancing: true, script: PARTY_LEO },
+      { id: 'leo-fete', name: 'Léo', x: 5, y: 5, facing: 'right', ...PARTY_TIME, dancing: true, script: PARTY_LEO },
       { id: 'anais-fete', name: 'Anaïs', x: 8, y: 5, facing: 'left', ...PARTY_TIME, dancing: true, script: PARTY_ANAIS },
       { id: 'etudiant-1', name: 'Étudiant', x: 1, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Première année à KEDGE ! Et toi ?'] },
-      { id: 'etudiant-2', name: 'Étudiant', x: 3, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['C\'est toi qui as rallumé le courant ? Respect.'] },
-      { id: 'etudiant-3', name: 'Étudiant', x: 8, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['L\'enceinte, elle envoie !'] },
-      { id: 'etudiant-4', name: 'Étudiant', x: 10, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Quelqu\'un a vu les gobelets ? Ah, ils sont là.'] },
-      { id: 'etudiant-5', name: 'Étudiant', x: 9, y: 5, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Je connais personne, mais j\'adore tout le monde.'] },
-      { id: 'etudiant-6', name: 'Étudiant', x: 1, y: 6, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['On est combien dans ce salon ? Vingt ?'] },
-      { id: 'etudiant-7', name: 'Étudiant', x: 3, y: 6, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Demain, cours à 8 h. On verra demain.'] },
-      { id: 'etudiant-8', name: 'Étudiant', x: 10, y: 6, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Tu fais finance ou marketing ?'] },
-      { id: 'etudiant-9', name: 'Étudiant', x: 2, y: 7, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Elle est trop bien, cette chanson !'] },
-      { id: 'etudiant-10', name: 'Étudiant', x: 9, y: 7, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Les voisins vont nous adorer.'] },
-      { id: 'etudiant-11', name: 'Étudiant', x: 1, y: 8, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Je danse depuis une heure, j\'ai mal aux pieds.'] },
-      { id: 'etudiant-12', name: 'Étudiant', x: 4, y: 8, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Ousmane m\'a dit que c\'était ici, la meilleure soirée.'] },
-      { id: 'etudiant-13', name: 'Étudiant', x: 10, y: 8, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Tu restes jusqu\'à quelle heure ?'] },
+      { id: 'etudiant-2', name: 'Étudiant', x: 10, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['C\'est toi qui as rallumé le courant ? Respect.'] },
+      { id: 'etudiant-3', name: 'Étudiant', x: 6, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['L\'enceinte, elle envoie !'] },
+      { id: 'etudiant-4', name: 'Étudiant', x: 8, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Quelqu\'un a vu les gobelets ? Ah, ils sont là.'] },
+      { id: 'etudiant-5', name: 'Étudiant', x: 2, y: 5, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Je connais personne, mais j\'adore tout le monde.'] },
+      { id: 'etudiant-6', name: 'Étudiant', x: 1, y: 8, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['On est combien dans ce salon ? Vingt ?'] },
+      { id: 'etudiant-7', name: 'Étudiant', x: 3, y: 8, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Demain, cours à 8 h. On verra demain.'] },
+      { id: 'etudiant-8', name: 'Étudiant', x: 10, y: 8, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Tu fais finance ou marketing ?'] },
+      { id: 'etudiant-9', name: 'Étudiant', x: 2, y: 10, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Elle est trop bien, cette chanson !'] },
+      { id: 'etudiant-10', name: 'Étudiant', x: 9, y: 9, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Les voisins vont nous adorer.'] },
+      { id: 'etudiant-11', name: 'Étudiant', x: 3, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Je danse depuis une heure, j\'ai mal aux pieds.'] },
+      { id: 'etudiant-12', name: 'Étudiant', x: 5, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Ousmane m\'a dit que c\'était ici, la meilleure soirée.'] },
+      { id: 'etudiant-13', name: 'Étudiant', x: 8, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Tu restes jusqu\'à quelle heure ?'] },
     ],
     // Le tableau électrique : au fond, sans bulle « ! » (on le cherche dans le noir).
     objects: [
-      { x: 5, y: 1, hidden: true, script: METER },
+      { x: 4, y: 2, hidden: true, script: METER },
       // Le lendemain matin, facultatif : ton lit (celui de droite) ; les gobelets et le salon sont des objets au sol (props).
-      ...[10, 11].map((x) => ({ x, y: 3, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.litFaitBordeaux], script: TIDY_BED })),
+      ...[[10, 10], [10, 11]].map(([x, y]) => ({ x, y, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.litFaitBordeaux], script: TIDY_BED })),
     ],
     // En quittant la fête (devant la porte) : le lendemain matin.
-    triggers: [[6, 8], [7, 8], [5, 9], [8, 9]].map(([x, y]) => ({ x, y, ...PARTY_TIME, script: PARTY_END })),
+    triggers: [[10, 6], [11, 5], [11, 7]].map(([x, y]) => ({ x, y, ...PARTY_TIME, script: PARTY_END })),
     events: [
       { on: 'enter', ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.coupure], steps: BLACKOUT },
       { on: 'enter', ...PARTY_TIME, steps: PARTY },
@@ -1457,29 +1441,27 @@ export const interiors = {
   studioPaulfit: {
     name: 'Studio de Paulfit',
     frlg: true,
+    // Pièce HGSS (séjour de la maison de M. Pokémon, scripts/interieurs/prytanee_bordeaux.py) : vitrine, canapé, chaîne
+    // hi-fi, étagère au fond, table et ordinateur au milieu ; les haltères au sol (dessinés par le jeu).
     grid: parseGrid([
-      'XXXXXXXX',
-      'XXXXXXXX',
-      'mmoooomm',
-      'mmoooooo',
-      'oooooomo', // haltères
-      'omoooooo',
-      'oooEEooo',
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'mmmmmoommmmm',
+      'oooooooooooo',
+      'oooooooooooo',
+      'ooooommmmooo',
+      'oomoommoomoo', // haltères (x 2 et x 9)
+      'oooooooooooo',
+      'mooEooooooom',
     ]),
-    decor: [
-      { kind: 'bed', x: 0, y: 2 },
-      { kind: 'window', x: 3, y: 0 },
-      { kind: 'cabinet', x: 6, y: 1 },
-      { kind: 'blueShelf', x: 7, y: 1 },
-    ],
     decals: [
-      { kind: 'dumbbells', x: 6, y: 4 },
-      { kind: 'dumbbells', x: 1, y: 5 },
+      { kind: 'dumbbells', x: 9, y: 6 },
+      { kind: 'dumbbells', x: 2, y: 6 },
     ],
-    spawn: { x: 3, y: 5, facing: 'up' },
-    npcs: [{ id: 'paulfit', name: 'Paulfit', x: 4, y: 3, facing: 'down', script: PAULFIT }],
+    spawn: { x: 3, y: 7, facing: 'up' },
+    npcs: [{ id: 'paulfit', name: 'Paulfit', x: 5, y: 3, facing: 'down', script: PAULFIT }],
     objects: [
-      ...[[6, 4], [1, 5]].map(([x, y]) => ({ x, y, dialogue: ['Des haltères. Bien trop lourds pour toi.'] })),
+      ...[[9, 6], [2, 6]].map(([x, y]) => ({ x, y, dialogue: ['Des haltères. Bien trop lourds pour toi.'] })),
     ],
   },
 
@@ -1487,21 +1469,20 @@ export const interiors = {
   appartRemi: {
     name: 'Appartement de Rémi',
     frlg: true,
+    // Pièce HGSS (maison de Doublonville, scripts/interieurs/prytanee_bordeaux.py) : cuisine, bibliothèque, plante au fond,
+    // table au milieu, le lit de Rémi à gauche ; le drapeau américain au mur (dessiné par le jeu).
     grid: parseGrid([
-      'XXXXXXXX',
-      'XXXXXXXX',
-      'mmoooomm',
-      'mmoooomm',
-      'oooooooo',
-      'oooooooo',
-      'oooEEooo',
+      'XXXXXXXXX',
+      'XXXXXXXXX',
+      'mmmooommm',
+      'ooooooooo',
+      'mmooommoo',
+      'mmooommoo',
+      'mmooooooo',
+      'oooEooooo',
     ]),
-    decor: [
-      { kind: 'bed', x: 0, y: 2 },
-      { kind: 'computerDesk', x: 6, y: 2 },
-    ],
     decals: [{ kind: 'usFlag', x: 3, y: 0 }],
-    spawn: { x: 3, y: 5, facing: 'up' },
+    spawn: { x: 3, y: 6, facing: 'up' },
     npcs: [{ id: 'remi-gobelets', name: 'Rémi', x: 4, y: 3, facing: 'down', script: REMI_CUPS }],
     objects: [
       ...[3, 4].map((x) => ({ x, y: 1, dialogue: ['Un drapeau américain. « Souvenir de mon échange aux USA », d\'après Rémi.'] })),
@@ -1512,33 +1493,25 @@ export const interiors = {
   kedge: {
     name: 'KEDGE',
     frlg: true,
+    // Pièce HGSS (salle de classe de l'école d'Écorcia, scripts/interieurs/prytanee_bordeaux.py) : tableau vert, le bureau
+    // de la professeure (x 4-6, rangée 3 : on lui parle par-dessus, '#'), deux rangées de tables, coin carrelé à droite.
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'mmoooooooomm',
-      'ooooommmoooo', // accueil
-      'oooooooooooo',
-      'oooooooooooo',
-      'moooooooooom',
-      'oooooooooooo',
-      'moooooooooom',
-      'oooooooooooo',
-      'ooooooEEoooo',
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'mmmoooooooooomm',
+      'oooo###oooooooo',
+      'ooooooooooooooo',
+      'oommmommmoooomm',
+      'ooooooooooooomm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooEoooooooom',
     ]),
-    decor: [
-      { kind: 'bookshelf', x: 0, y: 0 },
-      { kind: 'chalkboard', x: 4, y: 1 },
-      { kind: 'bookshelf', x: 10, y: 0 },
-      { kind: 'longTable', x: 5, y: 3 },
-      { kind: 'pottedPlant', x: 0, y: 6 },
-      { kind: 'pottedPlant', x: 11, y: 6 },
-      { kind: 'pottedPlant', x: 0, y: 8 },
-      { kind: 'pottedPlant', x: 11, y: 8 },
-    ],
-    spawn: { x: 6, y: 9, facing: 'up' },
+    spawn: { x: 5, y: 9, facing: 'up' },
     npcs: [
       {
-        id: 'prof-anglais', name: "Professeure d'anglais", x: 6, y: 4, facing: 'down', color: 0xb04c6c,
+        id: 'prof-anglais', name: "Professeure d'anglais", x: 5, y: 2, facing: 'down', color: 0xb04c6c,
         script: ENGLISH_ORAL,
       },
     ],
@@ -2185,31 +2158,30 @@ export const interiors = {
   // Bordeaux — le stade : cérémonie de remise des diplômes, foule de diplômés et podium.
   stade: {
     name: 'Stade',
+    // Pièce HGSS (hall du portique du Parc et du Pokéathlon, scripts/interieurs/prytanee_bordeaux.py) : affiches au mur,
+    // grande moquette, comptoir en U au fond (le directeur devant, x 18), tapis de sortie en bas à droite.
     grid: parseGrid([
-      'XXXXXXXXXXXXXXXXXXXX',
-      'X%%%%%%%%%%%%%%%%%%X', // tribunes
-      'X%%%%%%%%%%%%%%%%%%X',
-      'X..................X',
-      'X........++........X', // podium
-      'X........++........X',
-      'X..................X',
-      'X..................X',
-      'X..................X',
-      'X..................X',
-      'X..................X',
-      'X..................X',
-      'X........EE........X',
-      'XXXXXXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+      'mooooooooooooooomoooomooooom',
+      'oooooooooooooooomoooomoooooo',
+      'oooooooooooooooomoooomoooooo',
+      'oooooooooooooooommmmmmoooooo', // comptoir en U ; le directeur se tient devant
+      'oooooooooooooooooooooooooooo',
+      'oooooooooooooooooooooooooooo',
+      'oooooooooooooooooooooooooooo',
+      'oooooooooooooooooooooooooooo',
+      'moooooooooooooooooooooooEoom',
     ]),
-    spawn: { x: 9, y: 11, facing: 'up' },
+    spawn: { x: 24, y: 9, facing: 'up' },
     npcs: [
       {
-        id: 'directeur', name: 'Directeur', x: 11, y: 4, facing: 'left', color: 0x6c1c2c, hat: true,
+        id: 'directeur', name: 'Directeur', x: 18, y: 6, facing: 'down', color: 0x6c1c2c, hat: true,
         unlessFlags: [FLAGS.diplomeBordeaux],
         dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Monte sur le podium pour recevoir ton diplôme.'],
       },
       {
-        id: 'directeur-fin', name: 'Directeur', x: 11, y: 4, facing: 'left', color: 0x6c1c2c, hat: true,
+        id: 'directeur-fin', name: 'Directeur', x: 18, y: 6, facing: 'down', color: 0x6c1c2c, hat: true,
         ifFlags: [FLAGS.diplomeBordeaux],
         dialogue: ['[Directeur - texte provisoire] Félicitations, jeune diplômé ! La route de Paris est ouverte.'],
       },
@@ -2225,21 +2197,21 @@ export const interiors = {
         dialogue: ["[Diplômé - texte provisoire] Félicitations à nous tous !"] },
       { id: 'diplome-5', name: 'Diplômé', x: 16, y: 7, facing: 'up', color: 0x1c1c24, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Quelle belle journée !"] },
-      { id: 'diplome-6', name: 'Diplômé', x: 4, y: 10, facing: 'up', color: 0x202028, hat: true,
+      { id: 'diplome-6', name: 'Diplômé', x: 4, y: 9, facing: 'up', color: 0x202028, hat: true,
         dialogue: ["[Diplômé - texte provisoire] On l'a fait !"] },
       { id: 'diplome-7', name: 'Diplômé', x: 6, y: 9, facing: 'up', color: 0x2c2c3c, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Je n'en reviens pas, diplômés !"] },
-      { id: 'diplome-8', name: 'Diplômé', x: 13, y: 10, facing: 'up', color: 0x1c1c24, hat: true,
+      { id: 'diplome-8', name: 'Diplômé', x: 22, y: 8, facing: 'up', color: 0x1c1c24, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Félicitations à nous tous !"] },
       { id: 'diplome-9', name: 'Diplômé', x: 15, y: 9, facing: 'up', color: 0x202028, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Quelle belle journée !"] },
-      { id: 'diplome-10', name: 'Diplômé', x: 8, y: 10, facing: 'up', color: 0x2c2c3c, hat: true,
+      { id: 'diplome-10', name: 'Diplômé', x: 9, y: 9, facing: 'up', color: 0x2c2c3c, hat: true,
         dialogue: ["[Diplômé - texte provisoire] On l'a fait !"] },
       { id: 'diplome-11', name: 'Diplômé', x: 11, y: 9, facing: 'up', color: 0x1c1c24, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Je n'en reviens pas, diplômés !"] },
     ],
-    // Monter sur le podium : remise du diplôme de Bordeaux (une seule fois).
-    triggers: [[9, 4], [10, 4], [9, 5], [10, 5]].map(([x, y]) => ({
+    // Monter sur l'estrade, devant le pupitre du directeur : remise du diplôme de Bordeaux (une seule fois).
+    triggers: [[18, 7], [19, 7]].map(([x, y]) => ({
       x,
       y,
       unlessFlags: [FLAGS.diplomeBordeaux],

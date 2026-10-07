@@ -382,8 +382,9 @@ export class MapScene extends Phaser.Scene {
         this.props.push({ data, graphics });
         continue;
       }
-      // Objet en image (art/propImages.js, style Gen 4) : au milieu du bas de son emprise, trié en profondeur.
-      if (data.image) {
+      // Objet en image (art/propImages.js, style Gen 4) : au milieu du bas de son emprise, trié en profondeur. (Le désordre
+      // de la soirée, `type: 'image'`, a sa propre planche : plus bas.)
+      if (data.image && data.type !== 'image') {
         const bottom = (data.y + data.h) * TILE_SIZE;
         const graphics = this.add.image((data.x + data.w / 2) * TILE_SIZE, bottom, propKey(data.image))
           .setOrigin(0.5, 1).setDepth(10 + (bottom - 1) / 10000);

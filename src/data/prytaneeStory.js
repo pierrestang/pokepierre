@@ -16,7 +16,7 @@ export const NORTH_GATE = [[24, 2], [25, 2]];
 export const SOUTH_GATE = [16, 23];
 export const RESULTS_BOARD = { x: 17, y: 19 };              // le panneau de bois du bas de la place
 const COMMAND_POST = [29, 22];
-const DORM_EXIT = [13, 3];                                        // sous l'escalier du dortoir
+const DORM_EXIT = [12, 3];                                        // l'escalier du dortoir qui descend au hall
 
 // ---------- 1. Arrivée et Autonomie ----------
 
@@ -45,23 +45,23 @@ const INSPECTION = [
   { walk: 'capitaine-inspection', to: [7, 6], block: true },
   { face: { 'capitaine-inspection': 'up' } },
   { speaker: 'Capitaine', say: ['GARDE À VOUS !'] },
-  { walk: 'tanguy', to: [3, 4] },
-  { walk: 'geoffrey', to: [9, 4] },
-  { goTo: [6, 4], facing: 'down' },
+  { walk: 'tanguy', to: [4, 5] },
+  { walk: 'geoffrey', to: [6, 5] },
+  { goTo: [9, 5], facing: 'down' },
   { wait: 500 },
   { face: { tanguy: 'down', geoffrey: 'down', player: 'down' } },
   { say: ['Tanguy, Geoffrey et toi, alignés devant vos lits, au garde-à-vous.'] },
   // Il passe tout en revue : l'armoire d'abord (comme le disait Tanguy), le lit, puis le bureau.
-  { walk: 'capitaine-inspection', to: [11, 5], block: true },
+  { walk: 'capitaine-inspection', to: [11, 6], block: true },
   { face: { 'capitaine-inspection': 'right' } },
   { speaker: 'Capitaine', say: ['L\'armoire d\'abord. Toujours l\'armoire.', '… Pliée au carré. Je suis presque déçu.'] },
-  { walk: 'capitaine-inspection', to: [7, 4], block: true },
+  { walk: 'capitaine-inspection', to: [8, 5], block: true },
   { face: { 'capitaine-inspection': 'up' } },
   { speaker: 'Capitaine', say: ['Le lit. Une pièce de monnaie rebondirait dessus.', 'Je n\'ai pas de pièce. Mais je le sens.'] },
-  { walk: 'capitaine-inspection', to: [3, 6], block: true },
+  { walk: 'capitaine-inspection', to: [3, 9], block: true },
   { face: { 'capitaine-inspection': 'up' } },
   { speaker: 'Capitaine', say: ['Les affaires pour demain. Même les chaussettes sont alignées.', 'Qui t\'a appris ça ? … Ne réponds pas.'] },
-  { walk: 'capitaine-inspection', to: [6, 6], block: true },
+  { walk: 'capitaine-inspection', to: [7, 7], block: true },
   { face: { 'capitaine-inspection': 'up', player: 'down' } },
   { speaker: 'Capitaine', say: ['Correct. Repos.'] },
   { trait: TRAITS.autonomie },
@@ -79,7 +79,7 @@ const INSPECTION = [
   { say: ['Objectif : rejoins Tanguy et Geoffrey derrière le mur, à la porte nord. Gare aux rondes !'] },
   // Ils filent chacun par le plus court chemin vers l'escalier (pas en file : l'un ne refait pas tout le trajet de l'autre),
   // pendant que Pierre a déjà la main ; ils disparaissent en bas (Geoffrey, le plus loin, lève le drapeau à son arrivée).
-  { walk: 'tanguy', to: [DORM_EXIT[0] - 1, DORM_EXIT[1]] },
+  { walk: 'tanguy', to: [DORM_EXIT[0], DORM_EXIT[1] + 1] },
   { walk: 'geoffrey', to: DORM_EXIT, then: [FLAGS.murPropose] },
 ];
 const ALL_DONE = { ifFlags: [FLAGS.litFait, FLAGS.armoireRangee, FLAGS.affairesPretes], unlessFlags: [FLAGS.chambrePrete] };
@@ -139,7 +139,7 @@ export const BEHIND_THE_WALL = [
   { black: true },
   { wait: 700 },
   { setFlag: FLAGS.murReussi },
-  { travel: { interior: 'dortoir', x: 7, y: 4, facing: 'left' } },
+  { travel: { interior: 'dortoir', x: 8, y: 6, facing: 'right' } },
 ];
 
 // Au dortoir, au petit matin : le capitaine monte demander qui est sorti ; Pierre (Audace) affirme sans ciller que
@@ -148,7 +148,7 @@ export const BEHIND_THE_WALL = [
 export const MORNING = [
   { say: ['Au petit matin, au dortoir.'] },
   { sound: 'door' },
-  { walk: 'capitaine-matin', to: [9, 4], block: true },
+  { walk: 'capitaine-matin', to: [9, 6], block: true },
   { face: { 'capitaine-matin': 'left', player: 'right' } },
   { speaker: 'Capitaine', say: ['Trois lits vides cette nuit, d\'après la ronde. Qui est sorti ?'] },
   { useTrait: TRAITS.audace },
@@ -169,8 +169,8 @@ export const MORNING = [
   { speaker: 'Tanguy', say: ['Debout, Pierre ! C\'est aujourd\'hui : la liste du bac est affichée dans la cour.'] },
   { speaker: 'Geoffrey', say: ['On descend voir. Si j\'y suis pas, je refais le mur… mais pour de bon.'] },
   { say: ['Objectif : va voir les résultats du bac, sur le panneau de la place d\'armes.'] },
-  { walk: 'tanguy-jourj', to: [12, 3] },
-  { walk: 'geoffrey-jourj', to: [13, 3], then: [FLAGS.bacDescente] },
+  { walk: 'tanguy-jourj', to: [12, 4] },
+  { walk: 'geoffrey-jourj', to: [12, 3], then: [FLAGS.bacDescente] },
 ];
 
 // ---------- 3. Le bac ----------

@@ -1,304 +1,131 @@
-"""Intérieurs Gen 4 du Prytanée (internat) et de Bordeaux (agence, appartements, KEDGE, stade).
+"""Intérieurs du Prytanée (internat) et de Bordeaux (agence, appartements, KEDGE, stade), refaits à partir de vraies
+pièces de HeartGold / SoulSilver (pack de SirMaIo, scripts/hgss_rooms.py) : chaque plan part d'une pièce du jeu
+('hgss' : carte Tiled, x0, y0, largeur, hauteur), retouchée ('erase', 'paste') et meublée de morceaux du pack ('items').
 
-Voir scripts/interieurs_plans.py (format des plans) et scripts/build_interiors.py. Les positions des PNJ, objets,
-escaliers et tapis de sortie sont celles de src/data/maps/interiors.js ; les décors dessinés dans le code (drapeaux,
-compteur électrique, gobelets, haltères) gardent leur place libre sur le mur ou au sol.
+Les grilles logiques et les positions (PNJ, objets, escaliers, tapis) sont dans src/data/maps/interiors.js ; les décors
+de l'histoire dessinés par le jeu (drapeaux, compteur électrique, désordre de la soirée, haltères) y sont placés.
+Crédit : « Intérieurs HGSS ripés et préparés par SirMaIo ».
 """
 import math
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image
 
-import interieurs_plans as core
-from interieurs_plans import T, crop, isolate, meuble, sheet, WALLS  # noqa: F401
+from interieurs_plans import T, isolate  # noqa: F401
+
+import hgss_rooms as HG
+
+SHEETS = HG.SHEETS
 
 
-# ---------- Outils ----------
-def mm(i, w=None, align='bottom'):
-    """Meuble n° i de g4-int-meubles, détouré au plus juste, centré sur `w` cases (le moins possible sinon)."""
-    img = isolate(meuble(i))
+def pack_px(sheet, x, y, w, h, width=None):
+    """Morceau d'une planche du pack (rectangle en px de la planche, cases de 32 px), ramené à l'échelle du jeu, détouré
+    (le plus grand morceau d'un seul tenant) et posé en bas d'une image de cases entières (centré sur `width` cases)."""
+    a = np.array(Image.open(SHEETS / f'{sheet}.png').convert('RGBA'))
+    for key in ((240, 91, 161), (255, 245, 104), (255, 0, 255)):
+        a[(a[..., 0] == key[0]) & (a[..., 1] == key[1]) & (a[..., 2] == key[2])] = 0
+    img = Image.fromarray(a).crop((x, y, x + w, y + h))
+    img = img.resize((max(1, img.width // 2), max(1, img.height // 2)), Image.NEAREST)
+    img = isolate(img)
     img = img.crop(img.getbbox())
-    tw, th = w or math.ceil(img.width / T), math.ceil(img.height / T)
+    tw = width or math.ceil(img.width / T)
+    th = math.ceil(img.height / T)
     out = Image.new('RGBA', (tw * T, th * T))
-    out.alpha_composite(img, ((tw * T - img.width) // 2, out.height - img.height if align == 'bottom' else 0))
+    out.alpha_composite(img, ((tw * T - img.width) // 2, out.height - img.height))
     return out
 
 
-def piece(img, box, w, top=4, h=2):
-    """Un morceau (x, y, l, h en px) d'une image, accroché au mur : centré sur `w` cases, son haut à `top` px du haut
-    d'une image de `h` cases (pied du meuble sur la plinthe : y = 1)."""
-    part = img.crop((box[0], box[1], box[0] + box[2], box[1] + box[3]))
-    part = part.crop(part.getbbox())
+def hgss_piece(name, x0, y0, w, h, layers=('decor', 'dessus')):
+    """Un meuble pris dans une vraie pièce HGSS (calques décor et dessus, sans le sol), en image de w x h cases."""
+    r = HG.room(name, x0, y0, w, h)
     out = Image.new('RGBA', (w * T, h * T))
-    out.alpha_composite(part, ((w * T - part.width) // 2, top))
+    for k in layers:
+        for i, stack in enumerate(r[k]):
+            for t in stack:
+                out.alpha_composite(t, ((i % w) * T, (i // w) * T))
     return out
 
 
-def on_wall(img, w, top=6):
-    """Un meuble mural (fenêtre, tableau) sur les deux rangées du mur."""
-    img = img.crop(img.getbbox())
-    out = Image.new('RGBA', (w * T, 2 * T))
-    out.alpha_composite(img, ((w * T - img.width) // 2, top))
-    return out
-
-
-def centered(img, w):
-    """Image centrée en largeur sur `w` cases (un escalier d'une case dessiné un peu plus large)."""
-    img = img.crop(img.getbbox())
-    out = Image.new('RGBA', (w * T, math.ceil(img.height / T) * T))
-    out.alpha_composite(img, ((w * T - img.width) // 2, out.height - img.height))
-    return out
-
-
-DECO = lambda: meuble(309)          # carte, petit tableau, marine, notes, panneau suspendu, plante, boîtier
-
-
-def stairs_down():
-    """Cage d'escalier qui descend : la porte de l'escalier (283), les marches assombries et inversées."""
-    img = isolate(meuble(283))
-    img = img.crop(img.getbbox())
-    a = np.array(img).astype(float)
-    inner = a[6:-2, 3:-3].copy()
-    inner = inner[::-1]
-    inner[..., :3] *= np.linspace(0.35, 0.8, inner.shape[0])[:, None, None]
-    a[6:-2, 3:-3] = inner
-    return centered(Image.fromarray(a.clip(0, 255).astype(np.uint8)), 3)
-
-
-def stadium_seats():
-    """Gradins : deux sièges bleus par case sur une marche de béton (deux rangées de case : dossier, assise)."""
-    img = Image.new('RGBA', (T, T), (150, 150, 158, 255))
-    d = ImageDraw.Draw(img)
-    d.rectangle((0, 14, 15, 15), fill=(110, 110, 120, 255))
-    for x in (1, 9):
-        d.rectangle((x, 2, x + 5, 9), fill=(40, 80, 168, 255))
-        d.rectangle((x, 2, x + 5, 3), fill=(88, 136, 224, 255))
-        d.rectangle((x - 1, 9, x + 6, 12), fill=(52, 100, 192, 255))
-        d.line((x - 1, 12, x + 6, 12), fill=(28, 52, 110, 255))
-    return img
-
-
-def podium():
-    """Estrade de la remise des diplômes : plancher rouge bordé d'or, deux cases sur deux (on monte dessus)."""
-    img = Image.new('RGBA', (2 * T, 2 * T))
-    d = ImageDraw.Draw(img)
-    d.rectangle((0, 0, 31, 31), fill=(150, 40, 48, 255))
-    d.rectangle((0, 0, 31, 31), outline=(214, 172, 64, 255))
-    d.rectangle((1, 1, 30, 30), outline=(110, 26, 34, 255))
-    for y in (8, 16, 24):
-        d.line((2, y, 29, y), fill=(132, 34, 42, 255))
-    return img
-
-
-def lectern():
-    """Pupitre du directeur (bois, micro)."""
-    img = Image.new('RGBA', (T, 2 * T))
-    d = ImageDraw.Draw(img)
-    d.rectangle((3, 14, 12, 29), fill=(120, 76, 40, 255), outline=(60, 36, 20, 255))
-    d.rectangle((1, 10, 14, 15), fill=(156, 104, 56, 255), outline=(60, 36, 20, 255))
-    d.line((8, 3, 8, 10), fill=(50, 50, 56, 255))
-    d.ellipse((6, 1, 10, 5), fill=(70, 70, 78, 255))
-    return img
-
-
-def banner(color):
-    """Bannière accrochée au mur du stade."""
-    img = Image.new('RGBA', (T, T))
-    d = ImageDraw.Draw(img)
-    d.line((1, 1, 14, 1), fill=(90, 70, 40, 255))
-    d.polygon([(3, 2), (12, 2), (12, 13), (7, 10), (3, 13)], fill=color, outline=(40, 30, 30, 255))
-    d.line((5, 5, 10, 5), fill=(240, 220, 120, 255))
-    return img
-
-
-def exercise_mat():
-    """Tapis de sol bleu (salle de sport)."""
-    img = Image.new('RGBA', (2 * T, T))
-    d = ImageDraw.Draw(img)
-    d.rounded_rectangle((1, 3, 30, 13), 2, fill=(64, 112, 184, 255), outline=(36, 64, 116, 255))
-    for x in (8, 16, 24):
-        d.line((x, 4, x, 12), fill=(52, 92, 156, 255))
-    return img
-
-
-def weight_bench():
-    """Banc de musculation avec sa barre."""
-    img = Image.new('RGBA', (2 * T, T))
-    d = ImageDraw.Draw(img)
-    d.rectangle((6, 6, 25, 10), fill=(40, 40, 48, 255))
-    d.rectangle((7, 6, 24, 8), fill=(200, 48, 48, 255))
-    d.line((8, 11, 8, 14), fill=(60, 60, 68, 255))
-    d.line((23, 11, 23, 14), fill=(60, 60, 68, 255))
-    d.line((2, 3, 29, 3), fill=(160, 160, 170, 255))
-    for x in (2, 27):
-        d.rectangle((x, 0, x + 2, 6), fill=(50, 50, 58, 255))
-    return img
-
-
-# Pelouse du stade : l'herbe DPPt, tondue en bandes de deux cases.
-_old_floor = core.floor
-
-
-def _floor(name):
-    if name == 'pb-pelouse':
-        g = crop('dppt', 4, 0)
-        a = np.array(g).astype(float)
-        a[..., :3] *= 0.9
-        dark = Image.fromarray(a.clip(0, 255).astype(np.uint8))
-        return [[g, g, dark, dark]]
-    return _old_floor(name)
-
-
-core.floor = _floor
-WALLS['pb-beton'] = lambda: core.dppt_wall(165)
-
-
-# ---------- Meubles ----------
+NB = '001i_Newbark houses'
 ITEMS = {
-    'pb-lit-metal': {'img': lambda: mm(156, 2), 'solid': 2},
-    'pb-lit-bleu': {'img': lambda: mm(155, 2), 'solid': 2},
-    'pb-lit-rose': {'img': lambda: mm(157, 2), 'solid': 2},
-    'pb-casier-gris': {'img': lambda: mm(47), 'solid': 1},
-    'pb-casier-gris-2': {'img': lambda: mm(49), 'solid': 1},
-    'pb-casier-vert': {'img': lambda: mm(48), 'solid': 1},
-    'pb-armoire-metal': {'img': lambda: mm(47), 'solid': 2},
-    'pb-vitrine': {'img': lambda: mm(208, 2), 'solid': 1},
-    'pb-bibliotheque': {'img': lambda: mm(138, 2), 'solid': 1},
-    'pb-bibliotheque-bois': {'img': lambda: mm(226, 2), 'solid': 1},
-    'pb-etagere': {'img': lambda: mm(151, 2), 'solid': 2},
-    'pb-etagere-livres': {'img': lambda: mm(124, 2), 'solid': 2},
-    'pb-accueil': {'img': lambda: mm(116, 3), 'solid': 1},
-    'pb-bureau-bois': {'img': lambda: mm(115, 3), 'solid': 1},
-    'pb-bureau-gris': {'img': lambda: mm(282, 3), 'solid': 1},
-    'pb-bureau': {'img': lambda: mm(4, 2), 'solid': 1},
-    'pb-bureau-pc': {'img': lambda: mm(225, 2), 'solid': 2},
-    'pb-pupitre': {'img': lambda: mm(285, 2), 'solid': 1},
-    'pb-plante': {'img': lambda: mm(27), 'solid': 1},
-    'pb-grande-plante': {'img': lambda: mm(34), 'solid': 1},
-    'pb-fenetre': {'img': lambda: on_wall(meuble(20), 2, 3), 'solid': 0},
-    'pb-tableau-vert': {'img': lambda: on_wall(meuble(268), 4, 4), 'solid': 0},
-    'pb-carte': {'img': lambda: piece(DECO(), (0, 8, 32, 21), 2), 'solid': 0},
-    'pb-marine': {'img': lambda: piece(DECO(), (48, 6, 32, 24), 2), 'solid': 0},
-    'pb-petit-tableau': {'img': lambda: piece(DECO(), (32, 8, 16, 21), 1), 'solid': 0},
-    'pb-notes': {'img': lambda: piece(DECO(), (80, 8, 16, 22), 1), 'solid': 0},
-    'pb-panneau': {'img': lambda: piece(DECO(), (96, 4, 16, 25), 1, top=2), 'solid': 0},
-    'pb-frigo': {'img': lambda: mm(51), 'solid': 1},
-    'pb-cuisine': {'img': lambda: mm(277, 3), 'solid': 1},
-    'pb-tele': {'img': lambda: mm(264, 2), 'solid': 1},
-    'pb-canape': {'img': lambda: mm(17, 3), 'solid': 1},
-    'pb-tapis-bleu': {'img': lambda: mm(153), 'solid': 0, 'flat': True},
-    'pb-tapis-rouge': {'img': lambda: mm(6, 2), 'solid': 0, 'flat': True},
-    'pb-chaise': {'img': lambda: mm(161), 'solid': 1},
-    'pb-tapis-sport': {'img': exercise_mat, 'solid': 0, 'flat': True},
-    'pb-banc-muscu': {'img': weight_bench, 'solid': 1},
-    'pb-escalier-monte': {'img': lambda: centered(isolate(meuble(283)), 3), 'solid': 0, 'flat': True},
-    'pb-escalier-descend': {'img': stairs_down, 'solid': 0, 'flat': True},
-    'pb-gradins': {'img': stadium_seats, 'solid': 1},
-    'pb-podium': {'img': podium, 'solid': 0, 'flat': True},
-    'pb-pupitre-orateur': {'img': lectern, 'solid': 1},
-    'pb-banniere-rouge': {'img': lambda: banner((176, 36, 48, 255)), 'solid': 0},
-    'pb-banniere-bleue': {'img': lambda: banner((40, 72, 160, 255)), 'solid': 0},
+    # Lit du héros de Bourg Geon (planche de sa maison), une case et demie de large.
+    'pb-lit': {'img': lambda: pack_px('i_Player-House', 184, 548, 72, 96, width=2), 'solid': 2},
+    # Commode et bibliothèque des maisons ordinaires de Johto.
+    'pb-commode': {'img': lambda: pack_px('i_Basic_Houses', 160, 700, 64, 72, width=2), 'solid': 1},
+    'pb-bibliotheque': {'img': lambda: pack_px('i_Basic_Houses', 192, 160, 64, 64, width=2), 'solid': 1},
+    # Bureau et ordinateur de la chambre du héros (Bourg Geon, 2e maison).
+    'pb-bureau-pc': {'img': lambda: hgss_piece(NB, 15, 35, 2, 2), 'solid': 1},
+    'pb-plante': {'img': lambda: hgss_piece(NB, 19, 41, 1, 2), 'solid': 1},
 }
 
 
-# ---------- Pièces ----------
+RT = '012i_Goldenrod radio tower'
+GI = '012i_Goldenrod interiors'
+DORM_CLEAR = (3, 4, 11, 7)            # les bureaux, chaises, la table et son tapis de l'étage de la Tour Radio
+
+
+def dorm(extra=()):
+    """Un dortoir du Prytanée : l'étage de bureaux de la Tour Radio vidé, quatre lits par paires contre le mur du fond,
+    une commode de chaque côté, un bureau."""
+    return {
+        'hgss': (RT, 10, 51, 14, 12),
+        'erase': [DORM_CLEAR],
+        'items': [
+            *[['pb-lit', x, 4, {'solid': 3}] for x in (3, 5, 8, 10)],   # x 2 et 7 restent libres (escalier, allée)
+            ['pb-commode', 12, 7, {'solid': 2}], ['pb-commode', 0, 8, {'solid': 2}],
+            *extra,
+        ],
+    }
+
+
 PLANS = {
-    # Prytanée — hall de l'internat : mur gris austère, dallage ; bibliothèque, tableau d'affichage, drapeau (dessiné
-    # dans le code, en 3-4), fenêtre, deux casiers métalliques, vitrine des trophées, escalier qui monte en 11 ; accueil
-    # du planton (bureau gris, il se tient derrière), deux étagères, deux plantes de part et d'autre de l'entrée.
+    # Prytanée — hall de l'internat : le hall du côté boutiques de la gare de Doublonville (murs verts, sol à damier,
+    # plantes, escalier au fond à droite), sans ses lampadaires ; deux fenêtres remplacées par du mur pour le drapeau
+    # (dessiné par le jeu), une bibliothèque et le bureau de l'accueil.
     'dortoirHall': {
-        'wall': 'pb-beton', 'floor': 'carrelage-gris',
-        'items': [
-            ['pb-bibliotheque', 0, 2], ['pb-panneau', 2, 1], ['pb-fenetre', 5, 1],
-            ['pb-casier-gris', 7, 2], ['pb-casier-gris-2', 8, 2], ['pb-vitrine', 9, 2],
-            ['escalier-monte-gris', 11, 2],
-            ['pb-etagere', 0, 5], ['pb-etagere', 10, 5],
-            ['pb-bureau-gris', 4, 4],
-            ['pb-plante', 0, 7], ['pb-plante', 11, 7],
-        ],
+        'hgss': (GI, 47, 24, 11, 10),
+        'erase': [(2, 4, 1, 2), (6, 4, 1, 2), (2, 7, 1, 2), (6, 7, 1, 2), (6, 0, 2, 3)],
+        'paste': [{'from': (GI, 47 + 5, 24, 1, 3), 'to': (6, 0), 'sol': True},
+                  {'from': (GI, 47 + 5, 24, 1, 3), 'to': (7, 0), 'sol': True},
+                  # Les lampadaires sont dans le sol : recouverts par du sol nu de même motif.
+                  *[{'from': (GI, 47 + 4, 24 + y, 1, 2), 'to': (x, y), 'sol': True} for x in (2, 6) for y in (4, 7)]],
+        'items': [['pb-bibliotheque', 1, 3], ['pb-bureau-pc', 4, 3]],
+        'free': [[9, 6]],                              # le pied de l'escalier (η)
     },
-    # Prytanée — la chambre (1er étage) : quatre lits métalliques alignés contre le mur, fenêtres et tableau d'affichage,
-    # armoires métalliques par paires, le bureau commun ; escalier qui monte (11) et qui descend (13).
-    'dortoir': {
-        'wall': 'olive', 'floor': 'parquet-clair',
-        'items': [
-            ['pb-fenetre', 2, 1], ['pb-panneau', 5, 1], ['pb-fenetre', 7, 1],
-            ['pb-lit-metal', 0, 3], ['pb-lit-metal', 3, 3], ['pb-lit-metal', 6, 3], ['pb-lit-metal', 9, 3],
-            ['escalier-monte-gris', 11, 2], ['escalier-descend-gris', 13, 2],
-            ['pb-armoire-metal', 0, 6], ['pb-armoire-metal', 1, 6], ['pb-armoire-metal', 12, 6],
-            ['pb-armoire-metal', 13, 6],
-            ['pb-bureau', 2, 5],
-        ],
-    },
-    # Prytanée — dortoir des terminales (2e étage) : même ordre, une marine au mur ; escalier qui descend (13).
-    'dortoirEtage2': {
-        'wall': 'olive', 'floor': 'parquet-clair',
-        'items': [
-            ['pb-fenetre', 2, 1], ['pb-marine', 7, 1], ['pb-fenetre', 10, 1],
-            ['pb-lit-metal', 0, 3], ['pb-lit-metal', 3, 3], ['pb-lit-metal', 6, 3], ['pb-lit-metal', 9, 3],
-            ['escalier-descend-gris', 13, 2],
-            ['pb-armoire-metal', 0, 6], ['pb-armoire-metal', 1, 6], ['pb-armoire-metal', 12, 6],
-            ['pb-armoire-metal', 13, 6],
-        ],
-    },
-    # Bordeaux — l'agence immobilière : murs beiges, carrelage clair ; classeur bleu et casier, fenêtre, étagère à
-    # dossiers ; le bureau de l'agent face à l'entrée ; annonces au mur, une plante.
+    # Prytanée — dortoir (1er étage) : l'escalier de gauche monte au 2e, l'encadrement de droite descend au hall.
+    'dortoir': {**dorm([['pb-bureau-pc', 2, 8]]), 'free': [[1, 3], [12, 3]]},
+    # Prytanée — 2e étage : la même chambrée ; l'escalier de gauche redescend.
+    'dortoirEtage2': {**dorm(), 'free': [[1, 3]]},
+    # Bordeaux — l'agence : le bureau du directeur de la Tour Radio (moquette rouge, grand bureau, plantes, escalier).
     'agence': {
-        'wall': 'beige', 'floor': 'carrelage',
-        'items': [
-            ['pb-casier-vert', 0, 2], ['pb-casier-gris', 1, 2], ['pb-fenetre', 3, 1], ['pb-notes', 5, 1],
-            ['pb-bibliotheque-bois', 6, 2],
-            ['pb-bureau-bois', 2, 3], ['pb-grande-plante', 7, 7],
-        ],
+        'hgss': (RT, 10, 31, 9, 12), 'mat': 'rouge',
     },
-    # Bordeaux — l'appartement d'Ousmane et Pierre : deux lits (Ousmane dort dans celui de gauche, le matin après la
-    # soirée), coin cuisine et frigo, le compteur au mur en 5 (dessiné dans le code, sa case devant reste libre),
-    # bureau avec ordinateur, fenêtre et tableau ; un grand tapis au milieu du salon (la piste de la soirée).
+    # Bordeaux — l'appartement : le salon de la grande maison de Bourg Geon (cuisine, télé, coin repas, porte à droite),
+    # deux lits à la place des plantes du bas (Ousmane à gauche, Pierre à droite).
     'appartement': {
-        'wall': 'creme', 'floor': 'parquet-clair', 'npc_on_solid': ['ousmane-lit'],
-        'items': [
-            ['pb-tapis-bleu', 4, 7],
-            ['pb-lit-bleu', 0, 3, {'bed': True}], ['pb-fenetre', 3, 1], ['pb-marine', 9, 1],
-            ['pb-cuisine', 2, 2], ['pb-frigo', 6, 2],
-            ['pb-bureau-pc', 7, 3], ['pb-lit-rose', 10, 3],
-        ],
+        'hgss': (NB, 29, 10, 13, 13),
+        'erase': [(0, 10, 1, 2), (11, 10, 1, 2)],
+        'items': [['pb-lit', 0, 11, {'bed': True, 'solid': 3}], ['pb-lit', 10, 11, {'solid': 3}]],
+        'npc_on_solid': ['ousmane-lit'],
     },
-    # Bordeaux — le studio de Paulfit, fan de musculation : mur gris, sol bleu ; lit, fenêtre, casiers ; tapis de sol et
-    # banc de musculation (les haltères sont dessinés dans le code en 6-4 et 1-5).
+    # Bordeaux — le studio de Paulfit : la salle de séjour de la maison de M. Pokémon (chaîne hi-fi, canapé, ordinateur) ;
+    # ses haltères sont dessinés par le jeu.
     'studioPaulfit': {
-        'wall': 'gris', 'floor': 'metal', 'block': [[6, 4], [1, 5]],
-        'items': [
-            ['pb-lit-bleu', 0, 3], ['pb-fenetre', 3, 1], ['pb-casier-gris', 6, 2], ['pb-casier-vert', 7, 2],
-            ['pb-tapis-sport', 2, 5], ['pb-banc-muscu', 5, 5],
-        ],
+        'hgss': ('004i_Mr Pokémon House', 10, 8, 12, 9),
+        'block': [[2, 6], [9, 6]],
     },
-    # Bordeaux — l'appartement de Rémi : lit, bureau avec ordinateur ; le drapeau américain au mur (dessiné dans le
-    # code en 3-4) ; une plante.
+    # Bordeaux — l'appartement de Rémi : une maison de Doublonville (cuisine, bibliothèque, table) et un lit ; le drapeau
+    # américain est dessiné par le jeu.
     'appartRemi': {
-        'wall': 'bleu', 'floor': 'damier-bois',
-        'items': [
-            ['pb-lit-bleu', 0, 3], ['pb-bureau-pc', 6, 3], ['pb-plante', 5, 2],
-        ],
+        'hgss': (GI, 47, 8, 9, 8),
+        'items': [['pb-lit', 0, 6, {'solid': 3}]],
     },
-    # Bordeaux — KEDGE, la salle d'examen : école moderne (mur bleu-gris, sol gris) ; tableau vert, deux bibliothèques,
-    # le bureau du professeur ; deux rangées de pupitres de part et d'autre de l'allée ; quatre plantes.
+    # Bordeaux — KEDGE, la salle de l'oral : la salle de classe de l'école d'Écorcia ; la professeure derrière son bureau.
     'kedge': {
-        'wall': 'bleu', 'floor': 'carrelage',
-        'items': [
-            ['pb-bibliotheque-bois', 0, 2], ['pb-tableau-vert', 4, 1], ['pb-bibliotheque-bois', 10, 2],
-            ['pb-bureau-bois', 5, 3],
-            ['pb-bureau', 1, 5], ['pb-bureau', 8, 5], ['pb-bureau', 1, 7], ['pb-bureau', 8, 7],
-            ['pb-plante', 0, 6], ['pb-plante', 11, 6], ['pb-plante', 0, 8], ['pb-plante', 11, 8],
-        ],
+        'hgss': ('006i_Violet School ', 10, 8, 15, 11),
     },
-    # Bordeaux — le stade, remise des diplômes : gradins bleus (rangées 1-2), bannières au mur, pelouse tondue en
-    # bandes ; l'estrade rouge (on y monte, en 9-10 x 4-5) et le pupitre du directeur à côté.
+    # Bordeaux — le stade : le hall du portique du Parc et du Pokéathlon (moquette, comptoir en U : le pupitre du directeur).
     'stade': {
-        'wall': 'pb-beton', 'floor': 'pb-pelouse', 'void': [],
-        'items': [
-            *[['pb-gradins', x, y] for x in range(1, 19) for y in (1, 2)],
-            ['pb-podium', 9, 5],
-            *[['pb-banniere-rouge' if x % 4 == 2 else 'pb-banniere-bleue', x, 0] for x in range(2, 18, 2)],
-        ],
+        'hgss': ('013i_Park-Pokéathlon Gate', 10, 8, 28, 11),
     },
 }
