@@ -167,7 +167,7 @@ export const prytaneeMap = {
       ifFlags: [FLAGS.arriveeBordeaux],
       dialogue: ['Tu ne peux pas quitter le Prytanée sans ton baccalauréat.'],
       readyDialogue: ['Direction Bordeaux !'],
-      warp: { map: 'bordeaux', x: 1, y: 6, facing: 'right' },
+      warp: { map: 'bordeaux', x: 1, y: 10, facing: 'right' },
     })),
   ],
   spawn: { x: SOUTH_GATE[0], y: SOUTH_GATE[1], facing: 'up' },

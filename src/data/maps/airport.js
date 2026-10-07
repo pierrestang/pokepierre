@@ -116,7 +116,7 @@ export const airportMap = {
     x,
     y: 17,
     readyDialogue: ["Tu sors de l'aéroport."],
-    warp: { map: 'bordeaux', x: 30, y: 6, facing: 'left' },
+    warp: { map: 'bordeaux', x: 30, y: 10, facing: 'left' },
   })),
   objects: [
     ...[9, 10, 11, 12, 13, 14].map((x) => ({ x, y: 6, dialogue: ['Le tableau des départs. Hull, Hanoï, Amsterdam, New Delhi… Le monde entier.'] })),

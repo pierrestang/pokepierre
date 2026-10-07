@@ -22,11 +22,11 @@ export const routeBonsecoursMap = {
   sourceGrid: parseGrid([
     'TTTTTTTTTTççTTTTTTTTTTTT', // 0  nord : le Prytanée (gardé tant que la quête Bonsecours n'est pas finie)
     'TTTTTTTTTTççTTTTTTTTTTTT', // 1
-    'TTTTTTTT..çççççççç....TT', // 2
-    'TTTTTTTT..çççççççç.f..TT', // 3
-    'TTTT..ĥĥĥĥ..ĥĥĥĥççTT..TT', // 4
-    'TTTT..ĥĥĥĥ..ĥĥĥĥççTT..TT', // 5
-    'TT.f........ĥĥĥĥçç..f.TT', // 6
+    'TTTTTTTT..ççççççççĥĥ..TT', // 2
+    'TTTTTTTT..ççççççççĥf..TT', // 3
+    'TTTT............ççTTĥ.TT', // 4
+    'TTTT...ĥ.......ĥççTTĥ.TT', // 5
+    'TT.f............ççĥĥf.TT', // 6
     'TT..FFFFFFFFFFFFççFF..TT', // 7  cour du collège (clôture blanche, portails nord et sud)
     'TT..FƀRRRRRRRƀ..ççƀF..TT', // 8  collège Bonsecours
     'TT..F.RRRRRRR...çç.F..TT', // 9
@@ -38,15 +38,15 @@ export const routeBonsecoursMap = {
     'TT..Fffff.çç.fff..ƀF..TT', // 15
     'TT..Fffff.çç.fff...F..TT', // 16
     'TT..FFFFFFççFFFFFFFF..TT', // 17
-    'TTTT..f...çç......TT..TT', // 18
-    'TTTT...ŕ..çç.ĥĥĥĥ.TT..TT', // 19
-    'TTTTTT....çç.ĥĥĥĥ.TT..TT', // 20
-    'TTTTTT..f.çç.ĥĥĥĥ.TT..TT', // 21
-    'TT........çç.....f....TT', // 22
-    'TT..ĥĥĥĥĥ.çç.......ŕ..TT', // 23
-    'TT..ĥĥĥĥĥ.çç..TTTT....TT', // 24
-    'TT.ŕĥĥĥĥĥ.çç..TTTT....TT', // 25
-    'TT..ĥĥĥĥĥ.ççS.f....f..TT', // 26
+    'TTTT.ĥf...çç......TT..TT', // 18
+    'TTTTĥĥ.ŕ..çç....ĥ.TT..TT', // 19
+    'TTTTTT....çç....ĥ.TT..TT', // 20
+    'TTTTTTĥ.f.çç....ĥ.TT..TT', // 21
+    'TT.ĥĥĥĥ...çç.....f....TT', // 22
+    'TT.ĥĥĥĥĥ..çç.......ŕ..TT', // 23
+    'TT...ĥĥĥĥĥçç..TTTT....TT', // 24
+    'TT.ŕĥĥ.ĥĥĥçç..TTTT....TT', // 25
+    'TT..ĥĥ.ĥĥ.ççS.f....f..TT', // 26
     'TT........çç..........TT', // 27
     'TTTTTTTTTTççTTTTTTTTTTTT', // 28  sud : Montépilloy
     'TTTTTTTTTTççTTTTTTTTTTTT', // 29

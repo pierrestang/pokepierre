@@ -193,7 +193,7 @@ const DEPARTURE = [
   { faceTo: 'capitaine-depart' },
   { speaker: 'Capitaine', say: ['Bordeaux, hein. Tu feras ton lit là-bas aussi.'] },
   { setFlag: FLAGS.arriveeBordeaux },
-  { travel: { map: 'bordeaux', x: 1, y: 6, facing: 'right', car: true, carry: CARRY } },
+  { travel: { map: 'bordeaux', x: 1, y: 10, facing: 'right', car: true, carry: CARRY } },
 ];
 export const CAPTAIN_AT_GATE = [
   { ifItems: [ITEMS.baccalaureat.id], steps: DEPARTURE, end: true },

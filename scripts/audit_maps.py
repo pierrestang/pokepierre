@@ -86,3 +86,8 @@ for mid,g in data.items():
     print(f"== {mid} ({g['file']})")
     for k,v in res.items():
         if v: print(f"  {k}: {len(v)}  {v[:14]}")
+
+# --json <fichier> : le rapport complet (toutes les cases), pour les scripts de correction.
+if '--json' in sys.argv:
+    with open(sys.argv[sys.argv.index('--json') + 1], 'w') as f:
+        json.dump(report, f, ensure_ascii=False)
