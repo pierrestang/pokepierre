@@ -46,6 +46,9 @@
       .size input::-webkit-inner-spin-button { display: none; }
       #resize { color: var(--accent); }
       #resize[hidden] { display: none; }
+      .resize-side { font-size: 12px; color: var(--muted, #aaa); white-space: nowrap; margin-left: 6px; }
+      .resize-side[hidden] { display: none; }
+      .resize-side select { font: inherit; }
 
       /* ---------- Zone principale : palette | outils | carte ---------- */
       /* Largeur du panneau des planches : réglable en tirant son bord droit (--aside, retenue dans le navigateur). */
@@ -219,6 +222,12 @@
         <div class="map-meta">
           <input type="text" id="map-name" title="Nom de la carte" />
           <span class="size" title="Taille de la carte (cases)"><input type="number" id="map-w" min="6" max="200" step="2" title="Largeur (cases, paire)" />×<input type="number" id="map-h" min="6" max="200" step="2" title="Hauteur (cases, paire)" /></span>
+          <span class="resize-side" id="resize-cols" hidden title="De quel côté ajouter (ou retirer) les colonnes">
+            colonnes <select id="resize-x"><option value="right">à droite</option><option value="left">à gauche</option></select>
+          </span>
+          <span class="resize-side" id="resize-rows" hidden title="De quel côté ajouter (ou retirer) les rangées">
+            rangées <select id="resize-y"><option value="bottom">en bas</option><option value="top">en haut</option></select>
+          </span>
           <button class="btn" id="resize" title="Appliquer la nouvelle taille" hidden>Redimensionner</button>
         </div>
         <span class="grow"></span>

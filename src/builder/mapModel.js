@@ -72,22 +72,62 @@ export function decodeRef(map, ref) {
   return { sheet: map.sheets[Math.floor(ref / SHEET_STRIDE)], index: ref % SHEET_STRIDE };
 }
 
-// Nouvelle taille : le contenu reste ancré en haut à gauche ; ce qui dépasse est perdu, le reste est vide.
-export function resizeMap(map, width, height) {
+// Nouvelle taille. `left` / `top` : cases ajoutées (ou retirées, si négatif) à gauche et en haut ; le reste de la
+// différence est ajouté (ou retiré) à droite et en bas. Le contenu garde sa place par rapport au côté qui ne bouge pas ;
+// ce qui sort de la carte est perdu, les nouvelles cases sont vides. Tout ce qui est noté avec une position (mode simple :
+// éléments posés et leurs cases d'avant, forêt, clôture ; PNJ placés ; départ) suit le décalage.
+export function resizeMap(map, width, height, { left = 0, top = 0 } = {}) {
+  const inside = (x, y) => x >= 0 && y >= 0 && x < width && y < height;
+  const move = (x, y) => [x + left, y + top];
   const copy = (cells, fill) => {
     const out = new Array(width * height).fill(fill);
-    for (let y = 0; y < Math.min(height, map.height); y++) {
-      for (let x = 0; x < Math.min(width, map.width); x++) out[y * width + x] = cells[y * map.width + x];
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const [nx, ny] = move(x, y);
+        if (inside(nx, ny)) out[ny * width + nx] = cells[y * map.width + x];
+      }
     }
     return out;
   };
+  // Une case notée par son numéro (y * largeur + x) : son numéro dans la nouvelle carte, ou -1 si elle en sort.
+  const index = (i) => {
+    const [nx, ny] = move(i % map.width, Math.floor(i / map.width));
+    return inside(nx, ny) ? ny * width + nx : -1;
+  };
+  const points = (list) => (list ?? []).map(([x, y]) => move(x, y)).filter(([x, y]) => inside(x, y));
+  let studio = map.studio ?? null;
+  if (studio) {
+    studio = {
+      ...studio,
+      ...(studio.forest ? { forest: points(studio.forest) } : {}),
+      ...(studio.fence ? { fence: points(studio.fence) } : {}),
+      ...(studio.elements ? {
+        elements: studio.elements.map((e) => ({
+          ...e, x: e.x + left, y: e.y + top,
+          ...(e.prev ? { prev: e.prev.map(([i, v]) => [index(i), v]).filter(([i]) => i >= 0) } : {}),
+        })),
+      } : {}),
+    };
+  }
+  let npcEdits = map.npcEdits ?? null;
+  if (npcEdits) {
+    npcEdits = {
+      ...npcEdits,
+      moved: Object.fromEntries(Object.entries(npcEdits.moved ?? {}).map(([id, m]) => [id, { ...m, x: m.x + left, y: m.y + top }])),
+      extras: (npcEdits.extras ?? []).map((e) => ({ ...e, x: e.x + left, y: e.y + top }))
+        .filter((e) => inside(e.x, e.y)),
+    };
+  }
+  const clamp = (v, n) => Math.max(0, Math.min(n - 1, v));
   return {
     ...map,
     width,
     height,
     layers: Object.fromEntries(Object.entries(map.layers).map(([id, cells]) => [id, copy(cells, EMPTY)])),
     solid: copy(map.solid, 0),
-    spawn: { ...map.spawn, x: Math.min(map.spawn.x, width - 1), y: Math.min(map.spawn.y, height - 1) },
+    spawn: { ...map.spawn, x: clamp(map.spawn.x + left, width), y: clamp(map.spawn.y + top, height) },
+    ...(studio ? { studio } : {}),
+    ...(npcEdits ? { npcEdits } : {}),
   };
 }
 

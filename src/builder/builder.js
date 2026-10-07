@@ -4,6 +4,8 @@ import {
 import { createAssistant } from './assistant.js';
 import { createStudio } from './studio.js';
 import { createNpcLayer } from './npcs.js';
+import { MAPS } from '../data/maps/index.js';
+import { interiors } from '../data/maps/interiors.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -1464,8 +1466,15 @@ function evenSize(value, fallback) {
   return n % 2 ? n + 1 : n;
 }
 
+// Dessins portés par une carte ou un intérieur du jeu (leurs portes, objets et PNJ sont définis dans le code).
+const gameMapIds = () => new Set([...Object.values(MAPS).map((g) => g.built?.id), ...Object.keys(interiors)].filter(Boolean));
+
 function sizeEdited() {
-  $('resize').hidden = Number($('map-w').value) === state.map.width && Number($('map-h').value) === state.map.height;
+  const w = Number($('map-w').value) !== state.map.width;
+  const h = Number($('map-h').value) !== state.map.height;
+  $('resize').hidden = !w && !h;
+  $('resize-cols').hidden = !w;                  // de quel côté viennent (ou partent) les colonnes, les rangées
+  $('resize-rows').hidden = !h;
 }
 
 function syncFields() {
@@ -1684,11 +1693,16 @@ function bindUi() {
     const h = evenSize($('map-h').value, state.map.height);
     if (w === state.map.width && h === state.map.height) return;
     remember();
-    state.map = resizeMap(state.map, w, h);
+    const left = $('resize-x').value === 'left' ? w - state.map.width : 0;
+    const top = $('resize-y').value === 'top' ? h - state.map.height : 0;
+    state.map = resizeMap(state.map, w, h, { left, top });
     syncFields();
     centerMap();
     changed();
-    setStatus(`Taille : ${w} × ${h} (toujours paire : les arbres des bordures font 2 × 2 cases)`);
+    const moved = left || top;
+    setStatus(`Taille : ${w} × ${h} (toujours paire : les arbres des bordures font 2 × 2 cases)`
+      + (moved && gameMapIds().has(state.map.id)
+        ? ' — carte du jeu décalée : les portes, objets et PNJ définis dans le code sont à recaler' : ''));
   };
   $('save').onclick = save;
   $('open').onclick = showOpenDialog;

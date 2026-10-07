@@ -132,6 +132,14 @@ rochers et roseaux gardent la leur. Le catalogue du créateur passe ses maisons 
 toutes les cartes du créateur ont été traitées (octobre 2026). À relancer sur une carte qui recevrait des cases
 anciennes : python3 scripts/remove_shadows.py <id>.
 
+## Redimensionner : de quel côté
+
+En changeant la largeur ou la hauteur, deux menus apparaissent à côté de « Redimensionner » : les colonnes viennent (ou
+partent) à droite ou à gauche, les rangées en bas ou en haut (mapModel.js resizeMap, `left` / `top`). Le contenu reste
+collé au côté qui ne bouge pas ; tout ce que la carte note avec une position suit (éléments du mode simple et leurs cases
+d'avant, forêt, clôture, PNJ placés, départ). Sur une carte du jeu, les portes, objets et PNJ définis dans le code ne
+bougent pas : le créateur le rappelle, ils sont à recaler (puis check_paths.js).
+
 ## Taille des cartes : toujours paire
 
 Les arbres des bordures font 2 x 2 cases. Sur une carte de largeur ou de hauteur impaire, les bordures de deux côtés
