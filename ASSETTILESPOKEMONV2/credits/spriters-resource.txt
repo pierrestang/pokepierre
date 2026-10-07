@@ -1,0 +1,12 @@
+The Spriters Resource (https://www.spriters-resource.com) — rips de pièces des jeux DS, références d'agencement.
+Téléchargés le 7 octobre 2026. Graphismes : Nintendo / Game Freak ; projet de fan non commercial. Créditer le ripper.
+
+references/ds-pieces/dp-centre-pokemon_gamedude.png               Diamant / Perle, Centre Pokémon — Gamedude
+                                                                  (https://www.spriters-resource.com/ds_dsi/pokemondiamondpearl/asset/6974/)
+references/ds-pieces/pt-grandlakehouse-restaurant_spaceemotion.png Platine, restaurant de l'hôtel Grand Lac — spaceemotion
+                                                                  (https://www.spriters-resource.com/ds_dsi/pokemonplatinum/asset/26079/)
+references/ds-pieces/pt-battle-hall_spaceemotion.png              Platine, Palais de combat (arène, public) — spaceemotion
+                                                                  (https://www.spriters-resource.com/ds_dsi/pokemonplatinum/asset/26078/)
+references/ds-pieces/pt-rotom-room_spaceemotion.png               Platine, pièce de Motisma (garage) — spaceemotion
+                                                                  (https://www.spriters-resource.com/ds_dsi/pokemonplatinum/asset/25644/)
+Déjà présents dans references/ : dp-maison-du-heros.png, dp-labo-du-professeur.png, dp-les-eoliennes.png (Gamedude).
