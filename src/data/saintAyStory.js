@@ -45,7 +45,7 @@ export const BIRTH = [
   { speaker: 'Maman', say: ['Te voilà ! Viens voir… Je te présente Fanny.'] },
   { speaker: 'Manon', say: ['Elle est toute petite… Elle me ressemble, non ?'] },
   { speaker: 'Papa', say: ['Elle ne pleure même pas. Elle a déjà tout compris.'] },
-  { goTo: [3, 4], facing: 'up' },                                   // devant le berceau de Fanny
+  { goTo: [4, 7], facing: 'up' },                                   // devant le berceau de Fanny
   { speaker: 'Maman', say: ['Approche-toi. Tends-lui la main, doucement.'] },
 ];
 

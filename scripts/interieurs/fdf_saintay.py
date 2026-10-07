@@ -377,11 +377,18 @@ PLANS = {
     # Saint-Ay — la clinique : le labo d'Orme (machines, ordinateur, carrelage vert d'eau) ; les vitrines du bas
     # remplacées par trois lits (Maman et Fanny y dorment).
     'hospital': {
-        'hgss': ('001i_Newbark-Lab', 10, 4, 12, 15),
-        'erase': [(0, 8, 3, 3), (5, 8, 7, 3)],
-        'paste': [{'from': ('001i_Newbark-Lab', 11, 15, 6, 2), 'to': (x, y), 'sol': True}
-                  for x in (0, 6) for y in (8, 9)],
-        'items': [['fsa-lit-hgss', 0, 10, SLEEP], ['fsa-lit-hgss', 3, 10, SLEEP], ['fsa-lit-hgss', 6, 10]],
+        # 10 x 10 (raccourcie, demande de l'utilisateur) : le haut du labo (murs, notes, bureau et ordinateur,
+        # poubelle), puis la rangée des trois lits, puis la sortie. Sans rien de Pokémon (machine à Poké Balls, machine
+        # de transfert, PC orange effacés).
+        'hgss': ('001i_Newbark-Lab', 11, 8, 10, 10),
+        'splice': [{'from': ('001i_Newbark-Lab', 11, 4, 10, 4), 'to': (0, 0)},
+                   {'from': ('001i_Newbark-Lab', 11, 18, 10, 1), 'to': (0, 9)}],
+        'erase': [(0, 1, 2, 3), (4, 3, 1, 1), (5, 1, 3, 3), (8, 1, 2, 3), (0, 4, 10, 3)],
+        # Mur nu (la colonne du labo entre le bureau et la poubelle) là où étaient les machines ; sol des lits.
+        'paste': [{'from': ('001i_Newbark-Lab', 14, 5, 1, 2), 'to': (x, 1), 'sol': True, 'only': ('Floor', 'Wall')}
+                  for x in (0, 1, 5, 6, 7, 8, 9)]
+                 + [{'from': ('001i_Newbark-Lab', 11, 15, 6, 2), 'to': (x, y), 'sol': True} for x in (0, 4) for y in (4, 5)],
+        'items': [['fsa-lit-hgss', 0, 6, SLEEP], ['fsa-lit-hgss', 3, 6, SLEEP], ['fsa-lit-hgss', 6, 6]],
         'npc_on_solid': ['maman-hopital', 'fanny-hopital'],
     },
 }

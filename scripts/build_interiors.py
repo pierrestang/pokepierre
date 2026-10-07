@@ -101,11 +101,25 @@ def load_rooms():
 
 def hgss_base(plan):
     """Pièce partie d'une vraie pièce HGSS (scripts/hgss_rooms.py) : {'sol', 'decor', 'dessus', 'solid', 'w', 'h'},
-    retouchée par plan['erase'] (rectangles vidés de leurs meubles, sol gardé et praticable) et plan['paste'] (morceaux
+    retouchée par plan['splice'] (bandes remplacées), plan['erase'] (rectangles vidés de leurs meubles, sol gardé et
+    praticable) et plan['paste'] (morceaux
     d'autres pièces HGSS collés : {'from': (carte, x, y, w, h), 'to': (x, y), 'sol': False})"""
     import hgss_rooms as HG
     name, x0, y0, w, h = plan['hgss']
     r = HG.room(name, x0, y0, w, h)
+    # plan['splice'] : des bandes d'une pièce HGSS qui remplacent tout (calques et collisions) à cet endroit, avant
+    # erase et paste : pour raccourcir une pièce (ex. la clinique : le haut du labo, puis la rangée des lits).
+    for p in plan.get('splice', []):
+        sname, sx, sy, sw, sh = p['from']
+        piece = HG.room(sname, sx, sy, sw, sh)
+        tx, ty = p['to']
+        for y in range(sh):
+            for x in range(sw):
+                X, Y = tx + x, ty + y
+                if 0 <= X < w and 0 <= Y < h:
+                    j, i = y * sw + x, Y * w + X
+                    for k in ('sol', 'decor', 'dessus', 'solid'):
+                        r[k][i] = piece[k][j]
     for ex, ey, ew, eh in plan.get('erase', []):
         for y in range(ey, ey + eh):
             for x in range(ex, ex + ew):
@@ -114,7 +128,7 @@ def hgss_base(plan):
                 r['solid'][i] = 0 if r['sol'][i] else 1
     for p in plan.get('paste', []):
         sname, sx, sy, sw, sh = p['from']
-        piece = HG.room(sname, sx, sy, sw, sh)
+        piece = HG.room(sname, sx, sy, sw, sh, only=p.get('only'))
         tx, ty = p['to']
         for y in range(sh):
             for x in range(sw):

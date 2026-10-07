@@ -537,45 +537,31 @@ export const interiors = {
   hospital: {
     name: 'Clinique',
     frlg: true,
+    // 10 x 10 (dessin : le labo d'Orme raccourci, sans rien de Pokémon) : bureau et ordinateur en haut, trois lits,
+    // sortie en bas.
     grid: parseGrid([
-      'XXXXXXXXXXXX',
-      'XXXXXXXXXXXX',
-      'XmmmmmmmmmmX',
-      'mmmmmmmmmmmm',
-      'mmmooommmoom',
-      'oooooooooooo',
-      'oooooooooooo',
-      'oooooooooooo',
-      'mmmmmmmmmooo',
-      'mmmmmmmmmooo',
-      'mmmmmmmmmooo',
-      'oooooooooooo',
-      'oooooooooooo',
-      'moooooooooom',
-      'XooEoooooooX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'mmmmmmmmmm',   // mur, bureau et ordinateur
+      'oommoooooo',
+      'mmmmmmmmmo',   // les trois lits
+      'mmmmmmmmmo',
+      'mmmmmmmmmo',
+      'oooooooooo',
+      'oooooooooo',
+      'ooEooooooo',
     ]),
-    decor: [
-      { kind: 'bed', x: 0, y: 2 },
-      { kind: 'bed', x: 3, y: 2 },
-      { kind: 'bed', x: 6, y: 2 },
-      { kind: 'window', x: 3, y: 0 },
-      { kind: 'notice', x: 10, y: 0 },
-      { kind: 'computer', x: 12, y: 1 },
-      { kind: 'pottedPlant', x: 13, y: 2 },
-      { kind: 'table', x: 5, y: 5 },
-      { kind: 'plant', x: 0, y: 6 },
-      { kind: 'plant', x: 13, y: 6 },
-    ],
-    spawn: { x: 3, y: 13, facing: 'up' },
+    decor: [],
+    spawn: { x: 2, y: 8, facing: 'up' },
     objects: [
-      { x: 0, y: 10, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Maman se repose, les yeux mi-clos.'] },
-      { x: 3, y: 10, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Fanny dort, son petit poing serré.'] },
-      { x: 3, y: 3, dialogue: ['Un ordinateur. Des noms de bébés défilent à l\'écran.'] },
+      { x: 0, y: 6, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Maman se repose, les yeux mi-clos.'] },
+      { x: 3, y: 6, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Fanny dort, son petit poing serré.'] },
+      { x: 2, y: 3, dialogue: ['Un ordinateur. Des noms de bébés défilent à l\'écran.'] },
     ],
     // Maman et Fanny sont couchées chacune dans un lit ; Papa et Manon entre les deux.
     npcs: [
       {
-        id: 'maman-hopital', name: 'Maman', x: 1, y: 10, facing: 'down', color: 0xe86fa0, still: true, inBed: true,
+        id: 'maman-hopital', name: 'Maman', x: 1, y: 6, facing: 'down', color: 0xe86fa0, still: true, inBed: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         script: [
           { unlessFlags: [FLAGS.fannyMain], speaker: 'Maman', say: ['Va dire bonjour à Fanny, dans son berceau. Tends-lui la main.'], end: true },
@@ -584,17 +570,17 @@ export const interiors = {
       },
       // Le berceau : la main de Fanny (voir FANNY_CRADLE).
       {
-        id: 'fanny-hopital', name: 'Fanny', x: 4, y: 10, facing: 'down', still: true, inBed: true, child: true,
+        id: 'fanny-hopital', name: 'Fanny', x: 4, y: 6, facing: 'down', still: true, inBed: true, child: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         script: FANNY_CRADLE,
       },
       {
-        id: 'papa-hopital', name: 'Papa', x: 2, y: 11, facing: 'up', color: 0x3f6fd8,
+        id: 'papa-hopital', name: 'Papa', x: 2, y: 7, facing: 'up', color: 0x3f6fd8,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         dialogue: ['Une petite sœur… Te voilà grand frère, maintenant.'],
       },
       {
-        id: 'manon-hopital', name: 'Manon', x: 5, y: 11, facing: 'left', color: 0xf0a030,
+        id: 'manon-hopital', name: 'Manon', x: 5, y: 7, facing: 'left', color: 0xf0a030,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         dialogue: ['Je pourrai jouer avec elle, moi aussi ? Plus tard ? Bon…'],
       },

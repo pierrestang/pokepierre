@@ -114,15 +114,16 @@ def kind(name, level):
     return 'decor' if level <= 1 else 'dessus'
 
 
-def room(name, x0, y0, w, h):
-    """Une pièce : {'w', 'h', 'sol', 'decor', 'dessus': [[images…] par case], 'solid': [0/1]}."""
+def room(name, x0, y0, w, h, only=None):
+    """Une pièce : {'w', 'h', 'sol', 'decor', 'dessus': [[images…] par case], 'solid': [0/1]}. `only` : seulement les
+    calques dont le nom commence ainsi (ex. ('Floor', 'Wall') : le mur nu, sans les meubles posés devant)."""
     m = load(name)
     out = {k: [[] for _ in range(w * h)] for k in ('sol', 'decor', 'dessus')}
     solid = [1] * (w * h)
     passages = next((c for n, _, c, _ in m['layers'] if n.lower().startswith('passage')), None)
     for n, level, cells, visible in m['layers']:
         k = kind(n, level)
-        if not k or not visible:
+        if not k or not visible or (only and not n.startswith(tuple(only))):
             continue
         for (x, y), gid in cells.items():
             if x0 <= x < x0 + w and y0 <= y < y0 + h:
