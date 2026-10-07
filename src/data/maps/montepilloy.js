@@ -81,15 +81,15 @@ export const montepilloyMap = {
       type: 'toolbox', image: 'caisse-outils', x: JEAN_AT_TRACTOR[0], y: JEAN_AT_TRACTOR[1], w: 1, h: 1,
       ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.septembre], unlessItems: [ITEMS.cuillere.id], script: TOOLBOX,
     },
-    // Le tracteur de M. Bouly (image Gen 4, scripts/build_props.py) : en panne, puis parti faire un tour avec Jean, et de
-    // retour en septembre.
+    // Le tracteur de M. Bouly (image Gen 4, scripts/build_props.py), garé devant la ferme : en panne, puis parti faire un
+    // tour avec Jean, et de retour en septembre.
     {
-      type: 'tractor', image: 'tracteur', x: 13, y: 12, w: 2, h: 2,
+      type: 'tractor', image: 'tracteur', x: 4, y: 17, w: 2, h: 2,
       unlessFlags: [FLAGS.tracteurRepare],
       dialogue: ['Le tracteur de M. Bouly. Il refuse de démarrer.'],
     },
     {
-      type: 'tractor', image: 'tracteur', x: 13, y: 12, w: 2, h: 2,
+      type: 'tractor', image: 'tracteur', x: 4, y: 17, w: 2, h: 2,
       ifFlags: [FLAGS.septembre],
       dialogue: ['Le tracteur de M. Bouly ronronne.'],
     },
@@ -117,10 +117,10 @@ export const montepilloyMap = {
       ifFlags: [FLAGS.jeanQuetes], unlessFlags: [FLAGS.tracteurRepare],
       script: JEAN_TRACTOR,
     },
-    // Après le cache-cache, Benoît est assis seul devant la grange, jusqu'au matin de septembre (facultatif, voir
-    // montepilloyStory.js BENOIT_SAD).
+    // Après le cache-cache, Benoît est assis seul au bord de la mare, en bas à droite, jusqu'au matin de septembre
+    // (facultatif, voir montepilloyStory.js BENOIT_SAD).
     {
-      id: 'benoit-grange', name: 'Benoît', x: 6, y: 16, facing: 'down', still: true, color: 0xa07040,
+      id: 'benoit-grange', name: 'Benoît', x: 26, y: 24, facing: 'left', still: true, color: 0xa07040,
       ifFlags: [FLAGS.copainsPartent], unlessFlags: [FLAGS.septembre],
       script: BENOIT_SAD,
     },
@@ -162,7 +162,7 @@ export const montepilloyMap = {
     { x: 24, y: 6, dialogue: ['La boîte aux lettres de la voisine.'] },
     { x: 13, y: 15, dialogue: ['Ferme de M. Bouly.'] },
     // Cache-cache : Étienne dans l'arbre de la prairie (Margaux, voir les passages).
-    { x: 28, y: 19, ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveEtienne], script: FOUND_ETIENNE },
+    { x: 28, y: 23, ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveEtienne], script: FOUND_ETIENNE },
   ],
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveeMontepilloy], unlessFlags: [FLAGS.ellipseMontepilloy], steps: ARRIVAL },

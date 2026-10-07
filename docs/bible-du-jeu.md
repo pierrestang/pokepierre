@@ -72,7 +72,8 @@ traînées derrière lui, au bruit des réacteurs.
   bande d'herbe entre les deux) ; deux branches mènent à la
   cabane de pêche (à droite) et au mémorial (à gauche), au milieu d'une clairière de sable clair.
 - Mémorial de l'Anse Caffard : les six statues de pierre blanche d'origine, en trois rangées tournées vers la mer (trois
-  derrière, deux au milieu, une devant), sur la clairière de sable (décor `capStatues`, octobre 2026).
+  derrière, deux au milieu, une devant), sur la clairière de sable, en (6-9, 13-15) : un élément du dessin de la carte
+  (scripts/build_memorial.py), visible aussi dans le créateur.
 - À droite de la maison, le drapeau de la Martinique (rouge, vert, noir) entre deux pots de buis. Jardin fleuri autour
   de la maison, bordures de fleurs le long de l'allée. Les grandes fleurs tropicales à droite de l'allée se traversent.
   Devant la maison et la cabane, le sable du chemin va jusqu'aux murs (sous la jardinière et la boîte aux lettres).
@@ -297,7 +298,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 - 35 x 29 cases (agrandie de 3 x 3 en octobre 2026, script ponctuel retiré depuis) : la grand-rue nord-sud sur trois
   cases, la ferme de M. Bouly et la prairie élargies, le champ et la mare allongés ; ceinture d'arbres entiers.
 - 36 x 30 cases depuis les retouches d'octobre 2026 dans le créateur. La grange de M. Bouly est le grand bâtiment
-  orange (porte grise en (10, 16)) ; le tracteur est à sa droite (x 13-14, y 12-13), Jean devant lui (13, 14), M. Bouly
+  orange (porte grise en (10, 16)) ; le tracteur est garé devant elle, à la place de l'ancienne camionnette (x 4-5, y 17-18),
+  Jean devant lui (4, 19), M. Bouly
   au début du chemin de la ferme (13, 16). L'école est la maison jaune de droite : sa porte bleue en (27, 14), Margaux
   devant elle (25, 15) à la sortie. La porte de la voisine (maison jaune du haut) se frappe depuis la rue (20, 7).
 
@@ -319,7 +321,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 | M. Bouly | Le fermier, et son tracteur en panne | `g33` |
 | Margaux | Copine de classe : lance le cache-cache | `g43` |
 | Étienne | Copain de classe | `g108` |
-| Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul devant la grange | `g38` |
+| Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul au bord de la mare | `g38` |
 
 ### Quêtes, dans l'ordre (les quêtes 2 et 3 dans n'importe quel ordre après l'école)
 1. **Le dernier jour de CM2** : en entrant à l'école, « C'est le dernier jour de CM2. » Margaux : « Dernier jour de CM2 !
@@ -373,9 +375,9 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
   toi. » / « Jean t'attend dans sa chambre. » (tant que Jean n'a pas lancé la réparation) ; « Il se fait tard : rentre plutôt dîner à la maison. »
 
 ### Passage optionnel : Benoît triste (Joie de vivre)
-Après le cache-cache et jusqu'au matin de septembre, Benoît est assis seul devant la grange (il n'est plus dans la
+Après le cache-cache et jusqu'au matin de septembre, Benoît est assis seul au bord de la mare, en bas à droite (il n'est plus dans la
 classe avec Margaux et Étienne). Bonus sans objet.
-- Benoît : « Si tu cherches un coin pour bouder, la grange est déjà prise. » / « Margaux et Étienne iront au collège
+- Benoît : « Si tu cherches un coin pour bouder, la mare est déjà prise. » / « Margaux et Étienne iront au collège
   ensemble. Moi, je pars ailleurs. Je connaîtrai personne. » →
   **« Pierre utilise Joie de vivre ! »** → « Tu lui racontes la fois où Fanny a failli casser le vase de Maman… Benoît
   éclate de rire. » / Benoît : **« T'es bête… Merci. Je t'écrirai. »**
@@ -976,7 +978,7 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 | M. Bouly | `g33` | Montépilloy |
 | Margaux | `g43` | Montépilloy, collège |
 | Étienne | `g108` | Montépilloy, collège |
-| Benoît | `g38` | Montépilloy (la classe, puis seul devant la grange) |
+| Benoît | `g38` | Montépilloy (la classe, puis seul au bord de la mare) |
 | Surveillant | `g116` | Collège |
 | Principale | `g37` | Collège |
 | Rémy | `g109` | Collège |

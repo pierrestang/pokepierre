@@ -86,7 +86,7 @@ export const HIDE_AND_SEEK = [
 // Margaux, derrière les bottes de foin de la ferme ; Étienne, dans l'arbre de la prairie près de la mare ; Benoît,
 // dans le tonneau du fond à gauche de la grange. Dans n'importe quel ordre : chacun trouvé suit Pierre ; le dernier
 // clôt la partie (la promesse) ; les copains filent récupérer leurs cartables et disparaissent : on retrouve Margaux et
-// Étienne dans la classe, Benoît seul devant la grange (BENOIT_SAD). Le tonneau de Benoît ne s'ouvre qu'à plusieurs : il est toujours le dernier.
+// Étienne dans la classe, Benoît seul au bord de la mare (BENOIT_SAD). Le tonneau de Benoît ne s'ouvre qu'à plusieurs : il est toujours le dernier.
 const GAME_OVER = {
   ifFlags: [FLAGS.trouveMargaux, FLAGS.trouveEtienne, FLAGS.trouveBenoit],
   unlessFlags: [FLAGS.copainsPartent],
@@ -114,7 +114,7 @@ export const FOUND_MARGAUX = [
 export const FOUND_ETIENNE = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Des feuilles tombent… Étienne est perché dans l\'arbre !'] },
-  { emerge: { id: 'etienne', name: 'Étienne', from: [[28, 19]] } },
+  { emerge: { id: 'etienne', name: 'Étienne', from: [[28, 23]] } },
   { speaker: 'Étienne', say: ['Perdu ! Le collège, c\'est en septembre. Paraît qu\'il y a des casiers, j\'espère qu\'on sera dans la même classe.', 'Je t\'aide à chercher les autres !'] },
   { setFlag: FLAGS.trouveEtienne },
   GAME_OVER,
@@ -142,7 +142,7 @@ export const BENOIT_HIDING = { ...BENOIT_LEFT, x: BENOIT_BARREL[0], y: BENOIT_BA
 // ---------- La quête de Jean → Ingéniosité ----------
 
 // Jean, devant le tracteur (le tracteur occupe les cases x 13-14, y 12-13, à droite de la grange) ; l'escalier de la chambre des enfants.
-export const JEAN_AT_TRACTOR = [13, 14];
+export const JEAN_AT_TRACTOR = [4, 19];
 const JEAN_UPSTAIRS_STAIRS = [1, 3];
 
 // Jean, à l'étage de la maison : après l'école, il lance la quête, descend l'escalier et part devant à la ferme (il y
@@ -215,7 +215,7 @@ export const JEAN_TRACTOR = [
 // Facultatif : après le cache-cache, Benoît est assis seul devant la grange ; Pierre le fait rire (Joie de vivre).
 export const BENOIT_SAD = [
   { ifFlags: [FLAGS.benoitConsole], speaker: 'Benoît', say: ['Le vase… j\'y pense encore.'], end: true },
-  { speaker: 'Benoît', say: ['Si tu cherches un coin pour bouder, la grange est déjà prise.'] },
+  { speaker: 'Benoît', say: ['Si tu cherches un coin pour bouder, la mare est déjà prise.'] },
   { speaker: 'Benoît', say: ['Margaux et Étienne iront au collège ensemble. Moi, je pars ailleurs. Je connaîtrai personne.'] },
   { useTrait: TRAITS.joie },
   { say: ['Tu lui racontes la fois où Fanny a failli casser le vase de Maman… Benoît éclate de rire.'] },
