@@ -585,22 +585,24 @@ export const interiors = {
     events: [{ on: 'enter', ifFlags: [FLAGS.saArrivee], unlessFlags: [FLAGS.familleArrivee], steps: BIRTH }],
   },
 
-  // Montépilloy — la grange de M. Bouly, façon Rouge Feu : établi (longue table de Rubis/Saphir) sous la
-  // fenêtre, caisses de légumes, d'oranges et de tomates et une jarre du marché de Slateport (rs-crates.png),
-  // tonneaux. La pièce de tracteur est sous la botte de paille du fond à droite (une fois que M. Bouly t'en a parlé) ;
-  // au cache-cache, Benoît se cache dans le tonneau de gauche.
+  // Montépilloy — la grange de M. Bouly (dessin : la maison de Fargas d'HGSS, voir scripts/interieurs/
+  // montepilloy_college.py) : établi et étagères, vieux poêle, tonneaux, caisses, bidon de lait, grand tas de foin. La
+  // pièce de tracteur est sous le tas de foin (une fois que M. Bouly t'en a parlé) ; au cache-cache, Benoît se cache
+  // dans le premier tonneau de gauche.
   boulyBarn: {
     name: 'Grange de M. Bouly',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXX',
-      'XXXXXXXXX',
-      'mmmoommOO',   // établi, caisses, tonneaux ; la botte de paille dessous, au fond à droite
-      'ooooooooO',
-      'Ooooooooo',
-      'Oooooommo',   // caisse de tomates, jarre
-      'ooooooooo',
-      'ooooEoooo',
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'mmmmmommmmm',
+      'ooooooommmm',
+      'mmoommoooom',
+      'mooommooooo',
+      'ooooooommmm',
+      'moooooommmm',
+      'mooEoommmmm',
     ]),
     decor: [
       { kind: 'window', x: 3, y: 0 },
@@ -611,44 +613,47 @@ export const interiors = {
       { kind: 'tomatoCrate', x: 6, y: 5 },
       { kind: 'jar', x: 7, y: 5 },
     ],
-    spawn: { x: 4, y: 6, facing: 'up' },
+    spawn: { x: 3, y: 8, facing: 'up' },
     objects: [
-      ...[0, 1, 2].map((x) => ({ x, y: 2, dialogue: ["L'établi de M. Bouly : des outils, des boulons… pas la pièce qu'il lui faut."] })),
-      { x: 5, y: 2, dialogue: ['Une caisse de salades du potager.'] },
-      { x: 6, y: 2, dialogue: ["Une caisse d'oranges."] },
-      { x: 6, y: 5, dialogue: ['Une caisse de tomates bien mûres.'] },
-      { x: 7, y: 5, dialogue: ['Une jarre de miel, bien fermée.'] },
-      { x: 7, y: 2, dialogue: ['Un tonneau plein de grain.'] },
-      { x: 8, y: 2, dialogue: ['Un tonneau plein de grain.'] },
+      ...[0, 1, 2].map((x) => ({ x, y: 3, dialogue: ["L'établi de M. Bouly : des outils, des boulons… pas la pièce qu'il lui faut."] })),
+      ...[7, 8, 9].map((x) => ({ x, y: 4, dialogue: ['Le vieux poêle de M. Bouly. En été, il reste froid.'] })),
+      { x: 4, y: 6, dialogue: ['Une caisse de salades du potager.'] },
+      { x: 5, y: 6, dialogue: ["Une caisse d'oranges."] },
+      { x: 4, y: 5, dialogue: ['Une caisse de tomates bien mûres.'] },
+      { x: 6, y: 9, dialogue: ['Un bidon de lait de la ferme, bien fermé.'] },
+      { x: 1, y: 5, dialogue: ['Un tonneau plein de grain.'] },
       BENOIT_HIDING,
-      { x: 0, y: 4, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
-      { x: 0, y: 5, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
-      // La botte de paille du fond à droite cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
-      { x: 8, y: 3, unlessFlags: [FLAGS.boulyDemande], dialogue: ['Une botte de paille. Ça gratte.'] },
-      {
-        x: 8, y: 3,
+      { x: 0, y: 6, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
+      // Le tas de foin du fond à droite cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
+      ...[7, 8].map((y) => ({ x: 7, y, unlessFlags: [FLAGS.boulyDemande], dialogue: ['Un gros tas de foin. Ça gratte.'] })),
+      ...[7, 8].map((y) => ({
+        x: 7,
+        y,
         ifFlags: [FLAGS.boulyDemande],
-        dialogue: ['Tu soulèves la botte de paille… Dessous, une pièce de tracteur !', 'Jean va être content.'],
-        after: ['Il ne reste que de la paille.'],
+        dialogue: ['Tu fouilles le tas de foin… Dessous, une pièce de tracteur !', 'Jean va être content.'],
+        after: ['Il ne reste que du foin.'],
         item: ITEMS.pieceTracteur,
         setFlag: FLAGS.pieceTrouvee,
-      },
+      })),
     ],
   },
 
-  // Montépilloy — la maison de la famille, façon Rouge Feu : cuisine, télé, table, plantes.
+  // Montépilloy — la maison de la famille (dessin : le salon de la maison du héros à Bourg Geon, HGSS) : escalier à
+  // gauche, télé, cuisine, la table du dîner sur le tapis.
   montHouse: {
     name: 'Maison de Montépilloy',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XXXXXXXXXX',
-      'mmmooommoη',   // escalier vers la chambre (étage), contre le mur de droite
-      'oooooooooo',
-      'ooommmmooo',
-      'moommmmoom',
-      'moooooooom',
-      'ooooEEoooo',
+      'XXXXXXXXXXX',
+      'XXXXXXXXXXX',
+      'ηηoommmmmmm',
+      'mmoooomoooo',
+      'oooooommoom',
+      'ooooooooooo',
+      'ooooommoooo',
+      'ooooommoooo',
+      'ooooooooooo',
+      'moEooooooom',
     ]),
     decor: [
       { kind: 'kitchen', x: 0, y: 1 },
@@ -660,12 +665,12 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 5 },
       { kind: 'plant', x: 9, y: 5 },
     ],
-    spawn: { x: 4, y: 6, facing: 'up' },
+    spawn: { x: 2, y: 8, facing: 'up' },
     // Papa et Maman au salon ; Manon, Fanny et Jean à l'étage, dans la chambre (le jour de septembre, Papa, Maman et
     // Jean sont dehors). Maman rappelle le programme. Scénario : data/montepilloyStory.js.
     npcs: [
       {
-        id: 'maman-mont', name: 'Maman', x: 6, y: 3, facing: 'left', color: 0xe86fa0,
+        id: 'maman-mont', name: 'Maman', x: 7, y: 3, facing: 'left', color: 0xe86fa0,
         unlessFlags: [FLAGS.septembre], script: MAMAN,
       },
       {
@@ -675,7 +680,7 @@ export const interiors = {
       // Le soir de la dernière vertu, Jean est rentré pour le dîner (voir DINNER).
       // Dès que Pierre est arrivé au collège : Papa, Maman et Jean sont rentrés (ils disaient au revoir dehors, le matin).
       {
-        id: 'maman-college', name: 'Maman', x: 6, y: 3, facing: 'left', color: 0xe86fa0, ifFlags: [FLAGS.collegeOuverture],
+        id: 'maman-college', name: 'Maman', x: 7, y: 3, facing: 'left', color: 0xe86fa0, ifFlags: [FLAGS.collegeOuverture],
         dialogue: ['Alors, ce premier jour de collège ? Raconte-moi tout !'],
       },
       {
@@ -697,11 +702,12 @@ export const interiors = {
       { on: 'enter', ifFlags: [FLAGS.ellipseMontepilloy], unlessFlags: [FLAGS.mamanAccueil], steps: MAMAN_WELCOME },
       { on: 'enter', ifFlags: [FLAGS.finJournee], unlessFlags: [FLAGS.septembre], steps: DINNER },
     ],
-    triggers: [{ x: 9, y: 2, warp: { interior: 'montHouseUp', x: 12, y: 3, facing: 'down' } }],
+    triggers: [0, 1].map((x) => ({ x, y: 2, warp: { interior: 'montHouseUp', x: 2, y: 4, facing: 'down' } })),
   },
 
-  // Collège Bonsecours (route de Bonsecours) — le hall : la principale derrière l'accueil, panneaux d'affichage, et un
-  // seul escalier, à droite. Le collège se parcourt de bas en haut, un étage par salle : hall, couloir des casiers, salle
+  // Collège Bonsecours (route de Bonsecours) — le hall (dessin : le hall de la Tour Radio de Doublonville, HGSS) : la
+  // principale dans l'accueil en U (on lui parle par-dessus le comptoir, cases '#'), le coin lecture, et un seul
+  // escalier, en haut à droite. Les salles (dessin : la classe de l'école de Mauville) gardent les mêmes murs. Le collège se parcourt de bas en haut, un étage par salle : hall, couloir des casiers, salle
   // de maths (ta classe, la 6e B), salle de sciences, salle de français. Chaque escalier qui monte arrive en haut au
   // même endroit (à droite, puis à gauche, en alternance).
   // Scénario du premier jour : voir data/collegeStory.js.
@@ -711,15 +717,18 @@ export const interiors = {
     // Mur du fond : bibliothèque, accueil de la principale, casiers (une case libre de chaque côté des escaliers) ; murs
     // latéraux : les étagères du CDI et des trophées ; le centre du hall reste dégagé.
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXX',
-      'oommoooommmooη', // escalier vers le couloir des casiers (droite) ; bibliothèque, casiers
-      'oooommmooooooo', // accueil
-      'mmoooooooooomm', // étagères contre les murs latéraux
-      'mmoooooooooomm',
-      'oooooooooooooo',
-      'moooooooooooom',
-      'moooooEEooooom',
+      'XXXXXXXXXXXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXXXXXXXXXXX',
+      'moooommmommmoooooooooooηη',
+      'ooooooooooooooooooooooooo',
+      'ooooooooooooooooooooooooo',
+      'ooooooooooooooooommmmooom',
+      'ooooooooooooooooommmmooom',
+      'oooooooooooooooooooooooom',
+      'ooom#########moooooooooom',
+      'ooomooooooooomooommmmooom',
+      'ooomooooooooomooommmmoooo',
+      'oEomooooooooomoooooooooom',
     ]),
     decor: [
       { kind: 'bookshelf', x: 2, y: 0 },
@@ -733,28 +742,29 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 7 },
       { kind: 'plant', x: 13, y: 7 },
     ],
-    spawn: { x: 6, y: 7, facing: 'up' },
-    triggers: [{ x: 13, y: 2, warp: { interior: 'bonsecoursCasiers', x: 13, y: 3, facing: 'down' } }],
+    spawn: { x: 1, y: 10, facing: 'up' },
+    triggers: [23, 24].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursCasiers', x: 13, y: 3, facing: 'down' } })),
     objects: [
-      ...[4, 5, 6].map((x) => ({ x, y: 3, script: PRINCIPALE })),
-      { x: 4, y: 1, dialogue: ['Emploi du temps de 6e B : maths, français, sciences… et sport le vendredi.'] },
-      { x: 11, y: 1, dialogue: ['« Club de théâtre : inscriptions auprès de la principale. »'] },
-      ...[2, 3].map((x) => ({ x, y: 2, dialogue: ['Des manuels scolaires… et un manga glissé derrière le dictionnaire.'] })),
-      ...[8, 9, 10].map((x) => ({ x, y: 2, dialogue: ['Les casiers des 3e. Un cadenas en forme de Pikachu.'] })),
-      ...[[0, 4], [1, 4], [0, 5], [1, 5]].map(([x, y]) => ({ x, y, dialogue: ['Des livres de la bibliothèque du CDI. Rendus en retard, pour la plupart.'] })),
-      ...[[12, 4], [13, 4], [12, 5], [13, 5]].map(([x, y]) => ({ x, y, dialogue: ['Des trophées du collège : une coupe de cross… et une médaille de ping-pong.'] })),
+      // On parle à la principale par-dessus le comptoir d'accueil (en U).
+      ...[4, 5, 6, 7, 8, 9, 10, 11, 12].map((x) => ({ x, y: 8, script: PRINCIPALE })),
+      { x: 2, y: 1, dialogue: ['Emploi du temps de 6e B : maths, français, sciences… et sport le vendredi.'] },
+      { x: 20, y: 1, dialogue: ['« Club de théâtre : inscriptions auprès de la principale. »'] },
+      { x: 0, y: 2, dialogue: ['Le distributeur du foyer. Il ne rend jamais la monnaie.'] },
+      ...[[17, 5], [18, 5], [19, 5], [20, 5], [17, 9], [18, 9], [19, 9], [20, 9]].map(([x, y]) => ({
+        x, y, dialogue: ['Le coin lecture du CDI : des magazines et des livres rendus en retard, pour la plupart.'],
+      })),
     ],
     npcs: [
       ...collegeStudents([
-        [3, 5, 'La principale m\'a dit bonjour. Je crois qu\'elle sait ce que j\'ai fait.', 'right'],
-        [10, 6, 'À la cantine, il y a des frites aujourd\'hui. Enfin, j\'espère.', 'left'],
-        [5, 6, 'Le surveillant voit tout. Même ce qui se passe derrière lui.', 'up'],
+        [4, 5, 'La principale m\'a dit bonjour. Je crois qu\'elle sait ce que j\'ai fait.', 'right'],
+        [15, 4, 'À la cantine, il y a des frites aujourd\'hui. Enfin, j\'espère.', 'left'],
+        [7, 6, 'Le surveillant voit tout. Même ce qui se passe derrière lui.', 'up'],
       ]),
       // On parle à la principale par-dessus le comptoir d'accueil.
-      { id: 'principale', name: 'Principale', x: 5, y: 2, facing: 'down', color: 0x8c5ca8, script: PRINCIPALE },
+      { id: 'principale', name: 'Principale', x: 9, y: 9, facing: 'up', color: 0x8c5ca8, script: PRINCIPALE },
       // Le surveillant attend Pierre dans le hall le premier jour, puis monte au couloir des casiers.
       {
-        id: 'surveillant-hall', name: 'Surveillant', x: 9, y: 5, facing: 'left', color: 0x5c6c8c,
+        id: 'surveillant-hall', name: 'Surveillant', x: 11, y: 5, facing: 'left', color: 0x5c6c8c,
         ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeArrivee], script: SURVEILLANT,
       },
     ],
@@ -769,13 +779,17 @@ export const interiors = {
     name: 'Couloir des casiers',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXX',
-      'ηooommmmmmomoξ', // escalier vers la salle de maths, casiers, placard d'entretien, escalier vers le hall
-      'oooooooooooooo',
-      'oooooooooooooo',
-      'moooooooooooom',
-      'oooooooooooooo',
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'ηηoommmmmmmmmξξ',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooooooooooom',
     ]),
     decor: [
       ...Array.from({ length: 6 }, (_, i) => ({ kind: 'locker', x: 4 + i, y: 2 })),
@@ -785,8 +799,8 @@ export const interiors = {
     ],
     spawn: { x: 13, y: 3, facing: 'down' },
     triggers: [
-      { x: 13, y: 2, warp: { interior: 'bonsecours', x: 13, y: 3, facing: 'down' } },
-      { x: 0, y: 2, warp: { interior: 'bonsecoursMaths', x: 0, y: 3, facing: 'down' } },
+      ...[13, 14].map((x) => ({ x, y: 2, warp: { interior: 'bonsecours', x: 23, y: 3, facing: 'down' } })),
+      ...[0, 1].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursMaths', x: 0, y: 3, facing: 'down' } })),
     ],
     objects: [
       { x: 6, y: 2, script: LOCKER },
@@ -828,15 +842,17 @@ export const interiors = {
     name: 'Salle de maths',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXX',
-      'ξooooommmooooη', // escalier vers les casiers, bureau du professeur, escalier vers la salle de sciences
-      'oooooooooooooo',
-      'ommommommommoo', // pupitres
-      'oooooooooooooo',
-      'ommommommommoo',
-      'moooooooooooom',
-      'moooooooooooom',
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'ξξoooooooooooηη',
+      'oooommmoooooooo',
+      'ooooooooooooooo',
+      'oommmommmoooomm',
+      'ooooooooooooomm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooooooooooom',
     ]),
     decor: [
       { kind: 'window', x: 3, y: 0 },
@@ -850,30 +866,30 @@ export const interiors = {
     ],
     spawn: { x: 0, y: 3, facing: 'down' },
     triggers: [
-      { x: 0, y: 2, warp: { interior: 'bonsecoursCasiers', x: 0, y: 3, facing: 'down' } },
-      { x: 13, y: 2, warp: { interior: 'bonsecoursSciences', x: 13, y: 3, facing: 'down' } },
+      ...[0, 1].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursCasiers', x: 0, y: 3, facing: 'down' } })),
+      ...[13, 14].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursSciences', x: 13, y: 3, facing: 'down' } })),
     ],
     objects: [
-      { x: 5, y: 1, dialogue: ['Au tableau : « Le carré de l\'hypoténuse est égal à la somme des carrés des deux autres côtés. »'] },
+      ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Le carré de l\'hypoténuse est égal à la somme des carrés des deux autres côtés. »'] })),
     ],
     npcs: [
       // Le prof de maths : ta classe (6e B) ; il remet le brevet une fois l'Audace reçue (voir collegeStory.js).
-      { id: 'prof-maths', name: 'Professeur', x: 9, y: 2, facing: 'down', color: 0x4c6c9c, script: PROF },
+      { id: 'prof-maths', name: 'Professeur', x: 5, y: 2, facing: 'down', color: 0x4c6c9c, script: PROF },
       // Après l'ellipse (fin de la troisième), Pierre est seul avec le prof pour le brevet (Rémy est en sciences).
       {
-        id: 'margaux-college', name: 'Margaux', x: 2, y: 5, facing: 'up', still: true, color: 0xf08080,
+        id: 'margaux-college', name: 'Margaux', x: 2, y: 6, facing: 'up', still: true, color: 0xf08080,
         ifFlags: [FLAGS.margauxTrouvee], unlessFlags: [FLAGS.finTroisieme],
         dialogue: ['On est dans la même classe, comme promis ! Enfin… presque promis.'],
       },
       // Margaux cachée (placard d'entretien, voir collegeStory.js CLOSET) : Étienne vient prévenir, à sa place.
       {
-        id: 'etienne-maths', name: 'Étienne', x: 2, y: 5, facing: 'up', still: true, color: 0x6080a0,
+        id: 'etienne-maths', name: 'Étienne', x: 2, y: 6, facing: 'up', still: true, color: 0x6080a0,
         unlessFlags: [FLAGS.margauxTrouvee, FLAGS.finTroisieme],
         dialogue: ['Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance !'],
       },
       // Camille, une fille de ta classe : la scène du dialogue à choix (voir collegeStory.js CAMILLE).
       {
-        id: 'camille', name: 'Camille', x: 5, y: 5, facing: 'up', still: true, color: 0xe080a0,
+        id: 'camille', name: 'Camille', x: 6, y: 6, facing: 'up', still: true, color: 0xe080a0,
         ifFlags: [FLAGS.collegeArrivee], unlessFlags: [FLAGS.finTroisieme], script: CAMILLE,
       },
       // Rémy, arrivé en classe après l'embrouille du casier.
@@ -882,10 +898,10 @@ export const interiors = {
         ifFlags: [FLAGS.remiEnClasse], unlessFlags: [FLAGS.finTroisieme], script: REMI,
       },
       ...collegeStudents([
-        [1, 7, 'J\'ai oublié mon compas. Encore. C\'est le troisième cette année.'],
-        [4, 7, 'Tu as fait l\'exercice 4 ? Moi non plus. On est deux, ça compte.'],
-        [10, 7, 'Si tu lèves la main, faut répondre. C\'est un piège.'],
-        [11, 5, 'Je dessine dans la marge depuis une heure. Personne a rien vu.'],
+        [2, 8, 'J\'ai oublié mon compas. Encore. C\'est le troisième cette année.'],
+        [4, 8, 'Tu as fait l\'exercice 4 ? Moi non plus. On est deux, ça compte.'],
+        [7, 8, 'Si tu lèves la main, faut répondre. C\'est un piège.'],
+        [3, 6, 'Je dessine dans la marge depuis une heure. Personne a rien vu.'],
       ], { unlessFlags: [FLAGS.finTroisieme] }),
     ],
     events: [
@@ -898,15 +914,17 @@ export const interiors = {
     name: 'Salle de français',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXX',
-      'ξooooommmooooo', // escalier vers la salle de sciences, bureau du professeur
-      'oooooooooooooo',
-      'ommommommommoo', // pupitres
-      'oooooooooooooo',
-      'ommommommommoo',
-      'moooooooooooom',
-      'moooooooooooom',
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'ξξooooooommmmmm',
+      'oooommmoooooooo',
+      'ooooooooooooooo',
+      'oommmommmoooomm',
+      'ooooooooooooomm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooooooooooom',
     ]),
     decor: [
       { kind: 'window', x: 1, y: 0 },
@@ -919,21 +937,21 @@ export const interiors = {
       { kind: 'plant', x: 13, y: 7 },
     ],
     spawn: { x: 0, y: 3, facing: 'down' },
-    triggers: [{ x: 0, y: 2, warp: { interior: 'bonsecoursSciences', x: 0, y: 3, facing: 'down' } }],
+    triggers: [0, 1].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursSciences', x: 0, y: 3, facing: 'down' } })),
     objects: [
-      { x: 5, y: 1, dialogue: ['Au tableau : « Rédaction : racontez votre plus beau souvenir de vacances. »'] },
+      ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Rédaction : racontez votre plus beau souvenir de vacances. »'] })),
     ],
     npcs: [
-      { id: 'prof-francais', name: 'Professeure', x: 9, y: 2, facing: 'down', color: 0xc06080, dialogue: ['Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit !'] },
+      { id: 'prof-francais', name: 'Professeure', x: 5, y: 2, facing: 'down', color: 0xc06080, dialogue: ['Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit !'] },
       ...collegeStudents([
-        [2, 5, 'Ma rédaction fait douze lignes. Dont quatre de titre.'],
-        [10, 5, 'J\'ai mis trois couches de blanco. On voit plus rien. Même pas moi.'],
-        [1, 7, 'Qui a écrit « vive les vacances » sur la table ? C\'est pas moi. Enfin si.'],
-        [10, 7, 'La sonnerie, c\'est le plus beau son du monde.'],
+        [2, 6, 'Ma rédaction fait douze lignes. Dont quatre de titre.'],
+        [8, 6, 'J\'ai mis trois couches de blanco. On voit plus rien. Même pas moi.'],
+        [2, 8, 'Qui a écrit « vive les vacances » sur la table ? C\'est pas moi. Enfin si.'],
+        [8, 8, 'La sonnerie, c\'est le plus beau son du monde.'],
       ]),
       // Étienne revient ici une fois Margaux trouvée (ou à la fin de la troisième) ; avant, il est en salle de maths.
       ...[{ ifFlags: [FLAGS.margauxTrouvee] }, { ifFlags: [FLAGS.finTroisieme], unlessFlags: [FLAGS.margauxTrouvee] }].map((when) => ({
-        id: 'etienne-college', name: 'Étienne', x: 7, y: 5, facing: 'up', still: true, color: 0x6080a0, ...when,
+        id: 'etienne-college', name: 'Étienne', x: 7, y: 6, facing: 'up', still: true, color: 0x6080a0, ...when,
         dialogue: ['Les casiers, c\'était vrai ! Par contre, pas la même classe… On se voit à la récré !'],
       })),
     ],
@@ -945,15 +963,17 @@ export const interiors = {
     name: 'Salle de sciences',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXX',
-      'ηooooommmoommξ', // escalier vers la salle de français, bureau du professeur, vitrine, escalier vers les maths
-      'oooooooooooooo',
-      'oommmooommmooo', // paillasses
-      'oooooooooooooo',
-      'oommmooommmooo',
-      'moooooooooooom',
-      'moooooooooooom',
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'ηηoooooooooooξξ',
+      'oooommmoooooooo',
+      'ooooooooooooooo',
+      'oommmommmoommmm',
+      'ooooooooooommmm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooooooooooom',
     ]),
     decor: [
       { kind: 'window', x: 3, y: 0 },
@@ -966,41 +986,44 @@ export const interiors = {
     ],
     spawn: { x: 13, y: 3, facing: 'down' },
     triggers: [
-      { x: 13, y: 2, warp: { interior: 'bonsecoursMaths', x: 13, y: 3, facing: 'down' } },
-      { x: 0, y: 2, warp: { interior: 'bonsecoursFrancais', x: 0, y: 3, facing: 'down' } },
+      ...[13, 14].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursMaths', x: 13, y: 3, facing: 'down' } })),
+      ...[0, 1].map((x) => ({ x, y: 2, warp: { interior: 'bonsecoursFrancais', x: 0, y: 3, facing: 'down' } })),
     ],
     objects: [
-      ...[11, 12].map((x) => ({ x, y: 2, dialogue: ['La vitrine : un squelette en plastique, des bocaux et un vieux microscope.'] })),
+      ...[[11, 5], [12, 5], [13, 5], [14, 5]].map(([x, y]) => ({ x, y, dialogue: ['La vitrine : un squelette en plastique, des bocaux et un vieux microscope.'] })),
     ],
     npcs: [
       ...collegeStudents([
-        [3, 5, 'J\'ai cassé un bécher. Le prof a dit « c\'est pas grave ». Il a menti.'],
-        [9, 5, 'Le squelette de la vitrine, il s\'appelle Gérard. C\'est moi qui l\'ai baptisé.'],
-        [3, 7, 'Au microscope, j\'ai vu une feuille. Une feuille, mais en très gros.'],
-        [9, 7, 'Si on mélange tout, ça explose ? … Non ? Dommage.'],
+        [3, 6, 'J\'ai cassé un bécher. Le prof a dit « c\'est pas grave ». Il a menti.'],
+        [7, 6, 'Le squelette de la vitrine, il s\'appelle Gérard. C\'est moi qui l\'ai baptisé.'],
+        [3, 8, 'Au microscope, j\'ai vu une feuille. Une feuille, mais en très gros.'],
+        [7, 8, 'Si on mélange tout, ça explose ? … Non ? Dommage.'],
       ]),
       // Fin de la troisième : Rémy attend ici, à l'étage au-dessus, pendant le brevet de Pierre (voir collegeStory.js REMI).
       {
-        id: 'remy-sciences', name: 'Rémy', x: 8, y: 7, facing: 'up', still: true, color: 0xc05c3c,
+        id: 'remy-sciences', name: 'Rémy', x: 8, y: 8, facing: 'up', still: true, color: 0xc05c3c,
         ifFlags: [FLAGS.finTroisieme], script: REMI,
       },
-      { id: 'prof-sciences', name: 'Professeur de sciences', x: 9, y: 2, facing: 'down', color: 0x4c8c5c, dialogue: ['Aujourd\'hui, on observe des feuilles au microscope. Les feuilles des arbres de Bonsecours !'] },
+      { id: 'prof-sciences', name: 'Professeur de sciences', x: 5, y: 2, facing: 'down', color: 0x4c8c5c, dialogue: ['Aujourd\'hui, on observe des feuilles au microscope. Les feuilles des arbres de Bonsecours !'] },
     ],
   },
 
-  // Montépilloy — l'étage de la maison : la chambre des enfants, quatre lits côte à côte (Pierre, Manon, Jean,
-  // Fanny), escalier pour redescendre à droite. Jean et Fanny y jouent.
+  // Montépilloy — l'étage de la maison (dessin : la chambre du héros à Bourg Geon, HGSS) : la chambre des enfants,
+  // quatre lits côte à côte (Pierre, Manon, Jean, Fanny), escalier pour redescendre en haut à gauche.
   montHouseUp: {
     name: 'Chambre des enfants',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXX',
-      'XXXXXXXXXXXXX',
-      'mmommommommoξ',   // quatre lits, escalier vers le salon contre le mur de droite
-      'mmommommommoo',
-      'ooooooooooooo',
-      'mooooooooommo',   // plante, étagère
-      'oooooooooommo',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'ξξooommmmm',
+      'mmoooooooo',
+      'oooooooooo',
+      'oooooooooo',
+      'mmmmmmmmoo',
+      'mmmmmmmmoo',
+      'mmmmmmmmom',
     ]),
     decor: [
       ...[0, 3, 6, 9].map((x) => ({ kind: 'bed', x, y: 2 })),
@@ -1009,8 +1032,8 @@ export const interiors = {
       { kind: 'pottedPlant', x: 0, y: 5 },
       { kind: 'shelf', x: 10, y: 5 },
     ],
-    spawn: { x: 12, y: 3, facing: 'down' },
-    triggers: [{ x: 12, y: 2, warp: { interior: 'montHouse', x: 9, y: 3, facing: 'down' } }],
+    spawn: { x: 2, y: 4, facing: 'down' },
+    triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'montHouse', x: 2, y: 3, facing: 'down' } })),
     // Jean, ton petit frère, né entre-temps : il adore réparer des choses. Après l'école, il lance la réparation du
     // tracteur de M. Bouly, descend l'escalier et part devant à la ferme (voir JEAN).
     // Manon et Fanny y sont aussi, par défaut.
@@ -1030,27 +1053,28 @@ export const interiors = {
       },
     ],
     objects: [
-      { x: 0, y: 5, dialogue: ['Une petite plante verte.'] },
-      { x: 10, y: 5, dialogue: ['Des livres de classe, des BD et les jouets de Fanny.'] },
-      { x: 11, y: 5, dialogue: ['Des livres de classe, des BD et les jouets de Fanny.'] },
+      { x: 9, y: 9, dialogue: ['Une petite plante verte.'] },
+      ...[5, 6, 7].map((x) => ({ x, y: 3, dialogue: ['Des livres de classe, des BD et les jouets de Fanny.'] })),
     ],
   },
 
-  // Montépilloy — l'école, façon Rouge Feu : tableau vert, bureau du maître, deux rangées de pupitres ; Margaux,
-  // Étienne et Benoît le dernier jour de CM2.
+  // Montépilloy — l'école (dessin : la salle de classe de l'école de Mauville, HGSS) : tableau vert, bureau du maître,
+  // pupitres ; Margaux, Étienne et Benoît le dernier jour de CM2.
   school: {
     name: 'École',
     frlg: true,
     grid: parseGrid([
-      'XXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXX',
-      'ooooommmoooooo', // bureau du maître
-      'oooooooooooooo',
-      'ommommommommoo', // pupitres
-      'oooooooooooooo',
-      'ommommommommoo',
-      'moooooooooooom',
-      'moooooEEooooom',
+      'XXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXX',
+      'mmmoooooooooomm',
+      'oooommmoooooooo',
+      'ooooooooooooooo',
+      'oommmommmoooomm',
+      'ooooooooooooomm',
+      'oommmommmoooooo',
+      'ooooooooooooooo',
+      'ooooooooooooooo',
+      'mooooEoooooooom',
     ]),
     decor: [
       { kind: 'window', x: 1, y: 0 },
@@ -1062,12 +1086,12 @@ export const interiors = {
       { kind: 'plant', x: 0, y: 7 },
       { kind: 'plant', x: 13, y: 7 },
     ],
-    spawn: { x: 6, y: 7, facing: 'up' },
+    spawn: { x: 5, y: 9, facing: 'up' },
     // Dernier jour de CM2 : les copains de classe, avant la dernière partie de cache-cache (voir
     // data/montepilloyStory.js) ; ils sont partis se cacher une fois la partie lancée.
     npcs: [
       {
-        id: 'margaux', name: 'Margaux', x: 4, y: 3, facing: 'down', color: 0xf08080,
+        id: 'margaux', name: 'Margaux', x: 3, y: 4, facing: 'down', color: 0xf08080,
         unlessFlags: [FLAGS.cacheCache],
         dialogue: ['Dernier jour de CM2 ! À la sortie, on fait une partie de cache-cache. La dernière.'],
       },
@@ -1077,13 +1101,13 @@ export const interiors = {
         dialogue: ['L\'an prochain, c\'est le collège. Il paraît qu\'il y a un self, avec des frites tous les jours.'],
       },
       {
-        id: 'benoit', name: 'Benoît', x: 3, y: 5, facing: 'up', color: 0xa07040,
+        id: 'benoit', name: 'Benoît', x: 3, y: 6, facing: 'up', color: 0xa07040,
         unlessFlags: [FLAGS.cacheCache],
         dialogue: ['Dernier jour de CM2… Le maître a apporté des gâteaux. J\'en ai déjà mangé trois.'],
       },
       // La partie finie, les copains sont revenus à l'école chercher leurs cartables.
       {
-        id: 'margaux-fin', name: 'Margaux', x: 4, y: 3, facing: 'down', color: 0xf08080,
+        id: 'margaux-fin', name: 'Margaux', x: 3, y: 4, facing: 'down', color: 0xf08080,
         ifFlags: [FLAGS.copainsPartent], unlessFlags: [FLAGS.septembre],
         dialogue: ['Promis, hein ? L\'été prochain, on refait une partie. Dans tout le village.'],
       },

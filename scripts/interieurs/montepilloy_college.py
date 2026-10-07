@@ -1,437 +1,158 @@
-"""Intérieurs Gen 4 de Montépilloy (grange de M. Bouly, maison de la famille, chambre des enfants, école) et du
-collège Bonsecours (hall, couloir des casiers, salles de maths, de français et de sciences).
+"""Intérieurs de Montépilloy (grange de M. Bouly, maison de la famille, chambre des enfants, école) et du collège
+Bonsecours (hall, couloir des casiers, salles de maths, de sciences et de français), refaits à partir de VRAIES pièces
+HeartGold / SoulSilver (pack de SirMaIo, scripts/hgss_rooms.py) :
 
-Ce que les planches Gen 4 n'ont pas (tonneaux, casiers, pupitres d'élèves, paillasses, panneaux de liège, bottes de
-paille, pot de miel) est dessiné ici, dans leurs couleurs : contour sombre, deux tons et un reflet, ombre portée
-semi-transparente en bas à droite, comme les meubles DPPt.
+- école de Montépilloy, couloir des casiers et les trois salles du collège : la salle de classe de l'école de Mauville
+  (Violet School), vidée ou garnie selon la pièce ; le collège garde ainsi les mêmes murs d'un étage à l'autre ;
+- hall du collège : le hall de la Tour Radio de Doublonville (accueil en U, tapis rouge, salon, escalier qui monte) ;
+- maison de Montépilloy et chambre des enfants : le salon et la chambre de la maison du héros à Bourg Geon ;
+- grange de M. Bouly : la maison de Fargas à Écorce (bois, établi, poêle), avec le foin de la ferme Meumeu et les
+  caisses de l'entrepôt de Doublonville.
+Escaliers, casiers (armoires métalliques), caisses : planches du pack (interieurs_plans.sirmaio). Seuls les tonneaux,
+que le pack n'a pas (Benoît se cache dans l'un d'eux), sont dessinés ici, aux couleurs du bois de Fargas.
 """
-import json
-
-import numpy as np
 from PIL import Image, ImageDraw
 
-from interieurs_plans import T, V2, crop, rect, stretch, isolate, sheet  # noqa: F401
+from interieurs_plans import T, sirmaio
 
-LINE = (56, 48, 48, 255)          # contour des meubles DPPt
-SHADOW = (0, 0, 0, 70)
-
-
-def _elements():
-    return json.loads((V2 / 'g4-int-meubles.elements.json').read_text())['elements']
+VIOLET = '006i_Violet School '          # (sic : le nom de la carte du pack finit par une espace)
+NEWBARK = '001i_Newbark houses'
+WH = 'i_Warehouse'
 
 
-def me(i, **kw):
-    """Élément n° i de g4-int-meubles, détouré au pixel (rect)."""
-    c0, r0, c1, r1 = _elements()[i]
-    return rect('g4-int-meubles', c0 * T, r0 * T, (c1 - c0 + 1) * T, (r1 - r0 + 1) * T, **kw)
-
-
-def canvas(w, h):
-    return Image.new('RGBA', (w * T, h * T))
-
-
-def shadowed(img):
-    """Ombre portée DPPt : le dessin décalé de (2, 2) en noir semi-transparent, sous lui."""
-    a = np.array(img)
-    sh = np.zeros_like(a)
-    m = a[..., 3] > 0
-    sh[2:, 2:][m[:-2, :-2]] = SHADOW
-    out = Image.fromarray(sh)
-    out.alpha_composite(img)
-    return out
-
-
-def recolor(img, dst_rgb, src_pred):
-    """Les pixels qui répondent à src_pred(r, g, b) passent à la teinte de dst_rgb (même luminosité relative)."""
-    a = np.array(img).astype(float)
-    r, g, b = a[..., 0], a[..., 1], a[..., 2]
-    sel = src_pred(r, g, b) & (a[..., 3] > 0)
-    lum = (r + g + b) / 3 / 140
-    for k, c in enumerate(dst_rgb):
-        a[..., k][sel] = np.clip(c * lum[sel], 0, 255)
-    return Image.fromarray(a.astype(np.uint8))
-
-
-# ---------- Dessins ----------
+# ---------- Le seul dessin fait ici ----------
 def barrel():
-    """Tonneau de bois cerclé (une case)."""
+    """Tonneau de bois cerclé (une case), aux couleurs du bois de la maison de Fargas."""
     img = Image.new('RGBA', (T, T))
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle((1, 1, 13, 14), 3, fill=LINE)
-    d.rounded_rectangle((2, 2, 12, 13), 3, fill=(176, 112, 56, 255))
-    for x in (4, 7, 10):
-        d.line((x, 3, x, 12), fill=(140, 84, 40, 255))
-    d.line((3, 3, 3, 12), fill=(212, 150, 88, 255))
-    for y in (4, 10):
-        d.line((2, y, 12, y), fill=(84, 80, 88, 255))
-        d.line((2, y + 1, 12, y + 1), fill=(128, 124, 132, 255))
-    d.ellipse((3, 1, 11, 4), fill=(120, 72, 36, 255), outline=LINE)
-    return shadowed(img)
-
-
-def produce_crate(kind):
-    """Caisse de légumes ou de fruits (caisses du marché de la bibliothèque Gen 4, g4-mobilier)."""
-    if kind == 'tomates':
-        return rect('g4-mobilier', 4, 1952, 16, 18, iso=False)
-    if kind == 'oranges':
-        return rect('g4-mobilier', 4, 1968, 16, 17, iso=False)
-    if kind == 'salades':
-        tom = rect('g4-mobilier', 4, 1952, 16, 18, iso=False)
-        return recolor(tom, (96, 196, 72), lambda r, g, b: (r > g + 40) & (r > b + 40))
-    raise KeyError(kind)
-
-
-def honey_jar():
-    img = Image.new('RGBA', (T, T))
-    d = ImageDraw.Draw(img)
-    d.rounded_rectangle((3, 4, 12, 14), 3, fill=LINE)
-    d.rounded_rectangle((4, 5, 11, 13), 2, fill=(236, 168, 40, 255))
-    d.line((5, 6, 5, 11), fill=(252, 220, 120, 255))
-    d.rectangle((4, 2, 11, 4), fill=LINE)
-    d.rectangle((5, 2, 10, 3), fill=(200, 64, 56, 255))
-    d.rectangle((6, 8, 9, 10), fill=(248, 240, 216, 255))
-    return shadowed(img)
-
-
-def hay_bale():
-    """Botte de paille (une case)."""
-    img = Image.new('RGBA', (T, T))
-    d = ImageDraw.Draw(img)
-    d.rectangle((0, 3, 14, 14), fill=LINE)
-    d.rectangle((1, 4, 13, 13), fill=(228, 196, 96, 255))
-    d.rectangle((1, 4, 13, 6), fill=(244, 220, 136, 255))
-    for x in range(2, 13, 3):
-        d.line((x, 7, x + 1, 13), fill=(196, 160, 72, 255))
-    for x in (4, 10):
-        d.line((x, 4, x, 13), fill=(160, 104, 56, 255))
-    return shadowed(img)
-
-
-def straw():
-    """Brins de paille par terre (à plat, on marche dessus)."""
-    img = Image.new('RGBA', (T, T))
-    d = ImageDraw.Draw(img)
-    for (x, y, dx, dy) in [(2, 3, 4, 1), (8, 6, 3, -1), (4, 10, 4, 1), (11, 12, 3, 0), (1, 13, 3, -1)]:
-        d.line((x, y, x + dx, y + dy), fill=(228, 196, 96, 220))
-        d.point((x + dx, y + dy), fill=(196, 160, 72, 220))
+    line = (72, 48, 32, 255)
+    d.ellipse((3, 13, 14, 16), fill=(0, 0, 0, 60))
+    d.rounded_rectangle((2, 1, 13, 14), 3, fill=line)
+    d.rounded_rectangle((3, 2, 12, 13), 3, fill=(184, 128, 72, 255))
+    for x in (5, 8, 11):
+        d.line((x, 4, x, 12), fill=(148, 96, 56, 255))
+    d.line((4, 4, 4, 12), fill=(216, 168, 112, 255))
+    for y in (5, 10):
+        d.line((3, y, 12, y), fill=(96, 92, 100, 255))
+        d.line((3, y + 1, 12, y + 1), fill=(152, 148, 156, 255))
+    d.ellipse((4, 1, 11, 5), fill=(132, 84, 44, 255), outline=line)
     return img
 
 
-def tools():
-    """Outils posés sur l'établi (clé, marteau), à poser avec un décalage."""
-    img = Image.new('RGBA', (2 * T, T))
-    d = ImageDraw.Draw(img)
-    d.line((3, 10, 11, 6), fill=LINE, width=3)
-    d.line((3, 10, 11, 6), fill=(168, 172, 184, 255), width=1)
-    d.ellipse((10, 4, 14, 8), fill=(168, 172, 184, 255), outline=LINE)
-    d.rectangle((19, 5, 21, 12), fill=(150, 96, 48, 255), outline=LINE)
-    d.rectangle((16, 3, 25, 6), fill=(112, 116, 128, 255), outline=LINE)
-    return img
-
-
-def locker(color=(96, 136, 200)):
-    """Casier métallique du collège (une case de large, il monte sur le mur)."""
-    img = Image.new('RGBA', (T, 2 * T))
-    d = ImageDraw.Draw(img)
-    r, g, b = color
-    d.rectangle((0, 2, 15, 31), fill=LINE)
-    d.rectangle((1, 3, 14, 30), fill=(r, g, b, 255))
-    d.rectangle((1, 3, 14, 4), fill=(min(255, r + 48), min(255, g + 48), min(255, b + 48), 255))
-    d.line((1, 3, 1, 30), fill=(min(255, r + 40), min(255, g + 40), min(255, b + 40), 255))
-    d.line((14, 4, 14, 30), fill=(r - 36, g - 36, b - 36, 255))
-    for y in (7, 9, 11):
-        d.line((4, y, 11, y), fill=(r - 50, g - 50, b - 50, 255))
-    d.rectangle((5, 14, 10, 16), fill=(240, 240, 232, 255))
-    d.rectangle((11, 19, 12, 23), fill=(216, 216, 224, 255))
-    d.rectangle((1, 28, 14, 30), fill=(r - 50, g - 50, b - 50, 255))
-    return img
-
-
-def school_desk(content='livres', wood=(212, 164, 104)):
-    """Pupitre d'élève de deux cases : plateau de bois, pieds métalliques ; des livres ou des copies dessus."""
-    img = Image.new('RGBA', (2 * T, 2 * T))
-    d = ImageDraw.Draw(img)
-    r, g, b = wood
-    top = 14
-    d.rectangle((1, top, 30, top + 9), fill=LINE)
-    d.rectangle((2, top + 1, 29, top + 6), fill=(r, g, b, 255))
-    d.line((2, top + 1, 29, top + 1), fill=(min(255, r + 30), min(255, g + 30), min(255, b + 30), 255))
-    d.rectangle((2, top + 7, 29, top + 8), fill=(r - 60, g - 60, b - 60, 255))
-    for x in (3, 27):
-        d.rectangle((x, top + 9, x + 1, 31), fill=(120, 124, 136, 255))
-        d.point((x, 31), fill=LINE)
-    if content == 'livres':
-        d.rectangle((6, top - 1, 13, top + 4), fill=LINE)
-        d.rectangle((7, top, 12, top + 3), fill=(200, 72, 64, 255))
-        d.rectangle((15, top, 22, top + 4), fill=LINE)
-        d.rectangle((16, top + 1, 21, top + 3), fill=(72, 112, 200, 255))
-    elif content == 'copies':
-        d.rectangle((7, top, 14, top + 5), fill=(250, 250, 244, 255), outline=(176, 176, 168, 255))
-        for y in (top + 2, top + 4):
-            d.line((9, y, 13, y), fill=(120, 140, 200, 255))
-        d.line((19, top + 1, 24, top + 4), fill=(232, 192, 48, 255), width=2)
-    return shadowed(img)
-
-
-def lab_bench(n=3):
-    """Paillasse de sciences : plateau noir, caisson clair, évier et éprouvettes."""
-    w = n * T
-    img = Image.new('RGBA', (w, 2 * T))
-    d = ImageDraw.Draw(img)
-    top = 12
-    d.rectangle((0, top, w - 2, 31), fill=LINE)
-    d.rectangle((1, top + 1, w - 3, top + 7), fill=(64, 68, 80, 255))
-    d.line((1, top + 1, w - 3, top + 1), fill=(104, 108, 124, 255))
-    d.rectangle((1, top + 8, w - 3, 30), fill=(224, 224, 216, 255))
-    for x in range(T, w - 2, T):
-        d.line((x, top + 9, x, 30), fill=(176, 176, 168, 255))
-        d.point((x - 3, top + 13), fill=(120, 120, 128, 255))
-    d.rectangle((4, top + 3, 12, top + 6), fill=(168, 196, 220, 255), outline=(40, 44, 56, 255))
-    d.line((8, top - 2, 8, top + 3), fill=(176, 180, 192, 255))
-    # Porte-éprouvettes.
-    x0 = w - 20
-    d.rectangle((x0, top + 4, x0 + 13, top + 6), fill=(168, 112, 64, 255), outline=LINE)
-    for k, c in enumerate([(232, 72, 72), (72, 184, 104), (88, 136, 232), (240, 200, 64)]):
-        x = x0 + 2 + k * 3
-        d.rectangle((x, top - 3, x + 1, top + 4), fill=(236, 244, 248, 255))
-        d.rectangle((x, top + 1, x + 1, top + 4), fill=(*c, 255))
-    # Bécher.
-    d.rectangle((x0 - 9, top, x0 - 4, top + 5), fill=(220, 236, 244, 255), outline=(120, 140, 160, 255))
-    d.rectangle((x0 - 8, top + 3, x0 - 5, top + 4), fill=(120, 216, 176, 255))
-    return shadowed(img)
-
-
-def cork_board(w=1):
-    """Panneau de liège avec des affiches punaisées (au mur)."""
-    img = Image.new('RGBA', (w * T, T))
-    d = ImageDraw.Draw(img)
-    d.rectangle((0, 1, w * T - 1, 14), fill=(120, 72, 40, 255))
-    d.rectangle((1, 2, w * T - 2, 13), fill=(200, 148, 92, 255))
-    papers = [(2, 3, 6, 9, (250, 250, 244)), (8, 4, 13, 11, (252, 236, 150)), (4, 9, 9, 12, (200, 228, 250))]
-    for k in range(w):
-        for x0, y0, x1, y1, c in papers:
-            d.rectangle((x0 + k * T, y0, x1 + k * T, y1), fill=(*c, 255))
-            d.point(((x0 + x1) // 2 + k * T, y0), fill=(220, 56, 56, 255))
-    return img
-
-
-def poster(colors):
-    """Petite affiche colorée (au mur)."""
-    img = Image.new('RGBA', (T, T))
-    d = ImageDraw.Draw(img)
-    d.rectangle((3, 1, 12, 13), fill=LINE)
-    d.rectangle((4, 2, 11, 12), fill=(250, 250, 240, 255))
-    for k, c in enumerate(colors):
-        d.rectangle((5, 3 + 3 * k, 10, 4 + 3 * k), fill=(*c, 255))
-    return img
-
-
-def wall_clock():
-    return me(76)
-
-
-def stairs_up():
-    """Escalier qui monte, dans son cadre de bois (jesus-3), dessiné sur le mur au-dessus de la case η."""
-    return rect('jesus-3', 3 * T, 21 * T - 4, 2 * T, 2 * T + 4, iso=False)
-
-
-def stairs_down():
-    """Ouverture dans le mur et marches qui descendent (jesus-3), au-dessus de la case ξ."""
-    return rect('jesus-3', T, 20 * T, T + 8, 2 * T, iso=False)
-
-
-# ---------- Meubles ----------
 ITEMS = {
-    # Grange.
+    # Escaliers de l'entrepôt de Doublonville (montée encastrée dans le mur, descente dans le sol).
+    'mc-monte-g': {'img': lambda: sirmaio(WH, 0, 13, 2, 3), 'solid': 0, 'flat': True},
+    'mc-monte-d': {'img': lambda: sirmaio(WH, 6, 13, 2, 3), 'solid': 0, 'flat': True},
+    'mc-descend-g': {'img': lambda: sirmaio(WH, 0, 16, 2, 2), 'solid': 0, 'flat': True},
+    'mc-descend-d': {'img': lambda: sirmaio(WH, 6, 16, 2, 2), 'solid': 0, 'flat': True},
+    # Casiers : les armoires métalliques de l'entrepôt (3 cases de large, contre le mur).
+    'mc-casiers': {'img': lambda: sirmaio(WH, 5, 9, 3, 2), 'solid': 1},
+    'mc-placard': {'img': lambda: sirmaio(WH, 5, 1, 3, 2), 'solid': 1},
+    # Grange : caisses de l'entrepôt, foin et bidon de la ferme Meumeu, tonneaux.
+    'mc-caisses': {'img': lambda: sirmaio(WH, 0, 9, 2, 3), 'solid': 2},
+    'mc-foin': {'img': lambda: sirmaio('i_Moomoo-Farm', 0, 15, 4, 4), 'solid': 3},
+    'mc-bidon': {'img': lambda: sirmaio('i_Moomoo-Farm', 4, 22, 1, 2), 'solid': 1},
     'mc-tonneau': {'img': barrel, 'solid': 1},
-    'mc-caisse-tomates': {'img': lambda: produce_crate('tomates'), 'solid': 1},
-    'mc-caisse-oranges': {'img': lambda: produce_crate('oranges'), 'solid': 1},
-    'mc-caisse-salades': {'img': lambda: produce_crate('salades'), 'solid': 1},
-    'mc-miel': {'img': honey_jar, 'solid': 1},
-    'mc-paille': {'img': hay_bale, 'solid': 1},
-    'mc-brins': {'img': straw, 'solid': 0, 'flat': True},
-    'mc-outils': {'img': tools, 'solid': 0, 'flat': True},
-    'mc-etabli': {'img': lambda: me(115), 'solid': 1},                    # longue table de bois brun
-    # Fenêtres, cadres, horloge, affichage.
-    'mc-fenetre': {'img': lambda: rect('jesus-3', 17, 297, 30, 16, iso=False), 'solid': 0},   # fenêtre (2 x 1), au mur
-    'mc-fenetre-rideaux': {'img': lambda: me(184), 'solid': 0},           # fenêtre à rideaux (2 x 2)
-    'mc-fenetre-petite': {'img': lambda: rect('jesus-3', 0, 288, 16, 11, iso=False), 'solid': 0},
-    'mc-vitrine': {'img': lambda: me(20), 'solid': 1},                     # vitrine à deux étagères (2 x 2)
-    'mc-carte-monde': {'img': lambda: rect('jesus-3', 0, 664, 32, 20, iso=False), 'solid': 0},
-    'mc-tableau-paysage': {'img': lambda: rect('jesus-3', 48, 664, 33, 20, iso=False), 'solid': 0},
-    'mc-cadre': {'img': lambda: rect('jesus-3', 32, 664, 16, 20, iso=False), 'solid': 0},
-    'mc-note': {'img': lambda: rect('jesus-3', 80, 658, 16, 26, iso=False), 'solid': 0},
-    'mc-liege': {'img': cork_board, 'solid': 0},
-    'mc-liege-2': {'img': lambda: cork_board(2), 'solid': 0},
-    'mc-affiche-a': {'img': lambda: poster([(220, 80, 72), (72, 128, 220), (88, 184, 96)]), 'solid': 0},
-    'mc-affiche-b': {'img': lambda: poster([(240, 192, 56), (200, 96, 200), (72, 184, 200)]), 'solid': 0},
-    'mc-horloge': {'img': wall_clock, 'solid': 0},
-    # Maison.
-    'mc-cuisine': {'img': lambda: me(277), 'solid': 1},                  # évier, plaques et placards (3 x 2)
-    'mc-frigo': {'img': lambda: me(51), 'solid': 1},
-    'mc-meuble-tele': {'img': lambda: me(99), 'solid': 1},
-    'mc-tele': {'img': lambda: me(45), 'solid': 0, 'flat': True},
-    'mc-table-4': {'img': lambda: stretch(me(125), 4), 'solid': 2},
-    'mc-chaise': {'img': lambda: me(14), 'solid': 0, 'flat': True},
-    'mc-arbuste': {'img': lambda: me(27), 'solid': 2},                    # petit arbre en pot (1 x 2)
-    'mc-arbre-pot': {'img': lambda: me(34), 'solid': 2},                  # arbre en pot rose (1 x 3)
-    'mc-plante': {'img': lambda: me(306), 'solid': 1},
-    'mc-plante-2': {'img': lambda: me(308), 'solid': 1},
-    'mc-tapis-bleu': {'img': lambda: me(153), 'solid': 0, 'flat': True},
-    'mc-tapis-rouge': {'img': lambda: me(9), 'solid': 0, 'flat': True},
-    'mc-lit-bleu': {'img': lambda: me(155), 'solid': 2},
-    'mc-lit-ciel': {'img': lambda: me(156), 'solid': 2},
-    'mc-lit-rose': {'img': lambda: me(157), 'solid': 2},
-    'mc-lit-blanc': {'img': lambda: me(158), 'solid': 2},
-    'mc-bibliotheque': {'img': lambda: me(124), 'solid': 2},             # bibliothèque basse (2 x 2)
-    'mc-bibliotheque-haute': {'img': lambda: me(137), 'solid': 1},       # haute, contre le mur (2 x 3)
-    'mc-bibliotheque-verte': {'img': lambda: me(141), 'solid': 2},
-    'mc-bibliotheque-bois': {'img': lambda: me(226), 'solid': 1},
-    'mc-escalier-monte': {'img': stairs_up, 'solid': 0},
-    'mc-escalier-descend': {'img': stairs_down, 'solid': 0},
-    # École et collège.
-    'mc-tableau-vert': {'img': lambda: me(268), 'solid': 0},             # tableau vert (4 x 2), au mur
-    'mc-tableau-vert-dessin': {'img': lambda: me(269), 'solid': 0},
-    'mc-tableau-vert-2': {'img': lambda: me(270), 'solid': 0},
-    'mc-tableau-vert-3': {'img': lambda: me(271), 'solid': 0},
-    'mc-bureau-prof': {'img': lambda: me(115), 'solid': 1},
-    'mc-pupitre-livres': {'img': lambda: school_desk('livres'), 'solid': 1},
-    'mc-pupitre-copies': {'img': lambda: school_desk('copies'), 'solid': 1},
-    'mc-pupitre-bleu': {'img': lambda: school_desk('livres', (120, 168, 224)), 'solid': 1},
-    'mc-pupitre-vert': {'img': lambda: school_desk('copies', (136, 200, 120)), 'solid': 1},
-    'mc-pupitre-rouge': {'img': lambda: school_desk('livres', (232, 136, 120)), 'solid': 1},
-    'mc-pupitre-jaune': {'img': lambda: school_desk('copies', (236, 204, 104)), 'solid': 1},
-    'mc-accueil': {'img': lambda: stretch(me(108, align='top'), 3), 'solid_top': 1},   # comptoir d'accueil (3 x 1, vu de face)
-    'mc-casier': {'img': locker, 'solid': 1},
-    'mc-casier-vert': {'img': lambda: locker((96, 176, 136)), 'solid': 1},
-    'mc-casier-rouge': {'img': lambda: locker((208, 104, 96)), 'solid': 1},
-    'mc-armoire': {'img': lambda: me(35), 'solid': 1},                   # meuble à tiroirs (1 x 2)
-    'mc-armoire-grise': {'img': lambda: me(49), 'solid': 1},             # armoire métallique (1 x 3)
-    'mc-paillasse': {'img': lab_bench, 'solid': 1},
-    'mc-vitrine-labo': {'img': lambda: me(46), 'solid': 1},              # vitrine blanche (1 x 3)
-    'mc-vitrine-verte': {'img': lambda: me(208), 'solid': 1},            # vitrine du labo (2 x 3)
-    'mc-machine': {'img': lambda: me(235), 'solid': 1},                  # appareil de mesure
+    # Bibliothèque et tableau de l'école (planche School).
+    'mc-biblio': {'img': lambda: sirmaio('i_School', 3, 8, 1, 2), 'solid': 1},
 }
 
 
-# ---------- Pièces ----------
+def wall_column(x0, y0, to_x, rows=2):
+    """Recolle une colonne de mur propre de la salle de Mauville (ses `rows` rangées du haut) en x = to_x."""
+    return {'from': (VIOLET, x0, y0, 1, rows), 'to': (to_x, 0)}
+
+
+# La salle de Mauville : x 10, y 8, 15 x 11 dans la carte du pack. Murs : rangées 0-1 ; plante (0) et télé (1-2) en
+# haut à gauche, bibliothèque (13-14) en haut à droite, bureau du maître (4-6, 3), pupitres (2-4 et 6-8, rangées 5 et 7 ;
+# chaises rangées 6 et 8), machine (13-14, 4-6), plantes en bas (0 et 14, 9-10), tapis de sortie (5, 10).
+CLASSROOM = (VIOLET, 10, 8, 15, 11)
+CLEAN_WALL = 17                                  # colonne de mur sans fenêtre (x 7 de la salle)
+TOP_LEFT = [[0, 1, 3, 2]]                        # plante et télé du haut à gauche
+TOP_RIGHT = [[13, 1, 2, 2]]                      # bibliothèque du haut à droite
+DESKS = [[2, 3, 7, 6], [4, 3, 3, 1]]             # pupitres, chaises et bureau du maître
+MACHINE = [[13, 4, 2, 3]]
+MAT = [[5, 10, 1, 1]]
+# Le tapis de sortie est dans le sol (cases 4 à 6) : on y recolle le parquet propre de la même rangée (motif aligné).
+NO_MAT = [{'from': (VIOLET, sx, 18, 1, 1), 'to': (x, 10), 'sol': True} for x, sx in ((4, 12), (5, 17), (6, 12))]
+WALL_LEFT = [wall_column(CLEAN_WALL, 8, x) for x in (0, 1, 2)]
+WALL_RIGHT = [wall_column(CLEAN_WALL, 8, x) for x in (13, 14)]
+
+
 PLANS = {
-    # Grange de M. Bouly : murs de planches, plancher clair, paille par terre ; l'établi et ses outils sous la
-    # fenêtre, les caisses de salades et d'oranges, les tonneaux de grain au fond à droite (celui du coin cache la pièce
-    # de tracteur), les tonneaux de cidre à gauche, la caisse de tomates et le pot de miel.
+    # Grange de M. Bouly (maison de Fargas, 11 x 10) : l'établi et les étagères au fond à gauche, le vieux poêle au fond
+    # à droite ; tonneaux à gauche (Benoît dans le premier), caisses de légumes au milieu, grand tas de foin en bas à
+    # droite (la pièce du tracteur dessous), bidon de lait.
     'boulyBarn': {
-        'wall': 'bois', 'floor': 'parquet-clair', 'mat': 'rouge',
+        'hgss': ('010i_Azalea Houses', 10, 7, 11, 10),
+        'erase': [[1, 6, 1, 1], [4, 5, 1, 1], [10, 7, 1, 1]],
         'items': [
-            ['mc-fenetre', 3, 0], ['mc-liege', 6, 0], ['mc-horloge', 6, 1, {'dy': -2}],
-            ['mc-etabli', 0, 2], ['mc-outils', 0, 2, {'dy': -9}],
-            ['mc-caisse-salades', 5, 2], ['mc-caisse-oranges', 6, 2],
-            ['mc-tonneau', 7, 2], ['mc-tonneau', 8, 2], ['mc-paille', 8, 3],
-            ['mc-tonneau', 0, 4], ['mc-tonneau', 0, 5],
-            ['mc-caisse-tomates', 6, 5], ['mc-miel', 7, 5],
-            ['mc-brins', 2, 4], ['mc-brins', 5, 6], ['mc-brins', 7, 7], ['mc-brins', 3, 3], ['mc-brins', 1, 7],
+            ['mc-tonneau', 0, 5], ['mc-tonneau', 0, 6], ['mc-tonneau', 1, 5],
+            ['mc-caisses', 4, 6], ['mc-foin', 7, 9], ['mc-bidon', 6, 9],
         ],
     },
-    # Maison de Montépilloy : cuisine et frigo à gauche, fenêtre, la télé sur son meuble, la table du dîner au milieu
-    # (Papa et Maman au-dessus, Jean à droite), deux arbustes en pot, l'escalier qui monte en haut à droite.
+    # Maison de Montépilloy (salon de la maison du héros, Bourg Geon, 11 x 10) : escalier à gauche, télé, cuisine, frigo ;
+    # la table du dîner sur le grand tapis.
     'montHouse': {
-        'wall': 'beige', 'floor': 'damier-bois',
-        'items': [
-            ['mc-cuisine', 0, 2], ['mc-fenetre-rideaux', 4, 1], ['mc-frigo', 6, 2],
-            ['mc-meuble-tele', 7, 2], ['mc-tele', 7, 1, {'dy': -1}], ['mc-cadre', 2, 1, {'dy': -2}],
-            ['escalier-monte', 9, 2],
-            ['mc-tapis-bleu', 3, 6], ['mc-table-4', 3, 5],
-            ['mc-arbuste', 0, 6], ['mc-arbuste', 9, 6],
-        ],
+        'hgss': (NEWBARK, 10, 53, 11, 10),
+        'block': [[5, 6], [6, 6], [5, 7], [6, 7]],
+        'free': [[0, 2], [1, 2]],
     },
-    # Chambre des enfants : quatre lits de couleurs contre le mur, une fenêtre et un tableau entre eux, une plante et
-    # la bibliothèque en bas ; l'escalier qui descend en haut à droite.
+    # Chambre des enfants (chambre du héros, Bourg Geon, 10 x 10) : l'escalier qui descend en haut à gauche, bureau et
+    # ordinateur, télé ; quatre lits côte à côte en bas (Pierre, Manon, Jean, Fanny), le tapis au milieu.
     'montHouseUp': {
-        'wall': 'creme', 'floor': 'parquet',
-        'items': [
-            ['mc-lit-bleu', 0, 3], ['mc-lit-ciel', 3, 3], ['mc-lit-rose', 6, 3], ['mc-lit-blanc', 9, 3],
-            ['mc-fenetre-petite', 2, 0], ['mc-cadre', 8, 1, {'dy': -2}], ['mc-affiche-a', 5, 0], ['mc-affiche-b', 11, 0],
-            ['escalier-descend', 12, 2],
-            ['mc-plante', 0, 5], ['mc-bibliotheque', 10, 6],
-            ['mc-tapis-rouge', 5, 6],
-        ],
+        'hgss': (NEWBARK, 10, 33, 10, 10),
+        'paste': [{'from': (NEWBARK, 10, 40, 2, 3), 'to': (x, 7)} for x in (2, 4, 6)],
+        'block': [[x, y] for x in range(8) for y in (7, 8, 9)],
+        'free': [[0, 3], [1, 3]],
     },
-    # École de Montépilloy : salle de classe d'enfants, murs jaunes, tableau vert dessiné, bureau du maître, pupitres de
-    # couleurs, carte du monde et affiches, deux arbustes près de la porte.
+    # École de Montépilloy : la salle de classe de Mauville telle quelle (tableau, bureau du maître, pupitres).
     'school': {
-        'wall': 'jaune', 'floor': 'parquet-clair',
-        'items': [
-            ['mc-fenetre', 1, 0], ['mc-tableau-vert-dessin', 5, 1], ['mc-fenetre', 11, 0],
-            ['mc-affiche-a', 3, 0], ['mc-affiche-b', 10, 0], ['mc-horloge', 9, 0],
-            ['mc-bureau-prof', 5, 2],
-            ['mc-pupitre-rouge', 1, 4], ['mc-pupitre-bleu', 4, 4], ['mc-pupitre-vert', 7, 4], ['mc-pupitre-jaune', 10, 4],
-            ['mc-pupitre-bleu', 1, 6], ['mc-pupitre-jaune', 4, 6], ['mc-pupitre-rouge', 7, 6], ['mc-pupitre-vert', 10, 6],
-            ['mc-arbuste', 0, 8], ['mc-arbuste', 13, 8],
-        ],
+        'hgss': CLASSROOM,
     },
-    # Collège Bonsecours, le hall : comptoir d'accueil de la principale au milieu, panneaux de liège, bibliothèque,
-    # fenêtre, trois casiers, deux vitrines à livres sur les côtés, arbres en pot à l'entrée ; un seul escalier, à droite,
-    # qui monte au couloir des casiers (le collège se parcourt de bas en haut, un étage par salle).
+    # Hall du collège (Tour Radio de Doublonville, 25 x 12) : la principale dans l'accueil en U, le tapis rouge, le coin
+    # lecture (canapés), l'escalier qui monte aux casiers en haut à droite.
     'bonsecours': {
-        'wall': 'menthe', 'floor': 'carrelage',
-        'items': [
-            ['escalier-monte-gris', 13, 2],
-            ['mc-bibliotheque-haute', 2, 2], ['mc-liege', 4, 1, {'dy': -6}], ['mc-fenetre', 6, 0],
-            ['mc-casier', 8, 2], ['mc-casier-vert', 9, 2], ['mc-casier-rouge', 10, 2], ['mc-liege', 11, 1, {'dy': -6}],
-            ['mc-accueil', 4, 4],
-            ['mc-bibliotheque-verte', 0, 5], ['mc-bibliotheque-verte', 12, 5],
-            ['mc-arbre-pot', 0, 8], ['mc-arbre-pot', 13, 8],
-        ],
+        'hgss': ('012i_Goldenrod radio tower', 10, 111, 25, 12),
+        'free': [[23, 2], [24, 2], [23, 3], [24, 3]],
     },
-    # Le couloir des casiers : une rangée de casiers de couleurs, l'armoire du surveillant, des fenêtres et un panneau
-    # d'affichage ; l'escalier qui monte à la salle de maths à gauche, celui qui redescend au hall à droite.
+    # Couloir des casiers (salle de Mauville vidée) : six casiers métalliques au fond, le placard d'entretien ;
+    # l'escalier qui monte en maths à gauche, celui qui descend au hall à droite.
     'bonsecoursCasiers': {
-        'wall': 'gris', 'floor': 'carrelage-gris', 'mat': None,
+        'hgss': CLASSROOM,
+        'erase': TOP_LEFT + TOP_RIGHT + DESKS + [[4, 2, 3, 1]] + MACHINE + MAT,
+        # Le tableau vert (x 3-6) laisse place au mur : les casiers s'y adossent.
+        'paste': WALL_LEFT + WALL_RIGHT + [wall_column(CLEAN_WALL, 8, x) for x in (3, 4, 5, 6)] + NO_MAT,
         'items': [
-            ['escalier-monte-gris', 0, 2], ['mc-fenetre-petite', 2, 0], ['mc-fenetre-petite', 3, 0],
-            ['mc-casier', 4, 2], ['mc-casier-vert', 5, 2], ['mc-casier', 6, 2], ['mc-casier-rouge', 7, 2],
-            ['mc-casier', 8, 2], ['mc-casier-vert', 9, 2],
-            ['mc-liege', 10, 1, {'dy': -6}], ['mc-armoire', 11, 2], ['mc-fenetre-petite', 12, 0],
-            ['escalier-descend-gris', 13, 2],
-            ['mc-plante', 0, 5], ['mc-plante', 13, 5],
+            ['mc-monte-g', 0, 2], ['mc-descend-d', 13, 2],
+            ['mc-casiers', 4, 2], ['mc-casiers', 7, 2], ['mc-placard', 10, 2],
         ],
+        'free': [[0, 2], [1, 2], [13, 2], [14, 2]],
+        'block': [[x, 2] for x in range(4, 13)],
     },
-    # Salle de maths : tableau vert couvert d'équations, bureau du professeur, quatre rangées de pupitres, fenêtres,
-    # horloge et affiches ; l'escalier qui redescend aux casiers à gauche, celui qui monte en sciences à droite.
+    # Salle de maths (ta classe) : l'escalier qui redescend aux casiers à gauche, celui qui monte en sciences à droite.
     'bonsecoursMaths': {
-        'wall': 'creme', 'floor': 'carrelage',
-        'items': [
-            ['escalier-descend-gris', 0, 2], ['mc-fenetre', 2, 0], ['mc-tableau-vert', 5, 1], ['mc-horloge', 9, 0],
-            ['mc-fenetre', 10, 0], ['escalier-monte-gris', 13, 2],
-            ['mc-bureau-prof', 6, 2],
-            ['mc-pupitre-livres', 1, 4], ['mc-pupitre-copies', 4, 4], ['mc-pupitre-livres', 7, 4], ['mc-pupitre-copies', 10, 4],
-            ['mc-pupitre-copies', 1, 6], ['mc-pupitre-livres', 4, 6], ['mc-pupitre-copies', 7, 6], ['mc-pupitre-livres', 10, 6],
-            ['mc-arbuste', 0, 8], ['mc-arbuste', 13, 8],
-        ],
+        'hgss': CLASSROOM,
+        'erase': TOP_LEFT + TOP_RIGHT + MAT,
+        'paste': WALL_LEFT + WALL_RIGHT + NO_MAT,
+        'items': [['mc-descend-g', 0, 2], ['mc-monte-d', 13, 2]],
+        'free': [[0, 2], [1, 2], [13, 2], [14, 2]],
     },
-    # Salle de français, tout en haut : bibliothèques au mur de chaque côté du tableau, tableau vert, bureau, pupitres,
-    # plantes ; l'escalier qui redescend en sciences à gauche.
-    'bonsecoursFrancais': {
-        'wall': 'bibliotheque', 'floor': 'parquet',
-        'items': [
-            ['escalier-descend', 0, 2], ['mc-bibliotheque', 1, 1], ['mc-bibliotheque', 3, 1], ['mc-tableau-vert-2', 5, 1],
-            ['mc-bibliotheque', 9, 1], ['mc-bibliotheque', 11, 1],
-            ['mc-bureau-prof', 6, 2],
-            ['mc-pupitre-copies', 1, 4], ['mc-pupitre-livres', 4, 4], ['mc-pupitre-copies', 7, 4], ['mc-pupitre-livres', 10, 4],
-            ['mc-pupitre-livres', 1, 6], ['mc-pupitre-copies', 4, 6], ['mc-pupitre-livres', 7, 6], ['mc-pupitre-copies', 10, 6],
-            ['mc-arbuste', 0, 8], ['mc-arbuste', 13, 8],
-        ],
-    },
-    # Salle de sciences : paillasses noires avec évier et éprouvettes, vitrines du labo, tableau vert, appareils ;
-    # l'escalier qui monte en français à gauche, celui qui redescend en maths à droite.
+    # Salle de sciences : deux vitrines de labo (celle de Mauville et une du labo d'Orme), escalier qui monte en français à gauche, qui redescend en
+    # maths à droite.
     'bonsecoursSciences': {
-        'wall': 'gris', 'floor': 'carrelage-gris',
-        'items': [
-            ['escalier-monte-gris', 0, 2], ['mc-fenetre', 2, 0], ['mc-tableau-vert-3', 5, 1], ['mc-affiche-a', 9, 0],
-            ['mc-affiche-b', 10, 0], ['mc-vitrine-labo', 11, 2], ['mc-plante', 12, 2],
-            ['escalier-descend-gris', 13, 2],
-            ['mc-bureau-prof', 6, 2],
-            ['mc-paillasse', 2, 4], ['mc-paillasse', 8, 4], ['mc-paillasse', 2, 6], ['mc-paillasse', 8, 6],
-            ['mc-arbuste', 0, 8], ['mc-arbuste', 13, 8],
-        ],
+        'hgss': CLASSROOM,
+        'erase': TOP_LEFT + TOP_RIGHT + MAT,
+        'paste': WALL_LEFT + WALL_RIGHT + NO_MAT + [{'from': ('001i_Newbark-Lab', 16, 12, 2, 3), 'to': (11, 4)}],
+        'items': [['mc-monte-g', 0, 2], ['mc-descend-d', 13, 2]],
+        'free': [[0, 2], [1, 2], [13, 2], [14, 2]],
+    },
+    # Salle de français, tout en haut : l'escalier qui redescend à gauche ; des bibliothèques le long du mur.
+    'bonsecoursFrancais': {
+        'hgss': CLASSROOM,
+        'erase': TOP_LEFT + MAT,
+        'paste': WALL_LEFT + NO_MAT,
+        'items': [['mc-descend-g', 0, 2]] + [['mc-biblio', x, 2] for x in (9, 10, 11, 12)],
+        'free': [[0, 2], [1, 2]],
     },
 }

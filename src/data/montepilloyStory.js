@@ -120,12 +120,12 @@ export const FOUND_ETIENNE = [
   GAME_OVER,
 ];
 
-// Benoît, dans le tonneau du fond à gauche de la grange (la pièce du tracteur, elle, est sous la botte de paille, au
-// fond à droite) : le couvercle ne s'ouvre qu'à plusieurs, une fois Margaux et Étienne trouvés (ils suivent Pierre) :
+// Benoît, dans le premier tonneau à gauche de la grange (la pièce du tracteur, elle, est sous le tas de foin, en bas
+// à droite) : le couvercle ne s'ouvre qu'à plusieurs, une fois Margaux et Étienne trouvés (ils suivent Pierre) :
 // Esprit d'équipe.
 const BENOIT_LEFT = { ifFlags: [FLAGS.cacheCache], unlessFlags: [FLAGS.trouveBenoit] };
 const STUCK = 'Le couvercle ne bouge pas. On dirait qu\'on le retient de l\'intérieur… Il faudrait être plusieurs pour le soulever. Trouve d\'abord les autres.';
-export const BENOIT_BARREL = [0, 4];
+export const BENOIT_BARREL = [0, 5];
 export const FOUND_BENOIT = [
   { unlessFlags: [FLAGS.trouveMargaux], say: [STUCK], end: true },
   { unlessFlags: [FLAGS.trouveEtienne], say: [STUCK], end: true },
@@ -143,7 +143,7 @@ export const BENOIT_HIDING = { ...BENOIT_LEFT, x: BENOIT_BARREL[0], y: BENOIT_BA
 
 // Jean, devant le tracteur (le tracteur occupe les cases x 13-14, y 12-13, à droite de la grange) ; l'escalier de la chambre des enfants.
 export const JEAN_AT_TRACTOR = [13, 14];
-const JEAN_UPSTAIRS_STAIRS = [12, 2];
+const JEAN_UPSTAIRS_STAIRS = [1, 3];
 
 // Jean, à l'étage de la maison : après l'école, il lance la quête, descend l'escalier et part devant à la ferme (il y
 // est, sous le tracteur, à l'arrivée de Pierre).
@@ -197,11 +197,11 @@ export const BOULY = [
     unlessFlags: [FLAGS.boulyDemande], speaker: 'M. Bouly',
     say: [
       'Ah, Jean et son assistant ! Mon tracteur est en panne : il lui manque une pièce.',
-      'Elle doit traîner quelque part dans la grange… peut-être sous la botte de paille, au fond à droite ?',
+      'Elle doit traîner quelque part dans la grange… peut-être sous le gros tas de foin, en bas à droite ?',
     ],
   },
   { unlessFlags: [FLAGS.boulyDemande], setFlag: FLAGS.boulyDemande, end: true },
-  { speaker: 'M. Bouly', say: ['La pièce doit être sous la botte de paille, au fond de la grange.'] },
+  { speaker: 'M. Bouly', say: ['La pièce doit être sous le tas de foin, en bas de la grange.'] },
 ];
 
 // Jean, sous le tracteur : il attend la pièce ; on peut aussi la lui donner directement.
