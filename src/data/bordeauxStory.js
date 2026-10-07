@@ -10,7 +10,7 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 
 const AGENT = 'Agent immobilier';
 const PROF = "Professeure d'anglais";
-const APARTMENT = { interior: 'appartement', x: 6, y: 8, facing: 'up' };
+const APARTMENT = { interior: 'appartement', x: 10, y: 6, facing: 'left' };
 
 // ---------- 1. Les clés ----------
 
@@ -69,7 +69,7 @@ export const METER = [
       'Paulfit, c\'est la maison du milieu ; Rémi, celle de droite, juste à côté.',
     ],
   },
-  { walk: 'ousmane-coupure', to: [6, 9], block: true, then: [FLAGS.preparatifs] },
+  { walk: 'ousmane-coupure', to: [11, 6], block: true, then: [FLAGS.preparatifs] },
   { say: ['Objectif : récupère l\'enceinte chez Paulfit et les gobelets chez Rémi.'] },
 ];
 
