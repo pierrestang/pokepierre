@@ -642,9 +642,17 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 
 ### Arrivée et image d'accueil
 - Carte postale `hull` (« îles Tourbillon, la nuit » : une mer grise et agitée) : **« Hull, Angleterre. »**, puis
-  « Ousmane attend à l'arrêt de bus. » ;
+  « Ousmane t'attend au bout de la grande rue. » ;
   Ousmane : **« T'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps. »** / « Léo et Anaïs sont
   déjà là. Toute la promo de KEDGE a atterri ici. » / « Viens, je te montre la coloc. » Il pleut à Hull tant qu'il fait jour.
+
+### La carte (redessinée en octobre 2026, 40 x 50)
+En haut, le campus : la bibliothèque Brynmor Jones (immeuble à jardinières, à gauche), l'université (manoir de pierre,
+au centre, avec le panneau des résultats devant), The Asylum (boutique au store rayé, à droite). Newland Avenue descend
+au milieu : le premier pub (longère au toit d'ardoise, à gauche) ; en face, le second pub, chez Léo (immeuble à
+jardinières) et un café. Plus bas : la coloc de Pierre et Ousmane, celle de Charlotte et Anaïs, deux maisons fermées
+(« Ce n'est pas chez toi. »). La grande rue, est-ouest, mène à l'aéroport par ses deux bouts ; le square et sa fontaine,
+le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull Minster ni de The Deep.
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -660,8 +668,8 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 | Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `g138` |
 
 ### Quêtes, dans l'ordre
-1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite la maison au toit
-   d'ardoise, en haut de Newland Avenue, à droite. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Léo : « Romain,
+1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite le grand immeuble
+   à jardinières, en haut de Newland Avenue, à droite. » Chez Léo : **« Pierre ! Comme à la soirée de Bordeaux, mais en pire côté météo. Ce soir, on sort, tout le monde ! »** ; Léo : « Romain,
    Prophecy : voilà Pierre, de la promo de KEDGE. » ; Romain : **« Ah, c'est toi, Pierre ! Léo nous a parlé de toi. »** /
    « Nous, on vous rejoint à l'Asylum. » ; Prophecy : « Salut, Pierre. » / « On a nos propres plans avant. » ; Léo : « Les autres sont déjà au pub, en
    haut de Newland Avenue. On y va ! » ; « La nuit tombe sur Hull. »
@@ -701,7 +709,7 @@ qu'il veut, puis commande au comptoir. » → « Objectif : suis la bande au pub
 « Objectif : rejoins la bande à l'Asylum, tout en haut, sur le campus. » → « Objectif : rentre dormir à la coloc. » →
 « Objectif : rejoins la bande à la bibliothèque Brynmor Jones, sur le campus. » → « Objectif : va voir les résultats
 demain, devant l'université. » → « Objectif : va voir les résultats devant l'université. » → « Objectif : retrouve la
-bande devant chez Léo. » → « Objectif : va à l'aéroport. Le bus rouge part de l'arrêt de la grande rue. »
+bande devant chez Léo. » → « Objectif : va à l'aéroport, au bout de la grande rue. »
 
 ### Passage optionnel : le pari des fléchettes (Audace)
 Avant la partie, l'habitué : « Un pari ? Si tu gagnes, mes fléchettes sont à toi. » → **« Pierre utilise Audace ! »** →
@@ -730,8 +738,8 @@ La tournée (retenir quatre commandes, les donner en anglais), fléchettes (troi
 choix.
 
 ### Départ et trajet
-- **Condition** : le diplôme de Hull et les adieux. Le bus rouge (ou les deux bouts de la grande rue) mène à
-  l'aéroport : « Tu prends le bus rouge pour l'aéroport. » ; vol « Hanoï (Vietnam) », sans personne au guichet :
+- **Condition** : le diplôme de Hull et les adieux. Les deux bouts de la grande rue mènent à l'aéroport : « Tu te rends
+  à l'aéroport. » ; vol « Hanoï (Vietnam) », sans personne au guichet :
   **« Pierre utilise Autonomie ! »** → « Pour la première fois, personne ne t'accompagne. Tu prends ton billet pour
   Hanoï. »
 - **Trajet en avion** ; encart : « Tu emportes : Insouciance. »

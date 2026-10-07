@@ -2,7 +2,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 
 // Scénario de Hull : les années d'études avec la bande. Ousmane, Léo et Anaïs connaissent Pierre depuis Bordeaux (des
 // retrouvailles) ; Romain, Prophecy et Charlotte le rencontrent ici.
-//   1. L'arrivée en bus, Ousmane à l'arrêt, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
+//   1. L'arrivée, Ousmane au bout de la grande rue, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
 //   2. Premier pub : la tournée (chaque commande, puis le barman, en anglais) ; une erreur, on retourne redemander.
 //   3. Deuxième pub : une partie de fléchettes contre un habitué (systems/Darts.js), gagnée ou perdue.
 //   4. L'Asylum (Joie de vivre), puis le petit matin devant la boîte : Insouciance ; rentrer dormir.
@@ -11,20 +11,19 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 //   7. Les adieux devant chez Léo : chacun part en échange ; Léo et Ousmane restent. Puis l'avion pour Hanoï.
 // Pas de PNJ qui suit Pierre : la bande l'attend à chaque étape. Scénettes partagées par la carte et les intérieurs.
 
-// Arrêt de bus, bout ouest de la grande rue ; colocs et maisons de Newland Avenue (cases devant les portes).
+// Bout ouest de la grande rue (l'arrivée) ; la coloc (case devant la porte).
 export const HULL_SPOTS = {
-  busStop: [5, 36],
-  colocDoor: [2, 24],
-  leoDoor: [25, 18],
+  arrival: [4, 34],
+  colocDoor: [11, 32],
 };
 
 // ---------- 1. L'arrivée ----------
 
-// Arrivée en bus : image d'accueil (l'estuaire sous la pluie), Ousmane attend à l'arrêt et te montre la coloc (il marche
-// devant).
+// Arrivée : image d'accueil (l'estuaire sous la pluie), Ousmane attend au bout de la grande rue et te montre la coloc (il
+// marche devant).
 export const ARRIVAL = [
   { opening: { postcard: 'hull', text: 'Hull, Angleterre.' } },
-  { say: ['Ousmane attend à l\'arrêt de bus.'] },
+  { say: ['Ousmane t\'attend au bout de la grande rue.'] },
   { approach: 'ousmane-arrivee' },
   {
     speaker: 'Ousmane',
@@ -43,7 +42,7 @@ export const OUSMANE_WALK = [{ walk: 'ousmane-arrivee', to: HULL_SPOTS.colocDoor
 // Dans la coloc : Léo a appelé.
 export const LEO_CALLED = [
   { approach: 'ousmane-coloc' },
-  { speaker: 'Ousmane', say: ['Au fait, Léo a appelé. Il veut te voir, il a un plan.', 'Il habite la maison au toit d\'ardoise, en haut de Newland Avenue, à droite.'] },
+  { speaker: 'Ousmane', say: ['Au fait, Léo a appelé. Il veut te voir, il a un plan.', 'Il habite le grand immeuble à jardinières, en haut de Newland Avenue, à droite.'] },
   { setFlag: FLAGS.leoAppel },
 ];
 
@@ -194,7 +193,7 @@ export const ASYLUM_DANCE = [
   { black: true },
   { wait: 800 },
   { setFlag: FLAGS.asylumFini },
-  { travel: { map: 'hull', x: 23, y: 13, facing: 'down' } },
+  { travel: { map: 'hull', x: 29, y: 9, facing: 'down' } },
 ];
 
 // Au petit matin, devant l'Asylum, toute la bande : Léo part dans la mauvaise direction ; Insouciance.
@@ -202,7 +201,7 @@ export const DAWN = [
   { say: ['Ciel bleuté, les réverbères s\'éteignent. Toute la bande est devant l\'Asylum.'] },
   { approach: 'leo-aube' },
   { speaker: 'Léo', say: ['Ok guys, zis night was very, very beautiful. Now we go \'ome. Follow me, I know ze way!'] },
-  { walk: 'leo-aube', to: [15, 11], block: true },
+  { walk: 'leo-aube', to: [36, 11], block: true },
   { speaker: 'Ousmane', say: ['Léo… c\'est de l\'autre côté.'] },
   { speaker: 'Charlotte', say: ['Au fait… les exams, c\'est après-demain.'] },
   { speaker: 'Anaïs', say: ['Ne dis pas ça maintenant.'] },
@@ -292,7 +291,7 @@ export const FAREWELL = [
   { speaker: 'Léo', say: ['Hanoï, hein. Nous on garde la maison.'] },
   { speaker: 'Ousmane', say: ['Reviens avec des histoires.'] },
   { setFlag: FLAGS.adieuxHull },
-  { say: ['Objectif : va à l\'aéroport. Le bus rouge part de l\'arrêt de la grande rue.'] },
+  { say: ['Objectif : va à l\'aéroport, au bout de la grande rue.'] },
 ];
 
 // Les vertus reçues à Hull (encart du trajet).

@@ -87,7 +87,7 @@ export const FLAGS = {
   soireeFinie: 'soiree-finie',                  //   en sortant : « Quelques mois plus tard » (l'oral d'anglais)
   remiKedge: 'remi-kedge',                      //   Rémi, devant KEDGE : « T'inquiète, c'est easy. »
   arriveeHull: 'arrivee-hull',                  // arrivé à Hull (Angleterre)
-  hullAccueil: 'hull-accueil',                  // Hull : Ousmane t'a accueilli à l'arrêt de bus
+  hullAccueil: 'hull-accueil',                  // Hull : Ousmane t'a accueilli au bout de la grande rue
   ousmaneRentre: 'ousmane-rentre',              //        Ousmane est rentré à la coloc (devant toi)
   leoAppel: 'leo-appel',                        //        Ousmane : « Léo a appelé, il a un plan »
   leoPlan: 'leo-plan',                          //        chez Léo : la soirée commence (la nuit tombe)
