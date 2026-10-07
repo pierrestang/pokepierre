@@ -8,7 +8,25 @@ dessiné ici, dans les tons Gen 4 (contour brun sombre, deux nuances, reflet cla
 from PIL import Image, ImageDraw
 
 import hgss_rooms as HG
+from pathlib import Path
 from interieurs_plans import T, rect, stretch, meuble, sheet  # noqa: F401
+
+
+def hgss_sheet_px(name, x, y, w, h, width=1, align='bottom'):
+    """Un objet d'une planche du pack HGSS de SirMaIo, pris au pixel près (coordonnées à l'échelle du jeu, cases de
+    16 px), d'un seul tenant, sans ombre, posé dans une image de `width` cases de large (en bas, centré)."""
+    from interieurs_plans import sirmaio, isolate
+    import numpy as np
+    src = Image.open(HGSS_DIR / f'{name}.png')
+    img = isolate(sirmaio(name, 0, 0, src.width // 32, src.height // 32).crop((x, y, x + w, y + h)))
+    a = np.array(img)
+    a[(a[..., 3] > 0) & (a[..., 3] < 255) & (a[..., :3].astype(int).sum(-1) < 120)] = 0     # ombre portée
+    img = Image.fromarray(a)
+    img = img.crop(img.getbbox())
+    th = -(-img.height // T)
+    out = Image.new('RGBA', (width * T, th * T))
+    out.alpha_composite(img, ((width * T - img.width) // 2, out.height - img.height if align == 'bottom' else 0))
+    return out
 
 
 def hgss_piece(name, x, y, w, h, floor=False):
@@ -269,11 +287,17 @@ SLEEP = {'bed': True, 'cover': 99, 'pillow': 6}
 # Octobre 2026 : chaque pièce part d'une vraie pièce HGSS (pack de SirMaIo, scripts/hgss_rooms.py), retouchée :
 # 'hgss' (carte, x0, y0, w, h) ; 'paste' : morceaux d'autres pièces HGSS ; 'items' : meubles posés par-dessus.
 NB = '001i_Newbark houses'
+HGSS_DIR = Path(__file__).resolve().parents[2] / 'ASSETTILESPOKEMONV2' / 'tilesets' / 'interieurs' / 'hgss-sirmaio'
 # Parquet nu de la chambre de Bourg Geon (4 x 2 cases), collé sur le tapis pour faire de la place aux lits.
 PARQUET = (NB, 10, 38, 4, 2)
 ITEMS.update({
     # Le lit de la chambre du héros de Bourg Geon (3 x 3 cases, halo compris), pour y coucher un PNJ : avec son
     # parquet (chambres de Bourg Geon), ou seul (sur un autre sol).
+    # Cabane de pêche, en vrais objets HGSS : caisse en bois et carton (port d'Oliville), bouée de sauvetage au mur.
+    'fsa-caisse-hgss': {'img': lambda: hgss_sheet_px('i_Olivine-Port', 62, 94, 26, 22), 'solid': 1},
+    'fsa-carton-hgss': {'img': lambda: hgss_sheet_px('i_Olivine-Port', 65, 159, 16, 17), 'solid': 1},
+    'fsa-bouee': {'img': lambda: hgss_sheet_px('i_Olivine-Port', 77, 44, 22, 18, width=2, align='top'), 'flat': True},
+    # (posée à la main dans la cabane retouchée, 8 px sous le haut du mur : voir ffHut.json)
     'fsa-lit-hgss': {'img': lambda: hgss_piece(NB, 10, 40, 3, 3), 'solid': 3},
     'fsa-lit-hgss-sol': {'img': lambda: hgss_piece(NB, 10, 40, 3, 3, floor=True), 'solid': 3},
 })

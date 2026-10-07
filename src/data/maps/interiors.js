@@ -242,41 +242,31 @@ export const interiors = {
   ffHut: {
     name: 'Cabane de pêche',
     frlg: true,
+    // 6 x 6 (taille choisie par l'utilisateur dans le créateur) : bouée au mur, caisses de poisson et caisse
+    // « À DONNER » devant le mur, râtelier des cannes à gauche, un carton.
     grid: parseGrid([
       'XXXXXX',
       'XXXXXX',
-      'ooψψmm', // le râtelier des cannes au milieu du mur, les caisses de poisson
-      'oooooo',
-      'mooooo', // la caisse « À DONNER »
-      'oooooo',
-      'ooooom', // un carton
-      'mooooo', // tonneaux
-      'mooEoo',
+      'oomomm', // la caisse « À DONNER » (2, 2), les caisses de poisson
+      'mmoooo', // le râtelier des cannes
+      'mmooom', // un carton
+      'oooEoo',
     ]),
-    decor: [
-      { kind: 'window', x: 2, y: 0 },
-      { kind: 'notice', x: 4, y: 0 },
-      { kind: 'plant', x: 6, y: 3 },
-      { kind: 'fishCrate', x: 3, y: 2 },
-      { kind: 'fishCrate', x: 4, y: 2 },
-      { kind: 'giveCrate', x: 0, y: 4 },
-      { kind: 'carton', x: 5, y: 2 },
-      { kind: 'carton', x: 6, y: 5 },
-    ],
+    decor: [],
     // Cannes debout aux couleurs de HeartGold (voir MapScene, décors `icons`) : les trois du râtelier (Méga, Super,
     // Vieille), puis la Méga Canne que Papa garde ; dans la caisse « À DONNER », la Super Canne (offerte au
     // pêcheur) et la Vieille canne, puis la Vieille seule. Le bas des cannes est coupé (socle, bord de la caisse).
     decals: [
-      { x: 2, y: 2, unlessFlags: [FLAGS.papaFait], icons: RACK_RODS },
-      { x: 2, y: 2, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -3, -20, 26]] },
-      { x: 0, y: 4, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id], icons: CRATE_RODS },
-      { x: 0, y: 4, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
-      { x: 0, y: 4, ifItems: [ITEMS.canneAPeche.id], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
+      { x: 0, y: 4, unlessFlags: [FLAGS.papaFait], icons: RACK_RODS },
+      { x: 0, y: 4, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -3, -20, 26]] },
+      { x: 2, y: 2, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id], icons: CRATE_RODS },
+      { x: 2, y: 2, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
+      { x: 2, y: 2, ifItems: [ITEMS.canneAPeche.id], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
     ],
-    spawn: { x: 3, y: 7, facing: 'up' },
+    spawn: { x: 3, y: 4, facing: 'up' },
     npcs: [
       {
-        id: 'papa', name: 'Papa', x: 1, y: 4, facing: 'left', color: 0x3f6fd8, still: true,
+        id: 'papa', name: 'Papa', x: 2, y: 3, facing: 'left', color: 0x3f6fd8, still: true,
         ...HOME_FDF,
         script: [
           { ifFlags: [FLAGS.papaFait], speaker: 'Papa', say: ["Hm. Il reste des caisses, si t'as rien à faire."] },
@@ -301,18 +291,18 @@ export const interiors = {
       },
     ],
     objects: [
-      { x: 2, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
-      { x: 3, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
-      { x: 2, y: 2, dialogue: ['La canne que Papa a gardée.'] },
-      { x: 3, y: 2, dialogue: ['La canne que Papa a gardée.'] },
+      { x: 0, y: 4, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
+      { x: 1, y: 4, unlessFlags: [FLAGS.papaFait], dialogue: ['Trois cannes à pêche, rangées contre le mur.'] },
+      { x: 0, y: 4, dialogue: ['La canne que Papa a gardée.'] },
+      { x: 1, y: 4, dialogue: ['La canne que Papa a gardée.'] },
       { x: 4, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
       { x: 5, y: 2, dialogue: ['Des caisses prêtes pour le déménagement.'] },
-      { x: 5, y: 6, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] },
+      { x: 5, y: 4, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] },
       // Caisse « À DONNER » : une canne pour le capitaine du ferry, dès le tri avec Papa.
-      { x: 0, y: 4, unlessFlags: [FLAGS.papaFait], dialogue: ['Une caisse marquée « À DONNER ». Elle est encore vide.'] },
+      { x: 2, y: 2, unlessFlags: [FLAGS.papaFait], dialogue: ['Une caisse marquée « À DONNER ». Elle est encore vide.'] },
       // Dès le tri avec Papa, on peut prendre une des deux cannes (pour le capitaine du ferry).
       {
-        x: 0, y: 4,
+        x: 2, y: 2,
         ifFlags: [FLAGS.papaFait],
         unlessFlags: [FLAGS.canneOfferte],
         unlessItems: [ITEMS.canneAPeche.id],
@@ -322,10 +312,10 @@ export const interiors = {
         ],
       },
       // La canne qui reste, une fois l'autre prise pour le capitaine : Pierre peut la garder pour pêcher.
-      { x: 0, y: 4, ifItems: [ITEMS.vieilleCanne.id], dialogue: ['La caisse « À DONNER » est vide.'] },
-      { x: 0, y: 4, ifItems: [ITEMS.canneAPeche.id], script: OLD_ROD_CHOICE },
-      { x: 0, y: 4, ifFlags: [FLAGS.canneOfferte], script: OLD_ROD_CHOICE },
-      { x: 0, y: 4, dialogue: ['Deux cannes à pêche dans la caisse « À DONNER ».'] },
+      { x: 2, y: 2, ifItems: [ITEMS.vieilleCanne.id], dialogue: ['La caisse « À DONNER » est vide.'] },
+      { x: 2, y: 2, ifItems: [ITEMS.canneAPeche.id], script: OLD_ROD_CHOICE },
+      { x: 2, y: 2, ifFlags: [FLAGS.canneOfferte], script: OLD_ROD_CHOICE },
+      { x: 2, y: 2, dialogue: ['Deux cannes à pêche dans la caisse « À DONNER ».'] },
     ],
   },
 
