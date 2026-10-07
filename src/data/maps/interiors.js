@@ -115,7 +115,7 @@ const HOME_FDF = { unlessFlags: [FLAGS.departFortDeFrance] };
 export const interiors = {
   // Fort-de-France — la maison familiale, façon Rouge Feu (`frlg`, voir art/frlgArt.js) : mur de deux
   // rangées en haut, meubles des planches (`decor`, cases 'm' bloquantes), télé au mur, escalier encastré.
-  // Salon : Maman (Joie de vivre) ; Manon attend dehors, Papa trie à sa cabane de pêche.
+  // Salon : Maman (Joie de vivre) ; Manon attend dehors, Papa trie à son atelier.
   // Scénario : voir data/fortDeFranceStory.js.
   ffHouse: {
     name: 'Maison familiale',
@@ -166,7 +166,7 @@ export const interiors = {
             speaker: 'Maman',
             say: [
               "Le ferry part cet après-midi, tous ensemble. D'ici là, va voir ton père et ta sœur :",
-              "ton père trie ses affaires à sa cabane de pêche, à droite de la plage, et Manon prépare un coup dehors. Ensuite, reviens me voir !",
+              "ton père trie ses affaires à son atelier, à droite de la plage, et Manon prépare un coup dehors. Ensuite, reviens me voir !",
             ],
           },
           // Maman retourne à sa place, près de la cuisine : elle ne bloque plus le bas de l'escalier.
@@ -237,10 +237,10 @@ export const interiors = {
     ],
   },
 
-  // Fort-de-France — la cabane de pêche de Papa, façon Rouge Feu : cannes, caisses (dessinées dans le code),
+  // Fort-de-France — l'atelier de Papa (ancienne cabane de pêche), façon Rouge Feu : cannes, caisses (dessinées dans le code),
   // fenêtre, panneau, plante. Papa trie avant le départ ; caisse « À DONNER » en bas à gauche.
   ffHut: {
-    name: 'Cabane de pêche',
+    name: 'Atelier',
     frlg: true,
     // 6 x 6 (taille choisie par l'utilisateur dans le créateur) : bouée au mur, caisses de poisson et caisse
     // « À DONNER » devant le mur, râtelier des cannes à gauche, un carton.

@@ -62,7 +62,7 @@ export const FISHER_AT_FERRY = [
     ],
   },
   // Sans canne : il pousse Pierre à en chercher une.
-  { speaker: CAPITAINE, say: ["Ton père en a toute une collection, dans sa cabane de pêche. Il en aurait pas une en trop, des fois ?"] },
+  { speaker: CAPITAINE, say: ["Ton père en a toute une collection, dans son atelier. Il en aurait pas une en trop, des fois ?"] },
 ];
 
 // Le ferry, face au joueur : on embarque par le capitaine, une fois la canne offerte.
@@ -79,7 +79,7 @@ const MANON_TO_SALON = {
 // Manon, son secret partagé, renvoie vers Papa tant que le tri des cannes n'est pas fait.
 const MANON_TO_PAPA = {
   ifFlags: [FLAGS.secretManon], unlessFlags: [FLAGS.papaFait],
-  speaker: 'Manon', say: ['Papa trie ses cannes à sa cabane de pêche. Va l\'aider !'],
+  speaker: 'Manon', say: ['Papa trie ses cannes à son atelier. Va l\'aider !'],
 };
 
 // Manon : elle attend devant la maison et vient te parler à la sortie ; elle a caché un
@@ -136,7 +136,7 @@ export const MAMAN_FDF = [
   // Rappel du programme.
   {
     unlessFlags: [FLAGS.papaFait], speaker: 'Maman',
-    say: ['Ton père trie ses affaires à sa cabane de pêche, à droite de la plage. Va lui donner un coup de main.'],
+    say: ['Ton père trie ses affaires à son atelier, à droite de la plage. Va lui donner un coup de main.'],
   },
   {
     unlessFlags: [FLAGS.secretManon], speaker: 'Maman',

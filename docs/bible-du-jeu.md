@@ -64,13 +64,13 @@ traînées derrière lui, au bruit des réacteurs.
   **« C'est le dernier matin à Fort-de-France. »**
 - Maman, d'en bas : **« Pierre ! Le ferry part cet après-midi ! Descends ! »**
 - En descendant au salon, Maman s'approche et pose le cadre de la journée : « Le ferry part cet après-midi, tous
-  ensemble. D'ici là, va voir ton père et ta sœur : » / « ton père trie ses affaires à sa cabane de pêche, à droite de la
+  ensemble. D'ici là, va voir ton père et ta sœur : » / « ton père trie ses affaires à son atelier, à droite de la
   plage, et Manon prépare un coup dehors. Ensuite, reviens me voir ! »
 
 ### Décor (refonte DS d'octobre 2026, scripts/fdf_ds_v2.py)
 - Île ronde, plage arrondie, en assets Diamant / Perle / HeartGold. Une allée de sable relie la maison au ponton (sans
   bande d'herbe entre les deux) ; deux branches mènent à la
-  cabane de pêche (à droite) et au mémorial (à gauche), au milieu d'une clairière de sable clair.
+  atelier de Papa (à droite) et au mémorial (à gauche), au milieu d'une clairière de sable clair.
 - Mémorial de l'Anse Caffard : les six statues de pierre blanche d'origine, en trois rangées tournées vers la mer (trois
   derrière, deux au milieu, une devant), sur la clairière de sable, en (6-9, 13-15) : un élément du dessin de la carte
   (scripts/build_memorial.py), visible aussi dans le créateur.
@@ -91,7 +91,7 @@ traînées derrière lui, au bruit des réacteurs.
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Maman | Au salon : programme de la journée, puis la danse (Joie de vivre) | `g126` |
-| Papa | Trie ses cannes dans la cabane de pêche | `g119` |
+| Papa | Trie ses cannes dans son atelier | `g119` |
 | Manon | Sœur, devant la maison : le coquillage caché | `g57` |
 | Capitaine du ferry | « L'ancien pêcheur » : sa canne est cassée, il garde le départ | `g118` |
 | Promeneuse | Devant le mémorial de l'Anse Caffard : « Je viens souvent ici, devant les statues. » / « Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés. » | `g82` |
@@ -107,8 +107,8 @@ traînées derrière lui, au bruit des réacteurs.
    - Avec le coquillage, Manon : « Tu l'as trouvé ! » ; elle sort un deuxième coquillage identique : **« Un pour toi, un
      pour moi. Comme ça, où qu'on aille, on garde un bout de l'île. Et c'est notre secret. »** (sans vertu).
      Ensuite : « Chut… c'est notre secret. » Si le tri des cannes n'est pas fait, Manon ajoute (tout de suite, puis à chaque
-     fois) : « Papa trie ses cannes à sa cabane de pêche. Va l'aider ! »
-2. **Papa : le tri des cannes** (cabane de pêche). « Des caisses partout. Papa trie sans lever les yeux. » / Papa :
+     fois) : « Papa trie ses cannes à son atelier. Va l'aider ! »
+2. **Papa : le tri des cannes** (atelier). « Des caisses partout. Papa trie sans lever les yeux. » / Papa :
    « T'es venu m'aider ou regarder ? » / choix « Trois cannes à pêche sont posées là. Tu en prends combien ? »
    - « Une » : **« Voilà. Tu réfléchis. C'est ça, le pragmatisme. »** / « Une seule. Tu tiens ça de moi, pas de ta
      mère. »
@@ -134,7 +134,7 @@ traînées derrière lui, au bruit des réacteurs.
    (voir « Départ et trajet ») ; « Non » : « Ah… Bon. Le ferry attendra, alors. »
 
 ### Objectifs affichés (rappels des PNJ)
-- Maman, avant la danse : « Ton père trie ses affaires à sa cabane de pêche, à droite de la plage. Va lui
+- Maman, avant la danse : « Ton père trie ses affaires à son atelier, à droite de la plage. Va lui
   donner un coup de main. » / « Ta sœur mijote quelque chose dehors… Va voir ce qu'elle prépare. » / « Après, reviens
   me voir. »
 - Le capitaine (au bout du ponton, puis devant le ferry), tant que la famille n'a pas fini : « Ah, le petit ! Ta mère te
