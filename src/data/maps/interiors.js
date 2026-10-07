@@ -1,4 +1,6 @@
 import { parseGrid } from './parseGrid.js';
+import { interiorGrid } from './builtGrid.js';
+import { BUILT_INTERIORS } from '../builtInteriors/index.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
   BIRTH, FANNY_CRADLE, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT, CABANE_FETE, FELIX_AT_CABANE,
@@ -1520,9 +1522,9 @@ export const interiors = {
         dialogue: [
           '[Professor - texte provisoire] Welcome back! Voici ta nouvelle affectation :',
           'un échange universitaire à New Delhi, en Inde. Voici ton billet d\'avion !',
-          "Le bus rouge, à l'arrêt de la grande rue, t'emmènera à l'aéroport.",
+          "L'aéroport est au bout de la grande rue.",
         ],
-        after: ["[Professor - texte provisoire] Prends le bus rouge pour l'aéroport. Good luck!"],
+        after: ["[Professor - texte provisoire] L'aéroport, c'est au bout de la grande rue. Good luck!"],
         item: ITEMS.billetNewDelhi,
       },
     ],
@@ -1659,7 +1661,7 @@ export const interiors = {
     spawn: { x: 4, y: 6, facing: 'up' },
     objects: [
       ...[2, 3, 4, 5, 6].map((x) => ({ x, y: 3, script: PUB_A_BAR })),
-      { x: 8, y: 2, dialogue: ['Une cible de fléchettes. Personne ne vise le centre à cette heure-ci.'] },
+      { x: 8, y: 1, dialogue: ['Une cible de fléchettes. Personne ne vise le centre à cette heure-ci.'] },
       ...[[1, 6], [8, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une table ronde, quelques ronds de bière.'] })),
     ],
     npcs: [
@@ -1730,7 +1732,7 @@ export const interiors = {
     ],
     events: [{ on: 'enter', ...PUB_B_TIME, steps: [{ approach: 'habitue' }, ...DARTS] }],
     objects: [
-      ...[[1, 4], [4, 4], [7, 4], [1, 6], [4, 6], [7, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une table ronde, quelques ronds de bière.'] })),
+      ...[[1, 4], [4, 4], [7, 4], [1, 6], [7, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une table ronde, quelques ronds de bière.'] })),
     ],
   },
 
@@ -1770,9 +1772,8 @@ export const interiors = {
       { kind: 'pintPair', x: 10, y: 5, dy: -14 },
       { kind: 'discoBall', x: 5, y: 3, dx: 8, dy: -6 },
     ],
-    // La piste de danse (dalles lumineuses), où il faut rejoindre tout le monde.
-    decals: [{ kind: 'danceFloor', x: 4, y: 4, w: 4, h: 3, floor: true }],
-    night: { lights: [[5, 3, 0xff60c0], [7, 4, 0x40d8ff], [4, 6, 0xa060ff], [7, 6, 0xff60c0], [4, 0, 0xff60c0], [7, 0, 0x40d8ff], [1, 2, 0xffc060], [10, 4, 0xa060ff]] },
+    // La piste de danse (dalles lumineuses, cases x 4-7, y 4-6), où il faut rejoindre tout le monde : dans le dessin Gen 4.
+    night: { lights: [[5, 3, 0xff60c0], [7, 4, 0x40d8ff], [4, 6, 0xa060ff], [7, 6, 0xff60c0], [1, 0, 0xff60c0], [6, 0, 0x40d8ff], [9, 0, 0xa060ff], [11, 0, 0xff60c0], [1, 2, 0xffc060], [10, 4, 0xa060ff]] },
     spawn: { x: 5, y: 7, facing: 'up' },
     npcs: [
       { id: 'romain-asylum', name: 'Romain', x: 2, y: 4, facing: 'right', ...ASYLUM_TIME, dialogue: ['Sur la piste, tout le monde !'] },
@@ -2807,3 +2808,16 @@ export const interiors = {
     })),
   },
 };
+
+// Intérieurs redessinés en Gen 4 (scripts/build_interiors.py) : le dessin remplace le rendu Rouge Feu (meubles de
+// `decor` compris) ; la grille d'origine (sourceGrid) reste la référence logique, accordée aux collisions du dessin.
+for (const [id, built] of Object.entries(BUILT_INTERIORS)) {
+  const room = interiors[id];
+  if (!room) continue;
+  room.built = built;
+  room.frlg = false;
+  delete room.backdrop;                   // l'image d'un seul tenant (cabane) et ses tables redessinées
+  delete room.overlays;
+  room.sourceGrid = room.grid;
+  room.grid = interiorGrid(room.grid, built);
+}

@@ -1019,6 +1019,12 @@ export function decorSpritePosition(interior, { kind, x, y, dx = 0, dy = 0 }) {
 
 // Lit de l'intérieur sous la case (x, y) : coin haut-gauche de son image, en pixels (voir CharacterSprite, `bed`).
 export function bedAt(interior, x, y) {
+  // Intérieur redessiné en Gen 4 (scripts/build_interiors.py) : ses lits sont dans le dessin, la couverture au-dessus
+  // des personnages ; on couche le PNJ au milieu du lit, la tête sur l'oreiller.
+  if (interior.built) {
+    const b = (interior.built.beds ?? []).find((o) => x >= o.x && x < o.x + o.w && y >= o.y && y < o.y + o.h);
+    return b && { px: b.cx - 12, py: b.py, gen4: true };
+  }
   const bed = (interior.decor ?? []).find((o) => o.kind === 'bed' && x >= o.x && x < o.x + 2 && y >= o.y && y < o.y + 2);
   return bed && decorSpritePosition(interior, bed);
 }

@@ -60,6 +60,12 @@ puis Hanoï. Pas de combats.
   Bordeaux sont étroites). Détails : docs/technique/createur-de-cartes.md, à lire avant de toucher au créateur, aux
   planches V2/Gen 4 ou aux cartes générées.
 
+- Intérieurs (octobre 2026) : toutes les pièces sont dessinées en Gen 4 par scripts/build_interiors.py (plans dans
+  scripts/interieurs_plans.py et scripts/interieurs/<groupe>.py) vers src/data/builtInteriors/ ; le dessin remplace le
+  rendu Rouge Feu, la grille d'origine reste la logique (tapis, escaliers, PNJ, objets). Détails :
+  docs/technique/interieurs-gen4.md. Ressources du web : permises si l'utilisateur le demande, seulement des
+  ressources de fans libres pour un usage non commercial et redistribuables avec crédit (jamais PurpleZaffre).
+
 ## Structure
 - src/scenes/ : les scènes Phaser (titre, villes et routes, intérieurs, ferry, interface).
 - src/data/ : les données de cartes et de contenu.

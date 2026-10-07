@@ -13,3 +13,16 @@ export function builtGrid(sourceGrid, built) {
     return code;
   }));
 }
+
+// Grille de jeu d'un intérieur dessiné en Gen 4 (scripts/build_interiors.py) : les codes d'origine (tapis de sortie,
+// escaliers…) accordés aux collisions du dessin : un meuble ('m') là où le dessin bloque une case libre, du sol ('o')
+// là où il libère une case qui bloquait.
+export function interiorGrid(sourceGrid, built) {
+  return sourceGrid.map((row, y) => row.map((code, x) => {
+    const blocked = Boolean(built.solid[y * built.width + x]);
+    const solid = Boolean(getTile(code).solid);
+    if (blocked && !solid) return 'm';
+    if (!blocked && solid) return 'o';
+    return code;
+  }));
+}

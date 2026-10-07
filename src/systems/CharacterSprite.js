@@ -44,11 +44,16 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
 
   // Couché sur le dos, la tête sur l'oreiller : le bas du lit est redessiné par-dessus le corps, avec la
   // bosse du corps sous la couverture (plus courte pour un enfant).
-  lieInBed({ px, py, child = false }) {
+  lieInBed({ px, py, child = false, gen4 = false }) {
     this.setFacing('down');
     this.inBed = true;
     this.setPosition(px + 12, py);
     this.image.setOrigin(0.5, 0).setPosition(0, -4);
+    // Lit Gen 4 : la couverture est dans le dessin ; on ne garde que la tête et les épaules, sur l'oreiller.
+    if (gen4) {
+      this.image.setCrop(0, 0, this.image.width, child ? 13 : 16);
+      return;
+    }
     const textures = this.scene.textures;
     const frame = 'bed-lower';
     if (!textures.get(BED_LOWER.sheet).has(frame)) {

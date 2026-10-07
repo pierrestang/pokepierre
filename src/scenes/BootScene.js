@@ -5,6 +5,7 @@ import { preloadFrlgFont } from '../systems/frlgFont.js';
 import { preloadUiIcons } from '../art/uiIcons.js';
 import { preloadBunting } from '../art/bunting.js';
 import { MAPS } from '../data/maps/index.js';
+import { interiors } from '../data/maps/interiors.js';
 import {
   requestedBuiltMap, loadBuiltMap, preloadBuiltMap, bakeBuiltMap, preloadBuiltLooks, gameMapOf, useBuiltLook, protectSave,
 } from '../systems/builtMaps.js';
@@ -25,6 +26,7 @@ export class BootScene extends Phaser.Scene {
     preloadUiIcons(this);
     preloadBunting(this);
     preloadBuiltLooks(this, MAPS);                 // cartes du jeu dessinées avec le créateur (ex. Fort-de-France)
+    preloadBuiltLooks(this, interiors);            // intérieurs redessinés en Gen 4 (scripts/build_interiors.py)
     this.builtMap = requestedBuiltMap() && loadBuiltMap(requestedBuiltMap());
     if (this.builtMap) {
       protectSave();
