@@ -202,7 +202,7 @@ export const CAR = [
     end: true,
   },
   { say: ['La voiture est chargée.'] },
-  // Felix accourt de chez lui et se plante devant le capot.
+  // Felix descend de la cabane, accourt et se plante devant le capot.
   { setFlag: FLAGS.felixVoiture },
   { walk: 'felix-voiture', to: CAR_HOOD, block: true },
   { faceTo: 'felix-voiture' },

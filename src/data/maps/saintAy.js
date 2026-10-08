@@ -156,8 +156,8 @@ export const saintAyMap = {
     // En sortant de la clinique, Felix (ton cousin) vient à ta rencontre et part devant, chez lui, où les cousins
     // t'attendent (voir CLINIC_EXIT).
     {
-      // Au départ en voiture : Felix sort de chez lui en courant (voir saintAyStory.js CAR).
-      id: 'felix-voiture', name: 'Felix', x: 24, y: 15, facing: 'left', color: COUSIN_COLORS.felix,
+      // Au départ en voiture : Felix sort de la cabane (sa porte) et accourt jusqu'à la voiture (voir saintAyStory.js CAR).
+      id: 'felix-voiture', name: 'Felix', x: CABANE_SPOT.x, y: CABANE_SPOT.y, facing: 'up', color: COUSIN_COLORS.felix,
       ifFlags: [FLAGS.felixVoiture], unlessFlags: [FLAGS.arriveeMontepilloy],
       dialogue: ['Le mot de passe, tu le gardes, hein ?'],
     },
