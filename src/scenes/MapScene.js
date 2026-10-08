@@ -1013,12 +1013,22 @@ export class MapScene extends Phaser.Scene {
     if (night) {
       const lamps = [];
       this.grid.forEach((row, y) => row.forEach((c, x) => { if (c === 'l') lamps.push([x, y, 0xffd070]); }));
+      // Réverbère d'une carte du créateur : un poteau de plusieurs cases (sa tête dans le calque « au-dessus de
+      // Pierre ») ; la case 'l' est son pied. Un seul halo par réverbère (cases 'l' empilées : la plus basse), sur sa
+      // tête, plus une flaque de lumière discrète au pied.
+      const built = map.built;
+      const topCell = (x, y) => built?.layers?.dessus?.[y * built.width + x];
+      const filled = (x, y) => y >= 0 && built && [topCell(x, y)].flat().some((r) => r >= 0);
+      const kept = lamps.filter(([x, y]) => !lamps.some(([a, b]) => a === x && b > y && b - y <= 2));
       // Halo chaud et doux : trois disques superposés, de plus en plus petits, qui respirent doucement.
-      for (const [x, y, color] of [...lamps, ...(map.night.lights ?? [])]) {
+      for (const [x, y, color] of [...kept, ...(map.night.lights ?? [])]) {
+        let head = y;
+        if (kept.some(([a, b]) => a === x && b === y)) while (head > y - 3 && filled(x, head - 1)) head -= 1;
         const cx = x * TILE_SIZE + 8;
-        const cy = y * TILE_SIZE + 4;
+        const cy = head * TILE_SIZE + 4;
         const glow = this.add.container(0, 0);
         for (const [w, a] of [[46, 0.1], [30, 0.14], [16, 0.22]]) glow.add(this.add.ellipse(cx, cy, w, w * 0.8, color, a));
+        if (head < y) glow.add(this.add.ellipse(cx, y * TILE_SIZE + 14, 26, 10, color, 0.12));   // la flaque au pied
         this.ambience.add(glow);
         this.tweens.add({ targets: glow, alpha: 0.7, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       }

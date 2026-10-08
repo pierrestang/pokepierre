@@ -384,3 +384,14 @@ check_paths.js). L'hôtesse : une question à deux choix (le vol de la suite de 
 ouvrir une sous-question (`ask`) et être cachée quand d'autres conditions sont remplies (`notWhen`) ; seule, une
 sous-question s'ouvre directement (MapScene.runAsk).
 
+
+## Nuit et animations sur les cartes du créateur (octobre 2026)
+
+Couches, de bas en haut : dessin (fond, profondeur 0), reflets de l'eau (1), personnages et objets (≈ 10), calque
+« au-dessus de Pierre » (TOP_DEPTH 30), silhouette (30,5), feuilles qui tombent (35), mouettes (38), voile de la nuit
+(40, MapScene.applyAmbience) ; au-dessus seulement ce qui éclaire (halos, lampes des rondes, 41) et l'interface (bulles,
+notes, 50+). Tout ce qui fait partie du monde reste sous 40 : la nuit l'assombrit.
+- Réverbères ('l' de la grille) : un seul halo par réverbère, sur sa tête dessinée (calque « au-dessus de Pierre » au-dessus
+  de la case 'l'), avec une flaque discrète au pied.
+- Reflets de l'eau (effects.startSeaShimmer) : étangs et rivières, et sur les cartes du créateur la mer dessinée aussi,
+  seulement sur les cases vraiment dessinées en eau.

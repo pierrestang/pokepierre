@@ -132,7 +132,7 @@ export function startFallingLeaves(scene, map) {
       const x = tx * S + Phaser.Math.Between(0, S);
       const y = ty * S - Phaser.Math.Between(4, 14);
       const leaf = scene.add.rectangle(x, y, 2, 1, Phaser.Utils.Array.GetRandom([0x9cd850, 0x6cb844, 0xc8e070]))
-        .setDepth(40).setAlpha(0.9);
+        .setDepth(35).setAlpha(0.9);              // au-dessus des cimes (30), sous le voile de la nuit (40)
       const drift = Phaser.Math.Between(-14, 14);
       scene.tweens.add({ targets: leaf, y: y + 22, duration: 2200, ease: 'Linear' });
       scene.tweens.add({ targets: leaf, x: x + drift, duration: 550, yoyo: true, repeat: 1, ease: 'Sine.easeInOut' });
@@ -149,8 +149,28 @@ export function startSeaShimmer(scene, map) {
   const { grid } = map;
   const W = grid[0].length * S;
   const H = grid.length * S;
-  const water = [];
-  grid.forEach((row, y) => row.forEach((c, x) => { if (WATER.includes(c)) water.push([x, y]); }));
+  let water = [];
+  // Carte du créateur (map.built) : sa mer est dessinée (pas de couche de mer animée, voir tileRenderer.renderMap) ; les
+  // reflets passent aussi sur la mer, comme sur les étangs et les rivières, mais seulement sur les cases vraiment
+  // dessinées en eau (le bleu domine au milieu de la case), pour qu'une grille un peu en retard sur le dessin ne fasse
+  // pas onduler du sable.
+  const codes = map.built ? [...WATER, 'w'] : WATER;
+  grid.forEach((row, y) => row.forEach((c, x) => { if (codes.includes(c)) water.push([x, y]); }));
+  if (map.built && map.backdrop && water.length) {
+    const src = scene.textures.get(map.backdrop.sheet)?.getSourceImage?.();
+    const ctx = src?.getContext?.('2d');
+    if (ctx) {
+      const px = ctx.getImageData(0, 0, src.width, src.height).data;
+      water = water.filter(([x, y]) => {
+        let blue = 0;
+        for (const [dx, dy] of [[4, 4], [11, 4], [4, 11], [11, 11], [8, 8]]) {
+          const i = ((y * S + dy) * src.width + x * S + dx) * 4;
+          if (px[i + 2] > px[i] + 30 && px[i + 2] > px[i + 1] - 10) blue++;
+        }
+        return blue >= 3;
+      });
+    }
+  }
   if (!water.length) return;
 
   if (!scene.textures.exists('sea-shimmer')) {
@@ -248,7 +268,7 @@ export function startSeagulls(scene, map) {
     const y = Phaser.Math.Between(S * 2, H - S * 4);
     const x0 = fromLeft ? -20 : W + 20;
     const x1 = fromLeft ? W + 20 : -20;
-    const gull = scene.add.image(x0, y, 'gull-0').setDepth(45).setFlipX(!fromLeft);
+    const gull = scene.add.image(x0, y, 'gull-0').setDepth(38).setFlipX(!fromLeft);   // sous le voile de la nuit (40)
     const shadow = scene.add.ellipse(x0, y + 26, 7, 2, 0x000000, 0.18).setDepth(2);
     let frame = 0;
     const flap = scene.time.addEvent({ delay: 220, loop: true, callback: () => gull.setTexture(`gull-${(frame = 1 - frame)}`) });
