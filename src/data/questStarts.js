@@ -16,7 +16,7 @@ export const QUEST_STARTS = [
   { label: 'PRYTANÉE', maps: ['prytanee'], upTo: FLAGS.arriveePrytanee, go: { map: 'prytanee', x: 16, y: 23, facing: 'up' } },
   { label: 'BORDEAUX', maps: ['bordeaux'], upTo: FLAGS.arriveeBordeaux, go: { map: 'bordeaux', x: 1, y: 10, facing: 'right' } },
   { label: 'HULL', maps: ['hull'], upTo: FLAGS.arriveeHull, go: { map: 'hull', x: 1, y: 35, facing: 'right' } },
-  { label: 'HANOÏ', maps: ['hanoi'], upTo: FLAGS.arriveeHanoi, go: { map: 'hanoi', x: 1, y: 6, facing: 'right' } },
+  { label: 'HANOÏ', maps: ['hanoi'], upTo: FLAGS.arriveeHanoi, go: { map: 'hanoi', x: 1, y: 8, facing: 'right' } },
   { label: 'AMSTERDAM', maps: ['amsterdam'], upTo: FLAGS.arriveeAmsterdam, go: { map: 'amsterdam', x: 1, y: 6, facing: 'right' } },
   { label: 'HULL (RETOUR)', maps: [], upTo: FLAGS.mailLu, go: { map: 'hull', x: 1, y: 35, facing: 'right' } },
   { label: 'NEW DELHI', maps: ['newDelhi', 'rajasthan'], upTo: FLAGS.arriveeNewDelhi, go: { map: 'newDelhi', x: 1, y: 6, facing: 'right' } },

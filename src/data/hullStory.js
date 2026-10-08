@@ -359,7 +359,7 @@ export const FLIGHT_TO_HANOI = [
   { useTrait: TRAITS.autonomie },
   { say: ['Pour la première fois, personne ne t\'accompagne. Tu prends ton billet pour Hanoï.'] },
   { setFlag: FLAGS.arriveeHanoi },
-  { travel: { map: 'hanoi', x: 1, y: 6, facing: 'right', plane: true, carry: CARRY } },
+  { travel: { map: 'hanoi', x: 1, y: 8, facing: 'right', plane: true, carry: CARRY } },
 ];
 
 // Ambiances de la carte : nuit pendant la soirée, petit matin à la sortie de l'Asylum.

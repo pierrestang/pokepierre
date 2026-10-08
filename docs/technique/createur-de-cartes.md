@@ -376,6 +376,18 @@ séparés au pixel près, fichiers g4-<type>.elements.json) ; calque et collisio
 dans l'élément (cime d'arbre et toit au-dessus de Pierre, pied bloquant, ponts et fleurs franchissables, eau
 bloquante, bords de sol par-dessus le sol), quelle que soit la sélection. Autres planches : d'après la sélection.
 
+## Hanoï (octobre 2026)
+
+Hanoï est redessiné par scripts/build_hanoi.py (src/data/builtMaps/hanoi.json), comme l'aéroport : le sol vient du
+convertisseur (convert_g4, d'après la grille GROUND du script : rues, pavés, herbe, le lac Hoàn Kiếm, le ponton de
+l'îlot, la bordure de sapins ouverte aux deux bouts de la grande rue), les bâtiments et le mobilier sont des éléments du
+catalogue posés comme le mode simple (maisons étroites au toit orange, agence = boutique à auvent, temple au toit rouge,
+lanternes de bois, étals, nénuphars, cloche de l'îlot, cerisiers, palmier). Les cases libres qu'on n'atteint pas
+(derrière les maisons) sont bloquées. La grille du jeu (src/data/maps/hanoi.js sourceGrid) reprend GROUND avec les portes
+sur les portes dessinées. convert_maps_v2.py ne refait pas Hanoï ; le script réécrit la carte (une retouche faite dans le
+créateur serait perdue au prochain passage). Les villes suivantes (Amsterdam… Rajasthan) ne sont que des premiers jets
+de convert_maps_v2.py (`python3 scripts/convert_maps_v2.py <id>…`), pas encore branchés dans le jeu.
+
 ## L'aéroport (octobre 2026)
 
 L'aéroport (à Bordeaux) est une carte du créateur dessinée par scripts/build_airport.py (src/data/builtMaps/airport.json,

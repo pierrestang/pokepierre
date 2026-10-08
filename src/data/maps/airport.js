@@ -46,7 +46,7 @@ const OTHER_FLIGHTS = [
   { label: 'Montépilloy', ifFlags: [FLAGS.arriveeMontepilloy], plane: { map: 'montepilloy', x: 16, y: 27, facing: 'up' } },
   { label: 'Prytanée', ifFlags: [FLAGS.arriveePrytanee], plane: { map: 'prytanee', x: 16, y: 23, facing: 'up' } },
   { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], notWhen: BACK_TO_HULL, plane: { map: 'hull', x: 1, y: 35, facing: 'right' } },
-  { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], plane: { map: 'hanoi', x: 1, y: 6, facing: 'right' } },
+  { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], plane: { map: 'hanoi', x: 1, y: 8, facing: 'right' } },
   { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.arriveeAmsterdam], plane: { map: 'amsterdam', x: 1, y: 6, facing: 'right' } },
   { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 6, facing: 'right' } },
   { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: { map: 'paris', x: 1, y: 6, facing: 'right' } },
