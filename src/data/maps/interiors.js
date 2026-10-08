@@ -15,7 +15,7 @@ import { GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE
 import {
   SURVEILLANT, COLLEGE_WELCOME, LOCKER, REMI, REMI_INVITE, REMI_SEAT, CAMILLE, PROF, LOCKER_SIDE, SURVEILLANT_SPOT, CLOSET,
 } from '../collegeStory.js';
-import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING, DINNER } from '../montepilloyStory.js';
+import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING } from '../montepilloyStory.js';
 import {
   LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
   LIBRARY, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
@@ -679,7 +679,6 @@ export const interiors = {
         id: 'papa-mont', name: 'Papa', x: 4, y: 3, facing: 'down', color: 0x3f6fd8,
         unlessFlags: [FLAGS.septembre], script: PAPA,
       },
-      // Le soir de la dernière vertu, Jean est rentré pour le dîner (voir DINNER).
       // Dès que Pierre est arrivé au collège : Papa, Maman et Jean sont rentrés (ils disaient au revoir dehors, le matin).
       {
         id: 'maman-college', name: 'Maman', x: 7, y: 3, facing: 'left', color: 0xe86fa0, ifFlags: [FLAGS.collegeOuverture],
@@ -693,16 +692,10 @@ export const interiors = {
         id: 'jean-college', name: 'Jean', x: 7, y: 5, facing: 'left', color: 0x3c7c5c, ifFlags: [FLAGS.collegeOuverture],
         dialogue: ['Alors, c\'est comment le collège ? Il y a des tracteurs à réparer ?'],
       },
-      {
-        id: 'jean-diner', name: 'Jean', x: 7, y: 5, facing: 'left', color: 0x3c7c5c,
-        ifFlags: [FLAGS.finJournee], unlessFlags: [FLAGS.septembre],
-        dialogue: ['On a réparé le tracteur de M. Bouly ! Enfin… surtout moi.'],
-      },
     ],
-    // Première arrivée à la maison : Maman accueille Pierre. Le soir de la dernière vertu : le dîner, puis septembre.
+    // Première arrivée à la maison : Maman accueille Pierre.
     events: [
       { on: 'enter', ifFlags: [FLAGS.ellipseMontepilloy], unlessFlags: [FLAGS.mamanAccueil], steps: MAMAN_WELCOME },
-      { on: 'enter', ifFlags: [FLAGS.finJournee], unlessFlags: [FLAGS.septembre], steps: DINNER },
     ],
     triggers: [0, 1].map((x) => ({ x, y: 2, warp: { interior: 'montHouseUp', x: 2, y: 4, facing: 'down' } })),
   },

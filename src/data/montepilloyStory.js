@@ -10,10 +10,13 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 // Le cache-cache terminé et Ingéniosité reçue : la journée est faite.
 const DAY_DONE = { ifFlags: [FLAGS.copainsPartent], ifSouvenirs: [TRAITS.ingeniosite.id] };
 
-// La dernière des deux quêtes finie (cache-cache ou tracteur) : la journée se termine, Pierre rentre dîner (DINNER).
+// La dernière des deux quêtes finie (cache-cache ou tracteur) : directement l'ellipse jusqu'en septembre, devant la
+// maison (SEPTEMBER_MORNING), sans le soir ni le dîner.
 const END_OF_DAY = [
-  { ...DAY_DONE, say: ['La nuit tombe sur Montépilloy… Il serait temps de rentrer à la maison.'] },
-  { ...DAY_DONE, setFlag: FLAGS.finJournee },
+  { ...DAY_DONE, black: true },
+  { ...DAY_DONE, wait: 600 },
+  { ...DAY_DONE, setFlag: FLAGS.septembre },
+  { ...DAY_DONE, travel: { map: 'montepilloy', x: 9, y: 7, facing: 'down' } },
 ];
 
 // Arrivée en voiture (fin de Saint-Ay), puis l'ellipse : image d'accueil, Pierre au bord de la mare.
@@ -40,16 +43,11 @@ export const MAMAN_WELCOME = [
 
 // ---------- La maison : toute la famille ----------
 
-// Maman : sa réplique suit la journée (avant l'école, après, une fois les deux quêtes finies) et rappelle ce qu'il
-// reste à faire.
+// Maman : sa réplique suit la journée (avant l'école, après) et rappelle ce qu'il reste à faire.
 export const MAMAN = [
   {
     unlessFlags: [FLAGS.ecoleCm2], speaker: 'Maman',
     say: ['Dernier jour d\'école primaire ! Après, le collège.', 'File, l\'école, c\'est le grand bâtiment au toit jaune, à droite de la grand-rue.'], end: true,
-  },
-  {
-    ...DAY_DONE, speaker: 'Maman',
-    say: ['Quelle journée ! Les vacances commencent… et à la rentrée, le collège.'], end: true,
   },
   { unlessFlags: [FLAGS.copainsPartent], speaker: 'Maman', say: ['Tes copains jouent à cache-cache dans tout le village. File les trouver !'] },
   {
@@ -235,18 +233,6 @@ export const TOOLBOX = [
 
 // ---------- Le départ → le collège ----------
 
-// Le soir de la dernière vertu, à la maison : le dîner en famille, puis l'ellipse jusqu'en septembre, devant la maison.
-export const DINNER = [
-  { say: ['Le soir, toute la famille est à table.'] },
-  { speaker: 'Jean', say: ['On a réparé le tracteur de M. Bouly ! Enfin… surtout moi.'] },
-  { speaker: 'Papa', say: ['Bravo, les garçons. Profitez bien de l\'été.'] },
-  { speaker: 'Maman', say: ['Et en septembre, c\'est le collège !'] },
-  { black: true },
-  { wait: 600 },
-  { setFlag: FLAGS.septembre },
-  { travel: { map: 'montepilloy', x: 9, y: 7, facing: 'down' } },
-];
-
 // Septembre, devant la maison, au matin : la famille dit au revoir à Pierre, cartable sur le dos.
 export const SEPTEMBER_MORNING = [
   { opening: { postcard: 'montepilloySeptembre', text: 'Quelques mois plus tard… Septembre.' } },
@@ -265,7 +251,6 @@ export const NORTH_EXIT = [
   // Le premier départ : l'encart des vertus emportées, comme à la fin des trajets.
   { ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeOuverture], say: [carryText('montepilloy')] },
   { ifFlags: [FLAGS.departCollege], travel: { map: 'routeBonsecours', x: 11, y: 27, facing: 'up' }, end: true },
-  { ...DAY_DONE, say: ['Il se fait tard : rentre plutôt dîner à la maison.'], end: true },
   { say: ['Ta journée n\'est pas finie.'] },
   { unlessFlags: [FLAGS.ecoleCm2], say: ['C\'est le dernier jour de CM2 : file à l\'école, le grand bâtiment au toit jaune !'], end: true },
   { unlessFlags: [FLAGS.copainsPartent], say: ['Tes copains t\'attendent pour leur partie de cache-cache.'] },

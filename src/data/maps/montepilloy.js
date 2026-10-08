@@ -76,10 +76,10 @@ export const montepilloyMap = {
   ],
   props: [
     // La caisse à outils de Jean, restée devant le tracteur après la réparation : la cuillère (voir TOOLBOX) ; elle
-    // disparaît une fois la cuillère prise.
+    // disparaît une fois la cuillère prise. Elle reste en septembre (l'ellipse suit directement la réparation).
     {
       type: 'toolbox', image: 'caisse-outils', x: JEAN_AT_TRACTOR[0], y: JEAN_AT_TRACTOR[1], w: 1, h: 1,
-      ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.septembre], unlessItems: [ITEMS.cuillere.id], script: TOOLBOX,
+      ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.collegeOuverture], unlessItems: [ITEMS.cuillere.id], script: TOOLBOX,
     },
     // Le tracteur de M. Bouly (image Gen 4, scripts/build_props.py), garé devant la ferme : en panne, puis parti faire un
     // tour avec Jean, et de retour en septembre.
@@ -181,8 +181,6 @@ export const montepilloyMap = {
     ...[15, 16, 17].map((x) => ({ x, y: 0, script: NORTH_EXIT })),
   ],
   spawn: { x: 16, y: 27, facing: 'up' },
-  // Le soir de la dernière vertu : le soleil se couche (voir montepilloyStory.js END_OF_DAY).
-  night: { ifFlags: [FLAGS.finJournee], unlessFlags: [FLAGS.septembre] },
 };
 
 // La grille du jeu : celle d'origine, accordée aux collisions du dessin.

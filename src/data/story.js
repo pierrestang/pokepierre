@@ -42,7 +42,6 @@ export const FLAGS = {
   boulyDemande: 'bouly-demande',                //   M. Bouly t'a parlé de la pièce qui manque à son tracteur
   pieceTrouvee: 'piece-trouvee',                //   pièce de tracteur trouvée dans le tonneau de la grange
   tracteurRepare: 'tracteur-repare',            //   « Passe-moi la clé ! » réussi : le tracteur est réparé
-  finJournee: 'fin-journee',                    //   les deux vertus reçues : le soleil se couche, on rentre dîner
   septembre: 'septembre',                       //   ellipse jusqu'en septembre : la famille devant la maison
   departCollege: 'depart-college',              //   septembre : au revoir de la famille, départ à pied
   collegeOuverture: 'college-ouverture',        // Bonsecours : image d'accueil du premier jour de collège vue

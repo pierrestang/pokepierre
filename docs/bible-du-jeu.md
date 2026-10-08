@@ -357,10 +357,9 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
      bien. » → vertu **Ingéniosité** ; si le cache-cache n'est pas fini, Jean : « Tes copains jouent encore à cache-cache
      dans le village. Va les trouver ! » ; M. Bouly : « Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de
      tracteur ! »
-4. **La fin de la journée** (le cache-cache fini et Ingéniosité reçue ; la nuit tombe) : « La nuit tombe sur
-   Montépilloy… Il serait temps de rentrer à la maison. » ; le dîner : « Le soir, toute la famille est à table. » ; Jean « On a réparé le tracteur de M. Bouly !
-   Enfin… surtout moi. » ; Papa « Bravo, les garçons. Profitez bien de l'été. » ; Maman « Et en septembre, c'est le
-   collège ! »
+4. **La fin de la journée** (le cache-cache fini et Ingéniosité reçue, dans n'importe quel ordre) : pas de soir ni de
+   dîner, l'écran passe au noir et l'on enchaîne directement sur l'ellipse de septembre, devant la maison. La caisse à
+   outils de Jean (la cuillère) reste devant le tracteur jusqu'au départ pour le collège.
 5. **Septembre** : carte postale `montepilloySeptembre` (« bois aux Chênes, le matin ») : **« Quelques mois plus tard…
    Septembre. »** ; « Devant la maison, au matin. Tu as ton cartable sur le dos. » ; Maman « Premier jour de collège. Tu
    as tout ? » ; Papa « Il a tout. Il a même vérifié deux fois. » ; Jean « Tu me raconteras comment c'est ? » ; « Le
@@ -372,7 +371,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
   assistant, là-haut dans sa chambre. Il a encore une réparation en tête… »
 - La sortie nord : « Ta journée n'est pas finie. » ; « C'est le dernier jour de CM2 : file à l'école, en bas de la
   grand-rue ! » ; « Tes copains t'attendent pour leur partie de cache-cache. » ; « Et Jean a un tracteur à réparer avec
-  toi. » / « Jean t'attend dans sa chambre. » (tant que Jean n'a pas lancé la réparation) ; « Il se fait tard : rentre plutôt dîner à la maison. »
+  toi. » / « Jean t'attend dans sa chambre. » (tant que Jean n'a pas lancé la réparation)
 
 ### Passage optionnel : Benoît triste (Joie de vivre)
 Après le cache-cache et jusqu'au matin de septembre, Benoît est assis seul au bord de la mare, en bas à droite (il n'est plus dans la
@@ -400,7 +399,7 @@ de passe, pas nous. » / « Joshua veut changer les planches, on a dit non, c'es
 Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée jusqu'à la bonne réponse), pêche à la mare.
 
 ### Départ et trajet
-- **Condition** : le cache-cache fini et Ingéniosité, puis le dîner et le matin de septembre. Sortie nord : « Tu prends la route du collège,
+- **Condition** : le cache-cache fini et Ingéniosité, puis directement le matin de septembre. Sortie nord : « Tu prends la route du collège,
   ton cartable sur le dos. »
 - **Pas de scène de trajet** : à la sortie nord, l'encart « Tu emportes : Ingéniosité. » (au premier départ
   seulement), puis la route de Bonsecours.
