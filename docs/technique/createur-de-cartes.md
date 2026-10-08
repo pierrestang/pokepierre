@@ -437,3 +437,15 @@ regardées une à une sur un rendu zoomé :
   fermées sans accès (Fort-de-France (25,9), (24,10)).
 - Coin haut gauche de Fort-de-France : pas de noir en jeu (seulement un rendu hors jeu qui ignorait la case n° 0 de la
   planche auto).
+
+## Outils de retouche des cartes (check-up, octobre 2026)
+
+Scripts ponctuels, gardés parce qu'ils resservent après une retouche dans le créateur :
+- `scripts/sync_tall_grass.py <carte du jeu>` : accorde les hautes herbes et le blé de la grille ('ĥ', 'ʬ') au dessin.
+- `scripts/harmonize_assets.py <carte>:<x>,<y>,<w>,<h>` : retire l'ombre portée et rend nets les bords flous d'un objet
+  (cases assemblées, planche auto) ; à éviter sur un dessin dont les demi-transparences font partie du motif (voile).
+- `scripts/remove_base_rings.py <carte> <x>,<y>,<w>,<h>` : retire le halo de sol jaune / beige au pied d'un arbre ;
+  `scripts/add_tree_shadows.py <carte> --ref <commit> <rects>` : pose à la place une ombre douce de même largeur.
+- `scripts/place_elements.py` : vide une zone et y pose des éléments du catalogue, comme le mode simple.
+- `scripts/outline_objects.py`, `scripts/draw_sailboat.py`, `scripts/find_lamps.py`, `scripts/audit_assets.py` : voir
+  plus haut (contours, voilier de Fort-de-France, réverbères allumés la nuit, panneau « Écarts »).
