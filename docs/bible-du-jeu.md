@@ -645,7 +645,7 @@ côté de chez Paulfit. »
 - Route de Paris (en bas à droite), jusqu'au diplôme de Bordeaux : l'ouvrier, de la même façon : **« Holà ! Travaux sur la
   route de Paris, personne ne passe. »** / « Reviens plus tard. On aura peut-être fini… peut-être. »
 
-### Passage optionnel : le rangement après la soirée (Autonomie)
+### Le rangement après la soirée (Autonomie, obligatoire)
 Le lendemain matin, dans l'appartement, le désordre est au sol (dessiné au style DS) : trois gobelets rouges renversés, une
 boîte de pizza entamée, un paquet de chips, des canettes écrasées, des bouteilles, des confettis partout, et la couette en
 vrac sur le lit de Pierre. Trois tâches, dans n'importe quel ordre ; ramasser un objet range toute sa catégorie : les
@@ -654,8 +654,9 @@ pizza, les canettes, les chips et les bouteilles, et balaie les confettis. »), 
 couette et fait son lit. ») ; à la première : **« Pierre utilise Autonomie ! »**. Avant, Ousmane : « Ousmane dort à
 poings fermés. Il ronfle. » Une fois les trois faites, Ousmane se réveille : **« Attends… t'as tout rangé ? Tout
 seul ? »** / « Tiens, j'ai retrouvé ça sous les confettis. » → **Photo de la soirée** (« Tu reçois la photo de la soirée ! »). Ensuite : « Attends… t'as tout rangé ? Tout seul ? »
-On peut aussi sortir tout de suite : « Quelques mois plus tard… » ; l'appartement est alors rangé, Ousmane n'est plus
-couché, et la photo n'est plus disponible.
+On ne sort pas avant d'avoir tout rangé : à la porte, **« L'appartement ressemble à un champ de bataille… Tu ne vas pas
+laisser ce chantier à Ousmane : range tout avant de sortir. »** et Pierre recule d'un pas. Une fois tout rangé, la sortie
+mène à « Quelques mois plus tard… ».
 
 ### Passage optionnel : le vélo du cycliste (Ingéniosité)
 Sur le quai nord, près du banc, un cycliste assis sur son vélo (sprite Cycliste de Diamant / Perle) : **« Oh non, oh non…
@@ -670,7 +671,7 @@ sur le bouton VÉLO) pour monter dessus. » Ensuite : « Il te va bien, ce vélo
 ### Vertus
 - **Gagnée** : aucune. Le compteur de vertus n'est pas affiché à Bordeaux.
 - **Utilisées** : **Ingéniosité**, pendant la coupure et pour réparer le vélo du cycliste (optionnel) ; **Audace**, avant
-  l'oral d'anglais ; **Autonomie**, pour le rangement (optionnel).
+  l'oral d'anglais ; **Autonomie**, pour le rangement (obligatoire avant de sortir de l'appartement).
 
 ### Objet optionnel
 - **Photo de la soirée**, donnée par Ousmane au réveil (voir le passage optionnel).
@@ -946,7 +947,7 @@ définies, rien n'est codé).
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
 | Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
 | Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (optionnel) |
-| Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (photo, optionnel) ; Hull : le guichet de l'aéroport, avant Hanoï |
+| Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (obligatoire avant de sortir ; photo) ; Hull : le guichet de l'aéroport, avant Hanoï |
 | Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Nulle part pour l'instant |
 
 Vertus supprimées (leurs scènes restent, sans encart) : Pragmatisme (le tri des cannes), Confiance (le coquillage de

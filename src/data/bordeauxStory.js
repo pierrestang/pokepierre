@@ -146,15 +146,15 @@ export const PARTY_ANAIS = [
   { setFlag: FLAGS.anaisSoiree },
 ];
 
-// En quittant la fête : le lendemain matin, l'appartement en désordre ; Ousmane dort. Facultatif (Autonomie) : tout
-// ranger, dans n'importe quel ordre ; Ousmane se réveille et donne l'objet-souvenir de Bordeaux, la photo de la soirée.
-// On peut aussi sortir tout de suite : quelques mois plus tard (MONTHS_LATER), l'appartement est rangé.
+// En quittant la fête : le lendemain matin, l'appartement en désordre ; Ousmane dort. Il faut tout ranger (Autonomie),
+// dans n'importe quel ordre, avant de sortir (exitLock de l'appartement) ; Ousmane se réveille et donne l'objet-souvenir de
+// Bordeaux, la photo de la soirée. En sortant ensuite : quelques mois plus tard (MONTHS_LATER).
 export const PARTY_END = [
   { black: true },
   { wait: 600 },
   { setFlag: FLAGS.lendemainSoiree },
   { black: false },
-  { say: ['Le lendemain matin. L\'appartement est sens dessus dessous : gobelets, canettes, pizza froide, confettis…', 'Ousmane dort encore, tout habillé.'] },
+  { say: ['Le lendemain matin. L\'appartement est sens dessus dessous : gobelets, canettes, pizza froide, confettis…', 'Ousmane dort encore, tout habillé. Pas question de sortir avant d\'avoir tout rangé.'] },
 ];
 const TIDY_FLAGS = [FLAGS.gobeletsRanges, FLAGS.salonRange, FLAGS.litFaitBordeaux];
 const OUSMANE_WAKES = [

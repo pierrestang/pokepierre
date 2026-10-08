@@ -80,7 +80,7 @@ export const FLAGS = {
   leoSoiree: 'leo-soiree',                      //     Léo (KEDGE) rencontré à la soirée
   anaisSoiree: 'anais-soiree',                  //     Anaïs (KEDGE) rencontrée à la soirée
   lendemainSoiree: 'lendemain-soiree',          //   en quittant la fête : le lendemain matin, l'appartement en désordre
-  gobeletsRanges: 'gobelets-ranges',            //     facultatif (Autonomie) : les gobelets ramassés
+  gobeletsRanges: 'gobelets-ranges',            //     à faire avant de sortir (Autonomie) : les gobelets ramassés
   salonRange: 'salon-range',                    //       … le salon rangé
   litFaitBordeaux: 'lit-fait-bordeaux',         //       … le lit fait
   soireeFinie: 'soiree-finie',                  //   en sortant : « Quelques mois plus tard » (l'oral d'anglais)

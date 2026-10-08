@@ -1372,6 +1372,11 @@ export const interiors = {
     ],
     // En quittant la fête (devant la porte) : le lendemain matin.
     triggers: [[10, 6], [11, 5], [11, 7]].map(([x, y]) => ({ x, y, ...PARTY_TIME, script: PARTY_END })),
+    // Le lendemain de la soirée : on ne sort pas avant d'avoir tout rangé (Ousmane, réveillé, donne alors la photo).
+    exitLock: {
+      ...MORNING_AFTER, unlessItems: [ITEMS.photoSoiree.id],
+      dialogue: ['L\'appartement ressemble à un champ de bataille… Tu ne vas pas laisser ce chantier à Ousmane : range tout avant de sortir.'],
+    },
     events: [
       { on: 'enter', ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.coupure], steps: BLACKOUT },
       { on: 'enter', ...PARTY_TIME, steps: PARTY },
