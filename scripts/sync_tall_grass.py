@@ -36,7 +36,7 @@ def main():
                 grid[y][x] = 'ĥ'
                 added += 1
         for x, y in report[mid]['herbe_sans_dessin']:
-            if grid[y][x] == 'ĥ':
+            if grid[y][x] in 'ĥʬ':                    # hautes herbes ou blé sans dessin
                 grid[y][x] = '.'
                 removed += 1
         for (k, m), g in zip(rows, grid):
