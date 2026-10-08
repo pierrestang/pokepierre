@@ -740,8 +740,8 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    premier, part devant en éclaireur (il attend Pierre s'il traîne) et entre le premier ; Pierre le suit ; à partir du
    premier pub, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu, puis s'attablent en arrivant.
 2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** ; Anaïs : « Comme à Bordeaux, mais
-   c'est toi qui régales cette fois ! » ; Charlotte : **« Moi, c'est Charlotte, la coloc d'Anaïs. Alors c'est toi, le
-   fameux Pierre ? »** Chacun dit sa commande en
+   c'est toi qui régales cette fois ! » ; Charlotte, qui connaît déjà Pierre (d'avant Hull) : **« Pierre ! Ça fait
+   plaisir de te revoir. Et devine qui est la coloc d'Anaïs… Le monde est petit ! »** Chacun dit sa commande en
    français : Léo « Une Guinness, évidemment. », Ousmane « Un cidre, s'il te plaît. », Charlotte « Un gin tonic ! »,
    Anaïs « Un verre de vin rouge. ». Le barman les demande en anglais (« And for Léo? »…), parmi six boissons ; une
    erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : « Le barman pose les verres

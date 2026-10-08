@@ -1,7 +1,7 @@
 import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 
-// Scénario de Hull : les années d'études avec la bande. Ousmane, Léo et Anaïs connaissent Pierre depuis Bordeaux (des
-// retrouvailles) ; Romain, Prophecy et Charlotte le rencontrent ici.
+// Scénario de Hull : les années d'études avec la bande. Ousmane, Léo et Anaïs connaissent Pierre depuis Bordeaux, et
+// Charlotte d'avant Hull (des retrouvailles) ; Romain et Prophecy le rencontrent ici.
 //   1. L'arrivée, Ousmane vient accueillir Pierre, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
 //   2. Premier pub : la tournée (chaque commande, puis le barman, en anglais) ; une erreur, on retourne redemander.
 //   3. Deuxième pub : une partie de fléchettes contre un habitué (systems/Darts.js) ; pari gagné : tournée générale.
@@ -88,7 +88,8 @@ const ALL_SERVED = ORDERS.map((o) => o.flag);
 export const PUB_A_WELCOME = [
   { speaker: 'Léo', say: ['Première tournée, c\'est toi qui régales !'] },
   { speaker: 'Anaïs', say: ['Comme à Bordeaux, mais c\'est toi qui régales cette fois !'] },
-  { speaker: 'Charlotte', say: ['Moi, c\'est Charlotte, la coloc d\'Anaïs. Alors c\'est toi, le fameux Pierre ?'] },
+  // Charlotte connaît déjà Pierre (avant Hull) : des retrouvailles, pas une rencontre.
+  { speaker: 'Charlotte', say: ['Pierre ! Ça fait plaisir de te revoir. Et devine qui est la coloc d\'Anaïs… Le monde est petit !'] },
   { say: ['Objectif : ramène la tournée. Demande à chacun ce qu\'il veut, puis commande au comptoir.'] },
 ];
 
