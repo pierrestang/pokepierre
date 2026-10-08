@@ -722,7 +722,7 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
 | Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `g55` |
 | Romain | Colocataire de Léo ; rencontre Pierre chez Léo | `g92` |
 | Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `g94` |
-| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontre Pierre au premier pub | `g44` |
+| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; connaît Pierre d'avant Hull, le retrouve au premier pub | `g44` |
 | Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `g107` |
 | Barman, Barmaid, clients | Les deux pubs, l'Asylum | Barman `g101` ; les autres en figurants |
 | DJ, videur, vestiaire, danseurs, étudiants | The Asylum | figurants |
