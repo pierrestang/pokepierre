@@ -393,6 +393,13 @@ Couches, de bas en haut : dessin (fond, profondeur 0), reflets de l'eau (1), per
 notes, 50+). Tout ce qui fait partie du monde reste sous 40 : la nuit l'assombrit.
 - Réverbères ('l' de la grille) : un seul halo par réverbère, sur sa tête dessinée (calque « au-dessus de Pierre » au-dessus
   de la case 'l'), avec une flaque discrète au pied.
+- Réverbères repérés d'après le dessin (toutes les cartes de nuit, ex. le Prytanée) : scripts/find_lamps.py liste les cases
+  « tête de réverbère » (têtes des éléments réverbère du catalogue, leurs copies sans ombre, plus SEEDS pour les anciens
+  modèles) et le milieu de leur dessin dans src/data/lampTiles.json ; la nuit, chaque tête trouvée dans les calques Décor ou
+  « au-dessus de Pierre » reçoit le même halo et la même flaque (pas de doublon avec une case 'l'). À relancer après avoir
+  posé un réverbère d'un nouveau modèle. Montépilloy n'a pas de réverbère dessiné.
+- Contour d'un objet précis (scripts/outline_objects.py, côtés au choix : les pontons-passerelles de Bordeaux n'en ont qu'aux
+  deux longs côtés) ; voilier de Fort-de-France redessiné au style DS (scripts/draw_sailboat.py).
 - Reflets de l'eau (effects.startSeaShimmer) : étangs et rivières, et sur les cartes du créateur la mer dessinée aussi,
   seulement sur les cases vraiment dessinées en eau.
 

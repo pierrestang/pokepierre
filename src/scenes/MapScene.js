@@ -35,6 +35,9 @@ import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 import { toggleBike, resumeBike, checkBike, pauseBike, unpauseBike } from '../systems/bike.js';
 import { CITY_MUSIC } from '../data/music.js';
 import { applyBuiltLook, hiddenUnderTop, TOP_DEPTH } from '../systems/builtMaps.js';
+import LAMP_TILES from '../data/lampTiles.json' with { type: 'json' };
+
+const LAMP_REFS = LAMP_TILES.refs;                // { '<planche>:<n°>': [cx, cy] } : têtes de réverbère
 
 const FADE_MS = 150;
 const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`reply`)
@@ -1020,12 +1023,40 @@ export class MapScene extends Phaser.Scene {
       const topCell = (x, y) => built?.layers?.dessus?.[y * built.width + x];
       const filled = (x, y) => y >= 0 && built && [topCell(x, y)].flat().some((r) => r >= 0);
       const kept = lamps.filter(([x, y]) => !lamps.some(([a, b]) => a === x && b > y && b - y <= 2));
+      // Réverbères repérés d'après le dessin (têtes listées par scripts/find_lamps.py dans src/data/lampTiles.json) :
+      // la tête est la case trouvée, le pied la dernière case dessinée en dessous (au plus 3) ; sauf s'il a déjà sa
+      // case 'l' (même colonne, pied à moins de 3 cases).
+      if (built) {
+        const refs = new Map(Object.entries(LAMP_REFS).flatMap(([s, at]) => {
+          const [sheet, k] = s.split(':');
+          const slot = built.sheets.indexOf(sheet);
+          return slot < 0 ? [] : [[slot * 100000 + Number(k), at]];
+        }));
+        const drawn = (x, y) => y < built.height && ['decor', 'dessus']
+          .some((L) => [built.layers[L][y * built.width + x]].flat().some((r) => r >= 0));
+        const heads = [];
+        for (const L of ['dessus', 'decor']) {
+          built.layers[L].forEach((v, i) => {
+            const r = [v].flat().find((t) => refs.has(t));
+            if (r === undefined) return;
+            const x = i % built.width;
+            const y = Math.floor(i / built.width);
+            if (!heads.some(([a, b]) => a === x && Math.abs(b - y) <= 1)) heads.push([x, y, refs.get(r)]);
+          });
+        }
+        for (const [x, y, at] of heads) {
+          let foot = y;
+          while (foot < y + 3 && drawn(x, foot + 1)) foot += 1;
+          if (kept.some(([a, b]) => a === x && b >= y && b - y <= 3)) continue;
+          kept.push([x, foot, 0xffd070, y, at]);
+        }
+      }
       // Halo chaud et doux : trois disques superposés, de plus en plus petits, qui respirent doucement.
-      for (const [x, y, color] of [...kept, ...(map.night.lights ?? [])]) {
-        let head = y;
-        if (kept.some(([a, b]) => a === x && b === y)) while (head > y - 3 && filled(x, head - 1)) head -= 1;
-        const cx = x * TILE_SIZE + 8;
-        const cy = head * TILE_SIZE + 4;
+      for (const [x, y, color, knownHead, at] of [...kept, ...(map.night.lights ?? [])]) {
+        let head = knownHead ?? y;
+        if (knownHead === undefined && kept.some(([a, b]) => a === x && b === y)) while (head > y - 3 && filled(x, head - 1)) head -= 1;
+        const cx = x * TILE_SIZE + (at ? at[0] : 8);
+        const cy = head * TILE_SIZE + (at ? at[1] : 4);
         const glow = this.add.container(0, 0);
         for (const [w, a] of [[46, 0.1], [30, 0.14], [16, 0.22]]) glow.add(this.add.ellipse(cx, cy, w, w * 0.8, color, a));
         if (head < y) glow.add(this.add.ellipse(cx, y * TILE_SIZE + 14, 26, 10, color, 0.12));   // la flaque au pied
