@@ -84,7 +84,7 @@ function forgetLook(scene, map) {
 }
 
 // Le dessin a-t-il été perdu (texture absente, canvas sans contexte ou entièrement transparent) ?
-function lostLook(scene, map) {
+export function lostLook(scene, map) {
   const key = `jeu-${map.id}-fond`;
   if (!scene.textures.exists(key)) return true;
   const source = scene.textures.get(key).getSourceImage();

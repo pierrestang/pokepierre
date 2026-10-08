@@ -51,7 +51,7 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     this.image.setOrigin(0.5, 0).setPosition(0, -4);
     // Lit Gen 4 : la couverture est dans le dessin ; on ne garde que la tête et les épaules, sur l'oreiller.
     if (gen4) {
-      this.image.setCrop(0, 0, this.image.width, child ? 13 : 16);
+      this.image.setCrop(0, 0, this.image.width, child ? 18 : 21);   // jusqu'au menton (le visage, pas que les cheveux)
       return;
     }
     const textures = this.scene.textures;

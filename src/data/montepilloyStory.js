@@ -129,6 +129,9 @@ export const BENOIT_BARREL = [0, 5];
 export const FOUND_BENOIT = [
   { unlessFlags: [FLAGS.trouveMargaux], say: [STUCK], end: true },
   { unlessFlags: [FLAGS.trouveEtienne], say: [STUCK], end: true },
+  // Avant la vertu : le tonneau est trop bien fermé pour un seul, il faut l'ouvrir tous ensemble.
+  { say: ['Le couvercle est enfoncé à fond, serré comme jamais. Tout seul, tu n\'arriveras jamais à l\'ouvrir.'] },
+  { speaker: 'Margaux', say: ['On s\'y met tous ensemble ? À trois, on tire !'] },
   { useTrait: TRAITS.espritEquipe },
   { say: ['Margaux et Étienne t\'aident à tirer sur le couvercle… Il cède !'] },
   { emote: 'player', kind: 'surprise' },

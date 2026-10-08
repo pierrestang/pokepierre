@@ -34,7 +34,7 @@ import {
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 import { toggleBike, resumeBike, checkBike, pauseBike, unpauseBike } from '../systems/bike.js';
 import { CITY_MUSIC } from '../data/music.js';
-import { applyBuiltLook, hiddenUnderTop, TOP_DEPTH } from '../systems/builtMaps.js';
+import { applyBuiltLook, lostLook, hiddenUnderTop, TOP_DEPTH } from '../systems/builtMaps.js';
 import LAMP_TILES from '../data/lampTiles.json' with { type: 'json' };
 
 const LAMP_REFS = LAMP_TILES.refs;                // { '<planche>:<n°>': [cx, cy] } : têtes de réverbère
@@ -99,11 +99,17 @@ export class MapScene extends Phaser.Scene {
     this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
     // Carte dessinée avec le créateur de cartes (map.built) : son dessin remplace le rendu Rouge Feu.
     if (map.built) applyBuiltLook(this, map);
-    renderMap(this, map);
-    // Morceaux du décor redessinés par-dessus les personnages qui sont derrière (ex. tables de la cabane) :
-    // { sheet, frame(scene), x, y, h } en pixels, triés en profondeur par leur bas.
-    for (const o of map.overlays ?? []) {
-      this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(o.depth ?? 10 + (o.y + o.h) / 10000);
+    this.drawLook();
+    // Filet de sécurité : si le dessin cuit de la carte est perdu en cours de partie (texture retirée ou vidée, ex.
+    // après une scénette ou un voyage), on le refait et on le réaffiche (sinon seule la forêt de bordure se voit).
+    if (map.built) {
+      this.time.addEvent({
+        delay: 1000, loop: true, callback: () => {
+          if (!lostLook(this, map)) return;
+          applyBuiltLook(this, map);
+          this.drawLook();
+        },
+      });
     }
     if (this.scene.key === 'Overworld' && !map.builder) flags.add(visitedFlag(map.id));    // pour la carte du voyage
     this.canopy = map.built || map.backdrop ? new Set() : canopyTiles(grid);   // un dessin du créateur a ses cimes à lui
@@ -249,6 +255,20 @@ export class MapScene extends Phaser.Scene {
     await new Promise((resolve) => this.tweens.add({
       targets: image, x: (tx + 0.5) * TILE_SIZE, y: ty * TILE_SIZE + 6, duration: 160 * (Math.abs(tx - fx) + 1), ease: 'Quad.easeOut', onComplete: resolve,
     }));
+  }
+
+  // Le fond de la carte (dessin du créateur cuit, ou rendu Rouge Feu) et les morceaux redessinés par-dessus les
+  // personnages (calque « au-dessus de Pierre », tables de la cabane : { sheet, frame(scene), x, y, h }, triés en
+  // profondeur par leur bas). Rappelé si le dessin a été perdu : les anciennes images sont remplacées.
+  drawLook() {
+    const map = this.map;
+    for (const img of this.lookImages ?? []) img.destroy();
+    this.lookImages = [];
+    const back = renderMap(this, map);
+    if (back && map.backdrop) this.lookImages.push(back);
+    for (const o of map.overlays ?? []) {
+      this.lookImages.push(this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(o.depth ?? 10 + (o.y + o.h) / 10000));
+    }
   }
 
   // La carte entière est visible, aussi grande que possible dans la fenêtre.

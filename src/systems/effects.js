@@ -30,7 +30,7 @@ export class GrassCovers {
     const id = `${x},${y}`;
     if (!this.covers.has(id)) {
       // Bas de la tuile Rouge Feu des hautes herbes (ou du blé), juste devant un personnage debout sur cette
-      // case (profondeur 10 + y / 10000, joueur + 0.001).
+      // case (profondeur 10 + y / 10000, joueur + 0.001), mais pas devant la tête du personnage de la case du dessous.
       // Carte dessinée avec le créateur (map.backdrop) : le bas de la case telle qu'elle est dessinée (hautes herbes
       // Gen 4), pas la touffe Rouge Feu.
       const backdrop = this.map.backdrop?.sheet;
@@ -43,7 +43,7 @@ export class GrassCovers {
         texture = backdrop;
       }
       const image = this.scene.add.image(x * S, y * S + GRASS_COVER_TOP, texture, frame).setOrigin(0).setVisible(false)
-        .setDepth(10 + (y * S + S / 2) / 10000 + 0.002);
+        .setDepth(10 + (y * S + S / 2) / 10000 + 0.0012);   // devant le joueur (+ 0.001), derrière la case du dessous (+ 0.0016)
       this.covers.set(id, image);
     }
     return this.covers.get(id);

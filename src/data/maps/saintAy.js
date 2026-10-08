@@ -119,7 +119,7 @@ export const saintAyMap = {
     // La voiture chargée attend devant la maison après l'annonce de Papa : on y monte pour partir, elle roule
     // jusqu'à la route du nord et monte vers Montépilloy. Elle disparaît une fois le trajet fait, et ne bloque que
     // la rangée du bas de la route (on passe derrière).
-    { type: 'familyCar', x: 19, y: 7, w: 3, h: 1, facing: 'left', turnUp: 15, ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
+    { type: 'familyCar', x: 19, y: 7, w: 3, h: 1, facing: 'left', turnUp: 13, ifFlags: [FLAGS.annonceMutation], unlessFlags: [FLAGS.arriveeMontepilloy], script: CAR },
   ],
   objects: [
     { x: 13, y: 2, dialogue: ['Nord : route de Montépilloy.'] },

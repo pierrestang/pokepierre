@@ -200,7 +200,7 @@ export const interiors = {
       'XXXXXXXXXX',
       'ξξoommmmmm',   // escalier qui descend, bureau et ordinateur, télé
       'mmooomomom',   // le lit de Pierre (à gauche), le tabouret, des cartons
-      'mmoomooooo',
+      'mmoooooooo',   // (4, 5) libre : rien n'y est dessiné
       'mmoooooooo',
       'mmooomooom',   // des cartons
     ]),
@@ -409,7 +409,7 @@ export const interiors = {
       'XXXXXXXXXX',
       'ξξoommmmmm',
       'mmooomoooo',
-      'mmoomooooo',
+      'mmoooooooo',   // (4, 5) libre : rien n'y est dessiné
       'mmoooooooo',
       'ooooooooom',
     ]),
@@ -443,8 +443,8 @@ export const interiors = {
     grid: parseGrid([ // dessin de la maison familiale (Fort-de-France), sans cartons
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmoommmmmmm',   // l'escalier du dessin ne mène nulle part : bloqué
-      'mmoooomoooo',
+      'oooommmmmmm',   // maison de plain-pied : l'escalier du modèle est effacé (ajouts de la fiche)
+      'oooooomoooo',
       'oooooommoom',
       'ooooooooooo',
       'mooooommooo',
@@ -462,8 +462,8 @@ export const interiors = {
       { kind: 'table', x: 3, y: 4 },
       { kind: 'plant', x: 0, y: 5 },
     ],
-    // Le cheval que Val sculpte, posé sur la table juste devant lui (art/tileArt.js DECALS.statue).
-    decals: [{ kind: 'statue', x: 5, y: 5, ifFlags: [FLAGS.felixInvite] }],
+    // Le cheval que Val sculpte, posé au milieu de la table de la salle à manger (art/tileArt.js DECALS.statue).
+    decals: [{ kind: 'statue', x: 6, y: 5, dx: 10, dy: 12, above: true, ifFlags: [FLAGS.felixInvite] }],
     spawn: { x: 2, y: 8, facing: 'up' },
     npcs: [
       {
@@ -548,10 +548,10 @@ export const interiors = {
       'moommmmmmmmm',   // la plante ; les trois lits
       'mooooooooooo',
       'oooooooooooo',
-      'moEoooooooom',
+      'mooEooooooom',   // la sortie, sur le tapis dessiné (3, 7)
     ]),
     decor: [],
-    spawn: { x: 2, y: 6, facing: 'up' },
+    spawn: { x: 3, y: 6, facing: 'up' },
     objects: [
       { x: 3, y: 4, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Maman se repose, les yeux mi-clos.'] },
       { x: 6, y: 4, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Fanny dort, son petit poing serré.'] },
@@ -987,7 +987,7 @@ export const interiors = {
       'XXXXXXXXXX',
       'ξξoommmmmm',
       'mmooomoooo',
-      'mmoomooooo',
+      'mmoooooooo',   // (4, 5) libre : rien n'y est dessiné
       'mmoooooooo',
       'ooooooooom',
     ]),
@@ -2700,8 +2700,8 @@ export const interiors = {
     grid: parseGrid([ // dessin de la maison familiale (Fort-de-France), sans cartons
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmoommmmmmm',   // l'escalier du dessin ne mène nulle part : bloqué
-      'mmoooomoooo',
+      'oooommmmmmm',   // maison de plain-pied : l'escalier du modèle est effacé (ajouts de la fiche)
+      'oooooomoooo',
       'oooooommoom',
       'ooooooooooo',
       'mooooommooo',
@@ -2739,8 +2739,8 @@ export const interiors = {
     grid: parseGrid([ // dessin de la maison familiale (Fort-de-France), sans cartons
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
-      'mmoommmmmmm',   // l'escalier du dessin ne mène nulle part : bloqué
-      'mmoooomoooo',
+      'oooommmmmmm',   // maison de plain-pied : l'escalier du modèle est effacé (ajouts de la fiche)
+      'oooooomoooo',
       'oooooommoom',
       'ooooooooooo',
       'mooooommooo',
