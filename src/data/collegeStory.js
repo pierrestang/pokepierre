@@ -52,7 +52,7 @@ export const COLLEGE_WELCOME = [
 // salle de maths (par où Rémy file en classe).
 export const LOCKER_SIDE = [7, 3];
 export const SURVEILLANT_SPOT = [12, 5];
-const CORRIDOR_STAIRS = [0, 2];
+const CORRIDOR_STAIRS = [0, 3];                                  // la dernière marche de l'escalier de gauche
 const LOCKER_FIGHT = [
   { say: ['Le casier 12. Le tien, d\'après ton papier. Tu poses la main sur la porte…'] },
   { setFlag: FLAGS.remiArrive },

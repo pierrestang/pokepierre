@@ -189,9 +189,6 @@ PLANS = {
         'items': [['pb-lit', 0, 6, {'solid': 3}]],
     },
     # Bordeaux — KEDGE, la salle de l'oral : la salle de classe de l'école d'Écorcia ; la professeure derrière son bureau.
-    'kedge': {
-        'hgss': ('006i_Violet School ', 10, 8, 15, 11),
-    },
     # Bordeaux — le stade : le hall du portique du Parc et du Pokéathlon (moquette, comptoir en U : le pupitre du directeur).
     'stade': {
         'hgss': ('013i_Park-Pokéathlon Gate', 10, 8, 28, 11),

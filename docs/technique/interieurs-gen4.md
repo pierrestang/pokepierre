@@ -135,3 +135,14 @@ Générateur (build_interiors.py) : une fiche n'est jamais redessinée (on modif
 peut déclarer `'modele': ('<id>', '<Nom du type>')` : le dessin va dans le modèle (une fois par passage, gardé s'il a été
 retouché, sauf --force) et la pièce devient une fiche (pour des pièces de même plan : dortoirs, salles de KEDGE…).
 interiorSources.json donne à toutes les pièces d'un modèle la même source (`modele:<id>`).
+
+## Collège et KEDGE (octobre 2026)
+
+scripts/interieurs/montepilloy_college.py. Salles : la classe de l'école de Mauville (HGSS), fenêtres en arc remplacées
+par de petites fenêtres carrées (`mc-fenetre`, aux couleurs de la classe), coin carrelé de droite remis en parquet
+(`CLASS_FLOOR`). Escaliers : ceux des étages de la Tour Radio de Doublonville (calque Props), dans les coins du haut,
+retournés en miroir à droite ; posés en deux morceaux (`stairs()` : le haut au-dessus du mur, `top`, le bas à plat sur
+le sol) ; on passe par la dernière marche (rangée 3 : `η` monte, `ξ` descend dans la grille du jeu), on arrive juste
+en dessous (rangée 4). Couloir des casiers : le haut de la classe (15 x 6), casiers d'école dessinés ici (`mc-casier`),
+placard de l'entrepôt, feuille punaisée du labo d'Orme. KEDGE : les mêmes plans (`PLANS.update` : kedge, kedgeCasiers,
+kedgeSalle1-3).
