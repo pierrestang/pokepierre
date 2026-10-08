@@ -55,7 +55,7 @@ puis Hanoï. Pas de combats.
   commandes dessous ; en paysage, les commandes de chaque côté. `?touch` dans l'adresse force l'affichage tactile
   sur ordinateur. Logo (Poké Ball sur fond bleu) et icônes d'écran d'accueil : scripts/build_icons.py.
 
-- Créateur de cartes (builder.html, src/builder/ ; entrée « Créateur de cartes » du menu titre) : mode simple par
+- Créateur de cartes (builder.html, src/builder/ ; entrée « Créateur » du menu titre) : mode simple par
   défaut (matières aux bords automatiques, éléments entiers, thème par ville : src/builder/studio.js), et mode « Case
   par case » : éditeur « V2 » à trois calques avec collisions. En dev, les cartes sont enregistrées dans src/data/builtMaps/<id>.json et s'ouvrent dans
   le jeu avec ?carte=<id>. Les cartes de Fort-de-France à Hull sont générées par scripts/convert_maps_v2.py puis

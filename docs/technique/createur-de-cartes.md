@@ -4,7 +4,7 @@ Détail technique du créateur de cartes (sorti de CLAUDE.md, qui n'en garde qu'
 
 ## Éditeur
 
-Créateur de cartes (builder.html, src/builder/ ; entrée « Créateur de cartes » du menu titre) : nouveau design
+Créateur de cartes (builder.html, src/builder/ ; entrée « Créateur » du menu titre) : nouveau design
 « V2 ». Planches Gen 4 déposées par l'utilisateur dans ASSETTILESPOKEMONV2/ (ressources de fans DeviantArt et eeveeexpo, à
 créditer ; rangées par usage, voir ASSETTILESPOKEMONV2/README.md ; audit et nettoyage du 6 octobre 2026 :
 docs/technique/assets-gen4.md), préparées par scripts/build_v2_tiles.py vers public/assets/v2/ (cases de 16 px +
