@@ -71,7 +71,7 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   src/builder/npcs.js, lecture de l'histoire dans src/builder/questModel.js. Par défaut, le mode simple : la liste des
   personnages du lieu, toutes étapes confondues ; on en choisit un et on le place (glisser, flèches, Maj + flèche pour
   sa direction, « Remettre à sa place »). Ses marches dans l'histoire visent des cases fixes : il y va depuis sa
-  nouvelle place. Apparence : « partout » (par nom, écrite tout de suite dans src/data/characterLooks.json
+  nouvelle place. Apparence (« Choisir… » : la grille de tous les personnages Gen 4, de face, comme le menu PNJ du jeu) : « partout » (par nom, écrite tout de suite dans src/data/characterLooks.json
   par le serveur de développement, /__builder/looks ; elle passe avant BY_NAME de characters.js, après le choix du
   joueur dans le menu Start > PNJ) ou « Seulement ici » (npcEdits.moved[id].sprite, avec le dessin, à enregistrer). La
   molette sur un panneau le fait défiler (pas de zoom). La case « Plus d'options » (retenue dans le navigateur) ajoute le reste du panneau :

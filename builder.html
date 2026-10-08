@@ -177,6 +177,20 @@
       #npcbar .npc-intro { margin: 0; font-size: 12px; line-height: 1.4; }
       #npcbar .npc-toggle { margin-top: 0; opacity: 0.85; }
       #npcbar .npc-toggle input { flex: none; }
+      #npcbar .npc-look-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 4px; }
+      #npc-look-modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 50; width: min(760px, 92vw);
+        max-height: 80vh; display: flex; flex-direction: column; background: var(--panel, #1b1e27); border: 1px solid var(--line);
+        border-radius: 12px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); padding: 10px; }
+      #npc-look-modal[hidden] { display: none !important; }
+      .npc-look-head { display: flex; align-items: center; gap: 6px; font-size: 14px; margin-bottom: 8px; }
+      .npc-look-head small { flex: 1; opacity: 0.7; font-size: 11px; }
+      #npc-look-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; overflow: auto; }
+      .npc-look-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; border-radius: 8px;
+        border: 1px solid transparent; background: rgba(255, 255, 255, 0.04); cursor: pointer; color: inherit; font: inherit; }
+      .npc-look-item:hover { background: var(--hover); }
+      .npc-look-item.on { border-color: var(--accent); background: var(--accent-soft); }
+      .npc-look-item canvas { width: 64px; height: 60px; image-rendering: pixelated; }
+      .npc-look-item span { font-size: 10px; line-height: 1.2; text-align: center; opacity: 0.85; }
       #npcbar small { opacity: 0.7; font-size: 11px; }
       #npcbar .btn.mini { padding: 2px 6px; font-size: 11px; min-width: 0; }
       #npcbar .btn.mini.on { background: var(--accent-soft); color: var(--accent); }
@@ -431,7 +445,7 @@
               </div>
               <div id="npc-presence"></div>
               <div id="npc-look-box">
-                <label>Apparence <select id="npc-look"><option value="">celle du jeu</option></select></label>
+                <div class="npc-look-row">Apparence <button class="btn" id="npc-look-open">Choisir…</button></div>
                 <label class="npc-toggle" title="Décoché : l'apparence change partout où ce nom apparaît dans le jeu">
                   <input type="checkbox" id="npc-look-here" /> Seulement ici (pas les autres « <span id="npc-look-name"></span> »)</label>
               </div>
@@ -448,6 +462,11 @@
                 <label>Réplique <input type="text" id="npc-line" /></label>
                 <button class="btn" id="npc-delete">Supprimer ce figurant</button>
               </div>
+            </div>
+            <div id="npc-look-modal" hidden>
+              <div class="npc-look-head">Apparence de <b id="npc-look-who"></b> <small id="npc-look-scope"></small>
+                <button class="btn icon" id="npc-look-close" title="Fermer (Échap)">×</button></div>
+              <div id="npc-look-grid"></div>
             </div>
             <p class="help">Flèches : une case · Maj + flèche : sa direction · Tab : le suivant · puis « Enregistrer ».<span class="npc-adv">
               Sur la carte : <b style="color:#60aaff">→</b> ses marches, <b class="npc-story">⇢</b> ce qu'il débloque.</span></p>
