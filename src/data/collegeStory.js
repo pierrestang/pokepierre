@@ -137,7 +137,8 @@ export const CAMILLE = [
   // Pierre s'assoit à droite de Camille, puis Rémy à droite de Pierre : il n'en bouge plus.
   { goTo: PIERRE_SEAT, facing: 'left' },
   { walk: 'remi-classe', to: REMI_SEAT, block: true },
-  { face: { 'remi-classe': 'left' } },
+  // Camille et Pierre face à face ; Rémy, à sa place, regarde le tableau.
+  { face: { camille: 'right', player: 'left', 'remi-classe': 'up' } },
   { say: ['Tu t\'assois à côté d\'elle. Rémy s\'installe à ta droite, l\'air de rien.', 'La fille sort ses cahiers. Elle lève les yeux vers toi.'] },
   line('Que lui dis-tu ?', ['Salut ! T\'es en 6e B ?', 'Bonjour. Enchanté.', 'Salut, beauté !'], 'Salut ! T\'es en 6e B ?', {
     'Bonjour. Enchanté.': ['Elle hausse un sourcil. « Euh… enchantée aussi ? »', RELAX],
