@@ -27,7 +27,7 @@ export function createEcarts({ state, remember, changed, requestDraw, setStatus,
     const m = state.map;
     if (!m) return [];
     const ignored = new Set(store.get()[m.id] ?? []);
-    return (ECARTS[m.id] ?? []).filter((e) => !ignored.has(keyOf(e)) && present(e));
+    return (ECARTS[placeKey()] ?? []).filter((e) => !ignored.has(keyOf(e)) && present(e));
   }
   // Au moins une de ses cases a encore son dessin.
   function present(e) {
@@ -35,27 +35,41 @@ export function createEcarts({ state, remember, changed, requestDraw, setStatus,
     return Object.entries(e.refs).some(([c, list]) => list.some(([l, r]) => stackOf(m.layers[l]?.[Number(c)]).includes(r)));
   }
 
+  // Clé du lieu ouvert dans ecarts.json (scripts/audit_assets.py) : une carte et un intérieur peuvent avoir le même id.
+  const inside = () => ['interieur', 'modele'].includes(state.base?.kind);
+  const placeKey = () => `${inside() ? 'int' : 'carte'}:${state.map.id}`;
+
   // Cases importantes : celles de la carte du jeu (PNJ, portes, objets, déclencheurs : assistant.importantCells) ;
-  // dans un intérieur (ou un modèle : toutes ses pièces), ses PNJ, objets, déclencheurs, sorties et départ.
-  async function important() {
+  // dans un intérieur (ou un modèle : toutes ses pièces), ses PNJ (y compris placés pendant la séance), objets,
+  // décors de scène (props), lits, déclencheurs, sorties et départ. `fresh` : recalculées (avant une suppression).
+  async function important(fresh = false) {
     const m = state.map;
-    if (ui.important.has(m.id)) return ui.important.get(m.id);
+    const key = `${placeKey()}:${m.width}x${m.height}`;
+    if (!fresh && ui.important.has(key)) return ui.important.get(key);
     const set = new Map();
     const add = (x, y, why) => set.set(y * m.width + x, why);
-    const rooms = Object.entries(interiors).filter(([id, r]) => id === m.id || r.built?.modele === m.id);
-    if (rooms.length) {
+    if (inside()) {
+      const rooms = Object.entries(interiors).filter(([id, r]) => id === m.id || r.built?.modele === m.id);
       for (const [, r] of rooms) {
         for (const n of r.npcs ?? []) add(n.x, n.y, `PNJ ${n.name ?? n.id}`);
         for (const o of r.objects ?? []) add(o.x, o.y, 'objet du jeu (réplique)');
         for (const t of r.triggers ?? []) add(t.x, t.y, 'passage');
+        for (const p of r.props ?? []) {
+          for (let y = p.y; y < p.y + (p.h ?? 1); y++) for (let x = p.x; x < p.x + (p.w ?? 1); x++) add(x, y, `décor de scène (${p.type ?? p.kind ?? 'objet'})`);
+        }
+        for (const b of r.built?.beds ?? []) {
+          for (let y = b.y; y < b.y + b.h; y++) for (let x = b.x; x < b.x + b.w; x++) add(x, y, 'lit');
+        }
         (r.sourceGrid ?? r.grid ?? []).forEach((row, y) => [...row].forEach((ch, x) => { if (ch === 'E') add(x, y, 'sortie'); }));
         if (r.spawn) add(r.spawn.x, r.spawn.y, 'départ');
       }
+      for (const e of m.npcEdits?.extras ?? []) add(e.x, e.y, `PNJ ${e.name ?? e.id}`);
+      for (const [id, p] of Object.entries(m.npcEdits?.moved ?? {})) add(p.x, p.y, `PNJ ${id}`);
     } else {
       for (const [x, y, why] of await importantCells()) add(x, y, why);
     }
     add(m.spawn.x, m.spawn.y, 'départ');
-    ui.important.set(m.id, set);
+    ui.important.set(key, set);
     return set;
   }
 
@@ -88,14 +102,12 @@ export function createEcarts({ state, remember, changed, requestDraw, setStatus,
 
   async function remove(e) {
     const m = state.map;
-    const imp = await important();
+    const imp = await important(true);
     const hit = e.cells.find((c) => imp.has(c));
     if (hit !== undefined) { setStatus(`Pas supprimé : il couvre une case importante (${imp.get(hit)})`, 'err'); return; }
     remember();
-    if (e.ref?.element) {
-      const [c] = e.cells;
-      studio.eraseAt(c % m.width, Math.floor(c / m.width));     // l'élément du mode simple, comme la gomme
-    }
+    // L'élément du mode simple, retiré lui-même (jamais la gomme, qui repeindrait le sol autour).
+    if (e.ref?.element) studio.removePlaced(e.ref.element, e);
     // Ce qui reste de son dessin (objet de cases, ou élément sans fiche) : retiré case par case, sans le sol.
     const cells = Object.entries(e.refs).map(([c, list]) => ({
       x: Number(c) % m.width,
@@ -213,5 +225,5 @@ export function createEcarts({ state, remember, changed, requestDraw, setStatus,
     render();
   }
 
-  return { draw, bind, refresh, render, count, close: () => { ui.open = false; render(); } };
+  return { draw, bind, refresh, render };
 }

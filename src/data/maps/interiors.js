@@ -2883,7 +2883,7 @@ export const interiors = {
 // `decor` compris) ; la grille d'origine (sourceGrid) reste la référence logique, accordée aux collisions du dessin.
 for (const [id, built] of Object.entries(BUILT_INTERIORS)) {
   const room = interiors[id];
-  if (!room) continue;
+  if (!room || !built) continue;          // fiche invalide (voir compose.js) : l'ancien rendu reste
   // Un dessin d'une autre taille que la grille (pièce refaite, grille pas encore recalée) : on garde l'ancien rendu.
   if (room.grid.length !== built.height || room.grid[0].length !== built.width) {
     console.warn(`Intérieur ${id} : dessin ${built.width} x ${built.height}, grille ${room.grid[0].length} x ${room.grid.length}`);

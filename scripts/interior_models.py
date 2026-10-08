@@ -65,8 +65,7 @@ def compose(room, modele=None):
         solid[int(i)] = v
     out = {**m, 'id': room['id'], 'name': room.get('name', m.get('name')), 'modele': room['modele'],
            'sheets': sheets, 'layers': layers, 'solid': solid}
-    out.pop('npcEdits', None)
-    out.pop('beds', None)
+    out.pop('npcEdits', None)                 # propres à chaque pièce ; les lits du modèle restent sauf s'ils sont redonnés
     for k in ('spawn', 'beds', 'npcEdits'):
         if room.get(k):
             out[k] = room[k]

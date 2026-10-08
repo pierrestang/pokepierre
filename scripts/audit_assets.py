@@ -406,13 +406,13 @@ def audit_place(pid, m, interior):
         sl = (slice(min(ys) * T, (max(ys) + 1) * T), slice(min(xs) * T, (max(xs) + 1) * T))
         crop = one[sl]
         mask = crop[..., 3] >= 128
-        items.append({'place': pid, 'family': s['family'], 'cells': cells, 'refs': s['refs'], 'element': s['id'],
+        items.append({'place': pid, 'interior': interior, 'family': s['family'], 'cells': cells, 'refs': s['refs'], 'element': s['id'],
                       'name': s['name'], 'crop': crop, 'mask': mask, 'm': measure(crop, mask)})
     for a in pixel_assets(m, img, origin, interior):
         sl = a['sl']
         crop = img[sl].copy()
         crop[~a['mask']] = 0
-        items.append({'place': pid, 'family': a['family'], 'cells': sorted(a['refs']), 'refs': a['refs'],
+        items.append({'place': pid, 'interior': interior, 'family': a['family'], 'cells': sorted(a['refs']), 'refs': a['refs'],
                       'w_cells': (a['sl'][1].stop - a['sl'][1].start) / T,
                       'crop': crop, 'mask': a['mask'], 'm': measure(crop, a['mask'])})
     return items
@@ -461,20 +461,24 @@ def main():
     for it in items:
         it['why'] = reasons(it, meds[it['family']])
     # Écarts : le fichier lu par le créateur (fusionné avec l'existant si --carte).
+    # Clés : « carte:<id> » pour une carte, « int:<id> » pour un intérieur ou un modèle partagé (une carte et un
+    # intérieur peuvent porter le même identifiant, ex. bonsecours).
+    key = lambda pid, interior: f"{'int' if interior else 'carte'}:{pid}"
     ecarts = json.loads(OUT_JSON.read_text()) if only and OUT_JSON.exists() else {}
-    for pid, m, _ in places:
-        ecarts[pid] = []
+    for pid, m, interior in places:
+        ecarts[key(pid, interior)] = []
     for it in items:
         if not it['why']:
             continue
-        W = next(m['width'] for pid, m, _ in places if pid == it['place'])
+        pm = next((m, interior) for pid, m, interior in places if pid == it['place'] and interior == it.get('interior'))
+        W = pm[0]['width']
         xs = [c % W for c in it['cells']]
         ys = [c // W for c in it['cells']]
         e = {'x': min(xs), 'y': min(ys), 'w': max(xs) - min(xs) + 1, 'h': max(ys) - min(ys) + 1, 'cells': it['cells'],
              'famille': it['family'], 'raisons': it['why'],
              'refs': {str(c): [[L, r] for L, r in lst] for c, lst in it['refs'].items()},
              'ref': {'element': it['element']} if it.get('element') else {}, 'mesures': it['m']}
-        ecarts[it['place']].append(e)
+        ecarts[key(it['place'], it.get('interior'))].append(e)
     OUT_JSON.write_text(json.dumps(ecarts, ensure_ascii=False, separators=(',', ':')))
     summary = {'familles': {}, 'raisons': Counter()}
     for fam in FAMILIES:

@@ -331,35 +331,9 @@ def build_room(rid, src, plan, pack):
     return built, preview, problems
 
 
-SOURCES = Path(__file__).resolve().parent.parent / 'src' / 'builder' / 'interiorSources.json'
-
-
-def write_sources():
-    """La pièce d'origine de chaque intérieur (src/builder/interiorSources.json, lu par le créateur de cartes) : la pièce
-    HGSS (carte Tiled et numéro de pièce, voir hgss_rooms.rooms) d'où il est tiré, ou « dessinée » ; deux intérieurs de
-    même clé sont une pièce réutilisée."""
-    out = {}
-    for rid, plan in P.PLANS.items():
-        if 'hgss' not in plan:
-            out[rid] = {'key': f'dessinee:{rid}', 'label': 'Pièce dessinée (murs et sol générés)'}
-            continue
-        name, x, y, w, h = plan['hgss']
-        rs = HG.rooms(name)
-        overlap = lambda r: max(0, min(x + w, r[0] + r[2]) - max(x, r[0])) * max(0, min(y + h, r[1] + r[3]) - max(y, r[1]))
-        k = max(range(len(rs)), key=lambda i: overlap(rs[i])) if rs else 0
-        label = name.split('_', 1)[-1].strip()
-        out[rid] = {'key': f'{name.strip()}#{k}', 'label': f'HGSS · {label} · pièce {k + 1}'}
-    # Pièces qui reprennent un modèle partagé (src/data/builtInteriors/modeles, scripts/interior_models.py) : même dessin.
-    for mid, users in IM.users().items():
-        for rid in users:
-            out[rid] = {'key': f'modele:{mid}', 'label': f"Modèle · {IM.load_modele(mid)['name']}"}
-    SOURCES.write_text(json.dumps(out, ensure_ascii=False, indent=1, sort_keys=True))
-
-
 def main():
     args = sys.argv[1:]
-    if '--sources' in args:                           # seulement l'index des sources (créateur de cartes) et des pièces
-        write_sources()
+    if '--index' in args:                             # seulement l'index des pièces (src/data/builtInteriors/index.js)
         IM.write_index()
         return
     essai = '--essai' in args                         # aperçus seulement : rien n'est écrit dans le projet
@@ -387,6 +361,11 @@ def main():
         # fiche qui le reprend (voir scripts/interior_models.py) ; un modèle retouché dans le créateur est gardé.
         if plan.get('modele'):
             mid, mname = plan['modele']
+            # Une pièce retouchée dans le créateur qui n'est pas encore une fiche : on ne la remplace pas sans --force
+            # (son dessin serait perdu) ; avec --force, ses PNJ placés, son départ et ses lits sont gardés.
+            if old.get('retouche') and not old.get('modele') and not force and not essai:
+                print(f'{rid} : retouchée dans le créateur, pas encore partagée (--force pour la passer au modèle {mid})')
+                continue
             mfile = IM.MODELES / f'{mid}.json'
             mold = json.loads(mfile.read_text()) if mfile.exists() else {}
             if mid not in made and not (mold.get('retouche') and not force) and not essai:
@@ -400,7 +379,7 @@ def main():
             if not essai:
                 fiche = {'version': 1, 'id': rid, 'name': old.get('name') or rooms[rid]['name'], 'modele': mid}
                 for k in ('spawn', 'beds', 'npcEdits', 'ajouts'):
-                    if old.get(k) and old.get('modele') == mid:
+                    if old.get(k) and (old.get('modele') == mid or (k != 'ajouts' and not old.get('modele'))):
                         fiche[k] = old[k]
                 IM.save(old_file, fiche)
                 print(f'{rid} : reprend le modèle {mid}')
@@ -424,7 +403,6 @@ def main():
     if essai:
         return
     rows = pack.save()
-    write_sources()
     IM.write_index()                                   # index des pièces dessinées (et des modèles partagés)
     print(f'{len(ids)} pièces, {len(pack.tiles)} cases ({rows} rangées) -> public/assets/v2/{SHEET}.png')
 

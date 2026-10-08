@@ -912,8 +912,17 @@ export function createStudio(api) {
     el.prev = (el.prev ?? []).map(([c, v]) => [c + dy * m.width + dx, v]);
   }
 
+  // Retire l'élément posé `id` dont l'emprise touche le rectangle { x, y, w, h } (panneau « Écarts ») ; rien sinon.
+  function removePlaced(id, r) {
+    const inRect = (x, y) => x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h;
+    const el = (state.map.studio?.elements ?? []).find((o) => o.id === id && (inRect(o.x, o.y)
+      || occupancyCells(o).some((c) => inRect(c % state.map.width, Math.floor(c / state.map.width)))));
+    if (el) removeElement(el);
+    return Boolean(el);
+  }
+
   return {
-    elementCellsAt, elementMoved,
+    elementCellsAt, elementMoved, removePlaced,
     load, render, bind, hover, drawGhost, clickPlace, eraseAt, fillFrom, beginStroke, endStroke,
     paintAt: (x, y) => paintCells(brushCells(x, y, material().kind === 'forest')),
     paintRect: (r) => {

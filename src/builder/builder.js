@@ -28,6 +28,7 @@ const PALETTE_GROUPS = ['Sols et chemins', 'Eau', 'Végétation', 'Relief', 'Bâ
 const KEYS = {
   mode: 'pokepierre.builder.mode',
   lastOpen: 'pokepierre.builder.lastOpen',
+  ficheEdits: 'pokepierre.builder.ficheEdits', // modèle ouvert : PNJ placés pas encore enregistrés, par pièce
   foldedCities: 'pokepierre.builder.foldedCities', // groupes repliés dans « Ouvrir » (intérieurs)
   openSort: 'pokepierre.builder.openSort',   // « Ouvrir » (intérieurs) : rangés par 'ville' ou par 'type'   // le dernier ouvert de chaque espace ({ ext, int } : entrées de « Ouvrir »)
   current: 'pokepierre.builder.current',     // la carte en cours (rouverte au rechargement de la page)
@@ -1567,6 +1568,12 @@ async function loadModelRooms({ fresh = false } = {}) {
     if (found) fiches[u.id] = { fiche: found.map, etag: found.etag, saved: JSON.stringify(found.map.npcEdits ?? null) };
   }));
   state.fiches = fiches;
+  // Brouillon : les PNJ placés dans les autres pièces du modèle, pas encore enregistrés (voir keepFicheEdits).
+  if (fresh) store.set(KEYS.ficheEdits, {});
+  else {
+    const kept = store.get(KEYS.ficheEdits) ?? {};
+    for (const [id, edits] of Object.entries(kept)) if (fiches[id]) fiches[id].fiche.npcEdits = edits ?? undefined;
+  }
   if (!fiches[state.base.room]) setBase({ ...state.base, room: users[0]?.id });
   if (fresh) setRoomEdits(state.base.room);
   const select = $('model-room');
@@ -1587,12 +1594,26 @@ function setRoomEdits(room) {
   const edits = state.fiches?.[room]?.fiche.npcEdits;
   if (edits) m.npcEdits = clone(edits);
 }
-function switchModelRoom(room) {
-  const prev = state.base.room;
-  if (prev && state.fiches?.[prev]) {
-    if (state.map.npcEdits) state.fiches[prev].fiche.npcEdits = clone(state.map.npcEdits);
-    else delete state.fiches[prev].fiche.npcEdits;
+// Les PNJ placés de la pièce affichée passent dans sa fiche ; les fiches modifiées sont gardées dans le brouillon
+// (un rechargement de la page ne les perd pas).
+function keepFicheEdits() {
+  const room = state.base?.room;
+  if (room && state.fiches?.[room]) {
+    if (state.map.npcEdits) state.fiches[room].fiche.npcEdits = clone(state.map.npcEdits);
+    else delete state.fiches[room].fiche.npcEdits;
   }
+  const kept = {};
+  for (const [id, f] of Object.entries(state.fiches ?? {})) {
+    if (JSON.stringify(f.fiche.npcEdits ?? null) !== f.saved) kept[id] = f.fiche.npcEdits ?? null;
+  }
+  store.set(KEYS.ficheEdits, kept);
+}
+function switchModelRoom(room) {
+  keepFicheEdits();
+  // L'historique porte les PNJ de la pièce affichée : on ne l'applique pas à une autre pièce.
+  state.undo = [];
+  state.redo = [];
+  updateHistoryButtons();
   setBase({ ...state.base, room });
   setRoomEdits(room);
   store.set(KEYS.current, state.map);
@@ -1601,27 +1622,38 @@ function switchModelRoom(room) {
 }
 
 // Enregistre les fiches dont les PNJ placés ont changé (après le modèle).
+// Une fiche changée sur disque entre-temps (régénérée par un script) : on la relit et on n'y remet que les PNJ placés.
+// Renvoie { n : fiches enregistrées, failed : fiches en échec }.
 async function saveModelFiches() {
-  const room = state.base.room;
-  if (room && state.fiches?.[room]) {
-    if (state.map.npcEdits) state.fiches[room].fiche.npcEdits = clone(state.map.npcEdits);
-    else delete state.fiches[room].fiche.npcEdits;
-  }
+  keepFicheEdits();
   let n = 0;
+  const failed = [];
   for (const [id, f] of Object.entries(state.fiches ?? {})) {
     const now = JSON.stringify(f.fiche.npcEdits ?? null);
     if (now === f.saved) continue;
-    const res = await fetch(`/__builder/interieurs/${id}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'If-Match': f.etag ?? 'none', 'X-Force': '1' },
+    const post = () => fetch(`/__builder/interieurs/${id}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'If-Match': f.etag ?? 'none' },
       body: JSON.stringify(f.fiche),
     });
-    if (res.ok) {
+    let res = await post().catch(() => null);
+    if (res?.status === 409) {
+      const fresh = await fetchProjectMap(id, 'interieur');
+      if (fresh) {
+        const edits = f.fiche.npcEdits;
+        f.fiche = fresh.map;
+        if (edits) f.fiche.npcEdits = edits; else delete f.fiche.npcEdits;
+        f.etag = fresh.etag;
+        res = await post().catch(() => null);
+      }
+    }
+    if (res?.ok) {
       f.etag = (await res.json()).etag;
       f.saved = now;
       n++;
-    }
+    } else failed.push(id);
   }
-  return n;
+  keepFicheEdits();
+  return { n, failed };
 }
 
 // ---------- Deux espaces : extérieurs et intérieurs ----------
@@ -1723,8 +1755,12 @@ async function save({ force = false } = {}) {
     setBase({ ...state.base, id: m.id, etag: out.etag, kind: state.base?.kind });
     if (isInterior()) m.retouche = true;
     if (isModel()) {
-      const n = await saveModelFiches();
+      const { n, failed } = await saveModelFiches();
       const rooms = Object.keys(state.fiches ?? {}).length;
+      if (failed.length) {
+        setStatus(`Modèle enregistré, mais PNJ non enregistrés pour : ${failed.join(', ')} (réessaie Enregistrer)`, 'err');
+        return;                                   // reste « non enregistré »
+      }
       setStatus(`Modèle enregistré : ${out.file} (${rooms} pièce${rooms > 1 ? 's' : ''} le reprennent${n ? ` ; PNJ de ${n} pièce(s)` : ''})`, 'ok');
     } else setStatus(`Enregistrée dans le projet : ${out.file}${isInterior() ? ' (retouchée : build_interiors.py la garde)' : ''}`, 'ok');
   } else {
@@ -1927,6 +1963,12 @@ function bindUi() {
   $('map-w').oninput = sizeEdited;
   $('map-h').oninput = sizeEdited;
   $('resize').onclick = () => {
+    if (isModel()) {
+      // Les différences propres de chaque pièce (ajouts) sont indexées par case : un modèle garde sa taille.
+      setStatus('Un modèle partagé garde sa taille (les pièces qui le reprennent en dépendent)', 'err');
+      syncFields();
+      return;
+    }
     const w = evenSize($('map-w').value, state.map.width);
     const h = evenSize($('map-h').value, state.map.height);
     if (w === state.map.width && h === state.map.height) return;
@@ -2206,14 +2248,18 @@ async function start() {
     if (dirty) setStatus('Cette pièce reprend maintenant un modèle partagé : modèle ouvert, ancien brouillon laissé de côté', 'err');
     return;
   }
+  let fromProject = true;                 // la version du projet est chargée (pas le brouillon) : PNJ des fiches relus
   if (!draft) loadMap(blankMap());
   else if (project && !dirty) loadMap(project.map, { base: { ...base, id: base?.id ?? draft.id, etag: project.etag, kind: base?.kind } });
   else if (project && base?.etag !== project.etag
     && !window.confirm(`Ton brouillon de « ${draft.name} » n'est pas enregistré, mais la carte a changé dans le projet `
       + 'depuis (régénérée par un script ?).\n\nOK : garder ton brouillon.\nAnnuler : reprendre la version du projet.')) {
     loadMap(project.map, { base: { ...base, id: base?.id ?? draft.id, etag: project.etag, kind: base?.kind } });
-  } else loadMap(draft, { base, dirty });
-  if (isModel()) await loadModelRooms({ fresh: !dirty });
+  } else {
+    loadMap(draft, { base, dirty });
+    fromProject = false;
+  }
+  if (isModel()) await loadModelRooms({ fresh: fromProject });
   if (!state.projectSave) setStatus('Les cartes sont enregistrées dans ce navigateur');
 }
 

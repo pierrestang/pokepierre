@@ -56,10 +56,20 @@ function collection(dir, idPattern, { interiors = false, rel: relDir = null } = 
       }
     }
     if (req.method !== 'POST') return send(405, { error: 'méthode non prise en charge' });
+    // Seulement le créateur de ce serveur : du JSON (pas un formulaire envoyé par une autre page) et pas d'origine
+    // étrangère (une page ouverte dans le navigateur ne doit pas pouvoir écraser une carte).
+    if (!String(req.headers['content-type'] ?? '').startsWith('application/json')) return send(415, { error: 'JSON attendu' });
+    const origin = req.headers.origin;
+    if (origin && new URL(origin).host !== req.headers.host) return send(403, { error: 'origine refusée' });
     if (interiors && !existsSync(file)) return send(404, { error: 'intérieur inconnu' });
     let body = '';
-    req.on('data', (chunk) => { body += chunk; });
+    let tooBig = false;
+    req.on('data', (chunk) => {
+      body += chunk;
+      if (body.length > 32 * 1024 * 1024) { tooBig = true; req.destroy(); }
+    });
     req.on('end', () => {
+      if (tooBig) return send(413, { error: 'trop gros' });
       try {
         const map = JSON.parse(body);
         const current = existsSync(file) ? etagOf(readFileSync(file, 'utf8')) : 'none';

@@ -134,7 +134,7 @@ hullHouse, maisonCommune, hanoiHome, appartRemi, yanisAppart, hullColoc, studioP
 Générateur (build_interiors.py) : une fiche n'est jamais redessinée (on modifie le modèle dans le créateur) ; un plan
 peut déclarer `'modele': ('<id>', '<Nom du type>')` : le dessin va dans le modèle (une fois par passage, gardé s'il a été
 retouché, sauf --force) et la pièce devient une fiche (pour des pièces de même plan : dortoirs, salles de KEDGE…).
-interiorSources.json donne à toutes les pièces d'un modèle la même source (`modele:<id>`).
+`python3 scripts/build_interiors.py --index` réécrit seulement l'index des pièces (index.js).
 
 ## Collège et KEDGE (octobre 2026)
 

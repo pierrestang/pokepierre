@@ -1,10 +1,9 @@
 // Les intérieurs du jeu rangés par ville, pour le créateur de cartes (« Ouvrir ») : la ville d'un intérieur est la carte
 // dont une porte y mène (puis, de proche en proche, les étages et pièces voisines : escaliers, passages) ; à défaut, la
-// carte dont une scénette y emmène (voyage). Les sources (interiorSources.json, écrit par scripts/build_interiors.py)
-// disent de quelle pièce HGSS chaque intérieur est tiré : deux intérieurs de même source sont une pièce réutilisée.
+// carte dont une scénette y emmène (voyage). Les pièces partagées (même dessin) sont les modèles :
+// src/data/builtInteriors/modeles et scripts/interior_models.py.
 import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
-import SOURCES from './interiorSources.json' with { type: 'json' };
 
 // Les identifiants d'intérieurs cités sous `interior` (portes, passages, voyages) dans un objet, en profondeur.
 function interiorRefs(root, { deep }) {
@@ -69,10 +68,6 @@ export function interiorIndex() {
     for (const id of interiorRefs(room, { deep: true })) if (city[from]) assign(id, city[from]);
   }
   for (const id of Object.keys(interiors)) assign(id, 'Autres');
-  // Pièces réutilisées : les intérieurs qui partagent une source.
-  const bySource = {};
-  for (const [id, s] of Object.entries(SOURCES)) (bySource[s.key] ??= []).push(id);
-  const sharedWith = (id) => (SOURCES[id] ? bySource[SOURCES[id].key].filter((o) => o !== id) : []);
-  cache = { city, order, source: (id) => SOURCES[id] ?? null, sharedWith };
+  cache = { city, order };
   return cache;
 }

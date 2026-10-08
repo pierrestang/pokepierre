@@ -53,9 +53,8 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
 
 - Intérieurs : « Ouvrir » liste aussi les intérieurs du jeu (src/data/builtInteriors, `/__builder/interieurs` dans
   vite.config.js), rangés par ville dans l'ordre du jeu (src/builder/interiorIndex.js : la carte dont une porte y mène,
-  puis les étages de proche en proche, sinon le voyage qui y emmène). Chaque intérieur montre sa pièce HGSS d'origine
-  et, en orange, les autres intérieurs qui la réutilisent (src/builder/interiorSources.json, écrit par
-  build_interiors.py ; `--sources` pour seulement le réécrire). Réutiliser une pièce est permis pour les logements,
+  puis les étages de proche en proche, sinon le voyage qui y emmène). Un intérieur partagé (modèle) n'a qu'une ligne,
+  avec à droite les pièces qui le reprennent (voir interieurs-gen4.md, modèles). Réutiliser une pièce est permis pour les logements,
   pas pour les bâtiments spécifiques (boîte de nuit, pub, collège…). Ouverts en case par case, rayon « Intérieurs » de
   la palette. Enregistrés marqués `retouche` : scripts/build_interiors.py ne les redessine plus sans `--force` (voir
   docs/technique/interieurs-gen4.md). « Tester » ouvre la pièce dans le jeu, dans son contexte (BootScene :
