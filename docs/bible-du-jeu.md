@@ -47,8 +47,8 @@ Fort-de-France → Saint-Ay → (route de Montépilloy) → Montépilloy → rou
 Bordeaux → Hull → Hanoï → Amsterdam → Hull (retour) → New Delhi → Rajasthan → Bordeaux (stade) → Paris → Toulon
 (Chemin de Saint-Jacques, Corse) → Bali → Sri Lanka → Thaïlande → Népal → « Nouveau pays » (non ouvert).
 
-Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux, redessiné en Gen 4 : tarmac et avions derrière la
-baie vitrée, tableau des départs, guichet, file à cordons, salle d'attente). L'hôtesse (`g64`), derrière son comptoir
+Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux, redessiné en Gen 4, tout entier à l'écran : tarmac
+et avions garés derrière la baie vitrée, tableau des départs, guichet, file à cordons, salle d'attente ; pas de vélo). L'hôtesse (`g64`), derrière son comptoir
 (on lui parle par-dessus), propose deux choix : la destination de la suite de l'histoire et « Autre » (les lieux déjà
 visités, et « Rester ici ») ; sans vol de l'histoire en attente, la liste « Autre » s'ouvre directement. Chaque vol joue
 le **trajet en avion** : l'avion de ligne file au-dessus de l'océan et de ses îles, entre deux couches de nuages, deux

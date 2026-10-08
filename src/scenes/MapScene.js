@@ -59,7 +59,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 //   events:   [{ on: 'enter', ifFlags?, unlessFlags?, steps: [{ say, speaker? } | { setFlag } | { talk: npcId }] }]
 //             `talk` : le PNJ se tourne vers le joueur et dit son dialogue (+ souvenir éventuel).
 //             scénettes jouées automatiquement à l'arrivée sur la carte.
-//   surroundings: code de tuile qui remplit l'écran autour de la carte (sinon celui de la scène).
+//   surroundings: code de tuile qui remplit l'écran autour de la carte (sinon celui de la scène ; false : du noir).
 //   music:    { song, volume?, ifFlags?, unlessFlags? } — musique du lieu à la place de celle par défaut
 //   dark:     { radius?, ifFlags?, unlessFlags? } — pièce dans le noir, halo autour de Pierre (updateDarkness)
 //   patrols:  { guards, caught, ifFlags?, unlessFlags? } — rondes de nuit avec cônes de lumière (systems/Patrols.js)
@@ -67,8 +67,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // cityName() (affiché en haut à gauche)
 // et peuvent définir
 // `surroundingTile` (tuile de remplissage par défaut).
-// Objets posés au sol, dessinés dans le code : le tas de planches de la ferme (Saint-Ay), la caisse à outils de Jean
-// (Montépilloy).
+// Objets posés au sol, dessinés dans le code : la poulie de la cabane des cousins (Saint-Ay).
 const FLOOR_PROPS = { pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
 
 // Clés de conditions d'une étape (voir systems/flags.js meetsConditions).

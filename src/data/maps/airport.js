@@ -67,61 +67,59 @@ const DESTINATIONS = [
   { label: 'Autre', ask: { question: 'Quelle destination ?', choices: OTHER_FLIGHTS.map(flight) } },
 ];
 
-// Aéroport — 24 x 18 cases, en Gen 4 : le tarmac et ses avions derrière la baie vitrée, le tableau des départs, le guichet
-// (l'hôtesse derrière son comptoir, on lui parle par-dessus), la file entre les poteaux à cordon, la salle d'attente, les
-// portes vers Bordeaux. Légende : voir src/data/tiles.js (A = tarmac, | = baie vitrée, # = comptoir, _ = sol du terminal).
+// Aéroport — 22 x 14 cases (la carte tient en entier dans l'écran : on voit toujours les avions), en Gen 4 : le tarmac
+// et ses avions derrière la baie vitrée, le tableau des départs, le guichet (l'hôtesse derrière son comptoir, on lui parle
+// par-dessus), la file entre les poteaux à cordon, la salle d'attente, les portes vers Bordeaux. Un intérieur : pas de vélo.
+// Légende : voir src/data/tiles.js (A = tarmac, | = baie vitrée, # = comptoir, _ = sol du terminal).
 export const airportMap = {
   id: 'airport',
   name: 'Aéroport',
+  indoor: true,
+  surroundings: false,                        // autour de la carte, du noir (comme les intérieurs), pas de forêt
   built: BUILT,
   sourceGrid: parseGrid([
-    'AAAAAAAAAAAAAAAAAAAAAAAA', // 0  tarmac et avions
-    'AAAAAAAAAAAAAAAAAAAAAAAA', // 1
-    'AAAAAAAAAAAAAAAAAAAAAAAA', // 2
-    'AAAAAAAAAAAAAAAAAAAAAAAA', // 3
-    'AAAAAAAAAAAAAAAAAAAAAAAA', // 4
-    '||||||||||||||||||||||||', // 5  baie vitrée, tableau des départs
-    '||||||||||||||||||||||||', // 6
-    'XX____XXXXXXXXXXXX____XX', // 7  tapis à bagages
-    'XXXXXX____________XXXXXX', // 8  l'hôtesse (x 11), derrière le guichet ; cordons de chaque côté
-    'X_____############_____X', // 9  guichet ('#' : on parle à l'hôtesse par-dessus)
-    'X______________________X', // 10
-    'X_____XXXXX__XXXXX_____X', // 11 la file (poteaux à cordon, ouverte en x 11-12)
-    'X______________________X', // 12
-    'X_XXXXXX________XXXXXX_X', // 13 salle d'attente
-    'X______________________X', // 14
-    'XXXXXXX_________XXXXXX_X', // 15
-    'X______________________X', // 16
-    'XXXXXXXXXXX__XXXXXXXXXXX', // 17 portes vers Bordeaux
+    'AAAAAAAAAAAAAAAAAAAAAA', // 0  tarmac et avions
+    'AAAAAAAAAAAAAAAAAAAAAA', // 1
+    'AAAAAAAAAAAAAAAAAAAAAA', // 2
+    'AAAAAAAAAAAAAAAAAAAAAA', // 3
+    '||||||||||||||||||||||', // 4  baie vitrée, tableau des départs
+    '||||||||||||||||||||||', // 5
+    'XXXXXXXXXXXXXXXXXXXXXX', // 6  le côté du personnel : l'hôtesse (x 10), deux plantes
+    'XXXXXXX#######XXXXXXXX', // 7  guichet ('#' : on parle à l'hôtesse par-dessus) ; cordons de chaque côté
+    'X____________________X', // 8
+    'X___XXXXX__XXXXX_____X', // 9  la file (poteaux à cordon, ouverte en x 9-10)
+    'X_XXXXX________XXXXX_X', // 10 salle d'attente : dossiers des sièges
+    'X_XXXXXX______XXXXXX_X', // 11 assises, petites valises
+    'X____________________X', // 12
+    'XXXXXXXXXX__XXXXXXXXXX', // 13 portes vers Bordeaux
   ]),
   doors: [],
   buildings: [],
   npcs: [
     // Ousmane attend devant le guichet le jour du départ pour Hull.
     {
-      id: 'ousmane-aeroport', name: 'Ousmane', x: 13, y: 10, facing: 'left',
+      id: 'ousmane-aeroport', name: 'Ousmane', x: 11, y: 8, facing: 'left',
       ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull],
       dialogue: ['Le guichet, c\'est juste là. Prends ton billet pour Hull.'],
     },
     {
-      id: 'hotesse', name: 'Hôtesse', x: 11, y: 8, facing: 'down', color: 0x2c5cb0,
+      id: 'hotesse', name: 'Hôtesse', x: 10, y: 6, facing: 'down', color: 0x2c5cb0,
       dialogue: ["Bonjour ! Bienvenue à l'aéroport."],
       ask: { question: 'Où souhaites-tu partir ?', choices: DESTINATIONS },
     },
     // Des voyageurs dans la salle d'attente.
-    { id: 'voyageur-1', name: 'Voyageur', x: 7, y: 14, facing: 'up', dialogue: ['Mon vol a deux heures de retard. Encore.'] },
-    { id: 'voyageuse-1', name: 'Voyageuse', x: 17, y: 12, facing: 'down', dialogue: ['Je pars voir ma fille au Canada !'] },
+    { id: 'voyageur-1', name: 'Voyageur', x: 4, y: 12, facing: 'up', dialogue: ['Mon vol a deux heures de retard. Encore.'] },
+    { id: 'voyageuse-1', name: 'Voyageuse', x: 13, y: 10, facing: 'down', dialogue: ['Je pars voir ma fille au Canada !'] },
   ],
-  triggers: [11, 12].map((x) => ({
+  triggers: [10, 11].map((x) => ({
     x,
-    y: 17,
+    y: 13,
     readyDialogue: ["Tu sors de l'aéroport."],
     warp: { map: 'bordeaux', x: 30, y: 10, facing: 'left' },
   })),
-  objects: [
-    ...[9, 10, 11, 12, 13, 14].map((x) => ({ x, y: 6, dialogue: ['Le tableau des départs. Hull, Hanoï, Amsterdam, New Delhi… Le monde entier.'] })),
-  ],
-  spawn: { x: 11, y: 16, facing: 'up' },
+  // Les écrans du guichet, de part et d'autre de l'hôtesse.
+  objects: [8, 12].map((x) => ({ x, y: 7, dialogue: ['Sur l\'écran, les départs du jour : Hull, Hanoï, Amsterdam, New Delhi… Le monde entier.'] })),
+  spawn: { x: 10, y: 12, facing: 'up' },
 };
 
 // La grille du jeu : celle d'origine, accordée aux collisions du dessin.

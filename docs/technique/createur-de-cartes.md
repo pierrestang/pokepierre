@@ -373,11 +373,13 @@ bloquante, bords de sol par-dessus le sol), quelle que soit la sélection. Autre
 ## L'aéroport (octobre 2026)
 
 L'aéroport (à Bordeaux) est une carte du créateur dessinée par scripts/build_airport.py (src/data/builtMaps/airport.json,
-planche public/assets/v2/aeroport.png, masquée dans le créateur) : le tarmac et deux avions (l'avion du trajet,
-scripts/build_travel_art.py), la baie vitrée et le tableau des départs, le tapis à bagages, le guichet, la file à
-cordons, la salle d'attente, les portes vitrées. Meubles : planches DPPt et l'aéroport de TobalCR
-(ASSETTILESPOKEMONV2/tilesets/interieurs/aeroport_tobalcr.png, crédit dans credits/tobalcr.txt). Le script réécrit la
-carte : une retouche faite dans le créateur serait perdue au prochain passage.
+planche public/assets/v2/aeroport.png, masquée dans le créateur), en 22 x 14 cases pour tenir en entier dans l'écran
+(les avions restent visibles ; autour, du noir : `surroundings: false`) : le tarmac et deux avions garés (l'avion du
+trajet, scripts/build_travel_art.py), la baie vitrée et le tableau des départs, le guichet (comptoir clair à façade
+bleue, deux petits écrans), la file à cordons, la salle d'attente (sièges, petites valises), les portes vitrées.
+Meubles : planches DPPt, le reste dessiné dans le script, sans ombre portée. Carte de bâtiment (`indoor: true`) : pas
+de vélo (systems/bike.js). Le script réécrit la carte : une retouche faite dans le créateur serait perdue au prochain
+passage.
 Comptoir : une case '#' de la grille ; on parle à la personne de l'autre côté (MapScene.tryInteract, aussi compris par
 check_paths.js). L'hôtesse : une question à deux choix (le vol de la suite de l'histoire, « Autre ») ; une réponse peut
 ouvrir une sous-question (`ask`) et être cachée quand d'autres conditions sont remplies (`notWhen`) ; seule, une

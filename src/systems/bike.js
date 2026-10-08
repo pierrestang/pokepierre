@@ -35,10 +35,13 @@ export function giveBikeForTesting() {
   if (new URLSearchParams(window.location.search).has('velo')) items.add(ITEMS.velo);
 }
 
+// Dans un bâtiment : un intérieur, ou une carte de bâtiment (`indoor`, ex. l'aéroport).
+const indoors = (scene) => scene.scene.key !== 'Overworld' || Boolean(scene.map?.indoor);
+
 // Pourquoi Pierre ne peut pas monter ici (une réplique), ou null.
 export function bikeRefusal(scene) {
   if (!hasBike()) return null;
-  if (scene.scene.key !== 'Overworld') return ['Pas de vélo à l\'intérieur !'];
+  if (indoors(scene)) return ['Pas de vélo à l\'intérieur !'];
   if (scene.followers?.members.length) return ['Ce n\'est pas le moment de monter sur ton vélo : on t\'accompagne.'];
   return null;
 }
@@ -72,7 +75,7 @@ export async function toggleBike(scene) {
 // À l'arrivée sur une carte : on reprend le vélo si on roulait (dehors, seul), on reste à pied dans un bâtiment.
 export function resumeBike(scene) {
   if (!hasBike() || !wanted()) return;
-  if (scene.scene.key !== 'Overworld') {
+  if (indoors(scene)) {
     remember(false);
     return;
   }
