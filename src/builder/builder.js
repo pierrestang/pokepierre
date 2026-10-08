@@ -7,6 +7,7 @@ import { createNpcLayer } from './npcs.js';
 import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
 import { interiorIndex, TYPES, typeOf } from './interiorIndex.js';
+import { composeInterior } from '../data/builtInteriors/compose.js';
 
 // Créateur de cartes (builder.html) : on peint la carte case par case avec les planches V2
 // (public/assets/v2, préparées par scripts/build_v2_tiles.py), sur trois calques, puis on règle les collisions et le
@@ -1524,6 +1525,7 @@ function loadMap(map, { base = null, dirty = false } = {}) {
   centerMap();
   store.set(KEYS.current, map);
   npcs.reset();
+  if (!isModel()) $('model-room-wrap').hidden = true;
   studio.load().then(() => applySpace());
   if (dirty) setStatus('Brouillon repris : modifications non enregistrées');
 }
@@ -1537,8 +1539,86 @@ function setBase(base) {
 
 // Deux collections dans le projet (voir vite.config.js) : les cartes, et les intérieurs du jeu (dessinés par
 // scripts/build_interiors.py, qu'on retouche ici ; une pièce enregistrée ici est marquée « retouchée »).
-const API = (kind) => (kind === 'interieur' ? '/__builder/interieurs' : '/__builder/maps');
-const isInterior = () => state.base?.kind === 'interieur';
+const API = (kind) => ({ interieur: '/__builder/interieurs', modele: '/__builder/modeles' }[kind] ?? '/__builder/maps');
+const isInterior = () => state.base?.kind === 'interieur' || state.base?.kind === 'modele';
+
+// ---------- Modèles d'intérieurs partagés ----------
+// Un modèle (src/data/builtInteriors/modeles, voir compose.js) est le dessin commun à plusieurs pièces du jeu ; chaque
+// pièce en est une fiche (ses différences propres, ses PNJ placés). Ouvrir un modèle l'édite pour toutes ; le sélecteur
+// « Pièce » choisit la pièce dont on voit et place les PNJ (outil Personnages) et que « Tester » ouvre ; ses PNJ sont
+// enregistrés dans sa fiche. state.fiches : { id de pièce : { fiche, etag, saved } }.
+const isModel = () => state.base?.kind === 'modele';
+const clone = (v) => (v === undefined ? undefined : JSON.parse(JSON.stringify(v)));
+
+async function loadModelRooms({ fresh = false } = {}) {
+  const wrap = $('model-room-wrap');
+  if (!isModel()) { wrap.hidden = true; state.fiches = null; return; }
+  const list = await fetch('/__builder/interieurs').then((r) => (r.ok ? r.json() : [])).catch(() => []);
+  const order = interiorIndex().order;
+  const rank = (r) => { const k = order.indexOf(interiorIndex().city[r.id]); return k < 0 ? 99 : k; };
+  const users = list.filter((r) => r.modele === state.base.id).sort((a, b) => rank(a) - rank(b));
+  const fiches = {};
+  await Promise.all(users.map(async (u) => {
+    const found = await fetchProjectMap(u.id, 'interieur');
+    if (found) fiches[u.id] = { fiche: found.map, etag: found.etag, saved: JSON.stringify(found.map.npcEdits ?? null) };
+  }));
+  state.fiches = fiches;
+  if (!fiches[state.base.room]) setBase({ ...state.base, room: users[0]?.id });
+  if (fresh) setRoomEdits(state.base.room);
+  const select = $('model-room');
+  const idx = interiorIndex();
+  select.innerHTML = '';
+  for (const u of users) select.append(new Option(`${u.name}${idx.city[u.id] ? ` · ${idx.city[u.id]}` : ''}`, u.id));
+  select.value = state.base.room ?? '';
+  wrap.hidden = !users.length;
+  npcs.reset();
+  requestDraw();
+}
+
+// Les PNJ placés de la pièce choisie passent dans la carte ouverte (outil Personnages), ceux de la précédente dans sa
+// fiche (enregistrés avec le modèle).
+function setRoomEdits(room) {
+  const m = state.map;
+  if (m.npcEdits) delete m.npcEdits;
+  const edits = state.fiches?.[room]?.fiche.npcEdits;
+  if (edits) m.npcEdits = clone(edits);
+}
+function switchModelRoom(room) {
+  const prev = state.base.room;
+  if (prev && state.fiches?.[prev]) {
+    if (state.map.npcEdits) state.fiches[prev].fiche.npcEdits = clone(state.map.npcEdits);
+    else delete state.fiches[prev].fiche.npcEdits;
+  }
+  setBase({ ...state.base, room });
+  setRoomEdits(room);
+  store.set(KEYS.current, state.map);
+  npcs.reset();
+  requestDraw();
+}
+
+// Enregistre les fiches dont les PNJ placés ont changé (après le modèle).
+async function saveModelFiches() {
+  const room = state.base.room;
+  if (room && state.fiches?.[room]) {
+    if (state.map.npcEdits) state.fiches[room].fiche.npcEdits = clone(state.map.npcEdits);
+    else delete state.fiches[room].fiche.npcEdits;
+  }
+  let n = 0;
+  for (const [id, f] of Object.entries(state.fiches ?? {})) {
+    const now = JSON.stringify(f.fiche.npcEdits ?? null);
+    if (now === f.saved) continue;
+    const res = await fetch(`/__builder/interieurs/${id}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'If-Match': f.etag ?? 'none', 'X-Force': '1' },
+      body: JSON.stringify(f.fiche),
+    });
+    if (res.ok) {
+      f.etag = (await res.json()).etag;
+      f.saved = now;
+      n++;
+    }
+  }
+  return n;
+}
 
 // ---------- Deux espaces : extérieurs et intérieurs ----------
 // L'espace suit ce qui est ouvert (une carte : extérieurs ; un intérieur du jeu : intérieurs). Chacun a ses planches
@@ -1616,7 +1696,8 @@ async function save({ force = false } = {}) {
     try {
       const headers = { 'Content-Type': 'application/json', 'If-Match': state.base?.etag ?? 'none' };
       if (force) headers['X-Force'] = '1';
-      res = await fetch(`${API(state.base?.kind)}/${m.id}`, { method: 'POST', headers, body: JSON.stringify(m) });
+      const body = isModel() ? { ...m, npcEdits: undefined } : m;   // un modèle : les PNJ sont dans les fiches
+      res = await fetch(`${API(state.base?.kind)}/${m.id}`, { method: 'POST', headers, body: JSON.stringify(body) });
       out = await res.json();
     } catch (error) {
       setStatus(`Échec de l'enregistrement : ${error.message}`, 'err');
@@ -1635,9 +1716,13 @@ async function save({ force = false } = {}) {
       setStatus(`Échec de l'enregistrement : ${out.error}`, 'err');
       return;
     }
-    setBase({ id: m.id, etag: out.etag, kind: state.base?.kind });
+    setBase({ ...state.base, id: m.id, etag: out.etag, kind: state.base?.kind });
     if (isInterior()) m.retouche = true;
-    setStatus(`Enregistrée dans le projet : ${out.file}${isInterior() ? ' (retouchée : build_interiors.py la garde)' : ''}`, 'ok');
+    if (isModel()) {
+      const n = await saveModelFiches();
+      const rooms = Object.keys(state.fiches ?? {}).length;
+      setStatus(`Modèle enregistré : ${out.file} (${rooms} pièce${rooms > 1 ? 's' : ''} le reprennent${n ? ` ; PNJ de ${n} pièce(s)` : ''})`, 'ok');
+    } else setStatus(`Enregistrée dans le projet : ${out.file}${isInterior() ? ' (retouchée : build_interiors.py la garde)' : ''}`, 'ok');
   } else {
     const library = store.get(KEYS.library) ?? {};
     if (library[m.id] && state.base?.id !== m.id && !force
@@ -1660,7 +1745,10 @@ async function listMaps() {
     const rooms = await fetch('/__builder/interieurs').then((r) => (r.ok ? r.json() : [])).catch(() => []);
     const interiors = rooms.map((m) => ({ ...m, where: 'intérieur', kind: 'interieur' }))
       .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
-    return [...project, ...local.filter((l) => !project.some((p) => p.id === l.id)), ...interiors];
+    // Modèles partagés : une entrée chacun, avec les pièces qui le reprennent.
+    const modeles = (await fetch('/__builder/modeles').then((r) => (r.ok ? r.json() : [])).catch(() => []))
+      .map((m) => ({ ...m, where: 'modèle', kind: 'modele', rooms: interiors.filter((r) => r.modele === m.id) }));
+    return [...project, ...local.filter((l) => !project.some((p) => p.id === l.id)), ...interiors, ...modeles];
   } catch {
     return local;
   }
@@ -1677,19 +1765,26 @@ async function fetchProjectMap(id, kind) {
 }
 
 async function openMap(entry) {
-  if (entry.where === 'projet' || entry.kind === 'interieur') {
+  if (entry.kind === 'interieur' && entry.modele) return openMap({ kind: 'modele', id: entry.modele, room: entry.id, where: 'modèle' });
+  if (entry.where === 'projet' || entry.kind === 'interieur' || entry.kind === 'modele') {
     const found = await fetchProjectMap(entry.id, entry.kind);
-    if (found) loadMap(found.map, { base: { id: entry.id, etag: found.etag, kind: entry.kind } });
+    // Une pièce devenue fiche d'un modèle (ancienne entrée « dernier ouvert ») : on ouvre son modèle.
+    if (found?.map.modele && entry.kind === 'interieur') return openMap({ kind: 'modele', id: found.map.modele, room: entry.id, where: 'modèle' });
+    if (found) loadMap(found.map, { base: { id: entry.id, etag: found.etag, kind: entry.kind, ...(entry.kind === 'modele' ? { room: entry.room } : {}) } });
+    if (found && entry.kind === 'modele') await loadModelRooms({ fresh: true });
   } else {
     const map = (store.get(KEYS.library) ?? {})[entry.id];
     if (map) loadMap(map, { base: { id: entry.id, etag: null } });
   }
   if (state.base?.id === entry.id || (entry.where === 'navigateur' && state.map?.id === entry.id)) {
     const last = store.get(KEYS.lastOpen) ?? {};
-    last[space()] = { id: entry.id, name: entry.name, where: entry.where, kind: entry.kind };
+    last[space()] = { id: entry.id, name: entry.name, where: entry.where, kind: entry.kind, ...(entry.kind === 'modele' ? { room: state.base.room } : {}) };
     store.set(KEYS.lastOpen, last);
   }
-  if (state.base?.id === entry.id && entry.kind === 'interieur') {
+  if (state.base?.id === entry.id && entry.kind === 'modele') {
+    const n = Object.keys(state.fiches ?? {}).length;
+    setStatus(`Modèle ouvert : ${state.map.name} — repris par ${n} pièce${n > 1 ? 's' : ''} : ce que tu changes vaut pour toutes`, 'ok');
+  } else if (state.base?.id === entry.id && entry.kind === 'interieur') {
     setStatus(`Intérieur ouvert : ${state.map.name}${entry.retouche ? ' (déjà retouché)' : ''}`, 'ok');
   } else if (state.base?.id === entry.id) setStatus(`Carte ouverte : ${state.map.name}`, 'ok');
 }
@@ -1702,7 +1797,7 @@ async function showOpenDialog(sp = space()) {
   $('open-title').textContent = sp === 'int' ? 'Ouvrir un intérieur' : 'Ouvrir une carte';
   $('open-sort').hidden = sp !== 'int';
   if (!$('open-dialog').open) $('open-dialog').showModal();
-  const maps = (await listMaps()).filter((e) => (sp === 'int') === (e.kind === 'interieur'));
+  const maps = (await listMaps()).filter((e) => (sp === 'int') === (e.kind === 'interieur' || e.kind === 'modele'));
   list.innerHTML = '';
   if (!maps.length) list.innerHTML = '<li><small>Rien à ouvrir ici pour l\'instant.</small></li>';
   const entryItem = (entry, extra) => {
@@ -1721,57 +1816,63 @@ async function showOpenDialog(sp = space()) {
     };
     return li;
   };
-  for (const entry of maps.filter((e) => e.kind !== 'interieur')) list.append(entryItem(entry));
+  for (const entry of maps.filter((e) => e.kind !== 'interieur' && e.kind !== 'modele')) list.append(entryItem(entry));
   // Intérieurs : rangés par ville (ordre du jeu) ou par type de pièce (chambres, cabanes…), au choix (mémorisé) ; un
-  // clic sur un groupe le replie (mémorisé). Une ligne par pièce : son nom (sa ville, rangé par type) et, s'il y en a,
-  // les autres pièces qui reprennent le même dessin (src/builder/interiorIndex.js).
+  // clic sur un groupe le replie (mémorisé). Une pièce reprise par plusieurs cartes est un modèle partagé : une seule
+  // ligne (son nom de type, « Maison type 1 »), avec à droite les pièces qui le reprennent et leur ville ; par ville,
+  // les modèles sont rangés en tête, dans « Pièces partagées ». Les autres pièces : une ligne chacune.
   const rooms = maps.filter((e) => e.kind === 'interieur');
+  const modeles = maps.filter((e) => e.kind === 'modele' && e.rooms.length);
+  const solo = rooms.filter((r) => !r.modele);
   $('open-sort').hidden = !rooms.length;
   if (!rooms.length) return;
   const idx = interiorIndex();
   const byType = store.get(KEYS.openSort) === 'type';
   document.querySelectorAll('#open-sort button').forEach((b) => b.classList.toggle('on', (b.dataset.sort === 'type') === byType));
-  const nameOf = (id) => rooms.find((r) => r.id === id)?.name ?? interiors[id]?.name ?? id;
   const folded = new Set(store.get(KEYS.foldedCities) ?? []);
-  const groupOfRoom = (r) => (byType ? typeOf(r.id) : idx.city[r.id] ?? 'Autres');
-  const groupsAll = byType ? [...TYPES.map(([, label]) => label), 'Autres'] : [...idx.order, 'Autres'];
-  const cities = groupsAll.filter((c, i, all) => all.indexOf(c) === i);
-  for (const city of cities) {
-    const inCity = rooms.filter((r) => groupOfRoom(r) === city);
-    if (!inCity.length) continue;
+  const SHARED = 'Pièces partagées';
+  const groupOf = (e) => (e.kind === 'modele' ? (byType ? typeOf(e.rooms[0].id) : SHARED)
+    : byType ? typeOf(e.id) : idx.city[e.id] ?? 'Autres');
+  const groupsAll = byType ? [...TYPES.map(([, label]) => label), 'Autres'] : [SHARED, ...idx.order, 'Autres'];
+  const groups = groupsAll.filter((c, i, all) => all.indexOf(c) === i);
+  const entries = [...modeles, ...solo];
+  const current = (e) => (e.kind === 'modele' ? isModel() && state.base.id === e.id : !isModel() && state.base?.id === e.id);
+  for (const group of groups) {
+    const inGroup = entries.filter((e) => groupOf(e) === group)
+      .sort((x, y) => (x.kind === y.kind ? x.name.localeCompare(y.name, 'fr') : x.kind === 'modele' ? -1 : 1));
+    if (!inGroup.length) continue;
     const head = document.createElement('li');
-    head.className = `group${folded.has(city) ? ' folded' : ''}`;
-    head.innerHTML = `<span><i>▾</i> ${city}</span><small>${inCity.length}</small>`;
+    head.className = `group${folded.has(group) ? ' folded' : ''}`;
+    head.innerHTML = `<span><i>▾</i> ${group}</span><small>${inGroup.length}</small>`;
     head.title = 'Replier ou déplier';
     const lines = [];
     head.onclick = () => {
-      const now = !folded.has(city);
-      if (now) folded.add(city); else folded.delete(city);
+      const now = !folded.has(group);
+      if (now) folded.add(group); else folded.delete(group);
       store.set(KEYS.foldedCities, [...folded]);
       head.classList.toggle('folded', now);
       lines.forEach((li) => { li.hidden = now; });
     };
     list.append(head);
-    for (const entry of inCity) {
+    for (const entry of inGroup) {
       const li = document.createElement('li');
-      li.className = 'room';
+      li.className = `room${entry.kind === 'modele' ? ' modele' : ''}`;
       const name = document.createElement('span');
       name.textContent = entry.name;
-      if (byType) {
+      if (entry.kind !== 'modele' && byType) {
         const where = document.createElement('em');
         where.textContent = ` ${idx.city[entry.id] ?? ''}`;
         name.append(where);
       }
       li.append(name);
-      const shared = idx.sharedWith(entry.id);
-      if (shared.length) {
-        const also = document.createElement('small');
-        also.className = 'also';
-        also.textContent = `aussi : ${shared.map((o) => `${nameOf(o)} (${idx.city[o] ?? '?'})`).join(', ')}`;
-        li.append(also);
+      if (entry.kind === 'modele') {
+        const users = document.createElement('small');
+        users.className = 'also';
+        users.textContent = entry.rooms.map((r) => `${r.name} (${idx.city[r.id] ?? '?'})`).join(', ');
+        li.append(users);
       }
-      if (entry.id === state.base?.id) li.classList.add('current');
-      li.hidden = folded.has(city);
+      if (current(entry)) li.classList.add('current');
+      li.hidden = folded.has(group);
       li.onclick = async () => {
         $('open-dialog').close();
         if (state.dirty && !window.confirm('Des modifications ne sont pas enregistrées. Ouvrir quand même ?')) return;
@@ -1784,6 +1885,13 @@ async function showOpenDialog(sp = space()) {
 }
 
 function testMap() {
+  if (isModel() && state.fiches?.[state.base.room]) {
+    const fiche = clone(state.fiches[state.base.room].fiche);
+    if (state.map.npcEdits) fiche.npcEdits = clone(state.map.npcEdits); else delete fiche.npcEdits;
+    store.set(KEYS.test, composeInterior(fiche, { [state.base.id]: { ...state.map, npcEdits: undefined } }));
+    window.open(`${BASE}?carte=test`, 'pokepierre-test');
+    return;
+  }
   store.set(KEYS.test, { ...state.map, name: $('map-name').value.trim() || state.map.name });
   window.open(`${BASE}?carte=test`, 'pokepierre-test');
 }
@@ -2061,6 +2169,7 @@ async function start() {
   showSheet(select.querySelector('option').value);          // la première planche proposée (Sols et chemins)
   document.querySelectorAll('#space-switch button').forEach((b) => { b.onclick = () => switchSpace(b.dataset.space); });
   document.querySelectorAll('#open-space button').forEach((b) => { b.onclick = () => showOpenDialog(b.dataset.space); });
+  $('model-room').onchange = (e) => switchModelRoom(e.target.value);
   document.querySelectorAll('#open-sort button').forEach((b) => {
     b.onclick = () => { store.set(KEYS.openSort, b.dataset.sort); showOpenDialog('int'); };
   });
@@ -2074,13 +2183,20 @@ async function start() {
   const dirty = Boolean(store.get(KEYS.dirty));
   const base = store.get(KEYS.base);
   const project = draft && state.projectSave ? await fetchProjectMap(base?.id ?? draft.id, base?.kind) : null;
+  if (project?.map.modele) {
+    // La pièce du brouillon reprend maintenant un modèle partagé : on ouvre le modèle (le brouillon n'est plus valable).
+    await openMap({ kind: 'modele', id: project.map.modele, room: base?.id ?? draft.id, where: 'modèle' });
+    if (dirty) setStatus('Cette pièce reprend maintenant un modèle partagé : modèle ouvert, ancien brouillon laissé de côté', 'err');
+    return;
+  }
   if (!draft) loadMap(blankMap());
-  else if (project && !dirty) loadMap(project.map, { base: { id: base?.id ?? draft.id, etag: project.etag, kind: base?.kind } });
+  else if (project && !dirty) loadMap(project.map, { base: { ...base, id: base?.id ?? draft.id, etag: project.etag, kind: base?.kind } });
   else if (project && base?.etag !== project.etag
     && !window.confirm(`Ton brouillon de « ${draft.name} » n'est pas enregistré, mais la carte a changé dans le projet `
       + 'depuis (régénérée par un script ?).\n\nOK : garder ton brouillon.\nAnnuler : reprendre la version du projet.')) {
-    loadMap(project.map, { base: { id: base?.id ?? draft.id, etag: project.etag, kind: base?.kind } });
+    loadMap(project.map, { base: { ...base, id: base?.id ?? draft.id, etag: project.etag, kind: base?.kind } });
   } else loadMap(draft, { base, dirty });
+  if (isModel()) await loadModelRooms({ fresh: !dirty });
   if (!state.projectSave) setStatus('Les cartes sont enregistrées dans ce navigateur');
 }
 

@@ -4,8 +4,8 @@
   "label": "HGSS · Goldenrod radio tower · pièce 4"
  },
  "appartRemi": {
-  "key": "001i_Newbark houses#1",
-  "label": "HGSS · Newbark houses · pièce 2"
+  "key": "modele:maison-type-2",
+  "label": "Modèle · Maison type 2"
  },
  "appartement": {
   "key": "001i_Newbark houses#1",
@@ -60,12 +60,12 @@
   "label": "HGSS · Goldenrod radio tower · pièce 5"
  },
  "corseParents": {
-  "key": "001i_Newbark houses#4",
-  "label": "HGSS · Newbark houses · pièce 5"
+  "key": "modele:maison-type-1",
+  "label": "Modèle · Maison type 1"
  },
  "corseVoisins": {
-  "key": "001i_Newbark houses#4",
-  "label": "HGSS · Newbark houses · pièce 5"
+  "key": "modele:maison-type-1",
+  "label": "Modèle · Maison type 1"
  },
  "delhiUniversity": {
   "key": "006i_Violet School#0",
@@ -96,24 +96,24 @@
   "label": "HGSS · Goldenrod radio tower · pièce 6"
  },
  "felixHouse": {
-  "key": "001i_Newbark houses#4",
-  "label": "HGSS · Newbark houses · pièce 5"
+  "key": "modele:maison-type-1",
+  "label": "Modèle · Maison type 1"
  },
  "ffHouse": {
-  "key": "001i_Newbark houses#4",
-  "label": "HGSS · Newbark houses · pièce 5"
+  "key": "modele:maison-type-1",
+  "label": "Modèle · Maison type 1"
  },
  "ffHouseUp": {
-  "key": "001i_Newbark houses#2",
-  "label": "HGSS · Newbark houses · pièce 3"
+  "key": "modele:chambre-type-1",
+  "label": "Modèle · Chambre type 1"
  },
  "ffHut": {
   "key": "010i_Azalea Houses#0",
   "label": "HGSS · Azalea Houses · pièce 1"
  },
  "hanoiHome": {
-  "key": "001i_Newbark houses#1",
-  "label": "HGSS · Newbark houses · pièce 2"
+  "key": "modele:maison-type-2",
+  "label": "Modèle · Maison type 2"
  },
  "hospital": {
   "key": "001i_Newbark-Lab#0",
@@ -124,12 +124,12 @@
   "label": "HGSS · Goldenrod game corner · pièce 1"
  },
  "hullColoc": {
-  "key": "001i_Newbark houses#1",
-  "label": "HGSS · Newbark houses · pièce 2"
+  "key": "modele:maison-type-2",
+  "label": "Modèle · Maison type 2"
  },
  "hullHouse": {
-  "key": "001i_Newbark houses#1",
-  "label": "HGSS · Newbark houses · pièce 2"
+  "key": "modele:maison-type-2",
+  "label": "Modèle · Maison type 2"
  },
  "hullLibrary": {
   "key": "074i_Ruins of Alph Lab#0",
@@ -152,32 +152,32 @@
   "label": "HGSS · Violet School · pièce 1"
  },
  "maisonCommune": {
-  "key": "001i_Newbark houses#1",
-  "label": "HGSS · Newbark houses · pièce 2"
+  "key": "modele:maison-type-2",
+  "label": "Modèle · Maison type 2"
  },
  "monastere": {
   "key": "006i_Sprout Tower#0",
   "label": "HGSS · Sprout Tower · pièce 1"
  },
  "montHouse": {
-  "key": "001i_Newbark houses#4",
-  "label": "HGSS · Newbark houses · pièce 5"
+  "key": "modele:maison-type-1",
+  "label": "Modèle · Maison type 1"
  },
  "montHouseUp": {
-  "key": "001i_Newbark houses#2",
-  "label": "HGSS · Newbark houses · pièce 3"
+  "key": "modele:chambre-type-1",
+  "label": "Modèle · Chambre type 1"
  },
  "parisAppart": {
-  "key": "001i_Newbark houses#1",
-  "label": "HGSS · Newbark houses · pièce 2"
+  "key": "modele:maison-type-2",
+  "label": "Modèle · Maison type 2"
  },
  "playerHouse": {
-  "key": "001i_Newbark houses#4",
-  "label": "HGSS · Newbark houses · pièce 5"
+  "key": "modele:maison-type-1",
+  "label": "Modèle · Maison type 1"
  },
  "playerHouseUp": {
-  "key": "001i_Newbark houses#2",
-  "label": "HGSS · Newbark houses · pièce 3"
+  "key": "modele:chambre-type-1",
+  "label": "Modèle · Chambre type 1"
  },
  "school": {
   "key": "006i_Violet School#0",
@@ -192,8 +192,8 @@
   "label": "HGSS · Park-Pokéathlon Gate · pièce 1"
  },
  "studioPaulfit": {
-  "key": "001i_Newbark houses#1",
-  "label": "HGSS · Newbark houses · pièce 2"
+  "key": "modele:maison-type-2",
+  "label": "Modèle · Maison type 2"
  },
  "temple": {
   "key": "006i_Sprout Tower#0",
@@ -212,7 +212,7 @@
   "label": "HGSS · Sprout Tower · pièce 1"
  },
  "yanisAppart": {
-  "key": "001i_Newbark houses#1",
-  "label": "HGSS · Newbark houses · pièce 2"
+  "key": "modele:maison-type-2",
+  "label": "Modèle · Maison type 2"
  }
 }

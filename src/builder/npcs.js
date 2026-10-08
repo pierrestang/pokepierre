@@ -40,6 +40,8 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
   function entity() {
     const m = state.map;
     if (!m) return null;
+    // Un modèle partagé : la pièce choisie dans le sélecteur « Pièce » (builder.js, modèles d'intérieurs).
+    if (state.base?.kind === 'modele') return interiors[state.base.room] ?? null;
     if (state.base?.kind === 'interieur' && interiors[m.id]) return interiors[m.id];
     return interiors[m.id]?.built ? interiors[m.id] : Object.values(MAPS).find((g) => g.built?.id === m.id) ?? null;
   }

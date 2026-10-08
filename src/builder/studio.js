@@ -55,7 +55,7 @@ export function createStudio(api) {
   function guessTheme(m) {
     if (inside()) {
       const id = m.id ?? '';
-      const guess = [[/house|home|appart|coloc|maison/i, 'maison'], [/school|bonsecours|kedge|universit|library|dortoir/i, 'ecole'],
+      const guess = [[/house|home|appart|coloc|maison|chambre/i, 'maison'], [/school|bonsecours|kedge|universit|library|dortoir/i, 'ecole'],
         [/pub|bistro|coffee|asylum|cafe/i, 'cafe'], [/agence|entreprise|corning|agency/i, 'bureau'],
         [/temple|wat|monastere/i, 'temple'], [/hospital/i, 'sante'], [/barn|hut|cabane|tente/i, 'atelier']]
         .find(([re]) => re.test(id))?.[1];

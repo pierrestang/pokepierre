@@ -9,12 +9,14 @@ const MAPS_DIR = resolve(import.meta.dirname, 'src/data/builtMaps');
 const INTERIORS_DIR = resolve(import.meta.dirname, 'src/data/builtInteriors');
 const ID = /^[a-z0-9-]{1,60}$/;
 const INTERIOR_ID = /^[A-Za-z0-9-]{1,60}$/;
+const MODELES_DIR = resolve(INTERIORS_DIR, 'modeles');
 
 // Pendant le développement (npm run dev, sur l'ordinateur), le créateur de cartes lit et écrit ses cartes ici :
 //   GET  /__builder/maps         la liste { id, name, width, height }
 //   GET  /__builder/maps/<id>    une carte
 //   POST /__builder/maps/<id>    enregistre la carte (corps : la carte en JSON)
-// et les intérieurs du jeu sous /__builder/interieurs (mêmes adresses). Un intérieur ne se crée pas ici (il lui faut sa
+// et les intérieurs du jeu sous /__builder/interieurs (mêmes adresses ; une pièce qui reprend un modèle partagé y est une
+// fiche, voir src/data/builtInteriors/compose.js), leurs modèles sous /__builder/modeles. Un intérieur ne se crée pas ici (il lui faut sa
 // pièce dans src/data/maps/interiors.js) : on ne fait que retoucher ceux que scripts/build_interiors.py a dessinés ; une
 // pièce enregistrée ici est marquée `retouche` et le script ne l'écrase plus (sauf --force).
 // Chaque carte a une version (`etag`, empreinte du fichier) : le créateur envoie celle qu'il a ouverte (en-tête
@@ -22,8 +24,8 @@ const INTERIOR_ID = /^[A-Za-z0-9-]{1,60}$/;
 // régénérée par un script, autre onglet) ou si une nouvelle carte prendrait le nom d'une carte qui existe ; X-Force: 1
 // écrase quand même (après confirmation dans le créateur).
 // Le site publié n'a pas ces adresses : le créateur garde alors les cartes dans le navigateur.
-function collection(dir, idPattern, { interiors = false } = {}) {
-  const rel = interiors ? 'src/data/builtInteriors' : 'src/data/builtMaps';
+function collection(dir, idPattern, { interiors = false, rel: relDir = null } = {}) {
+  const rel = relDir ?? (interiors ? 'src/data/builtInteriors' : 'src/data/builtMaps');
   return (req, res) => {
     const send = (status, body) => {
       res.statusCode = status;
@@ -34,10 +36,11 @@ function collection(dir, idPattern, { interiors = false } = {}) {
     const etagOf = (text) => createHash('sha1').update(text).digest('hex').slice(0, 16);
     const id = decodeURIComponent((req.url ?? '/').replace(/^\/+|\/+$/g, ''));
     if (!id) {
+      // Une pièce qui reprend un modèle partagé (fiche, voir src/data/builtInteriors/compose.js) : `modele` dit lequel.
       const list = readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => {
         const text = readFileSync(resolve(dir, f), 'utf8');
-        const { name, width, height, retouche } = JSON.parse(text);
-        return { id: f.slice(0, -5), name, width, height, retouche: Boolean(retouche), etag: etagOf(text) };
+        const { name, width, height, retouche, modele } = JSON.parse(text);
+        return { id: f.slice(0, -5), name, width, height, retouche: Boolean(retouche), modele, etag: etagOf(text) };
       });
       return send(200, list);
     }
@@ -84,6 +87,8 @@ function builderMaps() {
     configureServer(server) {
       server.middlewares.use('/__builder/maps', collection(MAPS_DIR, ID));
       server.middlewares.use('/__builder/interieurs', collection(INTERIORS_DIR, INTERIOR_ID, { interiors: true }));
+      // Modèles d'intérieurs partagés (src/data/builtInteriors/modeles) : le dessin commun à plusieurs pièces.
+      server.middlewares.use('/__builder/modeles', collection(MODELES_DIR, ID, { interiors: true, rel: 'src/data/builtInteriors/modeles' }));
     },
   };
 }

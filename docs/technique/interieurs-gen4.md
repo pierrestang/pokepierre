@@ -108,3 +108,30 @@ de scripts/interieurs/catalogue_int.py. Vérification : `python3 scripts/check_i
 - Règles : aucune ombre portée (no_shadow), rien d'identifiable Pokémon (machines du labo, PC, Poké Balls, statues).
 - Planche qui ne fait que grandir (les numéros déjà utilisés par des pièces retouchées ne bougent pas) ; relancer le
   script ne change rien si les données n'ont pas changé.
+
+## Intérieurs partagés : les modèles (octobre 2026)
+
+Une pièce reprise par plusieurs cartes (la maison familiale de Fort-de-France à la Corse, la chambre de Pierre, la
+maison de Léo à Hull et ses reprises) n'est dessinée qu'une fois : un modèle, src/data/builtInteriors/modeles/<id>.json
+(dessin complet, nom de type « Maison type 1 »). Le JSON de chaque pièce qui le reprend est une fiche :
+
+    { "id", "name", "modele": "<id>", "ajouts"?: { "sheets": [...], "cells": { "<i>": { "sol"?, "decor"?, "dessus"? } },
+      "solid": { "<i>": 0 | 1 } }, "spawn"?, "beds"?, "npcEdits"? }
+
+`ajouts` : ses différences propres, case par case (une case citée remplace celle du modèle dans ce calque ; numéros de
+planche rapportés à `ajouts.sheets`) — cartons de déménagement à Fort-de-France, oreiller passé sous Fanny à Saint-Ay,
+escalier bloqué chez Felix et en Corse, haltères chez Paulfit. src/data/builtInteriors/compose.js recompose la pièce
+(composeInterior) ; index.js (généré) exporte MODELES et BUILT_INTERIORS déjà recomposés : le jeu, check_paths.js et les
+scripts d'export voient des pièces complètes. scripts/interior_models.py en est le double Python (compose, fiche) et :
+- `python3 scripts/interior_models.py share <id> "<Nom du type>" <pièce de base> <pièces…>` : fait du dessin de la pièce
+  de base un modèle et des pièces des fiches, chacune avec ses différences calculées ;
+- `python3 scripts/interior_models.py list` : les modèles et leurs pièces.
+
+Modèles actuels : maison-type-1 (Maison type 1 : ffHouse, playerHouse, montHouse, felixHouse, corseParents,
+corseVoisins), chambre-type-1 (Chambre type 1 : ffHouseUp, playerHouseUp, montHouseUp), maison-type-2 (Maison type 2 :
+hullHouse, maisonCommune, hanoiHome, appartRemi, yanisAppart, hullColoc, studioPaulfit, parisAppart).
+
+Générateur (build_interiors.py) : une fiche n'est jamais redessinée (on modifie le modèle dans le créateur) ; un plan
+peut déclarer `'modele': ('<id>', '<Nom du type>')` : le dessin va dans le modèle (une fois par passage, gardé s'il a été
+retouché, sauf --force) et la pièce devient une fiche (pour des pièces de même plan : dortoirs, salles de KEDGE…).
+interiorSources.json donne à toutes les pièces d'un modèle la même source (`modele:<id>`).
