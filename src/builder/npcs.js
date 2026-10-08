@@ -8,6 +8,9 @@ import {
 
 // Éditeur de personnages du créateur de cartes (outil « Personnages », touche N) : tous les PNJ de la carte ou de
 // l'intérieur du jeu qui porte ce dessin (même identifiant), à leur place, avec leur apparence et leur nom.
+// Par défaut, le mode simple : on choisit un personnage et on le place (glisser, flèches, direction, « Remettre à sa
+// place ») ; ses marches dans l'histoire vont vers des cases fixes, il y va depuis sa nouvelle place. « Plus d'options »
+// ajoute ce qui suit (frise de la quête, fiche détaillée, marches sur la carte, figurants).
 // - La frise de la quête (panneau) : les étapes de l'histoire qui concernent ce lieu (drapeaux de story.js, dans l'ordre
 //   du jeu) et qui les fait avancer ; choisir une étape ne montre que les personnages présents à ce moment-là
 //   (« Toutes les étapes » : tous, une pastille compte ceux d'une même case).
@@ -25,6 +28,15 @@ const SPRITE_H = 30;
 const DIRS = ['down', 'up', 'left', 'right'];
 const RING = { story: '#f2c14e', figurant: '#9aa3b5', extra: '#4fd1c5' };
 
+const ADVANCED_KEY = 'pokepierre.builder.npcAdvanced';
+function loadAdvanced() {
+  try {
+    return localStorage.getItem(ADVANCED_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export function createNpcLayer({ state, base, remember, changed, requestDraw, setStatus }) {
   const $ = (id) => document.getElementById(id);
   const sheet = new Image();
@@ -33,8 +45,9 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
   let names = [];
   fetch(`${base}assets/characters/gen4-npcs.json`).then((r) => r.json()).then((d) => { names = d.characters; fillSprites(); })
     .catch(() => {});
-  // selected : l'id du PNJ choisi ; step : l'étape de la frise (null : toutes les étapes).
-  const ui = { selected: null, adding: false, drag: null, step: null, stepByPlace: {} };
+  // selected : l'id du PNJ choisi ; step : l'étape de la frise (null : toutes les étapes) ; advanced : « Plus d'options »
+  // (frise de la quête, ce que fait le personnage, ses marches sur la carte, figurants) ; sinon, on ne fait que le placer.
+  const ui = { selected: null, adding: false, drag: null, step: null, stepByPlace: {}, advanced: loadAdvanced() };
 
   // L'intérieur ou la carte du jeu qui porte ce dessin, ou null (une carte libre : seulement des figurants ajoutés).
   function entity() {
@@ -160,7 +173,7 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     ctx.save();
     const sel = ui.selected && selectedItem();
     // Le choisi : ses marches (flèches bleues numérotées) et ce qu'il débloque (traits dorés).
-    if (sel && game && state.tool === 'npc') {
+    if (sel && game && state.tool === 'npc' && ui.advanced) {
       const c = (x, y) => [(x + 0.5) * cs, (y + 0.5) * cs];
       ctx.lineWidth = Math.max(2, cs * 0.1);
       ctx.setLineDash([]);
@@ -511,6 +524,8 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     panel.hidden = state.tool !== 'npc';
     if (panel.hidden || !state.map) return;
     const game = entity();
+    panel.classList.toggle('simple', !ui.advanced);
+    $('npc-advanced').checked = ui.advanced;
     $('npc-where').textContent = game ? (game.name ?? '') : 'carte libre : figurants seulement';
     $('npc-add').classList.toggle('on', ui.adding);
     renderTimeline();
@@ -519,6 +534,20 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
   }
 
   function bind() {
+    $('npc-advanced').onchange = () => {
+      ui.advanced = $('npc-advanced').checked;
+      try {
+        localStorage.setItem(ADVANCED_KEY, ui.advanced ? '1' : '0');
+      } catch {
+        // Stockage indisponible : le choix vaut pour cette session.
+      }
+      if (!ui.advanced) {
+        ui.adding = false;
+        setStep(null);                              // mode simple : tous les personnages du lieu
+      }
+      renderPanel();
+      requestDraw();
+    };
     $('npc-add').onclick = () => {
       ui.adding = !ui.adding;
       renderPanel();
@@ -571,7 +600,7 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     ui.selected = null;
     ui.adding = false;
     ui.drag = null;
-    ui.step = state.map && state.map.id in ui.stepByPlace ? ui.stepByPlace[state.map.id] : null;
+    ui.step = ui.advanced && state.map && state.map.id in ui.stepByPlace ? ui.stepByPlace[state.map.id] : null;
     renderPanel();
   }
 

@@ -68,7 +68,10 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   « Tester » ouvre (modèle + différences de la pièce, builder.js testMap). Une pièce qui reprend un modèle (ancien
   « dernier ouvert », brouillon) ouvre son modèle.
 - Personnages : outil « Personnages » (touche N ; bouton « Toujours voir les PNJ » dans la barre d'outils),
-  src/builder/npcs.js, lecture de l'histoire dans src/builder/questModel.js. Panneau :
+  src/builder/npcs.js, lecture de l'histoire dans src/builder/questModel.js. Par défaut, le mode simple : la liste des
+  personnages du lieu, toutes étapes confondues ; on en choisit un et on le place (glisser, flèches, Maj + flèche pour
+  sa direction, « Remettre à sa place »). Ses marches dans l'histoire visent des cases fixes : il y va depuis sa
+  nouvelle place. La case « Plus d'options » (retenue dans le navigateur) ajoute le reste du panneau :
   - Quête du lieu : les étapes de l'histoire qui concernent ce lieu (drapeaux de story.js dans l'ordre du jeu, libellés
     = leurs commentaires) et qui les fait avancer (« par Papa », « ailleurs : Cabane de pêche ») ; choisir une étape
     (clic, ◀ ▶) ne montre que les personnages présents à ce moment-là ; « Toutes » : tous (un chiffre compte ceux d'une

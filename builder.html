@@ -172,6 +172,11 @@
       #npcbar label input, #npcbar label select { flex: 1; min-width: 0; }
       #npcbar #npc-detail, #npcbar #npc-extra { display: flex; flex-direction: column; gap: 4px; }
       #npcbar [hidden] { display: none !important; }
+      #npcbar.simple .npc-adv { display: none !important; }
+      #npcbar.simple { bottom: auto; max-height: calc(100% - 24px); overflow: auto; }
+      #npcbar .npc-intro { margin: 0; font-size: 12px; line-height: 1.4; }
+      #npcbar .npc-toggle { margin-top: 0; opacity: 0.85; }
+      #npcbar .npc-toggle input { flex: none; }
       #npcbar small { opacity: 0.7; font-size: 11px; }
       #npcbar .btn.mini { padding: 2px 6px; font-size: 11px; min-width: 0; }
       #npcbar .btn.mini.on { background: var(--accent-soft); color: var(--accent); }
@@ -402,15 +407,18 @@
           </div>
           <div class="float" id="npcbar" hidden>
             <div class="npc-head">Personnages <small id="npc-where"></small>
-              <button class="btn" id="npc-add" title="Puis clique sur la carte : un figurant (une réplique) à cet endroit">+ Figurant</button></div>
-            <div id="npc-time">
+              <button class="btn npc-adv" id="npc-add" title="Puis clique sur la carte : un figurant (une réplique) à cet endroit">+ Figurant</button></div>
+            <p class="npc-intro">Glisse un personnage sur la carte pour changer sa place (ou choisis-le, puis les flèches du
+              clavier). Ses trajets dans l'histoire ne changent pas : il part de sa nouvelle place vers les mêmes endroits.</p>
+            <label class="npc-toggle"><input type="checkbox" id="npc-advanced" /> Plus d'options (quête, trajets, figurants)</label>
+            <div id="npc-time" class="npc-adv">
               <div class="npc-sec">Quête du lieu <small id="npc-step-now"></small>
                 <button class="btn mini" id="npc-prev" title="Étape précédente">◀</button>
                 <button class="btn mini" id="npc-next" title="Étape suivante">▶</button>
                 <button class="btn mini" id="npc-all" title="Montrer tous les personnages, toutes étapes confondues">Toutes</button></div>
               <ol id="npc-steps"></ol>
             </div>
-            <div class="npc-sec">Présents</div>
+            <div class="npc-sec">Personnages de ce lieu</div>
             <div id="npc-roster"></div>
             <div id="npc-detail" hidden>
               <div class="npc-card">
@@ -422,19 +430,22 @@
                 </div>
               </div>
               <div id="npc-presence"></div>
-              <div class="npc-sec">Ce qu'il fait</div>
-              <div id="npc-actions"></div>
-              <div class="npc-sec" id="npc-links-head">Fait avancer la quête</div>
-              <div id="npc-links"></div>
+              <button class="btn" id="npc-reset" hidden title="Le personnage revient à la place prévue dans le code">Remettre à sa place</button>
+              <div class="npc-adv">
+                <div class="npc-sec">Ce qu'il fait</div>
+                <div id="npc-actions"></div>
+                <div class="npc-sec" id="npc-links-head">Fait avancer la quête</div>
+                <div id="npc-links"></div>
+              </div>
               <div id="npc-extra" hidden>
                 <label>Nom <input type="text" id="npc-name" /></label>
                 <label>Apparence <select id="npc-sprite"><option value="">au hasard (figurant)</option></select></label>
                 <label>Réplique <input type="text" id="npc-line" /></label>
                 <button class="btn" id="npc-delete">Supprimer ce figurant</button>
               </div>
-              <button class="btn" id="npc-reset" hidden title="Le personnage revient à la place prévue dans le code">Remettre à sa place</button>
             </div>
-            <p class="help">Glisser ou flèches : déplacer · Maj + flèche : direction · Tab : suivant. Sur la carte : <b style="color:#60aaff">→</b> ses marches, <b class="npc-story">⇢</b> ce qu'il débloque.</p>
+            <p class="help">Flèches : une case · Maj + flèche : sa direction · Tab : le suivant · puis « Enregistrer ».<span class="npc-adv">
+              Sur la carte : <b style="color:#60aaff">→</b> ses marches, <b class="npc-story">⇢</b> ce qu'il débloque.</span></p>
           </div>
           <div class="float" id="selbar" hidden>
             <button class="btn" id="sel-dup" title="Dupliquer la sélection : la copie suit la souris, clic pour la poser (Ctrl+D)">Dupliquer</button>
