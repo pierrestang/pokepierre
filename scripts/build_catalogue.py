@@ -129,7 +129,8 @@ BUILDING_NAMES = {
 }
 
 # Bâtiments de la bibliothèque Gen 4 (g4-batiments, choisis en octobre 2026 pour les quatre premières villes) :
-# id : (nom, rectangle en pixels dans la planche, colonne de la porte, couleurs d'ombre opaque propres, thèmes[, options]).
+# id : (nom, rectangle en pixels dans la planche, colonne de la porte (None : pas de porte dessinée), couleurs d'ombre
+# opaque propres, thèmes[, options]).
 # Le dessin est pris d'un seul tenant, sans ombre, le bas calé sur la grille ; la porte est sur la dernière rangée.
 # Options : 'inside' (l'ombre n'est retirée qu'autour du bâtiment : un renfoncement sombre de la même couleur, sous un
 # auvent, reste) ; 'tile' (le toit passe au rouge tuile commun, TILE_RED).
@@ -167,6 +168,15 @@ LIB_BUILDINGS = {
     'noire': ('Maison noire', (112, 20224, 112, 112), 2, (), ['hanoi']),
     'violette': ('Petite maison violette', (240, 24784, 80, 96), 1, [(28, 35, 38)], ['hanoi']),
     'pilotis': ('Maison sur pilotis', (0, 1136, 48, 80), 1, (), ['hanoi']),
+    # Posés à la main sur Amsterdam (octobre 2026) : maisons de canal au toit rose (planche des bâtiments Gen 4), leur
+    # petite sœur, la maison à pignon rouge, et le manoir à pignons (Corning).
+    'canal-porte': ('Maison de canal (porte)', (12, 22229, 76, 129), 2, [DARK], ['amsterdam']),
+    'canal-porte-fleurs': ('Maison de canal (porte, fleurs)', (108, 22229, 76, 129), 2, [DARK], ['amsterdam']),
+    'canal-fleurs': ('Maison de canal (fleurs)', (204, 22229, 76, 129), None, [DARK], ['amsterdam']),
+    'canal-fenetres': ('Maison de canal (fenêtres)', (300, 22229, 76, 129), None, [DARK], ['amsterdam']),
+    'canal-basse': ('Petite maison de canal', (236, 22513, 76, 101), 2, [DARK], ['amsterdam']),
+    'pignon-rouge': ('Maison à pignon rouge', (8, 22516, 99, 122), 2, [DARK], ['amsterdam']),
+    'manoir-pignons': ('Manoir à pignons', (176, 193, 176, 95), 5, [DARK], ['amsterdam']),
 }
 
 
@@ -360,6 +370,9 @@ THEMES = {
               'extra': ['portique', 'pont-arque', 'banniere-bleue', 'cerisier', 'palmier', 'palmier-2', 'fleurs-tropicales',
                         'nenuphar', 'roseaux', 'cloche', 'etal', 'etal-bocaux', 'velo', 'oriflamme', 'fougere',
                         'lanterne-jardin', 'lanterne-bois', 'pot', 'hibiscus', 'arbuste-taille', 'reverbere-rouge']},
+    'amsterdam': {'name': 'Amsterdam (canaux)', 'forest': 'automne', 'paving': None, 'lamp': 'reverbere-noir',
+                  'extra': ['fontaine', 'peniche', 'velo', 'banc', 'banc-bois', 'jardiniere-rose', 'jardiniere-rouge',
+                            'hortensias', 'iris', 'arbuste-taille', 'poubelle-rouge']},
 }
 # Au moins cinq arbres par ville (octobre 2026).
 MORE_TREES = {
@@ -372,6 +385,7 @@ MORE_TREES = {
     'bordeaux': ['arbre-foret', 'arbre-olive', 'arbre-pointu', 'feuillu-orange'],
     'hull': ['arbre-foret', 'arbre-pointu', 'sapin-sombre'],
     'hanoi': ['arbre-pointu', 'pin-bleu'],
+    'amsterdam': ['arbre-foret', 'arbre-roux', 'feuillu-orange', 'arbre-pointu-brun', 'peuplier'],
 }
 for _tid, _more in MORE_TREES.items():
     THEMES[_tid]['extra'] = THEMES[_tid]['extra'] + _more
@@ -693,10 +707,11 @@ def main():
                 img = tile_roof(img)
             h = img.height // TILE
             solid_from = max(1, h - math.ceil(h * 0.55))
+            door = [door_col, h - 1] if door_col is not None else None
             elements.append(element_entry(pack, f'maison-{bid}', bname, 'maisons', img, solid_from, 'land',
-                                          door=[door_col, h - 1], theme_fn=None if 'tile' in opts else pal))
+                                          door=door, theme_fn=None if 'tile' in opts else pal))
             if tid == 'libre':
-                add_roof_variants(pack, elements, img, solid_from, [door_col, h - 1])
+                add_roof_variants(pack, elements, img, solid_from, door)
         # Éléments relevés sur les cartes (scripts/harvest_map_elements.py, choisis et nommés dans
         # assets-source/elements-cartes/elements.json) : dans le thème de leur carte et dans Libre ; l'image vient de la
         # carte (sans ombre, avec contour), les collisions aussi.

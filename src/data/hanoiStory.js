@@ -182,7 +182,7 @@ export const FLIGHT_TO_AMSTERDAM = [
     ],
   },
   { setFlag: FLAGS.arriveeAmsterdam },
-  { travel: { map: 'amsterdam', x: 1, y: 6, facing: 'right', plane: true, carry: CARRY } },
+  { travel: { map: 'amsterdam', x: 1, y: 10, facing: 'right', plane: true, carry: CARRY } },
 ];
 
 // ---------- Facultatif : les papis du lac (Audace) ----------

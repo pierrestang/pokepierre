@@ -927,12 +927,18 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 
 ## 9. Amsterdam (Pays-Bas) : textes provisoires
 
+- **La carte** (36 x 30, redessinée en Gen 4, scripts/build_amsterdam.py) : au nord, le long de la grande rue (vers
+  l'aéroport par ses deux bouts), une maison de canal, le manoir à pignons = Corning (porte (13, 9)), la maison de
+  canal à la porte en cœur = la maison commune (20, 9), la maison à pignon rouge (27, 9, fermée). Le premier canal, une
+  péniche et deux ponts de planches. Au sud, les maisons de canal au toit rose : le coffee shop (porte et fleurs, (4,
+  24)), la petite maison (14, 24, fermée), la maison de canal (24, 24, fermée), et la place à la fontaine. Le quai sud
+  et le second canal ; une bordure d'arbres d'automne dorés. Arrivée en (1, 10) ; Romain attend devant Corning (14, 10).
 - **PNJ** : Laurent (`g53`), patron chez Corning ; Romain (`g92`) ; un vendeur (`g112`) au coffee shop.
 - **Quêtes** :
   1. Laurent : « [Laurent - texte provisoire] Bienvenue chez Corning ! Je suis Laurent, le patron. » / « Ton stage
      commence aujourd'hui. Bienvenue dans l'équipe ! »
   2. En sortant, Romain : « [Romain - texte provisoire] Hé ! Tu sors du boulot ? » / « Tu peux passer au coffee shop
-     acheter la marchandise ? » / « Rejoins-moi ensuite à notre maison commune (2e maison en haut à gauche). »
+     acheter la marchandise ? » / « Rejoins-moi ensuite à notre maison commune (la maison à la porte en cœur, juste à droite de Corning). »
   3. Coffee shop → **Marchandise** ; donnée à Romain : « Super, tu as la marchandise ! Merci beaucoup. » / « Au fait, tu
      as dû recevoir un mail. Va voir sur l'ordinateur ! »
   4. L'ordinateur : « [Texte provisoire] Nouveau mail ! « Merci de retourner à l'université de Hull » / « pour récupérer

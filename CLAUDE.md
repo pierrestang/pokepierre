@@ -60,7 +60,8 @@ puis Hanoï. Pas de combats.
   par case » : éditeur « V2 » à trois calques avec collisions. En dev, les cartes sont enregistrées dans src/data/builtMaps/<id>.json et s'ouvrent dans
   le jeu avec ?carte=<id>. Les cartes de Fort-de-France à Hull sont générées par scripts/convert_maps_v2.py puis
   retouchées à la main ; --force efface ces retouches. Hanoï : scripts/build_hanoi.py (sol du convertisseur, éléments du
-  catalogue) ; les villes suivantes ne sont que des premiers jets dans le créateur, pas encore utilisés par le jeu. Ordre de reconstruction : build_v2_tiles.py, puis
+  catalogue) ; Amsterdam : scripts/build_amsterdam.py (même principe, forêt par scripts/paint_forest.mjs) ; les villes
+  suivantes ne sont que des premiers jets dans le créateur, pas encore utilisés par le jeu. Ordre de reconstruction : build_v2_tiles.py, puis
   convert_maps_v2.py et build_g4_library.py. Avant de changer un bâtiment : check_paths.js (les rues de Hull et
   Bordeaux sont étroites). Détails : docs/technique/createur-de-cartes.md, à lire avant de toucher au créateur, aux
   planches V2/Gen 4 ou aux cartes générées.

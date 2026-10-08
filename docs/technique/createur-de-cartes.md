@@ -390,8 +390,25 @@ catalogue posés comme le mode simple (maisons étroites au toit orange, agence 
 lanternes de bois, étals, nénuphars, cloche de l'îlot, cerisiers, palmier). Les cases libres qu'on n'atteint pas
 (derrière les maisons) sont bloquées. La grille du jeu (src/data/maps/hanoi.js sourceGrid) reprend GROUND avec les portes
 sur les portes dessinées. convert_maps_v2.py ne refait pas Hanoï ; le script réécrit la carte (une retouche faite dans le
-créateur serait perdue au prochain passage). Les villes suivantes (Amsterdam… Rajasthan) ne sont que des premiers jets
+créateur serait perdue au prochain passage). Les villes suivantes (New Delhi… Rajasthan) ne sont que des premiers jets
 de convert_maps_v2.py (`python3 scripts/convert_maps_v2.py <id>…`), pas encore branchés dans le jeu.
+
+## Amsterdam (octobre 2026)
+
+Thème « Amsterdam (canaux) » du catalogue (scripts/build_catalogue.py, THEMES['amsterdam']), d'après la carte retouchée
+à la main : les maisons de canal au toit rose de la planche des bâtiments Gen 4 (LIB_BUILDINGS : porte en cœur, porte
+et fleurs, fleurs, fenêtres ; les deux dernières sans porte dessinée, `door: None`), la petite maison de canal, la
+maison à pignon rouge et le manoir à pignons ; avec la fontaine, la péniche, les vélos, bancs, jardinières, réverbère
+noir, et des arbres d'automne (forêt « automne », arbre roux, grand feuillu orange, arbre pointu brun, peuplier).
+
+Amsterdam est redessiné par scripts/build_amsterdam.py (src/data/builtMaps/amsterdam.json), comme Hanoï : le sol vient
+du convertisseur (grille GROUND : grande rue, quais pavés, deux canaux, deux ponts de planches), les bâtiments et le
+mobilier sont des éléments du thème Amsterdam (maisons du nord, dont le manoir = Corning et la maison commune ; la
+péniche ; les maisons du sud, dont le coffee shop ; la place à la fontaine). La bordure est une forêt du créateur
+(studio.forest, arbre rond doré `dppt-dore`) dessinée par scripts/paint_forest.mjs, avec la même règle que le pinceau
+Forêt (src/builder/forestLayout.js) ; elle s'ouvre sur la grande rue (l'aéroport) et sur les deux canaux. Le script
+réécrit la carte : il refuse sans `--force` (une retouche faite dans le créateur serait perdue). La grille du jeu
+(src/data/maps/amsterdam.js sourceGrid) reprend GROUND, la bordure en 'T', les portes sur les portes dessinées.
 
 ## L'aéroport (octobre 2026)
 
