@@ -15,7 +15,8 @@ De haut en bas :
 La grille du jeu (src/data/maps/hanoi.js, sourceGrid) reprend GROUND, avec les portes ('D') sur les portes dessinées
 (DOORS, imprimées à la fin). convert_maps_v2.py ne refait pas Hanoï : c'est ce script.
 
-Usage : python3 scripts/build_hanoi.py
+Usage : python3 scripts/build_hanoi.py [--force]   (la carte a été retouchée depuis dans le créateur : --force efface ces
+retouches)
 """
 import json
 import sys
@@ -138,6 +139,8 @@ def main():
             if (x, y) not in seen:
                 m['solid'][y * W + x] = 1
     out = ROOT / 'src' / 'data' / 'builtMaps' / 'hanoi.json'
+    if out.exists() and '--force' not in sys.argv:
+        sys.exit('hanoi.json existe déjà (retouché dans le créateur) : rien n\'est écrit ; --force pour le refaire de zéro')
     out.write_text(json.dumps(m, ensure_ascii=False) + '\n')
     print(f'hanoi : {W} x {m["height"]} -> {out.relative_to(ROOT)}')
     for eid, x, y in doors:

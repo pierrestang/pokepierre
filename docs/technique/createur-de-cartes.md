@@ -378,6 +378,11 @@ bloquante, bords de sol par-dessus le sol), quelle que soit la sélection. Autre
 
 ## Hanoï (octobre 2026)
 
+Thème « Hanoï (Johto) » du catalogue (scripts/build_catalogue.py, THEMES['hanoi']) : les maisons de Johto posées à la
+main sur la carte (LIB_BUILDINGS, planche des bâtiments Gen 4 : maison vert et or, maison bleue aux lanternes, pagode,
+grande maison bleue, maison noire, petite maison violette, maison sur pilotis), le portique, le pont arqué et la
+bannière bleue (ELEMENTS), avec les lanternes, cerisiers, palmiers, étals, nénuphars, roseaux et la cloche.
+
 Hanoï est redessiné par scripts/build_hanoi.py (src/data/builtMaps/hanoi.json), comme l'aéroport : le sol vient du
 convertisseur (convert_g4, d'après la grille GROUND du script : rues, pavés, herbe, le lac Hoàn Kiếm, le ponton de
 l'îlot, la bordure de sapins ouverte aux deux bouts de la grande rue), les bâtiments et le mobilier sont des éléments du

@@ -159,6 +159,14 @@ LIB_BUILDINGS = {
     'vitraux': ('Maison aux vitraux', (253, 12336, 67, 144), 2, [DARK], ['hull'], {'tile'}),
     'volets': ('Maison aux volets', (0, 12512, 80, 128), 2, [DARK], ['hull'], {'tile'}),
     'boutique-store': ('Boutique au store rayé', (80, 12512, 80, 128), 1, [DARK], ['hull'], {'tile'}),
+    # Posés à la main sur Hanoï (octobre 2026) : maisons de Johto (planche des bâtiments Gen 4).
+    'vert-or': ('Maison vert et or', (224, 8752, 96, 128), 2, (), ['hanoi']),
+    'bleue-lanternes': ('Maison bleue aux lanternes', (192, 18816, 112, 128), 3, (), ['hanoi']),
+    'pagode': ('Pagode', (128, 18304, 112, 192), 3, (), ['hanoi']),
+    'grande-bleue': ('Grande maison bleue', (16, 24096, 112, 96), 3, (), ['hanoi']),
+    'noire': ('Maison noire', (112, 20224, 112, 112), 2, (), ['hanoi']),
+    'violette': ('Petite maison violette', (240, 24784, 80, 96), 1, [(28, 35, 38)], ['hanoi']),
+    'pilotis': ('Maison sur pilotis', (0, 1136, 48, 80), 1, (), ['hanoi']),
 }
 
 
@@ -212,6 +220,10 @@ ELEMENTS = {
     'palmier-2': ('Palmier (autre)', 'arbres', lambda: lis_tree('g4-palmier-2'), 3, 'land'),
     # Plantes.
     'fougere': ('Fougère', 'plantes', lambda: lib_building((4, 401, 35, 34), sid='g4-plantes', shadow=True), -1, 'land'),
+    # Posés à la main sur Hanoï (octobre 2026).
+    'portique': ('Portique', 'mobilier', lambda: lib_building((128, 1904, 96, 64), sid='g4-mobilier', dark=300), 3, 'land'),
+    'pont-arque': ('Pont arqué', 'eau', lambda: lib_building((240, 1392, 64, 64), sid='g4-ponts'), None, 'water'),
+    'banniere-bleue': ('Bannière bleue', 'mobilier', lambda: lib_building((160, 3984, 32, 80), sid='g4-mobilier'), 4, 'land'),
     'champignon': ('Champignon', 'plantes', lambda: lib_building((17, 481, 14, 14), sid='g4-plantes', shadow=True), None, 'land'),
     'baies-sombres': ('Buisson à baies', 'plantes', lambda: lib_building((6, 564, 36, 28), sid='g4-plantes', shadow=True), -1, 'land'),
     'hortensias': ('Hortensias', 'plantes', lambda: lib_building((2, 643, 44, 29), sid='g4-plantes', shadow=True), -1, 'land'),
@@ -344,6 +356,10 @@ THEMES = {
                  'palette': 'bordeaux', 'extra': ['peniche', 'velo', 'cerisier', 'arbuste-taille', 'hortensias', 'oranger']},
     'hull': {'name': 'Hull (brique anglaise)', 'forest': None, 'paving': 'brique', 'lamp': 'reverbere-noir',
              'palette': 'hull', 'extra': ['cargo', 'cabine', 'velo', 'arbre-olive', 'arbuste-taille', 'hortensias', 'cerisier']},
+    'hanoi': {'name': 'Hanoï (Johto)', 'forest': None, 'paving': None, 'lamp': 'lanterne-hgss',
+              'extra': ['portique', 'pont-arque', 'banniere-bleue', 'cerisier', 'palmier', 'palmier-2', 'fleurs-tropicales',
+                        'nenuphar', 'roseaux', 'cloche', 'etal', 'etal-bocaux', 'velo', 'oriflamme', 'fougere',
+                        'lanterne-jardin', 'lanterne-bois', 'pot', 'hibiscus', 'arbuste-taille', 'reverbere-rouge']},
 }
 # Au moins cinq arbres par ville (octobre 2026).
 MORE_TREES = {
@@ -355,6 +371,7 @@ MORE_TREES = {
     'prytanee': ['arbre-foret', 'arbre-pointu', 'arbre-olive', 'pin-bleu'],
     'bordeaux': ['arbre-foret', 'arbre-olive', 'arbre-pointu', 'feuillu-orange'],
     'hull': ['arbre-foret', 'arbre-pointu', 'sapin-sombre'],
+    'hanoi': ['arbre-pointu', 'pin-bleu'],
 }
 for _tid, _more in MORE_TREES.items():
     THEMES[_tid]['extra'] = THEMES[_tid]['extra'] + _more
