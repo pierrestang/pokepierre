@@ -1321,9 +1321,9 @@ export const interiors = {
     ],
     // Dans le noir tant que le compteur n'est pas relevé.
     dark: { ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.coupureReparee], radius: 34 },
-    // L'enceinte de Paulfit au milieu du salon, pendant la soirée.
+    // L'enceinte de Paul au milieu du salon, pendant la soirée.
     props: [
-      { type: 'partySpeaker', x: 6, y: 5, w: 1, h: 1, ...PARTY_TIME, dialogue: ['L\'enceinte de Paulfit. Elle envoie !'] },
+      { type: 'partySpeaker', x: 6, y: 5, w: 1, h: 1, ...PARTY_TIME, dialogue: ['L\'enceinte de Paul. Elle envoie !'] },
       // Le lendemain matin, facultatif : le désordre à ranger, par catégorie (ramasser un objet range toute sa catégorie).
       ...[[2, 7], [9, 10], [4, 10]].map(([x, y]) => ({
         type: 'image', image: 'gobelets', x, y, w: 1, h: 1,
@@ -1383,9 +1383,9 @@ export const interiors = {
     ],
   },
 
-  // Bordeaux — le studio de Paulfit, fan de musculation : haltères au sol.
+  // Bordeaux — le studio de Paul, fan de musculation : haltères au sol.
   studioPaulfit: {
-    name: 'Studio de Paulfit',
+    name: 'Studio de Paul',
     frlg: true,
     // Pièce HGSS (séjour de la maison de M. Pokémon, scripts/interieurs/prytanee_bordeaux.py) : vitrine, canapé, chaîne
     // hi-fi, étagère au fond, table et ordinateur au milieu ; les haltères au sol (dessinés par le jeu).
@@ -1409,7 +1409,7 @@ export const interiors = {
       { kind: 'dumbbells', x: 2, y: 10 },
     ],
     spawn: { x: 10, y: 6, facing: 'left' },
-    npcs: [{ id: 'paulfit', name: 'Paulfit', x: 5, y: 4, facing: 'down', script: PAULFIT }],
+    npcs: [{ id: 'paulfit', name: 'Paul', x: 5, y: 4, facing: 'down', script: PAULFIT }],
     objects: [
       ...[[9, 6], [2, 10]].map(([x, y]) => ({ x, y, dialogue: ['Des haltères. Bien trop lourds pour toi.'] })),
     ],

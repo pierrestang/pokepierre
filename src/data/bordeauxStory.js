@@ -3,7 +3,7 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 // Scénario de Bordeaux (les études), en cinq temps :
 //   1. Les clés : l'agence, puis Ousmane, le coloc, devant l'immeuble ; ils entrent ensemble.
 //   2. La coupure : l'appartement dans le noir ; Pierre (Ingéniosité) relève le compteur. Pas de vertu à Bordeaux.
-//   3. La soirée d'intégration : l'enceinte chez Paulfit, les gobelets chez Rémi ; la fête dans l'appartement.
+//   3. La soirée d'intégration : l'enceinte chez Paul, les gobelets chez Rémi ; la fête dans l'appartement.
 //   4. Le diplôme d'anglais : l'oral à KEDGE (Rémi devant la porte).
 //   5. Le départ : l'aéroport (sortie est), Ousmane au guichet ; vol pour Hull.
 // Scénettes partagées par la carte, les intérieurs et l'aéroport (étapes : voir MapScene.runSteps).
@@ -64,28 +64,28 @@ export const METER = [
     speaker: 'Ousmane',
     say: [
       'Bon. Les nouveaux élèves de KEDGE arrivent, on fait la soirée ici. Il nous manque tout.',
-      'Paulfit a une enceinte, Rémi a des gobelets.',
+      'Paul a une enceinte, Rémi a des gobelets.',
       'Ils habitent tous les deux de l\'autre côté de la Garonne : passe un pont, c\'est en bas.',
-      'Paulfit, c\'est la maison du milieu ; Rémi, celle de droite, juste à côté.',
+      'Paul, c\'est la maison du milieu ; Rémi, celle de droite, juste à côté.',
     ],
   },
   { walk: 'ousmane-coupure', to: [11, 6], block: true, then: [FLAGS.preparatifs] },
-  { say: ['Objectif : récupère l\'enceinte chez Paulfit et les gobelets chez Rémi.'] },
+  { say: ['Objectif : récupère l\'enceinte chez Paul et les gobelets chez Rémi.'] },
 ];
 
 // ---------- 3. La soirée d'intégration ----------
 
 export const PAULFIT = [
-  { ifItems: [ITEMS.enceinte.id], speaker: 'Paulfit', say: ['Dos droit, hein ! Et tu me la rends entière.'], end: true },
-  { ifFlags: [FLAGS.soiree], speaker: 'Paulfit', say: ['Alors, elle a tenu le coup, mon enceinte ?'], end: true },
-  { unlessFlags: [FLAGS.preparatifs], speaker: 'Paulfit', say: ['Salut ! Paulfit. Aujourd\'hui, c\'est jambes. Repasse plus tard.'], end: true },
-  { speaker: 'Paulfit', say: ['L\'enceinte ? Ok, mais tu la portes comme un vrai, dos droit.'] },
+  { ifItems: [ITEMS.enceinte.id], speaker: 'Paul', say: ['Dos droit, hein ! Et tu me la rends entière.'], end: true },
+  { ifFlags: [FLAGS.soiree], speaker: 'Paul', say: ['Alors, elle a tenu le coup, mon enceinte ?'], end: true },
+  { unlessFlags: [FLAGS.preparatifs], speaker: 'Paul', say: ['Salut, moi c\'est Paul ! Aujourd\'hui, c\'est jambes. Repasse plus tard.'], end: true },
+  { speaker: 'Paul', say: ['L\'enceinte ? Ok, mais tu la portes comme un vrai, dos droit.'] },
   {
     choose: 'Comment tu la portes ?',
     choices: [
-      { label: 'Dos droit, genoux pliés.', steps: [{ speaker: 'Paulfit', say: ['Voilà ! T\'as fait ça toute ta vie, toi.'] }] },
-      { label: 'À une main, tranquille.', steps: [{ speaker: 'Paulfit', say: ['À une main ?! Prends-la à deux. Et dos droit.'] }] },
-      { label: 'Tu me la portes ?', steps: [{ speaker: 'Paulfit', say: ['Bien essayé. C\'est de la muscu gratuite, profite.'] }] },
+      { label: 'Dos droit, genoux pliés.', steps: [{ speaker: 'Paul', say: ['Voilà ! T\'as fait ça toute ta vie, toi.'] }] },
+      { label: 'À une main, tranquille.', steps: [{ speaker: 'Paul', say: ['À une main ?! Prends-la à deux. Et dos droit.'] }] },
+      { label: 'Tu me la portes ?', steps: [{ speaker: 'Paul', say: ['Bien essayé. C\'est de la muscu gratuite, profite.'] }] },
     ],
   },
   { give: ITEMS.enceinte },
@@ -123,8 +123,8 @@ const BOTH = [ITEMS.enceinte.id, ITEMS.gobelets.id];
 export const OUSMANE_REMINDS = [
   { ifItems: BOTH, steps: PARTY_START, end: true },
   { speaker: 'Ousmane', say: ['Alors, ça avance ?'] },
-  { unlessItems: [ITEMS.enceinte.id], speaker: 'Ousmane', say: ['Il manque l\'enceinte : Paulfit, la maison du milieu, de l\'autre côté de la Garonne.'] },
-  { unlessItems: [ITEMS.gobelets.id], speaker: 'Ousmane', say: ['Et les gobelets : Rémi, la maison de droite, juste à côté de chez Paulfit.'] },
+  { unlessItems: [ITEMS.enceinte.id], speaker: 'Ousmane', say: ['Il manque l\'enceinte : Paul, la maison du milieu, de l\'autre côté de la Garonne.'] },
+  { unlessItems: [ITEMS.gobelets.id], speaker: 'Ousmane', say: ['Et les gobelets : Rémi, la maison de droite, juste à côté de chez Paul.'] },
 ];
 
 // La case devant la porte de l'immeuble : la rencontre avec Ousmane (avec les clés), puis le début de la soirée.
@@ -133,7 +133,7 @@ export const FRONT_DOOR = [
   { ifFlags: [FLAGS.preparatifs], unlessFlags: [FLAGS.soiree], ifItems: BOTH, steps: [{ approach: 'ousmane-rappel' }, ...PARTY_START] },
 ];
 
-export const PARTY = [{ say: ['La soirée d\'intégration bat son plein. L\'enceinte de Paulfit trône au milieu du salon.'] }];
+export const PARTY = [{ say: ['La soirée d\'intégration bat son plein. L\'enceinte de Paul trône au milieu du salon.'] }];
 // Parmi les invités, Léo et Anaïs, de KEDGE : on les retrouve à Hull (voir hullStory.js).
 export const PARTY_LEO = [
   { ifFlags: [FLAGS.leoSoiree], speaker: 'Léo', say: ['La prochaine soirée, c\'est à Hull !'], end: true },

@@ -75,7 +75,7 @@ export const FLAGS = {
   ousmaneRencontre: 'ousmane-rencontre',        //   Ousmane rencontré devant l'immeuble : ils entrent (la coupure)
   coupure: 'coupure',                          //   dans le noir : « On appelle quelqu'un ? » « Non. » (Pragmatisme)
   coupureReparee: 'coupure-reparee',            //   compteur électrique relevé : la lumière revient (Indépendance)
-  preparatifs: 'preparatifs',                   //   Ousmane lance la soirée : enceinte chez Paulfit, gobelets chez Rémi
+  preparatifs: 'preparatifs',                   //   Ousmane lance la soirée : enceinte chez Paul, gobelets chez Rémi
   soiree: 'soiree',                             //   la soirée d'intégration, dans l'appartement
   leoSoiree: 'leo-soiree',                      //     Léo (KEDGE) rencontré à la soirée
   anaisSoiree: 'anais-soiree',                  //     Anaïs (KEDGE) rencontrée à la soirée
@@ -225,7 +225,7 @@ export const ITEMS = {
   reglementQG: { id: 'reglement-qg', name: 'Règlement du QG' },               // Saint-Ay : le panier de la cabane (verrou)
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },
   clesAppartement: { id: 'cles-appartement', name: "Clés de l'appartement" },
-  enceinte: { id: 'enceinte', name: 'Enceinte' },                              // Bordeaux : prêtée par Paulfit
+  enceinte: { id: 'enceinte', name: 'Enceinte' },                              // Bordeaux : prêtée par Paul
   gobelets: { id: 'gobelets', name: 'Gobelets' },                              // Bordeaux : prêtés par Rémi
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },
   diplomeHull: { id: 'diplome-hull', name: 'Diplôme d\'anglais de Hull' },

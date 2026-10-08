@@ -76,7 +76,7 @@ export const bordeauxMap = {
     'ƀƀĥɔWWWWWWWWWɔɔɔWWWWɔɔWWWWɔɔɔɔɔɔ', // 30
     'ƀƀĥɔWWWWWWWWWɔɔɔWWWWɔɔWWWWWɔɔɔɔɔ', // 31
     'ƀƀ.ɔWWWWWWWWWɔɔɔWWWWɔɔWWWWWɔɔɔɔɔ', // 32
-    'ƀƀ.ɔɔɔɔɔDWɔɔɔɔɔɔWDWWɔɔWDWWWɔĥĥĥĥ', // 33  portes : KEDGE (8), le studio de Paulfit (17), Rémi (23) ; est : route de Paris
+    'ƀƀ.ɔɔɔɔɔDWɔɔɔɔɔɔWDWWɔɔWDWWWɔĥĥĥĥ', // 33  portes : KEDGE (8), le studio de Paul (17), Rémi (23) ; est : route de Paris
     'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔĥĥƀƀ', // 34
     'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔ...ɔɔɔɔɔɔɔɔĥĥĥĥƀƀ', // 35
     'ƀƀ..ɔɔɔɔɔɔɔɔɔɔ.........ĥĥĥĥĥĥĥƀƀ', // 36
@@ -104,7 +104,7 @@ export const bordeauxMap = {
       lock: { ifFlags: [FLAGS.soireeFinie] },
       lockedDialogue: ["L'oral d'anglais, c'est pas aujourd'hui."],
     },
-    { x: 17, y: 33, interior: 'studioPaulfit' },                  // le studio de Paulfit
+    { x: 17, y: 33, interior: 'studioPaulfit' },                  // le studio de Paul
     { x: 23, y: 33, interior: 'appartRemi' },                     // l'appartement de Rémi, près du campus
   ],
   // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
@@ -148,7 +148,7 @@ export const bordeauxMap = {
   // Panneaux « Aéroport » à côté des sorties ; les noms sur les portes.
   objects: [
     airportSign(29, 9, true),
-    ...[16, 18].map((x) => ({ x, y: 33, dialogue: ['Sur la porte : « PAULFIT ».'] })),
+    ...[16, 18].map((x) => ({ x, y: 33, dialogue: ['Sur la porte : « PAUL ».'] })),
     ...[22, 24].map((x) => ({ x, y: 33, dialogue: ['Sur la porte : « RÉMI ».'] })),
   ],
   triggers: [

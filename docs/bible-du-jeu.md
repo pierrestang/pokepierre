@@ -591,7 +591,7 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 |---|---|---|
 | Agent immobilier | Remet les clés : « Vos parents ont tout réglé. Voici les clés, l'immeuble est juste à gauche. » | `g35` |
 | Ousmane | Le coloc ; garde aussi le départ à l'aéroport | `g105` |
-| Paulfit | Fan de musculation : prête l'enceinte | `g86` |
+| Paul | Fan de musculation : prête l'enceinte | `g86` |
 | Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `g117` |
 | Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `g55` |
 | Anaïs | Étudiante de KEDGE (« de ta promo »), invitée à la soirée ; on la retrouve à Hull | `g107` |
@@ -609,14 +609,14 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
    au fond de la pièce : « Le compteur électrique. Le disjoncteur est tombé… Tu le relèves. » ; Ousmane : **« T'es
    sérieux, tu savais faire ça ? »** (sans vertu).
 3. **La soirée d'intégration.** Ousmane : « Bon. Les nouveaux élèves de KEDGE arrivent, on fait la soirée ici. Il nous
-   manque tout. » / « Paulfit a une enceinte, Rémi a des gobelets. » / « Ils habitent tous les deux de l'autre côté de
-   la Garonne : passe un pont, c'est en bas. » / « Paulfit, c'est la maison du milieu ; Rémi, celle de droite, juste à
+   manque tout. » / « Paul a une enceinte, Rémi a des gobelets. » / « Ils habitent tous les deux de l'autre côté de
+   la Garonne : passe un pont, c'est en bas. » / « Paul, c'est la maison du milieu ; Rémi, celle de droite, juste à
    côté. »
-   - Paulfit : « L'enceinte ? Ok, mais tu la portes comme un vrai, dos droit. » ; choix « Dos droit, genoux pliés. » /
+   - Paul : « L'enceinte ? Ok, mais tu la portes comme un vrai, dos droit. » ; choix « Dos droit, genoux pliés. » /
      « À une main, tranquille. » / « Tu me la portes ? » ; dans tous les cas → **Enceinte**.
    - Rémi : « C'est so random, les gobelets sont dans le closet. » ; choix « Le closet ? » / « Thanks, bro. » / « Parle
      français ! » ; dans tous les cas → **Gobelets**.
-   - Ousmane : « On est bons. Rentre, ça commence. » ; « La soirée d'intégration bat son plein. L'enceinte de Paulfit
+   - Ousmane : « On est bons. Rentre, ça commence. » ; « La soirée d'intégration bat son plein. L'enceinte de Paul
      trône au milieu du salon. » (répliques des étudiants, par exemple « C'est toi qui as rallumé le courant ? Respect. »)
    - Parmi les invités, Léo : **« Moi c'est Léo, aussi à KEDGE. Paraît qu'on part tous à Hull l'an prochain pour
      l'échange… Ça va être quelque chose. »** (ensuite : « La prochaine soirée, c'est à Hull ! ») ; Anaïs : **« Anaïs, de ta
@@ -633,10 +633,10 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 
 ### Objectifs affichés
 « Objectif : récupère les clés à l'agence. » → « Objectif : va à l'appartement. » → « Objectif : trouve le compteur
-électrique. » → « Objectif : récupère l'enceinte chez Paulfit et les gobelets chez Rémi. » → « Objectif : passe l'oral
+électrique. » → « Objectif : récupère l'enceinte chez Paul et les gobelets chez Rémi. » → « Objectif : passe l'oral
 d'anglais à KEDGE. » → « Objectif : va à l'aéroport, sortie est. » Ousmane rappelle aussi : « Il manque l'enceinte :
-Paulfit, la maison du milieu, de l'autre côté de la Garonne. » / « Et les gobelets : Rémi, la maison de droite, juste à
-côté de chez Paulfit. »
+Paul, la maison du milieu, de l'autre côté de la Garonne. » / « Et les gobelets : Rémi, la maison de droite, juste à
+côté de chez Paul. »
 
 ### Les gardiens des sorties est
 - Chemin de l'aéroport (en haut à droite), tant que Pierre n'a pas son diplôme d'anglais : l'agent de sécurité. Passer à
@@ -682,7 +682,7 @@ sur le bouton VÉLO) pour monter dessus. » Ensuite : « Il te va bien, ce vélo
 Aucune.
 
 ### Mini-jeux
-Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit, Rémi) ; oral d'anglais (trois questions).
+Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paul, Rémi) ; oral d'anglais (trois questions).
 
 ### Départ et trajet
 - **Condition** : le diplôme d'anglais (l'agent de sécurité laisse alors passer). La sortie est mène à l'aéroport ;
@@ -995,7 +995,7 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 | Militaires | `g87` / `g8` | Prytanée |
 | Agent immobilier | `g35` | Bordeaux |
 | Ousmane | `g105` | Bordeaux, aéroport, Hull |
-| Paulfit | `g86` | Bordeaux |
+| Paul | `g86` | Bordeaux |
 | Rémi | `g117` | Bordeaux |
 | Professeure d'anglais | `g106` | Bordeaux (KEDGE) |
 | Hôtesse | `g64` | Aéroport |
@@ -1034,7 +1034,7 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
   l'orthographe hésite aussi : le personnage affiché est « Rémy », mais ses identifiants et drapeaux s'écrivent « remi »
   (`remi`, `remi-casier`, `remi-classe`, `remiArrive`, `remiEnClasse`, `remiInvite`) ou « remy » (`remy-autocollant`,
   `remy-sciences`, `remyAutocollant`, `remyRepart`).
-- **Les deux Paul** : le code ne contient qu'un seul Paul, **Paulfit** (Bordeaux). Je n'ai trouvé aucun autre
+- **Les deux Paul** : le code ne contient qu'un seul Paul, **Paul** (Bordeaux). Je n'ai trouvé aucun autre
   personnage nommé Paul.
 - **Deux Léo** : Léo, meneur de la bande de Hull, et Léo, voisin des parents en Corse (avec Théo). Ils portent le même
   nom et ont donc le même sprite (`g55`). La Corse ne dit pas s'il s'agit du même Léo. `characters.js` attribue aussi

@@ -1440,7 +1440,7 @@ const DECALS = {
     rect(g, 0x707880, px + 3, py + 19, 10, 1);                                 // étiquettes
     rect(g, 0x000000, px + 2, py + 22, 12, 1);                                 // ombre au mur
   },
-  // Haltères posés au sol (studio de Paulfit) : deux barres à disques.
+  // Haltères posés au sol (studio de Paul) : deux barres à disques.
   dumbbells(g, px, py) {
     for (const [dx, dy] of [[1, 5], [3, 11]]) {
       rect(g, 0x000000, px + dx + 1, py + dy + 4, 12, 1);

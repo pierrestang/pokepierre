@@ -120,7 +120,7 @@ maison de Léo à Hull et ses reprises) n'est dessinée qu'une fois : un modèle
 
 `ajouts` : ses différences propres, case par case (une case citée remplace celle du modèle dans ce calque ; numéros de
 planche rapportés à `ajouts.sheets`) — cartons de déménagement à Fort-de-France, oreiller passé sous Fanny à Saint-Ay,
-escalier bloqué chez Felix et en Corse, haltères chez Paulfit. src/data/builtInteriors/compose.js recompose la pièce
+escalier bloqué chez Felix et en Corse, haltères chez Paul. src/data/builtInteriors/compose.js recompose la pièce
 (composeInterior) ; index.js (généré) exporte MODELES et BUILT_INTERIORS déjà recomposés : le jeu, check_paths.js et les
 scripts d'export voient des pièces complètes. scripts/interior_models.py en est le double Python (compose, fiche) et :
 - `python3 scripts/interior_models.py share <id> "<Nom du type>" <pièce de base> <pièces…>` : fait du dessin de la pièce

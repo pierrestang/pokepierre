@@ -182,7 +182,7 @@ PLANS = {
         'items': [['pb-lit', 0, 11, {'bed': True, 'solid': 3}], ['pb-lit', 10, 11, {'solid': 3}]],
         'npc_on_solid': ['ousmane-lit'],
     },
-    # Bordeaux — le studio de Paulfit : la salle de séjour de la maison de M. Pokémon (chaîne hi-fi, canapé, ordinateur) ;
+    # Bordeaux — le studio de Paul : la salle de séjour de la maison de M. Pokémon (chaîne hi-fi, canapé, ordinateur) ;
     # ses haltères sont dessinés par le jeu.
     'studioPaulfit': {
         'hgss': ('004i_Mr Pokémon House', 10, 8, 12, 9),
