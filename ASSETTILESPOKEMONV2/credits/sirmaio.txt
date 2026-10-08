@@ -1,0 +1,17 @@
+SirMaIo (DeviantArt : https://www.deviantart.com/sirmaio) — « Pokemon for Tiled - HGSS Pack » (mai 2024)
+Page : https://www.deviantart.com/sirmaio/art/Pokemon-for-Tiled-HGSS-Pack-1049750163
+Dossier Google Drive : https://drive.google.com/drive/folders/14ZolQJk5QtjUN5oxyLHA79vFL0ctwY0O
+Téléchargé le 7 octobre 2026.
+
+Conditions de l'auteur : « Everything was ripped, cleaned, arranged and prepared by me. You can modify everything and
+share the Google Drive link as long as you don't claim this as your own. Credits are very appreciated as I spent month
+doing that. » — Graphismes d'origine : Nintendo / Game Freak (Pokémon HeartGold / SoulSilver), projet de fan non
+commercial.
+Crédit à afficher : « Intérieurs HGSS ripés et préparés par SirMaIo ».
+
+Fichiers :
+  tilesets/interieurs/hgss-sirmaio/*.png          planches d'intérieur du pack (noms d'origine, gardés pour les .tsx)
+  tilesets/interieurs/centre-pokemon-hgss_sirmaio.png  « HGSS Pokemon-Center » (deviation 933170623)
+  references/hgss-interieurs/tiled/Maps/*.tmx     cartes Tiled des intérieurs du pack (agencements du jeu)
+  references/hgss-interieurs/tiled/Tilesets/*.tsx jeux de cases Tiled du pack
+  references/hgss-interieurs/*.png                rendus de ces cartes (tiled/render_tmx.py), références d'agencement

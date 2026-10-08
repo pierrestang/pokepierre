@@ -1,0 +1,1 @@
+{"version":1,"id":"ffHouse","name":"Maison Pierre - FDF","modele":"maison-type-1","ajouts":{"sheets":["interieurs","catalogue-int"],"cells":{"28":{"decor":[840,846,100242]},"34":{"decor":[853,854,100242]},"55":{"decor":[836,100242]},"65":{"decor":100242}},"solid":{"55":1,"65":1}},"spawn":{"x":2,"y":8,"facing":"up"}}

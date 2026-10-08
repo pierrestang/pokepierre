@@ -77,8 +77,9 @@ def main():
         cell = im.crop((x, y0, x + w + 1, y0 + HEIGHT)).convert('RGBA')
         cell.putdata([p if p[:3] in (INK, SHADOW) else (0, 0, 0, 0) for p in cell.getdata()])
         if not unicodedata.decomposition(c) and c not in '“”‘’…':
-            # Sans accent : les 3 rangées du haut ne contiennent que des restes de la ligne du dessus.
-            for yy in range(TOP):
+            # Sans accent : les 3 rangées du haut ne contiennent que des restes de la ligne du dessus. « ! » et « ? »
+            # montent d'un pixel plus haut que les capitales : on garde leur dernière rangée.
+            for yy in range(TOP - 1 if c in '!?' else TOP):
                 for xx in range(w + 1):
                     cell.putpixel((xx, yy), (0, 0, 0, 0))
         sheet.paste(cell, (sx, 0))

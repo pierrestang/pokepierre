@@ -1,0 +1,1 @@
+{"version":1,"id":"ffHouseUp","name":"Chambre Pierre","modele":"chambre-type-1","ajouts":{"sheets":["catalogue-int","interieurs"],"cells":{"47":{"decor":[343,242]},"49":{"decor":242},"70":{"decor":[100836,242]},"71":{"decor":[100931,242]},"75":{"decor":242}},"solid":{"47":1,"49":1,"70":1,"71":1,"75":1}},"spawn":{"x":2,"y":5,"facing":"left"}}

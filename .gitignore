@@ -1,3 +1,13 @@
 node_modules
 dist
 .DS_Store
+*.zip
+*.psd
+_archive/
+assets-source/elements-cartes/candidats/
+
+# Copies de travail des agents (git worktree)
+.claude/worktrees/
+
+# Références d études (captures et rips des jeux DS) : non redistribuées
+assets-source/references-ds/

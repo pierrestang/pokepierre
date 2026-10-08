@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { MAPS, START_MAP } from '../data/maps/index.js';
-import { renderMap } from '../systems/tileRenderer.js';
+import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
+import { applyBuiltLook } from '../systems/builtMaps.js';
 import { startSeaShimmer, startFallingLeaves } from '../systems/effects.js';
 import { FONT, touchScreen } from '../systems/screen.js';
 import { FRLG_FONT, frlgText } from '../systems/frlgFont.js';
@@ -9,8 +10,8 @@ import { flags } from '../systems/flags.js';
 import { hasSave, loadPosition, eraseSave } from '../systems/save.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 
-// Écran titre : l'île de Fort-de-France défile doucement en fond (caméra zoomée), le titre et le menu
-// sont affichés par une seconde caméra sans zoom. « Nouvelle partie » / « Continuer la partie » :
+// Écran titre : la carte de la partie en cours (sa ville ; Fort-de-France pour une nouvelle partie) défile doucement en
+// fond (caméra zoomée), avec son dessin Gen 4 ; le titre et le menu sont affichés par une seconde caméra sans zoom. « Nouvelle partie » / « Continuer la partie » :
 // flèches haut/bas pour choisir, Entrée ou Espace pour valider.
 export class TitleScene extends Phaser.Scene {
   constructor() {
@@ -22,12 +23,21 @@ export class TitleScene extends Phaser.Scene {
     playMusic('title');
     setSeaAmbience(true);
 
-    // Fond : la carte de l'île, avec ses vaguelettes et ses feuilles qui tombent.
-    const map = MAPS[START_MAP];
-    this.cameras.main.setBackgroundColor(0x4078e0);
+    // Fond : la carte de la partie en cours, avec ses vaguelettes et ses feuilles qui tombent.
+    const map = MAPS[this.backgroundMapId()] ?? MAPS[START_MAP];
+    const fill = map.surroundings ?? 'T';
+    this.cameras.main.setBackgroundColor(fill === 'w' ? 0x4078e0 : 0x000000);
+    if (map.built) applyBuiltLook(this, map);
     renderMap(this, map);
-    // Autour de l'île, la même mer animée qu'en jeu (ajoutée par renderMap).
-    startSeaShimmer(this, map, false);
+    for (const o of map.overlays ?? []) {
+      this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(o.depth ?? 10 + (o.y + o.h) / 10000);
+    }
+    // Autour de la carte : la mer animée (ajoutée par renderMap) ou son décor répété, comme en jeu.
+    if (fill && fill !== 'w') {
+      const around = createSurroundings(this, map, fill);
+      around.resize(map.grid[0].length * 16 + 2 * this.scale.width, map.grid.length * 16 + 2 * this.scale.height);
+    }
+    startSeaShimmer(this, map);
     startFallingLeaves(this, map);
     const background = [...this.children.list];
 
@@ -38,7 +48,7 @@ export class TitleScene extends Phaser.Scene {
       stroke: '#2c3858', strokeThickness: 12,
       shadow: { offsetX: 0, offsetY: 8, color: '#1c2438', fill: true, stroke: true, blur: 0 },
     }).setOrigin(0.5);
-    this.subtitle = this.add.text(0, 0, 'De Fort-de-France à Saint-Ay', {
+    this.subtitle = this.add.text(0, 0, 'Génération 1', {
       fontFamily: FONT, fontSize: '26px', color: '#ffffff', stroke: '#2c3858', strokeThickness: 6,
     }).setOrigin(0.5);
     this.panel = this.add.graphics();
@@ -66,13 +76,23 @@ export class TitleScene extends Phaser.Scene {
     this.panBackground(map);
   }
 
-  // Lent travelling sur l'île, d'un bout à l'autre et retour.
+  // La ville de la partie en cours (celle d'un bâtiment pour un intérieur, l'arrivée d'un voyage), sinon Fort-de-France.
+  backgroundMapId() {
+    if (!this.canContinue) return START_MAP;
+    const saved = loadPosition();
+    const data = saved?.data ?? {};
+    return data.mapId ?? data.fromMap ?? data.next?.data?.mapId ?? START_MAP;
+  }
+
+  // Lent travelling sur la carte, d'un bout à l'autre et retour.
   panBackground(map) {
     const cam = this.cameras.main;
-    const zoom = Math.max(2, Math.ceil(this.scale.height / (map.grid.length * 16)));
-    cam.setZoom(zoom);
     const w = map.grid[0].length * 16;
     const h = map.grid.length * 16;
+    // Assez zoomé pour que la carte remplisse l'écran, et la caméra reste dans la carte (rien autour).
+    const zoom = Math.max(2, Math.ceil(this.scale.height / h), Math.ceil(this.scale.width / w));
+    cam.setZoom(zoom);
+    cam.setBounds(0, 0, w, h);
     cam.centerOn(w * 0.3, h * 0.45);
     this.tweens.add({ targets: cam, scrollX: cam.scrollX + w * 0.4, duration: 26000, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
@@ -82,6 +102,7 @@ export class TitleScene extends Phaser.Scene {
       [
         { label: 'Nouvelle partie', action: () => this.onNewGame() },
         { label: 'Continuer la partie', action: () => this.continueGame(), disabled: !this.canContinue },
+        { label: 'Créateur', action: () => { window.location.href = `${import.meta.env.BASE_URL}builder.html`; } },
       ],
       this.canContinue ? 1 : 0,
     );

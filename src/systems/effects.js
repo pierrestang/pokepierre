@@ -22,26 +22,62 @@ export class GrassCovers {
     this.map = map;
     this.at = (x, y) => map.grid[y]?.[x];
     this.covers = new Map();
+    // Pas de hautes herbes ni de blé sur la carte (intérieurs, villes) : rien à faire à chaque image.
+    this.any = map.grid.some((row) => row.some((c) => TALL_PLANTS.includes(c)));
   }
 
   cover(x, y) {
     const id = `${x},${y}`;
     if (!this.covers.has(id)) {
       // Bas de la tuile Rouge Feu des hautes herbes (ou du blé), juste devant un personnage debout sur cette
-      // case (profondeur 10 + y / 10000, joueur + 0.001).
-      const image = this.scene.add.image(x * S, y * S + GRASS_COVER_TOP, tallGrassCoverTexture(this.scene, this.at(x, y))).setOrigin(0).setVisible(false)
-        .setDepth(10 + (y * S + S / 2) / 10000 + 0.002);
+      // case (profondeur 10 + y / 10000, joueur + 0.001), mais pas devant la tête du personnage de la case du dessous.
+      // Carte dessinée avec le créateur (map.backdrop) : le bas de la case telle qu'elle est dessinée (hautes herbes
+      // Gen 4), pas la touffe Rouge Feu.
+      const backdrop = this.map.backdrop?.sheet;
+      let texture = tallGrassCoverTexture(this.scene, this.at(x, y));
+      let frame;
+      if (backdrop && this.scene.textures.exists(backdrop)) {
+        const tex = this.scene.textures.get(backdrop);
+        frame = `herbe-${x},${y}`;
+        if (!tex.has(frame)) tex.add(frame, 0, x * S, y * S + GRASS_COVER_TOP, S, S - GRASS_COVER_TOP);
+        texture = backdrop;
+      }
+      const image = this.scene.add.image(x * S, y * S + GRASS_COVER_TOP, texture, frame).setOrigin(0).setVisible(false)
+        .setDepth(10 + (y * S + S / 2) / 10000 + 0.0012);   // devant le joueur (+ 0.001), derrière la case du dessous (+ 0.0016)
       this.covers.set(id, image);
     }
     return this.covers.get(id);
   }
 
+  // Carte du créateur : la case dessinée a-t-elle vraiment des hautes herbes (ou du blé) dans son bas ? Une case 'ĥ'
+  // de la grille retouchée en herbe rase ne cache pas les jambes. D'après le dessin cuit de la carte : l'herbe rase DPPt
+  // est presque unie (sa couleur principale couvre ~75 % de la case), les touffes et le blé sont texturés (≤ 41 %).
+  drawnPlants(x, y) {
+    const backdrop = this.map.backdrop?.sheet;
+    if (!backdrop || !this.scene.textures.exists(backdrop)) return true;
+    this.plants ??= new Map();
+    const id = `${x},${y}`;
+    if (!this.plants.has(id)) {
+      const source = this.scene.textures.get(backdrop).getSourceImage();
+      const data = source.getContext('2d', { willReadFrequently: true })
+        .getImageData(x * S, y * S + GRASS_COVER_TOP, S, S - GRASS_COVER_TOP).data;
+      const count = new Map();
+      for (let i = 0; i < data.length; i += 4) {
+        const color = (data[i] << 16) | (data[i + 1] << 8) | data[i + 2];
+        count.set(color, (count.get(color) ?? 0) + 1);
+      }
+      this.plants.set(id, Math.max(...count.values()) < 0.5 * (data.length / 4));
+    }
+    return this.plants.get(id);
+  }
+
   // Affiche les touffes des cases occupées par les personnages (`sprites`), cache les autres.
   update(sprites) {
+    if (!this.any) return;
     const shown = new Set();
     for (const sprite of sprites) {
       for (const { x, y } of sprite.tiles()) {
-        if (!TALL_PLANTS.includes(this.at(x, y))) continue;
+        if (!TALL_PLANTS.includes(this.at(x, y)) || !this.drawnPlants(x, y)) continue;
         shown.add(`${x},${y}`);
         this.cover(x, y).setVisible(true);
       }
@@ -50,8 +86,8 @@ export class GrassCovers {
   }
 
   // Frémissement quand on entre dans une case : les touffes se couchent un instant, des brins s'envolent.
-  rustle(x, y) {
-    sfx('rustle');
+  rustle(x, y, { sound = true } = {}) {
+    if (sound) sfx('rustle');
     const image = this.cover(x, y);
     this.scene.tweens.killTweensOf(image);
     image.setScale(1, 1).setY(y * S + GRASS_COVER_TOP);
@@ -96,7 +132,7 @@ export function startFallingLeaves(scene, map) {
       const x = tx * S + Phaser.Math.Between(0, S);
       const y = ty * S - Phaser.Math.Between(4, 14);
       const leaf = scene.add.rectangle(x, y, 2, 1, Phaser.Utils.Array.GetRandom([0x9cd850, 0x6cb844, 0xc8e070]))
-        .setDepth(40).setAlpha(0.9);
+        .setDepth(35).setAlpha(0.9);              // au-dessus des cimes (30), sous le voile de la nuit (40)
       const drift = Phaser.Math.Between(-14, 14);
       scene.tweens.add({ targets: leaf, y: y + 22, duration: 2200, ease: 'Linear' });
       scene.tweens.add({ targets: leaf, x: x + drift, duration: 550, yoyo: true, repeat: 1, ease: 'Sine.easeInOut' });
@@ -108,14 +144,39 @@ export function startFallingLeaves(scene, map) {
 // ---------- Mer animée ----------
 
 // Vaguelettes claires qui défilent lentement sur toutes les cases d'eau (carte et décor autour),
-// par-dessus les vagues dessinées : la mer ondule. `outsideIsSea` : le décor autour de la carte est la mer.
-export function startSeaShimmer(scene, map, outsideIsSea) {
+// par-dessus les vagues dessinées : la mer ondule.
+// Carte du créateur : parmi les cases [x, y] données, celles vraiment dessinées en eau (le bleu domine au milieu de la
+// case), pour que les effets d'eau (reflets, étincelles, poissons) ne tombent ni sur un bateau ni sur le sable ni sur
+// l'herbe d'une grille un peu en retard sur le dessin. Les autres cartes : toutes les cases.
+export function drawnWater(scene, map, cells) {
+  if (!map.built || !map.backdrop || !cells.length) return cells;
+  const src = scene.textures.get(map.backdrop.sheet)?.getSourceImage?.();
+  const ctx = src?.getContext?.('2d');
+  if (!ctx) return cells;
+  return cells.filter(([x, y]) => {
+    const px = ctx.getImageData(x * S, y * S, S, S).data;      // la case seule (pas tout le dessin de la carte)
+    let blue = 0;
+    for (const [dx, dy] of [[4, 4], [11, 4], [4, 11], [11, 11], [8, 8]]) {
+      const i = (dy * S + dx) * 4;
+      if (px[i + 2] > px[i] + 30 && px[i + 2] > px[i + 1] - 10) blue++;
+    }
+    return blue >= 3;
+  });
+}
+
+export function startSeaShimmer(scene, map) {
   const { grid } = map;
   const W = grid[0].length * S;
   const H = grid.length * S;
-  const water = [];
-  grid.forEach((row, y) => row.forEach((c, x) => { if (WATER.includes(c)) water.push([x, y]); }));
-  if (!water.length && !outsideIsSea) return;
+  let water = [];
+  // Carte du créateur (map.built) : sa mer est dessinée (pas de couche de mer animée, voir tileRenderer.renderMap) ; les
+  // reflets passent aussi sur la mer, comme sur les étangs et les rivières, mais seulement sur les cases vraiment
+  // dessinées en eau (le bleu domine au milieu de la case), pour qu'une grille un peu en retard sur le dessin ne fasse
+  // pas onduler du sable.
+  const codes = map.built ? [...WATER, 'w'] : WATER;
+  grid.forEach((row, y) => row.forEach((c, x) => { if (codes.includes(c)) water.push([x, y]); }));
+  water = drawnWater(scene, map, water);
+  if (!water.length) return;
 
   if (!scene.textures.exists('sea-shimmer')) {
     const g = scene.make.graphics({}, false);
@@ -135,13 +196,8 @@ export function startSeaShimmer(scene, map, outsideIsSea) {
   const shape = scene.make.graphics({}, false);
   shape.fillStyle(0xffffff);
   water.forEach(([x, y]) => shape.fillRect(x * S, y * S, S, S));
-  if (outsideIsSea) {
-    shape.fillRect(-margin, -margin, W + 2 * margin, margin);
-    shape.fillRect(-margin, H, W + 2 * margin, margin);
-    shape.fillRect(-margin, 0, margin, H);
-    shape.fillRect(W, 0, margin, H);
-  }
   layer.setMask(shape.createGeometryMask());
+  scene.events.once('shutdown', () => shape.destroy());     // hors de la liste de la scène : à détruire soi-même
 
   // Défilement lent en diagonale, par pixels entiers (rendu net), avec une respiration de l'opacité.
   let t = 0;
@@ -217,13 +273,14 @@ export function startSeagulls(scene, map) {
     const y = Phaser.Math.Between(S * 2, H - S * 4);
     const x0 = fromLeft ? -20 : W + 20;
     const x1 = fromLeft ? W + 20 : -20;
-    const gull = scene.add.image(x0, y, 'gull-0').setDepth(45).setFlipX(!fromLeft);
+    const gull = scene.add.image(x0, y, 'gull-0').setDepth(38).setFlipX(!fromLeft);   // sous le voile de la nuit (40)
     const shadow = scene.add.ellipse(x0, y + 26, 7, 2, 0x000000, 0.18).setDepth(2);
     let frame = 0;
     const flap = scene.time.addEvent({ delay: 220, loop: true, callback: () => gull.setTexture(`gull-${(frame = 1 - frame)}`) });
     const duration = Phaser.Math.Between(9000, 13000);
-    scene.tweens.add({ targets: [gull, shadow], x: x1, duration, ease: 'Linear', onComplete: () => { flap.remove(); gull.destroy(); shadow.destroy(); } });
-    scene.tweens.add({ targets: gull, y: y - 6, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    // Le battement (sans fin) est arrêté avec la mouette : Phaser ne retire pas les tweens d'un objet détruit.
+    const bob = scene.tweens.add({ targets: gull, y: y - 6, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    scene.tweens.add({ targets: [gull, shadow], x: x1, duration, ease: 'Linear', onComplete: () => { flap.remove(); bob.remove(); gull.destroy(); shadow.destroy(); } });
   };
   scene.time.addEvent({ delay: 7000, loop: true, callback: () => { if (Math.random() < 0.7) fly(); } });
   scene.time.delayedCall(1500, fly);
@@ -231,10 +288,11 @@ export function startSeagulls(scene, map) {
 
 // Un poisson saute hors de l'eau de temps en temps, avec des ronds dans l'eau.
 export function startJumpingFish(scene, map) {
-  const sea = [];
+  let sea = [];
   map.grid.forEach((row, y) => row.forEach((c, x) => {
     if (c === 'w' && row[x - 1] === 'w' && row[x + 1] === 'w' && map.grid[y - 1]?.[x] === 'w') sea.push([x, y]);
   }));
+  sea = drawnWater(scene, map, sea);
   if (!sea.length) return;
   ensureTexture(scene, 'fish', 6, 3, (g) => {
     px(g, 0x284878, 0, 0, 5, 3);

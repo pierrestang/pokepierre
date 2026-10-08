@@ -41,14 +41,3 @@ def clear_outside(im, match):
         px[x, y] = CLEAR
         queue.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
     return im
-
-
-def pack_characters(rows, w, h):
-    """Planche de personnages au format de frlg-npcs.png : une ligne de 12 images de w x h par personnage (bas,
-    haut, gauche, droite x debout, pas, pas), chaque personnage descendu pour que ses pieds touchent le bas."""
-    out = Image.new('RGBA', (w * 12, h * len(rows)), CLEAR)
-    for k, frames in enumerate(rows):
-        bottom = max(f.getbbox()[3] for f in frames if f.getbbox())
-        for i, f in enumerate(frames):
-            out.paste(f, (i * w, k * h + h - bottom), f)
-    return out

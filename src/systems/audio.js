@@ -27,6 +27,7 @@ let ctx = null;
 let master = null;
 let musicBus = null;
 let sfxBus = null;
+let mainGain = null;      // volume de la musique du lieu (voir playMusic)
 const waves = {};
 
 function init() {
@@ -40,6 +41,8 @@ function init() {
   musicBus = ctx.createGain();
   musicBus.gain.value = options.music ? 0.55 : 0;
   musicBus.connect(master);
+  mainGain = ctx.createGain();
+  mainGain.connect(musicBus);
   sfxBus = ctx.createGain();
   sfxBus.gain.value = options.sfx ? 0.8 : 0;
   sfxBus.connect(master);
@@ -66,7 +69,7 @@ export function unlockAudio() {
     if (pendingSong) {
       const s = pendingSong;
       pendingSong = null;
-      playMusic(s);
+      playMusic(s.name, s.volume);
     }
     if (seaOn) setSeaAmbience(true);
   };
@@ -195,40 +198,261 @@ const TITLE_LEAD = [
 ];
 const TITLE_CHORDS = ['G', 'Em', 'C', 'D', 'C', 'G', 'D', 'G'];
 
-// Thème de la maison : berceuse posée, en ré majeur.
-const HOME_LEAD = [
-  ['F#4', 2], ['A4', 2], ['D5', 3], ['C#5', 1],
-  ['B4', 2], ['A4', 2], ['F#4', 4],
-  ['G4', 2], ['B4', 2], ['E5', 3], ['D5', 1],
-  ['C#5', 2], ['B4', 2], ['A4', 4],
-  ['F#4', 2], ['A4', 2], ['D5', 3], ['E5', 1],
-  ['F#5', 2], ['E5', 2], ['D5', 4],
-  ['B4', 2], ['C#5', 2], ['E5', 2], ['C#5', 2],
+// ---------- Une musique par ville (même registre que celle de l'île) ----------
+
+// Saint-Ay : le village au bord du lac, en sol majeur, doux et chantant.
+const SAINTAY_LEAD = [
+  ['B4', 2], ['D5', 2], ['G5', 3], ['F#5', 1],
+  ['E5', 2], ['D5', 2], ['B4', 4],
+  ['C5', 2], ['E5', 2], ['G5', 2], ['E5', 2],
+  ['F#5', 3], ['E5', 1], ['D5', 4],
+  ['B4', 2], ['D5', 2], ['G5', 2], ['A5', 2],
+  ['B5', 3], ['A5', 1], ['G5', 4],
+  ['A5', 2], ['F#5', 2], ['E5', 2], ['F#5', 2],
+  ['G5', 6], [r, 2],
+];
+const SAINTAY_CHORDS = ['G', 'Em', 'C', 'D', 'G', 'Em', 'D', 'G'];
+
+// Montépilloy : la campagne et ses vieilles pierres, en la mineur, air de ballade médiévale.
+const MONTEPILLOY_LEAD = [
+  ['A4', 2], ['C5', 1], ['E5', 1], ['A5', 2], ['G5', 2],
+  ['B4', 2], ['D5', 2], ['G5', 4],
+  ['A5', 2], ['G5', 1], ['F5', 1], ['C5', 2], ['F5', 2],
+  ['E5', 2], ['D5', 2], ['B4', 4],
+  ['C5', 1], ['D5', 1], ['E5', 2], ['A5', 2], ['C6', 2],
+  ['B5', 2], ['G5', 2], ['D5', 2], ['G5', 2],
+  ['A5', 3], ['G5', 1], ['F5', 2], ['D5', 2],
+  ['E5', 2], ['G#4', 2], ['B4', 2], ['E5', 2],
+];
+const MONTEPILLOY_CHORDS = ['Am', 'G', 'F', 'G', 'Am', 'G', 'F', 'E'];
+
+// Le collège Bonsecours : sautillant, en do majeur, cour de récréation.
+const COLLEGE_LEAD = [
+  ['E5', 1], ['G5', 1], ['C6', 2], ['G5', 2], ['E5', 2],
+  ['A5', 2], ['E5', 2], ['C5', 2], ['E5', 2],
+  ['F5', 1], ['A5', 1], ['C6', 2], ['A5', 2], ['F5', 2],
+  ['G5', 3], ['F5', 1], ['D5', 4],
+  ['E5', 2], ['F5', 1], ['G5', 1], ['C6', 2], ['B5', 2],
+  ['A5', 2], ['G5', 1], ['E5', 1], ['C5', 4],
+  ['D5', 2], ['F5', 2], ['A5', 2], ['F5', 2],
+  ['G5', 2], ['B5', 2], ['D6', 2], [r, 2],
+];
+const COLLEGE_CHORDS = ['C', 'Am', 'F', 'G', 'C', 'Am', 'Dm', 'G'];
+
+// Le Prytanée : marche militaire en fa majeur, caisse claire et roulements.
+const PRYTANEE_LEAD = [
+  ['C5', 2], ['F5', 2], ['F5', 1], ['G5', 1], ['A5', 2],
+  ['G5', 3], ['E5', 1], ['C5', 4],
+  ['A5', 2], ['A5', 1], ['A#5', 1], ['C6', 2], ['A5', 2],
+  ['A#5', 3], ['F5', 1], ['D5', 2], ['F5', 2],
+  ['C5', 2], ['F5', 2], ['A5', 2], ['C6', 2],
+  ['D6', 3], ['C6', 1], ['A5', 4],
+  ['G5', 2], ['E5', 2], ['C5', 2], ['E5', 2],
+  ['F5', 6], [r, 2],
+];
+const PRYTANEE_CHORDS = ['F', 'C', 'F', 'Bb', 'F', 'Dm', 'C', 'F'];
+
+// Bordeaux : la ville étudiante, élégante, en ré mineur.
+const BORDEAUX_LEAD = [
+  ['A4', 2], ['D5', 2], ['F5', 2], ['E5', 1], ['D5', 1],
+  ['F5', 3], ['D5', 1], ['A#4', 4],
+  ['C5', 2], ['E5', 2], ['G5', 3], ['F5', 1],
+  ['E5', 2], ['C#5', 2], ['A4', 4],
+  ['D5', 1], ['E5', 1], ['F5', 2], ['A5', 2], ['D6', 2],
+  ['C6', 2], ['A#5', 2], ['F5', 4],
+  ['G5', 2], ['A#5', 2], ['D6', 2], ['A#5', 2],
+  ['A5', 4], ['C#5', 2], ['E5', 2],
+];
+const BORDEAUX_CHORDS = ['Dm', 'Bb', 'C', 'A', 'Dm', 'Bb', 'Gm', 'A'];
+
+// Hull : la ville du nord sous la pluie, rock de pub en si mineur.
+const HULL_LEAD = [
+  ['B4', 2], ['D5', 2], ['F#5', 2], ['D5', 2],
+  ['G5', 3], ['F#5', 1], ['D5', 4],
+  ['A5', 2], ['F#5', 2], ['D5', 2], ['F#5', 2],
+  ['E5', 3], ['C#5', 1], ['A4', 4],
+  ['B4', 1], ['C#5', 1], ['D5', 2], ['F#5', 2], ['B5', 2],
+  ['A5', 2], ['G5', 2], ['D5', 4],
+  ['F#5', 2], ['A5', 2], ['D6', 2], ['C#6', 2],
+  ['C#6', 2], ['B5', 2], ['A5', 4],
+];
+const HULL_CHORDS = ['Bm', 'G', 'D', 'A', 'Bm', 'G', 'D', 'A'];
+
+// Hanoï : gamme pentatonique en do, légère, sans batterie.
+const HANOI_LEAD = [
+  ['E5', 2], ['G5', 2], ['A5', 1], ['G5', 1], ['E5', 2],
+  ['C5', 2], ['D5', 2], ['E5', 4],
+  ['G5', 2], ['A5', 2], ['C6', 2], ['A5', 2],
+  ['G5', 3], ['E5', 1], ['D5', 4],
+  ['E5', 2], ['D5', 1], ['C5', 1], ['A4', 4],
+  ['C5', 2], ['D5', 2], ['A5', 2], ['G5', 2],
+  ['E5', 2], ['D5', 2], ['G4', 2], ['A4', 2],
+  ['C5', 6], [r, 2],
+];
+const HANOI_CHORDS = ['C', 'Am', 'C', 'G', 'Am', 'F', 'G', 'C'];
+
+// Amsterdam : orgue de barbarie au bord des canaux, en fa majeur.
+const AMSTERDAM_LEAD = [
+  ['F5', 2], ['A5', 2], ['C6', 2], ['A5', 2],
+  ['D6', 2], ['C6', 2], ['A5', 4],
+  ['A#5', 2], ['D6', 2], ['F5', 2], ['A#5', 2],
+  ['C6', 3], ['A#5', 1], ['G5', 4],
+  ['A5', 1], ['G5', 1], ['F5', 2], ['C5', 2], ['F5', 2],
+  ['A5', 2], ['F5', 2], ['D5', 4],
+  ['E5', 2], ['G5', 2], ['C6', 2], ['E5', 2],
+  ['F5', 6], [r, 2],
+];
+const AMSTERDAM_CHORDS = ['F', 'Dm', 'Bb', 'C', 'F', 'Dm', 'C', 'F'];
+
+// New Delhi et le Rajasthan : mode oriental sur ré, rythme en 3 + 3 + 2.
+const NEWDELHI_LEAD = [
+  ['D5', 2], ['D#5', 1], ['F#5', 1], ['G5', 2], ['A5', 2],
+  ['A#5', 2], ['A5', 1], ['G5', 1], ['F#5', 4],
+  ['G5', 2], ['E5', 2], ['C5', 2], ['E5', 2],
+  ['F#5', 2], ['D#5', 2], ['D5', 4],
+  ['G5', 2], ['A#5', 2], ['D6', 2], ['A#5', 2],
+  ['A5', 3], ['G5', 1], ['F#5', 4],
+  ['E5', 2], ['G5', 2], ['C6', 2], ['A#5', 2],
+  ['A5', 2], ['F#5', 2], ['D5', 4],
+];
+const NEWDELHI_CHORDS = ['D', 'D', 'C', 'D', 'Gm', 'D', 'C', 'D'];
+
+// Paris : valse musette en la mineur.
+const PARIS_LEAD = [
+  ['E5', 2], ['A5', 2], ['C6', 2], ['B5', 2],
+  ['A5', 2], ['F5', 2], ['D5', 4],
+  ['E5', 2], ['G#5', 2], ['B5', 2], ['D6', 2],
+  ['C6', 4], ['A5', 4],
+  ['D6', 2], ['C6', 1], ['A5', 1], ['F5', 2], ['A5', 2],
+  ['E5', 2], ['C5', 2], ['A4', 4],
+  ['B4', 2], ['D5', 2], ['G#5', 2], ['B5', 2],
+  ['A5', 6], [r, 2],
+];
+const PARIS_CHORDS = ['Am', 'Dm', 'E', 'Am', 'Dm', 'Am', 'E', 'Am'];
+
+// Toulon et le Chemin : le port au soleil, en sol majeur.
+const TOULON_LEAD = [
+  ['D5', 2], ['G5', 2], ['B5', 2], ['G5', 2],
+  ['C6', 2], ['B5', 1], ['A5', 1], ['G5', 2], ['E5', 2],
+  ['F#5', 2], ['A5', 2], ['D6', 3], ['C6', 1],
+  ['B5', 4], ['G5', 4],
+  ['E5', 2], ['G5', 2], ['B5', 2], ['E6', 2],
+  ['D6', 2], ['C6', 2], ['G5', 4],
+  ['A5', 2], ['F#5', 2], ['D5', 2], ['F#5', 2],
+  ['G5', 6], [r, 2],
+];
+const TOULON_CHORDS = ['G', 'C', 'D', 'G', 'Em', 'C', 'D', 'G'];
+
+// La Corse : montagne et maquis, mode de ré, posé.
+const CORSE_LEAD = [
+  ['D5', 2], ['F5', 2], ['A5', 3], ['G5', 1],
+  ['E5', 2], ['G5', 2], ['C5', 4],
+  ['F5', 2], ['E5', 1], ['D5', 1], ['A5', 4],
+  ['C6', 2], ['B5', 2], ['A5', 4],
+  ['A5', 2], ['D6', 2], ['C6', 2], ['A5', 2],
+  ['G5', 2], ['E5', 2], ['C5', 2], ['E5', 2],
+  ['E5', 3], ['D5', 1], ['C5', 2], ['E5', 2],
   ['D5', 6], [r, 2],
 ];
-const HOME_CHORDS = ['D', 'Bm', 'G', 'A', 'D', 'Bm', 'G', 'D'];
+const CORSE_CHORDS = ['Dm', 'C', 'Dm', 'Am', 'Dm', 'C', 'Am', 'Dm'];
+
+// Bali : couleurs de gamelan, en mi, sans batterie.
+const BALI_LEAD = [
+  ['E5', 1], ['G5', 1], ['B5', 2], ['E6', 2], ['B5', 2],
+  ['C6', 2], ['B5', 1], ['G5', 1], ['E5', 4],
+  ['A5', 2], ['C6', 2], ['E5', 2], ['A5', 2],
+  ['G5', 2], ['F5', 2], ['E5', 4],
+  ['B4', 2], ['E5', 2], ['F5', 2], ['G5', 2],
+  ['B5', 2], ['C6', 2], ['G5', 4],
+  ['E5', 2], ['A5', 2], ['C6', 2], ['B5', 2],
+  ['E5', 6], [r, 2],
+];
+const BALI_CHORDS = ['Em', 'C', 'Am', 'Em', 'Em', 'C', 'Am', 'Em'];
+
+// Le Sri Lanka : la jungle et ses cascades, en la majeur, entraînant.
+const SRILANKA_LEAD = [
+  ['C#5', 2], ['E5', 2], ['A5', 2], ['E5', 2],
+  ['F#5', 2], ['A5', 2], ['D6', 4],
+  ['B5', 2], ['G#5', 2], ['E5', 2], ['G#5', 2],
+  ['A5', 6], [r, 2],
+  ['F#5', 2], ['A5', 2], ['C#6', 2], ['A5', 2],
+  ['D6', 2], ['C#6', 1], ['B5', 1], ['A5', 4],
+  ['G#5', 2], ['B5', 2], ['E5', 2], ['G#5', 2],
+  ['A5', 6], [r, 2],
+];
+const SRILANKA_CHORDS = ['A', 'D', 'E', 'A', 'F#m', 'D', 'E', 'A'];
+
+// La Thaïlande : pentatonique en sol, comme une cloche de temple.
+const THAILAND_LEAD = [
+  ['B4', 2], ['D5', 2], ['E5', 2], ['D5', 2],
+  ['B4', 2], ['A4', 2], ['G4', 4],
+  ['E5', 2], ['G5', 2], ['A5', 2], ['G5', 2],
+  ['A5', 3], ['G5', 1], ['D5', 4],
+  ['D5', 2], ['E5', 2], ['G5', 2], ['B5', 2],
+  ['A5', 2], ['G5', 2], ['E5', 4],
+  ['D5', 2], ['E5', 2], ['A4', 2], ['B4', 2],
+  ['G4', 6], [r, 2],
+];
+const THAILAND_CHORDS = ['G', 'Em', 'C', 'D', 'G', 'Em', 'D', 'G'];
+
+// Le Népal : les sommets, lent et majestueux, en mi mineur.
+const NEPAL_LEAD = [
+  ['B4', 4], ['E5', 4],
+  ['G5', 4], ['E5', 4],
+  ['D5', 3], ['G5', 1], ['B5', 4],
+  ['A5', 4], ['F#5', 4],
+  ['G5', 2], ['A5', 2], ['B5', 4],
+  ['C6', 2], ['B5', 2], ['G5', 4],
+  ['A5', 2], ['F#5', 2], ['D5', 4],
+  ['E5', 8],
+];
+const NEPAL_CHORDS = ['Em', 'C', 'G', 'D', 'Em', 'C', 'D', 'Em'];
+
+// Vélo : air vif et sautillant en ré majeur, pour rouler (voir systems/bike.js). Mélodie originale.
+const VELO_LEAD = [
+  ['D5', 1], ['F#5', 1], ['A5', 2], ['F#5', 1], ['A5', 1], ['D6', 2],
+  ['C#6', 1], ['B5', 1], ['A5', 2], ['G5', 2], ['E5', 2],
+  ['F#5', 1], ['A5', 1], ['B5', 2], ['A5', 1], ['F#5', 1], ['D5', 2],
+  ['E5', 2], ['F#5', 1], ['G5', 1], ['A5', 4],
+  ['B5', 1], ['A5', 1], ['G5', 2], ['B5', 1], ['D6', 1], ['B5', 2],
+  ['A5', 1], ['F#5', 1], ['D5', 2], ['F#5', 2], ['A5', 2],
+  ['G5', 1], ['B5', 1], ['D6', 2], ['C#6', 1], ['B5', 1], ['C#6', 2],
+  ['D6', 2], ['A5', 2], ['D6', 4],
+];
+const VELO_CHORDS = ['D', 'A', 'Bm', 'A', 'G', 'D', 'G', 'D'];
 
 const CHORDS = {
   C: ['C', 'E', 'G'], D: ['D', 'F#', 'A'], E: ['E', 'G#', 'B'], F: ['F', 'A', 'C'], G: ['G', 'B', 'D'], A: ['A', 'C#', 'E'],
-  Am: ['A', 'C', 'E'], Bm: ['B', 'D', 'F#'], Dm: ['D', 'F', 'A'], Em: ['E', 'G', 'B'], 'F#m': ['F#', 'A', 'C#'],
+  Bb: ['A#', 'D', 'F'], Am: ['A', 'C', 'E'], Gm: ['G', 'A#', 'D'], Bm: ['B', 'D', 'F#'], Dm: ['D', 'F', 'A'], Em: ['E', 'G', 'B'], 'F#m': ['F#', 'A', 'C#'],
 };
 
 const SONGS = {
   island: { tempo: 132, lead: ISLAND_LEAD, chords: ISLAND_CHORDS, duty: 0.25, drums: true, leadVol: 0.12, arp: true },
   title: { tempo: 104, lead: TITLE_LEAD, chords: TITLE_CHORDS, duty: 0.5, drums: true, leadVol: 0.12, arp: true },
-  home: { tempo: 92, lead: HOME_LEAD, chords: HOME_CHORDS, duty: 0.125, drums: false, leadVol: 0.1, arp: true },
+  saintAy: { tempo: 108, lead: SAINTAY_LEAD, chords: SAINTAY_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
+  montepilloy: { tempo: 116, lead: MONTEPILLOY_LEAD, chords: MONTEPILLOY_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
+  college: { tempo: 138, lead: COLLEGE_LEAD, chords: COLLEGE_CHORDS, duty: 0.5, drums: true, leadVol: 0.11, arp: true },
+  prytanee: { tempo: 112, lead: PRYTANEE_LEAD, chords: PRYTANEE_CHORDS, duty: 0.5, drums: 'march', leadVol: 0.11, arp: true },
+  bordeaux: { tempo: 104, lead: BORDEAUX_LEAD, chords: BORDEAUX_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
+  hull: { tempo: 128, lead: HULL_LEAD, chords: HULL_CHORDS, duty: 0.5, drums: true, leadVol: 0.11, arp: true },
+  hanoi: { tempo: 104, lead: HANOI_LEAD, chords: HANOI_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
+  amsterdam: { tempo: 120, lead: AMSTERDAM_LEAD, chords: AMSTERDAM_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
+  newDelhi: { tempo: 110, lead: NEWDELHI_LEAD, chords: NEWDELHI_CHORDS, duty: 0.125, drums: 'biguine', leadVol: 0.11, arp: true },
+  paris: { tempo: 126, lead: PARIS_LEAD, chords: PARIS_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
+  toulon: { tempo: 124, lead: TOULON_LEAD, chords: TOULON_CHORDS, duty: 0.5, drums: true, leadVol: 0.11, arp: true },
+  corse: { tempo: 96, lead: CORSE_LEAD, chords: CORSE_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
+  bali: { tempo: 100, lead: BALI_LEAD, chords: BALI_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
+  sriLanka: { tempo: 116, lead: SRILANKA_LEAD, chords: SRILANKA_CHORDS, duty: 0.25, drums: 'biguine', leadVol: 0.11, arp: true },
+  thailand: { tempo: 108, lead: THAILAND_LEAD, chords: THAILAND_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
+  velo: { tempo: 152, lead: VELO_LEAD, chords: VELO_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
+  nepal: { tempo: 84, lead: NEPAL_LEAD, chords: NEPAL_CHORDS, duty: 0.5, drums: false, leadVol: 0.11, arp: true },
 };
 
-let current = null;       // { name, timer, ... }
+let current = null;       // musique en cours : { name, timer, ... }
 let pendingSong = null;
 
-export function playMusic(name) {
-  if (current?.name === name) return;
-  stopMusic();
-  if (!ctx || ctx.state !== 'running') {
-    pendingSong = name;                                              // démarrera au premier appui
-    return;
-  }
+// Joue la musique `name` en boucle sur `bus` ; renvoie de quoi l'arrêter (stopSong).
+function startSong(name, bus) {
   const song = SONGS[name];
   const eighth = 60 / song.tempo / 2;
   // Ordonnancement : pistes aplaties en événements, programmés un peu à l'avance.
@@ -242,14 +466,29 @@ export function playMusic(name) {
   song.chords.forEach((chord, bar) => {
     const [root, third, fifth] = CHORDS[chord];
     const b = bar * 8;
-    // Basse : croches qui sautent d'octave (grave / aigu).
-    for (let i = 0; i < 8; i++) events.push({ t: b + i, kind: 'bass', note: `${root}${i % 2 ? 3 : 2}`, len: 0.9 });
+    if (song.drums === 'biguine') {
+      // Basse sur le rythme 3 + 3 + 2, qui saute d'octave.
+      [[0, 2, 2.6], [3, 3, 2.6], [6, 2, 1.8]].forEach(([i, o, len]) => events.push({ t: b + i, kind: 'bass', note: `${root}${o}`, len }));
+    } else {
+      // Basse : croches qui sautent d'octave (grave / aigu).
+      for (let i = 0; i < 8; i++) events.push({ t: b + i, kind: 'bass', note: `${root}${i % 2 ? 3 : 2}`, len: 0.9 });
+    }
     // Arpèges rapides (doubles croches) de l'accord, en fond.
     if (song.arp) {
       const tones = [`${root}4`, `${third}4`, `${fifth}4`, `${third}4`];
       for (let i = 0; i < 16; i++) events.push({ t: b + i / 2, kind: 'arp', note: tones[i % 4], len: 0.45 });
     }
-    if (song.drums) {
+    if (song.drums === 'biguine') {
+      for (let i = 0; i < 8; i++) events.push({ t: b + i, kind: 'hat' });
+      for (const i of [0, 3, 6]) events.push({ t: b + i, kind: 'kick' });
+      for (const i of [2, 5, 7]) events.push({ t: b + i, kind: 'rim' });
+    } else if (song.drums === 'march') {
+      // Marche : grosse caisse sur 1 et 3, caisse claire sur 2 et 4, roulement à la fin des mesures paires.
+      for (let i = 0; i < 8; i++) events.push({ t: b + i, kind: 'hat' });
+      for (const i of [0, 4]) events.push({ t: b + i, kind: 'kick' });
+      for (const i of [2, 6]) events.push({ t: b + i, kind: 'snare' });
+      if (bar % 2 === 1) for (const i of [6.5, 7, 7.5]) events.push({ t: b + i, kind: 'snare' });
+    } else if (song.drums) {
       for (let i = 0; i < 8; i++) {
         events.push({ t: b + i, kind: 'hat' });
         if (i === 0 || i === 4) events.push({ t: b + i, kind: 'kick' });
@@ -269,14 +508,15 @@ export function playMusic(name) {
       if (at > horizon) break;
       const dur = (e.len ?? 0.5) * eighth;
       if (e.kind === 'lead') {
-        tone(musicBus, { duty: song.duty, f: freq(e.note), start: at, dur: dur * 0.94, vol: song.leadVol, vibrato: true });
+        tone(bus, { duty: song.duty, f: freq(e.note), start: at, dur: dur * 0.94, vol: song.leadVol, vibrato: true });
         // Écho : même note, un peu plus tard, plus douce et plus fine.
-        tone(musicBus, { duty: 0.125, f: freq(e.note), start: at + eighth * 0.75, dur: dur * 0.9, vol: song.leadVol * 0.35, vibrato: true });
-      } else if (e.kind === 'arp') tone(musicBus, { duty: 0.125, f: freq(e.note), start: at, dur, vol: 0.03, decay: 0.5 });
-      else if (e.kind === 'bass') tone(musicBus, { type: 'triangle', f: freq(e.note), start: at, dur, vol: 0.22, decay: 0.85 });
-      else if (e.kind === 'hat') noise(musicBus, { start: at, dur: 0.03, vol: 0.02, cutoff: 8000 });
-      else if (e.kind === 'snare') noise(musicBus, { start: at, dur: 0.1, vol: 0.06, filter: 'bandpass', cutoff: 2200 });
-      else if (e.kind === 'kick') tone(musicBus, { type: 'sine', f: 110, start: at, dur: 0.12, vol: 0.25, slide: 0.35, decay: 0.3 });
+        tone(bus, { duty: 0.125, f: freq(e.note), start: at + eighth * 0.75, dur: dur * 0.9, vol: song.leadVol * 0.35, vibrato: true });
+      } else if (e.kind === 'arp') tone(bus, { duty: 0.125, f: freq(e.note), start: at, dur, vol: 0.03, decay: 0.5 });
+      else if (e.kind === 'bass') tone(bus, { type: 'triangle', f: freq(e.note), start: at, dur, vol: 0.22, decay: 0.85 });
+      else if (e.kind === 'hat') noise(bus, { start: at, dur: 0.03, vol: 0.02, cutoff: 8000 });
+      else if (e.kind === 'snare') noise(bus, { start: at, dur: 0.1, vol: 0.06, filter: 'bandpass', cutoff: 2200 });
+      else if (e.kind === 'rim') noise(bus, { start: at, dur: 0.04, vol: 0.05, filter: 'bandpass', cutoff: 3600 });
+      else if (e.kind === 'kick') tone(bus, { type: 'sine', f: 110, start: at, dur: 0.12, vol: 0.25, slide: 0.35, decay: 0.3 });
       state.index++;
       if (state.index >= events.length) {
         state.index = 0;
@@ -286,12 +526,30 @@ export function playMusic(name) {
   };
   schedule();
   state.timer = setInterval(schedule, 50);
-  current = state;
+  return state;
+}
+
+const stopSong = (state) => state && clearInterval(state.timer);
+
+let mainVolume = 1;
+const applyVolume = () => ctx && mainGain.gain.setTargetAtTime(mainVolume, ctx.currentTime, 0.15);
+
+// Musique du lieu ; `volume` (0 à 1) pour une musique étouffée.
+export function playMusic(name, volume = 1) {
+  mainVolume = volume;
+  if (current?.name === name && ctx) return applyVolume();
+  stopMusic();
+  if (!ctx || ctx.state !== 'running') {
+    pendingSong = { name, volume };                                  // démarrera au premier appui
+    return;
+  }
+  current = startSong(name, mainGain);
+  applyVolume();
 }
 
 export function stopMusic() {
   pendingSong = null;
-  if (current) clearInterval(current.timer);
+  stopSong(current);
   current = null;
 }
 
@@ -343,6 +601,13 @@ const SFX = {
   },
   // On fonce dans un mur
   bump: (t) => tone(sfxBus, { duty: 0.5, f: 150, start: t, dur: 0.09, vol: 0.14, slide: 0.6 }),
+  // Sonnette du vélo : deux « dring » aigus
+  sonnette: (t) => {
+    for (const k of [0, 0.13]) {
+      tone(sfxBus, { duty: 0.5, f: 2350, start: t + k, dur: 0.08, vol: 0.07 });
+      tone(sfxBus, { duty: 0.25, f: 2960, start: t + k + 0.01, dur: 0.07, vol: 0.05 });
+    }
+  },
   // Porte qui s'ouvre, puis pas vers l'intérieur
   door: (t) => {
     noise(sfxBus, { start: t, dur: 0.12, vol: 0.12, filter: 'lowpass', cutoff: 1200 });
@@ -359,6 +624,10 @@ const SFX = {
     [0, 0.16, 0.3, 0.42, 0.52, 0.6, 0.67, 0.73].forEach((d) => noise(sfxBus, { start: t + d, dur: 0.07, vol: 0.12, filter: 'lowpass', cutoff: 260 }));
   },
   rustle: (t) => noise(sfxBus, { start: t, dur: 0.09, vol: 0.09, filter: 'bandpass', cutoff: 3200 }),
+  // Avion en vol : souffle grave et continu des réacteurs, qui monte puis s'apaise (le trajet en avion).
+  jet: (t) => {
+    for (let i = 0; i < 12; i++) noise(sfxBus, { start: t + i * 0.3, dur: 0.5, vol: 0.05 + 0.03 * Math.sin((i / 11) * Math.PI), filter: 'lowpass', cutoff: 420 });
+  },
   // Objet ou souvenir obtenu : petite fanfare
   item: (t) => {
     [['C5', 0], ['E5', 0.1], ['G5', 0.2], ['C6', 0.3]].forEach(([n, d]) =>

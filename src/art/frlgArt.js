@@ -36,6 +36,7 @@ export const FRLG_SHEETS = {
   townMap: 'frlg-townmap',
   car: 'frlg-car',
   cabane: 'rs-cabane',
+  g4Planches: 'g4-planches',      // le tas de planches de l'enclos à poules (idem)
   bigTree: 'rs-bigtree',
   farm: 'rs-farm',
   crates: 'rs-crates',
@@ -124,6 +125,9 @@ const pierPart = (y, at, x) => (at(x, y - 1) !== '=' ? 'start' : at(x, y + 1) !=
 
 // Grand arbre isolé (32 x 45 px) de la planche de Hoeloe : 2 cases de large, dépasse de 13 px au-dessus.
 const FRLG_TREE = { sheet: FRLG_SHEETS.props, sx: 95, sy: 33, w: 32, h: 45 };
+// Sur la planche, un bout gris du décor voisin dépasse dans le coin en haut à droite de la découpe (3 x 2 px) :
+// on ne copie pas ces pixels (sinon ils se voient à côté d'un sapin de bordure).
+const TREE_STRAY = { w: 3, h: 2 };
 
 // Bâtiments Rouge Feu : image entière, posée en bas de son emprise (footH cases de haut).
 export const FRLG_BUILDINGS = {
@@ -162,7 +166,7 @@ const GRASS_CODES = new Set(['.', 'f', 'ƒ', 'ĥ', 'ƀ', 'S', 'M', 'T', 'Ŧ', '�
 const SAND_CODES = new Set(['s', 'ψ']);
 const SEA_CODES = new Set(['w', 'ø']);
 // Objets posés au sol dont le sol est celui de la majorité de leurs voisins.
-const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ƫ', 'O', 'Q', 'V', 'J',
+const ON_NEIGHBOURS = new Set(['Y', 'ŕ', 'B', 'ɱ', 'ɸ', 'ʘ', 'ƫ', 'O', 'J',
   // objets des villes (réverbère, cabine, drapeaux, lanternes, étals, scooter, vélos, vache, tuk-tuk, terrasse,
   // métro, panneaux de l'aéroport, cactus, chameau, serpent, feu de camp)
   'l', 'b', 'e', 'v', 'g', 'n', 't', 'y', 'c', 'p', 'a', 'd', '$', '!', '>', '<', '*', 'H', 'z', '&',
@@ -183,6 +187,12 @@ export function frlgGroundOf(x, y, at, buildingFloor = () => false) {
     if (['path', 'cobble', 'concrete'].includes(below)) return below;
     // Ailleurs, le sol le plus fréquent autour du bâtiment (pavés en ville, herbe à la campagne).
     return groundUnderBuilding(x, y, at, buildingFloor);
+  }
+  // Panneau planté sur des pavés ou des dalles : le même sol que ses voisins (sinon de l'herbe, comme d'habitude).
+  if (code === 'S') {
+    const paved = [[0, -1], [0, 1], [-1, 0], [1, 0]].map(([dx, dy]) => at(x + dx, y + dy))
+      .filter((n) => n === 'ɔ' || n === 'ɐ');
+    if (paved.length >= 2) return paved.filter((n) => n === 'ɔ').length * 2 >= paved.length ? 'cobble' : 'concrete';
   }
   if (GRASS_CODES.has(code)) return 'grass';
   if (SAND_CODES.has(code)) return 'sand';
@@ -322,11 +332,16 @@ export function drawFrlgGround(ctx, textures, x, y, at, buildingFloor) {
       blit(ctx, textures, borderTile(SAND_ON_GRASS, isGrass), px, py);
     }
   } else if (ground === 'cobble' || ground === 'concrete') {
-    // Pavés et dalles : continuent sous les bâtiments et les objets posés dessus.
+    // Pavés et dalles : continuent sous les objets posés dessus et sous les bâtiments des villes. Bordure contre l'herbe,
+    // et au pied d'un bâtiment posé sur l'herbe (ex. l'internat du Prytanée), sauf devant sa porte : le pavé y entre
+    // jusqu'au seuil.
     const code = ground === 'cobble' ? 'ɔ' : 'ɐ';
     const other = (dx, dy) => {
       const n = at(x + dx, y + dy);
-      if (n === undefined || n === code || ['R', 'W', 'D'].includes(n) || buildingFloor(x + dx, y + dy)) return false;
+      if (n === undefined || n === code || n === 'D') return false;
+      if (['R', 'W'].includes(n) || buildingFloor(x + dx, y + dy)) {
+        return groundUnderBuilding(x + dx, y + dy, at, buildingFloor) === 'grass';
+      }
       const g = groundAt(dx, dy);
       return g !== 'cobble' && g !== 'concrete';        // pas de liseré entre pavés et dalles
     };
@@ -537,7 +552,12 @@ function tropicalTreeAnchor(x, y, at) {
 export function frlgTallImage(scene, code, x, y, at) {
   if (code === 'T') {
     if (!inFullTreeBlock(x, y, at) || mod2(x) !== 1 || mod2(y) !== 1) return null;
-    const key = sheetTexture(scene, 'tall-frlg-tree', FRLG_TREE.sheet, FRLG_TREE.sx, FRLG_TREE.sy, FRLG_TREE.w, FRLG_TREE.h);
+    const key = 'tall-frlg-tree';
+    if (!scene.textures.exists(key)) {
+      const tex = scene.textures.createCanvas(key, FRLG_TREE.w, FRLG_TREE.h);
+      drawFrlgTree(tex.getContext(), scene.textures, 0, 0);
+      tex.refresh();
+    }
     return { key, x: (x - 1) * S, y: (y + 1) * S - FRLG_TREE.h, baseY: (y + 1) * S - 1 };
   }
   if (code === 'ƫ') {
@@ -556,7 +576,9 @@ export function frlgTallImage(scene, code, x, y, at) {
 }
 
 function drawFrlgTree(ctx, textures, px, py) {
-  blit(ctx, textures, FRLG_TREE, px, py, FRLG_TREE.w, FRLG_TREE.h);
+  const { w, h } = FRLG_TREE;
+  blit(ctx, textures, FRLG_TREE, px, py, w - TREE_STRAY.w, TREE_STRAY.h);
+  blit(ctx, textures, { ...FRLG_TREE, sy: FRLG_TREE.sy + TREE_STRAY.h }, px, py + TREE_STRAY.h, w, h - TREE_STRAY.h);
 }
 
 // ---------- Voiture de la famille ----------
@@ -610,22 +632,12 @@ export function roadStripTexture(scene, height) {
 const CABANE_FRAMES = {
   hut: [0, 0, 64, 91],
   room: [64, 0, 128, 128],
-  // Les deux longues tables, redessinées par-dessus les cousins assis derrière (voir interiors.cabane).
-  tableLeft: [64 + 2, 42, 48, 16],
-  tableRight: [64 + 78, 42, 48, 16],
 };
 export const CABANE_LADDER_X = 32;
 export function cabaneFrame(scene, name) {
   const tex = scene.textures.get(FRLG_SHEETS.cabane);
   if (!tex.has(name)) tex.add(name, 0, ...CABANE_FRAMES[name]);
   return name;
-}
-
-// Morceau de l'intérieur de la cabane redessiné par-dessus les personnages (voir `overlays` dans MapScene), à sa
-// place dans la pièce.
-export function cabaneOverlay(name) {
-  const [sx, y, , h] = CABANE_FRAMES[name];
-  return { sheet: FRLG_SHEETS.cabane, frame: (scene) => cabaneFrame(scene, name), x: sx - CABANE_FRAMES.room[0], y, h };
 }
 
 // ---------- Mer animée ----------
@@ -717,6 +729,7 @@ export const FRLG_DECOR = {
   paperDesk: RS(539, 129, 32, 20, 2, 1),   // pupitre avec des copies
   longTable: RS(506, 50, 48, 16, 3, 1),    // longue table en bois (bureau du maître)
   shelf: RS(519, 80, 32, 31, 2, 2),        // étagère à livres
+  wardrobe: RS(602, 119, 15, 28, 1, 2),     // armoire en bois (portes en haut, tiroirs en bas)
   carton: { sprite: { sheet: 'frlg-carton', sx: 0, sy: 0 }, pw: 15, ph: 14, w: 1, h: 1 },        // carton de déménagement
   smallCarton: { sprite: { sheet: 'frlg-carton', sx: 15, sy: 0 }, pw: 11, ph: 9, w: 1, h: 1 },   // petit carton (sur un meuble)
   // Bar et boîte de nuit (Hull), dessinés dans le code faute d'équivalent Rouge Feu (texture 'frlg-bar', voir
@@ -997,6 +1010,12 @@ export function decorSpritePosition(interior, { kind, x, y, dx = 0, dy = 0 }) {
 
 // Lit de l'intérieur sous la case (x, y) : coin haut-gauche de son image, en pixels (voir CharacterSprite, `bed`).
 export function bedAt(interior, x, y) {
+  // Intérieur redessiné en Gen 4 (scripts/build_interiors.py) : ses lits sont dans le dessin, la couverture au-dessus
+  // des personnages ; on couche le PNJ au milieu du lit, la tête sur l'oreiller.
+  if (interior.built) {
+    const b = (interior.built.beds ?? []).find((o) => x >= o.x && x < o.x + o.w && y >= o.y && y < o.y + o.h);
+    return b && { px: b.cx - 12, py: b.py, gen4: true };
+  }
   const bed = (interior.decor ?? []).find((o) => o.kind === 'bed' && x >= o.x && x < o.x + 2 && y >= o.y && y < o.y + 2);
   return bed && decorSpritePosition(interior, bed);
 }

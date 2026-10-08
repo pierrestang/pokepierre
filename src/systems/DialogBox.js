@@ -2,6 +2,8 @@
 // Entrée / Espace : termine la page en cours d'écriture, sinon passe à la suivante.
 // choose(question, options) : pose une question, liste de réponses (flèches haut/bas + Entrée).
 // open(pages, { item }) : montre aussi l'icône de l'objet (voir art/uiIcons.js) dans un cadre au-dessus de la boîte.
+// open(pages, { speaker, phone: true }) : la personne parle au téléphone, une petite icône de téléphone (dessinée dans le
+// code) précède son nom.
 // Vit dans la UIScene (pas de zoom) ; les scènes de jeu l'ouvrent via open(pages) ou choose().
 // Texte dans la police de Rouge Feu (voir frlgFont.js), deux lignes par page comme dans le jeu : les pages
 // trop longues sont coupées automatiquement.
@@ -10,17 +12,27 @@ import { gameView } from './screen.js';
 import { FRLG_FONT, LINE_HEIGHT, frlgText, wrapText } from './frlgFont.js';
 import { sfx } from './audio.js';
 import { drawFrame, FRAME, FRAME_LIGHT, FRAME_FILL } from './frame.js';
-import { PORTRAITS } from '../art/spriteSheets.js';
-import { portraitOf } from '../data/characters.js';
 import { ITEM_ICONS, itemIcon } from '../art/uiIcons.js';
-
-const SHOW_PORTRAITS = false;
 
 const CHAR_DELAY = 25; // ms par caractère
 // Les dimensions sont en « pixels Game Boy » (u = facteur d'agrandissement de l'écran de jeu).
 const HEIGHT = 46;
 const LINES = 2;             // lignes par page
 const TEXT_LEFT = 9;         // marge du texte dans la boîte
+
+// Icône de téléphone (appel) : un petit portable vu de face, 6 x 11 pixels Game Boy, et ses ondes.
+const PHONE_W = 11;          // place prise devant le nom (icône, ondes et marge)
+function drawPhone(g, x, y, u) {
+  const px = (dx, dy, w, h, color) => g.fillStyle(color, 1).fillRect(x + dx * u, y + dy * u, w * u, h * u);
+  px(0, 0, 6, 11, 0x303848);                     // boîtier (contour sombre)
+  px(1, 1, 4, 5, 0x88c8f0);                      // écran
+  px(1, 7, 4, 3, 0x586078);                      // clavier
+  px(2, 8, 1, 1, 0xd0d8e8);
+  px(4, 8, 1, 1, 0xd0d8e8);
+  px(7, 2, 1, 1, 0xe04040);                      // ondes de la sonnerie
+  px(8, 1, 1, 1, 0xe04040);
+  px(8, 3, 1, 1, 0xe04040);
+}
 
 const bitmapText = (scene, text = '') => scene.add.bitmapText(0, 0, FRLG_FONT, text).setLineSpacing(0);
 
@@ -39,12 +51,11 @@ export class DialogBox {
 
     // Étiquette du nom de la personne qui parle
     this.speaker = undefined;
+    this.phone = false;                 // la personne appelle au téléphone (icône devant le nom)
     this.nameBg = scene.add.graphics();
     this.nameText = bitmapText(scene);
 
-    // Portrait en pied de la personne qui parle, debout sur le bord droit de la boîte. Masqué pour l'instant
-    // (SHOW_PORTRAITS) : comme dans Rouge Feu, seuls le nom et le texte s'affichent.
-    this.portrait = scene.add.image(0, 0, PORTRAITS, 'p0').setOrigin(1, 1).setVisible(false);
+    // Pas de portrait (comme dans les jeux DS) : seuls le nom et le texte s'affichent.
 
     // Icône de l'objet reçu, dans un petit cadre posé sur le bord haut de la boîte, à droite.
     this.icon = null;
@@ -55,7 +66,7 @@ export class DialogBox {
     scene.tweens.add({ targets: this.arrow, alpha: 0.2, duration: 300, yoyo: true, repeat: -1 });
 
     this.container = scene.add
-      .container(0, 0, [this.portrait, this.box, this.text, this.nameBg, this.nameText, this.iconBg, this.iconImage, this.arrow])
+      .container(0, 0, [this.box, this.text, this.nameBg, this.nameText, this.iconBg, this.iconImage, this.arrow])
       .setDepth(100)
       .setVisible(false);
 
@@ -95,9 +106,8 @@ export class DialogBox {
 
     this.text.setScale(u).setPosition(x + TEXT_LEFT * u, y + 6 * u);
     this.nameText.setScale(u).setPosition(x + 7 * u, y - 13 * u);
-    this.portrait.setScale(u).setPosition(x + w - 6 * u, y + 2 * u);
     this.arrow.setScale(u / 5).setPosition(x + w - 11 * u, y + H - 9 * u);
-    this.setSpeaker(this.speaker);
+    this.setSpeaker(this.speaker, this.phone);
     this.setIcon(this.icon);
     if (this.choiceTexts?.length) this.showChoices();
   }
@@ -122,11 +132,11 @@ export class DialogBox {
   }
 
   // Ouvre le dialogue ; la promesse se résout quand la dernière page est fermée.
-  open(pages, { speaker, item = null } = {}) {
+  open(pages, { speaker, item = null, phone = false } = {}) {
     this.pages = this.paginate(Array.isArray(pages) ? pages : [pages]);
     this.pageIndex = 0;
     this.openedAt = performance.now();
-    this.setSpeaker(speaker);
+    this.setSpeaker(speaker, phone);
     this.setIcon(item ? itemIcon(item.id) : null);
     this.container.setVisible(true);
     this.showPage();
@@ -172,21 +182,22 @@ export class DialogBox {
     this.choiceBox.setVisible(false);
   }
 
-  setSpeaker(speaker) {
-    const portrait = speaker && SHOW_PORTRAITS ? portraitOf(speaker) : null;
-    this.portrait.setVisible(portrait !== null);
-    if (portrait) this.portrait.setTexture(portrait.key, portrait.frame);
+  setSpeaker(speaker, phone = false) {
     this.speaker = speaker;
+    this.phone = Boolean(speaker && phone);
     this.nameBg.clear();
     this.nameText.setText(speaker ? frlgText(this.scene, speaker) : '');
     if (!speaker) return;
-    // Petit cartouche blanc cerclé, posé sur le bord haut de la boîte.
+    // Petit cartouche blanc cerclé, posé sur le bord haut de la boîte ; au téléphone, l'icône prend place devant le nom.
     const u = this.u;
-    const w = this.nameText.width + 8 * u;
+    const iconW = this.phone ? PHONE_W * u : 0;
+    const w = this.nameText.width + 8 * u + iconW;
     const x = this.boxX + 3 * u;
     const y = this.boxY - 14 * u;
+    this.nameText.setPosition(x + 4 * u + iconW, y + u);
     this.nameBg.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, 15 * u, 3 * u);
     this.nameBg.fillStyle(FRAME_FILL, 1).fillRoundedRect(x + u, y + u, w - 2 * u, 13 * u, 2.5 * u);
+    if (this.phone) drawPhone(this.nameBg, x + 4 * u, y + 2 * u, u);
   }
 
   setIcon(icon) {

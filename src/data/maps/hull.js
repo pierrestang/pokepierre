@@ -1,203 +1,227 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : fait avec le créateur de cartes ; ses collisions s'imposent à la grille du jeu (voir builtGrid).
+// La grille (sourceGrid) en est tirée : portes, pavés, eau, ponton.
+import BUILT from '../builtMaps/hull.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { toAirport } from './airportLinks.js';
-import { FLAGS, TRAITS } from '../story.js';
-import { ARRIVAL, OUSMANE_WALK, DAWN, NEXT_MORNING, HULL_SPOTS, NIGHT, DAWN_TIME, LEO_ROUTE } from '../hullStory.js';
+import { FLAGS, ITEMS, TRAITS } from '../story.js';
+import {
+  ARRIVAL, OUSMANE_WALK, DAWN, NEXT_DAY, RESULTS, FAREWELL, HULL_SPOTS, NIGHT, DAWN_TIME, LEO_SCOUT_A, LEO_SCOUT_B,
+  LEO_SCOUT_ASYLUM,
+} from '../hullStory.js';
 
-// Hors de la carte : Newland Avenue et la grande rue se prolongent, l'estuaire au sud, trottoirs ailleurs.
+// Hors de la carte : la grande rue se prolonge à l'est et à l'ouest, l'estuaire au sud, les arbres ailleurs.
 function outside(x, y, grid) {
-  if (y >= grid.length - 5) return '~';
+  if (y >= grid.length - 6) return '~';
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['ɐ', 'ɔ', '~'].includes(edge)) return edge;
+    if (['ɔ', '.', '=', '~'].includes(edge)) return edge;
   }
-  return 'ɔ';
+  return 'ƀ';
 }
 
 const NOT_HOME = ["Ce n'est pas chez toi."];
-const BANDE = TRAITS.bandeHull.id;
+const INSOUCIANCE = TRAITS.insouciance.id;
+// Les adieux, devant chez Léo : une fois le diplôme en poche, jusqu'à ce que chacun ait annoncé son départ.
+const FAREWELL_TIME = { ifItems: [ITEMS.diplomeHull.id], unlessFlags: [FLAGS.adieuxHull] };
+// Le panneau des résultats de l'examen, dressé sur le campus le jour venu (comme celui du bac au Prytanée).
+const RESULTS_BOARD = { x: 21, y: 10 };
 
-// Hull (Angleterre), façon Rouge Feu, 30 x 48 cases. En haut, le campus (université, jardin et bassin derrière,
-// deux terrains de football, bibliothèque Brynmor Jones, The Asylum) ; Newland Avenue descend tout droit,
-// bordée de maisons mitoyennes, de pubs, d'un café et des colocations (Pierre et Ousmane, Charlotte et Anaïs,
-// Léo avec Romain et Paul) ; le pont ferroviaire en briques « NEWLAND AVENUE » ; la grande rue est-ouest (arrêt
-// du bus rouge à l'ouest, aéroport aux deux bouts, cabines crème) ; Hull Minster, un square et The Deep sur le
-// quai ; l'estuaire de la Humber, la marina et le pont de la Humber au loin. Il pleut (le jour) ; la ville passe
-// en nuit pendant la soirée de Léo, puis au petit matin à la sortie de l'Asylum.
+// Hull (Angleterre), 40 x 50 cases, redessinée dans le créateur (octobre 2026 ; la grille du jeu est tirée du dessin).
+// En haut, le campus : les bureaux de l'université (immeuble à jardinières, fermés), l'université (manoir de pierre) et
+// The Asylum (boutique au store rayé), avec le panneau des résultats. Newland Avenue descend tout droit : la
+// bibliothèque Brynmor Jones (la longère au toit d'ardoise) et, en face, un café, le premier pub et chez Léo (avec Romain
+// et Prophecy, la petite maison juste après le pub) ; plus bas, la coloc de Pierre
+// et Ousmane, celle de Charlotte et Anaïs, et le second pub. Les pubs sont les immeubles à jardinières de l'avenue. La grande rue est-ouest mène à l'aéroport par ses deux
+// bouts ; le square et sa fontaine, le quai, l'estuaire de la Humber. Il pleut (le jour) ; la ville passe en nuit
+// pendant la soirée de Léo, puis au petit matin à la sortie de l'Asylum.
 // Scénario : voir data/hullStory.js.
-// Légende : voir src/data/tiles.js (ɐ = chaussée, ɔ = trottoir, ʕ = remblai du pont, F = barrière, ~ = eau,
-// = = ponton, B = bateau, b = cabine crème, q = bus, l = réverbère, S = panneau, f = fleurs, ƚ = petit arbre,
-// R / W / D = toit, mur, porte)
+// Légende : voir src/data/tiles.js (ɔ = pavés, ~ = eau, = = ponton, B = bateau, l = réverbère, S = panneau,
+// W / D = bâtiment, porte)
 export const hullMap = {
   id: 'hull',
   name: 'Hull',
-  grid: parseGrid([
-    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0
-    'ƀFFFFFFFFFffffffffffFFFFFFFFFƀ', // 1
-    'ƀFRRRRRRRFƀ.~~~~~~.ƀFRRRRRRRFƀ', // 2
-    'ƀFRRRRRRRFƀ.~~~~~~.ƀFRRRRRRRFƀ', // 3
-    'ƀFRRRRRRRFff......ffFRRRRRRRFƀ', // 4
-    'ƀFRRRRRRRFRRRRRRRRR.FRRRRRRRFƀ', // 5
-    'ƀFRRRRRRRFRRRRRRRRR.FRRRRRRRFƀ', // 6
-    'ƀFRRRRRRRFWWWWWWWWW.FRRRRRRRFƀ', // 7
-    'ƀFFFFFFFFFWWWWDWWWW.FFFFFFFFFƀ', // 8
-    'ƀRRRRRRRɔɔɔɔSɔɔɔɔɔɔɔɔɔRRRRRɔɔƀ', // 9
-    'ƀRRRRRRRɔlɔɔɔɔɔɔɔɔɔɔlɔRRRRRɔɔƀ', // 10
-    'ƀWWWWWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWɔɔƀ', // 11
-    'ƀWWWDWWWɔɔɔɔɔɔɔɔɔɔɔɔɔɔWDWWWɔɔƀ', // 12
-    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 13
-    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 14
-    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 15
-    'ƀWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƀ', // 16
-    'ƀWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƀ', // 17
-    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 18
-    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 19
-    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 20
-    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 21
-    'ƀWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƀ', // 22
-    'ƀWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƀ', // 23
-    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 24
-    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 25
-    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 26
-    'ƀRRRRRɔRRRRRɔɔɐɐɔɔRRRRRɔRRRRRƀ', // 27
-    'ƀWWWWWɔWWWWWlɔɐɐɔlWWWWWɔWWWWWƀ', // 28
-    'ƀWDWWWɔWDWWWɔɔɐɐɔɔWDWWWɔWDWWWƀ', // 29
-    'ƀɔɔɔɔɔɔɔɔɔɔɔɔɔɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 30
-    'ƀʕʕʕʕʕʕʕʕʕʕʕʕɔɐɐɔʕʕʕʕʕʕʕʕʕʕʕʕƀ', // 31
-    'ƀʕʕʕʕʕʕʕʕʕʕʕʕɔɐɐɔʕʕʕʕʕʕʕʕʕʕʕʕƀ', // 32
-    'ƀɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔƀ', // 33
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 34
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 35
-    'ƀɔɔɔɔɔɔɔɔbSɔɔɔɔɔɔɔɔbɔɔɔɔɔɔɔɔɔƀ', // 36
-    'ƀqqqɔRRRRRRR........ɔɔɔɔɔɔɔɔɔƀ', // 37
-    'ƀqqqɔRRRRRRR.ƀ....ƀ.ɔRRRRRRɔɔƀ', // 38
-    'ƀɔɔɔɔRRRRRRR..ffff..ɔRRRRRRɔɔƀ', // 39
-    'ƀɔɔɔɔWWWWWWW........ɔWWWWWWɔɔƀ', // 40
-    'ƀɔɔɔɔWWWDWWW.ƀ....ƀ.ɔWDWWWWɔlƀ', // 41
-    'ƀɔɔɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀ', // 42
-    '~~~~~~~~~~~~~~~==~~~~~~~~~~~~~', // 43
-    '~~~~~~~~~~BBB~~==~~BBB~~~~~~~~', // 44
-    '~~~~~~~~~~BBB~~==~~BBB~~~~~~~~', // 45
-    '~~~~~~~~~~~~~~~==~~~~~~~~~~~~~', // 46
-    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 47
+  built: BUILT,
+  sourceGrid: parseGrid([
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  arbres : bord de l'écran
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 1
+    'ƀƀ....................................ƀƀ', // 2  le campus
+    'ƀƀ....................................ƀƀ', // 3
+    'ƀƀ...WWWWW............................ƀƀ', // 4
+    'ƀƀ...WWWWW...WWWWWWWWW..WWWWWWWWWWWWW.ƀƀ', // 5
+    'ƀƀ...WWWWW...WWWWWWWWW..WWWWWWWWWWWWW.ƀƀ', // 6
+    'ƀƀ...WWWWW...WWWWWWWWW..WWWWWWWWWWWWW.ƀƀ', // 7
+    'ƀƀ...WWDWW...WWWWDWWWW..WWWWWDWWWWWWW.ƀƀ', // 8  portes : la bibliothèque (7), l'université (17), The Asylum (29)
+    'ƀƀ....ɔɔɔ.......ɔɔɔ.........ɔɔɔ.......ƀƀ', // 9
+    'ƀƀ....ɔɔɔ.....l.ɔɔɔ.l.......ɔɔɔ.......ƀƀ', // 10
+    'ƀƀ....ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.......ƀƀ', // 11  Newland Avenue part du campus et descend
+    'ƀƀ.....ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ........ƀƀ', // 12
+    'ƀƀ..........SS.ɔɔɔɔɔ..................ƀƀ', // 13  le panneau de l'université (résultats)
+    'ƀƀ..............ɔɔɔ...................ƀƀ', // 14
+    'ƀƀ.............ɔɔɔɔɔ..................ƀƀ', // 15
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWWWɔɔɔɔɔ.ƀƀ', // 16
+    'ƀƀ.ɔWWWWWWWWWWWɔɔɔɔɔɔWWWWWWWWWWWWWWWɔ.ƀƀ', // 17
+    'ƀƀ.ɔWWWWWWWWWWWɔɔɔɔɔɔWWWWWWWWWWWWWWWɔ.ƀƀ', // 18
+    'ƀƀ.ɔWWWWWWWWWWWɔɔɔɔɔɔWWWWWWWWWWWWWWWɔ.ƀƀ', // 19
+    'ƀƀ.ɔɔɔɔɔWDWɔɔɔɔɔɔɔɔɔlWDWWWWWDWWWWDWWɔ.ƀƀ', // 20  portes : le premier pub (9), le second pub (22), chez Léo (28), le café (33)
+    'ƀƀ.ɔlɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 21
+    'ƀƀ.ɔlɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 22
+    'ƀƀ.............ɔɔɔɔɔ..................ƀƀ', // 23
+    'ƀƀ..............ɔɔɔ...................ƀƀ', // 24
+    'ƀƀ..............ɔɔɔ...................ƀƀ', // 25
+    'ƀƀ.............ɔɔɔɔɔ..................ƀƀ', // 26
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔWWWWWWW.ƀƀ', // 27
+    'ƀƀ.WWWWWWɔWWWWɔɔɔɔɔɔɔWWWWɔWWWWWWWWWWW.ƀƀ', // 28
+    'ƀƀ.WWWWWWɔWWWWɔɔɔɔɔɔɔWWWWɔWWWWWWWWWWW.ƀƀ', // 29
+    'ƀƀ.ɔWWWWWɔWWWWɔɔɔɔɔɔɔWWWWɔWWWWWWWWWWW.ƀƀ', // 30
+    'ƀƀ.ɔWWWWWɔWDWWWɔɔɔɔɔlWDWWɔWDWWWWWDWWW.ƀƀ', // 31  portes : ta coloc (11), Charlotte et Anaïs (22), deux maisons (27, 33)
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 32  la grande rue : aéroport aux deux bouts (rangées 32-35)
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔlɔɔɔ', // 33
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ........ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 34
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔ..........ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 35
+    '.......ɔɔɔɔɔɔ...WWWW...ɔɔɔɔɔɔ...........', // 36  le square et sa fontaine
+    '..WWWW..ɔɔɔɔɔ...WWWW...ɔɔɔɔɔ..WWWW......', // 37
+    '..WWWW..ɔɔɔɔɔ...WWWW...ɔɔɔɔɔ..WWWW......', // 38
+    '..WWWW..ɔɔɔɔɔɔ........ɔɔɔɔɔɔ..WWWW......', // 39
+    '.......ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ...........', // 40
+    '========================================', // 41  le quai
+    '========================================', // 42
+    '========BBBBBBBB======BBBBBBBB====BBBBB=', // 43
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 44  l'estuaire de la Humber
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 45
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 46
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 47
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 48
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 49
   ]),
   doors: [
-    { x: 14, y: 8, interior: 'hullUniversity' },
+    { x: 17, y: 8, interior: 'hullUniversity' },                  // le manoir de pierre, au centre du campus
+    // L'immeuble à jardinières, à gauche du campus : les bureaux de l'université.
+    { x: 7, y: 8, lockedDialogue: ["Les bureaux de l'université. Fermés, sauf pour les inscriptions."] },
     {
-      x: 4, y: 12, interior: 'hullLibrary',
-      lock: { ifSouvenirs: [BANDE] },
-      lockedDialogue: ['La bibliothèque Brynmor Jones. Silence, on révise !'],
-    },
-    {
-      x: 23, y: 12, interior: 'hullAsylum',
-      lock: { ifFlags: [FLAGS.tableTrouvee], unlessFlags: [FLAGS.asylumFini] },
+      x: 29, y: 8, interior: 'hullAsylum',                        // la boutique au store rayé, à droite du campus
+      lock: { ifFlags: [FLAGS.flechettesJouees], unlessFlags: [FLAGS.asylumFini] },
       lockedDialogue: ["The Asylum, la boîte de l'université. Ça ouvre à 22 h !"],
     },
-    { x: 2, y: 17, lockedDialogue: NOT_HOME },
     {
-      x: 8, y: 17, interior: 'hullPubA',
-      lock: { ifFlags: [FLAGS.amiesSuivent], unlessFlags: [FLAGS.asylumFini] },
+      x: 9, y: 20, interior: 'hullLibrary',                       // la longère au toit d'ardoise : la bibliothèque
+      lock: { ifFlags: [FLAGS.lendemainHull] },
+      lockedDialogue: ['La bibliothèque Brynmor Jones. Silence, on révise !'],
+    },
+    { x: 22, y: 20, lockedDialogue: ['Un café de Newland Avenue. Fermé pour la journée.'] },
+    {
+      x: 28, y: 20, interior: 'hullPubA',                         // l'immeuble à jardinières, en haut de l'avenue
+      lock: { ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.asylumFini] },
       lockedDialogue: ["The pub is closed. Le pub n'ouvre que le soir."],
     },
-    { x: 19, y: 17, lockedDialogue: ['Un café de Newland Avenue. Fermé pour la journée.'] },
     {
-      x: 25, y: 17, interior: 'hullHouse',       // chez Léo, avec Romain et Paul
+      x: 33, y: 20, interior: 'hullHouse',                        // chez Léo, avec Romain et Prophecy : après le pub
       lock: { ifFlags: [FLAGS.leoAppel] },
-      lockedDialogue: ["La maison de Léo, Romain et Paul. Personne ne répond pour l'instant."],
+      lockedDialogue: ["La maison de Léo, Romain et Prophecy. Personne ne répond pour l'instant."],
     },
     {
-      x: 2, y: 23, interior: 'hullColoc',        // la coloc de Pierre et Ousmane
+      x: 11, y: 31, interior: 'hullColoc',                        // la coloc de Pierre et Ousmane
       lock: { ifFlags: [FLAGS.hullAccueil] },
       lockedDialogue: NOT_HOME,
     },
+    { x: 22, y: 31, lockedDialogue: ['La coloc de Charlotte et Anaïs. Personne ne répond.'] },
+    { x: 27, y: 31, lockedDialogue: NOT_HOME },
     {
-      x: 8, y: 23, interior: 'hullColoc2',       // la coloc de Charlotte et Anaïs
-      lock: { ifFlags: [FLAGS.leoPlan] },
-      lockedDialogue: ['La coloc de Charlotte et Anaïs. « On se prépare ! »'],
-    },
-    {
-      x: 19, y: 23, interior: 'hullPubB',
-      lock: { ifFlags: [FLAGS.pinteCommandee], unlessFlags: [FLAGS.asylumFini] },
+      x: 33, y: 31, interior: 'hullPubB',                         // l'immeuble à jardinières, plus bas
+      lock: { ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.asylumFini] },
       lockedDialogue: ["The pub is closed. Le pub n'ouvre que le soir."],
     },
-    { x: 25, y: 23, lockedDialogue: NOT_HOME },
-    { x: 2, y: 29, lockedDialogue: NOT_HOME },
-    { x: 8, y: 29, lockedDialogue: NOT_HOME },
-    { x: 19, y: 29, lockedDialogue: NOT_HOME },
-    { x: 25, y: 29, lockedDialogue: NOT_HOME },
-    { x: 8, y: 41, lockedDialogue: ['Hull Minster, la grande église de la vieille ville. Fermée à cette heure.'] },
-    { x: 22, y: 41, lockedDialogue: ["The Deep. L'aquarium ouvre à 10 h."] },
   ],
-  buildings: [
-    { type: 'footballPitch', x: 2, y: 2, w: 7, h: 6 },
-    { type: 'footballPitch', x: 21, y: 2, w: 7, h: 6 },
-    { type: 'university', x: 10, y: 5 },
-    { type: 'lab', x: 1, y: 9 },
-    { type: 'asylum', x: 22, y: 9 },
-    { type: 'house', x: 1, y: 14 },
-    { type: 'pub', x: 7, y: 14 },
-    { type: 'school', x: 18, y: 14 },
-    { type: 'slateHouse', x: 24, y: 14 },
-    { type: 'slateHouse', x: 1, y: 20 },
-    { type: 'house', x: 7, y: 20 },
-    { type: 'pub', x: 18, y: 20 },
-    { type: 'cottage', x: 24, y: 20 },
-    { type: 'greenHouse', x: 1, y: 26 },
-    { type: 'house', x: 7, y: 26 },
-    { type: 'slateHouse', x: 18, y: 26 },
-    { type: 'house', x: 24, y: 26 },
-    { type: 'bus', x: 1, y: 37, variant: 'hull' },
-    { type: 'minster', x: 5, y: 37 },
-    { type: 'theDeep', x: 21, y: 38 },
-    { type: 'boat', x: 10, y: 44 },
-    { type: 'boat', x: 19, y: 44 },
-  ],
-  decals: [
-    { kind: 'railBridge', x: 12, y: 31, w: 6, above: true },   // le tablier du pont : on passe dessous
-    { kind: 'humberBridge', x: 21, y: 46, w: 8 },               // le pont de la Humber, au loin
-  ],
-  // Le bus rouge, au bout ouest de la grande rue : navette pour l'aéroport.
-  objects: [1, 2, 3].flatMap((x) => [37, 38].map((y) => ({
-    ...toAirport(x, y),
-    readyDialogue: ["Tu prends le bus rouge pour l'aéroport."],
-  }))).concat([
-    { x: 12, y: 9, dialogue: ['Université de Hull. Au fond, le jardin et son bassin.'] },
-    { x: 10, y: 36, dialogue: ['À Hull, les cabines sont crème. Allez savoir pourquoi.'] },
-  ]),
-  npcs: [
-    // Arrivée : Ousmane attend à l'arrêt de bus, puis marche devant jusqu'à la coloc.
+  // Les bâtiments sont dans le dessin ; la liste d'origine sert à la conversion.
+  buildings: [],
+  // Redessinée à la main (octobre 2026) : plus de bâtiments d'origine à convertir.
+  sourceBuildings: [],
+  objects: [
+    // La boîte aux lettres, à droite de la coloc (dessinée) : une carte de Maman.
     {
-      id: 'ousmane-arrivee', name: 'Ousmane', x: HULL_SPOTS.busStop[0], y: HULL_SPOTS.busStop[1], facing: 'left',
-      ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.ousmaneRentre],
-      dialogue: ['Viens, je te montre la coloc. Suis-moi !'],
+      x: 14, y: 31,
+      dialogue: [
+        'Une carte postale ! Elle vient de Maman.',
+        '« Alors, l\'Angleterre ? Ici, tout le monde va bien. Fanny demande si les Anglais ont des poules.',
+        'Papa dit de bien manger. Jean a réparé le grille-pain, pour de vrai cette fois. Gros bisous, Maman. »',
+      ],
     },
-    // Soirée : Léo mène la bande. Il attend devant l'étape d'avant, marche jusqu'à la porte de la suivante (voir
-    // LEO_ROUTE) et entre : on le retrouve à l'intérieur.
-    ...LEO_ROUTE.map(({ from: [x, y], ifFlags, unlessFlags, entered, hint }, i) => ({
-      id: `leo-${i}`, name: 'Léo', x, y, facing: 'down', ifFlags, unlessFlags: [...unlessFlags, entered],
-      dialogue: hint,
-    })),
-    // Au petit matin, devant l'Asylum.
+    // Le panneau en bois du campus.
+    ...[12, 13].map((x) => ({ x, y: 13, dialogue: ['Université de Hull. Le campus, en haut de Newland Avenue.'] })),
+  ],
+  // Le jour des résultats : la liste, sur un panneau dressé devant l'université (on le lit par-dessous).
+  props: [{
+    type: 'resultsBoard', label: 'EXAM', x: RESULTS_BOARD.x, y: RESULTS_BOARD.y, w: 2, h: 1, ifFlags: [FLAGS.jourResultats],
+    script: [
+      { ifItems: [ITEMS.diplomeHull.id], say: ["Les résultats de l'examen d'anglais. Ton nom y est."], end: true },
+      ...RESULTS,
+    ],
+  }],
+  npcs: [
+    // Arrivée : Ousmane, déjà là, vient voir Pierre, puis marche devant jusqu'à la coloc.
     {
-      id: 'leo-aube', name: 'Léo', x: 22, y: 13, facing: 'right',
-      ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [BANDE],
-      dialogue: ['Demain, bibliothèque. Tout le monde.'],
+      id: 'ousmane-arrivee', name: 'Ousmane', x: HULL_SPOTS.arrival[0], y: HULL_SPOTS.arrival[1], facing: 'left',
+      ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.ousmaneRentre],
+      dialogue: ['Viens, je te montre la coloc.'],
+    },
+    // La soirée : Léo, en éclaireur, sort devant Pierre et part devant jusqu'au bar suivant, où il entre le premier
+    // (voir hullStory.js LEO_SCOUT_* et les événements) ; la bande suit Pierre (data/story.js FOLLOWERS).
+    ...[[32, 21, 'left', FLAGS.leoPlan, FLAGS.leoEntrePubA], [27, 21, 'right', FLAGS.tourneeServie, FLAGS.leoEntrePubB],
+      [32, 32, 'right', FLAGS.flechettesJouees, FLAGS.leoEntreAsylum]].map(([x, y, facing, from, until]) => ({
+      id: 'leo-pub', name: 'Léo', x, y, facing, ifFlags: [from], unlessFlags: [until], dialogue: ['Par ici ! Suis-moi.'],
+    })),
+    // Au petit matin, toute la bande devant l'Asylum, de part et d'autre de la porte : la rangée du dessous reste libre
+    // pour Léo, qui part dans la mauvaise direction (vers l'ouest, voir hullStory.js DAWN). Puis chacun rentre chez soi.
+    ...[['leo-aube', 'Léo', 30, 10, 'left', 'Demain, bibliothèque. Tout le monde.'],
+      ['ousmane-aube', 'Ousmane', 27, 9, 'down', 'Allez, on rentre se coucher.'],
+      ['charlotte-aube', 'Charlotte', 26, 9, 'down', 'Les exams… on en reparle demain.'],
+      ['anais-aube', 'Anaïs', 31, 9, 'down', 'Je sens plus mes pieds.'],
+      ['romain-aube', 'Romain', 32, 9, 'down', 'Quelle nuit !'],
+      ['prophecy-aube', 'Prophecy', 25, 9, 'down', 'On refait ça quand ?']].map(([id, name, x, y, facing, line]) => ({
+      id, name, x, y, facing, ifFlags: [FLAGS.asylumFini], unlessFlags: [FLAGS.lendemainHull, FLAGS.bandeRentree], dialogue: [line],
+    })),
+    // Le jour des résultats : Léo à côté du panneau.
+    {
+      id: 'leo-resultats', name: 'Léo', x: RESULTS_BOARD.x + 2, y: RESULTS_BOARD.y + 1, facing: 'left',
+      ifFlags: [FLAGS.jourResultats], unlessItems: [ITEMS.diplomeHull.id],
+      dialogue: ['Les résultats sont sur le panneau. Va voir !'],
+    },
+    // Les adieux, devant chez Léo : chacun part en échange (voir hullStory.js FAREWELL).
+    ...[['leo-adieux', 'Léo', 32, 21, 'down'], ['ousmane-adieux', 'Ousmane', 34, 21, 'down'],
+      ['charlotte-adieux', 'Charlotte', 31, 22, 'right'], ['anais-adieux', 'Anaïs', 30, 21, 'right'],
+      ['prophecy-adieux', 'Prophecy', 35, 22, 'left'], ['romain-adieux', 'Romain', 30, 22, 'right']].map(([id, name, x, y, facing]) => ({
+      id, name, x, y, facing, ...FAREWELL_TIME, script: FAREWELL,
+    })),
+    // Léo et Ousmane restent à Hull : ils gardent la maison.
+    {
+      id: 'leo-maison-garde', name: 'Léo', x: 32, y: 21, facing: 'down',
+      ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], dialogue: ['Hanoï, hein. Nous on garde la maison.'],
+    },
+    {
+      id: 'ousmane-maison-garde', name: 'Ousmane', x: 34, y: 21, facing: 'down',
+      ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], dialogue: ['Reviens avec des histoires.'],
     },
   ],
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.hullAccueil], steps: ARRIVAL },
     { on: 'enter', ifFlags: [FLAGS.hullAccueil], unlessFlags: [FLAGS.ousmaneRentre], steps: OUSMANE_WALK },
-    // Léo marche jusqu'à la porte de l'étape suivante de la soirée, la bande derrière lui, et entre.
-    ...LEO_ROUTE.map(({ ifFlags, unlessFlags, door, entered }, i) => ({
-      on: 'enter', ifFlags, unlessFlags: [...unlessFlags, entered], steps: [{ walk: `leo-${i}`, to: door, lead: true, then: [entered] }],
-    })),
-    { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [BANDE], steps: DAWN },
-    { on: 'enter', ifSouvenirs: [BANDE], unlessFlags: [FLAGS.lendemainHull, FLAGS.revisions], steps: NEXT_MORNING },
+    // La soirée : Léo part devant jusqu'au bar suivant (il attend Pierre s'il traîne).
+    { on: 'enter', ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.leoEntrePubA], steps: LEO_SCOUT_A },
+    { on: 'enter', ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.leoEntrePubB], steps: LEO_SCOUT_B },
+    { on: 'enter', ifFlags: [FLAGS.flechettesJouees], unlessFlags: [FLAGS.leoEntreAsylum], steps: LEO_SCOUT_ASYLUM },
+    { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [INSOUCIANCE], steps: DAWN },
+    // En sortant de la bibliothèque : le lendemain, les résultats.
+    { on: 'enter', ifFlags: [FLAGS.revisions], unlessFlags: [FLAGS.jourResultats], steps: NEXT_DAY },
   ],
   // La grande rue mène à l'aéroport par ses deux bouts.
-  triggers: [toAirport(0, 34), toAirport(0, 35), toAirport(29, 34), toAirport(29, 35)],
-  night: { ...NIGHT, lights: [[9, 16, 0xffc060], [20, 22, 0xffc060], [25, 10, 0xd070ff], [14, 7, 0xffe0a0]] },
+  triggers: [32, 33, 34, 35].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),
+  // Les deux pubs, l'Asylum et l'université éclairés pendant la soirée.
+  night: { ...NIGHT, lights: [[28, 19, 0xffc060], [33, 30, 0xffc060], [29, 7, 0xd070ff], [17, 7, 0xffe0a0]] },
   dawn: DAWN_TIME,
   rain: {},
-  surroundings: { outside, border: 'ƀ', borderSkip: ['ɐ', '~'] },
+  surroundings: { outside, border: 'ƀ', borderSkip: ['ɔ', '~'] },
   spawn: { x: 1, y: 35, facing: 'right' },
 };
+
+// La grille du jeu : celle d'origine, accordée aux collisions du dessin.
+hullMap.grid = builtGrid(hullMap.sourceGrid, BUILT);

@@ -1,13 +1,16 @@
 import { fullLook } from '../art/characterArt.js';
-import { PORTRAITS, EMERALD_PORTRAITS, SHEETS } from '../art/spriteSheets.js';
+import { SHEETS } from '../art/spriteSheets.js';
+// Apparences choisies dans le créateur de cartes (éditeur de personnages, « partout »), par nom : { Rémy: 'g110', … }.
+// Elles passent avant les attributions de BY_NAME ; le créateur les écrit via /__builder/looks (vite.config.js).
+import PROJECT_LOOKS from './characterLooks.json' with { type: 'json' };
 
-// Apparence des personnages : un sprite des planches fournies, `t{n}` (TownsPeople2, avec portrait)
-// ou `f{n}` (Rouge Feu / Vert Feuille, sans portrait). Voir art/spriteSheets.js pour la liste.
+// Apparence des personnages : uniquement des personnages de la quatrième génération, `g{n}` (voir
+// art/spriteSheets.js et public/assets/characters/gen4-npcs.json pour la liste et les noms).
 // Le chat reste dessiné dans le code (voir art/characterArt.js).
 
-// Apparences choisies par le joueur (menu Start > PNJ), par nom affiché : { Maman: 't3', … }. Gardées dans
+// Apparences choisies par le joueur (menu Start > PNJ), par nom affiché : { Maman: 'g126', … }. Gardées dans
 // la sauvegarde (localStorage), elles passent avant les attributions ci-dessous. Un choix fait dans une planche
-// retirée depuis (ex. les sprites DS) est ignoré.
+// retirée depuis (Rouge Feu, Émeraude, TownsPeople) est ignoré.
 const LOOKS_KEY = 'pokepierre.looks';
 function loadLooks() {
   try {
@@ -32,31 +35,32 @@ export const lookChoices = {
   },
 };
 
-// Pierre : Red, le héros de Rouge Feu (sauf choix du joueur).
-export const pierreLook = () => ({ sprite: lookChoices.get('Pierre') ?? 'f0' });
+// Pierre : Lucas, le héros de Diamant / Perle / Platine (sauf choix du joueur).
+export const pierreLook = () => ({ sprite: lookChoices.get('Pierre') ?? 'g198' });
 
-// Personnages par nom affiché.
+// Personnages par nom affiché (gen4-npcs.json : g126 maman, g138 Prof. Sorbier, g32 marin…).
 export const BY_NAME = {
-  Pierre: 'f0',
+  Pierre: 'g198',
   // Famille
-  Maman: 't8', Papa: 't1', Manon: 't7',
-  // Amis
-  Jean: 't12', Felix: 'f2', Romain: 't3', Paul: 'f53', Yanis: 'f66', Ousmane: 'f72', Harsh: 'f71',
-  Tom: 'f56', 'Théo': 'f57', 'Léo': 'f55', Tanguy: 'f58', Thomas: 'f20', Hugues: 'f17', Geoffrey: 'f42',
-  'Benoît': 'f38', 'Étienne': 'f36', Joshua: 'f10', Laurent: 'f52',
-  Margaux: 'f48', 'Rémi': 'f21', Camille: 'f19', Val: 't10', Anna: 'f59', Fanny: 'f18', Charlotte: 'f45',
-  'Anaïs': 'f47', Anais: 'f47',
+  Maman: 'g126', Papa: 'g119', Manon: 'g57',
+  // Amis (garçons : jeunes gens des villes de Sinnoh et Johto ; filles : idem)
+  Jean: 'g52', Felix: 'g93', Romain: 'g92', Prophecy: 'g94', Yanis: 'g96', Ousmane: 'g105', Harsh: 'g89',
+  Tom: 'g22', 'Théo': 'g23', 'Léo': 'g55', Tanguy: 'g56', Thomas: 'g90', Hugues: 'g91', Geoffrey: 'g41',
+  'Benoît': 'g38', 'Étienne': 'g108', Joshua: 'g18', Laurent: 'g53',
+  Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g117', Paul: 'g86', Camille: 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g49',
+  Charlotte: 'g44', 'Anaïs': 'g107', Anais: 'g107',
   // Métiers
-  'M. Bouly': 'f32', Directeur: 't3', Directrice: 'f54', Principale: 'f54', Sentinelle: 'f39', Manager: 'f8', Responsable: 't13',
-  'Agent immobilier': 'f34', Vendeur: 'f16', Cuisinier: 'f50', 'Capitaine du ferry': 'f43',
-  'Vieux pêcheur': 'f26', 'Vieux sage': 'f26',
-  Moine: 'f24', Capitaine: 'f39', Surveillant: 'f62', Professor: 'f3', Professeur: 'f3', Professeure: 't10',
-  "Professeure d'anglais": 't9', 'Hôtesse': 'f12', 'Pèlerine': 'f29', Fan: 't5', Chanteur: 't12',
-  Guitariste: 'f35', Batteur: 'f60', Promeneuse: 'f29', Gamin: 'f9', Barman: 'f38', Leo: 'f55',
+  'M. Bouly': 'g33', Militaire: 'g87', Directeur: 'g120', Directrice: 'g37', Principale: 'g37', Sentinelle: 'g87',
+  Manager: 'g122', Responsable: 'g36', 'Agent immobilier': 'g35', Vendeur: 'g112', Cuisinier: 'g63',
+  'Capitaine du ferry': 'g118', 'Vieux pêcheur': 'g67', 'Vieux sage': 'g71',
+  Moine: 'g72', Capitaine: 'g87', Surveillant: 'g116', Professor: 'g138', Professeur: 'g138', Professeure: 'g54',
+  "Professeure d'anglais": 'g106', 'Hôtesse': 'g64', 'Pèlerine': 'g15', Fan: 'g40', Chanteur: 'g69',
+  Guitariste: 'g68', Batteur: 'g16', Promeneuse: 'g82', Gamin: 'g59', Barman: 'g101', Leo: 'g55',
 };
 
 // Figurants sans attribution (ex. les diplômés, les touristes) : choisis d'après leur id et leur place.
-const EXTRAS = ['f9', 'f46', 'f19', 'f21', 'f23', 'f37', 'f53', 'f55', 'f56', 'f57', 'f59', 't0', 't5', 't12'];
+const EXTRAS = ['g22', 'g24', 'g49', 'g50', 'g55', 'g57', 'g58', 'g88', 'g89', 'g90', 'g93', 'g95', 'g96', 'g98',
+  'g106', 'g107', 'g108', 'g110', 'g112', 'g113'];
 
 function hash(text) {
   let h = 0;
@@ -64,34 +68,35 @@ function hash(text) {
   return h;
 }
 
-// Apparence d'un PNJ ou d'un suiveur : choix du joueur, sinon par nom (ou par id), sinon un figurant.
+// Apparence d'un PNJ ou d'un suiveur : `sprite` imposé (ex. des figurants garçons), sinon choix du joueur, sinon par nom
+// (ou par id), sinon un figurant.
 export function lookOf(data) {
   if (data.id === 'chat') return fullLook({ kind: 'cat' });
   if (data.id?.startsWith('poule')) return fullLook({ kind: 'hen' });
+  if (data.sprite) return { sprite: data.sprite };
   const name = data.name ?? capitalize(data.id);
-  const sprite = lookChoices.get(name) ?? BY_NAME[name] ?? BY_NAME[capitalize(data.id)];
+  const sprite = lookChoices.get(name) ?? projectLook(name) ?? BY_NAME[name] ?? BY_NAME[capitalize(data.id)];
   return { sprite: sprite ?? EXTRAS[hash(`${data.id}:${data.x},${data.y}`) % EXTRAS.length] };
 }
 
 // Sprite affiché pour un nom dans le menu PNJ : choix du joueur, attribution, sinon un figurant type.
 export function spriteForName(name) {
-  return lookChoices.get(name) ?? BY_NAME[name] ?? EXTRAS[hash(name) % EXTRAS.length];
+  return lookChoices.get(name) ?? projectLook(name) ?? BY_NAME[name] ?? EXTRAS[hash(name) % EXTRAS.length];
 }
 
 // Sprite attribué par défaut (null pour un figurant).
-export const defaultSpriteOf = (name) => BY_NAME[name] ?? null;
+export const defaultSpriteOf = (name) => projectLook(name) ?? BY_NAME[name] ?? null;
 
-// Portraits venant d'ailleurs que TownsPeople2 : dresseurs d'Émeraude (`colonne,rangée`).
-const EMERALD_PORTRAIT_BY_NAME = {
-  'Capitaine du ferry': '6,0',          // l'ancien pêcheur de Fort-de-France
-};
-
-// Portrait affiché dans les dialogues : { key, frame } (texture et image), ou null si la personne n'en a pas.
-export function portraitOf(speaker) {
-  const choice = lookChoices.get(speaker);
-  if (!choice && EMERALD_PORTRAIT_BY_NAME[speaker]) return { key: EMERALD_PORTRAITS, frame: `e${EMERALD_PORTRAIT_BY_NAME[speaker]}` };
-  const sprite = choice ?? BY_NAME[speaker];
-  return sprite?.startsWith('t') ? { key: PORTRAITS, frame: `p${sprite.slice(1)}` } : null;
+// Apparences du projet (characterLooks.json) ; le créateur peut en changer une sans recharger la page (setProjectLook).
+const projectLooks = { ...PROJECT_LOOKS };
+function projectLook(name) {
+  const sprite = projectLooks[name];
+  return sprite && SHEETS[sprite[0]] ? sprite : null;
+}
+export const projectLookOf = (name) => projectLooks[name] ?? null;
+export function setProjectLook(name, sprite) {
+  if (sprite) projectLooks[name] = sprite;
+  else delete projectLooks[name];
 }
 
 function capitalize(id = '') {

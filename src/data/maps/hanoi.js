@@ -1,144 +1,138 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : Hanoï en Gen 4 (première version par scripts/build_hanoi.py, puis retouché dans le créateur :
+// bâtiments de Johto, pagode, pont, portique) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille
+// ci-dessous (sourceGrid) suit ce dessin : sols, lac, portes.
+import BUILT from '../builtMaps/hanoi.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS, ITEMS } from '../story.js';
+import {
+  ARRIVAL, CHESS_PLAYERS, MAILBOX, MR_LAM, PASSANT, PASSANTE, SIX_MONTHS_LATER, TOURISTS_MEET, TOURISTS_THANKS, VENDEUSE,
+} from '../hanoiStory.js';
 
-// Hors de la carte : les rues et trottoirs se prolongent, végétation ailleurs.
+// Hors de la carte : la grande rue se prolonge (vers l'aéroport), la forêt ailleurs.
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['ɐ', 'ɔ'].includes(edge)) return edge;
+    if (edge === 'ɐ') return edge;
   }
-  return '.';
+  return 'T';
 }
 
-const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
+const NOT_HOME = ['Tu frappes. Personne ne répond… ou alors, en vietnamien.'];
+// Les deux touristes (sprites d'origine) : ils s'appellent tous les deux « Touriste » à l'écran.
+const TOURIST_1 = { name: 'Touriste', sprite: 'g24', color: 0xe0a0d0 };
+const TOURIST_2 = { name: 'Touriste', sprite: 'g22', color: 0x80c0e0 };
+// Après la visite, et jusqu'à l'ellipse des six mois : les touristes restent devant le temple.
+const AFTER_VISIT = { ifFlags: [FLAGS.visiteTerminee], unlessFlags: [FLAGS.sixMoisHanoi] };
 
-// Hanoï — capitale du Vietnam, 32 x 26 cases (comme Bordeaux et Hull).
-// Légende : voir src/data/tiles.js (ƚ = petit arbre, n = lanterne, v = drapeau, k = lotus,
-// r = pont rouge, t = stand de rue, y = scooter, ~ = lac Hoàn Kiếm)
+// Hanoï — capitale du Vietnam, 36 x 30 cases avec sa bordure de sapins. Le long de la grande rue, au nord : une maison
+// violette, la maison noire (l'agence de voyage), ta maison (la seconde maison violette, la boîte aux lettres à sa
+// droite) et la maison bleue aux lanternes. Au milieu : le lac Hoàn Kiếm, son îlot à la cloche et son pont de bois ; le
+// temple (toit rouge, murs violets) à droite. Au sud : le portique rouge, les étals, la maison sur pilotis et la grande
+// maison bleue. Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = rue, ~ = lac, D = porte, T = sapins).
 export const hanoiMap = {
   id: 'hanoi',
   name: 'Hanoï',
-  grid: parseGrid([
-    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  buissons : bord de l'écran
-    'ɔɔRRRRRRRRRɔɔRRRRɔɔɔRRRRRR.ƫƫ..ɔ', // 1  maisons, Boutique (agence de voyage)
-    'ɔɔRRRRRRRRRYɔRRRRɔYɔRRRRRR.ƫƫ.Yɔ', // 2
-    'ɔɔWWWWWWWWWɔɔWWWWɔɔɔWWWWWWf...fɔ', // 3
-    'ɔɔWDWWDWWDWɔɔWWDWɔɔɔWDWWDW..f..ɔ', // 4  portes (ta maison : 2e à gauche)
-    'ɔnɔɔɔɔɔɔɔɔɔnɔɔɔɔɔtɔnɔɔɔɔɔɔnɔɔɔɔɔ', // 5  lanternes, stand, scooters
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  rue (vers l'aéroport)
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
-    'ɔ<ɔɔnɔɔɔɔɔɔɔnɔɔɔɔɔɔɔnɔɔɔɔɔɔɔnɔ>ɔ', // 8  panneaux aéroport
-    '.Y.............Y..RRRRRRRRRRRf.ɔ', // 9  lac Hoàn Kiếm, temple (palais doré)
-    '..~~~~~r~~~~k~~.ƚ.RRRRRRRRRRR..ɔ', // 10
-    '..~~k~~r~~RR~~~...RRRRRRRRRRR.vɔ', // 11 tour de la Tortue, drapeau
-    '..~~~~~r~~RR~~~...RRRRRRRRRRR..ɔ', // 12
-    '..~k~k~r~~~~~~~...WWWWWWWWWWWƚ.ɔ', // 13
-    '..~~~~~r~~k~~k~.ƚ.WWWWWWWWWWW..ɔ', // 14
-    '.Y.............Y..WWWWWDWWWWW.fɔ', // 15 porte du temple
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
-    'ɔɔRRRRRRRRRɔtɔtɔtɔtɔRRRRRRRRRɔɔɔ', // 17 maisons, marché
-    'ɔɔRRRRRRRRRnɔɔɔɔɔɔɔnRRRRRRRRRɔɔɔ', // 18
-    'ɔɔWWWWWWWWWɔɔtɔtɔtɔɔWWWWWWWWWɔɔɔ', // 19
-    'ɔɔWDWWDWWDWɔɔɔɔɔɔɔɔɔWDWWDWWDWɔɔɔ', // 20
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔyɔɔ', // 21
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 22 rue sud
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 23
-    'ɔɔɔɔɔɔɔɔɔɔyɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 24
-    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 25 buissons : bord de l'écran
+  built: BUILT,
+  sourceGrid: parseGrid([
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0  sapins : bordure de la carte
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 1
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 2
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 3
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 4
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 5
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 6
+    'TTɔɔDɔɔɔɔɔɔɔDɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔDɔɔɔɔTT', // 7  portes : maison violette (4), agence (12), ta maison (20), maison bleue (29)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 8  grande rue (vers l'aéroport, la bordure y est ouverte)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 9
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 10
+    'TT.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 11
+    'TT....~~~~~~~~~~...ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 12  lac Hoàn Kiếm et son pont
+    'TT...~~~~~~...~~...ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 13
+    'TT...~~~~.....~~...ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 14
+    'TT..~~~~~.....~~...ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 15
+    'TT..~~~~~...~~~~...ɔɔɔɔɔɔɔDɔɔɔɔɔɔɔTT', // 16  porte du temple (toit rouge, 26, 16)
+    'TT...~~~~..~~~~....ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 17
+    'TTɔɔɔɔɔ~~~~~~~ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 18
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 19
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 20
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 21
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 22
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔTT', // 23  porte de la grande maison bleue (27, 23)
+    'TTɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐTT', // 24  rue sud
+    'TTɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐTT', // 25
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 26
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 27
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 28  sapins
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 29
   ]),
   doors: [
-    { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 6,  y: 4,  interior: 'hanoiHome' },          // ta maison
-    { x: 9,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 15, y: 4,  interior: 'travelAgency' },       // agence de voyage
-    { x: 21, y: 4,  lockedDialogue: NOT_HOME },
-    { x: 24, y: 4,  lockedDialogue: NOT_HOME },
-    // Le temple (palais doré) : on y entre en guidant les touristes.
+    { x: 4, y: 7, lockedDialogue: NOT_HOME },        // la maison violette
+    { x: 12, y: 7, interior: 'travelAgency' },       // l'agence de voyage (la maison noire)
+    { x: 20, y: 7, interior: 'hanoiHome' },          // ta maison (la seconde maison violette)
+    { x: 29, y: 7, lockedDialogue: NOT_HOME },       // la maison bleue aux lanternes
+    // Le temple (toit rouge) : on y entre en guidant les touristes.
     {
-      x: 23, y: 15, interior: 'temple',
+      x: 26, y: 16, interior: 'temple',
       lock: { ifFlags: [FLAGS.touristesSuivent] },
-      lockedDialogue: ['[Texte provisoire] Le temple est un lieu de recueillement.'],
+      lockedDialogue: ['Le temple. Un lieu de recueillement : on ne le visite qu\'accompagné d\'un guide.'],
     },
-    { x: 3,  y: 20, lockedDialogue: NOT_HOME },
-    { x: 6,  y: 20, lockedDialogue: NOT_HOME },
-    { x: 9,  y: 20, lockedDialogue: NOT_HOME },
-    { x: 21, y: 20, lockedDialogue: NOT_HOME },
-    { x: 24, y: 20, lockedDialogue: NOT_HOME },
-    { x: 27, y: 20, lockedDialogue: NOT_HOME },
+    { x: 27, y: 23, lockedDialogue: NOT_HOME },      // la grande maison bleue
   ],
-  buildings: [
-    { type: 'frontierHouse', x: 2, y: 1 },
-    { type: 'frontierShop', x: 5, y: 1 },
-    { type: 'frontierHouse', x: 8, y: 1 },
-    { type: 'mart', x: 13, y: 1 },
-    { type: 'frontierShop', x: 20, y: 1 },
-    { type: 'frontierHouse', x: 23, y: 1 },
-    { type: 'turtleTower', x: 10, y: 11 },
-    { type: 'goldenPalace', x: 18, y: 9 },
-    { type: 'frontierShop', x: 2, y: 17 },
-    { type: 'frontierHouse', x: 5, y: 17 },
-    { type: 'frontierShop', x: 8, y: 17 },
-    { type: 'frontierHouse', x: 20, y: 17 },
-    { type: 'frontierShop', x: 23, y: 17 },
-    { type: 'frontierHouse', x: 26, y: 17 },
-  ],
+  // Les bâtiments sont dans le dessin.
+  buildings: [],
   npcs: [
-    // Devant l'agence, après ton premier jour : deux touristes à guider jusqu'au temple.
+    // Devant l'agence, une fois les consignes traduites : deux touristes attendent leur guide.
     {
-      id: 'touriste-1', name: 'Anna', x: 14, y: 5, facing: 'right', color: 0xe0a0d0,
-      ifFlags: [FLAGS.travailEtape1],
-      unlessFlags: [FLAGS.touristesSuivent],
-      dialogue: [
-        "[Anna - texte provisoire] Bonjour ! Tu travailles à l'agence ?",
-        'Tu pourrais nous emmener visiter le temple ?',
-        "D'accord ! Tu acceptes de les guider jusqu'au temple.",
-      ],
-      setFlag: FLAGS.touristesSuivent,
+      id: 'touriste-1', ...TOURIST_1, x: 13, y: 8, facing: 'left',
+      ifFlags: [FLAGS.consignesTraduites], unlessFlags: [FLAGS.touristesSuivent],
+      script: TOURISTS_MEET,
     },
     {
-      id: 'touriste-2', name: 'Tom', x: 13, y: 5, facing: 'right', color: 0x80c0e0,
-      ifFlags: [FLAGS.travailEtape1],
-      unlessFlags: [FLAGS.touristesSuivent],
-      dialogue: ["[Tom - texte provisoire] On aimerait tellement voir le temple !"],
+      id: 'touriste-2', ...TOURIST_2, x: 14, y: 8, facing: 'left',
+      ifFlags: [FLAGS.consignesTraduites], unlessFlags: [FLAGS.touristesSuivent],
+      script: TOURISTS_MEET,
     },
-    // Après la visite, ils restent de chaque côté du temple.
-    {
-      id: 'touriste-1-merci', name: 'Anna', x: 17, y: 15, facing: 'right', color: 0xe0a0d0,
-      ifFlags: [FLAGS.visiteTerminee],
-      dialogue: ['[Anna - texte provisoire] Merci encore pour la visite !'],
-    },
-    {
-      id: 'touriste-2-merci', name: 'Tom', x: 29, y: 15, facing: 'left', color: 0x80c0e0,
-      ifFlags: [FLAGS.visiteTerminee],
-      dialogue: ['[Tom - texte provisoire] Super visite, merci !'],
-    },
+    // Après la visite, ils restent de chaque côté de la porte du temple.
+    { id: 'touriste-1-merci', ...TOURIST_1, x: 25, y: 17, facing: 'right', ...AFTER_VISIT, dialogue: ['Merci encore ! J\'ai tout regardé, pour de vrai.'] },
+    { id: 'touriste-2-merci', ...TOURIST_2, x: 27, y: 17, facing: 'left', ...AFTER_VISIT, dialogue: ['Le meilleur guide de Hanoï !'] },
+    // Les passants de la rue : ils ne parlent pas français.
+    { id: 'passante', name: 'Passante', sprite: 'g19', x: 22, y: 9, facing: 'down', script: PASSANTE },
+    { id: 'vendeuse', name: 'Vendeuse', sprite: 'g70', x: 18, y: 23, facing: 'up', still: true, script: VENDEUSE },
+    { id: 'passant', name: 'Passant', sprite: 'g14', x: 15, y: 25, facing: 'right', script: PASSANT },
+    // M. Lam, sur le banc au bord du lac : il parle un peu français.
+    { id: 'm-lam', name: 'M. Lam', sprite: 'g129', x: 7, y: 10, facing: 'left', still: true, script: MR_LAM },
+    // Facultatif : deux papis jouent aux échecs chinois au bord du lac (Audace).
+    { id: 'papi-1', name: 'Papi', sprite: 'g39', x: 18, y: 12, facing: 'right', still: true, script: CHESS_PLAYERS },
+    { id: 'papi-2', name: 'Papi', sprite: 'g48', x: 20, y: 12, facing: 'left', still: true, script: CHESS_PLAYERS },
   ],
   events: [
-    // En sortant de l'agence après le premier jour : Anna t'interpelle.
-    {
-      on: 'enter',
-      ifFlags: [FLAGS.travailEtape1],
-      unlessFlags: [FLAGS.touristesSuivent],
-      steps: [{ talk: 'touriste-1' }],
-    },
+    // L'arrivée : personne n'attend Pierre.
+    { on: 'enter', ifFlags: [FLAGS.arriveeHanoi], unlessFlags: [FLAGS.hanoiOuverture], steps: ARRIVAL },
     // En sortant du temple avec l'objet de chance : les touristes te remercient.
     {
       on: 'enter',
       ifFlags: [FLAGS.touristesSuivent],
       ifItems: [ITEMS.objetChance.id],
       unlessFlags: [FLAGS.visiteTerminee],
-      steps: [
-        { speaker: 'Anna', say: ['[Anna - texte provisoire] Quel temple magnifique ! Merci pour la visite.'] },
-        { speaker: 'Tom', say: ['[Tom - texte provisoire] Oui, merci beaucoup !'] },
-        { setFlag: FLAGS.visiteTerminee },
-      ],
+      steps: TOURISTS_THANKS,
     },
+    // En sortant du bureau du patron, remercié : six mois plus tard, l'appel de Romain.
+    { on: 'enter', ifFlags: [FLAGS.travailTermine], unlessFlags: [FLAGS.sixMoisHanoi], steps: SIX_MONTHS_LATER },
+  ],
+  objects: [
+    // La boîte aux lettres, à droite de ta maison (dessinée) : une carte de la bande de Hull.
+    { x: 24, y: 7, dialogue: MAILBOX },
+    // Panneaux « Aéroport » à côté des sorties.
+    airportSign(3, 10, false),
+    airportSign(32, 10, true),
   ],
   // Les deux bouts de la rue mènent à l'aéroport.
-  // Panneaux « Aéroport » à côté des sorties.
-  objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
-  triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'ƀ', borderSkip: ['ɐ'] },
-  spawn: { x: 1, y: 6, facing: 'right' },
+  triggers: [toAirport(0, 8), toAirport(0, 9), toAirport(35, 8), toAirport(35, 9)],
+  surroundings: { outside },
+  spawn: { x: 1, y: 8, facing: 'right' },
 };
+
+// La grille du jeu : celle ci-dessus, accordée aux collisions du dessin.
+hanoiMap.grid = builtGrid(hanoiMap.sourceGrid, BUILT);

@@ -1,0 +1,1 @@
+{"version":1,"id":"playerHouseUp","name":"Chambre Pierre","modele":"chambre-type-1","ajouts":{"sheets":["interieurs","catalogue-int"],"cells":{"40":{"decor":[836,924,100065],"dessus":-1},"41":{"decor":[925,100066],"dessus":-1}},"solid":{}},"spawn":{"x":2,"y":5,"facing":"left"},"beds":[{"x":0,"y":4,"w":2,"h":3,"cx":16,"py":72}]}

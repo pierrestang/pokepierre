@@ -1,31 +1,43 @@
 import Phaser from 'phaser';
+import { hiddenEdges } from '../builder/mapModel.js';
 import { TILE_SIZE, getTile } from '../data/tiles.js';
 import { FOLLOWERS } from '../data/story.js';
 import { CATCHES, FISHING_ROD } from '../data/fishing.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
-import { drawDecal, drawPlanksPile, drawToolbox } from '../art/tileArt.js';
+import { drawDecal, drawPulleyFixed, drawPulleyStuck } from '../art/tileArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
 import { Followers } from '../systems/Followers.js';
+import { Patrols } from '../systems/Patrols.js';
+import { playDarts } from '../systems/Darts.js';
 import { lookOf } from '../data/characters.js';
 import { bedAt, familyCarImage, cabaneFrame, CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
-import { interact } from '../systems/interactions.js';
+import { giveSouvenir, interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
 import { visitedFlag } from '../systems/RegionMap.js';
 import { items } from '../systems/items.js';
 import { ITEM_ICONS } from '../art/uiIcons.js';
+import { addBunting } from '../art/bunting.js';
+import { propKey } from '../art/propImages.js';
+import { MESS_SHEET, messFrame } from '../art/partyMess.js';
 import { savePosition } from '../systems/save.js';
 import { memo } from '../systems/memo.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
 import {
   GrassCovers, TALL_PLANTS, InteractHint, ensureSmallBubbles, stepEffect, footprint, startFallingLeaves, startSeaShimmer,
-  startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay,
+  startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay, drawnWater,
 } from '../systems/effects.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
+import { toggleBike, resumeBike, checkBike, pauseBike, unpauseBike } from '../systems/bike.js';
+import { CITY_MUSIC } from '../data/music.js';
+import { applyBuiltLook, lostLook, hiddenUnderTop, TOP_DEPTH } from '../systems/builtMaps.js';
+import LAMP_TILES from '../data/lampTiles.json' with { type: 'json' };
+
+const LAMP_REFS = LAMP_TILES.refs;                // { '<planche>:<n°>': [cx, cy] } : têtes de réverbère
 
 const FADE_MS = 150;
 const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`reply`)
@@ -39,22 +51,27 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 //   objects:  [{ x, y, name?, dialogue, after?, souvenir?, item?, setFlag?, ifFlags?, unlessFlags?, ifItems? }]
 //             (à examiner, sans sprite ; le premier dont les conditions sont remplies répond)
 //             un objet avec `warp` (ex. bateau) se comporte comme un déclencheur ci-dessous
-//   triggers: [{ x, y, dialogue, requiresSouvenirs?, ifFlags?, unlessFlags?, ifItems?, readyDialogue?, item?, warp?, setFlags? }]
-//             déclenchés en marchant dessus ; si `requiresSouvenirs` et les drapeaux sont remplis,
+//   triggers: [{ x, y, dialogue, ifFlags?, unlessFlags?, ifItems?, readyDialogue?, item?, warp?, setFlags? }]
+//             déclenchés en marchant dessus ; si leurs conditions sont remplies,
 //             affiche `readyDialogue`, lève `setFlags` puis téléporte vers `warp` { map, x, y, facing }.
 //   props:    [{ type, x, y, w, h, dialogue?, ifFlags?, unlessFlags? }] — obstacles dessinés comme un
 //             bâtiment (voir art/buildingArt.js), bloquants tant que leurs conditions sont remplies
 //   events:   [{ on: 'enter', ifFlags?, unlessFlags?, steps: [{ say, speaker? } | { setFlag } | { talk: npcId }] }]
 //             `talk` : le PNJ se tourne vers le joueur et dit son dialogue (+ souvenir éventuel).
 //             scénettes jouées automatiquement à l'arrivée sur la carte.
-//   surroundings: code de tuile qui remplit l'écran autour de la carte (sinon celui de la scène).
+//   surroundings: code de tuile qui remplit l'écran autour de la carte (sinon celui de la scène ; false : du noir).
+//   music:    { song, volume?, ifFlags?, unlessFlags? } — musique du lieu à la place de celle par défaut
+//   dark:     { radius?, ifFlags?, unlessFlags? } — pièce dans le noir, halo autour de Pierre (updateDarkness)
+//   patrols:  { guards, caught, ifFlags?, unlessFlags? } — rondes de nuit avec cônes de lumière (systems/Patrols.js)
 // Les sous-classes implémentent onTileEntered(tile, x, y), location() (pour la sauvegarde),
 // cityName() (affiché en haut à gauche)
 // et peuvent définir
 // `surroundingTile` (tuile de remplissage par défaut).
-// Objets posés au sol, dessinés dans le code : le tas de planches de la ferme (Saint-Ay), la caisse à outils de Jean
-// (Montépilloy).
-const FLOOR_PROPS = { planks: drawPlanksPile, toolbox: drawToolbox };
+// Objets posés au sol, dessinés dans le code : la poulie de la cabane des cousins (Saint-Ay).
+const FLOOR_PROPS = { pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
+
+// Clés de conditions d'une étape (voir systems/flags.js meetsConditions).
+const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenirs', 'ifItems', 'unlessItems'];
 
 // Un PNJ déplacé pendant la visite (voir stepTo) reprend sa place de départ.
 function restoreHome(d) {
@@ -71,22 +88,36 @@ export class MapScene extends Phaser.Scene {
     this.leaving = false;
     this.actorsReady = false;                       // voir refreshActors (place des nouveaux suiveurs)
     this.emerged = {};                              // personnages sortis de leur cachette (voir emerge)
+    this.ambienceKey = undefined;                   // ambiance jour / nuit / petit matin (voir applyAmbience)
+    this.ambience = null;
     this.events.once('shutdown', () => { this.leaving = true; });
+    // Drapeaux `then` des PNJ encore en train de marcher (voir walkNpc) : posés si on quitte la carte avant leur arrivée
+    // (sinon ils réapparaîtraient à leur place de départ à la visite suivante).
+    this.pendingWalkFlags = new Set();
+    this.events.once('shutdown', () => this.pendingWalkFlags.forEach(flags.add));
     this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
-    renderMap(this, map);
-    // Morceaux du décor redessinés par-dessus les personnages qui sont derrière (ex. tables de la cabane) :
-    // { sheet, frame(scene), x, y, h } en pixels, triés en profondeur par leur bas.
-    for (const o of map.overlays ?? []) {
-      this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(10 + (o.y + o.h) / 10000);
+    // Carte dessinée avec le créateur de cartes (map.built) : son dessin remplace le rendu Rouge Feu.
+    if (map.built) applyBuiltLook(this, map);
+    this.drawLook();
+    // Filet de sécurité : si le dessin cuit de la carte est perdu en cours de partie (texture retirée ou vidée, ex.
+    // après une scénette ou un voyage), on le refait et on le réaffiche (sinon seule la forêt de bordure se voit).
+    if (map.built) {
+      this.time.addEvent({
+        delay: 1000, loop: true, callback: () => {
+          if (!lostLook(this, map)) return;
+          applyBuiltLook(this, map);
+          this.drawLook();
+        },
+      });
     }
-    if (this.scene.key === 'Overworld') flags.add(visitedFlag(map.id));    // pour la carte du voyage
-    this.canopy = canopyTiles(grid);
+    if (this.scene.key === 'Overworld' && !map.builder) flags.add(visitedFlag(map.id));    // pour la carte du voyage
+    this.canopy = map.built || map.backdrop ? new Set() : canopyTiles(grid);   // un dessin du créateur a ses cimes à lui
     this.startWaterSparkles();
     this.grassCovers = new GrassCovers(this, map);
     const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
-    startSeaShimmer(this, map, false);      // reflets des étangs et rivières (la mer est animée, voir addSeaLayer)
+    startSeaShimmer(this, map);             // reflets de l'eau (mer et plans d'eau dessinés ; anciennes cartes : addSeaLayer)
     // Musique du lieu et ressac près de la mer.
-    playMusic(this.scene.key === 'Interior' ? 'home' : 'island');
+    this.playPlaceMusic();
     const hasSea = seaAround || grid.some((row) => row.includes('w'));
     setSeaAmbience(hasSea);
     // Vie de l'île : mouettes, poissons, fenêtres éclairées le soir.
@@ -105,8 +136,12 @@ export class MapScene extends Phaser.Scene {
     this.npcs = [];
     this.props = [];
     this.decals = [];
+    this.silhouette = null;                   // silhouette du joueur sous les toits (voir updateSilhouette)
     this.followers = new Followers(this);
-    const tileWalkable = createWalkableCheck(grid);
+    // Carte du créateur : les collisions sont celles du dessin, case par case.
+    const tileWalkable = map.built
+      ? (x, y) => x >= 0 && y >= 0 && x < map.built.width && y < map.built.height && !map.built.solid[y * map.built.width + x]
+      : createWalkableCheck(grid);
     this.tileWalkable = tileWalkable;
     // Les PNJ qui se sont avancés vers le joueur (voir approach) reprennent leur place à la prochaine visite.
     this.events.once('shutdown', () => (map.npcs ?? []).forEach(restoreHome));
@@ -116,7 +151,8 @@ export class MapScene extends Phaser.Scene {
     if (!spawnWalkable && map.spawn) spawn = map.spawn;
 
     this.player = new Player(this, spawn, {
-      isWalkable: (x, y) => (tileWalkable(x, y) || this.openDoorAt(x, y)) && !this.npcAt(x, y) && !this.propAt(x, y),
+      isWalkable: (x, y) => (tileWalkable(x, y) || this.openDoorAt(x, y)) && !this.npcAt(x, y) && !this.propAt(x, y)
+        && !this.patrols?.occupies(x, y),
       onStep: (x, y) => this.handleStep(x, y),
       onMoveStart: (x, y, nx, ny, duration) => {
         this.followers.advance(x, y, duration);
@@ -127,12 +163,16 @@ export class MapScene extends Phaser.Scene {
       },
     });
     this.refreshActors();
+    resumeBike(this);                               // à vélo si on roulait (dehors), voir systems/bike.js
     this.savePosition();
     this.registry.set('city', this.cityName());
     this.registry.set('cityId', this.fromMap ?? this.map.id);   // compteur de traits de la ville (UIScene)
 
     this.input.keyboard.on('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') this.tryInteract(e);
+      // Vélo : V (ou B), à l'arrêt, hors dialogue, menu et scénette.
+      if (['v', 'V', 'b', 'B'].includes(e.key) && !e.repeat && !this.dialog?.isOpen && !this.menuOpen && !this.scripting
+        && !this.transitioning) toggleBike(this);
     });
 
     const cam = this.cameras.main;
@@ -146,10 +186,15 @@ export class MapScene extends Phaser.Scene {
     // Touche moderne : bords de l'écran légèrement assombris (WebGL uniquement).
     if (!cam.vignetteFX && cam.postFX) {
       cam.vignetteFX = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.18);
-      if (this.scene.key === 'Overworld') applyTimeOfDay(cam, this.game);   // lumière selon l'heure
+      // Lumière selon l'heure ; pas sur une carte du créateur en essai (on la juge toujours en plein jour).
+      if (this.scene.key === 'Overworld' && !map.builder) applyTimeOfDay(cam, this.game);
     }
     cam.fadeIn(FADE_MS);
     this.applyAmbience(map);
+    // Pièce dans le noir (voir updateDarkness).
+    this.darkness = map.dark ? this.createDarkness(map.dark) : null;
+    // Rondes de nuit (voir systems/Patrols.js).
+    this.patrols = map.patrols && meetsConditions(map.patrols) ? new Patrols(this, map.patrols) : null;
     this.startIdleAnimations();
 
     this.runEnterEvents();
@@ -158,6 +203,8 @@ export class MapScene extends Phaser.Scene {
   // Vie des lieux (ex. les clients d'un pub), quand rien d'autre ne se passe :
   //   PNJ `fidget: true` : il se tourne de temps en temps (vers ses voisins), et trinque parfois d'un petit saut ;
   //   PNJ `pace: [[x, y], [x, y]]` : il va et vient entre ces deux cases (ex. le barman derrière son comptoir).
+  //   PNJ `route: [[x, y], …]` : il fait le tour de ces points, en boucle (ex. un militaire en ronde dans la cour), et
+  //   regarde un peu autour de lui à chaque point.
   startIdleAnimations() {
     const quiet = () => !this.scripting && !this.dialog?.isOpen && !this.menuOpen && !this.transitioning;
     const turns = ['down', 'left', 'right', 'up'];
@@ -181,6 +228,14 @@ export class MapScene extends Phaser.Scene {
               npc.sprite.setFacing('down');
             });
           }
+          if (d.route && !npc.pacing && Math.random() < 0.35) {
+            npc.pacing = true;
+            npc.routeAt = ((npc.routeAt ?? 0) + 1) % d.route.length;
+            this.walkNpc(d.id, d.route[npc.routeAt]).then(() => {
+              npc.pacing = false;
+              npc.sprite.setFacing(turns[Phaser.Math.Between(0, 3)]);
+            });
+          }
         }
       },
     });
@@ -201,13 +256,28 @@ export class MapScene extends Phaser.Scene {
     }));
   }
 
+  // Le fond de la carte (dessin du créateur cuit, ou rendu Rouge Feu) et les morceaux redessinés par-dessus les
+  // personnages (calque « au-dessus de Pierre », tables de la cabane : { sheet, frame(scene), x, y, h }, triés en
+  // profondeur par leur bas). Rappelé si le dessin a été perdu : les anciennes images sont remplacées.
+  drawLook() {
+    const map = this.map;
+    for (const img of this.lookImages ?? []) img.destroy();
+    this.lookImages = [];
+    const back = renderMap(this, map);
+    if (back && map.backdrop) this.lookImages.push(back);
+    for (const o of map.overlays ?? []) {
+      this.lookImages.push(this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(o.depth ?? 10 + (o.y + o.h) / 10000));
+    }
+  }
+
   // La carte entière est visible, aussi grande que possible dans la fenêtre.
   // Reflets animés sur l'eau (mer, étangs, rivières) : petits éclats qui apparaissent et s'effacent.
   startWaterSparkles() {
-    const water = [];
+    let water = [];
     this.grid.forEach((row, y) => row.forEach((c, x) => {
       if (['~', 'G'].includes(c)) water.push([x, y]);
     }));
+    water = drawnWater(this, this.map, water);               // carte du créateur : seulement l'eau vraiment dessinée
     if (!water.length) return;
     const pool = Array.from({ length: 16 }, () => this.add.rectangle(0, 0, 3, 1, 0xffffff).setAlpha(0).setDepth(1));
     let next = 0;
@@ -228,17 +298,22 @@ export class MapScene extends Phaser.Scene {
   // petite que l'écran dans un sens, elle reste centrée dans ce sens (le décor autour comble le vide).
   fitCamera() {
     const cam = this.cameras.main;
-    const mapW = this.grid[0].length * TILE_SIZE;
-    const mapH = this.grid.length * TILE_SIZE;
+    const mapW = this.grid[0].length * TILE_SIZE;   // (moins les colonnes cachées, plus bas)
+    // Carte du créateur bordée d'arbres : la dernière rangée et les colonnes des côtés ne sont jamais montrées (le bas
+    // et les côtés extérieurs des arbres restent cachés ; voir docs/technique/createur-de-cartes.md).
+    const edges = hiddenEdges(this.map.built);
+    const left = edges.left * TILE_SIZE;
+    const mapH = (this.grid.length - edges.bottom) * TILE_SIZE;
     const view = gameView(this.scale);
     const viewW = SCREEN_W;
     const viewH = SCREEN_H;
     cam.setViewport(view.x, view.y, view.w, view.h);
     cam.setZoom(view.zoom);
+    const shownW = mapW - left - edges.right * TILE_SIZE;
     cam.setBounds(
-      Math.min(0, (mapW - viewW) / 2),
+      left + Math.min(0, (shownW - viewW) / 2),
       Math.min(0, (mapH - viewH) / 2),
-      Math.max(mapW, viewW),
+      Math.max(shownW, viewW),
       Math.max(mapH, viewH),
     );
     cam.startFollow(this.player.sprite, true, 0.18, 0.18);   // suivi adouci
@@ -259,13 +334,14 @@ export class MapScene extends Phaser.Scene {
   }
 
   npcAt(x, y) {
-    return this.npcs.find((n) => n.data.x === x && n.data.y === y);
+    return this.npcs.find((n) => n.data.x === x && n.data.y === y && !n.gone);
   }
 
   // (Re)crée les PNJ et suiveurs selon les drapeaux d'histoire.
   // Un suiveur qui remplace un PNJ (même id) part de la position de celui-ci ; à l'inverse, un PNJ qui remplace
   // un suiveur (même id) apparaît là où était le suiveur (une scénette le fait ensuite marcher, voir walkNpc).
   refreshActors() {
+    this.applyAmbience(this.map);
     const wanted = (this.map.npcs ?? []).filter(meetsConditions);
     const stillFollowing = new Set(FOLLOWERS.filter(meetsConditions).map((f) => f.id));
     const followerAt = Object.fromEntries(this.followers.members.filter((m) => !stillFollowing.has(m.id))
@@ -287,6 +363,7 @@ export class MapScene extends Phaser.Scene {
       // `inBed` : couché dans le lit de la case (intérieurs Rouge Feu), `child` pour un enfant.
       const bed = data.inBed && bedAt(this.map, data.x, data.y);
       const sprite = new CharacterSprite(this, data.x, data.y, lookOf(data), data.facing, { bed: bed && { ...bed, child: data.child } });
+      if (data.dancing) this.startDancing(sprite, data);
       this.npcs.push({ data, sprite });
     }
 
@@ -300,12 +377,23 @@ export class MapScene extends Phaser.Scene {
     for (const data of wantedProps) {
       if (this.props.some((p) => p.data === data)) continue;
       // La voiture de la famille est une image (voir frlgArt.familyCarImage), posée au milieu du bas de son emprise.
-      // La cabane des cousins (voir frlgArt, rs-cabane.png) : l'emprise bloquante couvre la plateforme, l'échelle
-      // descend sur la case sous son 2e rang, où l'on monte (porte `when` de la carte).
+      // La cabane des cousins (voir frlgArt, rs-cabane.png ; retour à l'ancienne cabane demandé par l'utilisateur,
+      // octobre 2026) : l'emprise bloquante couvre la plateforme, l'échelle descend sur la case sous son 2e rang, où l'on
+      // monte (porte `when` de la carte). Elle est perchée dans les arbres : au-dessus de leurs cimes (calque « au-dessus
+      // de Pierre », TOP_DEPTH), sinon elles cachent son toit ; sous la nuit.
       if (data.type === 'cabane') {
         const bottom = (data.y + data.h + 1) * TILE_SIZE;
         const graphics = this.add.image((data.x + 1) * TILE_SIZE - CABANE_LADDER_X, bottom, FRLG_SHEETS.cabane, cabaneFrame(this, 'hut'))
-          .setOrigin(0, 1).setDepth(10 + bottom / 10000);
+          .setOrigin(0, 1).setDepth(TOP_DEPTH + 0.2);
+        this.props.push({ data, graphics });
+        continue;
+      }
+      // Le tas de planches de l'enclos à poules : le « tas de bois » Gen 4, détouré (g4-planches.png), centré sur
+      // le bas de son emprise.
+      if (data.type === 'planks') {
+        const bottom = (data.y + data.h) * TILE_SIZE;
+        const graphics = this.add.image((data.x + data.w / 2) * TILE_SIZE, bottom, FRLG_SHEETS.g4Planches)
+          .setOrigin(0.5, 1).setDepth(10 + (bottom - 1) / 10000);
         this.props.push({ data, graphics });
         continue;
       }
@@ -317,10 +405,28 @@ export class MapScene extends Phaser.Scene {
         this.props.push({ data, graphics });
         continue;
       }
+      // Objet en image (art/propImages.js, style Gen 4) : au milieu du bas de son emprise, trié en profondeur. (Le désordre
+      // de la soirée, `type: 'image'`, a sa propre planche : plus bas.)
+      if (data.image && data.type !== 'image') {
+        const bottom = (data.y + data.h) * TILE_SIZE;
+        const graphics = this.add.image((data.x + data.w / 2) * TILE_SIZE, bottom, propKey(data.image))
+          .setOrigin(0.5, 1).setDepth(10 + (bottom - 1) / 10000);
+        this.props.push({ data, graphics });
+        continue;
+      }
       // Objets posés au sol, dessinés dans le code (voir FLOOR_PROPS) : triés en profondeur avec les personnages.
       if (FLOOR_PROPS[data.type]) {
         const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);
         FLOOR_PROPS[data.type](graphics, data.x * TILE_SIZE, data.y * TILE_SIZE);
+        this.props.push({ data, graphics });
+        continue;
+      }
+      // Objet posé au sol, en image (ex. le désordre du lendemain de soirée, art/partyMess.js) : `image`, le nom du
+      // dessin, posé en bas de sa case ; trié en profondeur avec les personnages.
+      if (data.type === 'image') {
+        const bottom = (data.y + 1) * TILE_SIZE;
+        const graphics = this.add.image(data.x * TILE_SIZE + (data.dx ?? 0), bottom + (data.dy ?? 0), MESS_SHEET, messFrame(this, data.image))
+          .setOrigin(0, 1).setDepth(10 + bottom / 10000);
         this.props.push({ data, graphics });
         continue;
       }
@@ -348,7 +454,7 @@ export class MapScene extends Phaser.Scene {
       if (this.decals.some((d) => d.data === data)) continue;
       // `above` : au-dessus des personnages (ex. tablier d'un pont sous lequel on passe).
       // `floor` : au sol, sous tout le monde (ex. piste de danse).
-      const depth = data.above ? 45 : data.floor ? 1.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000;
+      const depth = data.above ? TOP_DEPTH + 0.1 : data.floor ? 1.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000;   // above : sous le voile de nuit
       if (data.icons) {
         // Décor en icônes d'objets (ex. cannes à pêche) : [image, x, y, hauteur gardée], dans un conteneur.
         const graphics = this.add.container(data.x * TILE_SIZE, data.y * TILE_SIZE).setDepth(depth);
@@ -358,8 +464,20 @@ export class MapScene extends Phaser.Scene {
         this.decals.push({ data, graphics });
         continue;
       }
+      // Décor en image (ex. confettis, couette en vrac : art/partyMess.js), en haut à gauche de sa case.
+      if (data.image) {
+        const graphics = this.add.image(data.x * TILE_SIZE + (data.dx ?? 0), data.y * TILE_SIZE + (data.dy ?? 0), MESS_SHEET, messFrame(this, data.image))
+          .setOrigin(0).setDepth(depth);
+        this.decals.push({ data, graphics });
+        continue;
+      }
+      // Guirlande de fanions (art/bunting.js) : fil tendu entre deux points, fanions qui ondulent.
+      if (data.kind === 'fanions') {
+        this.decals.push({ data, graphics: addBunting(this, data, depth) });
+        continue;
+      }
       const graphics = this.add.graphics().setDepth(depth);
-      drawDecal(graphics, data.kind, data.x * TILE_SIZE, data.y * TILE_SIZE, data);
+      drawDecal(graphics, data.kind, data.x * TILE_SIZE + (data.dx ?? 0), data.y * TILE_SIZE + (data.dy ?? 0), data);
       this.decals.push({ data, graphics });
     }
 
@@ -372,6 +490,7 @@ export class MapScene extends Phaser.Scene {
       FOLLOWERS.filter(meetsConditions),
       (id) => leftAt[id] ?? this.takeEmerged(id) ?? (arriving ? { x: tileX, y: tileY, facing } : this.besidePlayer()),
     );
+    checkBike(this);                                // quelqu'un suit Pierre : il descend de vélo
   }
 
   // Un personnage caché (ex. au cache-cache) sort de sa cachette : il apparaît sur la première case de `from` qui
@@ -428,6 +547,8 @@ export class MapScene extends Phaser.Scene {
     sprite.walkStep(WALK_DURATION);
     d.x = x;
     d.y = y;
+    // Un personnage qui entre dans les hautes herbes les fait frémir aussi (sans bruit : seul Pierre en fait).
+    if (TALL_PLANTS.includes(this.grid[y]?.[x])) this.grassCovers?.rustle(x, y, { sound: false });
     const [px, py] = tileCenter(x, y);
     return new Promise((resolve) => this.tweens.add({
       targets: sprite, x: px, y: py, duration: WALK_DURATION,
@@ -445,30 +566,37 @@ export class MapScene extends Phaser.Scene {
   async runScript(steps) {
     this.scripting = true;
     this.player.frozen = true;
+    const onBike = pauseBike(this);                 // Pierre descend de vélo le temps de la scène
     try {
-      await this.runSteps(steps);
+      await this.runSteps(steps, true);
     } catch (error) {
       console.error('Scénette interrompue', error);
     } finally {
       this.scripting = false;
       if (!this.transitioning) this.player.frozen = false;
+      if (onBike) unpauseBike(this);
     }
   }
 
   // Scénette : liste d'étapes jouées dans l'ordre. Chaque étape peut avoir des conditions (ifFlags,
   // unlessFlags, ifItems, unlessItems, ifSouvenirs, unlessSouvenirs), vérifiées au moment où elle est jouée.
   //   { say: [pages], speaker? }         texte (avec le nom de la personne qui parle)
+  //   { say, speaker, phone: true }      la personne parle au téléphone (icône de téléphone devant son nom)
   //   { talk: npcId }                    le PNJ s'avance jusqu'au joueur, se tourne vers lui et dit son dialogue
   //   { approach: npcId }                le PNJ s'avance jusqu'au joueur et ils se font face
   //   { comeBeside: npcId }              le PNJ vient sur une case libre à côté du joueur (même s'il l'enferme le temps
   //                                      de la scène : la scénette doit le faire repartir), tourné vers lui
+  //   { join: npcId, to: autreId }       le PNJ vient sur une case libre à côté de l'autre PNJ (pas celle du joueur),
+  //                                      et regarde du même côté que lui (ex. Manon rejoint Papa avant de partir)
   //   { faceTo: npcId }                  le joueur et le PNJ se tournent l'un vers l'autre
+  //   { allFace: npcId }                 tout le monde dans la pièce (Pierre, PNJ, suiveurs) se tourne vers ce PNJ
   //   { goTo: [x, y], facing? }          Pierre marche jusqu'à la case (plus court chemin), puis se tourne
   //   { setFlag } / { setFlags: [] }     drapeaux d'histoire (les personnages sont mis à jour)
   //   { trait: TRAITS.x }                vertu reçue (voir data/story.js) : « Pierre a reçu la vertu X ! »
   //   { useTrait: TRAITS.x }             une vertu débloque la situation : « Pierre utilise X ! » (à mettre sous
   //                                      condition `ifSouvenirs: [TRAITS.x.id]`)
   //   { give: item, text? }              objet reçu (message `text`, sinon « Tu as reçu : X. »)
+  //   { souvenir: { id, name } }         souvenir rangé dans le carnet (« Tu as obtenu un souvenir : X ! »)
   //   { take: itemId }                   objet donné (quitte l'inventaire)
   //   { black: true | false }            écran noir immédiat / retour de l'image en fondu
   //   { sea: true | false }              bruit des vagues
@@ -490,16 +618,40 @@ export class MapScene extends Phaser.Scene {
   //   { slide: 'pint', from: [x, y], to: [x, y] | 'player' }  un objet apparaît et glisse (ex. pinte sur le
   //                                      comptoir), jusqu'à la case devant Pierre avec 'player'
   //   { walk: npcId, to: [x, y], lead?, block?, then? }  le PNJ marche jusqu'à la case (voir walkNpc)
+  //   { walkAll: [[id, [x, y]], …] }    plusieurs PNJ marchent en même temps, chacun vers sa case ; on attend qu'ils
+  //                                      soient tous arrivés
   //   { walkLine: [ids], to: [x, y], block?, then? }  les PNJ marchent en file, l'un derrière l'autre (walkLine)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
   //   { hop: id | [ids], times? } : petits sauts sur place ('player' : Pierre)
   //   { cheer: [ids] } : tous sautent ensemble, des notes et des cœurs s'envolent
+  //   { darts: { opponent, win, lose, onWin?, onLose? } } : partie de fléchettes, trois lancers (systems/Darts.js), contre
+  //                                      un adversaire au score tiré au hasard ; gagnée ou perdue, la scénette continue
+  //                                      (après les étapes `onWin` ou `onLose`, s'il y en a)
   // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
-  async runSteps(steps) {
-    for (const step of steps) {
+  //   Fin de scène : une marche bloquante (`block`) suivie seulement de drapeaux (setFlag) ne fait plus attendre le
+  //   joueur ; il reprend la main pendant que le PNJ s'en va, et ces drapeaux sont posés à son arrivée (voir walkNpc).
+  async runSteps(steps, tail = false) {
+    // Les étapes après `i` ne sont-elles que des drapeaux (ou rien) ? Renvoie alors ces drapeaux, sinon null.
+    const trailingFlags = (i) => {
+      const out = [];
+      for (const rest of steps.slice(i + 1)) {
+        const keys = Object.keys(rest).filter((k) => !CONDITION_KEYS.includes(k) && k !== 'end');
+        if (keys.some((k) => k !== 'setFlag' && k !== 'setFlags')) return null;
+        if (meetsConditions(rest)) out.push(...[rest.setFlag, ...(rest.setFlags ?? [])].filter(Boolean));
+      }
+      return out;
+    };
+    for (const [i, step] of steps.entries()) {
       if (!meetsConditions(step)) continue;
+      const atTail = tail ? trailingFlags(i) : null;
+      if (atTail && step.block && (step.walk || step.walkLine)) {
+        const then = [...(step.then ?? []), ...atTail];
+        if (step.walk) this.walkNpc(step.walk, step.to, { lead: step.lead, then });
+        else this.walkLine(step.walkLine, step.to, { then });
+        return steps.slice(i + 1).some((rest) => rest.end && meetsConditions(rest));
+      }
       if (step.black !== undefined) await this.setCurtain(step.black);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
@@ -511,19 +663,26 @@ export class MapScene extends Phaser.Scene {
         await this.slideItem(step.slide, step.from, step.to === 'player' ? [x, y] : step.to);
       }
       if (step.dance) await this.dance(step.dance);
+      if (step.darts) {
+        const won = await this.dartsGame(step.darts);
+        const then = won ? step.darts.onWin : step.darts.onLose;
+        if (then && await this.runSteps(then)) return true;
+      }
       if (step.wait) await this.wait(step.wait);
       if (step.opening) await this.playOpening(step.opening);
       if (step.emerge) await this.emerge(step.emerge);
       if (step.push) await this.pushNpc(this.npcById(step.push), this.player.facing);
       if (step.resetNpcs) this.resetNpcs(step.resetNpcs);
       if (step.askWord) memo.set(step.askWord.key, await this.scene.get('UI').askWord(step.askWord));
-      if (step.say) await this.dialog.open(step.say.map(memo.fill), { speaker: step.speaker });
+      if (step.say) await this.dialog.open(step.say.map(memo.fill), { speaker: step.speaker, phone: step.phone });
       if (step.approach) await this.approach(step.approach);
       if (step.comeBeside) await this.comeBeside(step.comeBeside);
+      if (step.join) await this.joinNpc(step.join, step.to);
       if (step.faceTo) {
         const npc = this.npcById(step.faceTo);
         if (npc) this.faceEachOther(npc.sprite, npc.data);
       }
+      if (step.allFace) this.allFace(step.allFace);
       if (step.goTo) await this.walkPlayer(step.goTo, step.facing);
       if (step.drive) await this.driveAway(step.drive);
       if (step.hop) await this.hop(step.hop, step.times);
@@ -532,6 +691,7 @@ export class MapScene extends Phaser.Scene {
         const walking = this.walkNpc(step.walk, step.to, { lead: step.lead, then: step.then });
         if (step.block) await walking;
       }
+      if (step.walkAll) await Promise.all(step.walkAll.map(([id, to]) => this.walkNpc(id, to)));
       if (step.walkLine) {
         const walking = this.walkLine(step.walkLine, step.to, { then: step.then });
         if (step.block) await walking;
@@ -544,16 +704,17 @@ export class MapScene extends Phaser.Scene {
         }
       }
       if (step.quiz) await this.quiz(step.quiz);
-      if (step.steps && await this.runSteps(step.steps)) return true;
+      if (step.steps && await this.runSteps(step.steps, Boolean(tail && (step.end || trailingFlags(i))))) return true;
       if (step.choose) {
         const index = await this.dialog.choose(step.choose, step.choices.map((c) => c.label), { speaker: step.speaker });
-        if (await this.runSteps(step.choices[index]?.steps ?? [])) return true;
+        if (await this.runSteps(step.choices[index]?.steps ?? [], Boolean(tail && trailingFlags(i)))) return true;
       }
       if (step.give && items.add(step.give)) {
         this.refreshActors();
         sfx('item');
         await this.dialog.open([step.text ?? `Tu as reçu : ${step.give.name}.`], { item: step.give });
       }
+      if (step.souvenir) await giveSouvenir(this.dialog, step.souvenir);
       if (step.take && items.remove(step.take)) this.refreshActors();
       if (step.trait && souvenirs.add(step.trait)) {
         sfx('trait');
@@ -561,6 +722,7 @@ export class MapScene extends Phaser.Scene {
         this.refreshActors();                       // PNJ et suiveurs qui dépendent du trait
       }
       if (step.useTrait) {
+        souvenirs.use(step.useTrait.id);
         sfx('trait');
         await this.dialog.open([`Pierre utilise ${step.useTrait.name.toUpperCase()} !`]);
       }
@@ -615,6 +777,7 @@ export class MapScene extends Phaser.Scene {
       up = true;
       await drive({ y: car.y - 12 * TILE_SIZE }, 1800, 'Quad.easeIn');
     }
+    shake.stop();
     smoke.remove();
   }
 
@@ -661,6 +824,26 @@ export class MapScene extends Phaser.Scene {
     }
     npc.data.facing = this.directionTo(npc.data, me);
     npc.sprite.setFacing(npc.data.facing);
+  }
+
+  // Le PNJ `id` vient se placer à côté du PNJ `targetId` (la case libre la plus proche de lui parmi les quatre voisines,
+  // jamais celle du joueur), puis regarde du même côté que lui.
+  async joinNpc(id, targetId) {
+    const npc = this.npcById(id);
+    const target = this.npcById(targetId);
+    if (!npc || !target) return;
+    const t = target.data;
+    const me = { x: this.player.tileX, y: this.player.tileY };
+    const spots = Object.values(DIRECTIONS)
+      .map(({ dx, dy }) => [t.x + dx, t.y + dy])
+      .filter(([x, y]) => (x === npc.data.x && y === npc.data.y)
+        || (this.tileWalkable(x, y) && !this.npcAt(x, y) && !this.propAt(x, y) && !(x === me.x && y === me.y)))
+      .sort((a, b) => Math.abs(a[0] - npc.data.x) + Math.abs(a[1] - npc.data.y) - Math.abs(b[0] - npc.data.x) - Math.abs(b[1] - npc.data.y));
+    if (!spots.length) return;
+    const [x, y] = spots[0];
+    if (x !== npc.data.x || y !== npc.data.y) await this.walkNpc(id, [x, y]);
+    npc.data.facing = t.facing;
+    npc.sprite.setFacing(t.facing);
   }
 
   // Le joueur et un personnage (image `sprite`, position `d`) se tournent l'un vers l'autre.
@@ -710,6 +893,7 @@ export class MapScene extends Phaser.Scene {
   async walkNpc(id, [tx, ty], { lead = false, then = [] } = {}) {
     const npc = this.npcById(id);
     if (!npc) return;
+    then.forEach((f) => this.pendingWalkFlags.add(f));
     const d = npc.data;
     const alive = () => !this.leaving && this.npcs.includes(npc);
     let stuck = 0;                                  // au bout d'une dizaine de secondes bloqué, on abandonne
@@ -734,11 +918,24 @@ export class MapScene extends Phaser.Scene {
       await this.stepTo(npc.sprite, d, [x, y]);
     }
     if (!alive()) return;
+    if (d.x === tx && d.y === ty && getTile(this.grid[ty]?.[tx])?.stairs) await this.climbAway(npc);
+    then.forEach((f) => this.pendingWalkFlags.delete(f));
     d.facing = npc.sprite.facing;
     if (then.length) {
       then.forEach(flags.add);
       this.refreshActors();
     }
+  }
+
+  // Un PNJ envoyé sur une marche d'escalier s'en va par l'escalier : il monte les marches dessinées au-dessus (s'il y en
+  // a), puis s'efface. Il ne bloque plus personne (`gone`) jusqu'à ce que ses drapeaux le retirent.
+  async climbAway(npc) {
+    const d = npc.data;
+    while (getTile(this.grid[d.y - 1]?.[d.x])?.stairs && !(this.player.tileX === d.x && this.player.tileY === d.y - 1)) {
+      await this.stepTo(npc.sprite, d, [d.x, d.y - 1]);
+    }
+    await new Promise((resolve) => this.tweens.add({ targets: npc.sprite, alpha: 0, duration: 250, onComplete: resolve }));
+    npc.gone = true;
   }
 
   // Les PNJ `ids` marchent en file jusqu'à `to` : le premier ouvre la route (plus court chemin, par les chemins), chaque
@@ -747,6 +944,7 @@ export class MapScene extends Phaser.Scene {
   async walkLine(ids, [tx, ty], { then = [] } = {}) {
     const line = ids.map((id) => this.npcById(id)).filter(Boolean);
     if (!line.length) return;
+    then.forEach((f) => this.pendingWalkFlags.add(f));
     const alive = () => !this.leaving && line.every((n) => this.npcs.includes(n));
     const step = (npc, xy) => this.stepTo(npc.sprite, npc.data, xy);
     const near = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
@@ -779,6 +977,7 @@ export class MapScene extends Phaser.Scene {
       await Promise.all(line.map((n, i) => step(n, i === 0 ? next : [before[i - 1].x, before[i - 1].y])));
     }
     if (!alive()) return;
+    then.forEach((f) => this.pendingWalkFlags.delete(f));
     line.forEach((n) => { n.data.facing = n.sprite.facing; });
     if (then.length) {
       then.forEach(flags.add);
@@ -794,7 +993,7 @@ export class MapScene extends Phaser.Scene {
     const W = this.grid[0].length;
     const key = (x, y) => y * W + x;
     // Cases occupées, calculées une fois : PNJ (sauf `from` et `ignore`) et case évitée.
-    const taken = new Set(this.npcs.filter((n) => n.data !== from && !ignore.includes(n.data)).map((n) => key(n.data.x, n.data.y)));
+    const taken = new Set(this.npcs.filter((n) => n.data !== from && !n.gone && !ignore.includes(n.data)).map((n) => key(n.data.x, n.data.y)));
     if (avoid) taken.add(key(avoid[0], avoid[1]));
     const free = (x, y) => x >= 0 && x < W && this.tileWalkable(x, y) && !taken.has(key(x, y)) && !this.propAt(x, y);
     const cost = (x, y) => (getTile(this.grid[y][x]).road ? 1 : OFF_ROAD);
@@ -830,37 +1029,108 @@ export class MapScene extends Phaser.Scene {
   // Ambiance de la carte, selon l'histoire : nuit (filtre sombre, halos des réverbères et des enseignes),
   // petit matin bleuté, ou pluie. map.night / map.dawn / map.rain : conditions (ifFlags…) ; map.night.lights :
   // halos en plus des réverbères ('l'), [x, y, couleur].
+  // Recalculée quand l'histoire avance (voir refreshActors) : une scénette qui fait tomber la nuit ou se lever le jour
+  // change l'ambiance tout de suite, sans ressortir de la pièce.
   applyAmbience(map) {
     const on = (spec) => spec && meetsConditions(spec);
     const night = on(map.night);
     const dawn = !night && on(map.dawn);
+    const key = night ? 'night' : dawn ? 'dawn' : 'day';
+    if (key === this.ambienceKey) return;
+    const first = this.ambienceKey === undefined;
+    this.ambienceKey = key;
+    // Les halos respirent (tweens sans fin) : arrêtés avec l'ambiance, Phaser ne retire pas les tweens d'un objet détruit.
+    if (this.ambience) this.tweens.killTweensOf(this.ambience.list);
+    this.ambience?.destroy();
+    this.ambience = this.add.container(0, 0).setDepth(40);
     const W = this.grid[0].length * TILE_SIZE;
     const H = this.grid.length * TILE_SIZE;
     const M = 40 * TILE_SIZE;
     if (night || dawn) {
-      this.add.rectangle(-M, -M, W + 2 * M, H + 2 * M, night ? 0x0c1030 : 0x5070b0, night ? 0.58 : 0.28)
-        .setOrigin(0).setDepth(40);
+      this.ambience.add(this.add.rectangle(-M, -M, W + 2 * M, H + 2 * M, night ? 0x0c1030 : 0x5070b0, night ? 0.58 : 0.28)
+        .setOrigin(0));
     }
     if (night) {
       const lamps = [];
       this.grid.forEach((row, y) => row.forEach((c, x) => { if (c === 'l') lamps.push([x, y, 0xffd070]); }));
+      // Réverbère d'une carte du créateur : un poteau de plusieurs cases (sa tête dans le calque « au-dessus de
+      // Pierre ») ; la case 'l' est son pied. Un seul halo par réverbère (cases 'l' empilées : la plus basse), sur sa
+      // tête, plus une flaque de lumière discrète au pied.
+      const built = map.built;
+      const topCell = (x, y) => built?.layers?.dessus?.[y * built.width + x];
+      const filled = (x, y) => y >= 0 && built && [topCell(x, y)].flat().some((r) => r >= 0);
+      const kept = lamps.filter(([x, y]) => !lamps.some(([a, b]) => a === x && b > y && b - y <= 2));
+      // Réverbères repérés d'après le dessin (têtes listées par scripts/find_lamps.py dans src/data/lampTiles.json) :
+      // la tête est la case trouvée, le pied la dernière case dessinée en dessous (au plus 3) ; sauf s'il a déjà sa
+      // case 'l' (même colonne, pied à moins de 3 cases).
+      if (built) {
+        const refs = new Map(Object.entries(LAMP_REFS).flatMap(([s, at]) => {
+          const [sheet, k] = s.split(':');
+          const slot = built.sheets.indexOf(sheet);
+          return slot < 0 ? [] : [[slot * 100000 + Number(k), at]];
+        }));
+        const drawn = (x, y) => y < built.height && ['decor', 'dessus']
+          .some((L) => [built.layers[L]?.[y * built.width + x] ?? -1].flat().some((r) => r >= 0));
+        const heads = [];
+        for (const L of ['dessus', 'decor']) {
+          (built.layers[L] ?? []).forEach((v, i) => {
+            const r = [v].flat().find((t) => refs.has(t));
+            if (r === undefined) return;
+            const x = i % built.width;
+            const y = Math.floor(i / built.width);
+            if (!heads.some(([a, b]) => a === x && Math.abs(b - y) <= 1)) heads.push([x, y, refs.get(r)]);
+          });
+        }
+        for (const [x, y, at] of heads) {
+          let foot = y;
+          while (foot < y + 3 && drawn(x, foot + 1)) foot += 1;
+          if (kept.some(([a, b]) => a === x && b >= y && b - y <= 3)) continue;
+          kept.push([x, foot, 0xffd070, y, at]);
+        }
+      }
       // Halo chaud et doux : trois disques superposés, de plus en plus petits, qui respirent doucement.
-      for (const [x, y, color] of [...lamps, ...(map.night.lights ?? [])]) {
-        const cx = x * TILE_SIZE + 8;
-        const cy = y * TILE_SIZE + 4;
-        const glow = this.add.container(0, 0).setDepth(41);
+      for (const [x, y, color, knownHead, at] of [...kept, ...(map.night.lights ?? [])]) {
+        let head = knownHead ?? y;
+        if (knownHead === undefined && kept.some(([a, b]) => a === x && b === y)) while (head > y - 3 && filled(x, head - 1)) head -= 1;
+        const cx = x * TILE_SIZE + (at ? at[0] : 8);
+        const cy = head * TILE_SIZE + (at ? at[1] : 4);
+        const glow = this.add.container(0, 0);
         for (const [w, a] of [[46, 0.1], [30, 0.14], [16, 0.22]]) glow.add(this.add.ellipse(cx, cy, w, w * 0.8, color, a));
+        if (head < y) glow.add(this.add.ellipse(cx, y * TILE_SIZE + 14, 26, 10, color, 0.12));   // la flaque au pied
+        this.ambience.add(glow);
         this.tweens.add({ targets: glow, alpha: 0.7, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       }
+      // map.night.doorLamps : une petite applique au-dessus de chaque porte ('D'), qui éclaire le seuil.
+      if (map.night.doorLamps) {
+        this.grid.forEach((row, y) => row.forEach((c, x) => { if (c === 'D') this.addDoorLamp(x, y); }));
+      }
     }
-    if (!night && !dawn && on(map.rain)) this.startRain();
+    if (first && !night && !dawn && on(map.rain)) this.startRain();
+  }
+
+  // Applique au-dessus d'une porte, la nuit : le boîtier (sur le mur, au-dessus de la porte), un petit halo chaud
+  // autour, et une flaque de lumière sur le seuil. Lumière additive : elle éclaire le voile de la nuit au lieu de le
+  // teinter.
+  addDoorLamp(x, y) {
+    const cx = x * TILE_SIZE + 8;
+    const top = y * TILE_SIZE - 5;                     // sur le mur, juste au-dessus du chambranle
+    const lamp = this.add.container(0, 0);
+    const add = (o) => lamp.add(o.setBlendMode(Phaser.BlendModes.ADD));
+    add(this.add.ellipse(cx, (y + 1) * TILE_SIZE + 3, 22, 9, 0xffc860, 0.16));         // le seuil éclairé
+    add(this.add.ellipse(cx, (y + 1) * TILE_SIZE + 2, 12, 5, 0xffd890, 0.16));
+    for (const [w, a] of [[18, 0.12], [10, 0.2]]) add(this.add.ellipse(cx, top + 1, w, w * 0.75, 0xffd070, a));
+    lamp.add(this.add.rectangle(cx, top - 1, 4, 1, 0x403020));                              // le boîtier
+    lamp.add(this.add.rectangle(cx, top + 1, 4, 3, 0xfff0b0));
+    this.ambience.add(lamp);
+    this.tweens.add({ targets: lamp, alpha: 0.82, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
 
   // Pluie fine : traits clairs qui tombent en biais sur tout l'écran.
   startRain() {
     const g = this.add.graphics().setDepth(42).setScrollFactor(0);
     const drops = Array.from({ length: 70 }, () => ({ x: Math.random() * 400, y: Math.random() * 260, v: 3 + Math.random() * 2 }));
-    this.events.on('update', () => {
+    // Retiré à l'arrêt de la scène (les écouteurs de `events` survivent d'une carte à l'autre).
+    const fall = () => {
       // Fixé à l'écran : avec le zoom, la zone visible est centrée sur le milieu de la caméra.
       const cam = this.cameras.main;
       const vw = cam.width / cam.zoom;
@@ -875,7 +1145,9 @@ export class MapScene extends Phaser.Scene {
         if (d.y > vh) { d.y = -6; d.x = Math.random() * (vw + 40); }
         g.lineBetween(ox + d.x, oy + d.y, ox + d.x - 2, oy + d.y + 6);
       }
-    });
+    };
+    this.events.on('update', fall);
+    this.events.once('shutdown', () => this.events.off('update', fall));
   }
 
   // Vrai si, un PNJ venu de `from` se tenant en (x, y), le joueur peut encore aller loin : jusqu'à une sortie
@@ -1130,7 +1402,10 @@ export class MapScene extends Phaser.Scene {
       dialog.open(prop.data.dialogue);
       return;
     }
-    const npc = this.npcAt(x, y);
+    // Par-dessus un comptoir ('#'), comme au Centre Pokémon : on parle à la personne de l'autre côté.
+    const across = this.grid[y]?.[x] === '#' && !this.npcAt(x, y)
+      ? this.npcAt(2 * x - this.player.tileX, 2 * y - this.player.tileY) : null;
+    const npc = this.npcAt(x, y) ?? across;
     if (npc?.data.push) {
       this.runScript([{ push: npc.data.id }]);
       return;
@@ -1174,13 +1449,17 @@ export class MapScene extends Phaser.Scene {
     if (target.ask) await this.runAsk(target.ask, target.name);
   }
 
-  // ask : { question, ifFlags?, unlessFlags?, choices: [{ label, reply?, dialogue?, setFlags?, warp?, ifFlags?, ifItems?, ifSouvenirs? }] }
+  // ask : { question, ifFlags?, unlessFlags?, choices: [{ label, reply?, dialogue?, setFlags?, warp?, steps?, ifFlags?, ifItems?, ifSouvenirs? }] }
+  //   `steps` : une scénette (ex. le départ en avion, avec le gardien du départ).
   //   `reply` : réplique du joueur (affichée avec son nom), puis `dialogue` : réponse du personnage.
   // Seules les réponses dont les conditions sont remplies sont proposées.
   async runAsk(ask, speaker) {
     // La question elle-même peut avoir des conditions (ex. unlessFlags : n'être posée qu'une fois).
     if (!meetsConditions(ask)) return;
-    const choices = ask.choices.filter(meetsConditions);
+    // `notWhen` : une réponse cachée quand ces conditions-là sont remplies (ex. une destination déjà proposée ailleurs).
+    const choices = ask.choices.filter((c) => meetsConditions(c) && !(c.notWhen && meetsConditions(c.notWhen)));
+    // Une seule réponse, qui ouvre une autre question (ex. « Autre ») : on passe directement à celle-ci.
+    if (choices.length === 1 && choices[0].ask) return this.runAsk(choices[0].ask, speaker);
     const index = await this.dialog.choose(ask.question, choices.map((c) => c.label), { speaker });
     const choice = choices[index];
     if (!choice) return;
@@ -1191,10 +1470,13 @@ export class MapScene extends Phaser.Scene {
       this.refreshActors();
     }
     if (choice.warp) this.travel(choice.warp);
+    if (choice.steps) await this.runScript(choice.steps);
+    if (choice.ask) await this.runAsk(choice.ask, speaker);            // une sous-question (ex. « Autre »)
   }
 
   // Sauvegarde où se trouve le joueur (appelé à l'arrivée et à chaque pas).
   savePosition() {
+    if (this.map.builder) return;                   // carte du créateur en essai : la vraie partie reste intacte
     const { tileX: x, tileY: y, facing } = this.player;
     savePosition({ ...this.location(), spawn: { x, y, facing } });
   }
@@ -1212,8 +1494,7 @@ export class MapScene extends Phaser.Scene {
       if (meetsConditions(trigger)) await this.runScript(trigger.script);
       return;
     }
-    const ready =
-      (trigger.requiresSouvenirs ?? []).every((id) => souvenirs.has(id)) && meetsConditions(trigger);
+    const ready = meetsConditions(trigger);
     if (!ready) {
       if (trigger.dialogue) await this.dialog.open(trigger.dialogue);
       return;
@@ -1239,10 +1520,21 @@ export class MapScene extends Phaser.Scene {
   // `ferry: true` : on passe d'abord par la traversée en ferry (voir FerryScene).
   // `deck: true` : la traversée commence par la scène sur le pont du ferry (départ de Fort-de-France).
   // `car: true` : on passe d'abord par le trajet en voiture (même écran de voyage, voir FerryScene).
-  travel({ map, interior, ferry, deck, car, ...spawn }) {
+  // `carry` : encart affiché à la fin du trajet (ex. « Tu emportes : … », voir FerryScene).
+  // `plane: true` : en avion (même écran de voyage).
+  travel({ map, interior, ferry, deck, car, plane, carry, ...spawn }) {
     if (interior) this.goTo('Interior', { interior, fromMap: this.fromMap ?? this.map.id, spawn });
-    else if (ferry || car) this.goTo('Ferry', { deck, road: car, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
+    else if (ferry || car || plane) {
+      this.goTo('Ferry', { deck, road: car, plane, carry, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
+    }
     else this.goTo('Overworld', { mapId: map, spawn });
+  }
+
+  // Une musique par ville, la même dans ses intérieurs (voir data/music.js) ; `music` la remplace pour un lieu.
+  playPlaceMusic() {
+    const { map } = this;
+    const music = map.music && meetsConditions(map.music) ? map.music : null;
+    playMusic(music?.song ?? CITY_MUSIC[this.fromMap ?? map.id] ?? 'island', music?.volume);
   }
 
   goTo(sceneKey, data) {
@@ -1256,14 +1548,131 @@ export class MapScene extends Phaser.Scene {
   onTileEntered() {}
 
   update() {
+    this.updateDarkness();
     this.updateCovers();
     this.updateHint();
+    if (this.patrols) {
+      const busy = this.scripting || this.transitioning || this.dialog?.isOpen || this.menuOpen;
+      const guard = this.patrols.update(busy);
+      if (guard) this.caughtBy(guard);
+    }
     // Pendant un dialogue le joueur ne bouge pas, et on oublie les flèches appuyées.
     if (this.dialog?.isOpen || this.menuOpen) {
       this.player.queued = null;
       return;
     }
     this.player.update();
+  }
+
+  // Partie de fléchettes : trois lancers de Pierre, puis le score de l'adversaire (au hasard) et sa réaction.
+  async dartsGame({ opponent, win, lose }) {
+    const throws = await playDarts(this.scene.get('UI'));
+    const total = throws.reduce((n, t) => n + t.points, 0);
+    const theirs = 10 + Math.floor(Math.random() * 90);
+    await this.dialog.open([`Tes lancers : ${throws.map((t) => t.label.replace(/[.!…]+$/, '')).join(', ')}. Total : ${total} points.`]);
+    await this.dialog.open([`${theirs} points pour moi.`, ...(total > theirs ? win : lose)], { speaker: opponent });
+    return total > theirs;
+  }
+
+  // Pièce dans le noir, façon grotte sans Flash : tout est noir sauf un halo autour de Pierre. map.dark : { radius?,
+  // ifFlags?, unlessFlags? } ; dès que ses conditions ne sont plus remplies (ex. le courant revient), le noir se dissipe.
+  createDarkness(spec) {
+    const W = SCREEN_W * 3;
+    const H = SCREEN_H * 3;
+    const key = `darkness-${spec.radius ?? 36}`;
+    if (!this.textures.exists(key)) {
+      const tex = this.textures.createCanvas(key, W, H);
+      const ctx = tex.getContext();
+      ctx.fillStyle = 'rgba(4, 4, 10, 0.94)';
+      ctx.fillRect(0, 0, W, H);
+      const r = spec.radius ?? 36;
+      const hole = ctx.createRadialGradient(W / 2, H / 2, r * 0.45, W / 2, H / 2, r);
+      hole.addColorStop(0, 'rgba(0, 0, 0, 1)');
+      hole.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = hole;
+      ctx.fillRect(0, 0, W, H);
+      tex.refresh();
+    }
+    const image = this.add.image(0, 0, key).setDepth(40);
+    image.setVisible(meetsConditions(spec));
+    return { spec, image, on: image.visible };
+  }
+
+  updateDarkness() {
+    const dark = this.darkness;
+    if (!dark) return;
+    dark.image.setPosition(this.player.sprite.x, this.player.sprite.y);
+    const on = meetsConditions(dark.spec);
+    if (on === dark.on) return;
+    dark.on = on;
+    if (on) dark.image.setVisible(true).setAlpha(1);
+    else this.tweens.add({ targets: dark.image, alpha: 0, duration: 600, onComplete: () => dark.image.setVisible(false) });
+  }
+
+  // PNJ qui dansent en continu (`dancing: true`, ex. la soirée de Bordeaux) : petits sauts, et ils changent de côté
+  // de temps en temps ; chacun à son rythme.
+  startDancing(sprite, data) {
+    const seed = [...data.id].reduce((n, c) => n + c.charCodeAt(0), 0);
+    const hop = this.tweens.add({
+      targets: sprite.image, y: sprite.image.y - 2, duration: 160 + (seed % 5) * 20, yoyo: true, repeat: -1,
+      delay: (seed * 37) % 400, ease: 'Sine.easeOut',
+    });
+    const dirs = ['down', 'left', 'down', 'right'];
+    const turn = this.time.addEvent({
+      delay: 700 + (seed % 7) * 90, loop: true,
+      callback: () => { if (!this.scripting) sprite.setFacing(dirs[Math.floor(Math.random() * dirs.length)]); },
+    });
+    // Le PNJ retiré (fin de la soirée sans quitter la pièce) : sa danse s'arrête avec lui.
+    sprite.once('destroy', () => { hop.stop(); turn.remove(); });
+  }
+
+  // Tout le monde se tourne vers le PNJ `id` (ex. le prof qui interpelle la classe) : vers le haut ou le bas s'il est
+  // devant ou derrière (comme une classe face au tableau), sur le côté seulement s'il est sur la même rangée.
+  allFace(id) {
+    const target = this.npcById(id);
+    if (!target) return;
+    const to = target.data;
+    const turn = (sprite, from) => {
+      if (from.y !== to.y) sprite.setFacing(to.y < from.y ? 'up' : 'down');
+      else if (from.x !== to.x) sprite.setFacing(to.x < from.x ? 'left' : 'right');
+    };
+    for (const npc of this.npcs) {
+      if (npc === target) continue;
+      turn(npc.sprite, npc.data);
+      npc.data.facing = npc.sprite.facing;
+    }
+    for (const m of this.followers.members) turn(m.sprite, m);
+    const p = this.player;
+    turn(p.sprite, { x: p.tileX, y: p.tileY });
+    p.facing = p.sprite.facing;
+  }
+
+  // Pris dans le cône d'une ronde : le militaire l'interpelle, fondu, et Pierre se retrouve au point de départ
+  // (`caught.back`), sans autre pénalité.
+  async caughtBy(guard) {
+    if (this.scripting || this.transitioning) return;
+    const { speaker, say, back } = this.patrols.spec.caught;
+    this.scripting = true;
+    this.player.frozen = true;
+    this.player.queued = null;
+    try {
+      await this.emote([guard.x, guard.y], 'surprise');
+      await this.dialog.open(say, { speaker });
+      await this.setCurtain(true);
+      const sprite = this.player.sprite;
+      this.player.tileX = back.x;
+      this.player.tileY = back.y;
+      this.player.facing = back.facing;
+      sprite.setPosition(...tileCenter(back.x, back.y));
+      sprite.setFacing(back.facing);
+      sprite.updateDepth(0.001);
+      this.savePosition();
+      await this.setCurtain(false);
+    } finally {
+      this.scripting = false;
+      if (!this.transitioning) this.player.frozen = false;
+    }
   }
 
   // Bulle « ! » au-dessus du personnage ou de l'objet que le joueur regarde (s'il peut lui parler).
@@ -1308,5 +1717,22 @@ export class MapScene extends Phaser.Scene {
     const { x, y } = player.tile();
     if (this.canopy.has(`${x},${y}`)) player.image.setTint(0x8890a8);
     else player.image.clearTint();
+    this.updateSilhouette(player, x, y);
+  }
+
+  // Carte du créateur : quand un toit ou une cime (calque « au-dessus de Pierre ») cache le joueur, sa silhouette
+  // reste visible en transparence par-dessus, pour ne jamais le perdre de vue dans une rue étroite.
+  updateSilhouette(player, x, y) {
+    const key = this.map.topLayer;
+    if (!key) return;
+    const hidden = !player.inBed && player.visible && player.image.alpha > 0.5 && hiddenUnderTop(this, key, x, y);
+    if (!hidden) {
+      this.silhouette?.setVisible(false);
+      return;
+    }
+    const img = player.image;
+    this.silhouette ??= this.add.image(0, 0, img.texture.key).setAlpha(0.5).setDepth(TOP_DEPTH + 0.5);   // juste au-dessus des toits
+    this.silhouette.setTexture(img.texture.key, img.frame.name).setOrigin(img.originX, img.originY)
+      .setFlipX(img.flipX).setPosition(player.x + img.x, player.y + img.y).setVisible(true);
   }
 }

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { TILE_SIZE } from '../data/tiles.js';
 import { characterTexture, lookFromColor } from '../art/characterArt.js';
-import { sheetOf } from '../art/spriteSheets.js';
+import { sheetOf, BIKE_SHEET, BIKE_PREFIX } from '../art/spriteSheets.js';
 import { BED_LOWER } from '../art/frlgArt.js';
 
 export const DIRECTIONS = {
@@ -18,18 +18,17 @@ export function tileCenter(x, y) {
 }
 
 // Personnage animé (joueur ou PNJ) posé sur sa case, la tête dépasse au-dessus.
-// `appearance` : `{ sprite: 't4' | 'f0' … }` (planches fournies, voir art/spriteSheets.js), une apparence
+// `appearance` : `{ sprite: 'g198' … }` (planches fournies, voir art/spriteSheets.js), une apparence
 // dessinée (voir art/characterArt.js, ex. le chat) ou une simple couleur de haut.
 // `bed` : { px, py, child? } : couché dans le lit dont l'image commence en (px, py) (voir frlgArt.bedAt).
 export class CharacterSprite extends Phaser.GameObjects.Container {
   constructor(scene, x, y, appearance, facing = 'down', { hat = false, bed = null } = {}) {
     super(scene, ...tileCenter(x, y));
     if (appearance?.sprite) {
-      // TownsPeople2 : pieds sur l'avant-dernière ligne de l'image ; Rouge Feu : sur la dernière.
+      // Pieds sur la dernière ligne de l'image.
       const sheet = sheetOf(appearance.sprite);
-      const foot = sheet.key === 'townsfolk' ? 1 : 0;
       this.prefix = `${appearance.sprite}-`;
-      this.image = scene.add.image(0, TILE_SIZE / 2 + foot, sheet.key, `${this.prefix}${facing}-0`).setOrigin(0.5, 1);
+      this.image = scene.add.image(0, TILE_SIZE / 2, sheet.key, `${this.prefix}${facing}-0`).setOrigin(0.5, 1);
     } else {
       const look = typeof appearance === 'number' ? lookFromColor(appearance, { hat }) : appearance;
       this.prefix = '';
@@ -45,11 +44,16 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
 
   // Couché sur le dos, la tête sur l'oreiller : le bas du lit est redessiné par-dessus le corps, avec la
   // bosse du corps sous la couverture (plus courte pour un enfant).
-  lieInBed({ px, py, child = false }) {
+  lieInBed({ px, py, child = false, gen4 = false }) {
     this.setFacing('down');
     this.inBed = true;
     this.setPosition(px + 12, py);
     this.image.setOrigin(0.5, 0).setPosition(0, -4);
+    // Lit Gen 4 : la couverture est dans le dessin ; on ne garde que la tête et les épaules, sur l'oreiller.
+    if (gen4) {
+      this.image.setCrop(0, 0, this.image.width, child ? 18 : 21);   // jusqu'au menton (le visage, pas que les cheveux)
+      return;
+    }
     const textures = this.scene.textures;
     const frame = 'bed-lower';
     if (!textures.get(BED_LOWER.sheet).has(frame)) {
@@ -69,8 +73,33 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     this.image.setFrame(`${this.prefix}${dir}-0`);
   }
 
-  // Un pas animé de `duration` ms : pied gauche puis pied droit en alternance, retour debout à la fin.
+  // À vélo (le joueur, voir systems/bike.js) : l'image passe à la planche du vélo, et revient à la marche.
+  setBike(on) {
+    if (on === Boolean(this.onBike)) return;
+    if (on) {
+      this.walkLook = { key: this.image.texture.key, prefix: this.prefix };
+      this.prefix = BIKE_PREFIX;
+      this.image.setTexture(BIKE_SHEET);
+      this.pedal = 0;
+    } else {
+      this.prefix = this.walkLook.prefix;
+      this.image.setTexture(this.walkLook.key);
+    }
+    this.onBike = on;
+    this.walkTimer?.remove();
+    this.image.setFrame(`${this.prefix}${this.facing}-0`);
+  }
+
+  // Un pas animé de `duration` ms : pied gauche puis pied droit en alternance, retour debout à la fin. À vélo : les
+  // trois temps de pédalage à la suite, la roue qui tourne tant qu'on roule.
   walkStep(duration) {
+    if (this.onBike) {
+      this.pedal = (this.pedal % 3) + 1;
+      this.image.setFrame(`${this.prefix}${this.facing}-${this.pedal}`);
+      this.walkTimer?.remove();
+      this.walkTimer = this.scene.time.delayedCall(duration * 1.6, () => this.image.setFrame(`${this.prefix}${this.facing}-0`));
+      return;
+    }
     this.foot = 1 - this.foot;
     this.image.setFrame(`${this.prefix}${this.facing}-${1 + this.foot}`);
     this.walkTimer?.remove();

@@ -2,6 +2,7 @@ import { souvenirs } from './souvenirs.js';
 import { flags } from './flags.js';
 import { items } from './items.js';
 import { memo } from './memo.js';
+import { TRAIT_MIGRATION } from '../data/story.js';
 
 // Position du joueur sauvegardée à chaque pas : { scene, data, spawn: { x, y, facing } }.
 // `scene` + `data` suffisent à relancer la bonne scène ; les souvenirs et drapeaux
@@ -40,4 +41,15 @@ export function eraseSave() {
   flags.reset();
   items.reset();
   memo.reset();
+}
+
+// Anciennes sauvegardes (avant le passage à 8 vertus, voir data/story.js TRAIT_MIGRATION) : vertus renommées
+// converties, vertus retirées supprimées (leur scène reste marquée faite par un drapeau). Sans effet sur une
+// sauvegarde récente : on peut l'appeler à chaque démarrage.
+export function migrateSave() {
+  for (const [id, trait] of Object.entries(TRAIT_MIGRATION.renamed)) souvenirs.replace(id, trait);
+  for (const [id, flag] of Object.entries(TRAIT_MIGRATION.removed)) {
+    if (souvenirs.has(id) && flag) flags.add(flag);
+    souvenirs.replace(id, null);
+  }
 }

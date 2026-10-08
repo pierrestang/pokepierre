@@ -43,6 +43,7 @@ ICONS = {
     'orbe-bleue': (388, 386, 14, 14),
     'orbe-verte': (404, 386, 14, 14),
     'orbe-turquoise': (365, 305, 18, 19),
+    'velo': (108, 375, 23, 21),             # Bicyclette (objet rare)
 }
 
 
@@ -58,12 +59,14 @@ POSTCARDS = {
     'hanoi': (1, 4, 0),             # antre du Dragon : le pavillon sur l'eau, comme la tour de la Tortue
     'paris': (0, 6, 2),             # parc National, la nuit : les réverbères
     'corse': (1, 1, 1),             # îles Tourbillon, l'après-midi : côte rocheuse
+    'hull': (1, 1, 2),              # îles Tourbillon, la nuit : l'estuaire de la Humber sous la pluie
     'sriLanka': (1, 6, 0),          # chutes Tohjo : cascade dans la jungle
     'thailand': (1, 0, 1),          # tour Ferraille : temple de bois
     'nepal': (1, 3, 0),             # route de Glace : la montagne
     'montepilloy': (0, 5, 1),       # bois aux Chênes, l'après-midi : la campagne au soleil couchant
     'montepilloySeptembre': (0, 5, 0),   # bois aux Chênes, le matin : septembre, le premier jour de collège
     'routeBonsecours': (0, 6, 0),   # parc National, le matin : l'allée et la cour du collège
+    'prytanee': (0, 1, 0),          # tour Chétiflor, le matin : grand hall de bois, solennel (lycée militaire)
 }
 POSTCARD_X = ([69, 328, 587], [907, 1166, 1425])
 POSTCARD_W, POSTCARD_H = 256, 160

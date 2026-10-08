@@ -3,19 +3,25 @@ import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { FRLG_SHEETS, familyCarImage, roadStripTexture, ROAD_TOP } from '../art/frlgArt.js';
 import { sheetOf } from '../art/spriteSheets.js';
 import { lookOf } from '../data/characters.js';
+import { carryText } from '../data/story.js';
+import { sfx } from '../systems/audio.js';
 
 // Traversée en ferry, comme l'écran de voyage des îles Sevii dans Rouge Feu : entre deux bandes noires,
 // la mer défile vers la gauche et le ferry file vers la droite dans son sillage, en tanguant.
 // Au bout de quelques secondes, fondu au noir puis arrivée (`next` : { sceneKey, data }).
 // `deck: true` : la traversée commence sur le pont du ferry (départ de Fort-de-France) : la famille,
 // accoudée au bastingage, regarde la mer vers l'île qu'elle quitte ; le capitaine (l'ancien pêcheur) vient
-// raconter ses poissons, sans fin.
+// raconter ses poissons, sans fin. À la fin de la traversée, juste avant le fondu vers Saint-Ay, l'encart des vertus
+// emportées de l'île (`carry`).
+// `plane: true` : en avion, vu de haut au-dessus des nuages qui défilent (vers Hull).
 // `road: true` : même écran de voyage, mais en voiture : la campagne défile vers la gauche, la voiture de la
 // famille roule vers la droite sur la route de terre, en vibrant, avec des bouffées de fumée.
 const DURATION = 3600;
 const FADE_MS = 400;
 const BAND = 36;            // hauteur des bandes noires (en pixels de l'écran de jeu)
 const SPEED = 3;            // défilement de la mer, en pixels par image
+// Les trois nuages de public/assets/travel/nuages.png (x, y, largeur, hauteur ; voir scripts/build_travel_art.py).
+const CLOUD_FRAMES = [[0, 0, 72, 30], [72, 6, 52, 24], [124, 12, 36, 18]];
 
 // Pont du ferry
 const SKY_H = 26;           // ciel au-dessus de l'horizon
@@ -34,7 +40,15 @@ export class FerryScene extends Phaser.Scene {
     super('Ferry');
   }
 
-  create({ next, deck, road }) {
+  // Images du trajet en avion (scripts/build_travel_art.py).
+  preload() {
+    const base = `${import.meta.env.BASE_URL}assets/travel/`;
+    if (!this.textures.exists('travel-avion')) this.load.image('travel-avion', `${base}avion.png`);
+    if (!this.textures.exists('travel-nuages')) this.load.image('travel-nuages', `${base}nuages.png`);
+    if (!this.textures.exists('travel-ocean')) this.load.image('travel-ocean', `${base}ocean.png`);
+  }
+
+  create({ next, deck, road, plane, carry }) {
     this.next = next;
     this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir de la scénette de départ
     const cam = this.cameras.main;
@@ -52,6 +66,7 @@ export class FerryScene extends Phaser.Scene {
     if (deck) return this.playDeck();
 
     if (road) this.playRoad();
+    else if (plane) this.playPlane();
     else {
       this.sea = this.add.tileSprite(0, BAND, SCREEN_W, SCREEN_H - 2 * BAND, FRLG_SHEETS.travelSea).setOrigin(0);
       this.seaSpeed = { x: SPEED, y: 0 };
@@ -60,10 +75,47 @@ export class FerryScene extends Phaser.Scene {
     }
 
     cam.fadeIn(FADE_MS);
-    this.time.delayedCall(DURATION, () => {
+    this.time.delayedCall(DURATION, async () => {
+      if (carry) await this.scene.get('UI').dialog.open([carry]);
       cam.fadeOut(FADE_MS);
       cam.once('camerafadeoutcomplete', () => this.scene.start(next.sceneKey, next.data));
     });
+  }
+
+  // Trajet en avion, comme celui du ferry : entre les deux bandes noires, l'océan et ses îles défilent loin dessous, des
+  // nuages passent sous l'avion puis par-dessus (plus vite, plus près), l'avion de ligne (vu de trois quarts, comme le
+  // ferry) file vers la droite en tanguant, deux traînées de condensation derrière lui. Images :
+  // scripts/build_travel_art.py (public/assets/travel/).
+  playPlane() {
+    const h = SCREEN_H - 2 * BAND;
+    this.sea = this.add.tileSprite(0, BAND, SCREEN_W, h, 'travel-ocean').setOrigin(0);
+    this.seaSpeed = { x: 1.2, y: 0 };
+    const clouds = this.textures.get('travel-nuages');
+    if (!clouds.has('c0')) CLOUD_FRAMES.forEach(([x, y, w, ch], i) => clouds.add(`c${i}`, 0, x, y, w, ch));
+    // Deux couches de nuages : sous l'avion (lents, un peu transparents), au-dessus (rapides, plus gros).
+    this.cloudLayers = [
+      { depth: 1, speed: 2.2, alpha: 0.9, scale: 1, count: 4 },
+      { depth: 4, speed: 4.5, alpha: 0.96, scale: 1.4, count: 2 },
+    ].map((layer) => ({
+      ...layer,
+      sprites: Array.from({ length: layer.count }, (_, i) => this.add.image(
+        (i + 0.5) * (SCREEN_W / layer.count) + Phaser.Math.Between(-30, 30),
+        Phaser.Math.Between(BAND + 10, SCREEN_H - BAND - 10),
+        'travel-nuages', `c${Phaser.Math.Between(0, CLOUD_FRAMES.length - 1)}`,
+      ).setDepth(layer.depth).setAlpha(layer.alpha).setScale(layer.scale)),
+    }));
+    const plane = this.add.image(SCREEN_W / 2 + 24, SCREEN_H / 2, 'travel-avion').setDepth(3);
+    this.tweens.add({ targets: plane, y: plane.y + 3, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    this.tweens.add({ targets: plane, angle: { from: -1.5, to: 1.5 }, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    // Traînées : des bouffées blanches qui partent du réacteur et de la queue, filent vers l'arrière et s'effacent.
+    const trail = (dx, dy) => {
+      const puff = this.add.rectangle(plane.x + dx, plane.y + dy, 4, 3, 0xf8fbff).setDepth(2).setAlpha(0.9);
+      this.tweens.add({
+        targets: puff, x: puff.x - 90, scaleX: 3, scaleY: 1.6, alpha: 0, duration: 900, onComplete: () => puff.destroy(),
+      });
+    };
+    this.time.addEvent({ delay: 40, loop: true, callback: () => { trail(-8, 16); trail(-52, -2); } });
+    sfx('jet');
   }
 
   // Trajet en voiture : la campagne défile, la voiture roule au milieu de la route.
@@ -133,12 +185,11 @@ export class FerryScene extends Phaser.Scene {
     await say(['Et mon plus gros ? Un marlin bleu, long comme ce ferry ! Bon… presque. Mais il tirait comme un bœuf !'], CAPTAIN);
     await say(['Le capitaine continue… et continue encore. La traversée va être longue.']);
     face('pierre', 'up');
-    await wait(400);
-    await say(['Tu emportes : Joie de vivre, Pragmatisme et Confiance.']);
 
     await wait(1500);
     cam.fadeOut(800);
-    cam.once('camerafadeoutcomplete', () => this.scene.restart({ next: this.next }));
+    const carry = carryText('fortDeFrance');
+    cam.once('camerafadeoutcomplete', () => this.scene.restart({ next: this.next, carry }));
   }
 
   // Pont du ferry : bastingage blanc et plancher, au premier plan.
@@ -162,5 +213,16 @@ export class FerryScene extends Phaser.Scene {
     if (!this.sea) return;
     this.sea.tilePositionX += this.seaSpeed.x;
     this.sea.tilePositionY += this.seaSpeed.y;
+    // Nuages du trajet en avion : ils filent vers la gauche et reviennent par la droite, à une autre hauteur.
+    for (const layer of this.cloudLayers ?? []) {
+      for (const c of layer.sprites) {
+        c.x -= layer.speed;
+        if (c.x < -c.displayWidth / 2) {
+          c.x = SCREEN_W + c.displayWidth / 2 + Phaser.Math.Between(0, 60);
+          c.y = Phaser.Math.Between(BAND + 10, SCREEN_H - BAND - 10);
+          c.setFrame(`c${Phaser.Math.Between(0, CLOUD_FRAMES.length - 1)}`);
+        }
+      }
+    }
   }
 }

@@ -1,13 +1,13 @@
-import { FLAGS, ITEMS, TRAITS } from './story.js';
+import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 import { MONTEPILLOY_SPOTS } from './montepilloyStory.js';
 
-// Scénario de Saint-Ay (voir le document « Scénarios Poké-Pierre — Fort-de-France & Saint-Ay ») : Pierre gagne
-// Patience à la naissance de Fanny, puis Esprit d'équipe en construisant une cabane avec ses cousins (planches et
-// corde dans n'importe quel ordre), et part en voiture pour Montépilloy après une nouvelle mutation de Papa.
+// Scénario de Saint-Ay (voir le document « Scénarios Poké-Pierre — Fort-de-France & Saint-Ay ») : la naissance de
+// Fanny, puis Esprit d'équipe en construisant une cabane avec ses cousins (planches et corde dans n'importe quel ordre), et part en voiture pour Montépilloy après une nouvelle mutation de Papa.
 // Pas de PNJ qui suit Pierre : ils disent où les rejoindre, partent à l'écran, et l'attendent sur place.
 // Scénettes partagées par la carte du village et les intérieurs (étapes : voir MapScene.runSteps).
 
-const HAS_TRAITS = { ifSouvenirs: [TRAITS.patience.id, TRAITS.espritEquipe.id] };
+// La cabane inaugurée (Esprit d'équipe) : vient forcément après la naissance de Fanny.
+const CABANE_DONE = { ifSouvenirs: [TRAITS.espritEquipe.id] };
 // La cabane des cousins : posée sur deux blocs de sapins de la forêt au sud du lac (cases 2 à 5, rangées 18
 // et 19). Pied de l'échelle : la case où l'on monte, devant le sapin de droite (praticable une fois la cabane
 // construite, voir les portes `when`) ; la plateforme bloque les 4 x 3 cases au-dessus (de x - 1 à x + 2).
@@ -16,8 +16,9 @@ export const CABANE_SPOT = { x: 4, y: 19 };
 const LAKE_SPOT = { x: 10, y: 14 };
 
 // Arrivée : image d'accueil de Saint-Ay, le ferry a accosté au ponton du lac. Papa et Manon retrouvent Pierre,
-// lui disent de les rejoindre à la clinique et partent devant, l'un derrière l'autre (ils y sont à son arrivée).
-const CLINIC_DOOR = [19, 21];                                  // case devant la porte de la clinique
+// lui disent de les rejoindre à la clinique ; Manon revient se placer à côté de Papa, puis ils partent devant
+// ensemble, l'un derrière l'autre (ils y sont à son arrivée).
+const CLINIC_DOOR = [17, 15];                                  // case devant la porte de la clinique (grande maison bleue)
 export const ARRIVAL = [
   { opening: { postcard: 'saintAy', text: 'Saint-Ay, Loiret. Quelque temps plus tard…' } },
   { approach: 'papa' },
@@ -25,17 +26,18 @@ export const ARRIVAL = [
     speaker: 'Papa',
     say: [
       'Te voilà enfin ! On te cherche partout.',
-      'Maman est à la clinique : le bébé est arrivé ! Rejoins-nous là-bas, c\'est le bâtiment au toit d\'ardoise, en bas du village.',
+      'Maman est à la clinique : le bébé est arrivé ! Rejoins-nous là-bas, c\'est la grande maison au toit bleu, en bas du village.',
     ],
   },
   { approach: 'manon' },
   { speaker: 'Manon', say: ['Vite, dépêche-toi !'] },
+  { join: 'manon', to: 'papa' },
   { setFlag: FLAGS.saArrivee },
   { walkLine: ['papa', 'manon'], to: CLINIC_DOOR, then: [FLAGS.familleSuit] },
 ];
 
 // La clinique : Maman vient d'accoucher de Fanny. Pierre s'approche du berceau ; à lui de tendre la main
-// (FANNY_CRADLE, Patience).
+// (FANNY_CRADLE).
 export const BIRTH = [
   { setFlag: FLAGS.familleArrivee },
   { speaker: 'Papa', say: ['Te voilà ! Maman est là-bas.'] },
@@ -43,25 +45,25 @@ export const BIRTH = [
   { speaker: 'Maman', say: ['Te voilà ! Viens voir… Je te présente Fanny.'] },
   { speaker: 'Manon', say: ['Elle est toute petite… Elle me ressemble, non ?'] },
   { speaker: 'Papa', say: ['Elle ne pleure même pas. Elle a déjà tout compris.'] },
-  { goTo: [3, 4], facing: 'up' },                                   // devant le berceau de Fanny
+  { goTo: [7, 5], facing: 'up' },                                   // devant le berceau de Fanny
   { speaker: 'Maman', say: ['Approche-toi. Tends-lui la main, doucement.'] },
 ];
 
-// Le berceau de Fanny — Patience : Pierre tend un doigt (A), elle l'attrape et ne le lâche pas tout de suite.
+// Le berceau de Fanny : Pierre tend un doigt (A), elle l'attrape et ne le lâche pas tout de suite.
 export const FANNY_CRADLE = [
-  { ifSouvenirs: [TRAITS.patience.id], say: ['Fanny dort, son petit poing serré.'], end: true },
+  { ifFlags: [FLAGS.fannyMain], say: ['Fanny dort, son petit poing serré.'], end: true },
   { say: ['Tu tends un doigt vers Fanny…'] },
   { emote: 'player', kind: 'surprise' },
   { say: ['Elle l\'attrape ! Et elle serre fort. Tu attends… elle ne le lâche pas tout de suite.'] },
   { speaker: 'Maman', say: ['Elle a de la poigne, celle-là.', 'À partir d\'aujourd\'hui, tu vas veiller sur elle.'] },
-  { trait: TRAITS.patience },
+  { setFlag: FLAGS.fannyMain },
 ];
 
 // En sortant de la clinique : la famille rentre à la maison ; Felix vient chercher Pierre et part devant.
 export const CLINIC_EXIT = [
   { setFlag: FLAGS.familleRentree },
   { talk: 'felix' },
-  { walk: 'felix', to: [18, 13], then: [FLAGS.felixInvite] },
+  { walk: 'felix', to: [25, 15], then: [FLAGS.felixInvite] },                // chez lui, la petite maison au toit bleu
 ];
 
 // Chez Felix : le plan de la cabane. Joshua et Yanis partent chercher planches et corde ; Felix dirige et rappelle ce
@@ -91,19 +93,24 @@ export const FELIX_CHANTIER = [
   { take: ITEMS.corde.id },
   { wait: 600 },
   { setFlag: FLAGS.cabaneFinie },
-  // Pierre arrive assis à sa place, derrière le banc (la scène le fait ressortir) : `cutscene` pour
+  // Pierre arrive à sa place, au bout de la table basse du QG (la scène le fait ressortir) : `cutscene` pour
   // scripts/check_paths.js.
-  { travel: { interior: 'cabane', x: 2, y: 2, facing: 'down', cutscene: true } },
+  { travel: { interior: 'cabane', x: 4, y: 5, facing: 'right', cutscene: true } },
 ];
 
 // Dans la cabane toute neuve (voir interiors.cabane) : les quatre cousins assis derrière les deux longues
-// tables. Chacun parle en sautillant, puis toute la bande saute de joie. Pierre se retrouve debout devant
-// les tables, toujours dans la cabane.
+// tables. Ils s'ennuient déjà : Pierre (Joie de vivre) lance une chanson et toute la bande saute de joie ; puis
+// chacun parle en sautillant. Pierre se retrouve debout devant les tables, toujours dans la cabane.
 export const CABANE_FETE = [
   { black: true },
   { wait: 500 },
   { black: false },
   { say: ['La cabane est finie. Les quatre cousins s\'installent au QG.'] },
+  { speaker: 'Joshua', say: ['Bon… et maintenant, on fait quoi ?'] },
+  { speaker: 'Yanis', say: ['On s\'ennuie déjà.'] },
+  { useTrait: TRAITS.joie },
+  { say: ['Tu lances une chanson, et tout le monde se met à sauter dans la cabane !'] },
+  { cheer: ['felix-cabane', 'player', 'joshua-cabane', 'yanis-cabane'] },
   { hop: 'felix-cabane' },
   { speaker: 'Felix', say: ['Voilà. Notre QG.'] },
   { hop: 'joshua-cabane' },
@@ -118,7 +125,6 @@ export const CABANE_FETE = [
   { speaker: 'Joshua', say: ['{motDePasse|QG}. Retenu.'] },
   { speaker: 'Felix', say: ['Où que tu ailles après, cette cabane restera la nôtre. On est une équipe.'] },
   { face: { 'felix-cabane': 'down', player: 'down' } },
-  { cheer: ['felix-cabane', 'player', 'joshua-cabane', 'yanis-cabane'] },
   { trait: TRAITS.espritEquipe },
   // Ellipse : quelques années plus tard, Pierre au bord du lac ; Manon vient le chercher (voir MANON_NEWS).
   { black: true },
@@ -142,6 +148,7 @@ export const PLANKS = [
   { unlessFlags: [FLAGS.planCabane], say: ['Un tas de planches. De quoi construire quelque chose…'], end: true },
   { give: ITEMS.planches, text: 'Tu récupères des planches.' },
   { speaker: 'Joshua', say: ['Tu as survécu aux poules ? Respect.'] },
+  { ifItems: [ITEMS.corde.id], speaker: 'Joshua', say: ['On a tout ! On ramène ça chez Felix.'] },
 ];
 export const ROPE = [
   { give: ITEMS.corde, text: 'Tu trouves une vieille corde, cachée dans les hautes herbes.' },
@@ -153,16 +160,21 @@ export const henPush = (flag) => ({ exit: [ENCLOS_EXIT], flag, escaped: ['La pou
 
 // Les cousins à la cabane : avant l'annonce, puis l'adieu, puis après.
 export const FELIX_AT_CABANE = [
+  // Après le départ (en revenant de Montépilloy) : comme avant l'annonce.
+  { ifFlags: [FLAGS.arriveeMontepilloy], speaker: 'Felix', say: ['Notre QG ! Reviens quand tu veux.'], end: true },
   { ifFlags: [FLAGS.adieuCousins], speaker: 'Felix', say: ['La cabane t\'attendra. Allez, file, ta famille t\'attend à la voiture, devant ta maison.'], end: true },
   { unlessFlags: [FLAGS.annonceMutation], speaker: 'Felix', say: ['Notre QG ! Reviens quand tu veux.'], end: true },
   { speaker: 'Felix', say: ['Alors c\'est vrai, tu pars ?'] },
   { speaker: 'Joshua', say: ['Montépilloy, c\'est pas le bout du monde.'] },
   { speaker: 'Yanis', say: ['C\'est où, Montépilloy ?'] },
   { speaker: 'Felix', say: ['La cabane t\'attendra. Et le mot de passe ne change pas : « {motDePasse|QG} ».'] },
+  { speaker: 'Joshua', say: ['Tu nous écriras ? Une vraie lettre, avec un timbre et tout.'] },
+  { speaker: 'Yanis', say: ['Et s\'il y a des poules là-bas, tu nous préviens. Maintenant, on sait faire.'] },
   { setFlag: FLAGS.adieuCousins },
+  { speaker: 'Felix', say: ['Allez, file, ta famille t\'attend à la voiture, devant ta maison.'] },
 ];
 
-// L'annonce, en rentrant à la maison au toit de chaume avec les deux traits.
+// L'annonce, en rentrant à la maison (toit rouge, en haut de la rue) avec les deux traits.
 // Quelques années ont passé (voir CABANE_FETE) : Fanny court partout et coupe Papa une fois.
 export const ANNOUNCEMENT = [
   { say: ['Papa est assis à la table, une lettre à la main. Fanny a bien grandi : elle court partout dans le salon.'] },
@@ -176,40 +188,74 @@ export const ANNOUNCEMENT = [
   { speaker: 'Fanny', say: ['Je pourrai emmener mes poupées ?'] },
   { speaker: 'Maman', say: ['On y arrivera, comme à chaque fois. Tous ensemble.'] },
   { speaker: 'Papa', say: ['Et cette fois, pas de ferry. On prend la voiture.'] },
+  { speaker: 'Papa', say: ['Pierre, va annoncer la nouvelle à tes cousins. Ils sont à la cabane.'] },
   { setFlag: FLAGS.annonceMutation },
 ];
-export const ANNOUNCEMENT_EVENT = { ...HAS_TRAITS, unlessFlags: [FLAGS.annonceMutation] };
+export const ANNOUNCEMENT_EVENT = { ...CABANE_DONE, unlessFlags: [FLAGS.annonceMutation] };
 
-// Le départ : la voiture chargée devant la maison.
+// Le départ : la voiture chargée devant la maison (tournée vers la gauche : le capot donne sur la case CAR_HOOD).
+export const CAR_HOOD = [18, 7];
 export const CAR = [
   {
     unlessFlags: [FLAGS.adieuCousins],
     say: ['La voiture est chargée. Va d\'abord dire au revoir à tes cousins, à la cabane.'],
     end: true,
   },
-  { say: ['La voiture est chargée. Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
+  { say: ['La voiture est chargée.'] },
+  // Felix descend de la cabane, accourt et se plante devant le capot.
+  { setFlag: FLAGS.felixVoiture },
+  { walk: 'felix-voiture', to: CAR_HOOD, block: true },
+  { faceTo: 'felix-voiture' },
+  { speaker: 'Felix', say: ['Le mot de passe, tu le gardes, hein ?'] },
+  { walk: 'felix-voiture', to: [17, 8], block: true },          // il s'écarte pour laisser passer la voiture
+  { face: { 'felix-voiture': 'up' } },
+  { say: ['Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
   { drive: 'familyCar' },
   { black: true },
   { wait: 400 },
-  { speaker: 'Maman', say: ['Regarde bien Saint-Ay.'] },
-  { speaker: 'Papa', say: ['Elle ne va pas bouger. On reviendra.'] },
-  { say: ['Manon te montre son coquillage.'] },
-  { speaker: 'Manon', say: ['Tu as toujours le tien ?'] },
-  { say: ['Par la vitre arrière : le lac, la clinique, puis la cabane des cousins qui disparaît derrière les arbres.'] },
-  { say: ['Tu emportes : Patience et Esprit d\'équipe.'] },
+  { say: ['La voiture s\'éloigne de Saint-Ay. À l\'arrière, tu es serré entre Manon et le siège de Fanny.'] },
+  { speaker: 'Manon', say: ['Regarde, Fanny dort déjà. Elle rate tout.'] },
+  { speaker: 'Fanny', say: ['… les poules…'] },
+  { speaker: 'Manon', say: ['Elle rêve des poules de l\'enclos.'] },
+  { speaker: 'Papa', say: ['Allez. Montépilloy nous attend.'] },
   { setFlag: FLAGS.arriveeMontepilloy },
-  { travel: { map: 'montepilloy', ...MONTEPILLOY_SPOTS.pond, facing: 'down', car: true } },
+  { travel: { map: 'montepilloy', ...MONTEPILLOY_SPOTS.pond, facing: 'down', car: true, carry: carryText('saintAy') } },
 ];
 
 
-// Le vieux pêcheur du lac, méfiant : il ne parle qu'à quelqu'un de confiance (premier usage d'un trait). Il donne
-// alors l'objet-souvenir de Saint-Ay, un galet du lac.
+// Verrou de vertu (scène de retour, voir CLAUDE.md « Vertus ») : en revenant à pied de Montépilloy, au pied de la cabane,
+// une poulie grippée retient le panier des cousins, coincé tout en haut. Ingéniosité la répare : un mot de Felix et le
+// règlement du QG (objet-souvenir). Une seule fois ; ensuite, la poulie reste réparée et le panier vide.
+export const PULLEY_SPOT = { x: 7, y: 19 };
+export const PULLEY = [
+  { ifItems: [ITEMS.reglementQG.id], say: ['Le panier des cousins est redescendu. Il est vide.'], end: true },
+  { unlessSouvenirs: [TRAITS.ingeniosite.id], say: ['Le panier des cousins est coincé là-haut. La poulie est grippée.'], end: true },
+  { useTrait: TRAITS.ingeniosite },
+  { say: ['Tu grattes la rouille, tu remets la corde dans la gorge de la poulie… Le panier redescend !'] },
+  {
+    say: [
+      'Dans le panier, un mot de Felix :',
+      '« Si tu lis ça, c\'est que t\'as réparé la poulie. On savait que tu reviendrais. La cabane est toujours à toi. »',
+    ],
+  },
+  {
+    say: [
+      'Et le règlement du QG :',
+      '« RÈGLEMENT DU QG : 1. Pas d\'entrée sans le mot de passe. 2. Sauf si t\'as des bonbons. 3. Yanis a toujours tort. 4. C\'est Felix le chef (écrit par Felix). 5. Non. (écrit par les autres). »',
+    ],
+  },
+  { give: ITEMS.reglementQG, text: 'Tu prends le règlement du QG.' },
+];
+
+// Le vieux pêcheur du lac, de mauvaise humeur : la chanson de Maman le déride (Joie de vivre). Il donne alors
+// l'objet-souvenir de Saint-Ay, un galet du lac.
 export const OLD_FISHER = [
   { ifItems: [ITEMS.galetLac.id], speaker: 'Vieux pêcheur', say: ['Prends soin de ce galet. Et de ta petite sœur.'], end: true },
-  { unlessSouvenirs: [TRAITS.confiance.id], say: ['Le vieil homme te tourne le dos. Il ne parle pas aux inconnus.'], end: true },
+  { unlessSouvenirs: [TRAITS.joie.id], say: ['Le vieil homme te tourne le dos. Il a l\'air de mauvaise humeur.'], end: true },
   { speaker: 'Vieux pêcheur', say: ['Hm ? Je ne parle pas aux inconnus, moi.'] },
-  { useTrait: TRAITS.confiance },
-  { say: ['Tu t\'assois à côté de lui sans rien dire, comme avec Manon quand vous gardiez un secret.'] },
-  { speaker: 'Vieux pêcheur', say: ['… T\'as l\'air d\'un gamin de confiance, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
+  { useTrait: TRAITS.joie },
+  { say: ['Tu t\'assois à côté de lui et tu fredonnes la chanson de Maman.'] },
+  { speaker: 'Vieux pêcheur', say: ['… Elle est pas mal, ta chanson.'] },
+  { speaker: 'Vieux pêcheur', say: ['T\'as le sourire de ta mère, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
   { give: ITEMS.galetLac, text: 'Le vieux pêcheur te donne un galet tout lisse.' },
 ];

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { DialogBox } from '../systems/DialogBox.js';
 import { souvenirs, souvenirEvents } from '../systems/souvenirs.js';
-import { traitsOfCity } from '../data/story.js';
+import { MAX_TRAITS, TRAITS, traitsOfCity } from '../data/story.js';
 import { items, itemEvents } from '../systems/items.js';
 import { gameView } from '../systems/screen.js';
 import { FRLG_FONT, frlgText } from '../systems/frlgFont.js';
@@ -72,12 +72,12 @@ export class UIScene extends Phaser.Scene {
     if (isTouchDevice()) this.touch = new TouchControls(this);
 
     const setCity = createLabel(this, 0);
-    // Vertus de la ville en cours (« Vertus : 1 / 3 »), sous son nom ; rien dans une ville sans traits.
+    // Vertus reçues dans tout le jeu (« Vertus : 3 sur 8 »), sous le nom de la ville ; rien dans une ville sans vertu.
     const setTraits = createLabel(this, 1);
     const renderTraits = (show = true) => {
-      const all = traitsOfCity(this.registry.get('cityId'));
-      const got = all.filter((t) => souvenirs.has(t.id)).length;
-      setTraits(all.length ? `Vertus : ${got} / ${all.length}` : '', show);
+      const here = traitsOfCity(this.registry.get('cityId')).length;
+      const got = Object.values(TRAITS).filter((t) => souvenirs.has(t.id)).length;
+      setTraits(here ? `Vertus : ${got} sur ${MAX_TRAITS}` : '', show);
     };
     setCity(this.registry.get('city') ?? '');
     renderTraits(false);

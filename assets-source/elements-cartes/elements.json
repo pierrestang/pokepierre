@@ -1,0 +1,495 @@
+[
+ {
+  "id": "brique-grande",
+  "map": "hull",
+  "x": 5,
+  "y": 35,
+  "w": 7,
+  "h": 7,
+  "cat": "maisons",
+  "place": "land",
+  "solid": [
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+   ],
+   [
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0
+   ]
+  ],
+  "over": 1,
+  "door": [
+   3,
+   6
+  ],
+  "name": "Grande maison de brique",
+  "from": "hull-12"
+ },
+ {
+  "id": "immeuble-jaune",
+  "map": "prytanee",
+  "x": 4,
+  "y": 2,
+  "w": 5,
+  "h": 7,
+  "cat": "maisons",
+  "place": "land",
+  "solid": [
+   [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "over": 0,
+  "door": [
+   2,
+   6
+  ],
+  "name": "Bâtiment jaune",
+  "from": "prytanee-1"
+ },
+ {
+  "id": "hangar",
+  "map": "prytanee",
+  "x": 3,
+  "y": 18,
+  "w": 10,
+  "h": 4,
+  "cat": "maisons",
+  "place": "land",
+  "solid": [
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+   ]
+  ],
+  "over": 1,
+  "door": [
+   3,
+   3
+  ],
+  "name": "Hangar",
+  "from": "prytanee-4"
+ },
+ {
+  "id": "batiment-orange",
+  "map": "montepilloy",
+  "x": 4,
+  "y": 11,
+  "w": 9,
+  "h": 6,
+  "cat": "maisons",
+  "place": "land",
+  "solid": [
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  ],
+  "over": 2,
+  "door": [
+   3,
+   4
+  ],
+  "name": "Grand bâtiment orange",
+  "from": "montepilloy-4"
+ },
+ {
+  "id": "longue-vue",
+  "map": "prytanee",
+  "x": 26,
+  "y": 2,
+  "w": 1,
+  "h": 1,
+  "cat": "mobilier",
+  "place": "land",
+  "solid": [
+   [
+    1
+   ]
+  ],
+  "over": 0,
+  "door": null,
+  "name": "Longue-vue",
+  "from": "prytanee-5"
+ },
+ {
+  "id": "panneau-village",
+  "map": "saint-ay",
+  "x": 11,
+  "y": 13,
+  "w": 2,
+  "h": 2,
+  "cat": "mobilier",
+  "place": "land",
+  "solid": [
+   [
+    0,
+    0
+   ],
+   [
+    1,
+    1
+   ]
+  ],
+  "over": 1,
+  "door": null,
+  "name": "Panneau du village",
+  "from": "saint-ay-7"
+ },
+ {
+  "id": "camionnette",
+  "map": "hull",
+  "x": 0,
+  "y": 36,
+  "w": 4,
+  "h": 3,
+  "cat": "mobilier",
+  "place": "land",
+  "solid": [
+   [
+    1,
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1
+   ]
+  ],
+  "over": 0,
+  "door": null,
+  "name": "Camionnette",
+  "from": "hull-21"
+ },
+ {
+  "id": "camionnette-verte",
+  "map": "montepilloy",
+  "x": 3,
+  "y": 16,
+  "w": 4,
+  "h": 3,
+  "cat": "mobilier",
+  "place": "land",
+  "solid": [
+   [
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1
+   ]
+  ],
+  "over": 1,
+  "door": null,
+  "name": "Camionnette verte",
+  "from": "montepilloy-6"
+ },
+ {
+  "id": "yacht",
+  "map": "fort-de-france",
+  "x": 17,
+  "y": 28,
+  "w": 8,
+  "h": 3,
+  "cat": "eau",
+  "place": "water",
+  "solid": [
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+   ]
+  ],
+  "over": 0,
+  "door": null,
+  "name": "Yacht",
+  "from": "fort-de-france-7"
+ },
+ {
+  "id": "memorial-cap110",
+  "map": "fort-de-france",
+  "x": 6,
+  "y": 13,
+  "w": 4,
+  "h": 3,
+  "cat": "mobilier",
+  "place": "land",
+  "solid": [
+   [
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    1,
+    1
+   ],
+   [
+    0,
+    1,
+    1,
+    0
+   ]
+  ],
+  "over": 1,
+  "door": null,
+  "name": "Mémorial de l'Anse Caffard",
+  "from": "tileArt.capStatues"
+ }
+]

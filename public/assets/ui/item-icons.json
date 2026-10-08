@@ -160,7 +160,7 @@
     "h": 32
    }
   },
-  "vieille-canne-petite": {
+  "velo": {
    "frame": {
     "x": 640,
     "y": 0,
@@ -168,7 +168,7 @@
     "h": 32
    }
   },
-  "super-canne-petite": {
+  "vieille-canne-petite": {
    "frame": {
     "x": 672,
     "y": 0,
@@ -176,9 +176,17 @@
     "h": 32
    }
   },
-  "mega-canne-petite": {
+  "super-canne-petite": {
    "frame": {
     "x": 704,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "mega-canne-petite": {
+   "frame": {
+    "x": 736,
     "y": 0,
     "w": 32,
     "h": 32
