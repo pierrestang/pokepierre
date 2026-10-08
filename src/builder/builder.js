@@ -1778,11 +1778,21 @@ async function save({ force = false } = {}) {
   store.set(KEYS.current, m);
 }
 
+// Les cartes du projet dans l'ordre d'arrivée dans le jeu (la route de Montépilloy entre Saint-Ay et Montépilloy, qu'elle
+// relie ; l'aéroport juste avant Hull) ; une carte qui n'est pas dans la liste vient ensuite, par nom.
+const GAME_ORDER = ['fort-de-france', 'saint-ay', 'route-de-montepilloy', 'montepilloy', 'bonsecours', 'prytanee', 'bordeaux',
+  'airport', 'hull'];
+const gameRank = (id) => {
+  const i = GAME_ORDER.indexOf(id);
+  return i < 0 ? GAME_ORDER.length : i;
+};
+
 async function listMaps() {
   const local = Object.values(store.get(KEYS.library) ?? {}).map((m) => ({ id: m.id, name: m.name, width: m.width, height: m.height, where: 'navigateur' }));
   if (!state.projectSave) return local;
   try {
-    const project = (await (await fetch('/__builder/maps')).json()).map((m) => ({ ...m, where: 'projet' }));
+    const project = (await (await fetch('/__builder/maps')).json()).map((m) => ({ ...m, where: 'projet' }))
+      .sort((a, b) => gameRank(a.id) - gameRank(b.id) || a.name.localeCompare(b.name, 'fr'));
     const rooms = await fetch('/__builder/interieurs').then((r) => (r.ok ? r.json() : [])).catch(() => []);
     const interiors = rooms.map((m) => ({ ...m, where: 'intérieur', kind: 'interieur' }))
       .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
