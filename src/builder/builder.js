@@ -4,6 +4,7 @@ import {
 import { createAssistant } from './assistant.js';
 import { createStudio } from './studio.js';
 import { createNpcLayer } from './npcs.js';
+import { createEcarts } from './ecarts.js';
 import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
 import { interiorIndex, TYPES, typeOf } from './interiorIndex.js';
@@ -521,6 +522,7 @@ function draw() {
   ctx.fillText('P', (sp.x + 0.5) * cs, (sp.y + 0.53) * cs);
 
   npcs.draw(ctx, cs);
+  ecarts.draw(ctx, cs);
   drawCursor(cs);
   if (state.mode === 'simple') studio.drawGhost(ctx, cs);
 }
@@ -1498,6 +1500,7 @@ function changed() {
   setStatus('Modifications non enregistrées');
   clearTimeout(saveDraftTimer);
   saveDraftTimer = setTimeout(() => store.set(KEYS.current, state.map), 400);
+  ecarts.render();                               // panneau « Écarts » : liste et compteur à jour (annuler compris)
   requestDraw();
 }
 
@@ -1525,6 +1528,7 @@ function loadMap(map, { base = null, dirty = false } = {}) {
   centerMap();
   store.set(KEYS.current, map);
   npcs.reset();
+  ecarts.refresh();
   if (!isModel()) $('model-room-wrap').hidden = true;
   studio.load().then(() => applySpace());
   if (dirty) setStatus('Brouillon repris : modifications non enregistrées');
@@ -2082,6 +2086,18 @@ const studio = createStudio({
 
 const npcs = createNpcLayer({ state, base: BASE, remember, changed, requestDraw, setStatus });
 
+// Panneau « Écarts » (check-up visuel, src/builder/ecarts.js) : centrer la vue sur un écart.
+function focusCells(r) {
+  const cs = cellSize();
+  state.ox = Math.round(view.clientWidth / 2 - (r.x + r.w / 2) * cs);
+  state.oy = Math.round(view.clientHeight / 2 - (r.y + r.h / 2) * cs);
+  requestDraw();
+}
+const ecarts = createEcarts({
+  state, remember, changed, requestDraw, setStatus, liftObject, studio, colsOf, focus: focusCells,
+  importantCells: () => assistant.terrain.importantCells(),
+});
+
 function setMode(mode) {
   state.mode = mode;
   store.set(KEYS.mode, mode);
@@ -2159,6 +2175,7 @@ async function start() {
   bindAssistant();
   studio.bind();
   npcs.bind();
+  ecarts.bind();
   document.querySelectorAll('#mode-switch button').forEach((b) => { b.onclick = () => setMode(b.dataset.mode); });
   setMode(store.get(KEYS.mode) ?? 'simple');
   if (state.mode === 'simple') $('assistant').classList.add('closed');      // replié : la carte d'abord
