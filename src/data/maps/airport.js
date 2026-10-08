@@ -13,7 +13,6 @@ import { FLIGHT_TO_AMSTERDAM } from '../hanoiStory.js';
 // `notWhen` : cachée quand ces conditions-là sont remplies (elle est alors la suite de l'histoire).
 
 // La suite de l'histoire : le prochain vol, tant qu'on n'est pas arrivé (au plus un à la fois).
-const BACK_TO_HULL = { ifFlags: [FLAGS.mailLu], unlessItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi] };
 const NEXT_FLIGHTS = [
   // Hull : le premier vol, avec le diplôme d'anglais, est gardé par Ousmane (voir bordeauxStory.js FLIGHT_TO_HULL).
   { label: 'Hull (Angleterre)', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull], steps: FLIGHT_TO_HULL },
@@ -21,8 +20,7 @@ const NEXT_FLIGHTS = [
   { label: 'Hanoï (Vietnam)', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
   // Amsterdam : après l'appel de Romain, six mois après le premier jour à Hanoï (monologue au guichet, voir hanoiStory.js).
   { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.appelRomain], unlessFlags: [FLAGS.arriveeAmsterdam], steps: FLIGHT_TO_AMSTERDAM },
-  // Le mail d'Amsterdam : retour à l'université de Hull, qui donne le billet pour New Delhi.
-  { label: 'Hull (Angleterre)', ...BACK_TO_HULL, plane: { map: 'hull', x: 1, y: 35, facing: 'right' } },
+  // New Delhi : avec le billet que Romain remet à Amsterdam, la nuit au bord du canal.
   {
     label: 'New Delhi (Inde)', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
     setFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 6, facing: 'right' },
@@ -44,7 +42,7 @@ const OTHER_FLIGHTS = [
   { label: 'Saint-Ay', ifFlags: [FLAGS.departFortDeFrance], plane: { map: 'saintAy', x: 5, y: 10, facing: 'left' } },
   { label: 'Montépilloy', ifFlags: [FLAGS.arriveeMontepilloy], plane: { map: 'montepilloy', x: 16, y: 27, facing: 'up' } },
   { label: 'Prytanée', ifFlags: [FLAGS.arriveePrytanee], plane: { map: 'prytanee', x: 16, y: 23, facing: 'up' } },
-  { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], notWhen: BACK_TO_HULL, plane: { map: 'hull', x: 1, y: 35, facing: 'right' } },
+  { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], plane: { map: 'hull', x: 1, y: 35, facing: 'right' } },
   { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], plane: { map: 'hanoi', x: 1, y: 8, facing: 'right' } },
   { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.arriveeAmsterdam], plane: { map: 'amsterdam', x: 1, y: 10, facing: 'right' } },
   { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 6, facing: 'right' } },

@@ -1,12 +1,13 @@
 import { parseGrid } from './parseGrid.js';
-// Le dessin de la carte : Amsterdam en Gen 4 (scripts/build_amsterdam.py, d'après la carte retouchée à la main dans le
-// créateur : maisons de canal au toit rose, manoir à pignons, fontaine, canaux, arbres d'automne dorés) ; ses collisions
+// Le dessin de la carte : Amsterdam en Gen 4 (première version par scripts/build_amsterdam.py, puis retouchée à la main
+// dans le créateur : maisons remontées, place à la fontaine fleurie, jardinières du quai sud) ; ses collisions
 // s'imposent à la grille du jeu (voir builtGrid). La grille ci-dessous (sourceGrid) suit ce dessin : rue, quais, canaux,
-// ponts, portes.
+// ponts, portes (sur les portes dessinées).
 import BUILT from '../builtMaps/amsterdam.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS } from '../story.js';
+import { ARRIVAL, CANAL_NIGHT, CANAL_SPOT, MONTHS_LATER } from '../amsterdamStory.js';
 
 // Hors de la carte : la rue et les canaux se prolongent, la forêt ailleurs.
 function outside(x, y, grid) {
@@ -17,92 +18,90 @@ function outside(x, y, grid) {
   return 'T';
 }
 
-const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
+const NOT_HOME = ['Tu frappes. Personne ne répond… « Niemand thuis », peut-être.'];
 
 // Amsterdam — 36 x 30 cases avec sa bordure d'arbres d'automne. Au nord, le long de la grande rue : une maison de canal,
-// le manoir à pignons (CORNING), la maison de canal à la porte en cœur (votre maison commune), la maison à pignon rouge.
-// Le premier canal (une péniche, deux ponts de planches), puis les maisons de canal du sud (le coffee shop, à gauche :
-// porte et fleurs) et la place à la fontaine ; le quai sud et le second canal. Légende : voir src/data/tiles.js
-// (ɔ = pavés, ɐ = rue, ~ = canal, I = pont, D = porte, T = arbres).
+// le manoir à pignons (CORNING), la maison de canal à la porte en cœur (la maison commune, « la deuxième en haut à
+// gauche »), la maison à pignon rouge. Le premier canal (une péniche, deux ponts de planches), puis, au sud : le coffee
+// shop (porte et fleurs), une maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal et une
+// maison à pignon ; le quai sud, ses jardinières, et le second canal. Scénario : data/amsterdamStory.js.
+// Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = rue, ~ = canal, I = pont, D = porte, T = arbres).
 export const amsterdamMap = {
   id: 'amsterdam',
   name: 'Amsterdam',
   built: BUILT,
   sourceGrid: parseGrid([
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0  bordure : forêt d'automne (dessinée)
+    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0  bordure : arbres d'automne (dessinés)
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 1
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 2  maisons du nord
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 2
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 3
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 4
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 5
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 6
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 7
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 8
-    'TTɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔDɔɔɔɔɔɔDɔɔɔɔɔɔTT', // 9  portes : Corning (13), maison commune (20), maison à pignon (27)
+    'TTɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 7  porte de Corning (le manoir, 13)
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔDɔɔɔɔɔTT', // 8  portes : maison commune (22), maison à pignon (28)
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 9
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 10  grande rue (vers l'aéroport, la bordure y est ouverte)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 11
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 12  quai nord
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 12  quai nord (panneaux de l'aéroport)
     '~~~~~~II~~~~~~~~~~~~~~~~~~~II~~~~~~~', // 13  premier canal, ponts de planches (x 6-7, 27-28)
     '~~~~~~II~~~~~~~~~~~~~~~~~~~II~~~~~~~', // 14
     '~~~~~~II~~~~~~~~~~~~~~~~~~~II~~~~~~~', // 15
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 16  quai
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 17  maisons du sud, place à la fontaine
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 17
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 18
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 19
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 20
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 21
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 22
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 23
-    'TTɔɔDɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔTT', // 24  portes : coffee shop (4), petite maison (14), maison de canal (24)
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 25  quai sud
-    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 26  second canal
-    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 27
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 28  bordure
-    'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 29
+    'TTɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔDɔɔɔɔTT', // 22  portes : coffee shop (4), maison de canal (22), maison à pignon (29)
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 23  quai sud
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 24
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 25
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 26
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 27  second canal
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 28
+    '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 29
   ]),
   doors: [
-    { x: 13, y: 9, interior: 'corning' },                       // le manoir à pignons : CORNING
-    // La maison commune (avec Romain) : ouverte quand Romain t'a donné rendez-vous.
+    // CORNING (le manoir à pignons) : le stage commence une fois la marchandise rendue à Romain.
     {
-      x: 20, y: 9, interior: 'maisonCommune',
-      lock: { ifFlags: [FLAGS.romainDemande] },
-      lockedDialogue: ["[Texte provisoire] C'est votre maison commune, mais il n'y a personne pour l'instant."],
+      x: 13, y: 7, interior: 'corning',
+      lock: { ifFlags: [FLAGS.marchandiseDonnee] },
+      lockedDialogue: ['Les bureaux de Corning. Ton stage commence bientôt : va d\'abord t\'installer chez Romain.'],
     },
-    { x: 27, y: 9, lockedDialogue: NOT_HOME },                  // la maison à pignon rouge
-    // Le coffee shop : une fois que Romain t'a demandé la marchandise.
+    { x: 22, y: 8, interior: 'maisonCommune' },                 // la maison commune (la deuxième en haut à gauche)
+    { x: 28, y: 8, lockedDialogue: NOT_HOME },                  // la maison à pignon rouge
+    // Le coffee shop : une fois que Romain t'a demandé sa marchandise.
     {
-      x: 4, y: 24, interior: 'coffeeShop',
+      x: 4, y: 22, interior: 'coffeeShop',
       lock: { ifFlags: [FLAGS.romainDemande] },
-      lockedDialogue: ["[Texte provisoire] Rien à faire ici pour l'instant."],
+      lockedDialogue: ['Un coffee shop. Rien à y faire pour l\'instant.'],
     },
-    { x: 14, y: 24, lockedDialogue: NOT_HOME },                 // la petite maison de canal
-    { x: 24, y: 24, lockedDialogue: NOT_HOME },                 // la maison de canal du sud
+    { x: 22, y: 22, lockedDialogue: NOT_HOME },                 // la maison de canal du sud
+    { x: 29, y: 22, lockedDialogue: NOT_HOME },                 // la maison à pignon du sud
   ],
-  // Les bâtiments sont dans le dessin (scripts/build_amsterdam.py).
+  // Les bâtiments sont dans le dessin.
   buildings: [],
   npcs: [
-    // Romain t'attend à la sortie de CORNING, après ton premier rendez-vous avec Laurent.
+    // Quelques mois plus tard, la nuit : Romain, assis au bord du quai, devant la péniche.
     {
-      id: 'romain-dehors', name: 'Romain', x: 14, y: 10, facing: 'left', color: 0xc0602c,
-      ifFlags: [FLAGS.stageCorning],
-      unlessFlags: [FLAGS.romainDemande],
-      dialogue: [
-        '[Romain - texte provisoire] Hé ! Tu sors du boulot ?',
-        'Tu peux passer au coffee shop acheter la marchandise ?',
-        'Rejoins-moi ensuite à notre maison commune (la maison à la porte en cœur, juste à droite de Corning).',
-      ],
-      setFlag: FLAGS.romainDemande,
+      id: 'romain-canal', name: 'Romain', x: CANAL_SPOT[0], y: CANAL_SPOT[1], facing: 'down', still: true, color: 0xc0602c,
+      ifFlags: [FLAGS.moisAmsterdam], unlessFlags: [FLAGS.canalNuit],
+      script: CANAL_NIGHT,
     },
   ],
   events: [
-    // En sortant de CORNING : Romain t'interpelle.
-    {
-      on: 'enter',
-      ifFlags: [FLAGS.stageCorning],
-      unlessFlags: [FLAGS.romainDemande],
-      steps: [{ talk: 'romain-dehors' }],
-    },
+    // L'arrivée : Romain appelle.
+    { on: 'enter', ifFlags: [FLAGS.arriveeAmsterdam], unlessFlags: [FLAGS.appelAmsterdam], steps: ARRIVAL },
+    // En sortant de Corning, la campagne présentée : quelques mois plus tard (la nuit tombe).
+    { on: 'enter', ifFlags: [FLAGS.stageCorning], unlessFlags: [FLAGS.moisAmsterdam], steps: MONTHS_LATER },
   ],
+  // La nuit au bord du canal (forcée, quelle que soit l'heure) : réverbères allumés, appliques des portes, fenêtres de la
+  // péniche.
+  night: {
+    ifFlags: [FLAGS.moisAmsterdam], unlessFlags: [FLAGS.canalNuit], doorLamps: true,
+    lights: [[15, 14, 0xffc060], [17, 14, 0xffc060], [19, 14, 0xffd890]],
+  },
   // Panneaux « Aéroport » (dessinés) à côté des sorties ; les deux bouts de la grande rue mènent à l'aéroport.
   objects: [airportSign(2, 12, false), airportSign(33, 12, true)],
   triggers: [toAirport(0, 10), toAirport(0, 11), toAirport(35, 10), toAirport(35, 11)],

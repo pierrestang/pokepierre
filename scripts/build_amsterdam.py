@@ -18,6 +18,9 @@ De haut en bas :
 La grille du jeu (src/data/maps/amsterdam.js, sourceGrid) reprend GROUND, avec les portes ('D') sur les portes dessinées
 (imprimées à la fin).
 
+La carte a été retouchée à la main depuis dans le créateur (maisons remontées, place à la fontaine fleurie, jardinières) :
+le jeu suit ce dessin retouché (portes de src/data/maps/amsterdam.js), et --force l'effacerait.
+
 Usage : python3 scripts/build_amsterdam.py [--force]   (puis node scripts/paint_forest.mjs amsterdam ; la carte retouchée
 dans le créateur : --force efface ces retouches)
 """

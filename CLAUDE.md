@@ -78,8 +78,8 @@ puis Hanoï. Pas de combats.
 - src/systems/ : déplacement, collisions, dialogues.
 
 ## Vertus
-- 8 vertus au maximum dans tout le jeu, une par ville au maximum : 6 jusqu'à Hull, Adaptation à Hanoï, 1 place encore
-  libre (src/data/story.js TRAITS).
+- 8 vertus au maximum dans tout le jeu, une par ville au maximum : 6 jusqu'à Hull, Adaptation à Hanoï, la 8e réservée
+  à Paris (src/data/story.js TRAITS).
 - Les 7 vertus, leur ville et leur situation type : Joie de vivre (Fort-de-France : une ambiance éteinte à
   rallumer) ; Esprit d'équipe (Saint-Ay : un obstacle qu'on ne franchit qu'à plusieurs) ; Ingéniosité (Montépilloy :
   un mécanisme à réparer ou bricoler) ; Audace (collège : une situation intimidante) ; Autonomie (Prytanée : faire

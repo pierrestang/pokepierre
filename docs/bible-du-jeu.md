@@ -16,8 +16,8 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   très foncé d'un pixel (pour que les planches DPPt et Gen 4 aillent ensemble) ;
   la végétation et les éléments naturels (arbres, buissons, fleurs, rochers) gardent la leur. Cartes aux dimensions
   paires, bordées d'arbres ronds de DPPt dont le jeu cache le bord extérieur.
-- **Vertus** : 8 au plus dans tout le jeu, une par ville au plus ; 6 jusqu'à Hull, Adaptation à Hanoï, 1 place encore
-  libre. Encart « Pierre a reçu la vertu X ! » (étape `trait`) et « Pierre utilise X ! » (étape `useTrait`,
+- **Vertus** : 8 au plus dans tout le jeu, une par ville au plus ; 6 jusqu'à Hull, Adaptation à Hanoï, la 8e
+  réservée à Paris (pas encore définie). Encart « Pierre a reçu la vertu X ! » (étape `trait`) et « Pierre utilise X ! » (étape `useTrait`,
   comptée). Carnet dans Start > VERTUS : le total (« Vertus : X sur 8. »), puis une page par vertu reçue avec sa ville,
   sa phrase et son nombre d'utilisations (« Utilisée N fois. » ou « Pas encore utilisée. »), puis les « souvenirs des
   PNJ ». À l'écran, le compteur « Vertus : X sur 8 », seulement dans les villes qui donnent une vertu.
@@ -39,13 +39,13 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
   moment de monter sur ton vélo : on t'accompagne. »), il descend si quelqu'un se met à le suivre ; pendant une
   scénette, il descend et remonte à la fin. Une partie reprise dehors repart à vélo.
-- **Textes provisoires** : à partir d'Amsterdam (Hanoï est écrit), presque toutes les répliques commencent par « [Texte provisoire] » ou
+- **Textes provisoires** : à partir de New Delhi (Hanoï et Amsterdam sont écrits), presque toutes les répliques commencent par « [Texte provisoire] » ou
   « [Nom - texte provisoire] ».
 
 ## Ordre du jeu
 
 Fort-de-France → Saint-Ay → (route de Montépilloy) → Montépilloy → route et collège de Bonsecours → Prytanée →
-Bordeaux → Hull → Hanoï → Amsterdam → Hull (retour) → New Delhi → Rajasthan → Bordeaux (stade) → Paris → Toulon
+Bordeaux → Hull → Hanoï → Amsterdam → New Delhi → Rajasthan → Bordeaux (stade) → Paris → Toulon
 (Chemin de Saint-Jacques, Corse) → Bali → Sri Lanka → Thaïlande → Népal → « Nouveau pays » (non ouvert).
 
 Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux, redessiné en Gen 4, tout entier à l'écran : tarmac
@@ -925,34 +925,80 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
   traversé une ville entière sans en parler la langue. Tu n'as plus peur de l'inconnu. Tu t'adaptes. »
 - **Trajet en avion** ; encart : « Tu emportes : Adaptation. »
 
-## 9. Amsterdam (Pays-Bas) : textes provisoires
+## 9. Amsterdam (Pays-Bas)
 
-- **La carte** (36 x 30, redessinée en Gen 4, scripts/build_amsterdam.py) : au nord, le long de la grande rue (vers
-  l'aéroport par ses deux bouts), une maison de canal, le manoir à pignons = Corning (porte (13, 9)), la maison de
-  canal à la porte en cœur = la maison commune (20, 9), la maison à pignon rouge (27, 9, fermée). Le premier canal, une
-  péniche et deux ponts de planches. Au sud, les maisons de canal au toit rose : le coffee shop (porte et fleurs, (4,
-  24)), la petite maison (14, 24, fermée), la maison de canal (24, 24, fermée), et la place à la fontaine. Le quai sud
-  et le second canal ; une bordure d'arbres d'automne dorés. Arrivée en (1, 10) ; Romain attend devant Corning (14, 10).
-- **PNJ** : Laurent (`g53`), patron chez Corning ; Romain (`g92`) ; un vendeur (`g112`) au coffee shop.
-- **Quêtes** :
-  1. Laurent : « [Laurent - texte provisoire] Bienvenue chez Corning ! Je suis Laurent, le patron. » / « Ton stage
-     commence aujourd'hui. Bienvenue dans l'équipe ! »
-  2. En sortant, Romain : « [Romain - texte provisoire] Hé ! Tu sors du boulot ? » / « Tu peux passer au coffee shop
-     acheter la marchandise ? » / « Rejoins-moi ensuite à notre maison commune (la maison à la porte en cœur, juste à droite de Corning). »
-  3. Coffee shop → **Marchandise** ; donnée à Romain : « Super, tu as la marchandise ! Merci beaucoup. » / « Au fait, tu
-     as dû recevoir un mail. Va voir sur l'ordinateur ! »
-  4. L'ordinateur : « [Texte provisoire] Nouveau mail ! « Merci de retourner à l'université de Hull » / « pour récupérer
-     ta nouvelle affectation. » »
-- **Vertus, objet optionnel, boîte aux lettres, mini-jeu** : aucun.
-- **Départ** : vol « Hull (Angleterre) » (ouvert depuis le premier séjour à Hull).
+Le stage chez Corning, avec Romain en colocataire (`src/data/amsterdamStory.js`). Pas de vertu nouvelle (la 8e est
+réservée à Paris) : Autonomie et Audace servent au stage, Insouciance à la nuit au bord du canal. Une seule ellipse.
 
-## 10. Hull (retour) : textes provisoires
+### La carte (36 x 30, Gen 4)
+Première version par scripts/build_amsterdam.py, puis retouchée à la main dans le créateur. Au nord, le long de la grande
+rue (vers l'aéroport par ses deux bouts) : une maison de canal, le manoir à pignons = Corning (porte (13, 7)), la maison
+de canal à la porte en cœur = la maison commune, « la deuxième en haut à gauche » (22, 8), la maison à pignon rouge (28,
+8, fermée). Le premier canal, une péniche, deux ponts de planches. Au sud : le coffee shop (porte et fleurs, (4, 22)), une
+maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal (22, 22, fermée) et une maison à pignon
+(29, 22, fermée) ; le quai sud et ses jardinières, le second canal ; une bordure d'arbres d'automne dorés. Arrivée en
+(1, 10). Portes fermées : « Tu frappes. Personne ne répond… « Niemand thuis », peut-être. »
 
-- Le Professor : « [Professor - texte provisoire] Welcome back! Voici ta nouvelle affectation : » / « un échange
-  universitaire à New Delhi, en Inde. Voici ton billet d'avion ! » → **Billet d'avion pour New Delhi**.
-- **Départ** : vol « New Delhi (Inde) ».
+### PNJ présents
+| Nom | Rôle | Sprite |
+|---|---|---|
+| Romain | Le colocataire : la marchandise, puis la nuit au canal et le billet pour New Delhi | `g202` |
+| Vendeur | Le coffee shop, en français mêlé de néerlandais | `g112` |
+| Laurent | Le patron de Corning : la campagne du nouveau produit | `g53` |
 
-## 11. New Delhi et le Rajasthan (Inde) : textes provisoires
+### Quêtes, dans l'ordre
+1. **L'arrivée.** « Ton téléphone sonne. C'est Romain ! » ; Romain, au téléphone : **« Pierre, t'es arrivé ! Rejoins-moi à
+   la maison, la deuxième en haut à gauche. »** (Corning est fermé d'ici là : « Les bureaux de Corning. Ton stage commence
+   bientôt : va d'abord t'installer chez Romain. »)
+2. **La maison commune.** Romain : **« Installe-toi ! Tiens, d'ailleurs, tu peux me rendre un service ? Va chercher ma
+   marchandise au coffee shop, j'ai la flemme d'y retourner. »** (ensuite : « Le coffee shop, c'est de l'autre côté du
+   canal, la maison à gauche avec les fleurs. Passe le pont ! »)
+3. **Le coffee shop.** Le vendeur : « Hallo ! Tu viens pour la commande de Romain, ja ? Attends, je regarde dans le
+   kast… » / « Voilà, c'est goed ! Dis-moi, tu es bien le coloc de Romain, ja of nee ? » ; choix « Ja » : « Ha, parfait !
+   Alors tu lui dis : de volgende fois, il vient lui-même, hè ! » ; « Nee » : « Nee ? Dan is deze niet voor jou ! Allez, je
+   rigole. Tiens, prends-la quand même. » → **Marchandise** (dans les deux cas).
+4. **Retour chez Romain.** « Tu donnes la marchandise à Romain. » ; Romain : « Merci, t'es un chef ! Je te revaudrai ça. » /
+   « Bon, maintenant, au boulot : ton stage chez Corning commence aujourd'hui. C'est le grand manoir de la rue. Laurent
+   t'attend ! »
+5. **Corning : la campagne.** Laurent : **« Bienvenue chez Corning ! Pour ton premier jour, je te confie une vraie mission :
+   prépare-moi une campagne pour notre nouveau produit. »** / « Un verre pour écrans de téléphone. Presque incassable. À
+   toi de le faire connaître. » Trois choix, chacun commenté par Laurent, sans échec :
+   - la cible : « Aux fabricants de téléphones » (« Exactement. Ce sont eux qui achètent le verre. Bon instinct. »),
+     « Aux grands-mères », « À tout le monde » (« Tout le monde, c'est personne. On vise les fabricants de téléphones,
+     d'accord ? ») ;
+   - le slogan : « Lâchez-le. Il tiendra. » (« Court, et ça donne envie d'essayer. J'adore. »), « Le verre qui ne casse
+     pas. », « Du verre, mais en mieux. » ;
+   - la diffusion : « Une vidéo de chute en ligne », « Un salon professionnel », « Des affiches dans le métro ».
+   « Tu rassembles tout sur trois pages, sans demander d'aide à personne. » → **« Pierre utilise Autonomie ! »** →
+   « Devant toute l'équipe, tu présentes ta campagne… et tu lâches ton propre téléphone par terre. L'écran tient. » →
+   **« Pierre utilise Audace ! »** ; Laurent : **« Pas mal du tout pour un premier jour ! Tu as l'instinct du marketing,
+   toi. »**
+6. **Quelques mois plus tard.** En sortant de Corning : **« Quelques mois plus tard… »** (la seule ellipse de la ville). La
+   nuit tombe sur Amsterdam (nuit forcée, quelle que soit l'heure, jusqu'à la fin de la scène du canal) : réverbères
+   allumés, appliques des portes, fenêtres de la péniche.
+7. **La nuit au bord du canal.** Romain est assis sur le quai devant la péniche (17, 12) : « Romain est assis au bord du
+   quai, les jambes au-dessus de l'eau. Les lumières des péniches tremblent sur le canal. » ; **« Viens t'asseoir deux
+   minutes. Regarde-moi ça. »** / « Y a six mois, t'étais à l'autre bout du monde, à Hanoï. Et nous à Bordeaux. Et là, on
+   est posés ensemble à Amsterdam. » / « Profite, va. Demain c'est encore le stage, mais là, maintenant, on est bien. » →
+   **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de demain. Il y a juste l'eau, les lumières, et Romain qui
+   rigole. » ; Romain prend une photo → souvenir **Photo du canal** (carnet) ; **« Au fait, j'ai une nouvelle pour toi. Ton
+   prochain échange, c'est à New Delhi, en Inde ! Tiens, voilà ton billet d'avion. »** → **Billet d'avion pour New
+   Delhi** ; Pierre, en lui-même : **« Une ville de plus. Et à chaque fois, des gens que je quitte. Je me demande ce qu'ils
+   deviennent, tous. »** ; « Le lendemain, ton billet en poche, tu prends la route de l'aéroport. » (Pierre arrive au
+   guichet.)
+
+### Vertus
+- **Gagnée** : aucune.
+- **Utilisées** : **Autonomie** et **Audace** (la campagne de Corning), **Insouciance** (la nuit au canal).
+
+### Objets et souvenir
+**Marchandise** (le coffee shop, rendue à Romain), **Billet d'avion pour New Delhi** (remis par Romain), souvenir **Photo
+du canal** (carnet).
+
+### Départ et trajet
+Vol « New Delhi (Inde) », directement (il n'y a plus de retour à Hull) ; trajet en avion, sans encart.
+
+## 10. New Delhi et le Rajasthan (Inde) : textes provisoires
 
 - **PNJ** : la professeure de l'université de Delhi (`g54`), Harsh (`g89`), le vieux sage (`g71`).
 - **Quêtes** :
@@ -967,7 +1013,7 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 - **Vertus, objet optionnel, boîte aux lettres, mini-jeu** : aucun.
 - **Départ** : vol « Bordeaux ».
 
-## 12. Bordeaux (le stade) : textes provisoires
+## 11. Bordeaux (le stade) : textes provisoires
 
 - Le stade s'ouvre une fois le semestre terminé. Le directeur (`g120`) : « [Directeur - texte provisoire] Bienvenue à la
   cérémonie ! Avance-toi devant l'estrade pour recevoir ton diplôme. » ; douze diplômés (« Félicitations à nous tous ! »…).
@@ -976,7 +1022,7 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 - **Départ** : l'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton diplôme de Bordeaux en poche, tu
   prends la route de Paris ! » Pas de scène de trajet.
 
-## 13. Paris : textes provisoires
+## 12. Paris : textes provisoires
 
 - **Arrivée** : « [Texte provisoire] Bienvenue à Paris ! » / « Première mission : aller manger au bistrot (2e bâtiment en
   haut à gauche). »
@@ -998,7 +1044,7 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
   « Souvenir d'Hugues », « Souvenir de Thomas ».
 - **Départ** : la rue sud, vers Toulon. Pas de scène de trajet.
 
-## 14. Toulon, le Chemin de Saint-Jacques et la Corse : textes provisoires
+## 13. Toulon, le Chemin de Saint-Jacques et la Corse : textes provisoires
 
 - **Arrivée** : « [Texte provisoire] Bienvenue à Toulon ! » / « Mission : rejoindre l'appartement de Yanis (2e maison en
   haut à gauche). »
@@ -1017,7 +1063,7 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 - **Départ** : vol « Bali (Indonésie) », ouvert une fois le Chemin fini, la visite aux parents faite, et les souvenirs de
   Léo et de Théo obtenus.
 
-## 15. Bali, Sri Lanka, Thaïlande, Népal : textes provisoires
+## 14. Bali, Sri Lanka, Thaïlande, Népal : textes provisoires
 
 Chaque destination donne un objet magique qui ouvre la suivante. Pas de PNJ à Bali ; un moine (`g72`) dans les temples
 des trois autres.
@@ -1041,9 +1087,9 @@ des trois autres.
 | Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
 | Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
-| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) |
-| Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (obligatoire avant de sortir ; photo) ; Hull : le guichet de l'aéroport, avant Hanoï |
-| Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Hanoï : la touriste au téléphone à plat, au temple |
+| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) ; Amsterdam : la présentation de la campagne |
+| Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (obligatoire avant de sortir ; photo) ; Hull : le guichet de l'aéroport, avant Hanoï ; Amsterdam : la campagne de Corning |
+| Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Hanoï : la touriste au téléphone à plat, au temple ; Amsterdam : la nuit au canal avec Romain |
 | Adaptation | Hanoï | M. Lam, qui traduit les consignes en vietnamien | « Trouver son chemin partout, même sans en parler la langue. » | Nulle part pour l'instant |
 
 Vertus supprimées (leurs scènes restent, sans encart) : Pragmatisme (le tri des cannes), Confiance (le coquillage de
@@ -1051,8 +1097,9 @@ Manon), Patience (la main de Fanny), Loyauté (le cache-cache), Indépendance (l
 sauvegardes sont converties au chargement : l'ancienne Insouciance du collège devient Audace, l'ancien Lâcher-prise de
 Hull devient la nouvelle Insouciance, les vertus supprimées sont retirées.
 
-Après Hanoï, aucune vertu n'est gagnée. De Paris à la Corse, le jeu donne à la place des « souvenirs de PNJ » (cuisinier,
-Hugues, Thomas, Yanis à Toulon, Léo, Théo).
+Après Hanoï, aucune vertu n'est encore gagnée (la 8e est réservée à Paris). Le carnet range aussi des « souvenirs de
+PNJ » : la Photo du canal (Amsterdam, avec Romain), et, de Paris à la Corse, cuisinier, Hugues, Thomas, Yanis à Toulon,
+Léo, Théo.
 
 ---
 
@@ -1097,14 +1144,14 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 | Professeure d'anglais | `g106` | Bordeaux (KEDGE) |
 | Hôtesse | `g64` | Aéroport |
 | Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull |
-| Romain | `g92` | Hull, Amsterdam |
+| Romain | `g202` (characterLooks) | Hull, Hanoï (téléphone), Amsterdam |
 | Prophecy | `g94` | Hull |
 | Charlotte | `g44` | Hull |
 | Anaïs | `g107` | Bordeaux (la soirée), Hull |
 | Barman | `g101` | Hull |
 | Habitué | figurant | Hull |
 | Nouveau | `g58` | Prytanée (hall de l'internat) |
-| Professor | `g138` | Hull (deux fois) |
+| Professor | `g138` | Hull |
 | Patron | `g141` | Hanoï (l'agence) |
 | M. Lam | `g129` | Hanoï (le banc du lac) |
 | Passante, Vendeuse, Passant | `g19`, `g70`, `g14` | Hanoï |
@@ -1142,7 +1189,8 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 - **Yanis** : cousin à Saint-Ay, puis hôte à Toulon, avec la même couleur et le même sprite. Aucune réplique de Toulon ne
   rappelle qu'il est le cousin.
 - **Romain** : de la bande de Hull, il annonce partir à Hong Kong ; six mois après l'arrivée de Pierre à Hanoï, il
-  l'appelle (« Hong Kong, c'est fini ! ») et l'attend à Amsterdam, où ils partagent une « maison commune ».
+  l'appelle (« Hong Kong, c'est fini ! ») et l'attend à Amsterdam, où ils partagent une « maison commune » ; c'est lui
+  qui remet à Pierre son billet pour New Delhi.
 - **Sprites partagés** par des personnages différents : `g87` (les militaires, les sentinelles, le capitaine du
   Prytanée), `g138` (le prof de maths, le Professor de Hull), `g55` (Léo
   de Hull, Léo de Corse, « Leo »). La liste des figurants au hasard (`EXTRAS`) contient aussi les sprites de Tom, Fanny,
@@ -1157,11 +1205,11 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 ### Images d'accueil
 - Fort-de-France, Saint-Ay et le matin de septembre à Montépilloy utilisent la **même illustration** (bois aux Chênes, le
   matin).
-- Amsterdam, New Delhi, Paris, Toulon, la Corse, Bali, le Sri Lanka, la Thaïlande et le Népal n'ont pas d'ouverture.
+- Amsterdam (arrivée par un appel de Romain), New Delhi, Paris, Toulon, la Corse, Bali, le Sri Lanka, la Thaïlande et le Népal n'ont pas d'ouverture.
   Des cartes postales existent pourtant pour Paris, la Corse, le Sri Lanka, la Thaïlande et le Népal.
 
 ### Quêtes inachevées ou textes provisoires
-- Tout ce qui suit Hanoï est en **texte provisoire** : Amsterdam, Hull (retour), New Delhi, Rajasthan, le stade de
+- Tout ce qui suit Amsterdam est en **texte provisoire** : New Delhi, Rajasthan, le stade de
   Bordeaux, Paris, Toulon, le Chemin, la Corse, Bali, Sri Lanka, Thaïlande, Népal.
 - Léo et Théo, en Corse, n'ont que des répliques de remplissage (« Ceci est le premier dialogue de Léo. »), alors qu'ils
   ouvrent la route de Bali.
@@ -1187,7 +1235,7 @@ avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instan
 - À Saint-Ay, si la corde est trouvée **après** les planches, personne ne dit « On a tout ! » (Joshua est resté devant
   l'enclos) : rien n'indique de retourner chez Felix, sauf en reparlant à Joshua, Yanis ou Felix.
 - Il n'y a plus aucune réplique « Objectif : » : partout, le joueur suit les rappels des PNJ. Paris et Toulon ont une
-  « mission » d'arrivée ; Amsterdam, New Delhi et les pays d'Asie n'ont rien. À Bordeaux, après « Quelques mois plus
+  « mission » d'arrivée ; New Delhi et les pays d'Asie n'ont rien. À Bordeaux, après « Quelques mois plus
   tard… », seul Rémi, devant KEDGE, indique l'oral.
 - À Fort-de-France, la boîte aux lettres annonce « Peut-être une carte postale de Saint-Ay, un jour ? ». Cette carte
   n'existe pas : celle de Saint-Ay vient du capitaine, et la boîte de Fort-de-France ne change jamais.

@@ -14,7 +14,7 @@ import { Patrols } from '../systems/Patrols.js';
 import { playDarts } from '../systems/Darts.js';
 import { lookOf } from '../data/characters.js';
 import { bedAt, familyCarImage, cabaneFrame, CABANE_LADDER_X, FRLG_SHEETS } from '../art/frlgArt.js';
-import { interact } from '../systems/interactions.js';
+import { giveSouvenir, interact } from '../systems/interactions.js';
 import { souvenirs } from '../systems/souvenirs.js';
 import { flags, meetsConditions } from '../systems/flags.js';
 import { visitedFlag } from '../systems/RegionMap.js';
@@ -596,6 +596,7 @@ export class MapScene extends Phaser.Scene {
   //   { useTrait: TRAITS.x }             une vertu débloque la situation : « Pierre utilise X ! » (à mettre sous
   //                                      condition `ifSouvenirs: [TRAITS.x.id]`)
   //   { give: item, text? }              objet reçu (message `text`, sinon « Tu as reçu : X. »)
+  //   { souvenir: { id, name } }         souvenir rangé dans le carnet (« Tu as obtenu un souvenir : X ! »)
   //   { take: itemId }                   objet donné (quitte l'inventaire)
   //   { black: true | false }            écran noir immédiat / retour de l'image en fondu
   //   { sea: true | false }              bruit des vagues
@@ -713,6 +714,7 @@ export class MapScene extends Phaser.Scene {
         sfx('item');
         await this.dialog.open([step.text ?? `Tu as reçu : ${step.give.name}.`], { item: step.give });
       }
+      if (step.souvenir) await giveSouvenir(this.dialog, step.souvenir);
       if (step.take && items.remove(step.take)) this.refreshActors();
       if (step.trait && souvenirs.add(step.trait)) {
         sfx('trait');

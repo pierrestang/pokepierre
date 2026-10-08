@@ -123,11 +123,13 @@ export const FLAGS = {
   sixMoisHanoi: 'six-mois-hanoi',               //   en sortant de l'agence : « Six mois plus tard… »
   appelRomain: 'appel-romain',                  //   Romain t'appelle : il t'attend à Amsterdam (le vol s'ouvre)
   arriveeAmsterdam: 'arrivee-amsterdam',        // arrivé à Amsterdam
-  stageCorning: 'stage-corning',                // Laurent t'a lancé dans ton stage chez Corning
-  romainDemande: 'romain-demande',              // Romain t'a demandé la marchandise
-  marchandiseAchetee: 'marchandise-achetee',    // achetée au coffee shop
-  marchandiseDonnee: 'marchandise-donnee',      // donnée à Romain dans la maison commune
-  mailLu: 'mail-lu',                            // mail lu : retourner à l'université de Hull
+  appelAmsterdam: 'appel-amsterdam',            //   à l'arrivée, Romain appelle : rendez-vous à la maison commune
+  romainDemande: 'romain-demande',              //   Romain t'a demandé d'aller chercher sa marchandise au coffee shop
+  marchandiseAchetee: 'marchandise-achetee',    //   achetée au coffee shop
+  marchandiseDonnee: 'marchandise-donnee',      //   rendue à Romain : il t'envoie à ton stage chez Corning
+  stageCorning: 'stage-corning',                //   la campagne présentée à Laurent (Autonomie, Audace)
+  moisAmsterdam: 'mois-amsterdam',              //   en sortant de Corning : « Quelques mois plus tard… » (la nuit tombe)
+  canalNuit: 'canal-nuit',                      //   la nuit au bord du canal avec Romain (Insouciance), le billet pour New Delhi
   arriveeNewDelhi: 'arrivee-new-delhi',         // arrivé à New Delhi (Inde)
   echangeCommence: 'echange-commence',          // échange universitaire commencé à Delhi
   harshRencontre: 'harsh-rencontre',            // Harsh t'a proposé d'aller dans le désert
@@ -248,7 +250,7 @@ export const ITEMS = {
   consignesVietnamien: { id: 'consignes-vietnamien', name: 'Consignes en vietnamien' },
   pieceEchecs: { id: 'piece-echecs', name: "Pièce d'échecs chinois" },
   marchandise: { id: 'marchandise', name: 'Marchandise' },
-  billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },
+  billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },  // remis par Romain, à Amsterdam
   potionMagique: { id: 'potion-magique', name: 'Potion magique' },
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },
   pieceTracteur: { id: 'piece-tracteur', name: 'Pièce de tracteur' },

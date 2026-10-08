@@ -21,6 +21,7 @@ import {
   LIBRARY, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
 } from '../hullStory.js';
 import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC } from '../hanoiStory.js';
+import { CAMPAIGN, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
 
 // L'accueil de KEDGE (Bordeaux) : on lui parle par-dessus le comptoir.
 const KEDGE_DESK = ['Bienvenue à KEDGE ! L\'oral d\'anglais, c\'est en salle 1 : le couloir des casiers, puis l\'étage au-dessus.'];
@@ -1631,20 +1632,7 @@ export const interiors = {
     npcs: [
       {
         id: 'prof-hull', name: 'Professor', x: 6, y: 4, facing: 'down', color: 0x5c3c7c,
-        unlessFlags: [FLAGS.mailLu],
         dialogue: ['Welcome to Hull! Les résultats de l\'examen seront affichés devant l\'université.'],
-      },
-      // De retour après le mail d'Amsterdam : ta nouvelle affectation.
-      {
-        id: 'prof-hull-echange', name: 'Professor', x: 6, y: 4, facing: 'down', color: 0x5c3c7c,
-        ifFlags: [FLAGS.mailLu],
-        dialogue: [
-          '[Professor - texte provisoire] Welcome back! Voici ta nouvelle affectation :',
-          'un échange universitaire à New Delhi, en Inde. Voici ton billet d\'avion !',
-          "L'aéroport est au bout de la grande rue.",
-        ],
-        after: ["[Professor - texte provisoire] L'aéroport, c'est au bout de la grande rue. Good luck!"],
-        item: ITEMS.billetNewDelhi,
       },
     ],
   },
@@ -2022,8 +2010,9 @@ export const interiors = {
     objects: [5, 6, 7].map((x) => ({ x, y: 4, ...ALTAR, item: ITEMS.objetChance })),
   },
 
-  // Amsterdam — le bureau CORNING : Laurent, le patron, te lance dans ton nouveau stage. Un étage de bureaux de
-  // la Tour Radio (HGSS) : table de réunion, postes informatiques ; Laurent près des fenêtres.
+  // Amsterdam — le bureau CORNING : Laurent, le patron, confie à Pierre la campagne du nouveau produit (voir
+  // amsterdamStory.js CAMPAIGN). Un étage de bureaux de la Tour Radio (HGSS) : table de réunion, postes informatiques ;
+  // Laurent près des fenêtres.
   corning: {
     name: 'Corning',
     grid: parseGrid([
@@ -2044,18 +2033,14 @@ export const interiors = {
     npcs: [
       {
         id: 'laurent', name: 'Laurent', x: 11, y: 3, facing: 'down', color: 0x2c4c8c,
-        dialogue: [
-          '[Laurent - texte provisoire] Bienvenue chez Corning ! Je suis Laurent, le patron.',
-          'Ton stage commence aujourd\'hui. Bienvenue dans l\'équipe !',
-        ],
-        after: ['[Laurent - texte provisoire] Bon courage pour ton stage !'],
-        setFlag: FLAGS.stageCorning,
+        script: CAMPAIGN,
       },
     ],
   },
 
-  // Amsterdam — le coffee shop : on t'y vend la marchandise pour Romain. La fleuriste de Doublonville (HGSS),
-  // des plantes partout ; le vendeur derrière la grande table verte.
+  // Amsterdam — le coffee shop : le vendeur (français mêlé de néerlandais) donne la marchandise de Romain (voir
+  // amsterdamStory.js VENDOR). La fleuriste de Doublonville (HGSS), des plantes partout ; le vendeur derrière la grande
+  // table verte.
   coffeeShop: {
     name: 'Coffee shop',
     grid: parseGrid([
@@ -2073,19 +2058,13 @@ export const interiors = {
     npcs: [
       {
         id: 'vendeur', name: 'Vendeur', x: 6, y: 2, facing: 'down', color: 0x3c9c4c,
-        dialogue: [
-          '[Vendeur - texte provisoire] Salut ! Tu viens pour la commande de Romain ?',
-          'Voilà, tu as acheté la marchandise.',
-        ],
-        after: ['[Vendeur - texte provisoire] Passe une bonne journée !'],
-        item: ITEMS.marchandise,
-        setFlag: FLAGS.marchandiseAchetee,
+        script: VENDOR,
       },
     ],
   },
 
-  // Amsterdam — la maison commune : Romain t'attend pour récupérer la marchandise. La chambre du héros de
-  // Bourg Geon (HGSS) : bureau et PC, télé, deux lits, tapis ; l'escalier du coin mène à l'étage (fermé).
+  // Amsterdam — la maison commune, avec Romain : il accueille Pierre, l'envoie chercher sa marchandise, puis à son stage
+  // (voir amsterdamStory.js). Modèle maison-type-2 : cuisine, télé, table et fauteuils.
   maisonCommune: {
     name: 'Maison commune',
     grid: parseGrid([ // dessin de la maison de Léo (Hull)
@@ -2105,38 +2084,15 @@ export const interiors = {
     ]),
     spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [
+      // Romain, à la maison jusqu'au soir du canal (il y attend alors Pierre, voir maps/amsterdam.js).
       {
         id: 'romain-maison', name: 'Romain', x: 7, y: 4, facing: 'left', color: 0xc0602c,
-        dialogue: ["[Romain - texte provisoire] Alors, tu es passé au coffee shop ?"],
-        after: ['[Romain - texte provisoire] Merci encore !'],
-        receive: {
-          item: ITEMS.marchandise,
-          dialogue: [
-            '[Romain - texte provisoire] Super, tu as la marchandise ! Merci beaucoup.',
-            "Au fait, tu as dû recevoir un mail. Va voir sur l'ordinateur !",
-          ],
-          setFlag: FLAGS.marchandiseDonnee,
-        },
+        unlessFlags: [FLAGS.moisAmsterdam],
+        script: ROMAIN_HOME,
       },
     ],
-    // L'ordinateur (sur le bureau du fond) : le mail n'arrive qu'après toutes les étapes d'Amsterdam.
-    objects: [
-      {
-        x: 5, y: 3,
-        unlessFlags: [FLAGS.marchandiseDonnee],
-        dialogue: ["[Texte provisoire] C'est ton ordinateur. Aucun nouveau mail pour l'instant."],
-      },
-      {
-        x: 5, y: 3,
-        ifFlags: [FLAGS.marchandiseDonnee],
-        dialogue: [
-          '[Texte provisoire] Nouveau mail ! « Merci de retourner à l\'université de Hull',
-          'pour récupérer ta nouvelle affectation. »',
-        ],
-        after: ["[Texte provisoire] Le mail dit : retourne à l'université de Hull."],
-        setFlag: FLAGS.mailLu,
-      },
-    ],
+    // En entrant la première fois : Romain accueille Pierre et lui demande sa marchandise.
+    events: [{ on: 'enter', unlessFlags: [FLAGS.romainDemande], steps: ROMAIN_WELCOME }],
   },
 
   // New Delhi — l'université : ton échange universitaire commence. La classe de l'école de Mauville (HGSS) :

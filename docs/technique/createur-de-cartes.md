@@ -409,6 +409,9 @@ péniche ; les maisons du sud, dont le coffee shop ; la place à la fontaine). L
 Forêt (src/builder/forestLayout.js) ; elle s'ouvre sur la grande rue (l'aéroport) et sur les deux canaux. Le script
 réécrit la carte : il refuse sans `--force` (une retouche faite dans le créateur serait perdue). La grille du jeu
 (src/data/maps/amsterdam.js sourceGrid) reprend GROUND, la bordure en 'T', les portes sur les portes dessinées.
+La carte a depuis été retouchée à la main dans le créateur (maisons remontées, place à la fontaine fleurie, jardinières
+du quai sud) : amsterdam.js suit ce dessin (portes : Corning (13, 7), maison commune (22, 8), coffee shop (4, 22)…), et
+`build_amsterdam.py --force` effacerait ces retouches.
 
 ## L'aéroport (octobre 2026)
 
