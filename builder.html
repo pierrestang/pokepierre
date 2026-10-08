@@ -138,6 +138,31 @@
       #asst-log.warn { color: #f0b24a; }
       #erasebar { left: 12px; bottom: 12px; padding: 3px 3px 3px 10px; color: var(--muted); font-size: 12px; }
       #erasebar[hidden], #selbar[hidden], #npcbar[hidden], #npc-detail[hidden], #npc-extra[hidden] { display: none; }
+      #ecartsbar { right: 12px; top: 56px; bottom: 12px; width: 330px; flex-direction: column; align-items: stretch; gap: 6px;
+        padding: 10px 12px; overflow: auto; z-index: 3; }
+      #ecartsbar[hidden] { display: none; }
+      #ecartsbar .ecarts-head { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; }
+      #ecartsbar .ecarts-head small { flex: 1; font-weight: 400; opacity: 0.7; }
+      #ecartsbar .help { margin: 0; font-size: 11px; opacity: 0.8; }
+      #ecartsbar .btn.mini { padding: 2px 6px; font-size: 11px; min-width: 0; }
+      #ecarts-list { display: flex; flex-direction: column; gap: 6px; }
+      .ecart { display: grid; grid-template-columns: 60px 1fr auto; gap: 8px; align-items: center; padding: 6px; border: 1px solid var(--line);
+        border-radius: 8px; }
+      .ecart.on { border-color: #fff; background: var(--hover); }
+      .ecart-thumb { width: 60px; height: 60px; display: grid; place-items: center; background: rgba(255, 255, 255, 0.06); border: 0;
+        border-radius: 6px; cursor: pointer; padding: 0; }
+      .ecart-thumb canvas { image-rendering: pixelated; }
+      .ecart-text { font-size: 12px; line-height: 1.35; min-width: 0; }
+      .ecart-text small { display: block; opacity: 0.7; font-size: 11px; }
+      .ecart-text div { color: #f0a050; }
+      .ecart-acts { display: flex; flex-direction: column; gap: 4px; }
+      .ecart-acts .btn { padding: 3px 8px; font-size: 11px; justify-content: center; }
+      .ecart-acts .btn.danger { color: #ff8a80; }
+      .ecart-acts .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+      .tool { position: relative; }
+      .tool-badge { position: absolute; top: 1px; right: 1px; min-width: 14px; height: 14px; padding: 0 3px; border-radius: 7px;
+        background: #e0802c; color: #fff; font-size: 9px; font-weight: 700; line-height: 14px; text-align: center; }
+      .tool-badge[hidden] { display: none; }
       #npcbar { left: 12px; top: 12px; bottom: 12px; width: 330px; flex-direction: column; align-items: stretch; gap: 6px;
         padding: 10px 12px; overflow: auto; }
       #npcbar .npc-head { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; }
@@ -359,12 +384,21 @@
           <button class="tool" id="grid" title="Grille (H)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9.3h16M4 14.7h16M9.3 4v16M14.7 4v16"/></svg></button>
           <button class="tool" id="show-npcs" title="Toujours voir les PNJ"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A5 5 0 0 1 21 19v1"/></svg></button>
           <button class="tool" id="show-solid" title="Toujours voir les collisions (V)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          <hr />
+          <button class="tool" id="show-ecarts" title="Écarts — les assets qui s'écartent de leur famille (contour, ombre, style, échelle, couleurs : check-up visuel)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span class="tool-badge" id="ecarts-count" hidden></span></button>
         </nav>
 
         <div id="view">
           <canvas id="map"></canvas>
           <div class="float" id="erasebar" hidden title="Taille de la gomme ([ et ] pour la changer)">Gomme
             <button class="btn" data-erase="1">1</button><button class="btn" data-erase="2">2</button><button class="btn" data-erase="3">3</button><button class="btn" data-erase="5">5</button>
+          </div>
+          <div class="float" id="ecartsbar" hidden>
+            <div class="ecarts-head">Écarts <small id="ecarts-where"></small>
+              <button class="btn mini" id="ecarts-reset" title="Montrer aussi ceux qu'on a ignorés">Tout</button>
+              <button class="btn mini" id="ecarts-close" title="Fermer">×</button></div>
+            <p class="help">Assets qui s'écartent de leur famille (scripts/audit_assets.py). Clic sur une vignette : la voir sur la carte. « Supprimer » : retirée d'un clic (Ctrl+Z pour annuler).</p>
+            <div id="ecarts-list"></div>
           </div>
           <div class="float" id="npcbar" hidden>
             <div class="npc-head">Personnages <small id="npc-where"></small>

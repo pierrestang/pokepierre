@@ -384,3 +384,22 @@ check_paths.js). L'hôtesse : une question à deux choix (le vol de la suite de 
 ouvrir une sous-question (`ask`) et être cachée quand d'autres conditions sont remplies (`notWhen`) ; seule, une
 sous-question s'ouvre directement (MapScene.runAsk).
 
+
+## Écarts : check-up visuel (octobre 2026)
+
+`python3 scripts/audit_assets.py` mesure les assets posés de Fort-de-France à Hull (cartes du créateur et intérieurs de
+ces villes, modèles partagés compris) : éléments du mode simple, et objets des calques Décor / au-dessus de Pierre
+(morceaux de dessin d'un seul tenant ; ni les bordures d'arbres, ni les murs du haut des pièces, ni le vide noir). Il
+les range par famille (bâtiments et toits, végétation, mobilier urbain, sols et décor au sol, intérieurs et mobilier) et
+repère ceux qui s'écartent nettement de la médiane de leur famille : pas de contour, contour épais, ombre portée, bords
+flous ou beaucoup plus de couleurs (style hors DS), couleurs très différentes, échelle (règles et seuils en tête du
+script). Sorties : src/builder/ecarts.json et, dans le scratchpad (ou `--sortie`), une planche-contact par famille et
+resume.json. `--carte <id>` : une seule carte, fusionnée dans le fichier existant.
+
+Dans le créateur, le bouton « Écarts » (triangle, avec un compteur) ouvre le panneau (src/builder/ecarts.js) : pour la
+carte, l'intérieur ou le modèle ouvert, chaque écart avec sa vignette, sa famille et ses raisons ; clic sur la vignette :
+la vue se centre dessus (encadré blanc ; tous les écarts en pointillés orange) ; « Supprimer » le retire d'un clic
+(élément du mode simple comme la gomme, sinon ses cases des calques Décor et au-dessus, collisions libérées s'il ne reste
+rien ; jamais le sol), annulable ; désactivé s'il couvre une case importante (PNJ, porte, objet du jeu, passage, sortie,
+départ) ; « Ignorer » le masque dans ce navigateur (« Tout » les remontre). Un écart déjà retiré disparaît de la liste.
+Relancer le script après des retouches pour mettre la liste à jour.
