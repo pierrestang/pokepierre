@@ -1322,6 +1322,11 @@ export const interiors = {
     ],
     // Dans le noir tant que le compteur n'est pas relevé.
     dark: { ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.coupureReparee], radius: 34 },
+    // La soirée : de nuit, comme à l'Asylum, avec des lumières de fête autour de l'enceinte.
+    night: {
+      ...PARTY_TIME,
+      lights: [[6, 5, 0xff60c0], [3, 7, 0x40d8ff], [9, 7, 0xa060ff], [6, 9, 0xffc060], [10, 4, 0xff60c0]],
+    },
     // L'enceinte de Paul au milieu du salon, pendant la soirée.
     props: [
       { type: 'partySpeaker', x: 6, y: 5, w: 1, h: 1, ...PARTY_TIME, dialogue: ['L\'enceinte de Paul. Elle envoie !'] },
@@ -1344,7 +1349,12 @@ export const interiors = {
         dialogue: ['On n\'y voit rien… Il est où, ce compteur ? Pas près de la porte, en tout cas.'],
       },
       // Le lendemain matin : Ousmane dort, dans son lit (celui de gauche).
-      { id: 'ousmane-lit', name: 'Ousmane', x: 1, y: 10, facing: 'down', still: true, inBed: true, ...MORNING_AFTER, script: OUSMANE_ASLEEP },
+      { id: 'ousmane-lit', name: 'Ousmane', x: 1, y: 10, facing: 'down', still: true, inBed: true, ...MORNING_AFTER, unlessFlags: [FLAGS.soireeFinie, FLAGS.ousmaneLeve], script: OUSMANE_ASLEEP },
+      // Tout rangé : Ousmane sort du lit (voir bordeauxStory.js OUSMANE_WAKES).
+      {
+        id: 'ousmane-leve', name: 'Ousmane', x: 2, y: 10, facing: 'right', ifFlags: [FLAGS.lendemainSoiree, FLAGS.ousmaneLeve],
+        unlessFlags: [FLAGS.soireeFinie], dialogue: ['Tout rangé… Je te dois une pizza. Une vraie, pas celle d\'hier soir.'],
+      },
       // La soirée : Ousmane et Rémi dans la foule.
       { id: 'ousmane-fete', name: 'Ousmane', x: 7, y: 6, facing: 'left', ...PARTY_TIME, dancing: true, dialogue: ['Regarde-moi ça ! Et dire que tout à l\'heure on était dans le noir.'] },
       { id: 'remi-fete', name: 'Rémi', x: 5, y: 6, facing: 'right', ...PARTY_TIME, dancing: true, dialogue: ['This party is so lit ! Enfin… grâce à toi, littéralement.'] },

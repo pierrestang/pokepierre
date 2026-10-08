@@ -157,7 +157,11 @@ export const PARTY_END = [
   { say: ['Le lendemain matin. L\'appartement est sens dessus dessous : gobelets, canettes, pizza froide, confettis…', 'Ousmane dort encore, tout habillé. Pas question de sortir avant d\'avoir tout rangé.'] },
 ];
 const TIDY_FLAGS = [FLAGS.gobeletsRanges, FLAGS.salonRange, FLAGS.litFaitBordeaux];
+// Ousmane sort du lit (la variante debout, à côté du lit), vient voir Pierre et lui donne la photo.
 const OUSMANE_WAKES = [
+  { setFlag: FLAGS.ousmaneLeve },
+  { emote: 'ousmane-leve', kind: 'surprise' },
+  { approach: 'ousmane-leve' },
   { speaker: 'Ousmane', say: ['Attends… t\'as tout rangé ? Tout seul ?', 'Tiens, j\'ai retrouvé ça sous les confettis.'] },
   { give: ITEMS.photoSoiree, text: 'Tu reçois la photo de la soirée !' },
 ];
@@ -172,7 +176,6 @@ export const TIDY_CUPS = tidy('Pierre ramasse tous les gobelets qui traînent et
 export const TIDY_LIVING_ROOM = tidy('Pierre jette la pizza, les canettes, les chips et les bouteilles, et balaie les confettis.', FLAGS.salonRange);
 export const TIDY_BED = tidy('Pierre secoue la couette et fait son lit.', FLAGS.litFaitBordeaux);
 export const OUSMANE_ASLEEP = [
-  { ifItems: [ITEMS.photoSoiree.id], speaker: 'Ousmane', say: ['Attends… t\'as tout rangé ? Tout seul ?'], end: true },
   { say: ['Ousmane dort à poings fermés. Il ronfle.'] },
 ];
 

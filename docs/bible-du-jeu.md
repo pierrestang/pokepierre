@@ -617,7 +617,8 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
    - Rémi : « C'est so random, les gobelets sont dans le closet. » ; choix « Le closet ? » / « Thanks, bro. » / « Parle
      français ! » ; dans tous les cas → **Gobelets**.
    - Ousmane : « On est bons. Rentre, ça commence. » ; « La soirée d'intégration bat son plein. L'enceinte de Paul
-     trône au milieu du salon. » (répliques des étudiants, par exemple « C'est toi qui as rallumé le courant ? Respect. »)
+     trône au milieu du salon. » L'appartement est de nuit, comme à l'Asylum, avec des lumières de fête autour de
+     l'enceinte (répliques des étudiants, par exemple « C'est toi qui as rallumé le courant ? Respect. »)
    - Parmi les invités, Léo : **« Moi c'est Léo, aussi à KEDGE. Paraît qu'on part tous à Hull l'an prochain pour
      l'échange… Ça va être quelque chose. »** (ensuite : « La prochaine soirée, c'est à Hull ! ») ; Anaïs : **« Anaïs, de ta
      promo ! Léo dit qu'à Hull il pleut tout le temps. J'espère qu'il exagère. »** (ensuite : « À Hull, alors ! »).
@@ -652,8 +653,8 @@ vrac sur le lit de Pierre. Trois tâches, dans n'importe quel ordre ; ramasser u
 gobelets (« Pierre ramasse tous les gobelets qui traînent et les empile dans un sac. »), le salon (« Pierre jette la
 pizza, les canettes, les chips et les bouteilles, et balaie les confettis. »), le lit de droite (« Pierre secoue la
 couette et fait son lit. ») ; à la première : **« Pierre utilise Autonomie ! »**. Avant, Ousmane : « Ousmane dort à
-poings fermés. Il ronfle. » Une fois les trois faites, Ousmane se réveille : **« Attends… t'as tout rangé ? Tout
-seul ? »** / « Tiens, j'ai retrouvé ça sous les confettis. » → **Photo de la soirée** (« Tu reçois la photo de la soirée ! »). Ensuite : « Attends… t'as tout rangé ? Tout seul ? »
+poings fermés. Il ronfle. » Une fois les trois faites, Ousmane se réveille, sort du lit et vient voir Pierre : **« Attends… t'as tout rangé ? Tout
+seul ? »** / « Tiens, j'ai retrouvé ça sous les confettis. » → **Photo de la soirée** (« Tu reçois la photo de la soirée ! »). Ensuite : « Tout rangé… Je te dois une pizza. Une vraie, pas celle d'hier soir. »
 On ne sort pas avant d'avoir tout rangé : à la porte, **« L'appartement ressemble à un champ de bataille… Tu ne vas pas
 laisser ce chantier à Ousmane : range tout avant de sortir. »** et Pierre recule d'un pas. Une fois tout rangé, la sortie
 mène à « Quelques mois plus tard… ».
