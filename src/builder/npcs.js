@@ -1,7 +1,7 @@
 import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
 import { applyNpcEdits, isStoryNpc } from '../data/maps/npcEdits.js';
-import { lookOf } from '../data/characters.js';
+import { lookOf, projectLookOf, setProjectLook } from '../data/characters.js';
 import {
   stepsOf, rankOf, raisedAt, flagsOk, flagLabel, settersOf, describeNpc, unlockedBy, walksOf, flagsSetBy,
 } from './questModel.js';
@@ -43,7 +43,7 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
   sheet.src = `${base}assets/characters/gen4-npcs.png`;
   sheet.onload = () => { requestDraw(); renderPanel(); };
   let names = [];
-  fetch(`${base}assets/characters/gen4-npcs.json`).then((r) => r.json()).then((d) => { names = d.characters; fillSprites(); })
+  fetch(`${base}assets/characters/gen4-npcs.json`).then((r) => r.json()).then((d) => { names = d.characters; fillSprites(); fillLooks(); })
     .catch(() => {});
   // selected : l'id du PNJ choisi ; step : l'étape de la frise (null : toutes les étapes) ; advanced : « Plus d'options »
   // (frise de la quête, ce que fait le personnage, ses marches sur la carte, figurants) ; sinon, on ne fait que le placer.
@@ -332,7 +332,7 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
       e.moved[npc.id] = { ...(e.moved[npc.id] ?? {}), x, y, ...(facing ? { facing } : {}) };
       const o = originOf(npc);
       const m = e.moved[npc.id];
-      if (o && o.x === m.x && o.y === m.y && !m.facing) delete e.moved[npc.id];
+      if (o && o.x === m.x && o.y === m.y && !m.facing && !m.sprite) delete e.moved[npc.id];
     }
     changed();
     renderPanel();
@@ -390,6 +390,41 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     const sel = $('npc-sprite');
     if (!sel || sel.options.length > 1) return;
     for (const c of names) sel.append(new Option(`${c.id} — ${c.name}`, c.id));
+  }
+
+  function fillLooks() {
+    const sel = $('npc-look');
+    if (!sel || sel.options.length > 1) return;
+    for (const c of names) sel.append(new Option(`${c.id} — ${c.name}`, c.id));
+  }
+
+  // Apparence d'un PNJ du jeu : partout (par nom, src/data/characterLooks.json, écrit tout de suite par le serveur de
+  // développement) ou seulement ici (npcEdits.moved[id].sprite, enregistré avec le dessin).
+  async function setLook(n, sprite) {
+    const name = n.name ?? n.id;
+    if ($('npc-look-here').checked) {
+      remember();
+      const e = edits();
+      e.moved[n.id] = { ...(e.moved[n.id] ?? { x: n.x, y: n.y }), sprite: sprite || undefined };
+      if (!sprite) delete e.moved[n.id].sprite;
+      changed();
+      renderPanel();
+      setStatus(`Apparence de ${name} changée ici (pense à « Enregistrer »)`, 'ok');
+      return;
+    }
+    try {
+      const res = await fetch(`${base}__builder/looks`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, sprite: sprite || null }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setProjectLook(name, sprite || null);
+      setStatus(sprite ? `Apparence de ${name} changée partout (src/data/characterLooks.json)`
+        : `${name} reprend partout l'apparence prévue dans le jeu`, 'ok');
+    } catch {
+      setStatus('Apparence partout : seulement avec le serveur de développement (npm run dev)', 'err');
+    }
+    requestDraw();
+    renderPanel();
   }
 
   const el = (tag, cls, text) => {
@@ -461,6 +496,14 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     const extra = it.kind === 'extra';
     $('npc-extra').hidden = !extra;
     $('npc-reset').hidden = extra || !state.map.npcEdits?.moved?.[n.id];
+    $('npc-look-box').hidden = extra || n.id === 'chat' || n.id?.startsWith('poule');
+    if (!extra) {
+      fillLooks();
+      const here = state.map.npcEdits?.moved?.[n.id]?.sprite;
+      $('npc-look-here').checked = Boolean(here);
+      $('npc-look-name').textContent = n.name ?? n.id;
+      $('npc-look').value = here ?? projectLookOf(n.name ?? n.id) ?? '';
+    }
     if (extra) {
       const e = edits().extras.find((o) => o.id === n.id);
       $('npc-name').value = e?.name ?? '';
@@ -572,6 +615,23 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
         moveTo(it.npc, it.npc.x, it.npc.y, b.dataset.dir);
       };
     });
+    $('npc-look').onchange = () => {
+      const it = selectedItem();
+      if (it) setLook(it.npc, $('npc-look').value);
+    };
+    $('npc-look-here').onchange = () => {
+      const it = selectedItem();
+      if (!it) return;
+      const e = edits();
+      remember();
+      if ($('npc-look-here').checked) {
+        e.moved[it.npc.id] = { ...(e.moved[it.npc.id] ?? { x: it.npc.x, y: it.npc.y }), sprite: spriteOf(it.npc) };
+      } else if (e.moved[it.npc.id]) {
+        delete e.moved[it.npc.id].sprite;
+      }
+      changed();
+      renderPanel();
+    };
     $('npc-delete').onclick = () => editExtra((e) => {
       const list = edits().extras;
       list.splice(list.indexOf(e), 1);

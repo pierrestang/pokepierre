@@ -430,6 +430,11 @@
                 </div>
               </div>
               <div id="npc-presence"></div>
+              <div id="npc-look-box">
+                <label>Apparence <select id="npc-look"><option value="">celle du jeu</option></select></label>
+                <label class="npc-toggle" title="Décoché : l'apparence change partout où ce nom apparaît dans le jeu">
+                  <input type="checkbox" id="npc-look-here" /> Seulement ici (pas les autres « <span id="npc-look-name"></span> »)</label>
+              </div>
               <button class="btn" id="npc-reset" hidden title="Le personnage revient à la place prévue dans le code">Remettre à sa place</button>
               <div class="npc-adv">
                 <div class="npc-sec">Ce qu'il fait</div>

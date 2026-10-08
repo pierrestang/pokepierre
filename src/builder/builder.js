@@ -1385,6 +1385,7 @@ function applyAt(c, e) {
 
 // Zoom à la molette, autour de la souris.
 view.addEventListener('wheel', (e) => {
+  if (e.target.closest?.('.float')) return;          // sur un panneau (personnages, assistant…) : il défile, pas de zoom
   e.preventDefault();
   if (!e.ctrlKey && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {          // pavé tactile : défilement horizontal
     state.ox -= e.deltaX;

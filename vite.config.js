@@ -10,6 +10,7 @@ const INTERIORS_DIR = resolve(import.meta.dirname, 'src/data/builtInteriors');
 const ID = /^[a-z0-9-]{1,60}$/;
 const INTERIOR_ID = /^[A-Za-z0-9-]{1,60}$/;
 const MODELES_DIR = resolve(INTERIORS_DIR, 'modeles');
+const LOOKS_FILE = resolve(import.meta.dirname, 'src/data/characterLooks.json');
 
 // Pendant le développement (npm run dev, sur l'ordinateur), le créateur de cartes lit et écrit ses cartes ici :
 //   GET  /__builder/maps         la liste { id, name, width, height }
@@ -91,6 +92,45 @@ function collection(dir, idPattern, { interiors = false, rel: relDir = null } = 
   };
 }
 
+// Apparences des personnages choisies dans le créateur (« partout », par nom) : src/data/characterLooks.json.
+//   GET  /__builder/looks           { nom: 'g{n}', … }
+//   POST /__builder/looks           { name, sprite } (sprite null : retour à l'attribution du code)
+// Le fichier n'est pas surveillé (pas de rechargement du créateur) ; il est invalidé pour le prochain chargement du jeu.
+function looks(server) {
+  server.watcher.unwatch(LOOKS_FILE);
+  return (req, res) => {
+    const send = (status, body) => {
+      res.statusCode = status;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(body));
+    };
+    const read = () => (existsSync(LOOKS_FILE) ? JSON.parse(readFileSync(LOOKS_FILE, 'utf8')) : {});
+    if (req.method === 'GET') return send(200, read());
+    if (req.method !== 'POST') return send(405, { error: 'méthode non prise en charge' });
+    if (!String(req.headers['content-type'] ?? '').startsWith('application/json')) return send(415, { error: 'JSON attendu' });
+    const origin = req.headers.origin;
+    if (origin && new URL(origin).host !== req.headers.host) return send(403, { error: 'origine refusée' });
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; if (body.length > 10000) req.destroy(); });
+    req.on('end', () => {
+      try {
+        const { name, sprite } = JSON.parse(body);
+        if (typeof name !== 'string' || !name.trim() || name.length > 60) return send(400, { error: 'nom invalide' });
+        if (sprite !== null && !/^g\d{1,4}$/.test(sprite)) return send(400, { error: 'apparence invalide' });
+        const all = read();
+        if (sprite) all[name] = sprite;
+        else delete all[name];
+        const sorted = Object.fromEntries(Object.entries(all).sort(([a], [b]) => a.localeCompare(b, 'fr')));
+        writeFileSync(LOOKS_FILE, `${JSON.stringify(sorted, null, 2)}\n`);
+        server.moduleGraph.getModulesByFile(LOOKS_FILE)?.forEach((m) => server.moduleGraph.invalidateModule(m));
+        send(200, { ok: true, file: 'src/data/characterLooks.json' });
+      } catch (error) {
+        send(400, { error: String(error) });
+      }
+    });
+  };
+}
+
 function builderMaps() {
   return {
     name: 'pokepierre-builder-maps',
@@ -99,6 +139,7 @@ function builderMaps() {
       server.middlewares.use('/__builder/interieurs', collection(INTERIORS_DIR, INTERIOR_ID, { interiors: true }));
       // Modèles d'intérieurs partagés (src/data/builtInteriors/modeles) : le dessin commun à plusieurs pièces.
       server.middlewares.use('/__builder/modeles', collection(MODELES_DIR, ID, { interiors: true, rel: 'src/data/builtInteriors/modeles' }));
+      server.middlewares.use('/__builder/looks', looks(server));
     },
   };
 }

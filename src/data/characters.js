@@ -1,5 +1,8 @@
 import { fullLook } from '../art/characterArt.js';
 import { SHEETS } from '../art/spriteSheets.js';
+// Apparences choisies dans le créateur de cartes (éditeur de personnages, « partout »), par nom : { Rémy: 'g110', … }.
+// Elles passent avant les attributions de BY_NAME ; le créateur les écrit via /__builder/looks (vite.config.js).
+import PROJECT_LOOKS from './characterLooks.json' with { type: 'json' };
 
 // Apparence des personnages : uniquement des personnages de la quatrième génération, `g{n}` (voir
 // art/spriteSheets.js et public/assets/characters/gen4-npcs.json pour la liste et les noms).
@@ -72,17 +75,29 @@ export function lookOf(data) {
   if (data.id?.startsWith('poule')) return fullLook({ kind: 'hen' });
   if (data.sprite) return { sprite: data.sprite };
   const name = data.name ?? capitalize(data.id);
-  const sprite = lookChoices.get(name) ?? BY_NAME[name] ?? BY_NAME[capitalize(data.id)];
+  const sprite = lookChoices.get(name) ?? projectLook(name) ?? BY_NAME[name] ?? BY_NAME[capitalize(data.id)];
   return { sprite: sprite ?? EXTRAS[hash(`${data.id}:${data.x},${data.y}`) % EXTRAS.length] };
 }
 
 // Sprite affiché pour un nom dans le menu PNJ : choix du joueur, attribution, sinon un figurant type.
 export function spriteForName(name) {
-  return lookChoices.get(name) ?? BY_NAME[name] ?? EXTRAS[hash(name) % EXTRAS.length];
+  return lookChoices.get(name) ?? projectLook(name) ?? BY_NAME[name] ?? EXTRAS[hash(name) % EXTRAS.length];
 }
 
 // Sprite attribué par défaut (null pour un figurant).
-export const defaultSpriteOf = (name) => BY_NAME[name] ?? null;
+export const defaultSpriteOf = (name) => projectLook(name) ?? BY_NAME[name] ?? null;
+
+// Apparences du projet (characterLooks.json) ; le créateur peut en changer une sans recharger la page (setProjectLook).
+const projectLooks = { ...PROJECT_LOOKS };
+function projectLook(name) {
+  const sprite = projectLooks[name];
+  return sprite && SHEETS[sprite[0]] ? sprite : null;
+}
+export const projectLookOf = (name) => projectLooks[name] ?? null;
+export function setProjectLook(name, sprite) {
+  if (sprite) projectLooks[name] = sprite;
+  else delete projectLooks[name];
+}
 
 function capitalize(id = '') {
   return id.charAt(0).toUpperCase() + id.slice(1);
