@@ -78,8 +78,9 @@ const INSPECTION = [
   { useTrait: TRAITS.espritEquipe },
   { say: ['Objectif : rejoins Tanguy et Geoffrey derrière le mur, à la porte nord. Gare aux rondes !'] },
   // Ils filent chacun par le plus court chemin vers l'escalier (pas en file : l'un ne refait pas tout le trajet de l'autre),
-  // pendant que Pierre a déjà la main ; ils disparaissent en bas (Geoffrey, le plus loin, lève le drapeau à son arrivée).
-  { walk: 'tanguy', to: [DORM_EXIT[0], DORM_EXIT[1] + 1] },
+  // pendant que Pierre a déjà la main ; ils descendent l'escalier et s'effacent (Geoffrey, le plus loin, lève le drapeau à
+  // son arrivée ; Tanguy, parti le premier, ne lui barre plus la marche).
+  { walk: 'tanguy', to: DORM_EXIT },
   { walk: 'geoffrey', to: DORM_EXIT, then: [FLAGS.murPropose] },
 ];
 const ALL_DONE = { ifFlags: [FLAGS.litFait, FLAGS.armoireRangee, FLAGS.affairesPretes], unlessFlags: [FLAGS.chambrePrete] };
@@ -169,8 +170,8 @@ export const MORNING = [
   { speaker: 'Tanguy', say: ['Debout, Pierre ! C\'est aujourd\'hui : la liste du bac est affichée dans la cour.'] },
   { speaker: 'Geoffrey', say: ['On descend voir. Si j\'y suis pas, je refais le mur… mais pour de bon.'] },
   { say: ['Objectif : va voir les résultats du bac, sur le panneau de la place d\'armes.'] },
-  { walk: 'tanguy-jourj', to: [12, 4] },
-  { walk: 'geoffrey-jourj', to: [12, 3], then: [FLAGS.bacDescente] },
+  { walk: 'tanguy-jourj', to: DORM_EXIT },
+  { walk: 'geoffrey-jourj', to: DORM_EXIT, then: [FLAGS.bacDescente] },
 ];
 
 // ---------- 3. Le bac ----------

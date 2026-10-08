@@ -62,9 +62,10 @@ export const routeBonsecoursMap = {
   npcs: [
     { ...GUARD, id: 'sentinelle-1', x: 11, y: 2, dialogue: GUARD_LINES },
     { ...GUARD, id: 'sentinelle-2', x: 12, y: 2, dialogue: GUARD_LINES },
-    // Le brevet en poche : un militaire s'est écarté sur le bas-côté et laisse passer.
+    // Le brevet en poche : un militaire s'est écarté sur le bas-côté et laisse passer (à droite du chemin nord, au-dessus
+    // de la barrière, dos aux arbres).
     {
-      id: 'militaire-ouvert', name: 'Militaire', x: 13, y: 2, facing: 'left', color: 0x3c5c2c,
+      id: 'militaire-ouvert', name: 'Militaire', x: 13, y: 1, facing: 'left', color: 0x3c5c2c,
       ifFlags: [FLAGS.bonsecoursFini],
       dialogue: ['Ton brevet ? Garde-à-vous… C\'est en règle.', 'Les portes du Prytanée te sont ouvertes. Droit devant, et tiens-toi bien !'],
     },

@@ -335,7 +335,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   npcAt(x, y) {
-    return this.npcs.find((n) => n.data.x === x && n.data.y === y);
+    return this.npcs.find((n) => n.data.x === x && n.data.y === y && !n.gone);
   }
 
   // (Re)crée les PNJ et suiveurs selon les drapeaux d'histoire.
@@ -916,12 +916,24 @@ export class MapScene extends Phaser.Scene {
       await this.stepTo(npc.sprite, d, [x, y]);
     }
     if (!alive()) return;
+    if (d.x === tx && d.y === ty && getTile(this.grid[ty]?.[tx])?.stairs) await this.climbAway(npc);
     then.forEach((f) => this.pendingWalkFlags.delete(f));
     d.facing = npc.sprite.facing;
     if (then.length) {
       then.forEach(flags.add);
       this.refreshActors();
     }
+  }
+
+  // Un PNJ envoyé sur une marche d'escalier s'en va par l'escalier : il monte les marches dessinées au-dessus (s'il y en
+  // a), puis s'efface. Il ne bloque plus personne (`gone`) jusqu'à ce que ses drapeaux le retirent.
+  async climbAway(npc) {
+    const d = npc.data;
+    while (getTile(this.grid[d.y - 1]?.[d.x])?.stairs && !(this.player.tileX === d.x && this.player.tileY === d.y - 1)) {
+      await this.stepTo(npc.sprite, d, [d.x, d.y - 1]);
+    }
+    await new Promise((resolve) => this.tweens.add({ targets: npc.sprite, alpha: 0, duration: 250, onComplete: resolve }));
+    npc.gone = true;
   }
 
   // Les PNJ `ids` marchent en file jusqu'à `to` : le premier ouvre la route (plus court chemin, par les chemins), chaque
@@ -979,7 +991,7 @@ export class MapScene extends Phaser.Scene {
     const W = this.grid[0].length;
     const key = (x, y) => y * W + x;
     // Cases occupées, calculées une fois : PNJ (sauf `from` et `ignore`) et case évitée.
-    const taken = new Set(this.npcs.filter((n) => n.data !== from && !ignore.includes(n.data)).map((n) => key(n.data.x, n.data.y)));
+    const taken = new Set(this.npcs.filter((n) => n.data !== from && !n.gone && !ignore.includes(n.data)).map((n) => key(n.data.x, n.data.y)));
     if (avoid) taken.add(key(avoid[0], avoid[1]));
     const free = (x, y) => x >= 0 && x < W && this.tileWalkable(x, y) && !taken.has(key(x, y)) && !this.propAt(x, y);
     const cost = (x, y) => (getTile(this.grid[y][x]).road ? 1 : OFF_ROAD);

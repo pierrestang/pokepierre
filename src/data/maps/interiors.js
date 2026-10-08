@@ -805,7 +805,7 @@ export const interiors = {
       // Rémy arrive en courant par l'escalier quand Pierre touche le casier 12 (voir collegeStory.js LOCKER_FIGHT),
       // puis, l'embrouille réglée, file en salle de maths.
       {
-        id: 'remi', name: 'Rémy', x: 12, y: 4, facing: 'left', color: 0xc05c3c,
+        id: 'remi', name: 'Rémy', x: 13, y: 3, facing: 'left', color: 0xc05c3c,   // sur l'escalier du hall
         ifFlags: [FLAGS.remiArrive], unlessFlags: [FLAGS.casierPartage],
       },
       {
@@ -815,7 +815,7 @@ export const interiors = {
       // Le casier devenu QG : Rémy descend de la salle de maths donner son autocollant à Pierre (voir collegeStory.js
       // LOCKER).
       {
-        id: 'remy-autocollant', name: 'Rémy', x: 1, y: 4, facing: 'right', color: 0xc05c3c,
+        id: 'remy-autocollant', name: 'Rémy', x: 1, y: 3, facing: 'right', color: 0xc05c3c,   // sur l'escalier des maths
         ifFlags: [FLAGS.remyAutocollant], unlessFlags: [FLAGS.remyRepart],
         dialogue: ['On a le même autocollant, maintenant !'],
       },
@@ -1175,12 +1175,12 @@ export const interiors = {
       { id: 'geoffrey', name: 'Geoffrey', x: 9, y: 7, facing: 'left', color: 0x4c7cb0, unlessFlags: [FLAGS.murPropose], script: GEOFFREY_GUIDE },
       // L'inspection.
       {
-        id: 'capitaine-inspection', name: 'Capitaine', x: 13, y: 4, facing: 'down', color: 0x3c5c2c,   // au pied de l'escalier
+        id: 'capitaine-inspection', name: 'Capitaine', x: 12, y: 3, facing: 'down', color: 0x3c5c2c,   // sur l'escalier du hall
         ifFlags: [FLAGS.chambrePrete], unlessFlags: [FLAGS.inspection],
       },
       // Au petit matin, de retour du mur : le capitaine monte au dortoir (voir prytaneeStory.js MORNING).
       {
-        id: 'capitaine-matin', name: 'Capitaine', x: 13, y: 4, facing: 'down', color: 0x3c5c2c,   // au pied de l'escalier
+        id: 'capitaine-matin', name: 'Capitaine', x: 12, y: 3, facing: 'down', color: 0x3c5c2c,   // sur l'escalier du hall
         ifFlags: [FLAGS.murReussi], unlessFlags: [FLAGS.murMatin],
       },
       {
