@@ -45,10 +45,9 @@ const INSPECTION = [
   { walk: 'capitaine-inspection', to: [7, 6], block: true },
   { face: { 'capitaine-inspection': 'up' } },
   { speaker: 'Capitaine', say: ['GARDE À VOUS !'] },
-  { walk: 'tanguy', to: [4, 5] },
-  { walk: 'geoffrey', to: [6, 5] },
+  // Les trois rejoignent leur place (on attend qu'ils y soient), puis se tournent vers le capitaine.
+  { walkAll: [['tanguy', [4, 5]], ['geoffrey', [6, 5]]] },
   { goTo: [9, 5], facing: 'down' },
-  { wait: 500 },
   { face: { tanguy: 'down', geoffrey: 'down', player: 'down' } },
   { say: ['Tanguy, Geoffrey et toi, alignés devant vos lits, au garde-à-vous.'] },
   // Il passe tout en revue : l'armoire d'abord (comme le disait Tanguy), le lit, puis le bureau.

@@ -1150,7 +1150,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'mηommmmommmmmm',
+      'mηoooooooooomm',
       'mηommmmommmmξm',
       'mmommmmommmmoo',
       'mmoooooooooooo',
@@ -1163,7 +1163,7 @@ export const interiors = {
     ]),
     triggers: [
       { x: 12, y: 3, warp: { interior: 'dortoirHall', x: 8, y: 3, facing: 'left' } },   // au pied de l'escalier du hall
-      { x: 1, y: 2, warp: { interior: 'dortoirEtage2', x: 2, y: 3, facing: 'right' } }, { x: 1, y: 3, warp: { interior: 'dortoirEtage2', x: 2, y: 3, facing: 'right' } },
+      { x: 1, y: 2, warp: { interior: 'dortoirEtage2', x: 12, y: 4, facing: 'down' } }, { x: 1, y: 3, warp: { interior: 'dortoirEtage2', x: 12, y: 4, facing: 'down' } },   // on arrive par l'escalier de droite
     ],
     spawn: { x: 12, y: 4, facing: 'down' },
     // Le soir du mur, jusqu'au retour : la nuit tombe dans la chambre (au petit matin, il fait jour).
@@ -1226,13 +1226,13 @@ export const interiors = {
   dortoirEtage2: {
     name: 'Dortoir des terminales',
     frlg: true,
-    // Exactement le même dessin que le 1er étage (bureau compris) : l'escalier de gauche redescend (ξ en x 1) ;
-    // l'encadrement de droite est fermé.
+    // Le même dessin que le 1er étage (bureau compris), sans l'escalier de gauche (il ne menait nulle part) : on arrive et
+    // on redescend par l'escalier en haut à droite (ξ en x 12).
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'mξommmmommmmmm',
-      'mξommmmommmmmm',
+      'oooooooooooomm',
+      'mmommmmommmmξm',
       'mmommmmommmmoo',
       'mmoooooooooooo',
       'oooooooooooomm',
@@ -1242,9 +1242,10 @@ export const interiors = {
       'oooooooooooooo',
       'mooooooooooooo',
     ]),
-    spawn: { x: 2, y: 3, facing: 'right' },
+    spawn: { x: 12, y: 4, facing: 'down' },
     night: PRYTANEE_NIGHT,                          // la nuit du mur : dans le noir, et ils dorment (pas de PNJ debout)
-    triggers: [{ x: 1, y: 2, warp: { interior: 'dortoir', x: 2, y: 3, facing: 'right' } }, { x: 1, y: 3, warp: { interior: 'dortoir', x: 2, y: 3, facing: 'right' } }],
+    // L'escalier en haut à droite redescend au dortoir (celui de gauche, qui ne menait nulle part, est retiré).
+    triggers: [{ x: 12, y: 3, warp: { interior: 'dortoir', x: 2, y: 3, facing: 'right' } }],
     objects: [
       ...[3, 4, 5, 6, 8, 9, 10, 11].map((x) => ({ x, y: 4, dialogue: ['Un lit au carré. Les terminales, ça ne rigole pas.'] })),
       ...[[0, 8], [1, 8], [12, 6], [13, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une armoire. Un poster de rugby scotché à l\'intérieur de la porte.'] })),
