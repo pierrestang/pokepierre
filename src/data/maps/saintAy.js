@@ -25,7 +25,7 @@ const BOAT_POS = { x: 0, y: 9, w: 4, h: 2 };
 // S = panneau, M = boîte aux lettres, R / W / D = toit, mur,
 // porte des bâtiments)
 // La vieille corde : au fond du coin de hautes herbes du sud-ouest, seulement pendant le chantier de la cabane.
-const ROPE_SPOT = { x: 2, y: 20 };
+const ROPE_SPOT = { x: 3, y: 20 };                 // dans la touffe de hautes herbes du coin sud-ouest
 const ROPE_CONDITIONS = { ifFlags: [FLAGS.planCabane], unlessItems: [ITEMS.corde.id], unlessFlags: [FLAGS.cabaneFinie] };
 // Une poule qu'on ne peut pas pousser par là (clôture, planches, autre poule).
 const HEN_STUCK = ['Cot cot ! La poule ne bouge pas de ce côté.'];
