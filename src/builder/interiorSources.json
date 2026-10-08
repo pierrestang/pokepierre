@@ -136,8 +136,8 @@
   "label": "HGSS · Ruins of Alph Lab · pièce 1"
  },
  "hullPubA": {
-  "key": "012i_Goldenrod radio tower#7",
-  "label": "HGSS · Goldenrod radio tower · pièce 8"
+  "key": "010i_Azalea Houses#1",
+  "label": "HGSS · Azalea Houses · pièce 2"
  },
  "hullPubB": {
   "key": "010i_Azalea Houses#1",
@@ -148,6 +148,22 @@
   "label": "Pièce dessinée (murs et sol générés)"
  },
  "kedge": {
+  "key": "012i_Goldenrod radio tower#7",
+  "label": "HGSS · Goldenrod radio tower · pièce 8"
+ },
+ "kedgeCasiers": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "kedgeSalle1": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "kedgeSalle2": {
+  "key": "006i_Violet School#0",
+  "label": "HGSS · Violet School · pièce 1"
+ },
+ "kedgeSalle3": {
   "key": "006i_Violet School#0",
   "label": "HGSS · Violet School · pièce 1"
  },
@@ -188,8 +204,8 @@
   "label": "HGSS · Sprout Tower · pièce 1"
  },
  "stade": {
-  "key": "013i_Park-Pokéathlon Gate#0",
-  "label": "HGSS · Park-Pokéathlon Gate · pièce 1"
+  "key": "dessinee:stade",
+  "label": "Pièce dessinée (murs et sol générés)"
  },
  "studioPaulfit": {
   "key": "modele:maison-type-2",

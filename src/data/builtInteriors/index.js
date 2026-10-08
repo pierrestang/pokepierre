@@ -42,6 +42,10 @@ import hullPubA from './hullPubA.json' with { type: 'json' };
 import hullPubB from './hullPubB.json' with { type: 'json' };
 import hullUniversity from './hullUniversity.json' with { type: 'json' };
 import kedge from './kedge.json' with { type: 'json' };
+import kedgeCasiers from './kedgeCasiers.json' with { type: 'json' };
+import kedgeSalle1 from './kedgeSalle1.json' with { type: 'json' };
+import kedgeSalle2 from './kedgeSalle2.json' with { type: 'json' };
+import kedgeSalle3 from './kedgeSalle3.json' with { type: 'json' };
 import maisonCommune from './maisonCommune.json' with { type: 'json' };
 import monastere from './monastere.json' with { type: 'json' };
 import montHouse from './montHouse.json' with { type: 'json' };
@@ -104,6 +108,10 @@ export const BUILT_INTERIORS = {
   hullPubB: composeInterior(hullPubB, MODELES),
   hullUniversity: composeInterior(hullUniversity, MODELES),
   kedge: composeInterior(kedge, MODELES),
+  kedgeCasiers: composeInterior(kedgeCasiers, MODELES),
+  kedgeSalle1: composeInterior(kedgeSalle1, MODELES),
+  kedgeSalle2: composeInterior(kedgeSalle2, MODELES),
+  kedgeSalle3: composeInterior(kedgeSalle3, MODELES),
   maisonCommune: composeInterior(maisonCommune, MODELES),
   monastere: composeInterior(monastere, MODELES),
   montHouse: composeInterior(montHouse, MODELES),
