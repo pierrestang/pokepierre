@@ -149,7 +149,7 @@ export const hullMap = {
     ],
   }],
   npcs: [
-    // Arrivée : Ousmane attend au bout de la grande rue, puis marche devant jusqu'à la coloc.
+    // Arrivée : Ousmane, déjà là, vient voir Pierre, puis marche devant jusqu'à la coloc.
     {
       id: 'ousmane-arrivee', name: 'Ousmane', x: HULL_SPOTS.arrival[0], y: HULL_SPOTS.arrival[1], facing: 'left',
       ifFlags: [FLAGS.arriveeHull], unlessFlags: [FLAGS.ousmaneRentre],

@@ -87,7 +87,7 @@ export const FLAGS = {
   remiKedge: 'remi-kedge',                      //   Rémi, devant KEDGE : « T'inquiète, c'est easy. »
   veloCherche: 'velo-cherche',                  //   facultatif : le cycliste du quai a perdu la clé de son antivol
   arriveeHull: 'arrivee-hull',                  // arrivé à Hull (Angleterre)
-  hullAccueil: 'hull-accueil',                  // Hull : Ousmane t'a accueilli au bout de la grande rue
+  hullAccueil: 'hull-accueil',                  // Hull : Ousmane t'a accueilli à l'arrivée
   ousmaneRentre: 'ousmane-rentre',              //        Ousmane est rentré à la coloc (devant toi)
   leoAppel: 'leo-appel',                        //        Ousmane : « Léo a appelé, il a un plan »
   leoPlan: 'leo-plan',                          //        chez Léo : la soirée commence (la nuit tombe)

@@ -697,8 +697,7 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paulfit,
 
 ### Arrivée et image d'accueil
 - Carte postale `hull` (« îles Tourbillon, la nuit » : une mer grise et agitée) : **« Hull, Angleterre. »**, puis
-  « Ousmane t'attend au bout de la grande rue. » ;
-  Ousmane : **« T'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps. »** / « Léo et Anaïs sont
+  Ousmane, déjà là, vient directement voir Pierre : **« T'es enfin là ! Bienvenue en Angleterre. Oui, il pleut. Il pleut tout le temps. »** / « Léo et Anaïs sont
   déjà là. Toute la promo de KEDGE a atterri ici. » / « Viens, je te montre la coloc. » Il pleut à Hull tant qu'il fait jour.
 
 ### La carte (redessinée en octobre 2026, 40 x 50)

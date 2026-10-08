@@ -2,7 +2,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 
 // Scénario de Hull : les années d'études avec la bande. Ousmane, Léo et Anaïs connaissent Pierre depuis Bordeaux (des
 // retrouvailles) ; Romain, Prophecy et Charlotte le rencontrent ici.
-//   1. L'arrivée, Ousmane au bout de la grande rue, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
+//   1. L'arrivée, Ousmane vient accueillir Pierre, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
 //   2. Premier pub : la tournée (chaque commande, puis le barman, en anglais) ; une erreur, on retourne redemander.
 //   3. Deuxième pub : une partie de fléchettes contre un habitué (systems/Darts.js) ; pari gagné : tournée générale.
 //   De chez Léo au premier pub, puis d'un bar à l'autre jusqu'à l'Asylum, Léo part devant en éclaireur et entre le
@@ -25,11 +25,10 @@ export const HULL_SPOTS = {
 
 // ---------- 1. L'arrivée ----------
 
-// Arrivée : image d'accueil (l'estuaire sous la pluie), Ousmane attend au bout de la grande rue et te montre la coloc (il
-// marche devant).
+// Arrivée : image d'accueil (l'estuaire sous la pluie), puis Ousmane, déjà là, vient directement voir Pierre et lui
+// montre la coloc (il marche devant).
 export const ARRIVAL = [
   { opening: { postcard: 'hull', text: 'Hull, Angleterre.' } },
-  { say: ['Ousmane t\'attend au bout de la grande rue.'] },
   { approach: 'ousmane-arrivee' },
   {
     speaker: 'Ousmane',
