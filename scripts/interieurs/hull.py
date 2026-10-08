@@ -197,6 +197,17 @@ def _catalogue_int():
     return {e['id']: e for e in c['themes']['libre']['elements']}, Image.open(_V2 / 'catalogue-int.png').convert('RGBA'), c['cols']
 
 
+def crisp(img):
+    """Bords nets, comme les cases DS : le halo à demi transparent d'un dessin réduit en lissant (étagère à bouteilles,
+    lampe, cible…) disparaît (opacité < 128) ou devient plein (check-up visuel, octobre 2026)."""
+    import numpy as np
+    a = np.array(img.convert('RGBA'))
+    semi = (a[..., 3] > 0) & (a[..., 3] < 255)
+    a[semi & (a[..., 3] < 128)] = 0
+    a[semi & (a[..., 3] >= 128), 3] = 255
+    return Image.fromarray(a)
+
+
 def ci_img(eid):
     els, sheet_img, cols = _catalogue_int()
     e = els[eid]
@@ -206,7 +217,7 @@ def ci_img(eid):
             if k >= 0:
                 out.alpha_composite(sheet_img.crop(((k % cols) * T, (k // cols) * T, (k % cols + 1) * T, (k // cols + 1) * T)),
                                     (i * T, j * T))
-    return out
+    return crisp(out)
 
 
 def _ci_item(eid, **opts):
@@ -330,6 +341,10 @@ for _p in _as_paste:
         _p['only'] = ('Floor', 'Wall_A')
     if _ty == 3 and _tx in (2, 22):                  # les pots des plantes d'angle (leur feuillage était au mur)
         _p['only'] = ('Floor', 'Wall')
+    # Sous les fenêtres, le bas des rideaux du casino (festons orange à demi transparents) pendait encore en rangée 3,
+    # sans les rideaux du dessus (retirés du mur du fond) : retiré (check-up visuel, octobre 2026).
+    if _ty == 3 and 3 <= _tx <= 21 and _tx not in (2, 22):
+        _p['only'] = ('Floor', 'Wall_A')
     # Les petits murs des recoins du bas (arches d'angle, rangées 12-14) : au-dessus, le vide noir du casino laisse
     # place au bord de la salle et au sol, comme les rangées voisines (le haut du petit mur n'est plus noir).
     if _ty == 11 and _tx in (2, 3, 21, 22):
