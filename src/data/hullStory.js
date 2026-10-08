@@ -94,7 +94,7 @@ export const PUB_A_WELCOME = [
 ];
 
 // Tapis de sortie des deux pubs (voir interiors.js hullPubA, hullPubB) : Léo y file devant la bande.
-const PUB_A_EXIT = [1, 11];
+const PUB_A_EXIT = [3, 10];
 const PUB_B_EXIT = [3, 9];
 
 // Ce que chacun dit à table : sa commande (on peut la redemander autant qu'on veut).
