@@ -79,14 +79,14 @@ export const prytaneeMap = {
       unlessFlags: [FLAGS.capitaineAccueil],
       script: CAPTAIN_WELCOME,
     },
-    // Le militaire de faction à la porte sud (le jour).
+    // Le militaire de faction (le jour) : à droite du drapeau de la place d'armes, face à celui qui le garde à gauche.
     {
-      id: 'sentinelle-sud', name: 'Militaire', x: SOUTH_GATE[0] - 1, y: SOUTH_GATE[1] - 1, facing: 'right',
+      id: 'sentinelle-sud', name: 'Militaire', x: 19, y: 16, facing: 'left',
       unlessFlags: [FLAGS.soirMur], still: true,
       dialogue: ['Prytanée national militaire. On se tient droit en passant le portail, merci.'],
     },
     {
-      id: 'sentinelle-sud-apres', name: 'Militaire', x: SOUTH_GATE[0] - 1, y: SOUTH_GATE[1] - 1, facing: 'right',
+      id: 'sentinelle-sud-apres', name: 'Militaire', x: 19, y: 16, facing: 'left',
       ifFlags: [FLAGS.murReussi], still: true,
       dialogue: ['Rien à signaler. Comme toutes les nuits, hein ?'],
     },
