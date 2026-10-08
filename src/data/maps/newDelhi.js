@@ -1,84 +1,81 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : New Delhi en Gen 4 (scripts/build_new_delhi.py, thème « New Delhi (palais moghols) » du
+// catalogue) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille ci-dessous (sourceGrid) suit ce
+// dessin : avenue, trottoirs, jardins, bassin, portes (sur les portes dessinées).
+import BUILT from '../builtMaps/new-delhi.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { FLAGS } from '../story.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 const HARSH = { name: 'Harsh', color: 0x8c3cb0 };
 
-// Hors de la carte : les rues et trottoirs se prolongent, pelouses ailleurs.
+// Hors de la carte : la grande avenue se prolonge, les palmiers ailleurs.
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['ɐ', 'ɔ'].includes(edge)) return edge;
+    if (edge === 'ɐ') return edge;
   }
-  return '.';
+  return 'Y';
 }
 
 const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
 
-// New Delhi — capitale de l'Inde, 32 x 26 cases.
-// Légende : voir src/data/tiles.js (a = vache, d = tuk-tuk, g = drapeau indien,
-// i = soucis, p = stand d'épices, k = lotus, Y = palmier)
+// New Delhi — capitale de l'Inde, 36 x 30 cases avec sa bordure de palmiers. Au nord, le long de la grande avenue :
+// l'université (le bâtiment à coupole et lanternes dorées), le palais de grès, la porte du fort, le minaret. Les jardins :
+// la grande arche (India Gate), le bassin aux lotus, la fontaine octogonale. Au sud : maisons à toit plat et à coupole,
+// la tente du bazar, les étals et le stand de chai. Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = avenue, . = jardin,
+// ~ = bassin, D = porte, Y = palmiers).
 export const newDelhiMap = {
   id: 'newDelhi',
   name: 'New Delhi',
-  grid: parseGrid([
-    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 0  palmiers : bord de l'écran
-    'ɔɔRRRRRRRRRɔɔRRRRRRRɔɔɔRRRRRRɔYɔ', // 1  havelis, palais moghol
-    'ɔɔRRRRRRRRRYɔRRRRRRRɔYɔRRRRRRɔɔɔ', // 2
-    'ɔɔWWWWWWWWWɔɔWWWWWWWɔɔɔWWWWWWYɔɔ', // 3
-    'ɔɔWDWWDWWDWɔɔWWWDWWWɔɔɔWDWWDWɔɔɔ', // 4  portes
-    'ɔpɔɔɔɔɔɔɔɔɔɔpɔɔɔɔɔɔɔaɔiɔɔɔɔɔɔpɔɔ', // 5  stands d'épices, vache sacrée
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  grande avenue (vers l'aéroport)
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
-    'ɔ<ɔdɔɔɔɔɔɔaɔɔɔɔdɔɔɔɔɔɔɔɔɔɔɔdɔɔ>ɔ', // 8  tuk-tuks  panneaux aéroport
-    '.Y.RRRRR.Y.........Y.......Y....', // 9  pelouses : India Gate
-    '...RRRRR.....RRR.....~k~~k....i.', // 10 statue de Bouddha, bassin aux lotus
-    '...WWWWW...g.RRR.g...~~~k~......', // 11 drapeaux indiens
-    '...WWWWW.....WWW.....k~~~~...Y..', // 12
-    '...WWWWW.Y.a.WWW................', // 13
-    '..i.....i..........Y.i..i.a.i...', // 14 soucis
-    '.Y.i......i.i...i.i...i.......Y.', // 15
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
-    'ɔɔɔRRRRRRRRRɔpɔpɔpɔɔRRRRRRRRRɔɔɔ', // 17 université, marché aux épices, havelis
-    'ɔɔɔRRRRRRRRRɔaɔɔɔɔɔɔRRRRRRRRRɔɔɔ', // 18
-    'ɔɔɔWWWWWWWWWɔɔpɔpɔpɔWWWWWWWWWɔɔɔ', // 19
-    'ɔɔɔWWWWDWWWWɔɔɔɔɔɔɔɔWDWWDWWDWɔɔɔ', // 20 portes
-    'ɔɔɔɔɔɔɔɔɔɔɔɔdɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔdɔɔ', // 21
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 22 rue sud
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 23
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔaɔɔɔɔɔɔɔɔɔɔɔ', // 24
-    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 25 palmiers : bord de l'écran
+  built: BUILT,
+  sourceGrid: parseGrid([
+    'YYYYYYYYYYYY............YYYYYYYYYYYY', // 0  bordure : palmiers (dessinés) ; le palais monte jusqu'en haut
+    'YYYYYYYYYYYY............YYYYYYYYYYYY', // 1
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 2
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 3
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 4
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 5
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 6
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 7
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 8
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 9
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 10
+    'YYɔɔɔɔDɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔYY', // 11  portes : université (6), palais (17), porte du fort (26)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 12  grande avenue (vers l'aéroport, la bordure y est ouverte)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 13
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 14  trottoir (panneaux de l'aéroport)
+    'YY................................YY', // 15  jardins : India Gate, bassin aux lotus (x 16-21), fontaine
+    'YY..............~~~~~~............YY', // 16
+    'YY..............~~~~~~............YY', // 17
+    'YY................................YY', // 18
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 19  allée
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 20
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 21
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 22
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 23
+    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 24
+    'YYɔɔDɔɔɔɔDɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔYY', // 25  portes : maison à toit plat (4), maison à coupole (9), bazar (14), maison de grès (29)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐYY', // 26  rue sud
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐYY', // 27
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 28  bordure
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 29
   ]),
   doors: [
-    { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 6,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 9,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 16, y: 4,  lockedDialogue: ['[Texte provisoire] Le palais est fermé aux visiteurs.'] },
-    { x: 24, y: 4,  lockedDialogue: NOT_HOME },
-    { x: 27, y: 4,  lockedDialogue: NOT_HOME },
-    { x: 7,  y: 20, interior: 'delhiUniversity' },   // ton université d'échange
-    { x: 21, y: 20, lockedDialogue: NOT_HOME },
-    { x: 24, y: 20, lockedDialogue: NOT_HOME },
-    { x: 27, y: 20, lockedDialogue: NOT_HOME },
+    { x: 6, y: 11, interior: 'delhiUniversity' },   // ton université d'échange (la coupole aux lanternes dorées)
+    { x: 17, y: 11, lockedDialogue: ['[Texte provisoire] Le palais est fermé aux visiteurs.'] },
+    { x: 26, y: 11, lockedDialogue: ['[Texte provisoire] La porte du fort est fermée.'] },
+    { x: 4, y: 25, lockedDialogue: NOT_HOME },
+    { x: 9, y: 25, lockedDialogue: NOT_HOME },
+    { x: 14, y: 25, lockedDialogue: ['[Texte provisoire] Le bazar est fermé pour aujourd\'hui.'] },
+    { x: 29, y: 25, lockedDialogue: NOT_HOME },
   ],
-  buildings: [
-    { type: 'haveli', x: 2,  y: 1, variant: 0 },
-    { type: 'haveli', x: 5,  y: 1, variant: 1 },
-    { type: 'haveli', x: 8,  y: 1, variant: 2 },
-    { type: 'mughalPalace', x: 13, y: 1 },
-    { type: 'haveli', x: 23, y: 1, variant: 3 },
-    { type: 'haveli', x: 26, y: 1, variant: 4 },
-    { type: 'indiaGate', x: 3, y: 9 },
-    { type: 'buddha', x: 13, y: 10 },
-    { type: 'delhiUniversity', x: 3, y: 17 },
-    { type: 'haveli', x: 20, y: 17, variant: 4 },
-    { type: 'haveli', x: 23, y: 17, variant: 0 },
-    { type: 'haveli', x: 26, y: 17, variant: 2 },
-  ],
+  // Les bâtiments sont dans le dessin (scripts/build_new_delhi.py).
+  buildings: [],
   npcs: [
     // Harsh, étudiant à l'université : il t'attend à la sortie et propose d'aller dans le désert.
     {
-      id: 'harsh', ...HARSH, x: 8, y: 21, facing: 'left',
+      id: 'harsh', ...HARSH, x: 8, y: 12, facing: 'left',
       ifFlags: [FLAGS.echangeCommence],
       unlessFlags: [FLAGS.potionDonnee],
       dialogue: [
@@ -101,7 +98,7 @@ export const newDelhiMap = {
       },
     },
     {
-      id: 'harsh-retour', ...HARSH, x: 8, y: 21, facing: 'left',
+      id: 'harsh-retour', ...HARSH, x: 8, y: 12, facing: 'left',
       ifFlags: [FLAGS.potionDonnee],
       dialogue: ['[Harsh - texte provisoire] Quel voyage ! Va raconter ça à la professeure.'],
     },
@@ -115,10 +112,12 @@ export const newDelhiMap = {
       steps: [{ talk: 'harsh' }],
     },
   ],
-  // Les deux bouts de la grande avenue mènent à l'aéroport.
-  // Panneaux « Aéroport » à côté des sorties.
-  objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
-  triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'Y', borderSkip: ['ɐ'] },
-  spawn: { x: 1, y: 6, facing: 'right' },
+  // Panneaux « Aéroport » (dessinés) à côté des sorties ; les deux bouts de la grande avenue mènent à l'aéroport.
+  objects: [airportSign(2, 14, false), airportSign(33, 14, true)],
+  triggers: [toAirport(0, 12), toAirport(0, 13), toAirport(35, 12), toAirport(35, 13)],
+  surroundings: { outside },
+  spawn: { x: 1, y: 12, facing: 'right' },
 };
+
+// La grille du jeu : celle ci-dessus, accordée aux collisions du dessin.
+newDelhiMap.grid = builtGrid(newDelhiMap.sourceGrid, BUILT);

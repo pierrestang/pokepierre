@@ -390,7 +390,7 @@ catalogue posés comme le mode simple (maisons étroites au toit orange, agence 
 lanternes de bois, étals, nénuphars, cloche de l'îlot, cerisiers, palmier). Les cases libres qu'on n'atteint pas
 (derrière les maisons) sont bloquées. La grille du jeu (src/data/maps/hanoi.js sourceGrid) reprend GROUND avec les portes
 sur les portes dessinées. convert_maps_v2.py ne refait pas Hanoï ; le script réécrit la carte (une retouche faite dans le
-créateur serait perdue au prochain passage). Les villes suivantes (New Delhi… Rajasthan) ne sont que des premiers jets
+créateur serait perdue au prochain passage). Les villes suivantes (Rajasthan, Paris…) ne sont que des premiers jets
 de convert_maps_v2.py (`python3 scripts/convert_maps_v2.py <id>…`), pas encore branchés dans le jeu.
 
 ## Amsterdam (octobre 2026)
@@ -412,6 +412,25 @@ réécrit la carte : il refuse sans `--force` (une retouche faite dans le créat
 La carte a depuis été retouchée à la main dans le créateur (maisons remontées, place à la fontaine fleurie, jardinières
 du quai sud) : amsterdam.js suit ce dessin (portes : Corning (13, 7), maison commune (22, 8), coffee shop (4, 22)…), et
 `build_amsterdam.py --force` effacerait ces retouches.
+
+## New Delhi (octobre 2026)
+
+Thème « New Delhi (palais moghols) » du catalogue (scripts/build_catalogue.py, THEMES['new-delhi']), fait d'éléments de
+la bibliothèque Gen 4 qui n'étaient pas encore au catalogue (relevés dans public/assets/v2/g4-<type>.elements.json :
+attention, chaque élément y est noté [x0, y0, x1, y1] en cases, bornes comprises) : bâtiments (palais de grès, coupole aux
+lanternes dorées, maisons à coupole dorée (quatre), mausolées, porte du fort, minaret, maisons à toit plat, tentes de
+bazar ; LIB_BUILDINGS, ombre gris-bleu SLATE retirée) et éléments (grande arche « India Gate », grand bassin moghol,
+fontaine octogonale, étals rayés, stand de chai, brasero, lanterne de bronze, barrière dorée, cloche de temple, mât à
+fanions, taxi jaune et noir, palmier à grandes palmes, gulmohar, banian, soucis, fleurs en tulipe).
+
+New Delhi est redessiné par scripts/build_new_delhi.py (src/data/builtMaps/new-delhi.json), comme Hanoï et Amsterdam :
+le sol du convertisseur (grande avenue, trottoirs, jardins, bassin aux lotus), les éléments du thème (au nord
+l'université = la coupole aux lanternes, le palais, la porte du fort, le minaret ; les jardins avec India Gate et la
+fontaine ; au sud les maisons, le bazar, les étals), la bordure de palmiers (forêt du créateur, arbre `g4-palmier`,
+scripts/paint_forest.mjs), ouverte sur la grande avenue (l'aéroport). Le script refuse sans `--force` (une retouche faite
+dans le créateur serait perdue). La grille du jeu (src/data/maps/newDelhi.js sourceGrid) reprend GROUND, la bordure en
+'Y', les portes sur les portes dessinées. Le créateur range désormais Hanoï, Amsterdam et New Delhi dans l'ordre du jeu
+(builder.js GAME_ORDER).
 
 ## L'aéroport (octobre 2026)
 

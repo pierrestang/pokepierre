@@ -1000,6 +1000,13 @@ Vol « New Delhi (Inde) », directement (il n'y a plus de retour à Hull) ; traj
 
 ## 10. New Delhi et le Rajasthan (Inde) : textes provisoires
 
+- **La carte de New Delhi** (36 x 30, redessinée en Gen 4, scripts/build_new_delhi.py) : au nord, le long de la grande
+  avenue (vers l'aéroport par ses deux bouts), l'université (bâtiment à coupole et lanternes dorées, porte (6, 11)), le
+  palais de grès (17, 11, fermé), la porte du fort (26, 11, fermée) et le minaret. Les jardins : la grande arche (India
+  Gate), un palmier, le bassin aux lotus, la fontaine octogonale, des soucis. Au sud : une maison à toit plat (4, 25), une
+  maison à coupole dorée (9, 25), la tente du bazar (14, 25, fermée), les étals et le stand de chai, une maison de grès à
+  coupole (29, 25). Une bordure de palmiers. Arrivée en (1, 12) ; Harsh attend devant l'université (8, 12) ; retour du
+  Rajasthan en (7, 12).
 - **PNJ** : la professeure de l'université de Delhi (`g54`), Harsh (`g89`), le vieux sage (`g71`).
 - **Quêtes** :
   1. La professeure : « [Professeure - texte provisoire] Namaste ! Bienvenue à l'université. » / « Tu es le bienvenu dans

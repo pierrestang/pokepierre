@@ -136,6 +136,7 @@ BUILDING_NAMES = {
 # auvent, reste) ; 'tile' (le toit passe au rouge tuile commun, TILE_RED).
 GRAY = (128, 128, 128)
 DARK = (28, 35, 38)
+SLATE = (123, 123, 136)                    # ombre gris-bleu des maisons à coupole (New Delhi)
 LIB_BUILDINGS = {
     'toit-orange': ('Case au toit orange', (69, 12257, 54, 79), 1, (), ['fort-de-france']),
     'toit-vert': ('Maison au toit vert d\'eau', (122, 23336, 96, 114), 2, (), ['fort-de-france']),
@@ -177,6 +178,23 @@ LIB_BUILDINGS = {
     'canal-basse': ('Petite maison de canal', (236, 22513, 76, 101), 2, [DARK], ['amsterdam']),
     'pignon-rouge': ('Maison à pignon rouge', (8, 22516, 99, 122), 2, [DARK], ['amsterdam']),
     'manoir-pignons': ('Manoir à pignons', (176, 193, 176, 95), 5, [DARK], ['amsterdam']),
+    # New Delhi (octobre 2026) : bâtiments de la bibliothèque Gen 4 pas encore au catalogue, aux airs moghols et indiens
+    # (planche des bâtiments Gen 4, éléments de g4-batiments.elements.json).
+    'palais-gres': ('Palais de grès', (0, 10064, 192, 192), 5, (), ['new-delhi']),
+    'coupole-lanternes': ('Coupole aux lanternes dorées', (64, 4528, 112, 160), 3, (), ['new-delhi']),
+    'coupole-doree': ('Maison à coupole dorée', (80, 21808, 80, 96), 2, [SLATE], ['new-delhi']),
+    'coupole-doree-claire': ('Maison claire à coupole dorée', (160, 6608, 80, 96), 2, [SLATE], ['new-delhi']),
+    'coupole-gres': ('Maison de grès à coupole', (48, 14608, 80, 96), 2, [SLATE], ['new-delhi']),
+    'coupole-gres-bleue': ('Maison de grès à coupole (liseré bleu)', (176, 8512, 80, 96), 2, [SLATE], ['new-delhi']),
+    'mausolee': ('Mausolée à coupole blanche', (0, 8176, 96, 112), None, [(2, 3, 31)], ['new-delhi']),
+    'mausolee-petit': ('Petit mausolée', (208, 18048, 64, 96), 1, (), ['new-delhi']),
+    'porte-fort': ('Porte du fort', (160, 5024, 96, 112), 2, (), ['new-delhi']),
+    'minaret': ('Minaret de pierre', (160, 16976, 64, 160), None, (), ['new-delhi']),
+    'toit-plat': ('Maison à toit plat', (112, 19136, 80, 96), 2, (), ['new-delhi']),
+    'toit-plat-gauche': ('Maison à toit plat (porte à gauche)', (0, 19952, 80, 96), 1, (), ['new-delhi']),
+    'toit-plat-aveugle': ('Maison à toit plat (sans porte)', (208, 19136, 80, 96), None, (), ['new-delhi']),
+    'tente-bazar': ('Grande tente de bazar', (96, 19792, 80, 112), 2, (), ['new-delhi']),
+    'tente-petite': ('Petite tente de bazar', (80, 9920, 80, 64), 2, (), ['new-delhi']),
 }
 
 
@@ -234,6 +252,24 @@ ELEMENTS = {
     'portique': ('Portique', 'mobilier', lambda: lib_building((128, 1904, 96, 64), sid='g4-mobilier', dark=300), 3, 'land'),
     'pont-arque': ('Pont arqué', 'eau', lambda: lib_building((240, 1392, 64, 64), sid='g4-ponts'), None, 'water'),
     'banniere-bleue': ('Bannière bleue', 'mobilier', lambda: lib_building((160, 3984, 32, 80), sid='g4-mobilier'), 4, 'land'),
+    # New Delhi (octobre 2026) : éléments de la bibliothèque Gen 4 pas encore au catalogue.
+    'india-gate': ('Grande arche (India Gate)', 'mobilier', lambda: lib_building((160, 912, 112, 96), sid='g4-mobilier'), -1, 'land'),
+    'bassin-moghol': ('Grand bassin moghol', 'mobilier', lambda: lib_building((0, 848, 160, 176), sid='g4-mobilier'), 0, 'land'),
+    'fontaine-octogonale': ('Fontaine octogonale', 'mobilier', lambda: lib_building((176, 2512, 64, 64), sid='g4-mobilier'), 1, 'land'),
+    'etal-raye-bleu': ('Étal rayé bleu', 'mobilier', lambda: lib_building((16, 1904, 96, 48), sid='g4-mobilier'), -1, 'land'),
+    'etal-raye-rose': ('Étal rayé rose', 'mobilier', lambda: lib_building((16, 1952, 96, 48), sid='g4-mobilier'), -1, 'land'),
+    'stand-chai': ('Stand de chai', 'mobilier', lambda: lib_building((112, 2160, 80, 64), sid='g4-mobilier'), -1, 'land'),
+    'brasero': ('Brasero allumé', 'mobilier', lambda: lib_building((256, 3856, 32, 48), sid='g4-mobilier'), -1, 'land'),
+    'lanterne-bronze': ('Lanterne de bronze', 'mobilier', lambda: lib_building((96, 3856, 32, 48), sid='g4-mobilier'), -1, 'land'),
+    'barriere-doree': ('Barrière dorée', 'mobilier', lambda: lib_building((0, 3264, 80, 32), sid='g4-mobilier'), -1, 'land'),
+    'cloche-temple': ('Cloche de temple', 'mobilier', lambda: lib_building((240, 848, 48, 32), sid='g4-mobilier'), -1, 'land'),
+    'mat-fanions': ('Mât à fanions', 'mobilier', lambda: lib_building((48, 1440, 32, 80), sid='g4-mobilier'), -1, 'land'),
+    'taxi-jaune': ('Taxi jaune et noir', 'mobilier', lambda: lib_building((144, 2624, 64, 48), sid='g4-vehicules'), 1, 'land'),
+    'palmier-g4': ('Palmier à grandes palmes', 'arbres', lambda: lib_building((96, 2448, 48, 48), sid='g4-arbres', shadow=True), 2, 'land'),
+    'gulmohar': ('Gulmohar (arbre flamboyant)', 'arbres', lambda: lib_building((128, 288, 64, 64), sid='g4-arbres', shadow=True), 3, 'land'),
+    'banian': ('Banian', 'arbres', lambda: lib_building((96, 2560, 80, 96), sid='g4-arbres', shadow=True), 4, 'land'),
+    'soucis': ('Soucis', 'plantes', lambda: lib_building((16, 208, 16, 16), sid='g4-plantes', shadow=True), None, 'land'),
+    'fleurs-tulipes': ('Fleurs en tulipe (lotus)', 'plantes', lambda: lib_building((0, 592, 48, 48), sid='g4-plantes', shadow=True), None, 'land'),
     'champignon': ('Champignon', 'plantes', lambda: lib_building((17, 481, 14, 14), sid='g4-plantes', shadow=True), None, 'land'),
     'baies-sombres': ('Buisson à baies', 'plantes', lambda: lib_building((6, 564, 36, 28), sid='g4-plantes', shadow=True), -1, 'land'),
     'hortensias': ('Hortensias', 'plantes', lambda: lib_building((2, 643, 44, 29), sid='g4-plantes', shadow=True), -1, 'land'),
@@ -370,6 +406,11 @@ THEMES = {
               'extra': ['portique', 'pont-arque', 'banniere-bleue', 'cerisier', 'palmier', 'palmier-2', 'fleurs-tropicales',
                         'nenuphar', 'roseaux', 'cloche', 'etal', 'etal-bocaux', 'velo', 'oriflamme', 'fougere',
                         'lanterne-jardin', 'lanterne-bois', 'pot', 'hibiscus', 'arbuste-taille', 'reverbere-rouge']},
+    'new-delhi': {'name': 'New Delhi (palais moghols)', 'forest': None, 'paving': None, 'lamp': 'lanterne-bronze',
+                  'extra': ['india-gate', 'bassin-moghol', 'fontaine-octogonale', 'etal-raye-bleu', 'etal-raye-rose',
+                            'stand-chai', 'brasero', 'barriere-doree', 'cloche-temple', 'mat-fanions', 'taxi-jaune',
+                            'palmier-g4', 'gulmohar', 'banian', 'soucis', 'fleurs-tulipes', 'palmier', 'palmier-2',
+                            'hibiscus', 'fleurs-tropicales', 'pot', 'etal', 'velo', 'nenuphar']},
     'amsterdam': {'name': 'Amsterdam (canaux)', 'forest': 'automne', 'paving': None, 'lamp': 'reverbere-noir',
                   'extra': ['fontaine', 'peniche', 'velo', 'banc', 'banc-bois', 'jardiniere-rose', 'jardiniere-rouge',
                             'hortensias', 'iris', 'arbuste-taille', 'poubelle-rouge']},
@@ -386,6 +427,7 @@ MORE_TREES = {
     'hull': ['arbre-foret', 'arbre-pointu', 'sapin-sombre'],
     'hanoi': ['arbre-pointu', 'pin-bleu'],
     'amsterdam': ['arbre-foret', 'arbre-roux', 'feuillu-orange', 'arbre-pointu-brun', 'peuplier'],
+    'new-delhi': ['arbre-olive'],
 }
 for _tid, _more in MORE_TREES.items():
     THEMES[_tid]['extra'] = THEMES[_tid]['extra'] + _more
