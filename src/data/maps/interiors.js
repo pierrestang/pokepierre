@@ -13,7 +13,7 @@ import {
 } from '../bordeauxStory.js';
 import { GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
 import {
-  SURVEILLANT, COLLEGE_WELCOME, LOCKER, REMI, REMI_INVITE, REMI_SEAT, CAMILLE, PROF, LOCKER_SIDE, SURVEILLANT_SPOT, CLOSET,
+  SURVEILLANT, COLLEGE_WELCOME, LOCKER, REMI, REMI_INVITE, REMI_WAIT, CAMILLE, PROF, LOCKER_SIDE, SURVEILLANT_SPOT, CLOSET,
 } from '../collegeStory.js';
 import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING } from '../montepilloyStory.js';
 import {
@@ -834,7 +834,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmooooooooooomm',
+      'ξξoooooooooooηη',
       'ξξoommmooooooηη',
       'ooooooooooooooo',
       'oommmommmoooooo',
@@ -846,8 +846,8 @@ export const interiors = {
     ]),
     spawn: { x: 0, y: 4, facing: 'down' },
     triggers: [
-      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursCasiers', x: 0, y: 4, facing: 'down' } })),
-      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursSciences', x: 13, y: 4, facing: 'down' } })),
+      ...[0, 1].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'bonsecoursCasiers', x: 0, y: 4, facing: 'down' } }))),
+      ...[13, 14].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'bonsecoursSciences', x: 13, y: 4, facing: 'down' } }))),
     ],
     objects: [
       ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Le carré de l\'hypoténuse est égal à la somme des carrés des deux autres côtés. »'] })),
@@ -873,13 +873,13 @@ export const interiors = {
         ifFlags: [FLAGS.collegeArrivee], unlessFlags: [FLAGS.finTroisieme], script: CAMILLE,
       },
       // Rémy, arrivé en classe après l'embrouille du casier : il attend Pierre près de l'entrée (trajet court jusqu'à lui,
-      // REMI_INVITE), puis, après l'invitation, il est à son pupitre.
+      // REMI_INVITE), puis, après l'invitation, il attend dans l'allée (il s'assoit à la scène de Camille).
       {
         id: 'remi-classe', name: 'Rémy', x: 3, y: 4, facing: 'left', color: 0xc05c3c,
         ifFlags: [FLAGS.remiEnClasse], unlessFlags: [FLAGS.remiInvite, FLAGS.finTroisieme], script: REMI,
       },
       {
-        id: 'remi-classe', name: 'Rémy', x: REMI_SEAT[0], y: REMI_SEAT[1], facing: 'up', still: true, color: 0xc05c3c,
+        id: 'remi-classe', name: 'Rémy', x: REMI_WAIT[0], y: REMI_WAIT[1], facing: 'left', still: true, color: 0xc05c3c,
         ifFlags: [FLAGS.remiEnClasse, FLAGS.remiInvite], unlessFlags: [FLAGS.finTroisieme], script: REMI,
       },
       ...collegeStudents([
@@ -901,7 +901,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmooooooommmmoo',
+      'ξξooooooommmmoo',
       'ξξoommmoooooooo',
       'ooooooooooooooo',
       'oommmommmoooooo',
@@ -912,7 +912,7 @@ export const interiors = {
       'mooooooooooooom',
     ]),
     spawn: { x: 0, y: 4, facing: 'down' },
-    triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursSciences', x: 0, y: 4, facing: 'down' } })),
+    triggers: [0, 1].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'bonsecoursSciences', x: 0, y: 4, facing: 'down' } }))),
     objects: [
       ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Rédaction : racontez votre plus beau souvenir de vacances. »'] })),
     ],
@@ -940,7 +940,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmooooooooooomm',
+      'ηηoooooooooooξξ',
       'ηηoommmooooooξξ',
       'ooooooooooooooo',
       'oommmommmoommmm',
@@ -952,8 +952,8 @@ export const interiors = {
     ]),
     spawn: { x: 13, y: 4, facing: 'down' },
     triggers: [
-      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursMaths', x: 13, y: 4, facing: 'down' } })),
-      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursFrancais', x: 0, y: 4, facing: 'down' } })),
+      ...[13, 14].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'bonsecoursMaths', x: 13, y: 4, facing: 'down' } }))),
+      ...[0, 1].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'bonsecoursFrancais', x: 0, y: 4, facing: 'down' } }))),
     ],
     objects: [
       ...[[11, 5], [12, 5], [13, 5], [14, 5]].map(([x, y]) => ({ x, y, dialogue: ['La vitrine : un squelette en plastique, des bocaux et un vieux microscope.'] })),
@@ -1100,7 +1100,7 @@ export const interiors = {
       'XXXXXXXXXXX',
       'XXXXXXXXXXX',
       'mmmommoooηη', // plante, bibliothèque, bureau de l'accueil ; le bas de l'escalier
-      'ooooooooomm',
+      'ooooooooooo',
       'ooooooooooo',
       'moooooooooo',
       'ooooooooooo',
@@ -1150,7 +1150,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'mmommmmommmmmm',
+      'mηommmmommmmmm',
       'mηommmmommmmξm',
       'mmommmmommmmoo',
       'mmoooooooooooo',
@@ -1163,7 +1163,7 @@ export const interiors = {
     ]),
     triggers: [
       { x: 12, y: 3, warp: { interior: 'dortoirHall', x: 8, y: 3, facing: 'left' } },   // au pied de l'escalier du hall
-      { x: 1, y: 3, warp: { interior: 'dortoirEtage2', x: 2, y: 3, facing: 'right' } },
+      { x: 1, y: 2, warp: { interior: 'dortoirEtage2', x: 2, y: 3, facing: 'right' } }, { x: 1, y: 3, warp: { interior: 'dortoirEtage2', x: 2, y: 3, facing: 'right' } },
     ],
     spawn: { x: 12, y: 4, facing: 'down' },
     // Le soir du mur, jusqu'au retour : la nuit tombe dans la chambre (au petit matin, il fait jour).
@@ -1231,7 +1231,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'mmommmmommmmmm',
+      'mξommmmommmmmm',
       'mξommmmommmmmm',
       'mmommmmommmmoo',
       'mmoooooooooooo',
@@ -1244,7 +1244,7 @@ export const interiors = {
     ]),
     spawn: { x: 2, y: 3, facing: 'right' },
     night: PRYTANEE_NIGHT,                          // la nuit du mur : dans le noir, et ils dorment (pas de PNJ debout)
-    triggers: [{ x: 1, y: 3, warp: { interior: 'dortoir', x: 2, y: 3, facing: 'right' } }],
+    triggers: [{ x: 1, y: 2, warp: { interior: 'dortoir', x: 2, y: 3, facing: 'right' } }, { x: 1, y: 3, warp: { interior: 'dortoir', x: 2, y: 3, facing: 'right' } }],
     objects: [
       ...[3, 4, 5, 6, 8, 9, 10, 11].map((x) => ({ x, y: 4, dialogue: ['Un lit au carré. Les terminales, ça ne rigole pas.'] })),
       ...[[0, 8], [1, 8], [12, 6], [13, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une armoire. Un poster de rugby scotché à l\'intérieur de la porte.'] })),
@@ -1482,15 +1482,15 @@ export const interiors = {
     grid: parseGrid([ // escaliers (dernière marche), casiers x 4-9, placard x 10-12
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmoommmmmmmmmmm',
+      'ηηoommmmmmmmmξξ',
       'ηηoooooooooooξξ',
       'ooooooooooooooo',
       'ooooooooooooooo',
     ]),
     spawn: { x: 13, y: 4, facing: 'down' },
     triggers: [
-      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'kedge', x: 23, y: 3, facing: 'down' } })),
-      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle1', x: 0, y: 4, facing: 'down' } })),
+      ...[13, 14].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'kedge', x: 23, y: 3, facing: 'down' } }))),
+      ...[0, 1].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'kedgeSalle1', x: 0, y: 4, facing: 'down' } }))),
     ],
     objects: [
       ...[4, 5, 6, 7, 8, 9].map((x) => ({ x, y: 2, dialogue: ['Un casier d\'étudiant, fermé par un cadenas à code.'] })),
@@ -1504,7 +1504,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmooooooooooomm',
+      'ξξoooooooooooηη',
       'ξξoommmooooooηη',
       'ooooooooooooooo',
       'oommmommmoooooo',
@@ -1516,8 +1516,8 @@ export const interiors = {
     ]),
     spawn: { x: 0, y: 4, facing: 'down' },
     triggers: [
-      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'kedgeCasiers', x: 0, y: 4, facing: 'down' } })),
-      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle2', x: 13, y: 4, facing: 'down' } })),
+      ...[0, 1].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'kedgeCasiers', x: 0, y: 4, facing: 'down' } }))),
+      ...[13, 14].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'kedgeSalle2', x: 13, y: 4, facing: 'down' } }))),
     ],
     objects: [
       ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Oral exam today. Good luck! »'] })),
@@ -1536,7 +1536,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmooooooooooomm',
+      'ηηoooooooooooξξ',
       'ηηoommmooooooξξ',
       'ooooooooooooooo',
       'oommmommmoommmm',
@@ -1548,8 +1548,8 @@ export const interiors = {
     ]),
     spawn: { x: 13, y: 4, facing: 'down' },
     triggers: [
-      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle1', x: 13, y: 4, facing: 'down' } })),
-      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle3', x: 0, y: 4, facing: 'down' } })),
+      ...[13, 14].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'kedgeSalle1', x: 13, y: 4, facing: 'down' } }))),
+      ...[0, 1].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'kedgeSalle3', x: 0, y: 4, facing: 'down' } }))),
     ],
     objects: [
       ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : un graphique d\'offre et de demande, et « Partiel lundi ».'] })),
@@ -1562,7 +1562,7 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmooooooommmmoo',
+      'ξξooooooommmmoo',
       'ξξoommmoooooooo',
       'ooooooooooooooo',
       'oommmommmoooooo',
@@ -1573,7 +1573,7 @@ export const interiors = {
       'mooooooooooooom',
     ]),
     spawn: { x: 0, y: 4, facing: 'down' },
-    triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'kedgeSalle2', x: 0, y: 4, facing: 'down' } })),
+    triggers: [0, 1].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'kedgeSalle2', x: 0, y: 4, facing: 'down' } }))),
     objects: [
       ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Marketing : the 4 P. Product, Price, Place, Promotion. »'] })),
     ],

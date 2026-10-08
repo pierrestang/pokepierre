@@ -445,6 +445,8 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 2. **Camille → Audace** (salle de maths). « La salle de maths. Le cours n'a pas encore commencé : le prof range ses
    copies, ça discute de table en table. » ; Rémy : « Le cours commence dans cinq minutes. Tu vois la fille, au milieu de
    la classe ? Elle est en 6e B avec nous. » / « Elle connaît personne non plus. Va lui dire salut, je viens avec toi. »
+     Rémy attend au bout de la rangée de Camille. Quand Pierre parle à Camille, il s'assoit à sa droite, puis Rémy à
+     droite de Pierre (« Tu t'assois à côté d'elle. Rémy s'installe à ta droite, l'air de rien. ») ; Rémy n'en bouge plus.
    - Trois répliques à choisir, chaque fois une seule bonne : « Salut ! T'es en 6e B ? », « Oui, le village d'à
      côté ! », « On se met ensemble en français ? ». Une mauvaise réplique fait réagir Camille, puis Rémy : « Rémy, derrière
      toi, chuchote : « Joker. On la refait, tranquille. » ».

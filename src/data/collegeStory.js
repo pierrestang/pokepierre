@@ -83,7 +83,11 @@ const LOCKER_FIGHT = [
 
 // En salle de maths, une fois Rémy arrivé : le cours n'a pas commencé (le prof range ses copies) ; Rémy vient voir Pierre
 // et le pousse à aller dire salut à Camille, nouvelle elle aussi (il l'accompagne).
-export const REMI_SEAT = [8, 6];                                  // derrière son pupitre, face au tableau
+// Les places de la scène de Camille (6, 6) : Pierre s'assoit à sa droite, Rémy à droite de Pierre. Rémy attend dans
+// l'allée en attendant (s'il était déjà assis, la place de Pierre, entre Camille, Rémy et les pupitres, serait fermée).
+export const REMI_WAIT = [9, 5];                                  // au bout de la rangée de Camille, hors du passage
+const REMI_SEAT = [8, 6];
+const PIERRE_SEAT = [7, 6];
 export const REMI_INVITE = [
   { say: ['La salle de maths. Le cours n\'a pas encore commencé : le prof range ses copies, ça discute de table en table.'] },
   { approach: 'remi-classe' },
@@ -94,8 +98,8 @@ export const REMI_INVITE = [
       'Elle connaît personne non plus. Va lui dire salut, je viens avec toi.',
     ],
   },
-  // Il retourne à son pupitre avant le changement de variante (près de l'entrée → au pupitre) : pas de saut.
-  { walk: 'remi-classe', to: REMI_SEAT, block: true },
+  // Il va attendre dans l'allée avant le changement de variante (près de l'entrée → l'allée) : pas de saut.
+  { walk: 'remi-classe', to: REMI_WAIT, block: true },
   { setFlag: FLAGS.remiInvite },
 ];
 
@@ -130,9 +134,11 @@ const line = (question, choices, answer, wrong) => ({ quiz: { question, choices,
 export const CAMILLE = [
   { unlessFlags: [FLAGS.remiInvite], say: ['Une fille de ta classe sort ses cahiers.'], end: true },
   { ifSouvenirs: [TRAITS.audace.id], speaker: 'Camille', say: ['En français, on se met ensemble, c\'est promis ! D\'ici là, je survis aux maths.'], end: true },
-  { comeBeside: 'remi-classe' },
-  { faceTo: 'camille' },
-  { say: ['Rémy te suit, l\'air de rien.', 'La fille sort ses cahiers. Elle lève les yeux vers toi.'] },
+  // Pierre s'assoit à droite de Camille, puis Rémy à droite de Pierre : il n'en bouge plus.
+  { goTo: PIERRE_SEAT, facing: 'left' },
+  { walk: 'remi-classe', to: REMI_SEAT, block: true },
+  { face: { 'remi-classe': 'left' } },
+  { say: ['Tu t\'assois à côté d\'elle. Rémy s\'installe à ta droite, l\'air de rien.', 'La fille sort ses cahiers. Elle lève les yeux vers toi.'] },
   line('Que lui dis-tu ?', ['Salut ! T\'es en 6e B ?', 'Bonjour. Enchanté.', 'Salut, beauté !'], 'Salut ! T\'es en 6e B ?', {
     'Bonjour. Enchanté.': ['Elle hausse un sourcil. « Euh… enchantée aussi ? »', RELAX],
     'Salut, beauté !': ['Elle te regarde, gênée. « … Pardon ? »', RELAX],
@@ -152,7 +158,6 @@ export const CAMILLE = [
   { speaker: 'Rémy', say: ['Trop facile. Je savais que t\'allais gérer.'] },
   { trait: TRAITS.audace },
   { speaker: 'Rémy', say: ['Bon. Notre casier, c\'est notre QG, maintenant. Et toi, t\'es mon pote.'] },
-  { walk: 'remi-classe', to: REMI_SEAT, block: true },
   // Le prof les rappelle à l'ordre, depuis son bureau.
   { emote: 'prof-maths', kind: 'surprise' },
   { allFace: 'prof-maths' },                                       // toute la classe se tourne vers le prof
