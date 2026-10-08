@@ -9,7 +9,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 //   premier ; Pierre le suit, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu (data/story.js FOLLOWERS).
 //   4. L'Asylum (Joie de vivre), puis le petit matin devant la boîte : Insouciance ; rentrer dormir.
 //   5. La veille de l'examen, les révisions à la bibliothèque (tour de table, choix sans mauvaise réponse bloquante).
-//   6. Le lendemain, les résultats devant l'université : le diplôme d'anglais de Hull.
+//   6. Le surlendemain (l'examen a eu lieu entre-temps), les résultats devant l'université : le diplôme d'anglais de Hull.
 //   7. Les adieux devant chez Léo : chacun part en échange ; Léo et Ousmane restent. Puis l'avion pour Hanoï.
 // Scénettes partagées par la carte et les intérieurs.
 
@@ -64,7 +64,7 @@ export const LEO_PLAN = [
   { say: ['La nuit tombe sur Hull.'] },
   { setFlag: FLAGS.leoPlan },
   { black: false },
-  { say: ['Objectif : suis Léo jusqu\'au pub, juste à côté.'] },
+  { speaker: 'Léo', say: ['Premier pub, juste à côté. Suivez-moi, tout le monde !'] },
 ];
 
 // Dehors, à chaque étape de la soirée : Léo part devant jusqu'à la porte du bar suivant et entre le premier (il attend
@@ -90,7 +90,7 @@ export const PUB_A_WELCOME = [
   { speaker: 'Anaïs', say: ['Comme à Bordeaux, mais c\'est toi qui régales cette fois !'] },
   // Charlotte connaît déjà Pierre (avant Hull) : des retrouvailles, pas une rencontre.
   { speaker: 'Charlotte', say: ['Pierre ! Ça fait plaisir de te revoir. Et devine qui est la coloc d\'Anaïs… Le monde est petit !'] },
-  { say: ['Objectif : ramène la tournée. Demande à chacun ce qu\'il veut, puis commande au comptoir.'] },
+  { speaker: 'Barman', say: ['Alors, qu\'est-ce que je te sers pour la bande ?'] },
 ];
 
 // Tapis de sortie des deux pubs (voir interiors.js hullPubA, hullPubB) : Léo y file devant la bande.
@@ -111,7 +111,6 @@ const CHEERS = [
   { speaker: 'Ousmane', say: ['Santé !'] },
   { speaker: 'Léo', say: ['Cheers ! Allez, on finit ça et on file au pub d\'en bas. Je passe devant !'] },
   { walk: 'leo-pub', to: PUB_A_EXIT, block: true },
-  { say: ['Objectif : suis Léo jusqu\'au pub suivant, plus bas dans l\'avenue. La bande te suit.'] },
   { setFlag: FLAGS.tourneeServie },
 ];
 export const PUB_A_BAR = [
@@ -143,7 +142,7 @@ export const PUB_A_BAR = [
 const BAND_PUB = ['leo-pub', 'ousmane-pub', 'charlotte-pub', 'anais-pub'];
 export const PUB_B_SEATS = { 'ousmane-pub': [9, 5], 'charlotte-pub': [6, 6], 'anais-pub': [9, 6] };
 
-// Facultatif : le pari (Audace). Gagné, l'habitué offre une tournée générale (toute la bande saute de joie) ; perdu, il
+// Le pari (Audace), obligatoire ; seule la victoire est facultative. Gagné, l'habitué offre une tournée générale (toute la bande saute de joie) ; perdu, il
 // propose une revanche, autant de fois qu'on veut tant qu'on est dans ce pub (ici, puis en lui reparlant, voir
 // HABITUE_AFTER).
 const LOST = ['Not bad! La prochaine fois, peut-être.'];
@@ -191,9 +190,11 @@ export const DARTS = [
               betGame(REMATCHES),
             ],
           },
+          // Romain, déjà à l'Asylum avec Prophecy, appelle Pierre.
+          { say: ['Ton téléphone vibre. C\'est Romain.'] },
+          { speaker: 'Romain', phone: true, say: ['L\'Asylum nous attend, tout en haut sur le campus ! Léo, montre le chemin.'] },
           { speaker: 'Léo', say: ['On file à l\'Asylum ! Je passe devant, suivez Pierre !'] },
           { walk: 'leo-pub', to: PUB_B_EXIT, block: true },
-          { say: ['Objectif : suis Léo jusqu\'à l\'Asylum, tout en haut, sur le campus. La bande te suit.'] },
           { setFlag: FLAGS.flechettesJouees },
         ],
       },
@@ -250,13 +251,13 @@ export const DAWN = [
   { speaker: 'Anaïs', say: ['Ne dis pas ça maintenant.'] },
   { speaker: 'Léo', say: ['Demain, bibliothèque. Tout le monde.'] },
   { trait: TRAITS.insouciance },
+  { speaker: 'Ousmane', say: ['Allez, on rentre dormir à la coloc. Demain… enfin, tout à l\'heure, révisions.'] },
   // Chacun rentre chez soi : la bande quitte la rue (Léo, Romain et Prophecy chez eux, Ousmane à la coloc).
   { say: ['Tout le monde rentre se coucher.'] },
   { black: true },
   { wait: 500 },
   { setFlag: FLAGS.bandeRentree },
   { black: false },
-  { say: ['Objectif : rentre dormir à la coloc.'] },
 ];
 
 // Rentré à la coloc (Ousmane y est déjà) : on dort ; le lendemain, veille d'examen, Ousmane te réveille et t'envoie à la
@@ -313,17 +314,16 @@ export const LIBRARY = [
   },
   { speaker: 'Charlotte', say: ['T\'es prêt.'] },
   { setFlag: FLAGS.revisions },
-  { say: ['Objectif : va voir les résultats demain, devant l\'université.'] },
 ];
 
-// En sortant de la bibliothèque : le lendemain.
+// En sortant de la bibliothèque : le surlendemain (l'examen a eu lieu la veille) ; Ousmane réveille Pierre.
 export const NEXT_DAY = [
   { black: true },
   { wait: 700 },
-  { say: ['Le lendemain…'] },
+  { say: ['Le surlendemain…'] },
+  { speaker: 'Ousmane', say: ['Les résultats sont affichés devant l\'université. Viens, on va voir ça !'] },
   { setFlag: FLAGS.jourResultats },
   { black: false },
-  { say: ['Objectif : va voir les résultats devant l\'université.'] },
 ];
 
 // ---------- 6. Les résultats ----------
@@ -333,8 +333,7 @@ export const RESULTS = [
   { faceTo: 'leo-resultats' },
   { speaker: 'Léo', say: ['Diplôme de Hull, bro !'] },
   { give: ITEMS.diplomeHull, text: 'Diplôme obtenu : Anglais de Hull !' },
-  { speaker: 'Léo', say: ['Toute la bande se retrouve devant chez moi. Viens !'] },
-  { say: ['Objectif : retrouve la bande devant chez Léo.'] },
+  { speaker: 'Léo', say: ['On se retrouve tous devant chez moi pour se dire au revoir. Ramène-toi !'] },
 ];
 
 // ---------- 7. Les adieux ----------
@@ -347,14 +346,13 @@ export const FAREWELL = [
   { speaker: 'Romain', say: ['Hong Kong !'] },
   { say: ['Et toi, c\'est Hanoï, au Vietnam.'] },
   { speaker: 'Léo', say: ['Hanoï, hein. Nous on garde la maison.'] },
-  { speaker: 'Ousmane', say: ['Reviens avec des histoires.'] },
+  { speaker: 'Ousmane', say: ['Ton avion pour Hanoï part de l\'aéroport, au bout de la grande rue. Allez, file. Reviens avec des histoires.'] },
   { setFlag: FLAGS.adieuxHull },
-  { say: ['Objectif : va à l\'aéroport, au bout de la grande rue.'] },
 ];
 
 // Les vertus reçues à Hull (encart du trajet).
 const CARRY = carryText('hull');
-// Le vol pour Hanoï : personne au guichet, Pierre part seul (Autonomie).
+// Le vol pour Hanoï : personne n'accompagne Pierre, il part seul (Autonomie).
 export const FLIGHT_TO_HANOI = [
   { useTrait: TRAITS.autonomie },
   { say: ['Pour la première fois, personne ne t\'accompagne. Tu prends ton billet pour Hanoï.'] },

@@ -1,8 +1,8 @@
 # Bible du jeu Poképierre
 
-Ce document décrit ce qui est **réellement codé** au 5 octobre 2026 (branche `cartes-gen4`), ville par ville, dans
+Ce document décrit ce qui est **réellement codé** au 8 octobre 2026 (branche `cartes-gen4`), ville par ville, dans
 l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/story.js`, `src/data/*Story.js`,
-`src/data/characters.js`, `src/data/questStarts.js`, `src/data/fishing.js`, `src/data/maps/*.js`,
+`src/data/characters.js`, `src/data/hanoiStory.js`, `src/data/questStarts.js`, `src/data/fishing.js`, `src/data/maps/*.js`,
 `src/data/maps/interiors.js`, `src/scenes/FerryScene.js`, `scripts/build_ds_ui.py` (cartes postales).
 
 ## Conventions
@@ -16,14 +16,15 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   très foncé d'un pixel (pour que les planches DPPt et Gen 4 aillent ensemble) ;
   la végétation et les éléments naturels (arbres, buissons, fleurs, rochers) gardent la leur. Cartes aux dimensions
   paires, bordées d'arbres ronds de DPPt dont le jeu cache le bord extérieur.
-- **Vertus** : 8 au plus dans tout le jeu, une par ville au plus ; 6 jusqu'à Hull, 2 places réservées après Hull (pas
-  encore définies). Encart « Pierre a reçu la vertu X ! » (étape `trait`) et « Pierre utilise X ! » (étape `useTrait`,
+- **Vertus** : 8 au plus dans tout le jeu, une par ville au plus ; 6 jusqu'à Hull, Adaptation à Hanoï, 1 place encore
+  libre. Encart « Pierre a reçu la vertu X ! » (étape `trait`) et « Pierre utilise X ! » (étape `useTrait`,
   comptée). Carnet dans Start > VERTUS : le total (« Vertus : X sur 8. »), puis une page par vertu reçue avec sa ville,
   sa phrase et son nombre d'utilisations (« Utilisée N fois. » ou « Pas encore utilisée. »), puis les « souvenirs des
   PNJ ». À l'écran, le compteur « Vertus : X sur 8 », seulement dans les villes qui donnent une vertu.
-- **Objectifs** : le jeu n'a pas de journal de quêtes. Le joueur est guidé de deux façons : des répliques qui
-  commencent par « Objectif : » (seulement au Prytanée, à Bordeaux et à Hull), et des PNJ qui rappellent ce qu'il reste
-  à faire. Les deux sont relevés ci-dessous.
+- **Objectifs** : le jeu n'a ni journal de quêtes ni ligne « Objectif : » (supprimées le 8 octobre 2026). Le joueur est
+  guidé seulement par les PNJ, qui disent où aller et rappellent ce qu'il reste à faire (relevés ci-dessous).
+- **Téléphone** : une réplique au téléphone s'affiche dans la boîte de dialogue normale, avec une petite icône de
+  téléphone dessinée devant le nom (étape `{ speaker, phone: true, say }`). Utilisé pour Romain (Hull, Hanoï).
 - **Trajet** : scène de voyage (`FerryScene`) en ferry, en voiture ou en avion, qui se termine par l'encart
   « Tu emportes : … » (la vertu reçue dans la ville quittée ; pas d'encart en quittant une ville sans vertu). Sans scène
   de trajet, on passe directement à la carte suivante.
@@ -38,7 +39,7 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
   moment de monter sur ton vélo : on t'accompagne. »), il descend si quelqu'un se met à le suivre ; pendant une
   scénette, il descend et remonte à la fin. Une partie reprise dehors repart à vélo.
-- **Textes provisoires** : à partir de Hanoï, presque toutes les répliques commencent par « [Texte provisoire] » ou
+- **Textes provisoires** : à partir d'Amsterdam (Hanoï est écrit), presque toutes les répliques commencent par « [Texte provisoire] » ou
   « [Nom - texte provisoire] ».
 
 ## Ordre du jeu
@@ -510,8 +511,8 @@ Dialogue à choix (Camille), l'oral du brevet (trois questions : français, math
 ### Arrivée et image d'accueil
 - Carte postale `prytanee` (« tour Chétiflor, le matin ») : **« Le Prytanée, La Flèche. La rentrée. »** ; « Le capitaine
   t'attend devant l'internat des garçons, en haut à gauche. »
-- Le capitaine : **« Nouveau. Ici, personne ne fait les choses à ta place. »** / « Lit, armoire, affaires. Inspection dans
-  dix minutes. »
+- Le capitaine : **« Nouveau. Ici, personne ne fait les choses à ta place. »** / « Ta chambre est au premier étage. Lit,
+  armoire, affaires. Exécution. » / « Inspection dans dix minutes. »
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -533,25 +534,28 @@ Dialogue à choix (Camille), l'oral du brevet (trois questions : français, math
      presque déçu. » ; « Le lit. Une pièce de monnaie rebondirait dessus. » / « Je n'ai pas de pièce. Mais je le sens. » ;
      « Les affaires pour demain. Même les chaussettes sont alignées. » / « Qui t'a appris ça ? … Ne réponds pas. » ;
      **« Correct. Repos. »** → vertu **Autonomie**.
-2. **Le mur, la nuit.** « Le soir même… » ; Tanguy : **« Ce soir on fait le mur. T'es avec nous ? »** ; Geoffrey : « Les
-   rondes passent toutes les deux minutes, faut juste bien attendre. » → **« Pierre utilise Esprit d'équipe ! »**
+2. **Le mur, la nuit.** Fondu au noir sans texte, la nuit tombe sur le dortoir ; Tanguy : **« Ce soir on fait le mur.
+   T'es avec nous ? »** ; Geoffrey : « Les rondes passent toutes les deux minutes, faut juste bien attendre. » →
+   **« Pierre utilise Esprit d'équipe ! »** ; Tanguy : « On file par la porte nord, tout en haut. On t'attend derrière
+   le mur. Et planque-toi des rondes ! »
    - Traverser la cour sans être vu des rondes. Pris : « Hé, toi ! Retour au dortoir ! » (retour devant l'internat).
-   - Derrière la porte nord, Tanguy : « T'en as mis du temps ! » ; « Au petit matin, au dortoir. » ; le capitaine entre
-     au dortoir : « Trois lits vides cette nuit, d'après la ronde. Qui est sorti ? » → **« Pierre utilise Audace ! »** →
+   - Derrière la porte nord, Tanguy : « T'en as mis du temps ! » ; l'écran s'éclaircit (l'aube se lève sur la cour) ;
+     Tanguy : **« Le ciel se lève déjà… Vite, au dortoir avant la relève ! »** ; fondu, et l'on enchaîne directement au
+     dortoir, sans ellipse ; le capitaine entre : « Trois lits vides cette nuit, d'après la ronde. Qui est sorti ? » → **« Pierre utilise Audace ! »** →
      « Tu te lèves, au garde-à-vous, et tu regardes le capitaine droit dans les yeux. » ; Pierre : **« Personne n'est
      sorti, mon capitaine. On n'a rien vu, rien entendu. »** ; le capitaine : « Rien vu, rien entendu… Bien. » /
      **« Alors la prochaine fois que « personne » sort, dites-lui d'essuyer ses rangers : il a laissé de la boue jusqu'à
      son lit. »** ;
      Geoffrey : **« Personne a rien vu. On remet ça quand vous voulez les gars ! »**
-3. **Le bac.** **« Quelques années plus tard… »** ; Tanguy : « Debout, Pierre ! C'est aujourd'hui : la liste du bac est
-   affichée dans la cour. » ; Geoffrey : « On descend voir. Si j'y suis pas, je refais le mur… mais pour de bon. » Au
+3. **Le bac.** **« Quelques années plus tard… »** (la seule ellipse du Prytanée) ; Tanguy : « Debout, Pierre ! C'est
+   aujourd'hui, les résultats du bac ! » ; Geoffrey : « On descend voir. Si j'y suis pas, je refais le mur… mais pour de
+   bon. » ; Tanguy : « La liste du bac est affichée sur le panneau de la place d'armes. Viens, on va voir ! » Au
    panneau : « La liste des résultats du baccalauréat est affichée. Tu cherches ton nom… » ; Tanguy « T'es dessus ! » ;
    Geoffrey « On y est tous les trois. Même moi. » → **Baccalauréat** (« Diplôme obtenu : Baccalauréat ! »).
 
-### Objectifs affichés
-« Objectif : prépare ta chambre, au premier étage de l'internat. » → « Objectif : rejoins Tanguy et Geoffrey derrière le
-mur, à la porte nord. Gare aux rondes ! » → « Objectif : va voir les résultats du bac, sur le panneau de la place
-d'armes. » → « Le capitaine t'attend à la porte nord, la route de Bordeaux. »
+### Rappels des PNJ
+Le capitaine (« Ta chambre est au premier étage… »), Tanguy (la porte nord, puis le panneau du bac), puis, après le bac :
+« Le capitaine t'attend à la porte nord, la route de Bordeaux. »
 
 ### Passage optionnel : le nouveau qui a le mal du pays (Joie de vivre)
 Dans le hall de l'internat, de l'arrivée jusqu'au bac (pas la nuit du mur, où le hall est vide) : « Un nouvel élève, une
@@ -602,8 +606,10 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 | Ouvrier | Travaux sur la route de Paris (sortie sud-est), jusqu'au diplôme de Bordeaux | `g79` |
 
 ### Quêtes, dans l'ordre
-1. **Les clés.** À l'agence → **Clés de l'appartement**. Devant l'immeuble, Ousmane : **« Salut, moi c'est Ousmane, ton
-   coloc. Alors, on va voir ça ? »**
+1. **Les clés.** Dès l'arrivée, Ousmane, devant l'immeuble, vient se présenter : **« Salut, moi c'est Ousmane, ton
+   coloc ! Les clés sont à l'agence, juste à droite. Je t'attends ici. »**, puis retourne attendre à la porte (s'il revoit
+   Pierre sans les clés : « Les clés sont à l'agence, juste à droite. Je t'attends ici. »). À l'agence → **Clés de
+   l'appartement**. Devant l'immeuble, Ousmane : « T'as les clés ? Alors, on va voir ça ! »
 2. **La coupure.** « Il fait tout noir. L'interrupteur ne répond pas. » ; Ousmane : « C'est quoi ce délire ?
    On appelle quelqu'un ? » ; Pierre : **« Non. »** → **« Pierre utilise Ingéniosité ! »** Le compteur se cherche à tâtons
    au fond de la pièce : « Le compteur électrique. Le disjoncteur est tombé… Tu le relèves. » ; Ousmane : **« T'es
@@ -631,11 +637,13 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
    retard », « Ça marche ! », « J'ai hâte ! » ; bonnes réponses « I am late. », « Deal! », « I can't wait! » ; une erreur :
    par exemple « Very French. Try again! ») → « Excellent! Well done, Pierre. » → **Diplôme d'anglais** (« Diplôme
    obtenu : Anglais KEDGE ! ») ; « Avec ça, la route vers l'est t'est ouverte. »
+   En sortant de KEDGE, Ousmane attend devant la porte : **« Ça y est, tu l'as, ton diplôme ! L'aéroport est par la
+   sortie est. Prends ton billet pour Hull, je pars avant toi. »**, puis il part devant.
 
-### Objectifs affichés
-« Objectif : récupère les clés à l'agence. » → « Objectif : va à l'appartement. » → « Objectif : trouve le compteur
-électrique. » → « Objectif : récupère l'enceinte chez Paul et les gobelets chez Rémi. » → « Objectif : passe l'oral
-d'anglais à KEDGE. » → « Objectif : va à l'aéroport, sortie est. » Ousmane rappelle aussi : « Il manque l'enceinte :
+### Rappels des PNJ
+Ousmane (les clés à l'agence, puis l'aéroport par la sortie est), l'agent immobilier (« L'immeuble est juste à
+gauche. »), Ousmane dans le noir (« Pas près de la porte, en tout cas. »), Rémi devant KEDGE le jour de l'oral. Pendant
+les préparatifs, Ousmane rappelle : « Il manque l'enceinte :
 Paul, la maison du milieu, de l'autre côté de la Garonne. » / « Et les gobelets : Rémi, la maison de droite, juste à
 côté de chez Paul. »
 
@@ -679,8 +687,11 @@ sur le bouton VÉLO) pour monter dessus. » Ensuite : « Il te va bien, ce vélo
 - **Vélo**, offert par le cycliste du quai (voir le passage optionnel) ; la **Clé d'antivol** lui est rendue. L'enceinte et les gobelets, eux, sont
   obligatoires et repris au début de la soirée.
 
-### Boîte aux lettres
-Aucune.
+### Boîte aux lettres (carte postale)
+Une boîte aux lettres rouge, à gauche de l'immeuble. De Joshua (la « vraie lettre, avec un timbre » promise à Saint-Ay) :
+« Une carte postale ! Elle vient de Joshua. » / « « Pierre, je t'avais promis une vraie lettre, avec un timbre. Voilà le
+timbre. La lettre, c'est cette carte. » / « Felix dit que la cabane tient toujours. Yanis a encore oublié le mot de passe.
+Joshua. » »
 
 ### Mini-jeux
 Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paul, Rémi) ; oral d'anglais (trois questions).
@@ -736,13 +747,14 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    Prophecy : voilà Pierre, de la promo de KEDGE. » ; Romain : **« Ah, c'est toi, Pierre ! Léo nous a parlé de toi. »** /
    « Nous, on vous rejoint à l'Asylum. » ; Prophecy : « Salut, Pierre. » / « Il me faut au moins une heure pour choisir
    mes chaussures. Romain m'attend. » ; Léo : « Les autres sont déjà au pub, juste à côté. Je passe devant, suis-moi ! » ;
-   « La nuit tombe sur Hull. »
+   « La nuit tombe sur Hull. » ; Léo : « Premier pub, juste à côté. Suivez-moi, tout le monde ! »
    **La tournée des bars** : à chaque étape (de chez Léo au premier pub, puis au second, puis à l'Asylum), Léo sort le
    premier, part devant en éclaireur (il attend Pierre s'il traîne) et entre le premier ; Pierre le suit ; à partir du
    premier pub, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu, puis s'attablent en arrivant.
 2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** ; Anaïs : « Comme à Bordeaux, mais
    c'est toi qui régales cette fois ! » ; Charlotte, qui connaît déjà Pierre (d'avant Hull) : **« Pierre ! Ça fait
-   plaisir de te revoir. Et devine qui est la coloc d'Anaïs… Le monde est petit ! »** Chacun dit sa commande en
+   plaisir de te revoir. Et devine qui est la coloc d'Anaïs… Le monde est petit ! »** ; le barman : « Alors, qu'est-ce
+   que je te sers pour la bande ? » Chacun dit sa commande en
    français : Léo « Une Guinness, évidemment. », Ousmane « Un cidre, s'il te plaît. », Charlotte « Un gin tonic ! »,
    Anaïs « Un verre de vin rouge. ». Le barman les demande en anglais (« And for Léo? »…), parmi six boissons ; une
    erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : « Le barman pose les verres
@@ -750,8 +762,10 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    file au pub d'en bas. Je passe devant ! » (il sort ; les autres se lèvent et suivent Pierre).
 3. **Deuxième pub : les fléchettes.** L'habitué : « Hey, the new guy! Tu joues ? » ; choix « Allez ! » / « Pas
    maintenant. » ; le pari (voir le passage optionnel), puis une partie de trois lancers (écran façon jeu Pokémon : la
-   cible où se plantent les fléchettes, la liste des lancers et le total, la jauge de visée), gagnée ou perdue ; Léo :
-   « On file à l'Asylum ! Je passe devant, suivez Pierre ! » (l'histoire continue dans les deux cas).
+   cible où se plantent les fléchettes, la liste des lancers et le total, la jauge de visée), gagnée ou perdue ; puis
+   « Ton téléphone vibre. C'est Romain. » ; Romain, au téléphone (déjà à l'Asylum) : « L'Asylum nous attend, tout en haut
+   sur le campus ! Léo, montre le chemin. » ; Léo : « On file à l'Asylum ! Je passe devant, suivez Pierre ! »
+   (l'histoire continue dans les deux cas).
 4. **L'Asylum, l'aube → Insouciance.** Romain : « Vous en avez mis du temps ! » ; Léo : « Tout le monde sur la piste ! » /
    « C'est notre chanson ! Venez tous ! » → **« Pierre utilise Joie de vivre ! »** → « Tu entraînes toute la bande sur la
    piste, comme Maman au salon. » ; « Toute la bande danse sur la piste. » ; « La musique ralentit… Dernière
@@ -759,7 +773,8 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    **« Ok guys, zis night was very, very beautiful. Now we go 'ome. Follow me, I know ze way! »** (il part du mauvais
    côté) ; Ousmane « Léo… c'est de l'autre côté. » ; Charlotte « Au fait… les exams, c'est après-demain. » ; Anaïs « Ne
    dis pas ça maintenant. » ; Léo « Demain, bibliothèque. Tout le monde. » → vertu **Insouciance** (phrase du
-   carnet : « Profiter du moment, sans penser à demain. »). « Tout le monde rentre se coucher. » : la bande disparaît
+   carnet : « Profiter du moment, sans penser à demain. ») ; Ousmane : « Allez, on rentre dormir à la coloc. Demain…
+   enfin, tout à l'heure, révisions. » ; « Tout le monde rentre se coucher. » : la bande disparaît
    (chacun chez soi : Léo, Romain et Prophecy chez eux, Ousmane à la coloc).
 5. **Dormir** : Ousmane, déjà rentré : « Enfin ! Allez, au lit. » ; « Tu t'écroules sur ton lit. » ; « Le lendemain,
    veille d'examen… » ; Ousmane réveille Pierre : « Debout ! Les exams, c'est demain. Toute la bande révise à la
@@ -767,22 +782,24 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    retrouve là-bas ! »
 6. **Les révisions** (bibliothèque Brynmor Jones) : « La bande révise autour d'une table. Tour de table ! » Trois questions
    sans mauvaise réponse bloquante : Léo (« J'ai checké le planning, on a un meeting ASAP. »), Charlotte (le present
-   perfect), Prophecy (« si je dis « ze » au lieu de « the », ça passe ? »). Charlotte : **« T'es prêt. »**
-7. **Les résultats**, sur le panneau « EXAM » dressé devant l'université : « Le lendemain… » ; « Les résultats de
+   perfect), Prophecy (« si je dis « ze » au lieu de « the », ça passe ? »). Charlotte : **« T'es prêt. »** (Anaïs, à la
+   table : « Les résultats, c'est après-demain. On va y arriver ! »)
+7. **Les résultats**, sur le panneau « EXAM » dressé devant l'université : en sortant de la bibliothèque, « Le
+   surlendemain… » (l'examen a eu lieu la veille, hors écran) ; Ousmane, le matin : « Les résultats sont affichés devant
+   l'université. Viens, on va voir ça ! » ; « Les résultats de
    l'examen d'anglais sont affichés. Tu cherches ton nom… » ;
-   Léo : **« Diplôme de Hull, bro ! »** → **Diplôme d'anglais de Hull** (« Diplôme obtenu : Anglais de Hull ! »).
+   Léo : **« Diplôme de Hull, bro ! »** → **Diplôme d'anglais de Hull** (« Diplôme obtenu : Anglais de Hull ! ») ;
+   Léo : « On se retrouve tous devant chez moi pour se dire au revoir. Ramène-toi ! »
 8. **Les adieux**, devant chez Léo : « Toute la bande est là, devant chez Léo. Chacun part en échange. » ; Charlotte « Moi,
    c'est le Canada ! » ; Anaïs « Bali ! » ; Prophecy « Les États-Unis. Je vais enfin parler anglais pour de vrai. » ;
    Romain « Hong Kong ! » ; « Et toi, c'est Hanoï, au Vietnam. » ; Léo **« Hanoï, hein. Nous on garde la maison. »** ;
-   Ousmane « Reviens avec des histoires. »
+   Ousmane **« Ton avion pour Hanoï part de l'aéroport, au bout de la grande rue. Allez, file. Reviens avec des
+   histoires. »**
 
-### Objectifs affichés
-« Objectif : suis Léo jusqu'au pub, juste à côté. » → « Objectif : ramène la tournée. Demande à chacun ce
-qu'il veut, puis commande au comptoir. » → « Objectif : suis Léo jusqu'au pub suivant, plus bas dans l'avenue. La bande
-te suit. » → « Objectif : suis Léo jusqu'à l'Asylum, tout en haut, sur le campus. La bande te suit. » → « Objectif :
-rentre dormir à la coloc. » → (Ousmane, au réveil, envoie Pierre à la bibliothèque) → « Objectif : va voir les résultats
-demain, devant l'université. » → « Objectif : va voir les résultats devant l'université. » → « Objectif : retrouve la
-bande devant chez Léo. » → « Objectif : va à l'aéroport, au bout de la grande rue. »
+### Rappels des PNJ
+Plus aucune ligne « Objectif : ». Léo (le premier pub), le barman (la tournée), Romain au téléphone (l'Asylum), Ousmane
+à l'aube (rentrer dormir), au réveil (la bibliothèque), le surlendemain (les résultats) et aux adieux (l'aéroport), Léo
+aux résultats (les adieux devant chez lui).
 
 ### Passage optionnel : le pari des fléchettes (Audace)
 Avant la partie, l'habitué : « Un pari ? Si tu gagnes, je paie une tournée à toute ta bande. » → **« Pierre utilise
@@ -803,8 +820,10 @@ Audace ! »** → « Tu tends la main. Pari tenu. »
 ### Objet optionnel
 Aucun (le pari gagné offre une tournée générale).
 
-### Boîte aux lettres
-Aucune.
+### Boîte aux lettres (carte postale)
+Une boîte aux lettres rouge, à droite de la coloc. De Maman : « Une carte postale ! Elle vient de Maman. » / « « Alors,
+l'Angleterre ? Ici, tout le monde va bien. Fanny demande si les Anglais ont des poules. » / « Papa dit de bien manger.
+Jean a réparé le grille-pain, pour de vrai cette fois. Gros bisous, Maman. » »
 
 ### Mini-jeux
 La tournée (retenir quatre commandes, les donner en anglais), fléchettes (trois lancers), danse à l'Asylum, révisions à
@@ -812,29 +831,99 @@ choix.
 
 ### Départ et trajet
 - **Condition** : le diplôme de Hull et les adieux. Les deux bouts de la grande rue mènent à l'aéroport : « Tu te rends
-  à l'aéroport. » ; vol « Hanoï (Vietnam) », sans personne au guichet :
+  à l'aéroport. » ; vol « Hanoï (Vietnam) », personne ne l'accompagne :
   **« Pierre utilise Autonomie ! »** → « Pour la première fois, personne ne t'accompagne. Tu prends ton billet pour
   Hanoï. »
 - **Trajet en avion** ; encart : « Tu emportes : Insouciance. »
 
 ---
 
-## 8. Hanoï (Vietnam) : textes provisoires
+## 8. Hanoï (Vietnam)
 
-- **Arrivée** : pas d'image d'accueil. Dans sa maison : « [Texte provisoire] Ta nouvelle maison à Hanoï. Demain, tu
-  commences ton nouveau travail à l'agence de voyage ! »
-- **PNJ** : Directrice de l'agence de voyage (`g37`) ; Anna (`g24`) et Tom (`g22`), les deux touristes.
-- **Quêtes** :
-  1. La directrice : « [Directrice - texte provisoire] Bienvenue dans l'équipe de l'agence ! » / « C'est ton premier
-     jour : voici l'étape 1 de ton nouveau travail. »
-  2. En sortant, Anna : « [Anna - texte provisoire] Bonjour ! Tu travailles à l'agence ? » / « Tu pourrais nous emmener
-     visiter le temple ? » / « D'accord ! Tu acceptes de les guider jusqu'au temple. » Les deux touristes suivent Pierre.
-  3. Au temple, sur l'autel : « [Texte provisoire] Sur l'autel, tu trouves un objet de chance. » → **Objet de chance**.
-     En sortant, les remerciements (« [Anna - texte provisoire] Quel temple magnifique ! Merci pour la visite. »).
-  4. La directrice : « Merci pour ton travail, les touristes sont ravis ! » / « C'est bon, c'est terminé : tu peux
-     partir. »
-- **Vertus** : aucune. **Objet optionnel, boîte aux lettres, mini-jeu** : aucun.
-- **Départ** : vol « Amsterdam (Pays-Bas) » à l'aéroport, une fois le travail terminé, avec le trajet en avion.
+Pour la première fois, Pierre arrive seul dans une ville dont il ne parle pas la langue (`src/data/hanoiStory.js`).
+
+### La carte (36 x 30, redessinée en Gen 4)
+Au nord, le long de la grande rue (est-ouest, vers l'aéroport par ses deux bouts) : une maison violette (porte (4, 7),
+fermée), la maison noire = l'agence de voyage (12, 7), ta maison = la seconde maison violette (20, 7), avec sa boîte aux
+lettres rouge à droite (24, 7), et la maison bleue aux lanternes (29, 7, fermée). Au milieu : le lac Hoàn Kiếm, son îlot
+à la cloche et son pont de bois ; le banc de M. Lam au bord du lac (7, 10) ; les papis aux échecs à l'est du pont (18, 12)
+et (20, 12) ; le temple au toit rouge (porte (26, 16)). Au sud : le portique rouge, les étals, la maison sur pilotis, la
+grande maison bleue (27, 23, fermée). Portes fermées : « Tu frappes. Personne ne répond… ou alors, en vietnamien. »
+
+### Arrivée et image d'accueil
+- Carte postale `hanoi` (« antre du Dragon ») : **« Hanoï, Vietnam. »** ; « Personne ne t'attend à la sortie de
+  l'aéroport. Pas d'Ousmane, pas de Léo. » / « Ta maison est la petite maison violette de la grande rue. Ton nouveau
+  travail commence aujourd'hui, à l'agence de voyage : la maison noire, un peu plus loin. »
+- Dans ta maison (avant le premier jour) : « Ta maison à Hanoï. Petite, silencieuse… et rien qu'à toi. » / « L'agence de
+  voyage t'attend : la maison noire, sur la grande rue. »
+
+### PNJ présents
+| Nom | Rôle | Sprite |
+|---|---|---|
+| Patron | Le patron (français) de l'agence de voyage | `g141` (imposé) |
+| M. Lam | Vieux monsieur du banc, au bord du lac ; a appris le français à l'école | `g129` (imposé) |
+| Passante, Vendeuse, Passant | Ne parlent pas français | `g19`, `g70`, `g14` (imposés) |
+| Touriste (x 2) | Les deux touristes à guider ; tous deux nommés « Touriste » à l'écran | `g24`, `g22` (imposés, aussi quand ils suivent) |
+| Papi (x 2) | Jouent aux échecs chinois au bord du lac (passage optionnel) | `g39`, `g48` (imposés) |
+| Romain | Au téléphone, six mois plus tard | — |
+
+### Quêtes, dans l'ordre
+1. **L'agence.** Le patron : « Ah, Pierre ! Bienvenue à l'agence. Un Français dans l'équipe, enfin quelqu'un à qui
+   parler ! » / « Ton premier jour commence maintenant. Les consignes de la journée sont là-dessus : c'est l'équipe du
+   matin qui les a écrites. » → « Le patron te tend un papier. » → **Consignes en vietnamien** ; **« Tout est écrit en
+   vietnamien. Tu n'y comprends pas un mot. »** ; le patron : « Moi, j'ai des clients au téléphone. Débrouille-toi : tu
+   verras, c'est formateur ! » (ensuite : « Toujours pas lu tes consignes ? Demande dehors, quelqu'un saura bien te les
+   lire. »)
+2. **La traduction → Adaptation.** Les passants, quand on leur montre le papier (« Tu montres ton papier. », bulle « … ») :
+   la passante « Elle lit, te regarde, relit… puis joint les mains devant elle, désolée. Elle ne parle pas français. » ;
+   la vendeuse « La vendeuse hausse les épaules en riant, et te tend une mangue à la place. » ; le passant « Il fronce
+   les sourcils, retourne le papier dans tous les sens, puis te le rend avec un petit salut d'excuse. ». M. Lam, sur le
+   banc : « Oh ! Tu parles français ? Je l'ai appris à l'école, il y a… très longtemps. » / « Voyons voir. Mes yeux ne
+   sont plus tout jeunes… » / **« « Aller chercher les deux touristes devant l'agence. Leur faire visiter le temple. Ne
+   pas les perdre. » »** / « Le temple, c'est le grand bâtiment au toit rouge, de l'autre côté du lac. » ; **« Tu ne
+   parles pas un mot de vietnamien… et pourtant, tu as trouvé ton chemin. »** → vertu **Adaptation**.
+3. **Les touristes.** Devant l'agence : « Bonjour ! C'est vous, notre guide ? On vous attendait devant l'agence. » / « On
+   aimerait tellement voir le temple ! » ; « Tu leur fais signe de te suivre. » Ils suivent Pierre (le temple est fermé
+   sans eux : « Le temple. Un lieu de recueillement : on ne le visite qu'accompagné d'un guide. »).
+4. **Le temple.** Une touriste : « Oh non… Mon téléphone est à plat ! Pas une seule photo du temple… » / « Tout ce
+   voyage, et je ne pourrai rien montrer. Je veux rentrer à l'hôtel. » → **« Pierre utilise Insouciance ! »** → Pierre :
+   **« Laisse tomber les photos. Regarde autour de toi : tu y es, là, maintenant. Profite. »** ; « Elle range son
+   téléphone, lève les yeux vers les statues… et sourit. » ; « Vous avez raison. Je m'en souviendrai mieux comme ça. »
+   Sur l'autel : « Sur l'autel, entre deux bâtons d'encens, une petite amulette porte-bonheur. Un gardien te fait
+   signe : elle est pour toi. » → **Objet de chance**. En sortant : « Merci pour la visite ! Sans téléphone, j'ai tout
+   regardé. Vraiment regardé. » / « Un super guide. Et même pas besoin de parler vietnamien ! »
+5. **Le retour à l'agence.** Le patron : « Les touristes sont passés me voir. Ils ne parlent que de toi ! » / « Premier
+   jour, pas un mot de vietnamien, et tu t'en sors comme un chef. Merci, Pierre. » (il ne parle pas d'Amsterdam).
+6. **Six mois plus tard.** En sortant du bureau du patron : **« Six mois plus tard… »** ; « Ton téléphone sonne. C'est
+   Romain ! » ; Romain, au téléphone : « Pierre ! Ça y est, je viens de prendre mon avion. Hong Kong, c'est fini ! » /
+   « J'ai trop hâte que tu arrives à Amsterdam pour le stage. On va bien se marrer. » / **« Je t'attends là-bas, hein. Ne
+   rate pas ton vol ! »** Les touristes ne sont plus devant le temple.
+
+### Passage optionnel : les papis du lac (Audace)
+« Deux papis jouent aux échecs chinois au bord du lac. Ils parlent vite, en vietnamien, sans lever les yeux du plateau. »
+→ **« Pierre utilise Audace ! »** → « Tu t'assois sur un petit tabouret, à côté d'eux. Tu montres une pièce, puis une
+case, l'air de demander. » / « Le premier papi éclate de rire et te montre comment avance le cheval. L'autre tape sur la
+table pour te faire jouer. » / « Une partie plus tard, tu as perdu… mais tout le monde rit. » → « Le papi te glisse une
+pièce de son jeu dans la main : le cheval. » → **Pièce d'échecs chinois**. Ensuite : « Les papis te saluent d'un signe
+de tête, et reprennent leur partie. »
+
+### Boîte aux lettres (carte postale)
+De Léo et de la bande de Hull : « Une carte postale ! Elle vient de Hull. » / « « Pierre ! Alors, Hanoï ? Ici il pleut
+toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et toute la bande. » »
+
+### Vertus
+- **Gagnée** : Adaptation (M. Lam traduit les consignes). Phrase du carnet : « Trouver son chemin partout, même sans en
+  parler la langue. »
+- **Utilisées** : **Insouciance**, au temple (route principale) ; **Audace**, avec les papis (optionnel).
+
+### Objets
+**Consignes en vietnamien** (le patron, gardées), **Objet de chance** (l'autel), **Pièce d'échecs chinois** (optionnel).
+
+### Départ et trajet
+- **Condition** : l'appel de Romain. Au guichet de l'aéroport, vol « Amsterdam (Pays-Bas) » : « Il y a quelques mois, à
+  Hull, tu prenais ce même billet, le ventre noué, parce que personne ne t'accompagnait. » / « Aujourd'hui, tu as
+  traversé une ville entière sans en parler la langue. Tu n'as plus peur de l'inconnu. Tu t'adaptes. »
+- **Trajet en avion** ; encart : « Tu emportes : Adaptation. »
 
 ## 9. Amsterdam (Pays-Bas) : textes provisoires
 
@@ -938,24 +1027,25 @@ des trois autres.
 
 ## Tableau des vertus
 
-8 vertus au plus dans tout le jeu, une par ville au plus : 6 jusqu'à Hull, 2 places réservées après Hull (pas encore
-définies, rien n'est codé).
+8 vertus au plus dans tout le jeu, une par ville au plus : 6 jusqu'à Hull, Adaptation à Hanoï, 1 place encore libre
+(rien n'est codé).
 
 | Vertu | Ville | Où et auprès de qui elle se gagne | Phrase du carnet | Où elle resert |
 |---|---|---|---|---|
 | Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
 | Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
-| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (optionnel) |
+| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) |
 | Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (obligatoire avant de sortir ; photo) ; Hull : le guichet de l'aéroport, avant Hanoï |
-| Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Nulle part pour l'instant |
+| Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Hanoï : la touriste au téléphone à plat, au temple |
+| Adaptation | Hanoï | M. Lam, qui traduit les consignes en vietnamien | « Trouver son chemin partout, même sans en parler la langue. » | Nulle part pour l'instant |
 
 Vertus supprimées (leurs scènes restent, sans encart) : Pragmatisme (le tri des cannes), Confiance (le coquillage de
 Manon), Patience (la main de Fanny), Loyauté (le cache-cache), Indépendance (le compteur de Bordeaux). Les anciennes
 sauvegardes sont converties au chargement : l'ancienne Insouciance du collège devient Audace, l'ancien Lâcher-prise de
 Hull devient la nouvelle Insouciance, les vertus supprimées sont retirées.
 
-Aucune vertu n'est gagnée après Hull. De Paris à la Corse, le jeu donne à la place des « souvenirs de PNJ » (cuisinier,
+Après Hanoï, aucune vertu n'est gagnée. De Paris à la Corse, le jeu donne à la place des « souvenirs de PNJ » (cuisinier,
 Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 
 ---
@@ -1009,8 +1099,11 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 | Habitué | figurant | Hull |
 | Nouveau | `g58` | Prytanée (hall de l'internat) |
 | Professor | `g138` | Hull (deux fois) |
-| Directrice | `g37` | Hanoï |
-| Anna, Tom | `g24`, `g22` | Hanoï |
+| Patron | `g141` | Hanoï (l'agence) |
+| M. Lam | `g129` | Hanoï (le banc du lac) |
+| Passante, Vendeuse, Passant | `g19`, `g70`, `g14` | Hanoï |
+| Touriste (x 2) | `g24`, `g22` | Hanoï |
+| Papi (x 2) | `g39`, `g48` | Hanoï (échecs chinois, optionnel) |
 | Laurent | `g53` | Amsterdam |
 | Vendeur | `g112` | Amsterdam |
 | Professeure (Delhi) | `g54` | New Delhi |
@@ -1042,43 +1135,43 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
   « Leo » (sans accent) au même sprite.
 - **Yanis** : cousin à Saint-Ay, puis hôte à Toulon, avec la même couleur et le même sprite. Aucune réplique de Toulon ne
   rappelle qu'il est le cousin.
-- **Romain** : de la bande de Hull, il annonce partir à Hong Kong, puis on le retrouve à Amsterdam dans une « maison
-  commune » avec Pierre, sans explication.
+- **Romain** : de la bande de Hull, il annonce partir à Hong Kong ; six mois après l'arrivée de Pierre à Hanoï, il
+  l'appelle (« Hong Kong, c'est fini ! ») et l'attend à Amsterdam, où ils partagent une « maison commune ».
 - **Sprites partagés** par des personnages différents : `g87` (les militaires, les sentinelles, le capitaine du
-  Prytanée), `g138` (le prof de maths, le Professor de Hull), `g37` (la principale, la directrice de Hanoï), `g55` (Léo
+  Prytanée), `g138` (le prof de maths, le Professor de Hull), `g55` (Léo
   de Hull, Léo de Corse, « Leo »). La liste des figurants au hasard (`EXTRAS`) contient aussi les sprites de Tom, Fanny,
   Léo, Manon, Thomas, Felix, Yanis, Harsh, Étienne, Anaïs et de la professeure d'anglais : un figurant peut ressembler
   à un personnage.
 
 ### Répliques contradictoires ou répétées
-- **L'examen de Hull** n'est pas joué : « veille d'examen », révisions, puis « Le lendemain… » directement aux résultats.
+- **L'examen de Hull** n'est pas joué : « veille d'examen », révisions, puis « Le surlendemain… » directement aux
+  résultats (l'examen a lieu hors écran, la veille des résultats).
 - **Deux diplômes d'anglais** se suivent : « Diplôme d'anglais » (KEDGE, Bordeaux), puis « Diplôme d'anglais de Hull ».
 
 ### Images d'accueil
 - Fort-de-France, Saint-Ay et le matin de septembre à Montépilloy utilisent la **même illustration** (bois aux Chênes, le
   matin).
-- Hanoï, Amsterdam, New Delhi, Paris, Toulon, la Corse, Bali, le Sri Lanka, la Thaïlande et le Népal n'ont pas
-  d'ouverture. Des cartes postales existent pourtant pour Hanoï, Paris, la
-  Corse, le Sri Lanka, la Thaïlande et le Népal.
+- Amsterdam, New Delhi, Paris, Toulon, la Corse, Bali, le Sri Lanka, la Thaïlande et le Népal n'ont pas d'ouverture.
+  Des cartes postales existent pourtant pour Paris, la Corse, le Sri Lanka, la Thaïlande et le Népal.
 
 ### Quêtes inachevées ou textes provisoires
-- Tout ce qui suit Hull est en **texte provisoire** : Hanoï, Amsterdam, Hull (retour), New Delhi, Rajasthan, le stade de
+- Tout ce qui suit Hanoï est en **texte provisoire** : Amsterdam, Hull (retour), New Delhi, Rajasthan, le stade de
   Bordeaux, Paris, Toulon, le Chemin, la Corse, Bali, Sri Lanka, Thaïlande, Népal.
 - Léo et Théo, en Corse, n'ont que des répliques de remplissage (« Ceci est le premier dialogue de Léo. »), alors qu'ils
   ouvrent la route de Bali.
 - Le vol **« Nouveau pays »** n'est pas ouvert (« la suite du voyage arrive bientôt ! »).
 - Plusieurs répliques provisoires restent aussi avant Hull, à Fort-de-France : la télé, la console de Manon et le frigo
   (« [Texte provisoire] … »). Dans l'entreprise parisienne, le dernier étage bloqué l'est aussi.
-- **Objets sans usage** : l'objet de chance (Hanoï) reste dans le sac. Les objets optionnels (vieille canne exceptée :
-  elle sert à pêcher) ne servent plus après leur ville : galet du lac, autocollant, insigne du Prytanée, photo
-  de la soirée, fléchettes de l'habitué, règlement du QG.
+- **Objets sans usage** : l'objet de chance et les consignes en vietnamien (Hanoï) restent dans le sac. Les objets
+  optionnels (vieille canne exceptée : elle sert à pêcher) ne servent plus après leur ville : galet du lac, autocollant,
+  insigne du Prytanée, photo de la soirée, règlement du QG, pièce d'échecs chinois.
 - **Le gamin de la route de Montépilloy** parle d'un cerf-volant perdu, mais aucun cerf-volant n'est codé.
 - **La maison de la voisine** à Montépilloy est fermée (« Personne ne répond. »), et sa boîte aux lettres ne contient
   rien.
 
 ### Vertus jamais utilisées
-Insouciance (Hull) ne sert encore nulle part. Joie de vivre sert cinq fois (dont trois en passage optionnel), Audace
-quatre fois (dont une optionnelle), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
+Adaptation (Hanoï) ne sert encore nulle part ; Insouciance sert une fois (Hanoï, le temple). Joie de vivre sert cinq
+fois (dont trois en passage optionnel), Audace cinq fois (dont une optionnelle, à Hanoï), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
 Esprit d'équipe et Autonomie deux fois chacune (Autonomie une fois en passage optionnel). Chaque ville de Saint-Ay à
 Hull a désormais un passage optionnel qui utilise une vertu ; Fort-de-France n'en a pas (aucune vertu n'est acquise
 avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instant : le panier de la cabane de Saint-Ay
@@ -1087,9 +1180,10 @@ avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instan
 ### Objectifs manquants
 - À Saint-Ay, si la corde est trouvée **après** les planches, personne ne dit « On a tout ! » (Joshua est resté devant
   l'enclos) : rien n'indique de retourner chez Felix, sauf en reparlant à Joshua, Yanis ou Felix.
-- Les répliques « Objectif : » n'existent qu'au Prytanée, à Bordeaux et à Hull. Fort-de-France, Saint-Ay, Montépilloy et
-  le collège s'appuient seulement sur les rappels des PNJ. Paris et Toulon ont une « mission » d'arrivée ; Hanoï,
-  Amsterdam, New Delhi et les pays d'Asie n'ont rien.
+- Il n'y a plus aucune réplique « Objectif : » : partout, le joueur suit les rappels des PNJ. Paris et Toulon ont une
+  « mission » d'arrivée ; Amsterdam, New Delhi et les pays d'Asie n'ont rien. À Bordeaux, après « Quelques mois plus
+  tard… », seul Rémi, devant KEDGE, indique l'oral.
 - À Fort-de-France, la boîte aux lettres annonce « Peut-être une carte postale de Saint-Ay, un jour ? ». Cette carte
   n'existe pas : celle de Saint-Ay vient du capitaine, et la boîte de Fort-de-France ne change jamais.
-- Après Montépilloy, aucune boîte aux lettres ni carte postale.
+- Courrier : Fort-de-France (vide), Saint-Ay (le capitaine), Montépilloy (Felix), Bordeaux (Joshua), Hull (Maman), Hanoï
+  (Léo et la bande). Ni au collège ni au Prytanée (voulu). Après Hanoï, aucune boîte aux lettres.

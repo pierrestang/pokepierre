@@ -30,9 +30,15 @@ export const ARRIVAL = [
 // Le capitaine, devant l'internat : trois mots, l'objectif, et il s'en va vers son poste sans qu'on l'attende (le
 // dortoir est ouvert tout de suite ; entrer au dortoir le fait disparaître, voir interiors.dortoir).
 export const CAPTAIN_WELCOME = [
-  { speaker: 'Capitaine', say: ['Nouveau. Ici, personne ne fait les choses à ta place.', 'Lit, armoire, affaires. Inspection dans dix minutes.'] },
+  {
+    speaker: 'Capitaine',
+    say: [
+      'Nouveau. Ici, personne ne fait les choses à ta place.',
+      'Ta chambre est au premier étage. Lit, armoire, affaires. Exécution.',
+      'Inspection dans dix minutes.',
+    ],
+  },
   { setFlag: FLAGS.capitaineParle },
-  { say: ['Objectif : prépare ta chambre, au premier étage de l\'internat.'] },
   { walk: 'capitaine', to: COMMAND_POST, then: [FLAGS.capitaineAccueil] },
 ];
 
@@ -65,17 +71,16 @@ const INSPECTION = [
   { speaker: 'Capitaine', say: ['Correct. Repos.'] },
   { trait: TRAITS.autonomie },
   { walk: 'capitaine-inspection', to: DORM_EXIT, block: true, then: [FLAGS.inspection] },
-  // Le mur, la nuit.
+  // Le mur, la nuit (sans texte : la nuit tombe sur le dortoir).
   { black: true },
   { wait: 600 },
-  { say: ['Le soir même…'] },
   { setFlag: FLAGS.soirMur },
   { black: false },
   { approach: 'tanguy' },
   { speaker: 'Tanguy', say: ['Ce soir on fait le mur. T\'es avec nous ?'] },
   { speaker: 'Geoffrey', say: ['Les rondes passent toutes les deux minutes, faut juste bien attendre.'] },
   { useTrait: TRAITS.espritEquipe },
-  { say: ['Objectif : rejoins Tanguy et Geoffrey derrière le mur, à la porte nord. Gare aux rondes !'] },
+  { speaker: 'Tanguy', say: ['On file par la porte nord, tout en haut. On t\'attend derrière le mur. Et planque-toi des rondes !'] },
   // Ils filent chacun par le plus court chemin vers l'escalier (pas en file : l'un ne refait pas tout le trajet de l'autre),
   // pendant que Pierre a déjà la main ; ils descendent l'escalier et s'effacent (Geoffrey, le plus loin, lève le drapeau à
   // son arrivée ; Tanguy, parti le premier, ne lui barre plus la marche).
@@ -132,21 +137,24 @@ export const PATROLS = {
   caught: { speaker: 'Militaire', say: ['Hé, toi ! Retour au dortoir !'], back: { ...DORM_DOOR_FRONT, facing: 'down' } },
 };
 
-// Derrière le mur (la porte nord) : les deux copains, puis le retour au dortoir au petit matin.
+// Derrière le mur (la porte nord) : les deux copains ; le ciel s'éclaircit (l'aube, voir maps/prytanee.js), retour
+// au dortoir avant la relève.
 export const BEHIND_THE_WALL = [
   { face: { player: 'up' } },
   { speaker: 'Tanguy', say: ['T\'en as mis du temps !'] },
+  { setFlag: FLAGS.murAube },
+  { wait: 900 },
+  { speaker: 'Tanguy', say: ['Le ciel se lève déjà… Vite, au dortoir avant la relève !'] },
   { black: true },
   { wait: 700 },
   { setFlag: FLAGS.murReussi },
   { travel: { interior: 'dortoir', x: 8, y: 6, facing: 'right' } },
 ];
 
-// Au dortoir, au petit matin : le capitaine monte demander qui est sorti ; Pierre (Audace) affirme sans ciller que
-// personne n'est sorti et qu'ils n'ont rien vu ; le capitaine acquiesce et repart sur un bon mot. Puis l'ellipse
-// jusqu'aux résultats du bac.
+// Au dortoir, au petit matin (enchaîné directement, sans ellipse) : le capitaine monte demander qui est sorti ; Pierre
+// (Audace) affirme sans ciller que personne n'est sorti et qu'ils n'ont rien vu ; le capitaine acquiesce et repart sur un
+// bon mot. Puis l'ellipse jusqu'aux résultats du bac (la seule du Prytanée).
 export const MORNING = [
-  { say: ['Au petit matin, au dortoir.'] },
   { sound: 'door' },
   { walk: 'capitaine-matin', to: [9, 6], block: true },
   { face: { 'capitaine-matin': 'left', player: 'right' } },
@@ -166,9 +174,9 @@ export const MORNING = [
   { black: false },
   // Le jour des résultats : les deux copains réveillent Pierre, puis filent en bas (Pierre a la main pendant qu'ils partent).
   { allFace: 'tanguy-jourj' },
-  { speaker: 'Tanguy', say: ['Debout, Pierre ! C\'est aujourd\'hui : la liste du bac est affichée dans la cour.'] },
+  { speaker: 'Tanguy', say: ['Debout, Pierre ! C\'est aujourd\'hui, les résultats du bac !'] },
   { speaker: 'Geoffrey', say: ['On descend voir. Si j\'y suis pas, je refais le mur… mais pour de bon.'] },
-  { say: ['Objectif : va voir les résultats du bac, sur le panneau de la place d\'armes.'] },
+  { speaker: 'Tanguy', say: ['La liste du bac est affichée sur le panneau de la place d\'armes. Viens, on va voir !'] },
   { walk: 'tanguy-jourj', to: DORM_EXIT },
   { walk: 'geoffrey-jourj', to: DORM_EXIT, then: [FLAGS.bacDescente] },
 ];

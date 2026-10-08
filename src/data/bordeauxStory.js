@@ -14,30 +14,33 @@ const APARTMENT = { interior: 'appartement', x: 10, y: 6, facing: 'left' };
 
 // ---------- 1. Les clés ----------
 
+// Ousmane, déjà devant l'immeuble, vient se présenter dès l'arrivée, puis retourne attendre à la porte.
+const OUSMANE_KEYS = 'Les clés sont à l\'agence, juste à droite. Je t\'attends ici.';
 export const ARRIVAL = [
   { opening: { postcard: 'bordeaux', text: 'Bordeaux, Gironde. Les études commencent.' } },
   { setFlag: FLAGS.bordeauxOuverture },
-  { say: ['Objectif : récupère les clés à l\'agence.'] },
+  { approach: 'ousmane-porte' },
+  { speaker: 'Ousmane', say: [`Salut, moi c'est Ousmane, ton coloc ! ${OUSMANE_KEYS}`] },
+  { walk: 'ousmane-porte', to: [6, 11] },
 ];
 
 export const AGENT_KEYS = [
   { ifItems: [ITEMS.clesAppartement.id], speaker: AGENT, say: ['L\'immeuble est juste à gauche.'], end: true },
   { speaker: AGENT, say: ['Vos parents ont tout réglé. Voici les clés, l\'immeuble est juste à gauche.'] },
   { give: ITEMS.clesAppartement },
-  { say: ['Objectif : va à l\'appartement.'] },
 ];
 
 // Ousmane attend devant la porte de l'immeuble ; avec les clés, il entre avec Pierre.
 const OUSMANE_MEETS = [
   { approach: 'ousmane-porte' },
-  { speaker: 'Ousmane', say: ['Salut, moi c\'est Ousmane, ton coloc. Alors, on va voir ça ?'] },
+  { speaker: 'Ousmane', say: ['T\'as les clés ? Alors, on va voir ça !'] },
   { setFlag: FLAGS.ousmaneRencontre },
   { sound: 'door' },
   { travel: APARTMENT },
 ];
 export const OUSMANE_AT_DOOR = [
   { ifItems: [ITEMS.clesAppartement.id], steps: OUSMANE_MEETS, end: true },
-  { speaker: 'Ousmane', say: ['Salut ! Moi c\'est Ousmane, ton coloc. T\'as les clés ? L\'agence est juste à droite.'] },
+  { speaker: 'Ousmane', say: [OUSMANE_KEYS] },
 ];
 
 // ---------- 2. La coupure ----------
@@ -49,7 +52,6 @@ export const BLACKOUT = [
   { speaker: 'Pierre', say: ['Non.'] },
   { useTrait: TRAITS.ingeniosite },
   { setFlag: FLAGS.coupure },
-  { say: ['Objectif : trouve le compteur électrique.'] },
 ];
 
 // Le compteur, au fond de la pièce : la lumière revient ; Ousmane lance la soirée et sort attendre devant l'immeuble.
@@ -70,7 +72,6 @@ export const METER = [
     ],
   },
   { walk: 'ousmane-coupure', to: [11, 6], block: true, then: [FLAGS.preparatifs] },
-  { say: ['Objectif : récupère l\'enceinte chez Paul et les gobelets chez Rémi.'] },
 ];
 
 // ---------- 3. La soirée d'intégration ----------
@@ -186,7 +187,6 @@ export const MONTHS_LATER = [
   { say: ['Quelques mois plus tard…'] },
   { setFlag: FLAGS.soireeFinie },
   { black: false },
-  { say: ['Objectif : passe l\'oral d\'anglais à KEDGE.'] },
 ];
 
 // ---------- 4. Le diplôme d'anglais ----------
@@ -219,7 +219,14 @@ export const ENGLISH_ORAL = [
   { speaker: PROF, say: ['Excellent! Well done, Pierre.'] },
   { give: ITEMS.diplomeAnglais, text: 'Diplôme obtenu : Anglais KEDGE !' },
   { speaker: PROF, say: ['Avec ça, la route vers l\'est t\'est ouverte.'] },
-  { say: ['Objectif : va à l\'aéroport, sortie est.'] },
+];
+
+// En sortant de KEDGE, le diplôme en poche : Ousmane attend devant la porte et montre le chemin de l'aéroport ; il part
+// devant (il prend l'avion avant Pierre).
+export const OUSMANE_AFTER_ORAL = [
+  { approach: 'ousmane-kedge' },
+  { speaker: 'Ousmane', say: ['Ça y est, tu l\'as, ton diplôme ! L\'aéroport est par la sortie est. Prends ton billet pour Hull, je pars avant toi.'] },
+  { walk: 'ousmane-kedge', to: [23, 27], then: [FLAGS.ousmaneDiplome] },
 ];
 
 // ---------- 5. Le départ ----------

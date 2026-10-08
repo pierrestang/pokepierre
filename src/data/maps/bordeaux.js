@@ -7,7 +7,8 @@ import { builtGrid } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
-  ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST, ANTITHEFT_KEY,
+  ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AFTER_ORAL, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST,
+  ANTITHEFT_KEY,
 } from '../bordeauxStory.js';
 
 // Les gardiens des sorties est : leurs répliques, et l'arrêt quand Pierre passe à côté d'eux (il se tourne vers lui, parle,
@@ -139,15 +140,32 @@ export const bordeauxMap = {
       id: 'remi-kedge', name: 'Rémi', x: 9, y: 34, facing: 'left',
       ifFlags: [FLAGS.soireeFinie], unlessItems: [ITEMS.diplomeAnglais.id], dialogue: ['T\'inquiète, c\'est easy.'],
     },
+    // Ousmane, devant KEDGE à la sortie de l'oral : il montre le chemin de l'aéroport, puis part devant.
+    {
+      id: 'ousmane-kedge', name: 'Ousmane', x: 10, y: 34, facing: 'left',
+      ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.ousmaneDiplome],
+      dialogue: ['L\'aéroport est par la sortie est. On se retrouve au guichet !'],
+    },
   ],
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveeBordeaux], unlessFlags: [FLAGS.bordeauxOuverture], steps: ARRIVAL },
     // En sortant de la soirée.
     { on: 'enter', ifFlags: [FLAGS.soiree], unlessFlags: [FLAGS.soireeFinie], steps: MONTHS_LATER },
+    // En sortant de KEDGE avec le diplôme d'anglais : Ousmane.
+    { on: 'enter', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.ousmaneDiplome], steps: OUSMANE_AFTER_ORAL },
   ],
   // Panneaux « Aéroport » à côté des sorties ; les noms sur les portes.
   objects: [
     airportSign(29, 9, true),
+    // La boîte aux lettres, à gauche de l'immeuble (dessinée) : la vraie lettre promise par Joshua, à Saint-Ay.
+    {
+      x: 3, y: 10,
+      dialogue: [
+        'Une carte postale ! Elle vient de Joshua.',
+        '« Pierre, je t\'avais promis une vraie lettre, avec un timbre. Voilà le timbre. La lettre, c\'est cette carte.',
+        'Felix dit que la cabane tient toujours. Yanis a encore oublié le mot de passe. Joshua. »',
+      ],
+    },
     ...[16, 18].map((x) => ({ x, y: 33, dialogue: ['Sur la porte : « PAUL ».'] })),
     ...[22, 24].map((x) => ({ x, y: 33, dialogue: ['Sur la porte : « RÉMI ».'] })),
   ],

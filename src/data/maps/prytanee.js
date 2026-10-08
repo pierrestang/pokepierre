@@ -123,8 +123,10 @@ export const prytaneeMap = {
   events: [
     { on: 'enter', ifFlags: [FLAGS.arriveePrytanee], unlessFlags: [FLAGS.prytaneeOuverture], steps: ARRIVAL },
   ],
-  // La nuit du mur : cour assombrie, une applique au-dessus de chaque porte ; rondes avec leur lampe.
-  night: { ...NIGHT, doorLamps: true },
+  // La nuit du mur : cour assombrie, une applique au-dessus de chaque porte ; rondes avec leur lampe. Derrière le mur, le
+  // ciel s'éclaircit (l'aube) avant le retour au dortoir.
+  night: { ...NIGHT, unlessFlags: [...NIGHT.unlessFlags, FLAGS.murAube], doorLamps: true },
+  dawn: { ifFlags: [FLAGS.murAube], unlessFlags: [FLAGS.murReussi] },
   patrols: PATROLS,
   // Quelques années plus tard : le panneau des résultats du bac, dressé sur la place d'armes (on le lit par-dessous).
   props: [{

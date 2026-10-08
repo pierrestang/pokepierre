@@ -66,6 +66,7 @@ export const FLAGS = {
   inspection: 'inspection',                     //   « Correct. » : Autonomie reçue, le capitaine repart
   soirMur: 'soir-mur',                          //   « Le soir même… » : la nuit tombe sur le dortoir
   murPropose: 'mur-propose',                    //   le soir : Tanguy et Geoffrey sortent faire le mur (la nuit tombe)
+  murAube: 'mur-aube',                          //   derrière le mur : le ciel se lève déjà (l'écran s'éclaircit)
   murReussi: 'mur-reussi',                      //   Pierre les a rejoints derrière le mur, sans se faire prendre
   murMatin: 'mur-matin',                        //   au petit matin, au dortoir : « Personne a rien vu. »
   ellipseBac: 'ellipse-bac',                    //   quelques années plus tard : les résultats du bac dans la cour
@@ -86,6 +87,7 @@ export const FLAGS = {
   litFaitBordeaux: 'lit-fait-bordeaux',         //       … le lit fait
   soireeFinie: 'soiree-finie',                  //   en sortant : « Quelques mois plus tard » (l'oral d'anglais)
   remiKedge: 'remi-kedge',                      //   Rémi, devant KEDGE : « T'inquiète, c'est easy. »
+  ousmaneDiplome: 'ousmane-diplome',            //   le diplôme d'anglais en poche : Ousmane, devant KEDGE, montre l'aéroport
   veloCherche: 'velo-cherche',                  //   facultatif : le cycliste du quai a perdu la clé de son antivol
   arriveeHull: 'arrivee-hull',                  // arrivé à Hull (Angleterre)
   hullAccueil: 'hull-accueil',                  // Hull : Ousmane t'a accueilli à l'arrivée
@@ -111,10 +113,15 @@ export const FLAGS = {
   jourResultats: 'jour-resultats',              //        le lendemain : les résultats affichés devant l'université
   adieuxHull: 'adieux-hull',                    //        devant chez Léo, chacun part en échange (Pierre : Hanoï)
   arriveeHanoi: 'arrivee-hanoi',                // arrivé à Hanoï (Vietnam)
-  travailEtape1: 'travail-etape-1',             // nouveau travail à l'agence de voyage : étape 1
-  touristesSuivent: 'touristes-suivent',        // tu guides les deux touristes vers le temple
-  visiteTerminee: 'visite-terminee',            // les touristes t'ont remercié
-  travailTermine: 'travail-termine',            // la directrice te libère : tu peux partir
+  hanoiOuverture: 'hanoi-ouverture',            //   image d'accueil de Hanoï vue : Pierre arrive seul
+  travailEtape1: 'travail-etape-1',             //   premier jour à l'agence : le patron t'a tendu les consignes en vietnamien
+  consignesTraduites: 'consignes-traduites',    //   M. Lam a lu les consignes : guider les touristes au temple (Adaptation)
+  touristesSuivent: 'touristes-suivent',        //   tu guides les deux touristes vers le temple
+  templeCalme: 'temple-calme',                  //   au temple, la touriste au téléphone à plat se calme (Insouciance)
+  visiteTerminee: 'visite-terminee',            //   les touristes t'ont remercié
+  travailTermine: 'travail-termine',            //   le patron te remercie
+  sixMoisHanoi: 'six-mois-hanoi',               //   en sortant de l'agence : « Six mois plus tard… »
+  appelRomain: 'appel-romain',                  //   Romain t'appelle : il t'attend à Amsterdam (le vol s'ouvre)
   arriveeAmsterdam: 'arrivee-amsterdam',        // arrivé à Amsterdam
   stageCorning: 'stage-corning',                // Laurent t'a lancé dans ton stage chez Corning
   romainDemande: 'romain-demande',              // Romain t'a demandé la marchandise
@@ -153,7 +160,7 @@ export const TOULON_QUESTS = {
 };
 
 // Vertus (traits de caractère) : une seule collection, qui grandit de ville en ville ; 8 au plus dans tout le jeu, une
-// par ville au plus (6 jusqu'à Hull, 2 places réservées après). Encart « Pierre a reçu la vertu X ! » (étape `trait`),
+// par ville au plus (6 jusqu'à Hull, Adaptation à Hanoï, 1 place réservée après). Encart « Pierre a reçu la vertu X ! » (étape `trait`),
 // « Pierre utilise X ! » quand une vertu débloque une situation (étape `useTrait`, comptée dans le carnet), carnet
 // (Start > VERTUS) et compteur « Vertus : X sur 8 » (UIScene). `city` : la ville où on la reçoit (id de carte) ;
 // `phrase` : sa phrase dans le carnet. Les `id` gardent ceux des anciennes sauvegardes quand c'est la même vertu ;
@@ -182,6 +189,10 @@ export const TRAITS = {
   insouciance: {
     id: 'vertu-insouciance-hull', name: 'Insouciance', city: 'hull',
     phrase: 'Profiter du moment, sans penser à demain.',
+  },
+  adaptation: {
+    id: 'vertu-adaptation', name: 'Adaptation', city: 'hanoi',
+    phrase: 'Trouver son chemin partout, même sans en parler la langue.',
   },
 };
 export const MAX_TRAITS = 8;
@@ -233,6 +244,9 @@ export const ITEMS = {
   insigne: { id: 'insigne-prytanee', name: 'Insigne du Prytanée' },          // Prytanée : objet-souvenir (le nouveau)
   photoSoiree: { id: 'photo-soiree', name: 'Photo de la soirée' },           // Bordeaux : objet-souvenir (le rangement)
   objetChance: { id: 'objet-chance', name: 'Objet de chance' },
+  // Hanoï : les consignes du premier jour, écrites en vietnamien (le patron) ; facultatif, la pièce des papis du lac.
+  consignesVietnamien: { id: 'consignes-vietnamien', name: 'Consignes en vietnamien' },
+  pieceEchecs: { id: 'piece-echecs', name: "Pièce d'échecs chinois" },
   marchandise: { id: 'marchandise', name: 'Marchandise' },
   billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },
   potionMagique: { id: 'potion-magique', name: 'Potion magique' },
@@ -258,8 +272,8 @@ export const FOLLOWERS = [
   { id: 'etienne', name: 'Étienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], ...COPAINS_DONE },
   { id: 'benoit', name: 'Benoît', color: 0xa07040, ifFlags: [FLAGS.trouveBenoit], ...COPAINS_DONE },
   // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
-  { id: 'touriste-1', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
-  { id: 'touriste-2', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
+  { id: 'touriste-1', name: 'Touriste', sprite: 'g24', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
+  { id: 'touriste-2', name: 'Touriste', sprite: 'g22', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   // Chemin de Saint-Jacques : Yanis marche avec toi jusqu'à Saint-Jacques.
   { id: 'yanis', color: 0xc0b040, ifFlags: [FLAGS.caminoEnCours], unlessFlags: [FLAGS.caminoFini] },
   // Hull, la tournée des bars : Léo part devant en éclaireur ; Ousmane, Charlotte et Anaïs suivent Pierre à la queue

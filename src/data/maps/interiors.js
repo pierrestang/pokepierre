@@ -20,6 +20,7 @@ import {
   LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
   LIBRARY, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
 } from '../hullStory.js';
+import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC } from '../hanoiStory.js';
 
 // L'accueil de KEDGE (Bordeaux) : on lui parle par-dessus le comptoir.
 const KEDGE_DESK = ['Bienvenue à KEDGE ! L\'oral d\'anglais, c\'est en salle 1 : le couloir des casiers, puis l\'étage au-dessus.'];
@@ -1924,7 +1925,7 @@ export const interiors = {
       ...[['leo-biblio', 'Léo', 3, 5, 'right', "J'ai lu la même page six fois."],
         ['ousmane-biblio', 'Ousmane', 6, 5, 'left', 'Encore un chapitre, et on mange.'],
         ['charlotte-biblio', 'Charlotte', 3, 6, 'right', 'Chut ! On révise.'],
-        ['anais-biblio', 'Anaïs', 7, 6, 'right', 'Les résultats, c\'est demain. On va y arriver !'],
+        ['anais-biblio', 'Anaïs', 7, 6, 'right', 'Les résultats, c\'est après-demain. On va y arriver !'],
         ['prophecy-biblio', 'Prophecy', 10, 5, 'left', 'Ze exam. Ze exam. Ça passe, non ?']].map(([id, name, x, y, facing, line]) => ({
         id, name, x, y, facing, still: true, ifFlags: [FLAGS.lendemainHull], unlessFlags: [FLAGS.jourResultats], dialogue: [line],
       })),
@@ -1933,8 +1934,8 @@ export const interiors = {
   },
 
 
-  // Hanoï — ta maison (maison-tube rose, 2e en haut à gauche) : la petite maison de Doublonville (HGSS),
-  // un lit contre le mur de gauche (scripts/interieurs/asie_amsterdam.py).
+  // Hanoï — ta maison (la seconde maison violette de la grande rue) : la petite maison de Doublonville (HGSS)
+  // (scripts/interieurs/asie_amsterdam.py).
   hanoiHome: {
     name: 'Ta maison à Hanoï',
     grid: parseGrid([ // dessin de la maison de Léo (Hull)
@@ -1957,13 +1958,14 @@ export const interiors = {
       {
         on: 'enter',
         unlessFlags: [FLAGS.travailEtape1],
-        steps: [{ say: ["[Texte provisoire] Ta nouvelle maison à Hanoï. Demain, tu commences ton nouveau travail à l'agence de voyage !"] }],
+        steps: [{ say: ['Ta maison à Hanoï. Petite, silencieuse… et rien qu\'à toi.', 'L\'agence de voyage t\'attend : la maison noire, sur la grande rue.'] }],
       },
     ],
   },
 
-  // Hanoï — l'agence de voyage : ton nouveau travail commence (étape 1). Le bureau du directeur de la Tour
-  // Radio (HGSS) : la directrice derrière son grand bureau, sur le tapis.
+  // Hanoï — l'agence de voyage (la maison noire) : le patron, français, accueille Pierre et lui tend les consignes en
+  // vietnamien ; il le remercie après la visite du temple (voir hanoiStory.js). Le bureau du directeur de la Tour Radio
+  // (HGSS) : le patron derrière son grand bureau, sur le tapis.
   travelAgency: {
     name: 'Agence de voyage',
     grid: parseGrid([
@@ -1983,31 +1985,21 @@ export const interiors = {
     spawn: { x: 4, y: 10, facing: 'up' },
     npcs: [
       {
-        id: 'patron-agence', name: 'Directrice', x: 4, y: 7, facing: 'down', color: 0xc83c5c,
+        id: 'patron-agence', name: 'Patron', sprite: 'g141', x: 4, y: 7, facing: 'down', color: 0xc83c5c,
         unlessFlags: [FLAGS.visiteTerminee],
-        dialogue: [
-          "[Directrice - texte provisoire] Bienvenue dans l'équipe de l'agence !",
-          "C'est ton premier jour : voici l'étape 1 de ton nouveau travail.",
-        ],
-        after: ['[Directrice - texte provisoire] Bon courage pour ton premier jour !'],
-        setFlag: FLAGS.travailEtape1,
+        script: PATRON_WELCOME,
       },
-      // Après la visite du temple : elle te remercie et te laisse partir.
+      // Après la visite du temple : il remercie Pierre.
       {
-        id: 'patron-agence-fin', name: 'Directrice', x: 4, y: 7, facing: 'down', color: 0xc83c5c,
+        id: 'patron-agence-fin', name: 'Patron', sprite: 'g141', x: 4, y: 7, facing: 'down', color: 0xc83c5c,
         ifFlags: [FLAGS.visiteTerminee],
-        dialogue: [
-          '[Directrice - texte provisoire] Merci pour ton travail, les touristes sont ravis !',
-          "C'est bon, c'est terminé : tu peux partir.",
-        ],
-        after: ['[Directrice - texte provisoire] Bon voyage !'],
-        setFlag: FLAGS.travailTermine,
+        script: PATRON_THANKS,
       },
     ],
   },
 
-  // Hanoï — l'intérieur de la pagode : l'objet de chance est sur l'autel. Le dernier étage de la tour
-  // Chétiflor (HGSS) ; l'autel, la table dorée, entre les statues du fond.
+  // Hanoï — l'intérieur du temple : une touriste panique (téléphone à plat, Insouciance), puis l'objet de chance sur
+  // l'autel. Le dernier étage de la tour Chétiflor (HGSS) ; l'autel, la table dorée, entre les statues du fond.
   temple: {
     name: 'Temple',
     grid: parseGrid([
@@ -2024,14 +2016,10 @@ export const interiors = {
       'moooooEooooom',
     ]),
     spawn: { x: 6, y: 9, facing: 'up' },
+    // En entrant avec les touristes : l'une panique, son téléphone est à plat.
+    events: [{ on: 'enter', ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.templeCalme], steps: TEMPLE_PANIC }],
     // Les trois cases de l'autel réagissent quand on leur fait face.
-    objects: [5, 6, 7].map((x) => ({
-      x,
-      y: 4,
-      dialogue: ["[Texte provisoire] Sur l'autel, tu trouves un objet de chance."],
-      after: ["[Texte provisoire] L'autel est paisible."],
-      item: ITEMS.objetChance,
-    })),
+    objects: [5, 6, 7].map((x) => ({ x, y: 4, ...ALTAR, item: ITEMS.objetChance })),
   },
 
   // Amsterdam — le bureau CORNING : Laurent, le patron, te lance dans ton nouveau stage. Un étage de bureaux de

@@ -6,6 +6,7 @@ import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS, TOULON_QUESTS, visitedFlag } from '../story.js';
 import { FLIGHT_TO_HULL } from '../bordeauxStory.js';
 import { FLIGHT_TO_HANOI } from '../hullStory.js';
+import { FLIGHT_TO_AMSTERDAM } from '../hanoiStory.js';
 
 // L'aéroport (à Bordeaux) : l'hôtesse propose la destination de la suite de l'histoire, et « Autre » (les destinations
 // déjà visitées). Une destination n'apparaît que si ses conditions sont remplies (ifFlags / ifItems / ifSouvenirs) ;
@@ -16,12 +17,10 @@ const BACK_TO_HULL = { ifFlags: [FLAGS.mailLu], unlessItems: [ITEMS.billetNewDel
 const NEXT_FLIGHTS = [
   // Hull : le premier vol, avec le diplôme d'anglais, est gardé par Ousmane (voir bordeauxStory.js FLIGHT_TO_HULL).
   { label: 'Hull (Angleterre)', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull], steps: FLIGHT_TO_HULL },
-  // Hanoï : après les adieux de Hull (personne au guichet).
+  // Hanoï : après les adieux de Hull (personne n'accompagne Pierre).
   { label: 'Hanoï (Vietnam)', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
-  {
-    label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.travailTermine], unlessFlags: [FLAGS.arriveeAmsterdam],
-    setFlags: [FLAGS.arriveeAmsterdam], plane: { map: 'amsterdam', x: 1, y: 6, facing: 'right' },
-  },
+  // Amsterdam : après l'appel de Romain, six mois après le premier jour à Hanoï (monologue au guichet, voir hanoiStory.js).
+  { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.appelRomain], unlessFlags: [FLAGS.arriveeAmsterdam], steps: FLIGHT_TO_AMSTERDAM },
   // Le mail d'Amsterdam : retour à l'université de Hull, qui donne le billet pour New Delhi.
   { label: 'Hull (Angleterre)', ...BACK_TO_HULL, plane: { map: 'hull', x: 1, y: 35, facing: 'right' } },
   {

@@ -581,6 +581,7 @@ export class MapScene extends Phaser.Scene {
   // Scénette : liste d'étapes jouées dans l'ordre. Chaque étape peut avoir des conditions (ifFlags,
   // unlessFlags, ifItems, unlessItems, ifSouvenirs, unlessSouvenirs), vérifiées au moment où elle est jouée.
   //   { say: [pages], speaker? }         texte (avec le nom de la personne qui parle)
+  //   { say, speaker, phone: true }      la personne parle au téléphone (icône de téléphone devant son nom)
   //   { talk: npcId }                    le PNJ s'avance jusqu'au joueur, se tourne vers lui et dit son dialogue
   //   { approach: npcId }                le PNJ s'avance jusqu'au joueur et ils se font face
   //   { comeBeside: npcId }              le PNJ vient sur une case libre à côté du joueur (même s'il l'enferme le temps
@@ -672,7 +673,7 @@ export class MapScene extends Phaser.Scene {
       if (step.push) await this.pushNpc(this.npcById(step.push), this.player.facing);
       if (step.resetNpcs) this.resetNpcs(step.resetNpcs);
       if (step.askWord) memo.set(step.askWord.key, await this.scene.get('UI').askWord(step.askWord));
-      if (step.say) await this.dialog.open(step.say.map(memo.fill), { speaker: step.speaker });
+      if (step.say) await this.dialog.open(step.say.map(memo.fill), { speaker: step.speaker, phone: step.phone });
       if (step.approach) await this.approach(step.approach);
       if (step.comeBeside) await this.comeBeside(step.comeBeside);
       if (step.join) await this.joinNpc(step.join, step.to);

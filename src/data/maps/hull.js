@@ -137,6 +137,15 @@ export const hullMap = {
   // Redessinée à la main (octobre 2026) : plus de bâtiments d'origine à convertir.
   sourceBuildings: [],
   objects: [
+    // La boîte aux lettres, à droite de la coloc (dessinée) : une carte de Maman.
+    {
+      x: 14, y: 31,
+      dialogue: [
+        'Une carte postale ! Elle vient de Maman.',
+        '« Alors, l\'Angleterre ? Ici, tout le monde va bien. Fanny demande si les Anglais ont des poules.',
+        'Papa dit de bien manger. Jean a réparé le grille-pain, pour de vrai cette fois. Gros bisous, Maman. »',
+      ],
+    },
     // Le panneau en bois du campus.
     ...[12, 13].map((x) => ({ x, y: 13, dialogue: ['Université de Hull. Le campus, en haut de Newland Avenue.'] })),
   ],

@@ -2,6 +2,8 @@
 // Entrée / Espace : termine la page en cours d'écriture, sinon passe à la suivante.
 // choose(question, options) : pose une question, liste de réponses (flèches haut/bas + Entrée).
 // open(pages, { item }) : montre aussi l'icône de l'objet (voir art/uiIcons.js) dans un cadre au-dessus de la boîte.
+// open(pages, { speaker, phone: true }) : la personne parle au téléphone, une petite icône de téléphone (dessinée dans le
+// code) précède son nom.
 // Vit dans la UIScene (pas de zoom) ; les scènes de jeu l'ouvrent via open(pages) ou choose().
 // Texte dans la police de Rouge Feu (voir frlgFont.js), deux lignes par page comme dans le jeu : les pages
 // trop longues sont coupées automatiquement.
@@ -17,6 +19,20 @@ const CHAR_DELAY = 25; // ms par caractère
 const HEIGHT = 46;
 const LINES = 2;             // lignes par page
 const TEXT_LEFT = 9;         // marge du texte dans la boîte
+
+// Icône de téléphone (appel) : un petit portable vu de face, 6 x 11 pixels Game Boy, et ses ondes.
+const PHONE_W = 11;          // place prise devant le nom (icône, ondes et marge)
+function drawPhone(g, x, y, u) {
+  const px = (dx, dy, w, h, color) => g.fillStyle(color, 1).fillRect(x + dx * u, y + dy * u, w * u, h * u);
+  px(0, 0, 6, 11, 0x303848);                     // boîtier (contour sombre)
+  px(1, 1, 4, 5, 0x88c8f0);                      // écran
+  px(1, 7, 4, 3, 0x586078);                      // clavier
+  px(2, 8, 1, 1, 0xd0d8e8);
+  px(4, 8, 1, 1, 0xd0d8e8);
+  px(7, 2, 1, 1, 0xe04040);                      // ondes de la sonnerie
+  px(8, 1, 1, 1, 0xe04040);
+  px(8, 3, 1, 1, 0xe04040);
+}
 
 const bitmapText = (scene, text = '') => scene.add.bitmapText(0, 0, FRLG_FONT, text).setLineSpacing(0);
 
@@ -35,6 +51,7 @@ export class DialogBox {
 
     // Étiquette du nom de la personne qui parle
     this.speaker = undefined;
+    this.phone = false;                 // la personne appelle au téléphone (icône devant le nom)
     this.nameBg = scene.add.graphics();
     this.nameText = bitmapText(scene);
 
@@ -90,7 +107,7 @@ export class DialogBox {
     this.text.setScale(u).setPosition(x + TEXT_LEFT * u, y + 6 * u);
     this.nameText.setScale(u).setPosition(x + 7 * u, y - 13 * u);
     this.arrow.setScale(u / 5).setPosition(x + w - 11 * u, y + H - 9 * u);
-    this.setSpeaker(this.speaker);
+    this.setSpeaker(this.speaker, this.phone);
     this.setIcon(this.icon);
     if (this.choiceTexts?.length) this.showChoices();
   }
@@ -115,11 +132,11 @@ export class DialogBox {
   }
 
   // Ouvre le dialogue ; la promesse se résout quand la dernière page est fermée.
-  open(pages, { speaker, item = null } = {}) {
+  open(pages, { speaker, item = null, phone = false } = {}) {
     this.pages = this.paginate(Array.isArray(pages) ? pages : [pages]);
     this.pageIndex = 0;
     this.openedAt = performance.now();
-    this.setSpeaker(speaker);
+    this.setSpeaker(speaker, phone);
     this.setIcon(item ? itemIcon(item.id) : null);
     this.container.setVisible(true);
     this.showPage();
@@ -165,18 +182,22 @@ export class DialogBox {
     this.choiceBox.setVisible(false);
   }
 
-  setSpeaker(speaker) {
+  setSpeaker(speaker, phone = false) {
     this.speaker = speaker;
+    this.phone = Boolean(speaker && phone);
     this.nameBg.clear();
     this.nameText.setText(speaker ? frlgText(this.scene, speaker) : '');
     if (!speaker) return;
-    // Petit cartouche blanc cerclé, posé sur le bord haut de la boîte.
+    // Petit cartouche blanc cerclé, posé sur le bord haut de la boîte ; au téléphone, l'icône prend place devant le nom.
     const u = this.u;
-    const w = this.nameText.width + 8 * u;
+    const iconW = this.phone ? PHONE_W * u : 0;
+    const w = this.nameText.width + 8 * u + iconW;
     const x = this.boxX + 3 * u;
     const y = this.boxY - 14 * u;
+    this.nameText.setPosition(x + 4 * u + iconW, y + u);
     this.nameBg.fillStyle(FRAME, 1).fillRoundedRect(x, y, w, 15 * u, 3 * u);
     this.nameBg.fillStyle(FRAME_FILL, 1).fillRoundedRect(x + u, y + u, w - 2 * u, 13 * u, 2.5 * u);
+    if (this.phone) drawPhone(this.nameBg, x + 4 * u, y + 2 * u, u);
   }
 
   setIcon(icon) {
