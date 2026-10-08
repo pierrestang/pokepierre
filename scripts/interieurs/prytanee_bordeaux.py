@@ -164,9 +164,15 @@ PLANS = {
     'dortoir': {**dorm(), 'free': [[1, 3], [12, 3]]},
     # Prytanée — 2e étage : exactement la même chambrée (même dessin) ; l'escalier de gauche redescend.
     'dortoirEtage2': {**dorm(), 'free': [[1, 3]]},
-    # Bordeaux — l'agence : le bureau du directeur de la Tour Radio (moquette rouge, grand bureau, plantes, escalier).
+    # Bordeaux — l'agence : le bureau du directeur de la Tour Radio (moquette rouge, grand bureau, plantes), comme
+    # l'utilisateur l'a retouché (sans l'escalier), raccourci de deux rangées (9 x 10) : les rangées vides sous l'escalier
+    # et sous le grand bureau retirées, si bien que les meubles reculent vers le fond.
     'agence': {
-        'hgss': (RT, 10, 31, 9, 12), 'mat': 'rouge',
+        'hgss': (RT, 10, 31, 9, 10), 'mat': 'rouge',
+        'splice': [{'from': (RT, 10, y, 9, 1), 'to': (0, j)} for j, y in enumerate((35, 36, 37, 38, 39, 41, 42), start=3)],
+        'erase': [(0, 1, 2, 2), (0, 7, 1, 1), (8, 7, 1, 1)],                # l'escalier ; les plantes coupées
+        'paste': [{'from': (RT, 12, 32, 1, 1), 'to': (x, 1), 'sol': True, 'only': ('Floor', 'Wall')} for x in (0, 1)]
+                 + [{'from': (RT, 12, 33, 1, 1), 'to': (x, 2), 'sol': True, 'only': ('Floor',)} for x in (0, 1)],
     },
     # Bordeaux — l'appartement : le salon de la grande maison de Bourg Geon (cuisine, télé, coin repas, porte à droite),
     # deux lits à la place des plantes du bas (Ousmane à gauche, Pierre à droite).

@@ -537,31 +537,29 @@ export const interiors = {
   hospital: {
     name: 'Clinique',
     frlg: true,
-    // 10 x 10 (dessin : le labo d'Orme raccourci, sans rien de Pokémon) : bureau et ordinateur en haut, trois lits,
-    // sortie en bas.
+    // 12 x 8 (dessin : scripts/interieurs/fdf_saintay.py) : bureau d'accueil et ordinateur à gauche, trois lits contre le
+    // mur du fond (Maman, Fanny, un libre), une plante, un tableau ; sortie en bas.
     grid: parseGrid([
-      'XXXXXXXXXX',
-      'XXXXXXXXXX',
-      'mmmmmmmmmm',   // mur, bureau et ordinateur
-      'oommoooooo',
-      'mmmmmmmmmo',   // les trois lits
-      'mmmmmmmmmo',
-      'mmmmmmmmmo',
-      'oooooooooo',
-      'oooooooooo',
-      'ooEooooooo',
+      'XXXXXXXXXXXX',
+      'XXXXXXXXXXXX',
+      'mmmmmmmmmmmm',   // le bureau, le haut des lits
+      'ommmmmmmmmmm',
+      'moommmmmmmmm',   // la plante ; les trois lits
+      'mooooooooooo',
+      'oooooooooooo',
+      'moEoooooooom',
     ]),
     decor: [],
-    spawn: { x: 2, y: 8, facing: 'up' },
+    spawn: { x: 2, y: 6, facing: 'up' },
     objects: [
-      { x: 0, y: 6, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Maman se repose, les yeux mi-clos.'] },
-      { x: 3, y: 6, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Fanny dort, son petit poing serré.'] },
-      { x: 2, y: 3, dialogue: ['Un ordinateur. Des noms de bébés défilent à l\'écran.'] },
+      { x: 3, y: 4, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Maman se repose, les yeux mi-clos.'] },
+      { x: 6, y: 4, ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree], dialogue: ['Fanny dort, son petit poing serré.'] },
+      { x: 1, y: 3, dialogue: ['Un ordinateur. Des noms de bébés défilent à l\'écran.'] },
     ],
-    // Maman et Fanny sont couchées chacune dans un lit ; Papa et Manon entre les deux.
+    // Maman et Fanny sont couchées chacune dans un lit ; Papa près de Maman, Manon près de Fanny.
     npcs: [
       {
-        id: 'maman-hopital', name: 'Maman', x: 1, y: 6, facing: 'down', color: 0xe86fa0, still: true, inBed: true,
+        id: 'maman-hopital', name: 'Maman', x: 4, y: 4, facing: 'down', color: 0xe86fa0, still: true, inBed: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         script: [
           { unlessFlags: [FLAGS.fannyMain], speaker: 'Maman', say: ['Va dire bonjour à Fanny, dans son berceau. Tends-lui la main.'], end: true },
@@ -570,17 +568,17 @@ export const interiors = {
       },
       // Le berceau : la main de Fanny (voir FANNY_CRADLE).
       {
-        id: 'fanny-hopital', name: 'Fanny', x: 4, y: 6, facing: 'down', still: true, inBed: true, child: true,
+        id: 'fanny-hopital', name: 'Fanny', x: 7, y: 4, facing: 'down', still: true, inBed: true, child: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         script: FANNY_CRADLE,
       },
       {
-        id: 'papa-hopital', name: 'Papa', x: 2, y: 7, facing: 'up', color: 0x3f6fd8,
+        id: 'papa-hopital', name: 'Papa', x: 2, y: 4, facing: 'right', color: 0x3f6fd8,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         dialogue: ['Une petite sœur… Te voilà grand frère, maintenant.'],
       },
       {
-        id: 'manon-hopital', name: 'Manon', x: 5, y: 7, facing: 'left', color: 0xf0a030,
+        id: 'manon-hopital', name: 'Manon', x: 9, y: 5, facing: 'left', color: 0xf0a030,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         dialogue: ['Je pourrai jouer avec elle, moi aussi ? Plus tard ? Bon…'],
       },
@@ -1261,26 +1259,25 @@ export const interiors = {
   agence: {
     name: 'Agence immobilière',
     frlg: true,
-    // Pièce HGSS (bureau du directeur de la Tour Radio, scripts/interieurs/prytanee_bordeaux.py) : escalier au fond à
-    // gauche, ordinateur (x 2-3), grand bureau (x 3-5, rangées 8-9), plantes le long des murs ; l'agent à côté du bureau.
+    // Pièce HGSS (bureau du directeur de la Tour Radio, scripts/interieurs/prytanee_bordeaux.py), 9 x 10 : ascenseur vitré
+    // au fond à droite, ordinateur (x 2-3, rangées 3-4), grand bureau (x 3-5, rangées 6-7), plantes le long des murs ;
+    // l'agent à côté du bureau.
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
-      'mmooooomm',
-      'mmooooooo',
+      'ooooooomm',
       'ooooooooo',
       'mommoooom',
       'ooooooooo',
       'mooooooom',
       'ooommmooo',
-      'moommmoom',
       'ooooooooo',
       'moooEooom',
     ]),
-    spawn: { x: 4, y: 10, facing: 'up' },
+    spawn: { x: 4, y: 8, facing: 'up' },
     npcs: [
       {
-        id: 'agent', name: 'Agent immobilier', x: 6, y: 8, facing: 'left', color: 0x3c4c6c,
+        id: 'agent', name: 'Agent immobilier', x: 6, y: 6, facing: 'left', color: 0x3c4c6c,
         script: AGENT_KEYS,
       },
     ],
@@ -2014,12 +2011,12 @@ export const interiors = {
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
-      'mmoooooooooomm',
-      'mmoooooooooomm',
+      'oooooooooooomm',
+      'oooooooooooomm',
       'mmoooooooooooo',
       'mmoommoooooooo',
       'ooooooooommooo',
-      'ooooooooommooo',
+      'ommoooooommooo',
       'oooommooommooo',
       'oooooooooooooo',
       'oooooooooooooo',
@@ -2028,7 +2025,7 @@ export const interiors = {
     spawn: { x: 6, y: 10, facing: 'up' },
     npcs: [
       {
-        id: 'laurent', name: 'Laurent', x: 10, y: 4, facing: 'down', color: 0x2c4c8c,
+        id: 'laurent', name: 'Laurent', x: 11, y: 3, facing: 'down', color: 0x2c4c8c,
         dialogue: [
           '[Laurent - texte provisoire] Bienvenue chez Corning ! Je suis Laurent, le patron.',
           'Ton stage commence aujourd\'hui. Bienvenue dans l\'équipe !',
@@ -2194,60 +2191,71 @@ export const interiors = {
   // Bordeaux — le stade : cérémonie de remise des diplômes, foule de diplômés et podium.
   stade: {
     name: 'Stade',
-    // Pièce HGSS (hall du portique du Parc et du Pokéathlon, scripts/interieurs/prytanee_bordeaux.py) : affiches au mur,
-    // grande moquette, comptoir en U au fond (le directeur devant, x 18), tapis de sortie en bas à droite.
+    // Stade de foot (scripts/interieurs/stade.py) : tribune pleine au fond, piste tout autour, terrain d'herbe à bandes et
+    // lignes blanches, deux buts ; l'estrade du directeur en haut du terrain (x 11-14, rangées 4-5), sortie en bas.
     grid: parseGrid([
-      'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-      'mooooooooooooooomoooomooooom',
-      'oooooooooooooooomoooomoooooo',
-      'oooooooooooooooomoooomoooooo',
-      'oooooooooooooooommmmmmoooooo', // comptoir en U ; le directeur se tient devant
-      'oooooooooooooooooooooooooooo',
-      'oooooooooooooooooooooooooooo',
-      'oooooooooooooooooooooooooooo',
-      'oooooooooooooooooooooooooooo',
-      'moooooooooooooooooooooooEoom',
+      'XXXXXXXXXXXXXXXXXXXXXXXXXX',
+      'XXXXXXXXXXXXXXXXXXXXXXXXXX',   // la tribune
+      'oooooooooooooooooooooooooo',
+      'oooooooooooooooooooooooooo',
+      'ooooooooooommmmooooooooooo',   // l'estrade du directeur
+      'ooooooooooommmmooooooooooo',
+      'moooooooooooooooooooooooom',   // les buts dans la piste
+      'moooooooooooooooooooooooom',
+      'moooooooooooooooooooooooom',
+      'moooooooooooooooooooooooom',
+      'oooooooooooooooooooooooooo',
+      'oooooooooooooooooooooooooo',
+      'oooooooooooooooooooooooooo',
+      'ooooooooooooEEoooooooooooo',   // tapis de sortie
     ]),
-    spawn: { x: 24, y: 9, facing: 'up' },
+    spawn: { x: 12, y: 12, facing: 'up' },
     npcs: [
       {
-        id: 'directeur', name: 'Directeur', x: 18, y: 6, facing: 'down', color: 0x6c1c2c, hat: true,
+        id: 'directeur', name: 'Directeur', x: 13, y: 4, facing: 'down', color: 0x6c1c2c, hat: true,
         unlessFlags: [FLAGS.diplomeBordeaux],
         dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Monte sur le podium pour recevoir ton diplôme.'],
       },
       {
-        id: 'directeur-fin', name: 'Directeur', x: 18, y: 6, facing: 'down', color: 0x6c1c2c, hat: true,
+        id: 'directeur-fin', name: 'Directeur', x: 13, y: 4, facing: 'down', color: 0x6c1c2c, hat: true,
         ifFlags: [FLAGS.diplomeBordeaux],
         dialogue: ['[Directeur - texte provisoire] Félicitations, jeune diplômé ! La route de Paris est ouverte.'],
       },
-      { id: 'diplome-0', name: 'Diplômé', x: 3, y: 7, facing: 'up', color: 0x202028, hat: true,
+      { id: 'diplome-0', name: 'Diplômé', x: 5, y: 8, facing: 'up', color: 0x202028, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Félicitations à nous tous !"] },
-      { id: 'diplome-1', name: 'Diplômé', x: 5, y: 8, facing: 'up', color: 0x2c2c3c, hat: true,
+      { id: 'diplome-1', name: 'Diplômé', x: 7, y: 9, facing: 'up', color: 0x2c2c3c, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Quelle belle journée !"] },
-      { id: 'diplome-2', name: 'Diplômé', x: 7, y: 7, facing: 'up', color: 0x1c1c24, hat: true,
+      { id: 'diplome-2', name: 'Diplômé', x: 9, y: 8, facing: 'up', color: 0x1c1c24, hat: true,
         dialogue: ["[Diplômé - texte provisoire] On l'a fait !"] },
-      { id: 'diplome-3', name: 'Diplômé', x: 12, y: 7, facing: 'up', color: 0x202028, hat: true,
+      { id: 'diplome-3', name: 'Diplômé', x: 16, y: 8, facing: 'up', color: 0x202028, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Je n'en reviens pas, diplômés !"] },
-      { id: 'diplome-4', name: 'Diplômé', x: 14, y: 8, facing: 'up', color: 0x2c2c3c, hat: true,
+      { id: 'diplome-4', name: 'Diplômé', x: 18, y: 9, facing: 'up', color: 0x2c2c3c, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Félicitations à nous tous !"] },
-      { id: 'diplome-5', name: 'Diplômé', x: 16, y: 7, facing: 'up', color: 0x1c1c24, hat: true,
+      { id: 'diplome-5', name: 'Diplômé', x: 20, y: 8, facing: 'up', color: 0x1c1c24, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Quelle belle journée !"] },
-      { id: 'diplome-6', name: 'Diplômé', x: 4, y: 9, facing: 'up', color: 0x202028, hat: true,
+      { id: 'diplome-6', name: 'Diplômé', x: 6, y: 11, facing: 'up', color: 0x202028, hat: true,
         dialogue: ["[Diplômé - texte provisoire] On l'a fait !"] },
-      { id: 'diplome-7', name: 'Diplômé', x: 6, y: 9, facing: 'up', color: 0x2c2c3c, hat: true,
+      { id: 'diplome-7', name: 'Diplômé', x: 8, y: 10, facing: 'up', color: 0x2c2c3c, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Je n'en reviens pas, diplômés !"] },
-      { id: 'diplome-8', name: 'Diplômé', x: 22, y: 8, facing: 'up', color: 0x1c1c24, hat: true,
+      { id: 'diplome-8', name: 'Diplômé', x: 18, y: 11, facing: 'up', color: 0x1c1c24, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Félicitations à nous tous !"] },
-      { id: 'diplome-9', name: 'Diplômé', x: 15, y: 9, facing: 'up', color: 0x202028, hat: true,
+      { id: 'diplome-9', name: 'Diplômé', x: 20, y: 10, facing: 'up', color: 0x202028, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Quelle belle journée !"] },
-      { id: 'diplome-10', name: 'Diplômé', x: 9, y: 9, facing: 'up', color: 0x2c2c3c, hat: true,
+      { id: 'diplome-10', name: 'Diplômé', x: 10, y: 11, facing: 'up', color: 0x2c2c3c, hat: true,
         dialogue: ["[Diplômé - texte provisoire] On l'a fait !"] },
-      { id: 'diplome-11', name: 'Diplômé', x: 11, y: 9, facing: 'up', color: 0x1c1c24, hat: true,
+      { id: 'diplome-11', name: 'Diplômé', x: 16, y: 11, facing: 'up', color: 0x1c1c24, hat: true,
         dialogue: ["[Diplômé - texte provisoire] Je n'en reviens pas, diplômés !"] },
     ],
-    // Monter sur l'estrade, devant le pupitre du directeur : remise du diplôme de Bordeaux (une seule fois).
-    triggers: [[18, 7], [19, 7]].map(([x, y]) => ({
+    // Le directeur est sur l'estrade : on lui parle depuis le terrain, au bord de l'estrade.
+    objects: [12, 13].flatMap((x) => [
+      {
+        x, y: 5, unlessFlags: [FLAGS.diplomeBordeaux],
+        dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Monte sur le podium pour recevoir ton diplôme.'],
+      },
+      { x, y: 5, dialogue: ['[Directeur - texte provisoire] Félicitations, jeune diplômé ! La route de Paris est ouverte.'] },
+    ]),
+    // Devant l'estrade du directeur : remise du diplôme de Bordeaux (une seule fois).
+    triggers: [[11, 6], [12, 6], [13, 6], [14, 6]].map(([x, y]) => ({
       x,
       y,
       unlessFlags: [FLAGS.diplomeBordeaux],
@@ -2574,13 +2582,15 @@ export const interiors = {
   // Paris — Bercy (Accor Arena) : le concert.
   bercy: {
     name: 'Bercy',
+    // Salle de concert (scripts/interieurs/paris_voyages.py) : l'estrade au fond (x 2-10, rangées 3-5), le groupe dessus,
+    // la fosse devant pour la foule ; on parle aux musiciens depuis le bord de la scène.
     grid: parseGrid([
       'XXXXXXXXXXXXX',
       'XXXXXXXXXXXXX',
       'XXXXXXXXXXXXX',
-      'mooooooooooom',
-      'ooooooooooooo',
-      'oomooooooommo',
+      'mommmmmmmmmom',
+      'oommmmmmmmmoo',
+      'oommmmmmmmmoo',
       'ooooooooooooo',
       'ooooooooooooo',
       'XXoooooooooXX',
@@ -2604,13 +2614,19 @@ export const interiors = {
       },
     ],
     npcs: [
-      { id: 'chanteur', name: 'Chanteur', x: 6, y: 4, facing: 'down', color: 0xd83060, dialogue: ['[Chanteur - texte provisoire] Merci Paris !'] },
-      { id: 'guitariste', name: 'Guitariste', x: 4, y: 4, facing: 'down', color: 0x3c3c3c, dialogue: ['[Guitariste - texte provisoire] Yeah !'] },
-      { id: 'batteur', name: 'Batteur', x: 8, y: 4, facing: 'down', color: 0x5c2c8c, dialogue: ['[Batteur - texte provisoire] Boum boum !'] },
+      { id: 'chanteur', name: 'Chanteur', x: 6, y: 4, facing: 'down', color: 0xd83060 },
+      { id: 'guitariste', name: 'Guitariste', x: 4, y: 4, facing: 'down', color: 0x3c3c3c },
+      { id: 'batteur', name: 'Batteur', x: 8, y: 4, facing: 'down', color: 0x5c2c8c },
       ...[[3, 6], [5, 6], [7, 6], [9, 6], [4, 8], [6, 8], [8, 8], [3, 10], [9, 10], [4, 11]].map(([x, y], i) => ({
         id: `fan-${i}`, name: 'Fan', x, y, facing: 'up', color: [0xe86040, 0x40a0e8, 0xe8c040, 0x60c060][i % 4],
         dialogue: [['[Fan - texte provisoire] Quel son !', '[Fan - texte provisoire] Encore ! Encore !'][i % 2]],
       })),
+    ],
+    // Le groupe joue sur l'estrade : on lui parle depuis le bord de la scène (chacun derrière sa case).
+    objects: [
+      { x: 4, y: 5, dialogue: ['[Guitariste - texte provisoire] Yeah !'] },
+      { x: 6, y: 5, dialogue: ['[Chanteur - texte provisoire] Merci Paris !'] },
+      { x: 8, y: 5, dialogue: ['[Batteur - texte provisoire] Boum boum !'] },
     ],
   },
 

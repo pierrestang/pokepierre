@@ -202,6 +202,28 @@ def mic():
     return img
 
 
+def stage(w=9, h=3):
+    """Estrade de salle de concert (w x h cases), au style des planchers DS : plateau en planches (h - 1 rangées), nez
+    doré à petites lampes de rampe, devant en bois sombre à panneaux."""
+    img, d = canvas(w, h)
+    W, top = w * T, (h - 1) * T
+    d.rectangle((0, 0, W - 1, top + T - 1), fill=OUT)
+    d.rectangle((1, 1, W - 2, top - 1), fill=(214, 168, 110, 255))                  # plateau
+    for y in range(4, top, 5):
+        d.line((1, y, W - 2, y), fill=(178, 130, 82, 255))                           # joints des planches
+        d.line((1, y + 1, W - 2, y + 1), fill=(232, 196, 140, 255))
+    for k, y in enumerate(range(1, top, 5)):
+        for x in range(9 + (k % 2) * 13, W - 2, 26):
+            d.line((x, y, x, min(top - 1, y + 3)), fill=(178, 130, 82, 255))         # bouts des planches
+    d.rectangle((1, top, W - 2, top + 2), fill=(232, 192, 80, 255))                  # nez doré
+    d.line((1, top + 3, W - 2, top + 3), fill=(150, 108, 40, 255))
+    d.rectangle((1, top + 4, W - 2, top + T - 2), fill=(132, 80, 46, 255))           # devant
+    for x in range(8, W - 2, 16):
+        d.line((x, top + 5, x, top + T - 3), fill=(98, 58, 32, 255))                 # panneaux
+        d.rectangle((x - 1, top, x + 1, top + 1), fill=(255, 244, 170, 255))         # lampes de rampe
+    return img
+
+
 # ---------- Meubles ----------
 ITEMS = {
     # Planches du pack HGSS (SirMaIo).
@@ -229,6 +251,7 @@ ITEMS = {
     'pv-enceinte': {'img': speaker, 'solid': 1},
     'pv-batterie': {'img': drums, 'solid': 0, 'flat': True},
     'pv-micro': {'img': mic, 'solid': 0, 'flat': True},
+    'pv-scene': {'img': stage, 'solid': 3, 'flat': True},
 }
 
 
@@ -275,14 +298,18 @@ PLANS = {
         'erase': [(0, 0, 2, 4)],
         'paste': [{'from': (RADIO, 13, 31, 2, 2), 'to': (0, 0)}, {'from': ELEVATOR_DOORS, 'to': (0, 0)}],
     },
-    # Paris — Bercy : le théâtre de danse de Rosalia (colonnes dorées, rideaux, grand tapis), sans ses banquettes : le
-    # groupe joue sur le tapis du haut (rangée 4), le public en dessous.
+    # Paris — Bercy : le théâtre de danse de Rosalia (colonnes dorées, rideaux, grand tapis), sans ses banquettes,
+    # transformé en salle de concert (demande de l'utilisateur) : une estrade en planches au fond (x 2-10, rangées 3-5)
+    # où jouent le chanteur, le guitariste et le batteur (enceintes, batterie, micro), la fosse devant pour la foule.
     'bercy': {
         'hgss': ('012i_Goldenrod game corner', 10, 8, 13, 13),
-        'erase': [(5, 4, 3, 4), (5, 8, 3, 2)],
+        'erase': [(5, 4, 3, 4), (5, 8, 3, 2), (10, 4, 3, 2)],
         'items': [
-            ['pv-enceinte', 2, 5], ['pv-enceinte', 10, 5], ['pv-batterie', 8, 4], ['pv-micro', 6, 4],
+            ['pv-scene', 2, 5],
+            ['pv-enceinte', 2, 4, {'solid': 0}], ['pv-enceinte', 10, 4, {'solid': 0}],
+            ['pv-batterie', 7, 3], ['pv-micro', 6, 4],
         ],
+        'npc_on_solid': ['chanteur', 'guitariste', 'batteur'],
     },
     # Toulon — l'appartement de Yanis : une maison de Doublonville (cuisine, télé, grand tapis bleu, table).
     'yanisAppart': {'hgss': (GOLD, 104, 40, 9, 8)},
