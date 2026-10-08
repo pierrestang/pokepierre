@@ -472,7 +472,8 @@ export const interiors = {
         script: FELIX_CHANTIER,
       },
       {
-        id: 'val', name: 'Val', x: 5, y: 4, facing: 'down', color: 0x5cb85c, still: true,
+        // Devant la table, sur la case à gauche du cheval qu'il sculpte (posé sur la table, voir decals).
+        id: 'val', name: 'Val', x: 5, y: 6, facing: 'right', color: 0x5cb85c, still: true,
         ifFlags: [FLAGS.felixInvite],
         script: [
           { say: ['Sur la table, Val sculpte une statue : un cheval en bois. Des copeaux partout.'] },
