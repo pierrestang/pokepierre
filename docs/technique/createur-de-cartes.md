@@ -421,3 +421,19 @@ la vue se centre dessus (encadré blanc ; tous les écarts en pointillés orange
 rien ; jamais le sol), annulable ; désactivé s'il couvre une case importante (PNJ, porte, objet du jeu, passage, sortie,
 départ) ; « Ignorer » le masque dans ce navigateur (« Tout » les remontre). Un écart déjà retiré disparaît de la liste.
 Relancer le script après des retouches pour mettre la liste à jour.
+
+## Franchissable vérifié case par case (check-up visuel, octobre 2026)
+
+Cases signalées par scripts/audit_maps.py (murs invisibles, objets traversables, poches), Fort-de-France → Hull,
+regardées une à une sur un rendu zoomé :
+- Corrigé : Fort-de-France (11,7), (19,21), (20,21) libérées (anciennes places d'arbres) ; mur droit de l'atelier
+  (27,13-14) et pots de fleurs (26-27,15) bloqués ; poches d'eau (2,3), (3-5,28-29), (28-30,29-30) bloquées.
+  Saint-Ay : poches (8,10) dans l'eau, (3,15), (5,15) sous les cimes bloquées. Montépilloy : (26,6) libérée (sable à
+  côté de la maison jaune). Bonsecours : bande d'herbe hors clôture (2,2-8) et (4,1) bloquées. Bordeaux : coin de
+  l'hortensia (14,25) bloqué ; dedans du toit du stade (18-24,4) bloqué. Hull : poche dans la péniche (6-13,45) bloquée.
+- Laissé (voulu) : fleurs et touffes qu'on traverse, marches et seuils (université de Hull, manoir de Bordeaux),
+  bouts de pontons, cimes et canopées au-dessus de Pierre, pied du mât du drapeau (Fort-de-France, Prytanée),
+  piquets des tentes, cases de bord de carte (Montépilloy (19,29), Prytanée (22,1), (14,25)), petites poches d'herbe
+  fermées sans accès (Fort-de-France (25,9), (24,10)).
+- Coin haut gauche de Fort-de-France : pas de noir en jeu (seulement un rendu hors jeu qui ignorait la case n° 0 de la
+  planche auto).
