@@ -627,17 +627,19 @@ export const interiors = {
       { x: 1, y: 5, dialogue: ['Un tonneau plein de grain.'] },
       BENOIT_HIDING,
       { x: 0, y: 6, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
-      // Le tas de foin du fond à droite cache la pièce de tracteur (une fois que M. Bouly t'en a parlé).
-      ...[7, 8].map((y) => ({ x: 7, y, unlessFlags: [FLAGS.boulyDemande], dialogue: ['Un gros tas de foin. Ça gratte.'] })),
-      ...[7, 8].map((y) => ({
+      // Le tas de foin du fond à droite cache la pièce de tracteur : on la trouve une fois que M. Bouly en a parlé, ou dès
+      // que le cache-cache est fini et que Jean a lancé la réparation (même sans parler à M. Bouly). Le premier objet
+      // dont les conditions sont remplies sert ; sinon, le foin.
+      ...[[FLAGS.boulyDemande], [FLAGS.copainsPartent, FLAGS.jeanQuetes]].flatMap((ifFlags) => [7, 8].map((y) => ({
         x: 7,
         y,
-        ifFlags: [FLAGS.boulyDemande],
+        ifFlags,
         dialogue: ['Tu fouilles le tas de foin… Dessous, une pièce de tracteur !', 'Jean va être content.'],
         after: ['Il ne reste que du foin.'],
         item: ITEMS.pieceTracteur,
         setFlag: FLAGS.pieceTrouvee,
-      })),
+      }))),
+      ...[7, 8].map((y) => ({ x: 7, y, dialogue: ['Un gros tas de foin. Ça gratte.'] })),
     ],
   },
 

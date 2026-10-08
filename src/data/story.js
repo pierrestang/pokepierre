@@ -220,7 +220,6 @@ export const ITEMS = {
   cleAntivol: { id: 'cle-antivol', name: "Clé d'antivol" },
   velo: { id: 'velo', name: 'Vélo' },
   corde: { id: 'corde', name: 'Vieille corde' },
-  cuillere: { id: 'cuillere', name: 'Cuillère de Jean' },                     // Montépilloy : objet-souvenir (caisse à outils)
   brevet: { id: 'brevet', name: 'Diplôme du brevet' },                         // collège : remis par le prof
   autocollant: { id: 'autocollant', name: 'Autocollant de Rémy' },             // collège : objet-souvenir (le casier)
   reglementQG: { id: 'reglement-qg', name: 'Règlement du QG' },               // Saint-Ay : le panier de la cabane (verrou)

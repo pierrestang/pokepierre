@@ -1483,29 +1483,6 @@ export function drawDecal(g, kind, px, py, options) {
   DECALS[kind]?.(g, px, py, options);
 }
 
-// Caisse à outils de Jean (Montépilloy), posée par terre, d'après l'icône de la Boîte Jetons de HeartGold (couvercle
-// rouge ouvert, plateau jaune, caisse grise) mais vue de face, à l'échelle d'une case : couvercle relevé vers l'arrière,
-// plateau à compartiments avec une clé, fermoir doré, ombre au sol.
-const TOOLBOX_COLORS = {
-  K: 0x302830, r: 0xe86868, R: 0xb03038, w: 0xe0e4ec, s: 0x9098a8, y: 0xf8e060, Y: 0xd0b038,
-  h: 0xd4d8e0, g: 0xa4a8b8, G: 0x787c8c, L: 0xf0d050,
-};
-const TOOLBOX = [
-  '..KKKKKKKKKKKK..',
-  '..KrrrrrrrrrrK..',
-  '..KRrrrrrrrrRK..',
-  '...KRRRRRRRRK...',
-  '.KKKKKKKKKKKKKK.',
-  '.KYyYyYyKsKyYyK.',
-  '.KyYyYyYKwsKYyK.',
-  'KKKKKKKKKKKKKKKK',
-  'KhhhhhhhhhhhhhhK',
-  'KgggggggLLgggggK',
-  'KgGGGGGGLLGGGGgK',
-  'KgGGGGGGGGGGGGgK',
-  'KGGGGGGGGGGGGGGK',
-  'KKKKKKKKKKKKKKKK',
-];
 // La poulie de la cabane des cousins (Saint-Ay), au pied du sapin : poteau, roue rouillée en haut, corde, et le panier,
 // coincé tout en haut (`up`) ou redescendu (réparée, panier vide).
 function drawPulley(g, px, py, up) {
@@ -1524,12 +1501,6 @@ function drawPulley(g, px, py, up) {
 }
 export const drawPulleyStuck = (g, px, py) => drawPulley(g, px, py, true);
 export const drawPulleyFixed = (g, px, py) => drawPulley(g, px, py, false);
-
-export function drawToolbox(g, px, py) {
-  g.fillStyle(0x000000, 0.22);
-  g.fillRect(px + 1, py + 15, 14, 1);
-  sprite(g, TOOLBOX, TOOLBOX_COLORS, px, py + 1);
-}
 
 // Remblai en briques du pont ferroviaire de Newland Avenue (Hull) : briques rouges, couronnement de pierre.
 function railEmbankment(g, px, py, x, y, at) {

@@ -6,7 +6,7 @@ import BUILT from '../builtMaps/montepilloy.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
-  ARRIVAL, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, NORTH_EXIT, JEAN_AT_TRACTOR, JEAN_TRACTOR, TOOLBOX,
+  ARRIVAL, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, NORTH_EXIT, JEAN_AT_TRACTOR, JEAN_TRACTOR,
   BENOIT_SAD,
 } from '../montepilloyStory.js';
 
@@ -75,12 +75,6 @@ export const montepilloyMap = {
     { type: 'boulyFarm', x: 3, y: 12 },
   ],
   props: [
-    // La caisse à outils de Jean, restée devant le tracteur après la réparation : la cuillère (voir TOOLBOX) ; elle
-    // disparaît une fois la cuillère prise. Elle reste en septembre (l'ellipse suit directement la réparation).
-    {
-      type: 'toolbox', image: 'caisse-outils', x: JEAN_AT_TRACTOR[0], y: JEAN_AT_TRACTOR[1], w: 1, h: 1,
-      ifFlags: [FLAGS.tracteurRepare], unlessFlags: [FLAGS.collegeOuverture], unlessItems: [ITEMS.cuillere.id], script: TOOLBOX,
-    },
     // Le tracteur de M. Bouly (image Gen 4, scripts/build_props.py), garé devant la ferme : en panne, puis parti faire un
     // tour avec Jean, et de retour en septembre.
     {

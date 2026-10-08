@@ -185,7 +185,6 @@ const REPAIR = [
   { sound: 'engine' },
   { say: ['M. Bouly emmène Jean faire un tour de tracteur dans les champs.'] },
   { black: false },
-  { say: ['La caisse à outils de Jean est restée là.'] },
   ...END_OF_DAY,
 ];
 
@@ -222,13 +221,6 @@ export const BENOIT_SAD = [
   { say: ['Tu lui racontes la fois où Fanny a failli casser le vase de Maman… Benoît éclate de rire.'] },
   { speaker: 'Benoît', say: ['T\'es bête… Merci. Je t\'écrirai.'] },
   { setFlag: FLAGS.benoitConsole },
-];
-
-// Objet-souvenir : la cuillère de la caisse à outils de Jean, restée devant le tracteur après la réparation (la caisse
-// disparaît une fois la cuillère prise).
-export const TOOLBOX = [
-  { say: ['La caisse à outils de Jean. Tout au fond, entre deux clés… la cuillère !'] },
-  { give: ITEMS.cuillere, text: 'Tu prends la cuillère. Un souvenir de votre réparation.' },
 ];
 
 // ---------- Le départ → le collège ----------

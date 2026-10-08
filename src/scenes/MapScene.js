@@ -5,7 +5,7 @@ import { FOLLOWERS } from '../data/story.js';
 import { CATCHES, FISHING_ROD } from '../data/fishing.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
-import { drawDecal, drawPulleyFixed, drawPulleyStuck, drawToolbox } from '../art/tileArt.js';
+import { drawDecal, drawPulleyFixed, drawPulleyStuck } from '../art/tileArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
@@ -69,7 +69,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // `surroundingTile` (tuile de remplissage par défaut).
 // Objets posés au sol, dessinés dans le code : le tas de planches de la ferme (Saint-Ay), la caisse à outils de Jean
 // (Montépilloy).
-const FLOOR_PROPS = { toolbox: drawToolbox, pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
+const FLOOR_PROPS = { pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
 
 // Clés de conditions d'une étape (voir systems/flags.js meetsConditions).
 const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenirs', 'ifItems', 'unlessItems'];

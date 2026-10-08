@@ -345,10 +345,11 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 3. **Le tracteur → Ingéniosité.** Jean, dans la chambre : « Le tracteur de M. Bouly est en panne. Je peux le réparer,
    mais il me faut un assistant. » / « Rejoins-moi à la ferme ! » M. Bouly : « Ah, Jean et son assistant ! Mon tracteur
    est en panne : il lui manque une pièce. » / « Elle doit traîner quelque part dans la grange… peut-être sous le gros
-   tas de foin, en bas à droite ? » Sous le tas de foin (pas dans un tonneau : Benoît se cache dans celui de gauche) :
+   tas de foin, en bas à droite ? » Sous le tas de foin (pas dans un tonneau : Benoît se cache dans celui de gauche),
+   une fois que M. Bouly en a parlé, ou dès que le cache-cache est fini et que Jean a lancé la réparation (même sans
+   parler à M. Bouly) :
    « Tu fouilles le tas de foin… Dessous, une pièce de tracteur ! » / « Jean va être content. » →
-   **Pièce de tracteur**, rapportée à M. Bouly ou à Jean. Le tracteur et la caisse à outils sont des dessins Gen 4
-   (scripts/build_props.py).
+   **Pièce de tracteur**, rapportée à M. Bouly ou à Jean. Le tracteur est un dessin Gen 4 (scripts/build_props.py).
    - « Jean ouvre sa caisse à outils et se glisse sous le tracteur. » ; Jean : **« Passe-moi la clé ! »** → trois
      questions (« La clé de 12 ! », « Le tournevis plat ! », « Le marteau… non, le petit ! ») parmi cinq outils ;
      mauvaises réponses : « Ça, c'est une cuillère. Qui a mis une cuillère dans ma caisse ? », « Le gros ? Tu veux
@@ -358,8 +359,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
      dans le village. Va les trouver ! » ; M. Bouly : « Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de
      tracteur ! »
 4. **La fin de la journée** (le cache-cache fini et Ingéniosité reçue, dans n'importe quel ordre) : pas de soir ni de
-   dîner, l'écran passe au noir et l'on enchaîne directement sur l'ellipse de septembre, devant la maison. La caisse à
-   outils de Jean (la cuillère) reste devant le tracteur jusqu'au départ pour le collège.
+   dîner, l'écran passe au noir et l'on enchaîne directement sur l'ellipse de septembre, devant la maison. Pas de caisse
+   à outils laissée devant le tracteur.
 5. **Septembre** : carte postale `montepilloySeptembre` (« bois aux Chênes, le matin ») : **« Quelques mois plus tard…
    Septembre. »** ; « Devant la maison, au matin. Tu as ton cartable sur le dos. » ; Maman « Premier jour de collège. Tu
    as tout ? » ; Papa « Il a tout. Il a même vérifié deux fois. » ; Jean « Tu me raconteras comment c'est ? » ; « Le
@@ -386,10 +387,6 @@ classe avec Margaux et Étienne). Bonus sans objet.
 - **Gagnée** : Ingéniosité (le tracteur, avec Jean).
 - **Utilisées** : **Esprit d'équipe**, pour ouvrir le tonneau de Benoît avec Margaux et Étienne ; **Joie de vivre**, pour
   consoler Benoît (optionnel).
-
-### Objet optionnel
-- **Cuillère de Jean**, dans la caisse à outils restée devant le tracteur : « La caisse à outils de Jean. Tout au fond,
-  entre deux clés… la cuillère ! » → « Tu prends la cuillère. Un souvenir de votre réparation. »
 
 ### Boîte aux lettres (carte postale)
 De Felix : « Une carte postale ! Elle vient de Felix. » / « « Pierre, la cabane tient toujours. Yanis a oublié le mot
@@ -1070,7 +1067,7 @@ Hugues, Thomas, Yanis à Toulon, Léo, Théo).
 - Plusieurs répliques provisoires restent aussi avant Hull, à Fort-de-France : la télé, la console de Manon et le frigo
   (« [Texte provisoire] … »). Dans l'entreprise parisienne, le dernier étage bloqué l'est aussi.
 - **Objets sans usage** : l'objet de chance (Hanoï) reste dans le sac. Les objets optionnels (vieille canne exceptée :
-  elle sert à pêcher) ne servent plus après leur ville : galet du lac, cuillère, autocollant, insigne du Prytanée, photo
+  elle sert à pêcher) ne servent plus après leur ville : galet du lac, autocollant, insigne du Prytanée, photo
   de la soirée, fléchettes de l'habitué, règlement du QG.
 - **Le gamin de la route de Montépilloy** parle d'un cerf-volant perdu, mais aucun cerf-volant n'est codé.
 - **La maison de la voisine** à Montépilloy est fermée (« Personne ne répond. »), et sa boîte aux lettres ne contient
