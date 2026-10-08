@@ -772,23 +772,25 @@ export const interiors = {
 
   // Collège Bonsecours — le couloir des casiers (1er étage, en haut de l'escalier du hall), un couloir fin (15 x 6) :
   // six casiers contre le mur ; le 12 (x = 6) sera celui de Pierre… et de Rémy. À gauche, l'escalier qui monte à la salle
-  // de maths ; à droite, celui qui redescend au hall. On passe un escalier par sa dernière marche (rangée 3).
+  // de maths ; à droite, celui qui redescend au hall. On passe un escalier par ses deux dernières marches (rangées 2 et 3).
   // Scénario : voir data/collegeStory.js (l'embrouille du casier, la scène de la fille).
   bonsecoursCasiers: {
     name: 'Couloir des casiers',
     frlg: true,
-    grid: parseGrid([ // escaliers (dernière marche), casiers x 4-9, placard x 10-12
+    grid: parseGrid([ // escaliers (deux dernières marches), casiers x 4-9, placard x 10-12
       'XXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXX',
-      'mmoommmmmmmmmmm',
+      'ηηoommmmmmmmmξξ',
       'ηηoooooooooooξξ',
       'ooooooooooooooo',
       'ooooooooooooooo',
     ]),
     spawn: { x: 13, y: 4, facing: 'down' },
     triggers: [
-      ...[13, 14].map((x) => ({ x, y: 3, warp: { interior: 'bonsecours', x: 23, y: 3, facing: 'down' } })),
-      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'bonsecoursMaths', x: 0, y: 4, facing: 'down' } })),
+      // On prend un escalier par ses deux dernières marches : depuis le couloir (rangée 3) ou depuis le renfoncement
+      // à côté (rangée 2).
+      ...[13, 14].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'bonsecours', x: 23, y: 3, facing: 'down' } }))),
+      ...[0, 1].flatMap((x) => [2, 3].map((y) => ({ x, y, warp: { interior: 'bonsecoursMaths', x: 0, y: 4, facing: 'down' } }))),
     ],
     objects: [
       { x: 6, y: 2, script: LOCKER },
