@@ -146,8 +146,7 @@ export const prytaneeMap = {
   objects: [
     { x: 8, y: 7, dialogue: ['Internat des garçons.'] },
     { x: 28, y: 6, dialogue: ['Internat des filles. Au nord : la porte du Prytanée.'] },
-    { x: 4, y: 21, dialogue: ['Infirmerie.'] },
-    { x: 25, y: 20, dialogue: ['Poste de commandement.'] },
+    { x: 30, y: 20, dialogue: ['Poste de commandement.'] },   // la case au toit orange
     { x: 17, y: 13, dialogue: ['Le drapeau tricolore flotte en haut du mât.'] },
   ],
   triggers: [

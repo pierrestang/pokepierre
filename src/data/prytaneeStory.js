@@ -100,7 +100,7 @@ export const TANGUY_GUIDE = [
   { unlessFlags: [FLAGS.armoireRangee], speaker: 'Tanguy', say: ['La tienne, c\'est celle de droite.'] },
 ];
 export const GEOFFREY_GUIDE = [
-  { unlessFlags: [FLAGS.litFait], speaker: 'Geoffrey', say: ['Ton lit, c\'est celui du milieu. Au carré, hein.'] },
+  { unlessFlags: [FLAGS.litFait], speaker: 'Geoffrey', say: ['Ton lit, c\'est le troisième en partant de la gauche. Au carré, hein.'] },
   { unlessFlags: [FLAGS.affairesPretes], speaker: 'Geoffrey', say: ['Et prépare tes affaires pour demain, sur le bureau.'] },
   { ifFlags: [FLAGS.litFait, FLAGS.affairesPretes], speaker: 'Geoffrey', say: ['Il reste l\'armoire. Demande à Tanguy, c\'est un maniaque.'] },
 ];

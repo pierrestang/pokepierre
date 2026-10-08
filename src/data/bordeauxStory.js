@@ -242,7 +242,7 @@ export const CYCLIST = [
       { speaker: 'Cycliste', say: ['Ma clé ! Tu l\'as retrouvée ! Merci, sans elle je ne pouvais plus attacher mon vélo.'] },
       { take: ITEMS.cleAntivol.id },
       { speaker: 'Cycliste', say: [
-        'Pour te remercier… j\'ai un vieux vélo, attaché au lampadaire, là. La chaîne a sauté, il ne roule plus.',
+        'Pour te remercier… j\'ai un vieux vélo, attaché là, contre la fontaine. La chaîne a sauté, il ne roule plus.',
         'Il est à toi, si tu arrives à en tirer quelque chose !',
       ] },
       { useTrait: TRAITS.ingeniosite },

@@ -528,7 +528,7 @@ Dialogue à choix (Camille), l'oral du brevet (trois questions : français, math
 ### Quêtes, dans l'ordre
 1. **La chambre → Autonomie.** Trois tâches dans n'importe quel ordre : « Pierre fait son lit. », « Pierre range ses
    affaires. », « Pierre prépare ses affaires pour demain. » Tanguy : « Le capitaine regarde toujours l'armoire en
-   premier. » / « La tienne, c'est celle de droite. » ; Geoffrey : « Ton lit, c'est celui du milieu. Au carré, hein. » /
+   premier. » / « La tienne, c'est celle de droite. » ; Geoffrey : « Ton lit, c'est le troisième en partant de la gauche. Au carré, hein. » /
    « Et prépare tes affaires pour demain, sur le bureau. » / « Il reste l'armoire. Demande à Tanguy, c'est un
    maniaque. »
    - L'inspection : **« GARDE À VOUS ! »** ; « L'armoire d'abord. Toujours l'armoire. » / « … Pliée au carré. Je suis
@@ -876,8 +876,8 @@ choix.
 ## 12. Bordeaux (le stade) : textes provisoires
 
 - Le stade s'ouvre une fois le semestre terminé. Le directeur (`g120`) : « [Directeur - texte provisoire] Bienvenue à la
-  cérémonie ! Monte sur le podium pour recevoir ton diplôme. » ; douze diplômés (« Félicitations à nous tous ! »…).
-- Sur le podium : « Tu montes sur le podium sous les applaudissements ! » / « Le directeur te remet ton diplôme. » →
+  cérémonie ! Avance-toi devant l'estrade pour recevoir ton diplôme. » ; douze diplômés (« Félicitations à nous tous ! »…).
+- Devant l'estrade : « Tu t'avances devant l'estrade sous les applaudissements ! » / « Le directeur te remet ton diplôme. » →
   **Diplôme de Bordeaux**.
 - **Départ** : l'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton diplôme de Bordeaux en poche, tu
   prends la route de Paris ! » Pas de scène de trajet.

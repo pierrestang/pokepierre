@@ -671,7 +671,7 @@ export const interiors = {
     // Jean sont dehors). Maman rappelle le programme. Scénario : data/montepilloyStory.js.
     npcs: [
       {
-        id: 'maman-mont', name: 'Maman', x: 7, y: 3, facing: 'left', color: 0xe86fa0,
+        id: 'maman-mont', name: 'Maman', x: 5, y: 7, facing: 'left',   // près de la table, à 4 cases de la porte color: 0xe86fa0,
         unlessFlags: [FLAGS.septembre], script: MAMAN,
       },
       {
@@ -765,7 +765,7 @@ export const interiors = {
       { id: 'principale', name: 'Principale', x: 9, y: 9, facing: 'up', color: 0x8c5ca8, script: PRINCIPALE },
       // Le surveillant attend Pierre dans le hall le premier jour, puis monte au couloir des casiers.
       {
-        id: 'surveillant-hall', name: 'Surveillant', x: 11, y: 5, facing: 'left', color: 0x5c6c8c,
+        id: 'surveillant-hall', name: 'Surveillant', x: 2, y: 7, facing: 'down',   // près de l'entrée color: 0x5c6c8c,
         ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeArrivee], script: SURVEILLANT,
       },
     ],
@@ -873,10 +873,15 @@ export const interiors = {
         id: 'camille', name: 'Camille', x: 6, y: 6, facing: 'up', still: true, color: 0xe080a0,
         ifFlags: [FLAGS.collegeArrivee], unlessFlags: [FLAGS.finTroisieme], script: CAMILLE,
       },
-      // Rémy, arrivé en classe après l'embrouille du casier.
+      // Rémy, arrivé en classe après l'embrouille du casier : il attend Pierre près de l'entrée (trajet court jusqu'à lui,
+      // REMI_INVITE), puis, après l'invitation, il est à son pupitre.
+      {
+        id: 'remi-classe', name: 'Rémy', x: 3, y: 4, facing: 'left', color: 0xc05c3c,
+        ifFlags: [FLAGS.remiEnClasse], unlessFlags: [FLAGS.remiInvite, FLAGS.finTroisieme], script: REMI,
+      },
       {
         id: 'remi-classe', name: 'Rémy', x: REMI_SEAT[0], y: REMI_SEAT[1], facing: 'up', still: true, color: 0xc05c3c,
-        ifFlags: [FLAGS.remiEnClasse], unlessFlags: [FLAGS.finTroisieme], script: REMI,
+        ifFlags: [FLAGS.remiEnClasse, FLAGS.remiInvite], unlessFlags: [FLAGS.finTroisieme], script: REMI,
       },
       ...collegeStudents([
         [2, 8, 'J\'ai oublié mon compas. Encore. C\'est le troisième cette année.'],
@@ -1134,8 +1139,8 @@ export const interiors = {
   },
 
   // Prytanée — l'internat des garçons, 1er étage : la chambre de Pierre, Tanguy et Geoffrey : quatre lits contre le mur,
-  // une commode de chaque côté, une bibliothèque, un bureau, un tapis ; deux escaliers (vers le hall, vers le 2e étage). Le lit de Pierre est celui
-  // du milieu, son armoire celle de droite (voir data/prytaneeStory.js).
+  // une commode de chaque côté, une bibliothèque, un bureau, un tapis ; deux escaliers (vers le hall, vers le 2e étage). Le lit de Pierre est le
+  // troisième en partant de la gauche, son armoire celle de droite (voir data/prytaneeStory.js).
   dortoir: {
     name: 'Dortoir',
     frlg: true,
@@ -1334,7 +1339,7 @@ export const interiors = {
     npcs: [
       // Ousmane, pendant la coupure (il sort ensuite attendre devant l'immeuble).
       {
-        id: 'ousmane-coupure', name: 'Ousmane', x: 7, y: 7, facing: 'up',
+        id: 'ousmane-coupure', name: 'Ousmane', x: 6, y: 5, facing: 'down',
         ifFlags: [FLAGS.ousmaneRencontre], unlessFlags: [FLAGS.preparatifs],
         dialogue: ['On n\'y voit rien… Il est où, ce compteur ? Pas près de la porte, en tout cas.'],
       },
@@ -1650,7 +1655,7 @@ export const interiors = {
     spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [
       {
-        id: 'leo-maison', name: 'Léo', x: 6, y: 10, facing: 'up',
+        id: 'leo-maison', name: 'Léo', x: 8, y: 7, facing: 'right',
         unlessFlags: [FLAGS.leoPlan],
         dialogue: ['Ce soir, on sort. Tout le monde.'],
       },
@@ -1695,7 +1700,7 @@ export const interiors = {
     spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [
       {
-        id: 'ousmane-coloc', name: 'Ousmane', x: 3, y: 4, facing: 'down',
+        id: 'ousmane-coloc', name: 'Ousmane', x: 8, y: 5, facing: 'down',
         ifFlags: [FLAGS.ousmaneRentre], unlessFlags: [FLAGS.leoPlan],
         script: [
           { ifFlags: [FLAGS.leoAppel], speaker: 'Ousmane', say: ['Léo t\'attend chez lui : en haut de Newland Avenue, à droite, la petite maison juste après le pub.'], end: true },
@@ -1704,12 +1709,12 @@ export const interiors = {
       },
       // Au petit matin, Ousmane est rentré avant Pierre ; au réveil, il l'envoie à la bibliothèque (hullStory.js SLEEP).
       {
-        id: 'ousmane-nuit', name: 'Ousmane', x: 3, y: 4, facing: 'down',
+        id: 'ousmane-nuit', name: 'Ousmane', x: 8, y: 5, facing: 'down',
         ifSouvenirs: [INSOUCIANCE], unlessFlags: [FLAGS.lendemainHull],
         dialogue: ['Au lit. Demain, bibliothèque.'],
       },
       {
-        id: 'ousmane-apres', name: 'Ousmane', x: 3, y: 4, facing: 'down',
+        id: 'ousmane-apres', name: 'Ousmane', x: 8, y: 5, facing: 'down',
         ifFlags: [FLAGS.lendemainHull], unlessFlags: [FLAGS.revisions],
         dialogue: ['La bibliothèque, c\'est la longère au toit d\'ardoise, en haut de Newland Avenue, à gauche. J\'arrive !'],
       },
@@ -1792,7 +1797,7 @@ export const interiors = {
       { id: 'client-b4', name: 'Cliente', x: 0, y: 8, facing: 'right', fidget: true, dialogue: ['Cheers!'] },
       { id: 'client-b5', name: 'Client', x: 7, y: 8, facing: 'left', fidget: true, dialogue: ['Le meilleur fish and chips de Hull, ici.'] },
       // L'habitué, près de la cible : la partie de fléchettes (voir hullStory.js DARTS).
-      { id: 'habitue', name: 'Habitué', x: 7, y: 3, facing: 'down', ...PUB_B_TIME, script: DARTS },
+      { id: 'habitue', name: 'Habitué', x: 6, y: 6, facing: 'down', ...PUB_B_TIME, script: DARTS },   // près de l'entrée
       { id: 'habitue-apres', name: 'Habitué', x: 7, y: 3, facing: 'down', ifFlags: [FLAGS.flechettesJouees], script: HABITUE_AFTER },
       // La bande, à la table du milieu : Léo, entré le premier, attend ; les autres suivaient Pierre et s'attablent en
       // arrivant (mêmes id que leurs suiveurs, voir hullStory.js PUB_B_ENTER).
@@ -1850,7 +1855,7 @@ export const interiors = {
     npcs: [
       // La bande : Romain et Prophecy déjà là, Léo entré le premier ; les autres arrivent derrière Pierre (ils le
       // suivaient) et s'installent au bord de la piste (voir hullStory.js ASYLUM_ENTER).
-      { id: 'romain-asylum', name: 'Romain', x: 5, y: 8, facing: 'right', ...ASYLUM_TIME, dialogue: ['Sur la piste, tout le monde !'] },
+      { id: 'romain-asylum', name: 'Romain', x: 14, y: 13, facing: 'down', ...ASYLUM_TIME, dialogue: ['Sur la piste, tout le monde !'] },
       { id: 'prophecy-asylum', name: 'Prophecy', x: 17, y: 8, facing: 'left', ...ASYLUM_TIME, dialogue: ['Enfin au complet ! Et j\'ai les bonnes chaussures.'] },
       { id: 'leo-pub', name: 'Léo', x: 17, y: 10, facing: 'left', ...ASYLUM_TIME, dialogue: ['Allez, sur la piste !'] },
       ...[['ousmane-pub', 'Ousmane', 'Quelle soirée !'], ['charlotte-pub', 'Charlotte', 'On danse !'],
@@ -2197,7 +2202,7 @@ export const interiors = {
     })),
   },
 
-  // Bordeaux — le stade : cérémonie de remise des diplômes, foule de diplômés et podium.
+  // Bordeaux — le stade : cérémonie de remise des diplômes, foule de diplômés et estrade du directeur.
   stade: {
     name: 'Stade',
     // Stade de foot (scripts/interieurs/stade.py) : tribune pleine au fond, piste tout autour, terrain d'herbe à bandes et
@@ -2223,7 +2228,7 @@ export const interiors = {
       {
         id: 'directeur', name: 'Directeur', x: 13, y: 4, facing: 'down', color: 0x6c1c2c, hat: true,
         unlessFlags: [FLAGS.diplomeBordeaux],
-        dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Monte sur le podium pour recevoir ton diplôme.'],
+        dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Avance-toi devant l\'estrade pour recevoir ton diplôme.'],
       },
       {
         id: 'directeur-fin', name: 'Directeur', x: 13, y: 4, facing: 'down', color: 0x6c1c2c, hat: true,
@@ -2259,7 +2264,7 @@ export const interiors = {
     objects: [12, 13].flatMap((x) => [
       {
         x, y: 5, unlessFlags: [FLAGS.diplomeBordeaux],
-        dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Monte sur le podium pour recevoir ton diplôme.'],
+        dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Avance-toi devant l\'estrade pour recevoir ton diplôme.'],
       },
       { x, y: 5, dialogue: ['[Directeur - texte provisoire] Félicitations, jeune diplômé ! La route de Paris est ouverte.'] },
     ]),
@@ -2270,7 +2275,7 @@ export const interiors = {
       unlessFlags: [FLAGS.diplomeBordeaux],
       dialogue: ['[Texte provisoire] Tu repenses avec émotion à ta remise de diplôme.'],
       readyDialogue: [
-        '[Texte provisoire] Tu montes sur le podium sous les applaudissements !',
+        '[Texte provisoire] Tu t\'avances devant l\'estrade sous les applaudissements !',
         'Le directeur te remet ton diplôme.',
       ],
       item: ITEMS.diplomeBordeaux,

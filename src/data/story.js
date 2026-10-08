@@ -127,7 +127,7 @@ export const FLAGS = {
   arriveeRajasthan: 'arrivee-rajasthan',        // parti dans le désert du Rajasthan
   potionDonnee: 'potion-donnee',                // potion magique apportée au vieux sage
   semestreTermine: 'semestre-termine',          // félicitations de la professeure : semestre terminé
-  diplomeBordeaux: 'diplome-bordeaux',          // diplôme reçu sur le podium du stade (la route de Paris s'ouvre)
+  diplomeBordeaux: 'diplome-bordeaux',          // diplôme reçu devant l'estrade du stade (la route de Paris s'ouvre)
   arriveeParis: 'arrivee-paris',                // arrivé à Paris
   repasParis: 'repas-paris',                    // mangé au restaurant, rencontré le cuisinier
   parisAccueil: 'paris-accueil',                // message d'arrivée à Paris déjà montré

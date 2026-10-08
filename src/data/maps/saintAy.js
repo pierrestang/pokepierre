@@ -143,12 +143,12 @@ export const saintAyMap = {
   npcs: [
     // Arrivée : Papa et Manon arrivent en courant, puis partent devant à la clinique (ils y sont à ton arrivée).
     {
-      id: 'papa', name: 'Papa', x: 10, y: 7, facing: 'left', color: 0x3f6fd8,
+      id: 'papa', name: 'Papa', x: 7, y: 9, facing: 'left', color: 0x3f6fd8,
       ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit, FLAGS.familleArrivee],
       dialogue: ['Maman est à la clinique, en bas du village. Rejoins-nous !'],
     },
     {
-      id: 'manon', name: 'Manon', x: 11, y: 7, facing: 'left', color: 0xf0a030,
+      id: 'manon', name: 'Manon', x: 6, y: 8, facing: 'left', color: 0xf0a030,
       ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.familleSuit, FLAGS.familleArrivee],
       dialogue: ['Vite, à la clinique !'],
     },
