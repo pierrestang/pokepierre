@@ -94,6 +94,8 @@ export const REMI_INVITE = [
       'Elle connaît personne non plus. Va lui dire salut, je viens avec toi.',
     ],
   },
+  // Il retourne à son pupitre avant le changement de variante (près de l'entrée → au pupitre) : pas de saut.
+  { walk: 'remi-classe', to: REMI_SEAT, block: true },
   { setFlag: FLAGS.remiInvite },
 ];
 

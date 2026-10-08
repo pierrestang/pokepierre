@@ -145,6 +145,25 @@ export function startFallingLeaves(scene, map) {
 
 // Vaguelettes claires qui défilent lentement sur toutes les cases d'eau (carte et décor autour),
 // par-dessus les vagues dessinées : la mer ondule.
+// Carte du créateur : parmi les cases [x, y] données, celles vraiment dessinées en eau (le bleu domine au milieu de la
+// case), pour que les effets d'eau (reflets, étincelles, poissons) ne tombent ni sur un bateau ni sur le sable ni sur
+// l'herbe d'une grille un peu en retard sur le dessin. Les autres cartes : toutes les cases.
+export function drawnWater(scene, map, cells) {
+  if (!map.built || !map.backdrop || !cells.length) return cells;
+  const src = scene.textures.get(map.backdrop.sheet)?.getSourceImage?.();
+  const ctx = src?.getContext?.('2d');
+  if (!ctx) return cells;
+  return cells.filter(([x, y]) => {
+    const px = ctx.getImageData(x * S, y * S, S, S).data;      // la case seule (pas tout le dessin de la carte)
+    let blue = 0;
+    for (const [dx, dy] of [[4, 4], [11, 4], [4, 11], [11, 11], [8, 8]]) {
+      const i = (dy * S + dx) * 4;
+      if (px[i + 2] > px[i] + 30 && px[i + 2] > px[i + 1] - 10) blue++;
+    }
+    return blue >= 3;
+  });
+}
+
 export function startSeaShimmer(scene, map) {
   const { grid } = map;
   const W = grid[0].length * S;
@@ -156,21 +175,7 @@ export function startSeaShimmer(scene, map) {
   // pas onduler du sable.
   const codes = map.built ? [...WATER, 'w'] : WATER;
   grid.forEach((row, y) => row.forEach((c, x) => { if (codes.includes(c)) water.push([x, y]); }));
-  if (map.built && map.backdrop && water.length) {
-    const src = scene.textures.get(map.backdrop.sheet)?.getSourceImage?.();
-    const ctx = src?.getContext?.('2d');
-    if (ctx) {
-      const px = ctx.getImageData(0, 0, src.width, src.height).data;
-      water = water.filter(([x, y]) => {
-        let blue = 0;
-        for (const [dx, dy] of [[4, 4], [11, 4], [4, 11], [11, 11], [8, 8]]) {
-          const i = ((y * S + dy) * src.width + x * S + dx) * 4;
-          if (px[i + 2] > px[i] + 30 && px[i + 2] > px[i + 1] - 10) blue++;
-        }
-        return blue >= 3;
-      });
-    }
-  }
+  water = drawnWater(scene, map, water);
   if (!water.length) return;
 
   if (!scene.textures.exists('sea-shimmer')) {
@@ -273,8 +278,9 @@ export function startSeagulls(scene, map) {
     let frame = 0;
     const flap = scene.time.addEvent({ delay: 220, loop: true, callback: () => gull.setTexture(`gull-${(frame = 1 - frame)}`) });
     const duration = Phaser.Math.Between(9000, 13000);
-    scene.tweens.add({ targets: [gull, shadow], x: x1, duration, ease: 'Linear', onComplete: () => { flap.remove(); gull.destroy(); shadow.destroy(); } });
-    scene.tweens.add({ targets: gull, y: y - 6, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    // Le battement (sans fin) est arrêté avec la mouette : Phaser ne retire pas les tweens d'un objet détruit.
+    const bob = scene.tweens.add({ targets: gull, y: y - 6, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    scene.tweens.add({ targets: [gull, shadow], x: x1, duration, ease: 'Linear', onComplete: () => { flap.remove(); bob.remove(); gull.destroy(); shadow.destroy(); } });
   };
   scene.time.addEvent({ delay: 7000, loop: true, callback: () => { if (Math.random() < 0.7) fly(); } });
   scene.time.delayedCall(1500, fly);
@@ -282,10 +288,11 @@ export function startSeagulls(scene, map) {
 
 // Un poisson saute hors de l'eau de temps en temps, avec des ronds dans l'eau.
 export function startJumpingFish(scene, map) {
-  const sea = [];
+  let sea = [];
   map.grid.forEach((row, y) => row.forEach((c, x) => {
     if (c === 'w' && row[x - 1] === 'w' && row[x + 1] === 'w' && map.grid[y - 1]?.[x] === 'w') sea.push([x, y]);
   }));
+  sea = drawnWater(scene, map, sea);
   if (!sea.length) return;
   ensureTexture(scene, 'fish', 6, 3, (g) => {
     px(g, 0x284878, 0, 0, 5, 3);

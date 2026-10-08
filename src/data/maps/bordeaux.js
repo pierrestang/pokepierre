@@ -133,7 +133,7 @@ export const bordeauxMap = {
       unlessFlags: [FLAGS.diplomeBordeaux], dialogue: ROAD_WORKER,
     },
     // Le cycliste du quai nord, assis sur son vélo (facultatif : le vélo de Pierre, voir bordeauxStory.js CYCLIST).
-    { id: 'cycliste', name: 'Cycliste', sprite: 'g18', x: 17, y: 16, facing: 'down', script: CYCLIST },
+    { id: 'cycliste', name: 'Cycliste', sprite: 'g18', x: 17, y: 17, facing: 'down', script: CYCLIST },   // devant la fontaine
     // Rémi, devant KEDGE le jour de l'oral.
     {
       id: 'remi-kedge', name: 'Rémi', x: 9, y: 34, facing: 'left',

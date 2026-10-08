@@ -671,7 +671,7 @@ export const interiors = {
     // Jean sont dehors). Maman rappelle le programme. Scénario : data/montepilloyStory.js.
     npcs: [
       {
-        id: 'maman-mont', name: 'Maman', x: 5, y: 7, facing: 'left',   // près de la table, à 4 cases de la porte color: 0xe86fa0,
+        id: 'maman-mont', name: 'Maman', x: 5, y: 7, facing: 'left', color: 0xe86fa0,   // près de la table, à 4 cases de la porte
         unlessFlags: [FLAGS.septembre], script: MAMAN,
       },
       {
@@ -765,7 +765,7 @@ export const interiors = {
       { id: 'principale', name: 'Principale', x: 9, y: 9, facing: 'up', color: 0x8c5ca8, script: PRINCIPALE },
       // Le surveillant attend Pierre dans le hall le premier jour, puis monte au couloir des casiers.
       {
-        id: 'surveillant-hall', name: 'Surveillant', x: 2, y: 7, facing: 'down',   // près de l'entrée color: 0x5c6c8c,
+        id: 'surveillant-hall', name: 'Surveillant', x: 2, y: 7, facing: 'down', color: 0x5c6c8c,   // près de l'entrée
         ifFlags: [FLAGS.departCollege], unlessFlags: [FLAGS.collegeArrivee], script: SURVEILLANT,
       },
     ],
@@ -1796,9 +1796,10 @@ export const interiors = {
       { id: 'client-b3', name: 'Client', x: 13, y: 7, facing: 'up', fidget: true, dialogue: ['Hull City a gagné, ce soir !'] },
       { id: 'client-b4', name: 'Cliente', x: 0, y: 8, facing: 'right', fidget: true, dialogue: ['Cheers!'] },
       { id: 'client-b5', name: 'Client', x: 7, y: 8, facing: 'left', fidget: true, dialogue: ['Le meilleur fish and chips de Hull, ici.'] },
-      // L'habitué, près de la cible : la partie de fléchettes (voir hullStory.js DARTS).
-      { id: 'habitue', name: 'Habitué', x: 6, y: 6, facing: 'down', ...PUB_B_TIME, script: DARTS },   // près de l'entrée
-      { id: 'habitue-apres', name: 'Habitué', x: 7, y: 3, facing: 'down', ifFlags: [FLAGS.flechettesJouees], script: HABITUE_AFTER },
+      // L'habitué, près de l'entrée (trajet court jusqu'à Pierre ; pas sur une place de la bande, PUB_B_SEATS) : la partie
+      // de fléchettes (voir hullStory.js DARTS).
+      { id: 'habitue', name: 'Habitué', x: 4, y: 6, facing: 'down', ...PUB_B_TIME, script: DARTS },
+      { id: 'habitue-apres', name: 'Habitué', x: 4, y: 6, facing: 'down', ifFlags: [FLAGS.flechettesJouees], script: HABITUE_AFTER },
       // La bande, à la table du milieu : Léo, entré le premier, attend ; les autres suivaient Pierre et s'attablent en
       // arrivant (mêmes id que leurs suiveurs, voir hullStory.js PUB_B_ENTER).
       { id: 'leo-pub', name: 'Léo', x: 6, y: 5, facing: 'right', still: true, ...PUB_B_TIME, dialogue: ['Une partie de fléchettes, et on file à l\'Asylum !'] },
@@ -2226,12 +2227,12 @@ export const interiors = {
     spawn: { x: 12, y: 12, facing: 'up' },
     npcs: [
       {
-        id: 'directeur', name: 'Directeur', x: 13, y: 4, facing: 'down', color: 0x6c1c2c, hat: true,
+        id: 'directeur', name: 'Directeur', x: 13, y: 4, facing: 'down', still: true, color: 0x6c1c2c, hat: true,
         unlessFlags: [FLAGS.diplomeBordeaux],
         dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Avance-toi devant l\'estrade pour recevoir ton diplôme.'],
       },
       {
-        id: 'directeur-fin', name: 'Directeur', x: 13, y: 4, facing: 'down', color: 0x6c1c2c, hat: true,
+        id: 'directeur-fin', name: 'Directeur', x: 13, y: 4, facing: 'down', still: true, color: 0x6c1c2c, hat: true,
         ifFlags: [FLAGS.diplomeBordeaux],
         dialogue: ['[Directeur - texte provisoire] Félicitations, jeune diplômé ! La route de Paris est ouverte.'],
       },
@@ -2628,9 +2629,9 @@ export const interiors = {
       },
     ],
     npcs: [
-      { id: 'chanteur', name: 'Chanteur', x: 6, y: 4, facing: 'down', color: 0xd83060 },
-      { id: 'guitariste', name: 'Guitariste', x: 4, y: 4, facing: 'down', color: 0x3c3c3c },
-      { id: 'batteur', name: 'Batteur', x: 8, y: 4, facing: 'down', color: 0x5c2c8c },
+      { id: 'chanteur', name: 'Chanteur', x: 6, y: 4, facing: 'down', still: true, color: 0xd83060 },
+      { id: 'guitariste', name: 'Guitariste', x: 4, y: 4, facing: 'down', still: true, color: 0x3c3c3c },
+      { id: 'batteur', name: 'Batteur', x: 8, y: 4, facing: 'down', still: true, color: 0x5c2c8c },
       ...[[3, 6], [5, 6], [7, 6], [9, 6], [4, 8], [6, 8], [8, 8], [3, 10], [9, 10], [4, 11]].map(([x, y], i) => ({
         id: `fan-${i}`, name: 'Fan', x, y, facing: 'up', color: [0xe86040, 0x40a0e8, 0xe8c040, 0x60c060][i % 4],
         dialogue: [['[Fan - texte provisoire] Quel son !', '[Fan - texte provisoire] Encore ! Encore !'][i % 2]],

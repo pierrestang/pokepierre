@@ -29,7 +29,7 @@ import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
 import {
   GrassCovers, TALL_PLANTS, InteractHint, ensureSmallBubbles, stepEffect, footprint, startFallingLeaves, startSeaShimmer,
-  startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay,
+  startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay, drawnWater,
 } from '../systems/effects.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 import { toggleBike, resumeBike, checkBike, pauseBike, unpauseBike } from '../systems/bike.js';
@@ -110,7 +110,7 @@ export class MapScene extends Phaser.Scene {
     this.startWaterSparkles();
     this.grassCovers = new GrassCovers(this, map);
     const seaAround = (map.surroundings ?? this.surroundingTile) === 'w';
-    startSeaShimmer(this, map);             // reflets des étangs et rivières (la mer est animée, voir addSeaLayer)
+    startSeaShimmer(this, map);             // reflets de l'eau (mer et plans d'eau dessinés ; anciennes cartes : addSeaLayer)
     // Musique du lieu et ressac près de la mer.
     this.playPlaceMusic();
     const hasSea = seaAround || grid.some((row) => row.includes('w'));
@@ -254,10 +254,11 @@ export class MapScene extends Phaser.Scene {
   // La carte entière est visible, aussi grande que possible dans la fenêtre.
   // Reflets animés sur l'eau (mer, étangs, rivières) : petits éclats qui apparaissent et s'effacent.
   startWaterSparkles() {
-    const water = [];
+    let water = [];
     this.grid.forEach((row, y) => row.forEach((c, x) => {
       if (['~', 'G'].includes(c)) water.push([x, y]);
     }));
+    water = drawnWater(this, this.map, water);               // carte du créateur : seulement l'eau vraiment dessinée
     if (!water.length) return;
     const pool = Array.from({ length: 16 }, () => this.add.rectangle(0, 0, 3, 1, 0xffffff).setAlpha(0).setDepth(1));
     let next = 0;
@@ -434,7 +435,7 @@ export class MapScene extends Phaser.Scene {
       if (this.decals.some((d) => d.data === data)) continue;
       // `above` : au-dessus des personnages (ex. tablier d'un pont sous lequel on passe).
       // `floor` : au sol, sous tout le monde (ex. piste de danse).
-      const depth = data.above ? 45 : data.floor ? 1.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000;
+      const depth = data.above ? TOP_DEPTH + 0.1 : data.floor ? 1.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000;   // above : sous le voile de nuit
       if (data.icons) {
         // Décor en icônes d'objets (ex. cannes à pêche) : [image, x, y, hauteur gardée], dans un conteneur.
         const graphics = this.add.container(data.x * TILE_SIZE, data.y * TILE_SIZE).setDepth(depth);
@@ -1004,6 +1005,8 @@ export class MapScene extends Phaser.Scene {
     if (key === this.ambienceKey) return;
     const first = this.ambienceKey === undefined;
     this.ambienceKey = key;
+    // Les halos respirent (tweens sans fin) : arrêtés avec l'ambiance, Phaser ne retire pas les tweens d'un objet détruit.
+    if (this.ambience) this.tweens.killTweensOf(this.ambience.list);
     this.ambience?.destroy();
     this.ambience = this.add.container(0, 0).setDepth(40);
     const W = this.grid[0].length * TILE_SIZE;
@@ -1033,10 +1036,10 @@ export class MapScene extends Phaser.Scene {
           return slot < 0 ? [] : [[slot * 100000 + Number(k), at]];
         }));
         const drawn = (x, y) => y < built.height && ['decor', 'dessus']
-          .some((L) => [built.layers[L][y * built.width + x]].flat().some((r) => r >= 0));
+          .some((L) => [built.layers[L]?.[y * built.width + x] ?? -1].flat().some((r) => r >= 0));
         const heads = [];
         for (const L of ['dessus', 'decor']) {
-          built.layers[L].forEach((v, i) => {
+          (built.layers[L] ?? []).forEach((v, i) => {
             const r = [v].flat().find((t) => refs.has(t));
             if (r === undefined) return;
             const x = i % built.width;
