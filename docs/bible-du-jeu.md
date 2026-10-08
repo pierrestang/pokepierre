@@ -280,7 +280,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 
 ### Départ et trajet
 - **Condition** : la naissance de Fanny, la cabane (Esprit d'équipe), l'annonce de Papa, l'adieu aux cousins. On monte dans la voiture devant la maison :
-  « La voiture est chargée. » ; Felix accourt devant le capot : **« Le mot de passe, tu le gardes, hein ? »** ; « Tu
+  « La voiture est chargée. » ; Felix descend de la cabane et accourt devant le capot : **« Le mot de passe, tu le gardes, hein ? »** ; « Tu
   montes à l'arrière, à côté de Manon et de Fanny. »
 - **Trajet en voiture** (écran noir) : « La voiture s'éloigne de Saint-Ay. À l'arrière, tu es serré entre Manon et le siège
   de Fanny. » ; Manon « Regarde, Fanny dort déjà. Elle rate tout. » ; Fanny (endormie) « … les poules… » ; Manon « Elle
