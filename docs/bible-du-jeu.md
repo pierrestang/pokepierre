@@ -308,7 +308,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
   tard… »** ; « Te voilà au bord de la mare. La maison est en haut du village : toute la famille y est. »
 - À la maison, Maman : « Te voilà ! Dernier jour d'école primaire ! Après, le collège. » / **« Et ton petit frère Jean
   ne te lâchera pas : à huit ans, il veut déjà tout réparer dans la maison. »** / « Dépêche-toi, tu vas être en retard !
-  L'école est en bas de la grand-rue, à droite. »
+  L'école, c'est le grand bâtiment au toit jaune, à droite de la grand-rue. »
 
 ### PNJ présents
 | Nom | Rôle | Sprite |

@@ -32,7 +32,7 @@ export const MAMAN_WELCOME = [
     say: [
       'Te voilà ! Dernier jour d\'école primaire ! Après, le collège.',
       'Et ton petit frère Jean ne te lâchera pas : à huit ans, il veut déjà tout réparer dans la maison.',
-      'Dépêche-toi, tu vas être en retard ! L\'école est en bas de la grand-rue, à droite.',
+      'Dépêche-toi, tu vas être en retard ! L\'école, c\'est le grand bâtiment au toit jaune, à droite de la grand-rue.',
     ],
   },
   { setFlag: FLAGS.mamanAccueil },
@@ -45,7 +45,7 @@ export const MAMAN_WELCOME = [
 export const MAMAN = [
   {
     unlessFlags: [FLAGS.ecoleCm2], speaker: 'Maman',
-    say: ['Dernier jour d\'école primaire ! Après, le collège.', 'File, l\'école est en bas de la grand-rue, à droite.'], end: true,
+    say: ['Dernier jour d\'école primaire ! Après, le collège.', 'File, l\'école, c\'est le grand bâtiment au toit jaune, à droite de la grand-rue.'], end: true,
   },
   {
     ...DAY_DONE, speaker: 'Maman',
@@ -264,7 +264,7 @@ export const NORTH_EXIT = [
   { ifFlags: [FLAGS.departCollege], travel: { map: 'routeBonsecours', x: 11, y: 27, facing: 'up' }, end: true },
   { ...DAY_DONE, say: ['Il se fait tard : rentre plutôt dîner à la maison.'], end: true },
   { say: ['Ta journée n\'est pas finie.'] },
-  { unlessFlags: [FLAGS.ecoleCm2], say: ['C\'est le dernier jour de CM2 : file à l\'école, en bas de la grand-rue !'], end: true },
+  { unlessFlags: [FLAGS.ecoleCm2], say: ['C\'est le dernier jour de CM2 : file à l\'école, le grand bâtiment au toit jaune !'], end: true },
   { unlessFlags: [FLAGS.copainsPartent], say: ['Tes copains t\'attendent pour leur partie de cache-cache.'] },
   { unlessSouvenirs: [TRAITS.ingeniosite.id], say: ['Et Jean a un tracteur à réparer avec toi.'] },
   { unlessSouvenirs: [TRAITS.ingeniosite.id], unlessFlags: [FLAGS.jeanQuetes], say: ['Jean t\'attend dans sa chambre.'] },
