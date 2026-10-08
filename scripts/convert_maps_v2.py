@@ -14,8 +14,8 @@ src/data/builtMaps/<id>.json, à retoucher ensuite dans builder.html :
 Deux thèmes : DS (Fort-de-France, scripts/ds_theme.py) et Gen 4 (les autres, scripts/g4_theme.py).
 - collisions : celles du jeu (cases bloquantes de la grille) ; départ : celui de la carte.
 
-Usage : python3 scripts/convert_maps_v2.py [--force | --force=<id>]   (de Fort-de-France à Hull ; les cartes déjà
-là sont gardées, sauf --force)
+Usage : python3 scripts/convert_maps_v2.py [<id du jeu>…] [--force | --force=<id>]   (sans id : de Fort-de-France à
+Hull ; les cartes déjà là sont gardées, sauf --force ; ex. python3 scripts/convert_maps_v2.py hanoi amsterdam)
 """
 import ast
 import json
@@ -146,7 +146,7 @@ G4_MAPS = {'saintAy', 'routeMontepilloy', 'montepilloy', 'routeBonsecours', 'pry
 
 def main():
     # Toutes les cartes sont refaites ensemble : elles partagent la planche des cases assemblées (auto.png).
-    ids = DEFAULT_MAPS
+    ids = [a for a in sys.argv[1:] if not a.startswith('--')] or DEFAULT_MAPS
     exported = json.loads(subprocess.check_output(['node', str(ROOT / 'scripts' / 'export_maps.mjs'), *ids], cwd=ROOT))
     builder = Builder(load_catalog())
     OUT.mkdir(parents=True, exist_ok=True)
