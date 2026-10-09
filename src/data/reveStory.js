@@ -1,10 +1,11 @@
 import { FLAGS } from './story.js';
+import { OPENING_CINEMATIC } from './fortDeFranceStory.js';
 
 // Le rêve, la fin du jeu : en sortant de la tour de Paris (voir parisStory.js INTO_THE_DREAM), Pierre se retrouve au
 // centre d'une grande plate-forme qui flotte dans le bleu (maps/reve.js). Tous les personnages nommés du jeu sont là,
 // autour de lui ; huit prennent la parole, un par ville : chacun s'avance, dit son mot, puis se range près de lui. Pierre
 // parle ; le décor s'efface dans un fondu au noir lent, le carnet des huit vertus s'affiche une à une ; puis le réveil à
-// Fort-de-France (interiors.js ffHouseUp, WAKE_UP).
+// Fort-de-France, la cinématique d'ouverture rejouée, et le pendentif (interiors.js ffHouseUp, WAKE_UP, PENDANT).
 
 // Pierre, au centre de la plate-forme.
 export const CENTER = [14, 10];
@@ -29,6 +30,7 @@ export const PRESENT = [
   ['remy', 'Rémy'], ['tanguy', 'Tanguy'], ['geoffrey', 'Geoffrey'],
   ['ousmane', 'Ousmane'], ['paul', 'Paul'], ['remi', 'Rémi'], ['leo', 'Léo'], ['anais', 'Anaïs'],
   ['charlotte', 'Charlotte'], ['romain', 'Romain'], ['prophecy', 'Prophecy'], ['harsh', 'Harsh'],
+  ['dalil', 'Dalil'], ['hugues', 'Hugues'], ['thomas', 'Thomas'],
 ];
 
 // Côté vers lequel regarder pour voir Pierre, depuis la case [x, y].
@@ -60,27 +62,26 @@ export const REUNION = [
   { travel: { interior: 'ffHouseUp', fromMap: 'fortDeFrance', x: 2, y: 5, facing: 'left' } },
 ];
 
-// Le réveil, à Fort-de-France : le même décor qu'à l'ouverture du jeu, la mer qu'on entend. Pierre est couché (un PNJ
-// « Pierre » dans le lit, le joueur caché) ; il se lève, trouve la pierre gravée sur la table de chevet, la prend. Rien
-// ne tranche entre le rêve et la réalité. Puis l'écran noir final, et le retour au titre.
+// Le réveil, à Fort-de-France : la chambre de l'ouverture du jeu. Pierre est couché (un PNJ « Pierre » dans le lit, le
+// joueur caché) ; on rejoue telle quelle la cinématique d'ouverture (l'image de l'île, les vagues, Maman qui appelle :
+// le ferry). Pierre se lève ; le joueur reprend la main et va vers l'escalier. Juste avant, il passe devant la table de
+// chevet : le pendentif (PENDANT). Rien ne tranche entre le rêve et la réalité.
 export const WAKE_UP = [
   { hidePlayer: true },
-  { sea: true },
-  { wait: 1500 },
-  { black: false },
-  { wait: 2200 },
+  ...OPENING_CINEMATIC,
+  { wait: 500 },
   { setFlag: FLAGS.reveilFin },
   { hidePlayer: false },
-  { wait: 700 },
-  { goTo: [2, 5], facing: 'up' },
+];
+
+// Devant le pendentif, sur la table de chevet (le même que le talisman de New Delhi) : « ! », la phrase, le noir, la fin.
+export const PENDANT = [
+  { face: { player: 'down' } },
   { emote: 'player', kind: 'surprise' },
-  { say: ['Sur la table de chevet, une petite pierre polie, gravée d\'un chemin qui tourne sur lui-même.'] },
+  { speaker: 'Pierre', say: ['Je ne suis jamais parti de Fort-de-France. Alors ça, d\'où ça vient ?'] },
   { setFlag: FLAGS.talismanPris },
-  { say: ['Tu la prends dans ta main.'] },
-  { speaker: 'Pierre', say: ['… Attends. Ça, ça vient d\'où ?'] },
   { wait: 900 },
   { black: true },
-  { sea: false },
   { wait: 2500 },
   { endGame: true },
 ];

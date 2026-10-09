@@ -6,7 +6,7 @@ import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
   BIRTH, FANNY_CRADLE, CABANE_PLAN, FELIX_CHANTIER, ANNOUNCEMENT, ANNOUNCEMENT_EVENT, CABANE_FETE, FELIX_AT_CABANE,
 } from '../saintAyStory.js';
-import { MAMAN_FDF } from '../fortDeFranceStory.js';
+import { MAMAN_FDF, OPENING_CINEMATIC } from '../fortDeFranceStory.js';
 import {
   AGENT_KEYS, CEREMONY, REUNION_LINES, STADIUM, STADIUM_ARRIVAL, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_END, PARTY_LEO, PAULFIT, REMI_CUPS,
   TIDY_BED, TIDY_CUPS, TIDY_LIVING_ROOM,
@@ -26,7 +26,7 @@ import {
   COLLEAGUE, CONCERT, DIRECTOR, DIRECTOR_AFTER, DIRECTOR_CALLS, HALL_LINES, HUGUES_AFTER, MANAGER_CALLS, MANAGER_TALK, MATCH,
   OFFICE_FIRST, PROMOTION, THOMAS_SERVICE,
 } from '../parisStory.js';
-import { WAKE_UP } from '../reveStory.js';
+import { PENDANT, WAKE_UP } from '../reveStory.js';
 import { DELHI_PARTY, FORT_SILENCE, SAGE, SAGE_AFTER, GUESTS } from '../newDelhiStory.js';
 
 // L'accueil de KEDGE (Bordeaux) : on lui parle par-dessus le comptoir.
@@ -220,9 +220,13 @@ export const interiors = {
       ...FF_UP_CARTONS.map(([x, y]) => ({ kind: 'carton', x, y })),
     ],
     spawn: { x: 2, y: 5, facing: 'left' },             // au réveil, à côté du lit
-    triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
+    triggers: [
+      ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
+      { x: 2, y: 3, ifFlags: [FLAGS.reveilFin], unlessFlags: [FLAGS.talismanPris], script: PENDANT },
+    ],
     // La fin du jeu (reveStory.js WAKE_UP) : la chambre s'ouvre dans le noir ; Pierre couché dans son lit, la table de
-    // chevet à côté et, dessus, la pierre gravée du vieux sage de New Delhi.
+    // chevet à côté et, dessus, le pendentif (la pierre gravée du vieux sage de New Delhi, même image). En allant vers
+    // l'escalier, Pierre passe forcément devant (2, 3) : il le voit (PENDANT).
     openDark: { ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.reveilFin] },
     npcs: [
       {
@@ -244,14 +248,7 @@ export const interiors = {
       {
         on: 'enter',
         unlessFlags: [FLAGS.reveilFortDeFrance],
-        steps: [
-          { sea: true },
-          { opening: { postcard: 'fortDeFrance', text: "C'est le dernier matin à Fort-de-France." } },
-          { sea: false },
-          { wait: 300 },
-          { speaker: 'Maman', say: ['Pierre ! Le ferry part cet après-midi ! Descends !'] },
-          { setFlag: FLAGS.reveilFortDeFrance },
-        ],
+        steps: [...OPENING_CINEMATIC, { setFlag: FLAGS.reveilFortDeFrance }],
       },
       { on: 'enter', ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.talismanPris], steps: WAKE_UP },
     ],
@@ -1393,6 +1390,8 @@ export const interiors = {
       { id: 'etudiant-11', name: 'Étudiant', x: 3, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Je danse depuis une heure, j\'ai mal aux pieds.'] },
       { id: 'etudiant-12', name: 'Étudiant', x: 5, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Ousmane m\'a dit que c\'était ici, la meilleure soirée.'] },
       { id: 'etudiant-13', name: 'Étudiant', x: 8, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Tu restes jusqu\'à quelle heure ?'] },
+      // Dalil, discret, dans un coin : on ne le voit qu'à de rares moments (ici, puis au stade).
+      { id: 'dalil-fete', name: 'Dalil', x: 11, y: 8, facing: 'left', ...PARTY_TIME, still: true, dialogue: ['Il paraît qu\'il va faire beau ce week-end. Parfait pour aller voir les vagues.'] },
     ],
     // Le tableau électrique : au fond, sans bulle « ! » (on le cherche dans le noir).
     objects: [
@@ -2246,7 +2245,7 @@ export const interiors = {
         ['ousmane-stade', 'Ousmane', 7, 2, 'ousmane'], ['romain-stade', 'Romain', 8, 3, 'romain'],
         ['leo-stade', 'Léo', 9, 2, 'leo'], ['paul-stade', 'Paul', 17, 2, 'paul'],
         ['remi-stade', 'Rémi', 18, 3, 'remi'], ['anais-stade', 'Anaïs', 20, 2, 'anais'],
-        ['charlotte-stade', 'Charlotte', 21, 3, 'charlotte'],
+        ['charlotte-stade', 'Charlotte', 21, 3, 'charlotte'], ['dalil-stade', 'Dalil', 19, 2, 'dalil'],
       ].map(([id, name, x, y, line]) => ({ id, name, x, y, facing: 'down', dialogue: REUNION_LINES[line] })),
       // Prophecy, qui suivait Pierre depuis Delhi : en entrant, il va rejoindre la foule (même id que le suiveur : il
       // part de là où il était).
@@ -2312,7 +2311,7 @@ export const interiors = {
       { id: 'collegue-tot', name: 'Collègue', sprite: 'g74', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
       { id: 'collegue-point', name: 'Collègue', sprite: 'g3', x: 13, y: 4, facing: 'left', fidget: true, dialogue: HALL_LINES.point },
       { id: 'collegue-bonne', name: 'Collègue', sprite: 'g75', x: 20, y: 3, facing: 'down', fidget: true, dialogue: HALL_LINES.bonne },
-      { id: 'accueil', name: 'Accueil', sprite: 'g2', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
+      { id: 'accueil', name: 'Accueil', sprite: 'g51', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
     ],
     objects: elevator('entreprise'),
     events: [

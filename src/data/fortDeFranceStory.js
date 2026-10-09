@@ -144,3 +144,13 @@ export const MAMAN_FDF = [
   },
   { speaker: 'Maman', say: ['Après, reviens me voir.'] },
 ];
+
+// La cinématique d'ouverture du jeu, dans la chambre (interiors.js ffHouseUp) : l'image d'accueil de l'île et le bruit
+// des vagues, puis Maman appelle d'en bas. Rejouée telle quelle à la toute fin (reveStory.js WAKE_UP).
+export const OPENING_CINEMATIC = [
+  { sea: true },
+  { opening: { postcard: 'fortDeFrance', text: "C'est le dernier matin à Fort-de-France." } },
+  { sea: false },
+  { wait: 300 },
+  { speaker: 'Maman', say: ['Pierre ! Le ferry part cet après-midi ! Descends !'] },
+];

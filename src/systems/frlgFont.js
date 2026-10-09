@@ -34,12 +34,18 @@ export function textWidth(scene, text) {
   return [...text].reduce((w, c) => w + (chars[c.charCodeAt(0)]?.xAdvance ?? 0), 0);
 }
 
-// Coupe un texte en lignes d'au plus `maxWidth` px (coupure aux espaces).
+// Coupe un texte en lignes d'au plus `maxWidth` px (coupure aux espaces). La ponctuation haute précédée d'une espace
+// (« ? », « ! », « : », « ; ») reste collée au mot d'avant : jamais seule en début de ligne.
 export function wrapText(scene, text, maxWidth) {
   const lines = [];
   for (const paragraph of frlgText(scene, text).split('\n')) {
     let line = '';
-    for (const word of paragraph.split(' ')) {
+    const words = paragraph.split(' ').reduce((out, w) => {
+      if (out.length && /^[?!:;»”]+$/.test(w)) out[out.length - 1] += ` ${w}`;
+      else out.push(w);
+      return out;
+    }, []);
+    for (const word of words) {
       const candidate = line ? `${line} ${word}` : word;
       if (line && textWidth(scene, candidate) > maxWidth) {
         lines.push(line);

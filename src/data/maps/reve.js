@@ -6,8 +6,8 @@ import { builtGrid } from './builtGrid.js';
 import { FLAGS } from '../story.js';
 import { CENTER, PRESENT, REUNION, towardCenter } from '../reveStory.js';
 
-// Les présents se tiennent sur le pourtour de la plate-forme, à quatre cases de Pierre (24 places sur 32, régulièrement
-// espacées), tournés vers lui.
+// Les présents se tiennent sur le pourtour de la plate-forme, à quatre cases de Pierre (autant de places que de
+// présents, régulièrement espacées sur les 32 cases du carré), tournés vers lui.
 const RING = (() => {
   const [cx, cy] = CENTER;
   const cells = [];
@@ -15,7 +15,7 @@ const RING = (() => {
   for (let y = cy - 3; y <= cy + 4; y++) cells.push([cx + 4, y]);
   for (let x = cx + 3; x >= cx - 4; x--) cells.push([x, cy + 4]);
   for (let y = cy + 3; y >= cy - 3; y--) cells.push([cx - 4, y]);
-  return cells.filter((_, i) => i % 4 !== 3);
+  return PRESENT.map((_, i) => cells[Math.floor((i * cells.length) / PRESENT.length)]);
 })();
 
 // Le rêve — 28 x 22 cases : une grande plate-forme de brique flotte dans le bleu, quatre colonnes brisées à ses coins ;

@@ -601,7 +601,8 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 | Agent immobilier | Remet les clés : « Vos parents ont tout réglé. Voici les clés, l'immeuble est juste à gauche. » | `g35` |
 | Ousmane | Le coloc ; garde aussi le départ à l'aéroport | `g105` |
 | Paul | Fan de musculation : prête l'enceinte | `g86` |
-| Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `g117` |
+| Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `g140` |
+| Dalil | Discret, à la soirée d'intégration (puis au stade, au retour) | `g2` |
 | Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `g55` |
 | Anaïs | Étudiante de KEDGE (« de ta promo »), invitée à la soirée ; on la retrouve à Hull | `g107` |
 | Étudiants (13) | À la soirée d'intégration | figurants |
@@ -633,6 +634,8 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
    - Parmi les invités, Léo : **« Moi c'est Léo, aussi à KEDGE. Paraît qu'on part tous à Hull l'an prochain pour
      l'échange… Ça va être quelque chose. »** (ensuite : « La prochaine soirée, c'est à Hull ! ») ; Anaïs : **« Anaïs, de ta
      promo ! Léo dit qu'à Hull il pleut tout le temps. J'espère qu'il exagère. »** (ensuite : « À Hull, alors ! »).
+   - Dans un coin, près des lits, sans danser : **Dalil**, discret (on ne le voit qu'à de rares moments : ici, puis au
+     stade, au retour) : « Il paraît qu'il va faire beau ce week-end. Parfait pour aller voir les vagues. »
    - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous :
      gobelets, canettes, pizza froide, confettis… »** / « Ousmane dort encore, tout habillé. » (couché dans le lit de
      gauche). Voir le passage optionnel.
@@ -1166,6 +1169,8 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
    - Romain : « Hong Kong, puis Amsterdam avec toi… Maintenant, je me sens chez moi n'importe où. Mais ici, avec vous,
      c'est autre chose. »
    - Prophecy : « Les États-Unis, puis New Delhi avec toi… Quel voyage. Et maintenant, le diplôme ! »
+   - Dalil, discret, dans les gradins : « Peu importe où on ira après… il y aura toujours un océan quelque part pour
+     nous ramener ici. »
    - Huit diplômés en toge sur le terrain, tournés vers l'estrade (« On l'a fait ! », « Félicitations à nous tous ! »,
      « Je n'en reviens pas : diplômés ! », « Quelle belle journée ! ») ; l'allée du milieu reste libre.
 3. **La cérémonie** (le seul geste : avancer devant l'estrade, rangée 6, x 11 à 14) : « Tu t'avances jusqu'à l'estrade.
@@ -1226,10 +1231,10 @@ de jour.
 | Collègue | Le blasé du rez-de-chaussée, près de la machine à café ; d'autres collègues debout dans la tour | `g36` (et `g74`, `g3`, `g75`, `g76`, `g0`) |
 | Manager | Le 1er étage : la promotion | `g122` |
 | Directeur | Le dernier étage : la belle place | `g120` |
-| Hugues | L'ami : la place de concert promise, puis le match chez lui (fan de foot) | `g91` |
+| Hugues | L'ami parisien de Pierre, fan de foot : la place de concert promise, puis le match chez lui | `g121` |
 | Inès, Malik, Clara | La place de concert, de main en main (l'Opéra, la file du Louvre, le café à terrasse) | `g5`, `g4`, `g15` |
 | Chanteur | Bercy | `g69` |
-| Thomas | Travaille au restaurant au store rayé ; le match | `g90` |
+| Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g90` |
 
 ### Quêtes, dans l'ordre
 1. **L'arrivée.** Pas de métro : par la route de Bordeaux, Pierre arrive au bord ouest de l'avenue (1, 11) et marche
@@ -1302,10 +1307,11 @@ travers, un tourbillon, deux tablettes gravées. Un voile pâle, des nappes de b
 
 ### La grande réunion
 Pierre est immobile au centre ; le joueur n'a plus la main. Le voile clair se dissipe et le décor se forme autour de lui.
-Tous les personnages nommés du jeu sont là, en cercle (sauf M. Lam, Laurent, Camille et M. Bouly, à la demande de
-l'utilisateur) : Maman, Papa, Manon, Fanny, Jean ; Felix, Joshua, Yanis, Val ; Margaux, Benoît, Étienne ; Rémy ; Tanguy,
-Geoffrey ; Ousmane, Paul, Rémi, Léo, Anaïs ; Charlotte, Romain, Prophecy ; Harsh. Huit prennent la parole, un par ville :
-chacun s'avance vers Pierre, dit son mot, puis se range près de lui.
+Les personnages nommés du jeu sont là, en cercle (27, répartis régulièrement autour de lui) : Maman, Papa, Manon, Fanny,
+Jean ; Felix, Joshua, Yanis, Val ; Margaux, Benoît, Étienne ; Rémy ; Tanguy, Geoffrey ; Ousmane, Paul, Rémi, Léo, Anaïs ;
+Charlotte, Romain, Prophecy ; Harsh ; **Dalil, Hugues et Thomas**, silencieux. Huit prennent la parole, un par ville :
+chacun s'avance vers Pierre, dit son mot, puis se range près de lui. **Absents** (personnages nommés, signalés sans être
+ajoutés) : M. Lam, Laurent, Camille et M. Bouly (à la demande de l'utilisateur), Inès, Malik et Clara (Paris).
 - Felix (Saint-Ay) : « Depuis Saint-Ay qu'on te suit ! On savait que tu finirais par tous nous réunir. »
 - Margaux (Montépilloy) : « Tu te cachais toujours au même endroit… Mais là, tu es allé tellement loin qu'on a failli ne
   jamais te trouver ! »
@@ -1323,13 +1329,15 @@ Le décor s'efface dans un fondu au noir lent (pas de flash). Pendant ce temps, 
 une, de la Joie de vivre à la Liberté ; la Liberté s'illumine en dernier (en or), sa phrase dessous ; puis noir complet
 (systems/VirtuesFade.js).
 
-### Le réveil
-On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu (le même décor), au bruit de la mer. Pierre est
-couché ; il se lève. Sur la table de chevet, à côté du lit : la **pierre gravée** de New Delhi (la même icône que l'objet
-du vieux sage). « Sur la table de chevet, une petite pierre polie, gravée d'un chemin qui tourne sur lui-même. » / « Tu la
-prends dans ta main. » ; Pierre : **« … Attends. Ça, ça vient d'où ? »** Écran noir final, puis retour à l'écran titre.
-Rien ne tranche entre le rêve et la réalité. « Continuer » reprend Pierre dans sa chambre de Fort-de-France, libre (la
-scène ne se rejoue pas).
+### Le réveil (le twist)
+On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu (le même décor). Pierre est couché. On **rejoue telle
+quelle la cinématique d'ouverture** (`fortDeFranceStory.js OPENING_CINEMATIC`, la même qu'en début de partie) : l'image
+de l'île et le bruit des vagues, « C'est le dernier matin à Fort-de-France. », puis Maman, d'en bas : « Pierre ! Le
+ferry part cet après-midi ! Descends ! » Pierre se lève ; le joueur reprend la main et va vers l'escalier. Juste avant
+l'escalier, il passe forcément devant la table de chevet : dessus, le **pendentif** (la même image que le talisman du
+vieux sage de New Delhi). Bulle « ! » au-dessus de Pierre ; Pierre : **« Je ne suis jamais parti de Fort-de-France.
+Alors ça, d'où ça vient ? »** Écran noir final, puis retour à l'écran titre. « Continuer » reprend Pierre dans sa chambre
+de Fort-de-France, libre (la scène ne se rejoue pas).
 
 ### Après Paris
 L'histoire se termine ici : Toulon, le Chemin de Saint-Jacques, la Corse, Bali, le Sri Lanka, la Thaïlande, le Népal et le
@@ -1398,7 +1406,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Agent immobilier | `g35` | Bordeaux |
 | Ousmane | `g105` | Bordeaux, aéroport, Hull, Bordeaux (le stade) |
 | Paul | `g86` | Bordeaux (et le stade, au retour) |
-| Rémi | `g117` | Bordeaux (et le stade, au retour) |
+| Rémi | `g140` | Bordeaux (et le stade, au retour) |
 | Professeure d'anglais | `g106` | Bordeaux (KEDGE) |
 | Hôtesse | `g64` | Aéroport |
 | Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
@@ -1423,13 +1431,14 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Propriétaire | `g35` | Paris (devant l'immeuble) |
 | Collègue | `g36` | Paris (rez-de-chaussée de la tour) |
 | Manager | `g122` | Paris (1er étage de la tour) |
-| Hugues | `g91` | Paris (au téléphone, puis chez lui : le match) |
-| Thomas | `g90` | Paris (le restaurant au store rayé, le match) |
+| Hugues | `g121` | Paris (au téléphone, puis chez lui : le match), le rêve |
+| Dalil | `g2` | Bordeaux (la soirée d'intégration, le stade), le rêve |
+| Thomas | `g90` | Paris (le restaurant au store rayé, le match), le rêve |
 | Inès, Malik, Clara | `g5`, `g4`, `g15` | Paris (la place de concert) |
 | Chanteur | `g69` | Paris (Bercy) |
 
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, Laurent, Camille et M. Bouly (voir la
-section 13 ; Hugues, Thomas, Inès, Malik, Clara et le chanteur, ajoutés ensuite à Paris, n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
+section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Inès, Malik, Clara et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
 
 ## Incohérences repérées

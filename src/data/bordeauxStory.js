@@ -302,7 +302,7 @@ export const BACK_FROM_DELHI = [
 export const STADIUM = { prophecy: [15, 9], stage: [11, 12, 13, 14].map((x) => [x, 6]) };
 const GRADUATES = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => `diplome-${i}`);
 const BAND = ['ousmane-stade', 'leo-stade', 'paul-stade', 'remi-stade', 'anais-stade', 'charlotte-stade', 'romain-stade',
-  'maman-stade', 'papa-stade', 'prophecy-depart'];
+  'maman-stade', 'papa-stade', 'prophecy-depart', 'dalil-stade'];
 
 // En entrant : la foule ; Prophecy (qui ne suit plus Pierre) va rejoindre les autres ; le directeur appelle Pierre.
 export const STADIUM_ARRIVAL = [
@@ -339,6 +339,7 @@ export const REUNION_LINES = {
   prophecy: ['Les États-Unis, puis New Delhi avec toi… Quel voyage. Et maintenant, le diplôme !'],
   maman: ['Mon Pierre ! Regarde-toi, diplômé ! Viens là que je te serre fort ! Je suis tellement fière, mon grand !'],
   papa: ['Un diplôme. Du concret, enfin.', '… Bon. Je suis fier de toi, fiston. Mais ne le répète pas trop.'],
+  dalil: ['Peu importe où on ira après… il y aura toujours un océan quelque part pour nous ramener ici.'],
 };
 
 // En sortant du stade, le diplôme en poche : Pierre, tourné vers Paris (la route s'ouvre au sud-est).
