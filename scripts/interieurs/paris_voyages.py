@@ -258,6 +258,28 @@ ITEMS = {
 
 # ---------- Pièces ----------
 PLANS = {
+    # Paris — le restaurant au store rayé, où Thomas travaille : une maison de Doublonville (coin cuisine, bibliothèque,
+    # table et ses chaises) avec le comptoir rouge du café d'Oliville ; le serveur derrière le comptoir (1, 3).
+    'bistro': {
+        'hgss': (GOLD, 47, 8, 9, 8),
+        'items': [
+            ['pv-comptoir-cafe', 0, 5], ['pv-caisse', 2, 4, {'dy': -7}], ['pv-assiette', 0, 4, {'dy': -6}],
+            ['pv-sauce', 1, 4, {'dy': -8}], ['pv-menu', 4, 1, {'dy': -3}], ['pv-plante-cafe', 8, 6],
+        ],
+    },
+    # Paris — Bercy : le théâtre de danse de Rosalia (colonnes dorées, rideaux, grand tapis), sans ses banquettes,
+    # transformé en salle de concert : une estrade en planches au fond (x 2-10, rangées 3-5) où jouent le chanteur, le
+    # guitariste et le batteur (enceintes, batterie, micro), la fosse devant pour la foule.
+    'bercy': {
+        'hgss': ('012i_Goldenrod game corner', 10, 8, 13, 13),
+        'erase': [(5, 4, 3, 4), (5, 8, 3, 2), (10, 4, 3, 2)],
+        'items': [
+            ['pv-scene', 2, 5],
+            ['pv-enceinte', 2, 4, {'solid': 0}], ['pv-enceinte', 10, 4, {'solid': 0}],
+            ['pv-batterie', 7, 3], ['pv-micro', 6, 4],
+        ],
+        'npc_on_solid': ['chanteur', 'guitariste', 'batteur'],
+    },
     # Paris — ton appartement : le salon de M. Pokémon (aquarium, lit, ordinateur et ses câbles, table, bibliothèque).
     'parisAppart': {'hgss': ('004i_Mr Pokémon House', 10, 8, 12, 9)},
     # Paris — l'entreprise, rez-de-chaussée : le hall de la Tour Radio (accueil en U, grand tapis, salon) ; l'escalier

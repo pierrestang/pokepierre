@@ -61,8 +61,8 @@ const SOUTH_WALKERS = [
 ];
 const SOUTH_STANDING = [
   ['vendeur-bazar', 'Vendeur', 'g112', 35, 23, 'left', 'bazar'],
-  ['habitante-2', 'Habitante', 'g108', 10, 27, 'down', 'ancien'],
-  ['habitant-2', 'Habitant', 'g90', 31, 26, 'down', 'voisine'],
+  ['habitante-2', 'Habitante', 'g113', 10, 27, 'down', 'ancien'],
+  ['habitant-2', 'Habitant', 'g73', 31, 26, 'down', 'voisine'],
 ];
 const south = [
   ...SOUTH_WALKERS.map(([id, name, sprite, from, to, line]) => ({

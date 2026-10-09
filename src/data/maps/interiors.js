@@ -23,7 +23,8 @@ import {
 import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC } from '../hanoiStory.js';
 import { CAMPAIGN, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
 import {
-  COLLEAGUE, DAY_1, DAY_2, DAY_3, DIRECTOR, DIRECTOR_AFTER, EVENING_1, EVENING_2, MANAGER_TALK, PROMOTION,
+  COLLEAGUE, CONCERT, DIRECTOR, DIRECTOR_AFTER, DIRECTOR_CALLS, HALL_LINES, HUGUES_AFTER, MANAGER_CALLS, MANAGER_TALK, MATCH,
+  OFFICE_FIRST, PROMOTION, THOMAS_SERVICE,
 } from '../parisStory.js';
 import { WAKE_UP } from '../reveStory.js';
 import { DELHI_PARTY, FORT_SILENCE, SAGE, SAGE_AFTER, GUESTS } from '../newDelhiStory.js';
@@ -63,10 +64,10 @@ const elevator = (room) => ELEVATORS[room].doors.map((x) => ({
     question: 'Ascenseur : quel étage ?',
     choices: [
       { label: 'Rez-de-chaussée', warp: floor('entreprise') },
-      { label: '1er étage', ifFlags: [FLAGS.jour2], warp: floor('entrepriseManager') },
-      { label: '1er étage', unlessFlags: [FLAGS.jour2], dialogue: ['Le bouton du 1er étage ne s\'allume pas : ton badge n\'y donne pas accès.'] },
-      { label: 'Dernier étage', ifFlags: [FLAGS.directeurInvite], warp: floor('entrepriseDirecteur') },
-      { label: 'Dernier étage', unlessFlags: [FLAGS.directeurInvite], dialogue: ['Le bouton du dernier étage ne s\'allume pas : ton badge n\'y donne pas accès.'] },
+      { label: '1er étage (manager)', ifFlags: [FLAGS.concertParis], warp: floor('entrepriseManager') },
+      { label: '1er étage (manager)', unlessFlags: [FLAGS.concertParis], dialogue: ['Le bouton « manager » est éteint : ton badge n\'y donne pas accès.'] },
+      { label: 'Dernier étage (directeur)', ifFlags: [FLAGS.directeurInvite], warp: floor('entrepriseDirecteur') },
+      { label: 'Dernier étage (directeur)', unlessFlags: [FLAGS.directeurInvite], dialogue: ['Le bouton « directeur » est éteint : ton badge n\'y donne pas accès.'] },
       { label: 'Rester ici' },
     ],
   },
@@ -2262,10 +2263,9 @@ export const interiors = {
     events: [{ on: 'enter', unlessFlags: [FLAGS.stadeEntree], steps: STADIUM_ARRIVAL }],
   },
 
-  // Paris — ton appartement, dans l'immeuble aux balcons fleuris (modèle « maison-type-2 ») : le soir, la pensée du
-  // jour, puis « Le lendemain… » (voir parisStory.js EVENING_1 / EVENING_2).
+  // Paris — ton studio, dans l'immeuble aux balcons fleuris (modèle « maison-type-2 »).
   parisAppart: {
-    name: 'Ton appartement',
+    name: 'Ton studio',
     grid: parseGrid([ // dessin de la maison de Pierre à Amsterdam (maison de Léo, Hull)
       'XXXXXXXXXXXXX',
       'XXXXXXXXXXXXX',
@@ -2282,17 +2282,14 @@ export const interiors = {
       'XooooooooooXX',
     ]),
     spawn: { x: 10, y: 6, facing: 'left' },
-    events: [
-      { on: 'enter', ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.jour2], steps: EVENING_1 },
-      { on: 'enter', ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.jour3], steps: EVENING_2 },
-    ],
     objects: [
       { x: 5, y: 3, dialogue: ['La télé. Tu ne l\'allumes presque jamais.'] },
     ],
   },
 
-  // Paris — la tour de bureaux, rez-de-chaussée : le hall, le comptoir (ton poste, jour 1) et le collègue blasé.
-  // L'ascenseur (au fond à droite) ouvre le 1er étage le jour 2, le dernier le jour 3.
+  // Paris — la tour de bureaux, rez-de-chaussée : le hall (accueil, salon), vivant, des collègues debout qui parlent à
+  // Pierre comme à l'un des leurs, le collègue blasé près de la machine à café. Le travail reste hors champ. L'ascenseur
+  // (au fond à droite) : « manager » s'allume après le concert, « directeur » après le match (voir parisStory.js).
   entreprise: {
     name: 'Tour de bureaux',
     grid: parseGrid([
@@ -2312,23 +2309,21 @@ export const interiors = {
     spawn: { x: 1, y: 10, facing: 'up' },
     npcs: [
       { id: 'collegue', name: 'Collègue', sprite: 'g36', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
-      // Jour 2 : le manager attend devant l'ascenseur.
-      {
-        id: 'manager-rdc', name: 'Manager', x: 22, y: 3, facing: 'down',
-        ifFlags: [FLAGS.jour2], unlessFlags: [FLAGS.promotionParis], dialogue: ['Pierre, monte une minute.'],
-      },
+      { id: 'collegue-tot', name: 'Collègue', sprite: 'g74', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
+      { id: 'collegue-point', name: 'Collègue', sprite: 'g3', x: 13, y: 4, facing: 'left', fidget: true, dialogue: HALL_LINES.point },
+      { id: 'collegue-bonne', name: 'Collègue', sprite: 'g75', x: 20, y: 3, facing: 'down', fidget: true, dialogue: HALL_LINES.bonne },
+      { id: 'accueil', name: 'Accueil', sprite: 'g2', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
     ],
-    objects: [
-      ...elevator('entreprise'),
-      ...[6, 7].map((x) => ({ x, y: 8, dialogue: ['Ton poste. Un écran, un clavier, une pile de dossiers.'] })),
-    ],
+    objects: elevator('entreprise'),
     events: [
-      { on: 'enter', ifFlags: [FLAGS.parisCles], unlessFlags: [FLAGS.jour1Bureau], steps: DAY_1 },
-      { on: 'enter', ifFlags: [FLAGS.jour2], unlessFlags: [FLAGS.promotionParis], steps: DAY_2 },
+      { on: 'enter', ifFlags: [FLAGS.parisCles], unlessFlags: [FLAGS.jour1Bureau], steps: OFFICE_FIRST },
+      // Après le concert : le manager attend Pierre au 1er étage ; après le match : le directeur, au dernier.
+      { on: 'enter', ifFlags: [FLAGS.concertParis], unlessFlags: [FLAGS.promotionParis], steps: MANAGER_CALLS },
+      { on: 'enter', ifFlags: [FLAGS.matchParis], unlessFlags: [FLAGS.directeurInvite], steps: DIRECTOR_CALLS },
     ],
   },
 
-  // Paris — la tour, 1er étage : les bureaux du manager (jour 2 : la promotion ; jour 3 : il envoie Pierre au directeur).
+  // Paris — la tour, 1er étage : les bureaux du manager (la promotion), deux collègues debout.
   entrepriseManager: {
     name: 'Tour de bureaux - 1er étage',
     grid: parseGrid([
@@ -2348,15 +2343,14 @@ export const interiors = {
     spawn: { x: 1, y: 2, facing: 'down' },
     npcs: [
       { id: 'manager', name: 'Manager', x: 7, y: 7, facing: 'down', script: MANAGER_TALK },
+      { id: 'collegue-etage-1', name: 'Collègue', sprite: 'g76', x: 4, y: 7, facing: 'right', fidget: true, dialogue: ['Bienvenue à l\'étage, Pierre ! Ici, on a même du vrai café.'] },
+      { id: 'collegue-etage-2', name: 'Collègue', sprite: 'g0', x: 11, y: 7, facing: 'left', fidget: true, dialogue: ['Réunion à onze heures. Et à quatorze heures. Et à seize heures.'] },
     ],
     objects: elevator('entrepriseManager'),
-    events: [
-      { on: 'enter', ifFlags: [FLAGS.jour2], unlessFlags: [FLAGS.promotionParis], steps: PROMOTION },
-      { on: 'enter', ifFlags: [FLAGS.jour3], unlessFlags: [FLAGS.directeurInvite], steps: DAY_3 },
-    ],
+    events: [{ on: 'enter', ifFlags: [FLAGS.concertParis], unlessFlags: [FLAGS.promotionParis], steps: PROMOTION }],
   },
 
-  // Paris — la tour, dernier étage : le bureau du directeur (jour 3 : la belle place, et la Liberté).
+  // Paris — la tour, dernier étage : le bureau du directeur (la belle place, et la Liberté) ; son assistante.
   entrepriseDirecteur: {
     name: 'Tour de bureaux - dernier étage',
     grid: parseGrid([
@@ -2379,9 +2373,111 @@ export const interiors = {
         id: 'directeur', name: 'Directeur', x: 4, y: 7, facing: 'down',
         ifFlags: [FLAGS.directeurInvite], dialogue: DIRECTOR_AFTER,
       },
+      { id: 'assistante', name: 'Assistante', sprite: 'g1', x: 6, y: 3, facing: 'down', fidget: true, dialogue: ['Le directeur vous attend, Pierre. Entrez, entrez.'] },
     ],
     objects: elevator('entrepriseDirecteur'),
     events: [{ on: 'enter', ifFlags: [FLAGS.directeurInvite], unlessFlags: [FLAGS.liberteParis], steps: DIRECTOR }],
+  },
+
+  // Paris — le restaurant au store rayé, où Thomas travaille : une maison de Doublonville (coin cuisine, bibliothèque,
+  // table et chaises) avec le comptoir rouge du café d'Oliville (scripts/interieurs/paris_voyages.py).
+  bistro: {
+    name: 'Restaurant',
+    grid: parseGrid([
+      'XXXXXXXXX',
+      'XXXXXXXXX',
+      'mmmooommm',
+      'ooooooooo',
+      '###oommoo',
+      'ooooommoo',
+      'oooooooom',
+      'oooEooooo',
+    ]),
+    spawn: { x: 3, y: 6, facing: 'up' },
+    npcs: [
+      { id: 'serveur', name: 'Serveur', x: 1, y: 3, facing: 'down', still: true, dialogue: ['Bonsoir ! Désolé, c\'est complet ce soir.'] },
+      { id: 'thomas', name: 'Thomas', x: 4, y: 3, facing: 'down', unlessFlags: [FLAGS.thomasSuit], dialogue: ['Mon service finit bientôt !'] },
+      { id: 'client-1', name: 'Client', sprite: 'g51', x: 4, y: 5, facing: 'right', still: true, dialogue: ['Le plat du jour est excellent. Comme tous les jours.'] },
+      { id: 'cliente-1', name: 'Cliente', sprite: 'g11', x: 7, y: 4, facing: 'left', still: true, dialogue: ['On vient ici depuis des années. Thomas nous connaît par cœur.'] },
+    ],
+    // Hugues a envoyé Pierre chercher Thomas : Thomas finit son service (parisStory.js THOMAS_SERVICE).
+    events: [{ on: 'enter', ifFlags: [FLAGS.messageHugues], unlessFlags: [FLAGS.thomasSuit], steps: THOMAS_SERVICE }],
+  },
+
+  // Paris — Bercy : le théâtre de danse de Rosalia (colonnes dorées, rideaux), transformé en salle de concert : une
+  // estrade au fond (x 2-10, rangées 3-5) où jouent le chanteur, le guitariste et le batteur ; la fosse devant, pleine
+  // (dix-huit fans tournés vers la scène) ; l'allée du milieu (x 6) laisse Pierre avancer (parisStory.js CONCERT).
+  bercy: {
+    name: 'Bercy',
+    grid: parseGrid([
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'mommmmmmmmmom',
+      'oommmmmmmmmoo',
+      'oommmmmmmmmoo',
+      'ooooooooooooo',
+      'ooooooooooooo',
+      'XXoooooooooXX',
+      'XXoooooooooXX',
+      'XXoooooooooXX',
+      'ooooooooooooo',
+      'ooooooEoooooo',
+    ]),
+    spawn: { x: 6, y: 11, facing: 'up' },
+    night: { lights: [[6, 4, 0xff70c0], [3, 4, 0x80b0ff], [9, 4, 0xffd060]] },
+    npcs: [
+      // Sur l'estrade : on leur parle depuis le bord de la scène (objets plus bas).
+      { id: 'chanteur', name: 'Chanteur', x: 6, y: 4, facing: 'down', still: true },
+      { id: 'guitariste', name: 'Guitariste', sprite: 'g68', x: 4, y: 4, facing: 'down', still: true },
+      { id: 'batteur', name: 'Batteur', sprite: 'g16', x: 8, y: 4, facing: 'down', still: true },
+      ...[[3, 6], [4, 6], [5, 6], [7, 6], [8, 6], [9, 6], [2, 7], [4, 7], [5, 7], [7, 7], [8, 7], [10, 7],
+        [3, 8], [5, 8], [7, 8], [9, 8], [4, 9], [8, 9]].map(([x, y], i) => ({
+        id: `fan-${i}`, name: 'Fan', sprite: ['g10', 'g20', 'g21', 'g34', 'g73', 'g83', 'g9', 'g17', 'g65'][i % 9],
+        x, y, facing: 'up', still: true,
+        // Au cœur de la foule, on ne les approche pas : seuls ceux du bord et des derniers rangs parlent.
+        ...([2, 5, 7, 10].includes(x) || y >= 8 ? { dialogue: [['Quel son !', 'Encore ! Encore !', 'Je connais toutes les paroles !'][i % 3]] } : {}),
+      })),
+    ],
+    // Le groupe joue sur l'estrade : on lui parle depuis le bord de la scène (chacun derrière sa case).
+    objects: [
+      { x: 4, y: 5, dialogue: ['Le guitariste te fait un clin d\'œil.'] },
+      { x: 6, y: 5, dialogue: ['Le chanteur salue la foule : « Merci Paris ! »'] },
+      { x: 8, y: 5, dialogue: ['Le batteur fait tourner ses baguettes.'] },
+    ],
+    events: [{ on: 'enter', unlessFlags: [FLAGS.concertParis], steps: CONCERT }],
+  },
+
+  // Paris — chez Hugues (l'immeuble crème, modèle « maison-type-2 ») : le salon, la télé allumée, des amis devant
+  // (parisStory.js MATCH : France-Argentine).
+  huguesAppart: {
+    name: 'Chez Hugues',
+    grid: parseGrid([
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XXXXXXXXXXXXX',
+      'XmmoommommmXX',
+      'moooooooooomX',
+      'ooomoooooooom',
+      'mmmmoooooooEm',
+      'oooooooooooom',
+      'oooommmmooooX',
+      'oooommmmooooX',
+      'ooooooooooooX',
+      'moooooooooomX',
+      'XooooooooooXX',
+    ]),
+    spawn: { x: 10, y: 6, facing: 'left' },
+    npcs: [
+      { id: 'hugues', name: 'Hugues', x: 5, y: 5, facing: 'up', dialogue: HUGUES_AFTER },
+      { id: 'ami-match-1', name: 'Ami', sprite: 'g6', x: 4, y: 5, facing: 'up', dialogue: ['La prochaine, on la gagne. Promis.'] },
+      { id: 'amie-match', name: 'Amie', sprite: 'g28', x: 6, y: 5, facing: 'up', dialogue: ['Cette passe, quand même… Magnifique.'] },
+      { id: 'ami-match-2', name: 'Ami', sprite: 'g7', x: 8, y: 5, facing: 'up', dialogue: ['Il reste des parts ? Thomas, t\'es un génie.'] },
+      // Thomas, qui suivait Pierre : même id que le suiveur (il part de là où il était).
+      { id: 'thomas', name: 'Thomas', x: 7, y: 5, facing: 'up', ifFlags: [FLAGS.matchArrivee], dialogue: ['Bon match quand même, hein ?'] },
+    ],
+    objects: [{ x: 5, y: 3, dialogue: ['La télé : France-Argentine.'] }, { x: 6, y: 3, dialogue: ['La télé : France-Argentine.'] }],
+    events: [{ on: 'enter', ifFlags: [FLAGS.thomasSuit], unlessFlags: [FLAGS.matchParis], steps: MATCH }],
   },
 };
 

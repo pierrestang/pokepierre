@@ -5,7 +5,7 @@ import { parseGrid } from './parseGrid.js';
 import BUILT from '../builtMaps/paris.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
-import { ARRIVAL, INTO_THE_DREAM, LANDLORD } from '../parisStory.js';
+import { ARRIVAL, CLARA, HUGUES_CALL, HUGUES_MESSAGE, INES, INTO_THE_DREAM, LANDLORD, MALIK } from '../parisStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la Seine, l'avenue et la rue sud se prolongent ; des arbres ailleurs.
@@ -21,9 +21,9 @@ const NOT_HOME = ['Tu frappes. Personne ne répond.'];
 
 // Paris — 52 x 48 cases avec sa bordure d'arbres (premier jet de scripts/build_paris.py, retouché à la main dans le
 // créateur). Au nord : le grand dôme (Bercy), le Louvre et son drapeau, le musée-gare ; l'avenue les traverse (ouest :
-// Bordeaux, est : l'aéroport). Puis ton appartement (l'immeuble aux balcons fleuris), le café à terrasse, le jardin au
+// Bordeaux, est : l'aéroport). Puis ton studio (l'immeuble aux balcons fleuris), le café à terrasse, le jardin au
 // bassin, l'opéra. La Seine, deux yachts, deux ponts. Au sud : un immeuble crème, le café au store rayé, Notre-Dame, la
-// tour de bureaux vitrée (ton travail). Le trajet de chaque matin : de l'appartement à la tour, par le pont de gauche
+// tour de bureaux vitrée (ton travail). Le trajet : du studio à la tour, par le pont de gauche
 // (voir parisStory.js).
 // Légende : voir src/data/tiles.js (ɔ = pavés, . = jardin, G = Seine, D = porte, ƀ = arbres).
 export const parisMap = {
@@ -81,11 +81,16 @@ export const parisMap = {
     'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 47
   ]),
   doors: [
-    { x: 9, y: 11, lockedDialogue: ['Bercy. Ce soir, pas de concert.'] },
+    // Bercy (le grand dôme) : le concert, avec la place que Clara a rendue (parisStory.js CONCERT).
+    {
+      x: 9, y: 11, interior: 'bercy',
+      lock: { ifItems: [ITEMS.placeConcert.id] },
+      lockedDialogue: ['Bercy. Ce soir, il y a un concert… mais sans place, on ne rentre pas.'],
+    },
     { x: 39, y: 9, lockedDialogue: ['Le musée est fermé le lundi.'] },
     { x: 21, y: 14, lockedDialogue: ['La file d\'attente du Louvre fait le tour de la cour. Une autre fois.'] },
     { x: 29, y: 14, lockedDialogue: ['La file d\'attente du Louvre fait le tour de la cour. Une autre fois.'] },
-    // Ton appartement (l'immeuble aux balcons fleuris) : avec les clés du propriétaire.
+    // Ton studio (l'immeuble aux balcons fleuris) : avec les clés du propriétaire.
     {
       x: 6, y: 22, interior: 'parisAppart',
       lock: { ifItems: [ITEMS.clesParis.id] },
@@ -93,8 +98,14 @@ export const parisMap = {
     },
     { x: 13, y: 22, lockedDialogue: ['Le café à terrasse. Tu n\'as jamais le temps de t\'y asseoir.'] },
     { x: 41, y: 22, lockedDialogue: ['L\'Opéra est fermé jusqu\'à ce soir.'] },
-    { x: 8, y: 40, lockedDialogue: NOT_HOME },
-    { x: 14, y: 40, lockedDialogue: ['Le café au store rayé est complet.'] },
+    // L'immeuble crème : chez Hugues, le soir du match (avec Thomas et de quoi manger).
+    { x: 8, y: 40, interior: 'huguesAppart', lock: { ifFlags: [FLAGS.thomasSuit] }, lockedDialogue: NOT_HOME },
+    // Le restaurant au store rayé : Thomas y travaille ; on y entre le soir du match.
+    {
+      x: 14, y: 40, interior: 'bistro',
+      lock: { ifFlags: [FLAGS.messageHugues] },
+      lockedDialogue: ['Le restaurant au store rayé est complet.'],
+    },
     { x: 25, y: 41, lockedDialogue: ['Notre-Dame est en travaux.'] },
     // La tour de bureaux vitrée : ton travail, une fois installé.
     {
@@ -108,21 +119,24 @@ export const parisMap = {
   npcs: [
     // Le propriétaire, devant l'immeuble.
     { id: 'proprietaire', name: 'Propriétaire', sprite: 'g35', x: 7, y: 23, facing: 'left', script: LANDLORD },
+    // La place de concert, de main en main (parisStory.js) : Inès devant l'Opéra, Malik dans la file du Louvre, Clara
+    // au café à terrasse.
+    { id: 'ines', name: 'Inès', x: 39, y: 23, facing: 'right', script: INES },
+    // La file du Louvre, devant sa porte de gauche (21, 14).
+    { id: 'file-louvre-1', name: 'Touriste', sprite: 'g21', x: 20, y: 15, facing: 'right', still: true, dialogue: ['La file avance… doucement. Très doucement.'] },
+    { id: 'malik', name: 'Malik', x: 19, y: 15, facing: 'right', script: MALIK },
+    { id: 'file-louvre-2', name: 'Touriste', sprite: 'g34', x: 18, y: 15, facing: 'right', still: true, dialogue: ['On m\'a dit vingt minutes. Ça fait une heure.'] },
+    { id: 'clara', name: 'Clara', x: 15, y: 23, facing: 'left', script: CLARA },
   ],
   events: [
     // L'arrivée, devant l'immeuble : les clés.
     { on: 'enter', ifFlags: [FLAGS.arriveeParis], unlessFlags: [FLAGS.parisCles], steps: ARRIVAL },
+    // En sortant de la tour la première fois : Hugues appelle (la place de concert) ; promu : son message (le match).
+    { on: 'enter', ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.concertAppel], steps: HUGUES_CALL },
+    { on: 'enter', ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.messageHugues], steps: HUGUES_MESSAGE },
     // En sortant de la tour, la Liberté choisie : le rêve.
     { on: 'enter', ifFlags: [FLAGS.liberteParis], unlessFlags: [FLAGS.reveParis], steps: INTO_THE_DREAM },
   ],
-  // Le soir des jours 1 et 2 (en rentrant de la tour) : la nuit tombe sur Paris.
-  night: {
-    anyOf: [
-      { ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.jour2] },
-      { ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.jour3] },
-    ],
-    doorLamps: true,
-  },
   // Panneau « Aéroport » (dessiné) à côté de la sortie est.
   objects: [airportSign(45, 13, true)],
   triggers: [

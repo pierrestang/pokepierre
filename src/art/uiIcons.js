@@ -19,6 +19,8 @@ const ICON_OF_ITEM = {
   'objet-chance': 'amulette',
   marchandise: 'bouquet',
   'billet-new-delhi': 'billet',
+  'place-concert': 'billet',
+  'cles-paris': 'cles',
   'diplome-bordeaux': 'carte',
   'piece-tracteur': 'piece-metal',
   'cle-antivol': 'cles',

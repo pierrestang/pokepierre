@@ -1179,74 +1179,115 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
 
 ## 12. Paris : la dernière ville
 
-Pierre a bougé toute sa vie ; à Paris, pour la première fois, il doit vraiment s'installer, et il n'est pas prêt. Une
-routine qui ne lui ressemble pas : il grimpe les étages de la tour de bureaux en trois jours, comprend que ce n'est pas sa
-vie, et choisit la **Liberté**, la 8e et dernière vertu (`src/data/parisStory.js`). Aucune ligne « Objectif : » ; deux
-ellipses « Le lendemain… » (une par soir). L'ancien Paris (le bistrot, l'ordinateur et la recherche d'emploi, le concert
-à Bercy, la rupture conventionnelle, Hugues, Thomas, le cuisinier) n'existe plus.
+Pierre a bougé toute sa vie ; à Paris, pour la première fois, il doit vraiment s'installer, et il n'est pas prêt. Il
+grimpe les étages d'une entreprise, comprend que ce n'est pas sa vie, et choisit la **Liberté**, la 8e et dernière vertu
+(`src/data/parisStory.js`). **Le travail reste hors champ** : on ne joue jamais de scène de bureau ; on ne joue que des
+mini-quêtes à lui, dans Paris, sans lien avec l'entreprise. Aucune ligne « Objectif : », **aucune ellipse**.
+
+**La boucle (l'ascenseur, fil rouge).** Pierre passe au bureau, ressort, vit une mini-quête en ville, revient au bureau,
+et l'étage suivant s'allume : le bouton « manager » après le concert, le bouton « directeur » après le match.
 
 ### La carte (52 x 48, Gen 4)
 Premier jet de scripts/build_paris.py, retouché à la main dans le créateur ; les portes du jeu sont sur les portes
-dessinées (audit sans `porte_hors_dessin`), et chacune a été essayée en jeu. Au nord, le grand dôme (« Bercy. Ce soir, pas
-de concert. »), le Louvre (« La file d'attente du Louvre fait le tour de la cour. Une autre fois. ») et le musée-gare
-(« Le musée est fermé le lundi. ») ; l'avenue (rangées 10 à 13) mène à l'ouest à la route de Bordeaux, à l'est à
-l'aéroport. Puis **ton appartement**, l'immeuble aux balcons fleuris (6, 22, avec les clés du propriétaire), le café à
-terrasse (13, 22, « Le café à terrasse. Tu n'as jamais le temps de t'y asseoir. »), le jardin au bassin, l'opéra (41, 22).
-La Seine, deux yachts, deux ponts. Au sud : un immeuble crème (8, 40, « Tu frappes. Personne ne répond. »), le café au
-store rayé (14, 40, complet), Notre-Dame (25, 41, en travaux) et **la tour de bureaux** vitrée (42, 41, fermée avant les
-clés : « Le badge à l'entrée ne te laisse pas passer. »). La rue sud, ouverte à l'est, ne mène plus nulle part (« La rue
-continue vers d'autres quartiers. Rien à faire par là. »). Le trajet de chaque matin : de l'appartement à la tour, par le
-pont de gauche, à pied (ou à vélo). Le soir des jours 1 et 2, la nuit tombe sur la carte (lampes des portes allumées).
+dessinées (audit sans `porte_hors_dessin`). Au nord, **Bercy**, le grand dôme (9, 11 : le concert, avec une place ;
+sinon « Bercy. Ce soir, il y a un concert… mais sans place, on ne rentre pas. »), le Louvre (« La file d'attente du
+Louvre fait le tour de la cour. Une autre fois. », sa file devant la porte de gauche) et le musée-gare (« Le musée est
+fermé le lundi. ») ; l'avenue (rangées 10 à 13) mène à l'ouest à la route de Bordeaux, à l'est à l'aéroport. Puis **ton
+studio**, l'immeuble aux balcons fleuris (6, 22, avec les clés du propriétaire), le café à terrasse (13, 22, « Le café
+à terrasse. Tu n'as jamais le temps de t'y asseoir. »), le jardin au bassin, l'opéra (41, 22). La Seine, deux yachts,
+deux ponts. Au sud : **l'immeuble crème, chez Hugues** (8, 40, le soir du match ; sinon « Tu frappes. Personne ne
+répond. »), **le restaurant au store rayé**, où Thomas travaille (14, 40, le soir du match ; sinon « Le restaurant au
+store rayé est complet. »), Notre-Dame (25, 41, en travaux) et **la tour de bureaux** vitrée (42, 41, fermée avant les
+clés). La rue sud ne mène nulle part. Le trajet du studio à la tour : à pied (ou à vélo), par le pont de gauche. Toujours
+de jour.
 
-### La tour de bureaux (trois intérieurs)
-Le rez-de-chaussée (hall de la Tour Radio de HGSS : comptoir d'accueil, salon, ascenseur au fond à droite), le 1er étage
-(un plateau de bureaux), le dernier étage (le bureau du directeur). L'ascenseur propose Rez-de-chaussée, 1er étage, Dernier
-étage ; un étage fermé : « Le bouton du 1er étage ne s'allume pas : ton badge n'y donne pas accès. » Le 1er étage s'ouvre
-le jour 2, le dernier le jour 3 (quand le manager y envoie Pierre).
+### Les intérieurs
+- **Ton studio** (modèle « maison type 2 ») : la télé (« Tu ne l'allumes presque jamais. »).
+- **La tour de bureaux**, trois niveaux reliés par l'ascenseur (Rez-de-chaussée, « 1er étage (manager) », « Dernier étage
+  (directeur) » ; un bouton éteint : « Le bouton « manager » est éteint : ton badge n'y donne pas accès. »).
+  - Le rez-de-chaussée (hall de la Tour Radio de HGSS) : vivant, des collègues debout qui parlent à Pierre comme à l'un
+    des leurs : « Salut Pierre ! Encore là de bonne heure, toi. », « Tiens, Pierre, tu passes au point d'équipe tout à
+    l'heure ? », « Bonne journée, hein ! On se voit en haut. » ; l'accueil (« La machine à café est encore en panne.
+    Comme tous les lundis. ») ; le collègue blasé près de la machine à café.
+  - Le 1er étage (un plateau de bureaux) : le manager, deux collègues debout (« Bienvenue à l'étage, Pierre ! Ici, on a
+    même du vrai café. », « Réunion à onze heures. Et à quatorze heures. Et à seize heures. »).
+  - Le dernier étage : le bureau du directeur, son assistante (« Le directeur vous attend, Pierre. Entrez, entrez. »).
+- **Bercy** (le théâtre de danse de Doublonville, transformé en salle de concert) : une estrade au fond, le chanteur
+  (`g69`), le guitariste et le batteur ; dix-huit fans tournés vers la scène, l'allée du milieu libre ; lumières de
+  scène. On parle aux musiciens depuis le bord de la scène.
+- **Le restaurant** (une maison de Doublonville et le comptoir du café d'Oliville) : le serveur derrière le comptoir,
+  deux clients, Thomas.
+- **Chez Hugues** (modèle « maison type 2 », comme les maisons des amis) : la télé allumée, Hugues et trois amis devant.
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Propriétaire | Devant l'immeuble : les clés, puis où est le bureau | `g35` |
-| Collègue | Le blasé du rez-de-chaussée, près de la machine à café | `g36` |
+| Propriétaire | Devant l'immeuble : les clés du studio, puis où est le bureau | `g35` |
+| Collègue | Le blasé du rez-de-chaussée, près de la machine à café ; d'autres collègues debout dans la tour | `g36` (et `g74`, `g3`, `g75`, `g76`, `g0`) |
 | Manager | Le 1er étage : la promotion | `g122` |
 | Directeur | Le dernier étage : la belle place | `g120` |
+| Hugues | L'ami : la place de concert promise, puis le match chez lui (fan de foot) | `g91` |
+| Inès, Malik, Clara | La place de concert, de main en main (l'Opéra, la file du Louvre, le café à terrasse) | `g5`, `g4`, `g15` |
+| Chanteur | Bercy | `g69` |
+| Thomas | Travaille au restaurant au store rayé ; le match | `g90` |
 
 ### Quêtes, dans l'ordre
-1. **L'arrivée.** Par la route de Bordeaux, Pierre arrive au bord ouest de l'avenue (1, 11) et marche jusqu'à l'immeuble aux balcons fleuris (6, 23). Le propriétaire : **« Bienvenue !
-   C'est petit, mais vous verrez, on s'y fait. Le bureau n'est pas loin. »** → **Clés de l'appartement de Paris** (« Le
-   propriétaire te tend les clés. ») ; Pierre, en lui-même : **« Bon. Un appartement, un bureau. C'est ça,
-   maintenant. »** Ensuite le propriétaire : « Votre bureau ? La grande tour de verre, de l'autre côté de la Seine, tout
-   en bas à droite. »
-2. **Jour 1, le rez-de-chaussée.** « Le hall de la tour. Ton poste t'attend derrière le comptoir. » ; le collègue vient à
-   Pierre : **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** ; « Des mails, des tableaux, des réunions.
-   L'après-midi passe sans que tu t'en rendes compte. » ; écran noir ; le collègue : « Dix-huit heures ! Allez, on
-   rentre. » (le poste, au comptoir : « Ton poste. Un écran, un clavier, une pile de dossiers. »). La nuit tombe. En
-   entrant dans l'appartement : **« Une journée. Puis une autre. Toutes pareilles. »** → **« Le lendemain… »** → Pierre
-   ressort le matin devant l'immeuble ; le même trajet.
-3. **Jour 2, le manager.** « Le même trajet. Le même hall. » ; le manager, devant l'ascenseur : **« Pierre, monte une
-   minute. »** ; au 1er étage : **« Tu t'en sors très bien. À partir d'aujourd'hui, tu travailles ici, avec moi. »** ;
-   « Un bureau plus grand, plus haut. Les heures passent pareil. » ; écran noir ; « Il est tard, Pierre. À demain. » Le
-   soir : **« Ils sont contents de moi. Pourquoi je ne le suis pas, moi ? »** → **« Le lendemain… »**
-4. **Jour 3, le directeur (Liberté).** Au 1er étage, le manager : « Ah, Pierre. Le directeur veut te voir. Dernier étage,
-   l'ascenseur est à gauche. » Le directeur : **« Entre, Pierre, assieds-toi. Ça fait un moment que je te regarde, et je
-   dois dire que tu te débrouilles vraiment bien. Il y a une belle place pour toi ici, tu sais. »** ; Pierre : **« C'est
-   gentil, vraiment… Mais je crois que ce n'est pas ma place. Il faut que je parte. »** → **« Pierre utilise
-   LIBERTÉ ! »** (la vertu entre au carnet sans l'encart « a reçu ») → **« Tu emportes : Liberté. »**
-5. **Le pont vers le rêve.** En sortant de la tour, Pierre fait un pas et s'arrête ; le joueur n'a plus la main. L'écran
+1. **L'arrivée.** Pas de métro : par la route de Bordeaux, Pierre arrive au bord ouest de l'avenue (1, 11) et marche
+   jusqu'à l'immeuble aux balcons fleuris (6, 23). Le propriétaire : **« Bienvenue ! C'est petit, mais vous verrez, on
+   s'y fait. Le bureau n'est pas loin. »** → **Clés du studio** (« Le propriétaire te tend les clés du studio. ») ;
+   Pierre, en lui-même : **« Bon. Un appartement, un bureau. C'est ça, maintenant. »** Ensuite le propriétaire : « Votre
+   bureau ? La grande tour de verre, de l'autre côté de la Seine, tout en bas à droite. »
+2. **Premier passage au bureau.** « Le hall de la tour. Cette fois, ton badge passe. » ; le collègue vient à Pierre :
+   **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** Les boutons « manager » et « directeur » de
+   l'ascenseur sont éteints. Pierre ressort.
+3. **Le concert (la place qui a voyagé).** En sortant de la tour, le téléphone sonne. Hugues : **« Pierre ! Ce soir,
+   concert à Bercy. Je t'avais promis une place… mais je l'ai passée à Inès pour qu'elle te la donne, et… bref, elle a un
+   peu voyagé. »** / « Inès est devant l'Opéra. Elle saura où elle est passée ! » Inès : « La place de Hugues ? Ah… Je
+   l'ai donnée à Malik, il en rêvait. Il fait la queue au Louvre, comme d'habitude. » ; Malik, dans la file du Louvre :
+   « Ta place ? Mince… Je l'ai laissée à Clara, au café à terrasse, à côté de ton immeuble. Elle adore ce chanteur. » ;
+   Clara : « Oh, c'était la tienne ? Je suis désolée ! Tiens, reprends-la. » → **Place de concert** / « Bercy, c'est le
+   grand dôme, en haut à gauche. Ça commence bientôt ! » (Avant l'appel, ce sont des Parisiens comme les autres.) À
+   Bercy : « Tu montres ta place à l'entrée. La salle est pleine. » ; Pierre avance de quelques pas dans l'allée ;
+   **« Le concert commence ! »** ; le chanteur : « J'garde le meilleur et j'ai tourné les pages, j'ai pas de rancœur et
+   j'oublie jamais rien. » / « J'ai passé l'été sous la neige et l'hiver à la plage, tu ferais quoi à ma place ? » /
+   « Donc, y'a plus rien qui m'attache, c'est un jour la baie ou le Taj, moi j'voulais répondre à ces messages… »
+   (paroles fournies par l'utilisateur) ; la foule saute de joie ; **« Le concert se termine. »** ; Pierre, en lui-même :
+   **« Allez, faut que je rentre. Demain, grosse journée. »**
+4. **La promotion.** Au bureau, un collègue : « Pierre ! Le manager te cherchait. Il t'attend au 1er étage : l'ascenseur,
+   au fond. » Le bouton « manager » s'est allumé. Au 1er étage, le manager : **« Pierre ! Tu t'en sors très bien. À
+   partir d'aujourd'hui, tu travailles ici, avec moi. »** ; « Une promotion. Un bureau plus grand, plus haut. »
+5. **Le match.** En sortant de la tour, un message de Hugues : **« Match ce soir chez moi ! Passe prendre Thomas en
+   chemin, et ramenez de quoi manger. »** / « Thomas finit son service au resto au store rayé, de l'autre côté de la
+   Seine. Moi, c'est l'immeuble crème, juste à côté ! » ; Pierre, en lui-même : **« Enfin un truc normal. »** Au
+   restaurant, Thomas finit son service : **« Ah, Pierre ! Deux secondes, je récupère de quoi manger et j'arrive. Hugues
+   va encore hurler devant sa télé, tu vas voir ! »** → **De quoi manger** ; Thomas suit Pierre. Chez Hugues : **« Les
+   voilà ! Allez, posez tout, ça va commencer, j'attends ce match depuis des semaines ! »** ; Thomas rejoint les autres
+   devant la télé ; **« Le match commence ! C'est France-Argentine. »** ; « Allez les Bleus ! », « Non mais tu as vu
+   cette passe ?! », « Contre l'Argentine, ça se gagne, allez ! » ; **« Buuut ! »** (tout le monde saute de joie),
+   Hugues : « Allez la France ! » ; « Mais l'Argentine revient. Une fois… puis une deuxième. » ; Hugues : « Non… c'est
+   pas possible… » ; **« Le match se termine. »** ; Thomas : « Bon. On les aura la prochaine fois. Allez, il reste à
+   manger ! » ; Pierre, en lui-même : **« On a perdu, mais c'était une belle soirée pour le GOAT… »**
+6. **Le directeur (Liberté).** Au bureau, un collègue : « Pierre ! Le directeur veut te voir. Dernier étage, rien que
+   ça ! » Le bouton « directeur » s'est allumé. Le directeur : **« Entre, Pierre, assieds-toi. Ça fait un moment que je
+   te regarde, et je dois dire que tu te débrouilles vraiment bien. Il y a une belle place pour toi ici, tu sais. »** ;
+   Pierre : **« C'est gentil, vraiment… Mais je crois que ce n'est pas ma place. Il faut que je parte. »** → **« Pierre
+   utilise LIBERTÉ ! »** (la vertu entre au carnet sans l'encart « a reçu ») → **« Tu emportes : Liberté. »**
+7. **Le pont vers le rêve.** En sortant de la tour, Pierre fait un pas et s'arrête ; le joueur n'a plus la main. L'écran
    se brouille doucement (flou), la musique s'éteint, un voile clair monte : le rêve (section suivante).
 
-Rappels : le collègue (« Le même café, la même machine, le même bonjour. Tu vois, on s'habitue. », « Alors, monsieur du
-premier étage ? Ton bureau, c'est en haut maintenant. »…), le manager, le directeur ensuite (« La porte est ouverte,
-Pierre. Dans les deux sens. »).
+Rappels : le collègue (« Alors, monsieur du premier étage ? On ne te voit plus, en bas. », après la Liberté « Tu pars ?
+Vraiment ? … Tu sais quoi, je t'envie un peu. »), le manager, Hugues après le match (« Perdu contre l'Argentine… Mais
+quelle soirée, hein ? Reviens quand tu veux. »), le directeur ensuite (« La porte est ouverte, Pierre. Dans les deux
+sens. »).
 
 ### Vertus
 - **Gagnée** : **Liberté** (« Écouter qui l'on est vraiment, et refuser une vie qui n'est pas la sienne. »), la 8e et
   dernière.
 - **Utilisée** : Liberté (le bureau du directeur).
 
-### Objet
-**Clés de l'appartement de Paris** (le propriétaire).
+### Objets
+**Clés du studio** (le propriétaire), **Place de concert** (Clara ; rendue à l'entrée de Bercy), **De quoi manger**
+(Thomas ; posé chez Hugues).
 
 ## 13. Le rêve et la fin du jeu
 
@@ -1382,9 +1423,13 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Propriétaire | `g35` | Paris (devant l'immeuble) |
 | Collègue | `g36` | Paris (rez-de-chaussée de la tour) |
 | Manager | `g122` | Paris (1er étage de la tour) |
+| Hugues | `g91` | Paris (au téléphone, puis chez lui : le match) |
+| Thomas | `g90` | Paris (le restaurant au store rayé, le match) |
+| Inès, Malik, Clara | `g5`, `g4`, `g15` | Paris (la place de concert) |
+| Chanteur | `g69` | Paris (Bercy) |
 
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, Laurent, Camille et M. Bouly (voir la
-section 13) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
+section 13 ; Hugues, Thomas, Inès, Malik, Clara et le chanteur, ajoutés ensuite à Paris, n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
 
 ## Incohérences repérées

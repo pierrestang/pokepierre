@@ -7,6 +7,8 @@ import modele_maison_type_2 from './modeles/maison-type-2.json' with { type: 'js
 import agence from './agence.json' with { type: 'json' };
 import appartRemi from './appartRemi.json' with { type: 'json' };
 import appartement from './appartement.json' with { type: 'json' };
+import bercy from './bercy.json' with { type: 'json' };
+import bistro from './bistro.json' with { type: 'json' };
 import bonsecours from './bonsecours.json' with { type: 'json' };
 import bonsecoursCasiers from './bonsecoursCasiers.json' with { type: 'json' };
 import bonsecoursFrancais from './bonsecoursFrancais.json' with { type: 'json' };
@@ -30,6 +32,7 @@ import ffHouseUp from './ffHouseUp.json' with { type: 'json' };
 import ffHut from './ffHut.json' with { type: 'json' };
 import hanoiHome from './hanoiHome.json' with { type: 'json' };
 import hospital from './hospital.json' with { type: 'json' };
+import huguesAppart from './huguesAppart.json' with { type: 'json' };
 import hullAsylum from './hullAsylum.json' with { type: 'json' };
 import hullColoc from './hullColoc.json' with { type: 'json' };
 import hullHouse from './hullHouse.json' with { type: 'json' };
@@ -64,6 +67,8 @@ export const BUILT_INTERIORS = {
   agence: composeInterior(agence, MODELES),
   appartRemi: composeInterior(appartRemi, MODELES),
   appartement: composeInterior(appartement, MODELES),
+  bercy: composeInterior(bercy, MODELES),
+  bistro: composeInterior(bistro, MODELES),
   bonsecours: composeInterior(bonsecours, MODELES),
   bonsecoursCasiers: composeInterior(bonsecoursCasiers, MODELES),
   bonsecoursFrancais: composeInterior(bonsecoursFrancais, MODELES),
@@ -87,6 +92,7 @@ export const BUILT_INTERIORS = {
   ffHut: composeInterior(ffHut, MODELES),
   hanoiHome: composeInterior(hanoiHome, MODELES),
   hospital: composeInterior(hospital, MODELES),
+  huguesAppart: composeInterior(huguesAppart, MODELES),
   hullAsylum: composeInterior(hullAsylum, MODELES),
   hullColoc: composeInterior(hullColoc, MODELES),
   hullHouse: composeInterior(hullHouse, MODELES),
