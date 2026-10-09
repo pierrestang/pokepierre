@@ -1,0 +1,15 @@
+PixelMister (DeviantArt) — « Pokemon Gaia Project Tileset (COMPLETE-ISH) », d'après le Project Gaia de zetavares852
+Page : https://www.deviantart.com/pixelmister/art/Pokemon-Gaia-Project-Tileset-COMPLETE-ISH-629191867
+Liste de crédits de l'auteur : https://zetavares852.deviantart.com/journal/Credit-s-Section-227900990
+Téléchargé le 9 octobre 2026 (image pleine taille, 128 x 26000, cases de 16 px).
+
+Crédits non vérifiés tuile par tuile (choix de l'utilisateur). Crédit à afficher : « Tilesets Monde Distorsion et Colonne
+Lance : Pokémon Gaia Project (zetavares852 et ses contributeurs), compilés par PixelMister ».
+
+Fichiers (découpés dans la grande image, entre ses bandes jaune-vert de séparation) :
+  tilesets/exterieurs/monde-distorsion_gaia-pixelmister.png      rangées 19616-22480 : plates-formes flottantes de
+                                                                  brique rouge, arbres de travers, eau bleu nuit,
+                                                                  tourbillons, cascades
+  tilesets/exterieurs/colonne-lance-ruines_gaia-pixelmister.png  rangées 15696-17648 : colonnes brisées et dalles de la
+                                                                  Colonne Lance, tablettes gravées, statue, mont Couronné
+                                                                  (et quelques éléments sans rapport : grues, bâtiments)
