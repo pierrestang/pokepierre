@@ -794,9 +794,8 @@ export class MapScene extends Phaser.Scene {
   }
 
   // Case où revenir sur cette carte quand on la quitte par son bord (ex. vers l'aéroport) : la case voisine, vers
-  // l'intérieur, tournée vers l'intérieur ; null si Pierre n'est pas au bord.
-  edgeReturn() {
-    const { tileX: x, tileY: y } = this.player;
+  // l'intérieur, tournée vers l'intérieur ; null si la case (par défaut celle de Pierre) n'est pas au bord.
+  edgeReturn(x = this.player.tileX, y = this.player.tileY) {
     const W = this.grid[0].length;
     const H = this.grid.length;
     const at = (dx, dy, facing) => ({ map: this.map.id, x: x + dx, y: y + dy, facing });
@@ -805,6 +804,15 @@ export class MapScene extends Phaser.Scene {
     if (y === 0) return at(0, 1, 'down');
     if (y === H - 1) return at(0, -1, 'up');
     return null;
+  }
+
+  // Vers l'aéroport sans passer par un bord (une scénette y emmène Pierre) : au retour, la route de l'aéroport de cette
+  // carte la plus proche de l'endroit où il était.
+  nearestAirportReturn() {
+    const { tileX: px, tileY: py } = this.player;
+    const roads = (this.map.triggers ?? []).filter((t) => t.warp?.map === 'airport');
+    const near = roads.sort((a, b) => Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py))[0];
+    return near ? this.edgeReturn(near.x, near.y) : null;
   }
 
   // Le joueur monte dans la voiture (prop de type `type`), qui démarre en tremblant puis file du côté où elle
@@ -1619,7 +1627,7 @@ export class MapScene extends Phaser.Scene {
     }
     if (map === 'airport' && !plane && this.map.id !== 'airport') {
       memo.set('aeroport', this.fromMap ?? this.map.id);
-      memo.set('aeroportRetour', this.scene.key === 'Overworld' ? this.edgeReturn() : null);
+      memo.set('aeroportRetour', this.scene.key === 'Overworld' ? this.edgeReturn() ?? this.nearestAirportReturn() : null);
     }
     // `fromMap` : la ville où l'on ressort d'un intérieur (par défaut, celle où l'on est).
     if (interior) this.goTo('Interior', { interior, fromMap: fromMap ?? this.fromMap ?? this.map.id, spawn });

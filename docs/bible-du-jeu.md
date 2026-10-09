@@ -55,7 +55,9 @@ visités, et « Rester ici ») ; sans vol de l'histoire en attente, la liste « 
 le **trajet en avion** : l'avion de ligne file au-dessus de l'océan et de ses îles, entre deux couches de nuages, deux
 traînées derrière lui, au bruit des réacteurs. C'est l'aéroport de la ville d'où l'on vient : le jeu la retient (memo
 `aeroport`), ses portes y ramènent (« Tu sors de l'aéroport. ») sur la case exacte et du côté par lequel Pierre est
-entré (memo `aeroportRetour` ; à défaut, la sortie habituelle de la ville), et la liste des vols ne la propose pas ;
+entré (memo `aeroportRetour`). Quand une scénette y emmène Pierre (ex. le lendemain de la nuit au canal, à
+Amsterdam), c'est la route de l'aéroport la plus proche de l'endroit où il était ; sans souvenir, la sortie habituelle
+de la ville. et la liste des vols ne la propose pas ;
 « Autre » propose Bordeaux quand on n'y est pas. Les vols atterrissent à côté des sorties vers l'aéroport de chaque ville.
 
 ---
@@ -1028,6 +1030,14 @@ bazar (33, 22, « La tente du bazar est fermée pour aujourd'hui. »). Au sud : 
 « L'internat de l'université, où tu loges pour le semestre. ») et une maison à coupole (16, 28, « Tu frappes. Personne
 ne répond. »). Une bordure de palmiers. Arrivée en (1, 16).
 
+**Le quartier sud**, plus calme que l'avenue : neuf habitants. Ceux qui vont et viennent : un ancien (« Ici, tout le
+monde se connaît. Bientôt, on te connaîtra aussi. »), une voisine (« Tu es l'étudiant français de l'internat ? Bienvenue
+dans le quartier ! »), un livreur (« Pardon ! Je livre tout le quartier, et je suis en retard… comme tous les jours ! »),
+un étudiant de l'internat (« L'internat, c'est la maison à toit plat. Le soir, on fait un peu de bruit. Désolé
+d'avance ! »), deux enfants (« On joue au ballon ! Tu veux être dans notre équipe ? »). Ceux qui restent sur place : le
+vendeur devant la tente du bazar (« Le bazar ouvre demain matin. Il y aura du monde, crois-moi ! »), une habitante et
+un habitant.
+
 **La foule** : vingt-trois passants sur l'avenue, dix-huit qui vont et viennent entre deux cases et cinq qui restent sur
 place en regardant autour d'eux (pas de tuk-tuks, de vaches ni d'étals : le dépaysement, c'est la densité). Chacun a un
 mot : « Oh, un étranger ! Tu viens d'où ? … La France ! Bienvenue, bienvenue ! » ; « Pardon, pardon ! Ici, tout le monde
@@ -1048,7 +1058,9 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
   Pixel foods » de ghostpixxells (itch.io, CC0), réduits de 32 à 16 px, sans leur ombre portée ; l'assiette et la carafe,
   de la vaisselle Gen 4 de PeekyChew (DeviantArt, crédit demandé) ; crédits dans `assets-source/fan/food/CREDITS.txt`.
   L'assiette tendue à Pierre est la galette (`plat.png`). Neuf convives assis par terre en cercle autour
-  (les personnages assis : jambes cachées, buste abaissé ; option `seated` des PNJ, étape `sit`), qui restent à chaque
+  (les personnages assis : le buste entier, abaissé de 3 pixels, et des jambes repliées en tailleur dessinées dessous,
+  de la couleur du pantalon de chacun ; de face en travers, de dos dépassant de chaque côté, de profil les genoux en
+  avant ; option `seated` des PNJ, étape `sit`), qui restent à chaque
   visite : « Tu reviens ? Il y a toujours une place pour toi, et toujours de quoi manger ! », « Reprends du riz, va ! Il
   en reste plein la marmite. », « Le dal, c'est la recette de ma grand-mère. Elle ne la donne à personne ! », « Ici, on
   ne mange jamais seul. C'est ça, le meilleur ingrédient. », la grand-mère « Mange, mon garçon, mange ! Tu es tout
@@ -1069,7 +1081,8 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 ### Quêtes, dans l'ordre
 1. **L'arrivée.** Quelques pas après l'aéroport (colonne 4 de la carte, sur toute sa hauteur) : bulle « ! », puis Pierre,
    en lui-même : **« Tant de monde, de bruit, de couleurs… Je n'ai jamais rien vu de pareil. »**
-2. **Prophecy et Harsh.** Au bout de l'avenue (colonne 24, ou en parlant à Prophecy, en (29, 15)) : bulle « ! » ; Prophecy
+2. **Prophecy et Harsh.** Au bout de l'avenue, Prophecy (29, 15) ne repère Pierre que quand il arrive à 5 cases ou
+   moins de lui (ou quand on lui parle) : bulle « ! » ; Prophecy
    s'avance : **« Pierre ! Te voilà enfin ! Ça y est, on y est. L'Inde, pour de vrai. »** Harsh arrive de la foule, à
    l'est, et vient vers eux deux : **« Vous êtes les étudiants en échange, c'est ça ? Moi c'est Harsh ! Venez, je vais
    vous montrer. »** / « Ce soir, il y a une fête dans la cour du palais de grès. Suivez-moi ! » Pas d'écran noir : Harsh

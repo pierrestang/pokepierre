@@ -7,7 +7,7 @@ import { builtGrid } from './builtGrid.js';
 import { getTile } from '../tiles.js';
 import { FLAGS } from '../story.js';
 import {
-  CROWD, GOING_HOME, HARSH_GOODBYE, HARSH_LEADING, HARSH_WALK, PASSERS_BY, PROPHECY_WELCOME,
+  CROWD, GOING_HOME, HARSH_GOODBYE, HARSH_LEADING, HARSH_WALK, NEIGHBOURS, PASSERS_BY, PROPHECY_WELCOME,
 } from '../newDelhiStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
@@ -49,6 +49,30 @@ const CROWD_STANDING = [
   ['passante-7', 'g37', 23, 13, 'down', 'grandMere'],
   ['passante-12', 'g104', 16, 13, 'down', 'etudiante'],
 ];
+// Le quartier du sud (les maisons, l'internat, la place du bazar) : des habitants, plus calmes que l'avenue
+// ([id, nom, sprite, de, à, réplique] pour ceux qui marchent, [id, nom, sprite, x, y, regard, réplique] sinon).
+const SOUTH_WALKERS = [
+  ['habitant-ancien', 'Habitant', 'g72', [3, 29], [12, 29], 'ancien'],
+  ['habitante-1', 'Habitante', 'g50', [9, 31], [20, 31], 'voisine'],
+  ['livreur', 'Livreur', 'g96', [22, 30], [36, 30], 'livreur'],
+  ['etudiant-internat', 'Étudiant', 'g106', [2, 25], [2, 30], 'internat'],
+  ['enfant-1', 'Enfant', 'g23', [22, 28], [28, 28], 'enfants'],
+  ['enfant-2', 'Enfant', 'g57', [28, 29], [22, 29], 'enfants'],
+];
+const SOUTH_STANDING = [
+  ['vendeur-bazar', 'Vendeur', 'g112', 35, 23, 'left', 'bazar'],
+  ['habitante-2', 'Habitante', 'g108', 10, 27, 'down', 'ancien'],
+  ['habitant-2', 'Habitant', 'g90', 31, 26, 'down', 'voisine'],
+];
+const south = [
+  ...SOUTH_WALKERS.map(([id, name, sprite, from, to, line]) => ({
+    id, name, sprite, x: from[0], y: from[1], facing: 'down', route: [from, to], dialogue: NEIGHBOURS[line],
+  })),
+  ...SOUTH_STANDING.map(([id, name, sprite, x, y, facing, line]) => ({
+    id, name, sprite, x, y, facing, fidget: true, dialogue: NEIGHBOURS[line],
+  })),
+];
+
 const crowd = [
   ...CROWD_WALKERS.map(([id, sprite, from, to, line]) => ({
     id, name: id.startsWith('passante') ? 'Passante' : 'Passant', sprite, x: from[0], y: from[1], facing: 'down',
@@ -127,6 +151,7 @@ export const newDelhiMap = {
   buildings: [],
   npcs: [
     ...crowd,
+    ...south,
     // Prophecy attend Pierre au bout de l'avenue (déclencheurs plus bas : on ne peut pas le manquer).
     { id: 'prophecy', name: 'Prophecy', x: 29, y: 15, facing: 'left', unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME },
     // Harsh : il arrive de la foule à l'est quand Prophecy a retrouvé Pierre, puis part devant vers la porte du palais
@@ -162,12 +187,19 @@ export const newDelhiMap = {
 // La grille du jeu : celle ci-dessus, accordée aux collisions du dessin.
 newDelhiMap.grid = builtGrid(newDelhiMap.sourceGrid, BUILT);
 
-// Deux colonnes de déclencheurs, sur toute la hauteur praticable de la carte : à la colonne 4, quelques pas après
-// l'aéroport, Pierre découvre la foule ; à la colonne 24, Prophecy l'aperçoit.
-const column = (x, spec) => newDelhiMap.grid
-  .map((row, y) => ({ x, y, ...spec }))
-  .filter(({ y }) => !getTile(newDelhiMap.grid[y][x]).solid && newDelhiMap.grid[y][x] !== 'D');
+// À la colonne 4, sur toute la hauteur praticable de la carte, quelques pas après l'aéroport : Pierre découvre la foule.
+// Prophecy, lui, ne repère Pierre que quand il arrive à 5 cases ou moins de lui (dans le carré de 11 x 11 cases autour
+// de lui, sa case exceptée ; on peut aussi lui parler).
+const walkable = (x, y) => {
+  const code = newDelhiMap.grid[y]?.[x];
+  return code !== undefined && !getTile(code).solid && code !== 'D';
+};
+const column = (x, spec) => newDelhiMap.grid.map((row, y) => ({ x, y, ...spec })).filter(({ y }) => walkable(x, y));
+const PROPHECY_AT = [29, 15];
+const around = ([cx, cy], r, spec) => Array.from({ length: (2 * r + 1) ** 2 }, (_, i) => ({
+  x: cx - r + (i % (2 * r + 1)), y: cy - r + Math.floor(i / (2 * r + 1)), ...spec,
+})).filter(({ x, y }) => (x !== cx || y !== cy) && walkable(x, y));
 newDelhiMap.triggers.push(
   ...column(4, { ifFlags: [FLAGS.arriveeNewDelhi], unlessFlags: [FLAGS.delhiFoule], script: CROWD }),
-  ...column(24, { unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME }),
+  ...around(PROPHECY_AT, 5, { unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME }),
 );

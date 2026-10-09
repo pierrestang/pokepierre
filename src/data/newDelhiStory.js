@@ -36,6 +36,16 @@ export const PASSERS_BY = {
   silencieux: ['Le passant te sourit et te fait signe de passer devant.'],
 };
 
+// Les habitants du quartier sud (maisons, internat, place du bazar).
+export const NEIGHBOURS = {
+  ancien: ['Ici, tout le monde se connaît. Bientôt, on te connaîtra aussi.'],
+  voisine: ['Tu es l\'étudiant français de l\'internat ? Bienvenue dans le quartier !'],
+  livreur: ['Pardon ! Je livre tout le quartier, et je suis en retard… comme tous les jours !'],
+  internat: ['L\'internat, c\'est la maison à toit plat. Le soir, on fait un peu de bruit. Désolé d\'avance !'],
+  enfants: ['On joue au ballon ! Tu veux être dans notre équipe ?'],
+  bazar: ['Le bazar ouvre demain matin. Il y aura du monde, crois-moi !'],
+};
+
 // Au bout de l'avenue, Prophecy (retrouvailles prévues) ; puis Harsh vient vers eux deux : il ne connaît ni l'un ni
 // l'autre. Puis il part devant, à pied, vers la porte du palais de grès (la cour de la fête) ; Prophecy suit Pierre, et
 // tous deux suivent Harsh (rien n'est automatique : on marche jusqu'à la cour).
