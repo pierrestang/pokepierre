@@ -13,7 +13,6 @@ export const CITY_MUSIC = {
   hanoi: 'hanoi',
   amsterdam: 'amsterdam',
   newDelhi: 'newDelhi',
-  rajasthan: 'newDelhi',
   paris: 'paris',
   toulon: 'toulon',
   camino: 'toulon',

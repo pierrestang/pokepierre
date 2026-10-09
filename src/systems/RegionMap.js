@@ -17,7 +17,7 @@ import { FullScreenPanel, BAR } from './FullScreenPanel.js';
 // Étapes du voyage, dans l'ordre de l'histoire.
 const STOPS = [
   'fortDeFrance', 'saintAy', 'montepilloy', 'prytanee', 'bordeaux', 'hull',
-  'hanoi', 'amsterdam', 'newDelhi', 'rajasthan', 'paris', 'toulon',
+  'hanoi', 'amsterdam', 'newDelhi', 'paris', 'toulon',
   'camino', 'corse', 'bali', 'sriLanka', 'thailand', 'nepal',
 ];
 const PER_ROW = 6;

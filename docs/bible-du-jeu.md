@@ -1,6 +1,6 @@
 # Bible du jeu Poképierre
 
-Ce document décrit ce qui est **réellement codé** au 8 octobre 2026 (branche `cartes-gen4`), ville par ville, dans
+Ce document décrit ce qui est **réellement codé** au 9 octobre 2026 (branche `cartes-gen4`), ville par ville, dans
 l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/story.js`, `src/data/*Story.js`,
 `src/data/characters.js`, `src/data/hanoiStory.js`, `src/data/questStarts.js`, `src/data/fishing.js`, `src/data/maps/*.js`,
 `src/data/maps/interiors.js`, `src/scenes/FerryScene.js`, `scripts/build_ds_ui.py` (cartes postales).
@@ -39,13 +39,13 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
   moment de monter sur ton vélo : on t'accompagne. »), il descend si quelqu'un se met à le suivre ; pendant une
   scénette, il descend et remonte à la fin. Une partie reprise dehors repart à vélo.
-- **Textes provisoires** : à partir de New Delhi (Hanoï et Amsterdam sont écrits), presque toutes les répliques commencent par « [Texte provisoire] » ou
+- **Textes provisoires** : à partir du stade de Bordeaux (Hanoï, Amsterdam et New Delhi sont écrits), presque toutes les répliques commencent par « [Texte provisoire] » ou
   « [Nom - texte provisoire] ».
 
 ## Ordre du jeu
 
 Fort-de-France → Saint-Ay → (route de Montépilloy) → Montépilloy → route et collège de Bonsecours → Prytanée →
-Bordeaux → Hull → Hanoï → Amsterdam → New Delhi → Rajasthan → Bordeaux (stade) → Paris → Toulon
+Bordeaux → Hull → Hanoï → Amsterdam → New Delhi → Bordeaux (stade) → Paris → Toulon
 (Chemin de Saint-Jacques, Corse) → Bali → Sri Lanka → Thaïlande → Népal → « Nouveau pays » (non ouvert).
 
 Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux, redessiné en Gen 4, tout entier à l'écran : tarmac
@@ -998,27 +998,102 @@ du canal** (carnet).
 ### Départ et trajet
 Vol « New Delhi (Inde) », directement (il n'y a plus de retour à Hull) ; trajet en avion, sans encart.
 
-## 10. New Delhi et le Rajasthan (Inde) : textes provisoires
+## 10. New Delhi (Inde)
 
-- **La carte de New Delhi** (40 x 34, premier jet de scripts/build_new_delhi.py retouché à la main dans le créateur en
-  octobre 2026) : au nord, l'université (bâtiment à coupole et lanternes dorées, porte (6, 12)), le palais de grès
-  (16, 11, fermé), la porte du fort (27, 9, fermée) et le minaret. La grande avenue (rangées 14 à 17) mène à l'aéroport
-  par ses deux bouts. Au centre, les jardins : la grande arche (India Gate) et le bassin aux lotus avec son île au banian.
-  À l'est, la place de grès : la tente du bazar (33, 22, fermée), l'étal et le stand de chai. Au sud : une maison à toit
-  plat (5, 27) et une maison à coupole (16, 28). Une bordure de palmiers. Arrivée en (1, 16) ; Harsh attend devant
-  l'université (8, 13) ; retour du Rajasthan en (7, 13).
-- **PNJ** : la professeure de l'université de Delhi (`g54`), Harsh (`g89`), le vieux sage (`g71`).
-- **Quêtes** :
-  1. La professeure : « [Professeure - texte provisoire] Namaste ! Bienvenue à l'université. » / « Tu es le bienvenu dans
-     ce pays : ton échange commence aujourd'hui ! »
-  2. En sortant, Harsh : « Salut ! Moi c'est Harsh, j'étudie à l'université avec toi. » / « Ça te dirait de venir avec moi
-     dans le désert du Rajasthan ? » ; choix Oui → le Rajasthan.
-  3. Au Rajasthan, Harsh : « Notre mission : récupérer la potion magique dans la tente rayée, » / « puis l'apporter au
-     vieux sage, près du feu de camp. » Tente → **Potion magique** ; au vieux sage : « La potion magique ! Merci, jeune
-     voyageur. » ; Harsh : « Mission accomplie, bravo ! » → retour à New Delhi.
-  4. La professeure : « Félicitations pour ton semestre ! » / « Bonne chance pour la suite de ton voyage. »
-- **Vertus, objet optionnel, boîte aux lettres, mini-jeu** : aucun.
-- **Départ** : vol « Bordeaux ».
+Un semestre d'échange étudiant (`src/data/newDelhiStory.js`) : Pierre loge à l'internat, parmi les étudiants indiens.
+C'est le plus grand choc culturel du parcours : une ville dense et grouillante, une grande joie de vivre, et quelque chose
+de très ancien, rendu sans jamais nommer de religion. Pas de vertu nouvelle (la 8e est réservée à Paris) : Joie de vivre
+sert à la fête, dans le sens renversé. Aucune ligne « Objectif : », une seule ellipse. Le Rajasthan, sa tente et la
+« potion magique » n'existent plus (carte, intérieur et objet retirés du jeu).
+
+### La carte (40 x 34, Gen 4)
+Premier jet de scripts/build_new_delhi.py, retouché à la main dans le créateur ; les portes du jeu sont sur les portes
+dessinées (audit sans `porte_hors_dessin`). Au nord, le long de la grande avenue : l'université (bâtiment à coupole et
+lanternes dorées, porte (6, 12) : la grande salle de la fête, fermée avant : « L'université, où tu passes le semestre.
+Les portes sont encore fermées. »), le palais de grès (16, 11, « Le palais est fermé aux visiteurs. »), la vieille porte
+du fort (27, 9 : le vieux fort, fermé avant la fête : « Une vieille porte de pierre, plus ancienne que tout le reste de la
+ville. Elle est fermée. ») et le minaret. La grande avenue (rangées 14 à 17) mène à l'aéroport par ses deux bouts. Au
+centre, les jardins : la grande arche (India Gate) et le bassin aux lotus avec son île au banian. À l'est, la tente du
+bazar (33, 22, « La tente du bazar est fermée pour aujourd'hui. »). Au sud : l'internat, la maison à toit plat (5, 27,
+« L'internat de l'université, où tu loges pour le semestre. ») et une maison à coupole (16, 28, « Tu frappes. Personne
+ne répond. »). Une bordure de palmiers. Arrivée en (1, 16).
+
+**La foule** : vingt-trois passants sur l'avenue, dix-huit qui vont et viennent entre deux cases et cinq qui restent sur
+place en regardant autour d'eux (pas de tuk-tuks, de vaches ni d'étals : le dépaysement, c'est la densité). Chacun a un
+mot : « Oh, un étranger ! Tu viens d'où ? … La France ! Bienvenue, bienvenue ! » ; « Pardon, pardon ! Ici, tout le monde
+est pressé, mais personne n'est en retard. » ; « Une photo avec moi ? Mes cousins ne vont jamais me croire ! » ;
+« Première fois ici ? Ça se voit, tu regardes partout ! Garde les yeux ouverts, tu ne verras jamais tout. » ; « Tu es
+nouveau à l'université ? Tu vas voir, ici, on n'est jamais seul. » ; « Mange bien, mon garçon ! Tu es tout maigre. » ;
+« Le soir, l'avenue est encore plus pleine. Si, si, c'est possible ! » ; « Ha ha ! Tu as l'air perdu. Ne t'en fais pas :
+tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait signe de passer devant. »
+
+### Les intérieurs
+- **La grande salle de l'université** (`delhiUniversity`, 15 x 11) : la classe de l'école de Mauville (HGSS) sans ses
+  pupitres ni ses chaises ; le bureau du professeur reste ; des guirlandes de fanions le long du mur du fond. Six
+  étudiants dansent en continu (« Tu reviens danser ? Il y a toujours une fête quelque part, ici ! », « C'est ma chanson
+  préférée ! Enfin… elles sont toutes ma chanson préférée. », « Un, deux, trois… et on tourne ! Tu vois, tu as le
+  rythme ! », « Le prochain qui s'assoit chante devant tout le monde ! ») ; la fête continue à chaque visite.
+- **Le vieux fort** (`delhiFort`, 21 x 16) : le bas de l'arène de Mauville (HGSS), sans l'arène : dalles de pierre,
+  grands piliers, balustrades, marches, deux statues. La musique se tait (musique de la ville à volume nul). Le vieux
+  sage attend sur la terrasse, en haut des marches ; ensuite : « Rien ne se perd, jeune voyageur. Rien. »
+
+### PNJ présents
+| Nom | Rôle | Sprite |
+|---|---|---|
+| Prophecy | De la bande de Hull ; il enchaîne son échange aux États-Unis par ce semestre (prévu de longue date) et accueille Pierre ; il rentre lui aussi finir ses études à Bordeaux | `g94` |
+| Harsh | Étudiant indien, rencontré sur place (nouveau pour Pierre et pour Prophecy) : la porte d'entrée dans la culture locale | `g89` |
+| Vieux sage | Le vieux fort : il transmet, et donne la pierre gravée | `g71` |
+| Étudiante, étudiants | La fête (l'étudiante qui vient chercher Pierre : `g25`) | `g25`, `g97`, `g95`, `g110`, `g104`, `g102`, `g103` |
+| Passants, passantes | La foule de l'avenue | sprites imposés (`g14`, `g42`, `g86`…) |
+
+### Quêtes, dans l'ordre
+1. **L'arrivée.** Quelques pas après l'aéroport (colonne 4 de la carte, sur toute sa hauteur) : bulle « ! », puis Pierre,
+   en lui-même : **« Tant de monde, de bruit, de couleurs… Je n'ai jamais rien vu de pareil. »**
+2. **Prophecy et Harsh.** Au bout de l'avenue (colonne 24, ou en parlant à Prophecy, en (29, 15)) : bulle « ! » ; Prophecy
+   s'avance : **« Pierre ! Te voilà enfin ! Ça y est, on y est. L'Inde, pour de vrai. »** Harsh sort de la foule et vient
+   vers eux deux : **« Vous êtes les étudiants en échange, c'est ça ? Moi c'est Harsh ! Venez, je vais vous montrer. »** ;
+   écran noir : « Harsh vous entraîne à travers la foule, jusqu'à la grande salle de l'université. La musique s'entend de
+   loin. »
+3. **La fête (Joie de vivre, dans le sens renversé).** « La musique fait trembler le sol. Tout le monde danse, chante, tape
+   dans ses mains. » ; Harsh : **« Ce soir, c'est la fête ! Venez, chez nous on sait faire la fête ! »** ; Prophecy :
+   « Moi, j'y vais ! » (il rejoint la piste) ; bulle « … » sur Pierre : « Toi, tu restes près de la porte. Trop de bruit,
+   trop de monde, des pas que tu ne connais pas. » ; Harsh vient le chercher : « Eh, Pierre ! Ici, personne ne regarde
+   les autres danser. Allez, viens ! » ; une étudiante : « Viens, on te montre ! C'est facile : tu fais comme nous. » ;
+   **« Pour une fois, ce n'est pas toi qui entraînes les autres. Ce sont eux qui t'entraînent. »** → **« Pierre utilise
+   Joie de vivre ! »** → « Tu te laisses porter. » → la danse de Fort-de-France (étape `dance`, avec Harsh et
+   l'étudiante) → « Tu ris, tu rates tous les pas, et ça n'a aucune importance. » ; Harsh : « Tu vois ? Tu es des nôtres,
+   maintenant ! » / **« Maintenant que vous avez vu la fête, il faut que je vous montre autre chose. Un endroit très
+   ancien. Venez. »** / « C'est derrière la vieille porte du fort, au bout de l'avenue. » Harsh et Prophecy suivent
+   ensuite Pierre.
+4. **Le vieux sage (ni vertu, ni mini-jeu).** En entrant dans le fort : « Derrière toi, le bruit de la ville s'est éteint
+   d'un coup. Il n'y a plus que le vent entre les vieilles pierres. » ; Harsh : « Ces murs sont là depuis plus de mille
+   ans. Ici, on parle doucement. » En haut des marches, le vieux sage vient à Pierre : **« Tu viens de loin, et tu iras
+   plus loin encore. Mais souviens-toi : ce n'est pas la destination qui compte, c'est ce que le chemin dépose en
+   toi. »** / **« Chaque lieu que tu traverses, chaque visage que tu quittes, rien ne se perd. Tout cela voyage avec toi,
+   ici. »** ; « En disant « ici », il pose la main sur son cœur. » → **Pierre gravée** (« Le vieux sage glisse dans ta
+   main une petite pierre, polie par les années, où l'on a gravé un chemin qui tourne sur lui-même. ») ; avec le galet
+   de Saint-Ay dans le sac : « Elle est lisse et tiède, comme le galet du lac de Saint-Ay. Comme le coquillage de
+   Manon. » ; sans : « Elle est lisse et tiède, comme le coquillage de Manon, à Fort-de-France. »
+5. **Quelques mois plus tard.** Écran noir : **« Quelques mois plus tard… »** (la seule ellipse de la ville) ; Pierre
+   ressort devant la porte du fort (27, 10).
+6. **Le retour.** Prophecy (26, 11) : **« Bon, la parenthèse indienne se termine. On rentre à Bordeaux finir nos études.
+   Tu te rends compte, on revient là où tout a commencé ? »** ; Harsh (28, 11) : « Vous allez me manquer, tous les deux.
+   Revenez quand vous voulez : ici, vous serez toujours chez vous. » ; écran noir : « Ta valise bouclée, tu prends
+   l'avion pour Bordeaux avec Prophecy. »
+
+### Vertus
+- **Gagnée** : aucune.
+- **Utilisée** : **Joie de vivre**, dans le sens renversé : à Fort-de-France, à la cabane, à Hull, c'est Pierre qui
+  entraîne les autres ; ici, ce sont Harsh et les étudiants qui l'entraînent, lui. Un Pierre plus mûr, qui a appris à
+  recevoir la joie des autres.
+
+### Objet
+**Pierre gravée** (le vieux sage) : un objet-souvenir sans usage, qui remplace la potion magique et fait écho au galet du
+lac de Saint-Ay et au coquillage de Manon.
+
+### Départ et trajet
+Trajet en avion (sans encart : pas de vertu reçue) jusqu'à l'aéroport de Bordeaux, Pierre tourné vers les portes ; le
+stade s'ouvre (drapeau `semestre-termine`).
 
 ## 11. Bordeaux (le stade) : textes provisoires
 
@@ -1099,7 +1174,7 @@ des trois autres.
 
 | Vertu | Ville | Où et auprès de qui elle se gagne | Phrase du carnet | Où elle resert |
 |---|---|---|---|---|
-| Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum |
+| Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum ; New Delhi : la fête (dans le sens renversé : les étudiants entraînent Pierre) |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
 | Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
 | Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) ; Amsterdam : la présentation de la campagne |
@@ -1160,7 +1235,7 @@ Léo, Théo.
 | Hôtesse | `g64` | Aéroport |
 | Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull |
 | Romain | `g202` (characterLooks) | Hull, Hanoï (téléphone), Amsterdam |
-| Prophecy | `g94` | Hull |
+| Prophecy | `g94` | Hull, New Delhi |
 | Charlotte | `g44` | Hull |
 | Anaïs | `g107` | Bordeaux (la soirée), Hull |
 | Barman | `g101` | Hull |
@@ -1174,9 +1249,8 @@ Léo, Théo.
 | Papi (x 2) | `g39`, `g48` | Hanoï (échecs chinois, optionnel) |
 | Laurent | `g53` | Amsterdam |
 | Vendeur | `g112` | Amsterdam |
-| Professeure (Delhi) | `g54` | New Delhi |
-| Harsh | `g89` | New Delhi, Rajasthan |
-| Vieux sage | `g71` | Rajasthan |
+| Harsh | `g89` | New Delhi |
+| Vieux sage | `g71` | New Delhi (le vieux fort) |
 | Directeur | `g120` | Bordeaux (stade), Paris (entreprise) |
 | Cuisinier | `g63` | Paris |
 | Hugues, Thomas | `g91`, `g90` | Paris |
@@ -1224,7 +1298,7 @@ Léo, Théo.
   Des cartes postales existent pourtant pour Paris, la Corse, le Sri Lanka, la Thaïlande et le Népal.
 
 ### Quêtes inachevées ou textes provisoires
-- Tout ce qui suit Amsterdam est en **texte provisoire** : New Delhi, Rajasthan, le stade de
+- Tout ce qui suit New Delhi est en **texte provisoire** : le stade de
   Bordeaux, Paris, Toulon, le Chemin, la Corse, Bali, Sri Lanka, Thaïlande, Népal.
 - Léo et Théo, en Corse, n'ont que des répliques de remplissage (« Ceci est le premier dialogue de Léo. »), alors qu'ils
   ouvrent la route de Bali.
@@ -1239,8 +1313,8 @@ Léo, Théo.
   rien.
 
 ### Vertus jamais utilisées
-Adaptation (Hanoï) ne sert encore nulle part ; Insouciance sert une fois (Hanoï, le temple). Joie de vivre sert cinq
-fois (dont trois en passage optionnel), Audace cinq fois (dont une optionnelle, à Hanoï), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
+Adaptation (Hanoï) ne sert encore nulle part ; Insouciance sert une fois (Hanoï, le temple). Joie de vivre sert six
+fois (dont trois en passage optionnel ; la dernière à New Delhi, dans le sens renversé), Audace cinq fois (dont une optionnelle, à Hanoï), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
 Esprit d'équipe et Autonomie deux fois chacune (Autonomie une fois en passage optionnel). Chaque ville de Saint-Ay à
 Hull a désormais un passage optionnel qui utilise une vertu ; Fort-de-France n'en a pas (aucune vertu n'est acquise
 avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instant : le panier de la cabane de Saint-Ay
@@ -1250,7 +1324,8 @@ avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instan
 - À Saint-Ay, si la corde est trouvée **après** les planches, personne ne dit « On a tout ! » (Joshua est resté devant
   l'enclos) : rien n'indique de retourner chez Felix, sauf en reparlant à Joshua, Yanis ou Felix.
 - Il n'y a plus aucune réplique « Objectif : » : partout, le joueur suit les rappels des PNJ. Paris et Toulon ont une
-  « mission » d'arrivée ; New Delhi et les pays d'Asie n'ont rien. À Bordeaux, après « Quelques mois plus
+  « mission » d'arrivée ; les pays d'Asie n'ont rien ; à New Delhi, Prophecy
+  et Harsh disent où aller. À Bordeaux, après « Quelques mois plus
   tard… », seul Rémi, devant KEDGE, indique l'oral.
 - À Fort-de-France, la boîte aux lettres annonce « Peut-être une carte postale de Saint-Ay, un jour ? ». Cette carte
   n'existe pas : celle de Saint-Ay vient du capitaine, et la boîte de Fort-de-France ne change jamais.

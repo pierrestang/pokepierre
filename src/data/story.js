@@ -131,11 +131,12 @@ export const FLAGS = {
   moisAmsterdam: 'mois-amsterdam',              //   en sortant de Corning : « Quelques mois plus tard… » (la nuit tombe)
   canalNuit: 'canal-nuit',                      //   la nuit au bord du canal avec Romain (Insouciance), le billet pour New Delhi
   arriveeNewDelhi: 'arrivee-new-delhi',         // arrivé à New Delhi (Inde)
-  echangeCommence: 'echange-commence',          // échange universitaire commencé à Delhi
-  harshRencontre: 'harsh-rencontre',            // Harsh t'a proposé d'aller dans le désert
-  arriveeRajasthan: 'arrivee-rajasthan',        // parti dans le désert du Rajasthan
-  potionDonnee: 'potion-donnee',                // potion magique apportée au vieux sage
-  semestreTermine: 'semestre-termine',          // félicitations de la professeure : semestre terminé
+  delhiFoule: 'delhi-foule',                    //   la traversée de la foule : Pierre n'a jamais rien vu de pareil
+  prophecyDelhi: 'prophecy-delhi',              //   Prophecy accueille Pierre au bout de l'avenue ; Harsh se présente
+  feteDelhi: 'fete-delhi',                      //   la fête à l'université (Joie de vivre) ; Harsh et Prophecy suivent Pierre
+  sageDelhi: 'sage-delhi',                      //   le vieux sage, derrière la porte du fort : la pierre gravée
+  moisDelhi: 'mois-delhi',                      //   « Quelques mois plus tard… » (la seule ellipse de la ville)
+  semestreTermine: 'semestre-termine',          //   Prophecy : on rentre à Bordeaux (le stade s'ouvre)
   diplomeBordeaux: 'diplome-bordeaux',          // diplôme reçu devant l'estrade du stade (la route de Paris s'ouvre)
   arriveeParis: 'arrivee-paris',                // arrivé à Paris
   repasParis: 'repas-paris',                    // mangé au restaurant, rencontré le cuisinier
@@ -251,7 +252,7 @@ export const ITEMS = {
   pieceEchecs: { id: 'piece-echecs', name: "Pièce d'échecs chinois" },
   marchandise: { id: 'marchandise', name: 'Marchandise' },
   billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },  // remis par Romain, à Amsterdam
-  potionMagique: { id: 'potion-magique', name: 'Potion magique' },
+  pierreGravee: { id: 'pierre-gravee', name: 'Pierre gravée' },                // New Delhi : le vieux sage du fort
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },
   pieceTracteur: { id: 'piece-tracteur', name: 'Pièce de tracteur' },
   objetMagiqueBali: { id: 'objet-magique-bali', name: 'Objet magique de Bali' },
@@ -276,6 +277,9 @@ export const FOLLOWERS = [
   // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', name: 'Touriste', sprite: 'g24', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', name: 'Touriste', sprite: 'g22', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
+  // New Delhi : après la fête, Harsh et Prophecy suivent Pierre jusqu'au vieux sage, derrière la porte du fort.
+  { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
+  { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
   // Chemin de Saint-Jacques : Yanis marche avec toi jusqu'à Saint-Jacques.
   { id: 'yanis', color: 0xc0b040, ifFlags: [FLAGS.caminoEnCours], unlessFlags: [FLAGS.caminoFini] },
   // Hull, la tournée des bars : Léo part devant en éclaireur ; Ousmane, Charlotte et Anaïs suivent Pierre à la queue

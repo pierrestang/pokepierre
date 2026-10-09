@@ -19,7 +19,6 @@ const ICON_OF_ITEM = {
   'objet-chance': 'amulette',
   marchandise: 'sac',
   'billet-new-delhi': 'billet',
-  'potion-magique': 'potion',
   'diplome-bordeaux': 'carte',
   'piece-tracteur': 'piece-metal',
   'objet-magique-bali': 'orbe-turquoise',

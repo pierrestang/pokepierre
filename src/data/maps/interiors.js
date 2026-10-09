@@ -22,6 +22,7 @@ import {
 } from '../hullStory.js';
 import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC } from '../hanoiStory.js';
 import { CAMPAIGN, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
+import { DELHI_PARTY, FORT_SILENCE, SAGE, SAGE_AFTER, STUDENTS } from '../newDelhiStory.js';
 
 // L'accueil de KEDGE (Bordeaux) : on lui parle par-dessus le comptoir.
 const KEDGE_DESK = ['Bienvenue à KEDGE ! L\'oral d\'anglais, c\'est en salle 1 : le couloir des casiers, puis l\'étage au-dessus.'];
@@ -2095,8 +2096,9 @@ export const interiors = {
     events: [{ on: 'enter', unlessFlags: [FLAGS.romainDemande], steps: ROMAIN_WELCOME }],
   },
 
-  // New Delhi — l'université : ton échange universitaire commence. La classe de l'école de Mauville (HGSS) :
-  // tableau, bureau du professeur, pupitres et chaises rouges, coin carrelé avec bibliothèque.
+  // New Delhi — la grande salle de l'université, un soir de fête : la classe de l'école de Mauville (HGSS), pupitres
+  // et chaises retirés ; le bureau du professeur sert de table à la musique. Harsh et Prophecy accueillent Pierre, des
+  // étudiants dansent (voir newDelhiStory.js DELHI_PARTY) ; la fête continue à chaque visite.
   delhiUniversity: {
     name: 'Université de Delhi',
     grid: parseGrid([
@@ -2105,61 +2107,67 @@ export const interiors = {
       'mmmoooooooooomm',
       'oooommmoooooooo',
       'ooooooooooooooo',
-      'oommmommmoooomm',
       'ooooooooooooomm',
-      'oommmommmoooooo',
+      'ooooooooooooomm',
+      'ooooooooooooooo',
       'ooooooooooooooo',
       'ooooooooooooooo',
       'mooooEoooooooom',
     ]),
     spawn: { x: 5, y: 9, facing: 'up' },
+    // Des guirlandes de fanions le long du mur du fond.
+    decals: [{ kind: 'fanions', x: 0, y: 1, cords: [[4, 18, 116, 18, 8], [124, 18, 236, 18, 8]] }],
     npcs: [
+      { id: 'harsh-fete', name: 'Harsh', x: 6, y: 7, facing: 'down', unlessFlags: [FLAGS.feteDelhi], dialogue: ['Viens danser !'] },
+      { id: 'prophecy-fete', name: 'Prophecy', x: 4, y: 8, facing: 'right', unlessFlags: [FLAGS.feteDelhi], dialogue: ['Quelle ambiance !'] },
       {
-        id: 'prof-delhi', name: 'Professeure', x: 5, y: 2, facing: 'down', color: 0xd06020,
-        unlessFlags: [FLAGS.potionDonnee],
-        dialogue: [
-          '[Professeure - texte provisoire] Namaste ! Bienvenue à l\'université.',
-          'Tu es le bienvenu dans ce pays : ton échange commence aujourd\'hui !',
-        ],
-        after: ['[Professeure - texte provisoire] Profite bien de ton échange en Inde !'],
-        setFlag: FLAGS.echangeCommence,
+        id: 'etudiante-fete', name: 'Étudiante', sprite: 'g25', x: 8, y: 6, facing: 'down', dancing: true,
+        dialogue: STUDENTS.etudiante,
       },
-      // Au retour du désert : fin du semestre.
-      {
-        id: 'prof-delhi-fin', name: 'Professeure', x: 5, y: 2, facing: 'down', color: 0xd06020,
-        ifFlags: [FLAGS.potionDonnee],
-        dialogue: [
-          '[Professeure - texte provisoire] Félicitations pour ton semestre !',
-          'Bonne chance pour la suite de ton voyage.',
-        ],
-        after: ["[Professeure - texte provisoire] Bon voyage ! L'aéroport t'attend."],
-        setFlag: FLAGS.semestreTermine,
-      },
+      ...[
+        ['etudiante-musique', 'g97', 3, 4, 'musique'], ['etudiant-rythme', 'g95', 9, 4, 'rythme'],
+        ['etudiant-chanteur', 'g110', 11, 7, 'chanteur'], ['etudiante-ronde', 'g104', 6, 5, 'rythme'],
+        ['etudiant-ronde', 'g102', 2, 6, 'musique'], ['etudiante-chant', 'g103', 12, 3, 'chanteur'],
+      ].map(([id, sprite, x, y, line]) => ({
+        id, name: id.startsWith('etudiante') ? 'Étudiante' : 'Étudiant', sprite, x, y, facing: 'down', dancing: true,
+        dialogue: STUDENTS[line],
+      })),
     ],
+    // En entrant la première fois (Harsh y conduit Pierre et Prophecy) : la fête.
+    events: [{ on: 'enter', unlessFlags: [FLAGS.feteDelhi], steps: DELHI_PARTY }],
   },
 
-  // Rajasthan — la tente : la potion magique est posée sur la table dorée du fond. La tente de la diseuse de
-  // bonne aventure de Doublonville (HGSS) : rideaux violets, tapis rond.
-  tente: {
-    name: 'Tente',
+  // New Delhi — le vieux fort, derrière la porte de pierre : le bas de l'arène de Mauville (HGSS) : dalles, grands
+  // piliers, balustrades, marches, deux statues. Le bruit de la ville ne passe pas les murs (musique coupée). Le vieux
+  // sage attend sur la terrasse, au-dessus des marches (voir newDelhiStory.js SAGE).
+  delhiFort: {
+    name: 'Vieux fort',
+    music: { song: 'newDelhi', volume: 0 },
     grid: parseGrid([
-      'XXXXXXXXX',
-      'mmmmmmmmm',
-      'ooooooooo',
-      'ooommmooo',
-      'ooooooooo',
-      'ooooooooo',
-      'omooooomo',
-      'ooooEoooo',
+      'mmmmmmmmmmmmmmmmmmmmm',   // le haut de l'arène, les balustrades
+      'mmmmmmmmmmmmmmmmmmmmm',
+      'mmmmmmmmmmmmmmmmmmmmm',
+      'mmmmmmmmmmmmmmmmmmmmm',
+      'mmmmmmmmmmmmmmmmmmmmm',
+      'mmmooooooooooooooommm',   // la terrasse : le vieux sage
+      'mmmooooooooooooooommm',
+      'mmmooooooooooooooommm',
+      'mmmooooooooooooooommm',
+      'mmmooooooooooooooommm',   // le haut des marches (déclencheurs)
+      'mmmmmmmmmooommmmmmmmm',   // les marches
+      'mmmmmmmmmooommmmmmmmm',
+      'mmmooooooooooooooommm',   // le bas : deux statues
+      'mmmoooomooooomoooommm',
+      'mmmooooooooooooooommm',
+      'mmmoooooooEooooooommm',   // sortie
     ]),
-    spawn: { x: 4, y: 6, facing: 'up' },
-    objects: [3, 4, 5].map((x) => ({
-      x,
-      y: 3,
-      dialogue: ['[Texte provisoire] Sur la table, une fiole scintille : la potion magique !'],
-      after: ['[Texte provisoire] La table est vide.'],
-      item: ITEMS.potionMagique,
-    })),
+    spawn: { x: 10, y: 14, facing: 'up' },
+    npcs: [
+      { id: 'vieux-sage', name: 'Vieux sage', x: 10, y: 5, facing: 'down', dialogue: SAGE_AFTER },
+    ],
+    events: [{ on: 'enter', unlessFlags: [FLAGS.sageDelhi], steps: FORT_SILENCE }],
+    // En haut des marches, le vieux sage vient à Pierre.
+    triggers: [9, 10, 11].map((x) => ({ x, y: 9, unlessFlags: [FLAGS.sageDelhi], script: SAGE })),
   },
 
   // Bordeaux — le stade : cérémonie de remise des diplômes, foule de diplômés et estrade du directeur.

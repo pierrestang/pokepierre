@@ -25,7 +25,7 @@ export const TYPES = [
     'corseVoisins', 'hanoiHome', 'maisonCommune', 'appartement', 'studioPaulfit', 'appartRemi', 'hullColoc', 'parisAppart',
     'yanisAppart']],
   ['chambre', 'Chambres et dortoirs', ['ffHouseUp', 'playerHouseUp', 'montHouseUp', 'dortoir', 'dortoirEtage2']],
-  ['cabane', 'Cabanes et tentes', ['cabane', 'baliCabane', 'tente']],
+  ['cabane', 'Cabanes et tentes', ['cabane', 'baliCabane']],
   ['atelier', 'Ateliers et granges', ['ffHut', 'boulyBarn']],
   ['ecole', 'Écoles et universités', ['school', 'bonsecours', 'bonsecoursCasiers', 'bonsecoursMaths', 'bonsecoursFrancais',
     'bonsecoursSciences', 'dortoirHall', 'kedge', 'kedgeCasiers', 'kedgeSalle1', 'kedgeSalle2', 'kedgeSalle3', 'hullUniversity',

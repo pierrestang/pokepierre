@@ -21,6 +21,7 @@ import coffeeShop from './coffeeShop.json' with { type: 'json' };
 import corning from './corning.json' with { type: 'json' };
 import corseParents from './corseParents.json' with { type: 'json' };
 import corseVoisins from './corseVoisins.json' with { type: 'json' };
+import delhiFort from './delhiFort.json' with { type: 'json' };
 import delhiUniversity from './delhiUniversity.json' with { type: 'json' };
 import dortoir from './dortoir.json' with { type: 'json' };
 import dortoirEtage2 from './dortoirEtage2.json' with { type: 'json' };
@@ -58,7 +59,6 @@ import sriLankaTemple from './sriLankaTemple.json' with { type: 'json' };
 import stade from './stade.json' with { type: 'json' };
 import studioPaulfit from './studioPaulfit.json' with { type: 'json' };
 import temple from './temple.json' with { type: 'json' };
-import tente from './tente.json' with { type: 'json' };
 import travelAgency from './travelAgency.json' with { type: 'json' };
 import watInterieur from './watInterieur.json' with { type: 'json' };
 import yanisAppart from './yanisAppart.json' with { type: 'json' };
@@ -87,6 +87,7 @@ export const BUILT_INTERIORS = {
   corning: composeInterior(corning, MODELES),
   corseParents: composeInterior(corseParents, MODELES),
   corseVoisins: composeInterior(corseVoisins, MODELES),
+  delhiFort: composeInterior(delhiFort, MODELES),
   delhiUniversity: composeInterior(delhiUniversity, MODELES),
   dortoir: composeInterior(dortoir, MODELES),
   dortoirEtage2: composeInterior(dortoirEtage2, MODELES),
@@ -124,7 +125,6 @@ export const BUILT_INTERIORS = {
   stade: composeInterior(stade, MODELES),
   studioPaulfit: composeInterior(studioPaulfit, MODELES),
   temple: composeInterior(temple, MODELES),
-  tente: composeInterior(tente, MODELES),
   travelAgency: composeInterior(travelAgency, MODELES),
   watInterieur: composeInterior(watInterieur, MODELES),
   yanisAppart: composeInterior(yanisAppart, MODELES),
