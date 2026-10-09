@@ -3,9 +3,9 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 // Scénario d'Amsterdam : le stage chez Corning, avec Romain en colocataire. Pas de vertu nouvelle (la 8e se gagne à
 // Paris) : Autonomie sert au stage, Insouciance à la nuit au bord du canal.
 //   1. L'arrivée : Romain appelle (téléphone) et donne rendez-vous à la maison commune.
-//   2. La maison commune : Romain envoie Pierre chercher sa marchandise au coffee shop.
-//   3. Le coffee shop : le vendeur parle un mélange de français et de néerlandais (« Ja » ou « Nee », sans conséquence).
-//   4. Retour chez Romain : la marchandise rendue, il envoie Pierre à son stage.
+//   2. La maison commune : Romain envoie Pierre chercher son bouquet de fleurs chez le marchand de fleurs.
+//   3. Le marchand de fleurs : le vendeur parle un mélange de français et de néerlandais (« Ja » ou « Nee », sans conséquence).
+//   4. Retour chez Romain : le bouquet donné, il envoie Pierre à son stage.
 //   5. Corning : Laurent confie une campagne pour le nouveau produit ; trois choix (cible, slogan, diffusion), Laurent
 //      encourage ou recadre, sans échec ; la présentation (Autonomie).
 //   6. En sortant de Corning : « Quelques mois plus tard… » (la seule ellipse de la ville) ; la nuit tombe.
@@ -26,17 +26,17 @@ export const ARRIVAL = [
 
 // ---------- 2. La maison commune ----------
 
-// En entrant la première fois : Romain accueille Pierre et lui demande sa marchandise.
+// En entrant la première fois : Romain accueille Pierre et lui demande son bouquet de fleurs.
 export const ROMAIN_WELCOME = [
   { approach: 'romain-maison' },
   {
     speaker: 'Romain',
-    say: ['Installe-toi ! Tiens, d\'ailleurs, tu peux me rendre un service ? Va chercher ma marchandise au coffee shop, j\'ai la flemme d\'y retourner.'],
+    say: ['Installe-toi ! Tiens, d\'ailleurs, tu peux me rendre un service ? Va chercher mon bouquet de fleurs chez le marchand de fleurs, j\'ai la flemme d\'y retourner.'],
   },
   { setFlag: FLAGS.romainDemande },
 ];
 
-// Romain dans la maison commune : il attend sa marchandise, la reprend, puis envoie Pierre à son stage.
+// Romain dans la maison commune : il attend son bouquet, le reprend, puis envoie Pierre à son stage.
 export const ROMAIN_HOME = [
   { ifFlags: [FLAGS.stageCorning], speaker: 'Romain', say: ['Alors, ce stage ? Laurent est content de toi, j\'en suis sûr.'], end: true },
   { ifFlags: [FLAGS.marchandiseDonnee], speaker: 'Romain', say: ['Ton stage, c\'est chez Corning, le grand manoir de la rue. Laurent t\'attend !'], end: true },
@@ -44,7 +44,7 @@ export const ROMAIN_HOME = [
     ifItems: [ITEMS.marchandise.id],
     steps: [
       { take: ITEMS.marchandise.id },
-      { say: ['Tu donnes la marchandise à Romain.'] },
+      { say: ['Tu donnes le bouquet de fleurs à Romain.'] },
       {
         speaker: 'Romain',
         say: [
@@ -56,24 +56,24 @@ export const ROMAIN_HOME = [
     ],
     end: true,
   },
-  { speaker: 'Romain', say: ['Le coffee shop, c\'est de l\'autre côté du canal, la maison à gauche avec les fleurs. Passe le pont !'] },
+  { speaker: 'Romain', say: ['Le marchand de fleurs, c\'est de l\'autre côté du canal, la maison à gauche avec les fleurs. Passe le pont !'] },
 ];
 
-// ---------- 3. Le coffee shop ----------
+// ---------- 3. Le marchand de fleurs ----------
 
 export const VENDOR = [
   { ifItems: [ITEMS.marchandise.id], speaker: 'Vendeur', say: ['Doei ! Bonne journée, hè !'], end: true },
   { ifFlags: [FLAGS.marchandiseAchetee], speaker: 'Vendeur', say: ['Hallo ! Tu dis bonjour à Romain de ma part, ja ?'], end: true },
-  { speaker: 'Vendeur', say: ['Hallo ! Tu viens pour la commande de Romain, ja ? Attends, je regarde dans le kast…'] },
+  { speaker: 'Vendeur', say: ['Hallo ! Tu viens pour le bouquet de Romain, ja ? Attends, je regarde dans le kast…'] },
   { speaker: 'Vendeur', say: ['Voilà, c\'est goed ! Dis-moi, tu es bien le coloc de Romain, ja of nee ?'] },
   {
     choose: 'Que réponds-tu ?',
     choices: [
       { label: 'Ja', steps: [{ speaker: 'Vendeur', say: ['Ha, parfait ! Alors tu lui dis : de volgende fois, il vient lui-même, hè !'] }] },
-      { label: 'Nee', steps: [{ speaker: 'Vendeur', say: ['Nee ? Dan is deze niet voor jou ! Allez, je rigole. Tiens, prends-la quand même.'] }] },
+      { label: 'Nee', steps: [{ speaker: 'Vendeur', say: ['Nee ? Dan is deze niet voor jou ! Allez, je rigole. Tiens, prends-le quand même.'] }] },
     ],
   },
-  { give: ITEMS.marchandise, text: 'Tu reçois la marchandise de Romain.' },
+  { give: ITEMS.marchandise, text: 'Tu reçois le bouquet de fleurs de Romain.' },
   { setFlag: FLAGS.marchandiseAchetee },
 ];
 

@@ -151,10 +151,17 @@ export const ALTAR = {
 
 // En sortant du temple (avec ou sans l'objet de chance) : les touristes remercient Pierre, et l'envoient raconter sa
 // journée au patron de l'agence.
+// Pierre fait un pas hors de la porte ; les touristes qui le suivaient (FOLLOWERS) redeviennent des PNJ là où ils sont, et
+// vont se placer de chaque côté de la porte (maps/hanoi.js), chacun sur sa case, avant de parler.
+export const TEMPLE_FRONT = { pierre: [26, 18], touriste1: [25, 17], touriste2: [27, 17] };
 export const TOURISTS_THANKS = [
+  { goTo: TEMPLE_FRONT.pierre, facing: 'up' },
+  { setFlag: FLAGS.visiteTerminee },
+  { walk: 'touriste-1', to: TEMPLE_FRONT.touriste1, block: true },
+  { walk: 'touriste-2', to: TEMPLE_FRONT.touriste2, block: true },
+  { face: { 'touriste-1': 'right', 'touriste-2': 'left', player: 'up' } },
   { speaker: TOURISTE, say: ['Merci pour la visite ! Sans téléphone, j\'ai tout regardé. Vraiment regardé.'] },
   { speaker: TOURISTE, say: ['Un super guide. Et même pas besoin de parler vietnamien !', 'On va dire à ton patron, à l\'agence, que tu es le meilleur. Va vite lui raconter !'] },
-  { setFlag: FLAGS.visiteTerminee },
 ];
 
 // ---------- 5. Six mois plus tard : l'appel de Romain ----------

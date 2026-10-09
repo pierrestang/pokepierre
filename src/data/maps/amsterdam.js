@@ -22,8 +22,8 @@ const NOT_HOME = ['Tu frappes. Personne ne répond… « Niemand thuis », peut-
 
 // Amsterdam — 36 x 30 cases avec sa bordure d'arbres d'automne. Au nord, le long de la grande rue : une maison de canal,
 // le manoir à pignons (CORNING), la maison de canal à la porte en cœur (la maison commune, « la deuxième en haut à
-// gauche »), la maison à pignon rouge. Le premier canal (une péniche, deux ponts de planches), puis, au sud : le coffee
-// shop (porte et fleurs), une maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal et une
+// gauche »), la maison à pignon rouge. Le premier canal (une péniche, deux ponts de planches), puis, au sud : le
+// marchand de fleurs (porte et fleurs), une maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal et une
 // maison à pignon ; le quai sud, ses jardinières, et le second canal. Scénario : data/amsterdamStory.js.
 // Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = rue, ~ = canal, I = pont, D = porte, T = arbres).
 export const amsterdamMap = {
@@ -53,7 +53,7 @@ export const amsterdamMap = {
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 19
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 20
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 21
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔTT', // 22  portes : coffee shop (4), maison de canal (22), maison à pignon (29)
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔTT', // 22  portes : marchand de fleurs (4), maison de canal (22), maison à pignon (29)
     'TTɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔTT', // 23  quai sud
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 24
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 25
@@ -63,7 +63,7 @@ export const amsterdamMap = {
     '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', // 29
   ]),
   doors: [
-    // CORNING (le manoir à pignons) : le stage commence une fois la marchandise rendue à Romain.
+    // CORNING (le manoir à pignons) : le stage commence une fois le bouquet donné à Romain.
     {
       x: 13, y: 7, interior: 'corning',
       lock: { ifFlags: [FLAGS.marchandiseDonnee] },
@@ -71,11 +71,11 @@ export const amsterdamMap = {
     },
     { x: 22, y: 9, interior: 'maisonCommune' },                 // la maison commune (la deuxième en haut à gauche)
     { x: 28, y: 9, lockedDialogue: NOT_HOME },                  // la maison à pignon rouge
-    // Le coffee shop : une fois que Romain t'a demandé sa marchandise.
+    // Le marchand de fleurs : une fois que Romain t'a demandé son bouquet.
     {
       x: 4, y: 23, interior: 'coffeeShop',
       lock: { ifFlags: [FLAGS.romainDemande] },
-      lockedDialogue: ['Un coffee shop. Rien à y faire pour l\'instant.'],
+      lockedDialogue: ['Un marchand de fleurs. Rien à y faire pour l\'instant.'],
     },
     { x: 22, y: 23, lockedDialogue: NOT_HOME },                 // la maison de canal du sud
     { x: 29, y: 22, lockedDialogue: NOT_HOME },                 // la maison à pignon du sud

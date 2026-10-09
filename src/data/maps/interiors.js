@@ -2054,11 +2054,11 @@ export const interiors = {
     ],
   },
 
-  // Amsterdam — le coffee shop : le vendeur (français mêlé de néerlandais) donne la marchandise de Romain (voir
+  // Amsterdam — le marchand de fleurs : le vendeur (français mêlé de néerlandais) donne le bouquet de Romain (voir
   // amsterdamStory.js VENDOR). La fleuriste de Doublonville (HGSS), des plantes partout ; le vendeur derrière la grande
   // table verte.
   coffeeShop: {
-    name: 'Coffee shop',
+    name: 'Marchand de fleurs',
     grid: parseGrid([
       'XXXXXXXXXX',
       'XXXXXXXXXX',
@@ -2079,7 +2079,7 @@ export const interiors = {
     ],
   },
 
-  // Amsterdam — la maison commune, avec Romain : il accueille Pierre, l'envoie chercher sa marchandise, puis à son stage
+  // Amsterdam — la maison commune, avec Romain : il accueille Pierre, l'envoie chercher son bouquet de fleurs, puis à son stage
   // (voir amsterdamStory.js). Modèle maison-type-2 : cuisine, télé, table et fauteuils.
   maisonCommune: {
     name: 'Maison commune',
@@ -2107,7 +2107,7 @@ export const interiors = {
         script: ROMAIN_HOME,
       },
     ],
-    // En entrant la première fois : Romain accueille Pierre et lui demande sa marchandise.
+    // En entrant la première fois : Romain accueille Pierre et lui demande son bouquet de fleurs.
     events: [{ on: 'enter', unlessFlags: [FLAGS.romainDemande], steps: ROMAIN_WELCOME }],
   },
 

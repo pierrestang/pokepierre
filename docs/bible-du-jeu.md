@@ -896,7 +896,8 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
    téléphone, lève les yeux vers les statues… et sourit. » ; « Vous avez raison. Je m'en souviendrai mieux comme ça. »
    Sur l'autel : « Sur l'autel, entre deux bâtons d'encens, une petite amulette porte-bonheur. Un gardien te fait
    signe : elle est pour toi. » → **Objet de chance** (facultatif). En sortant, avec ou sans l'amulette (la visite est
-   finie dès que la touriste a rangé son téléphone) : « Merci pour la visite ! Sans téléphone, j'ai tout regardé.
+   finie dès que la touriste a rangé son téléphone), Pierre fait un pas devant la porte et les deux touristes vont se
+   placer de chaque côté de la porte, chacun sur sa case, avant de parler : « Merci pour la visite ! Sans téléphone, j'ai tout regardé.
    Vraiment regardé. » / « Un super guide. Et même pas besoin de parler vietnamien ! » / **« On va dire à ton patron, à
    l'agence, que tu es le meilleur. Va vite lui raconter ! »**
 5. **Le retour à l'agence.** Le patron : « Les touristes sont passés me voir. Ils ne parlent que de toi ! » / « Premier
@@ -941,7 +942,7 @@ réservée à Paris) : Autonomie sert au stage, Insouciance à la nuit au bord d
 Première version par scripts/build_amsterdam.py, puis retouchée à la main dans le créateur. Au nord, le long de la grande
 rue (vers l'aéroport par ses deux bouts) : une maison de canal, le manoir à pignons = Corning (porte (13, 7)), la maison
 de canal à la porte en cœur = la maison commune, « la deuxième en haut à gauche » (22, 9), la maison à pignon rouge (28,
-9, fermée). Le premier canal, une péniche, deux ponts de planches. Au sud : le coffee shop (porte et fleurs, (4, 23)), une
+9, fermée). Le premier canal, une péniche, deux ponts de planches. Au sud : le marchand de fleurs (porte et fleurs, (4, 23)), une
 maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal (22, 23, fermée) et une maison à pignon
 (29, 22, fermée) ; le quai sud et ses jardinières, le second canal ; une bordure d'arbres d'automne dorés. Arrivée en
 (1, 10). Portes fermées : « Tu frappes. Personne ne répond… « Niemand thuis », peut-être. »
@@ -949,22 +950,22 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Romain | Le colocataire : la marchandise, puis la nuit au canal et le billet pour New Delhi | `g202` |
-| Vendeur | Le coffee shop, en français mêlé de néerlandais | `g112` |
+| Romain | Le colocataire : le bouquet de fleurs, puis la nuit au canal et le billet pour New Delhi | `g202` |
+| Vendeur | Le marchand de fleurs, en français mêlé de néerlandais | `g112` |
 | Laurent | Le patron de Corning : la campagne du nouveau produit | `g53` |
 
 ### Quêtes, dans l'ordre
 1. **L'arrivée.** « Ton téléphone sonne. C'est Romain ! » ; Romain, au téléphone : **« Pierre, t'es arrivé ! Rejoins-moi à
    la maison, la deuxième en haut à gauche. »** (Corning est fermé d'ici là : « Les bureaux de Corning. Ton stage commence
    bientôt : va d'abord t'installer chez Romain. »)
-2. **La maison commune.** Romain : **« Installe-toi ! Tiens, d'ailleurs, tu peux me rendre un service ? Va chercher ma
-   marchandise au coffee shop, j'ai la flemme d'y retourner. »** (ensuite : « Le coffee shop, c'est de l'autre côté du
+2. **La maison commune.** Romain : **« Installe-toi ! Tiens, d'ailleurs, tu peux me rendre un service ? Va chercher mon
+   bouquet de fleurs chez le marchand de fleurs, j'ai la flemme d'y retourner. »** (ensuite : « Le marchand de fleurs, c'est de l'autre côté du
    canal, la maison à gauche avec les fleurs. Passe le pont ! »)
-3. **Le coffee shop.** Le vendeur : « Hallo ! Tu viens pour la commande de Romain, ja ? Attends, je regarde dans le
+3. **Le marchand de fleurs.** Le vendeur : « Hallo ! Tu viens pour le bouquet de Romain, ja ? Attends, je regarde dans le
    kast… » / « Voilà, c'est goed ! Dis-moi, tu es bien le coloc de Romain, ja of nee ? » ; choix « Ja » : « Ha, parfait !
    Alors tu lui dis : de volgende fois, il vient lui-même, hè ! » ; « Nee » : « Nee ? Dan is deze niet voor jou ! Allez, je
-   rigole. Tiens, prends-la quand même. » → **Marchandise** (dans les deux cas).
-4. **Retour chez Romain.** « Tu donnes la marchandise à Romain. » ; Romain : « Merci, t'es un chef ! Je te revaudrai ça. » /
+   rigole. Tiens, prends-le quand même. » → **Bouquet de fleurs** (dans les deux cas ; icône : la Gracidée de HGSS).
+4. **Retour chez Romain.** « Tu donnes le bouquet de fleurs à Romain. » ; Romain : « Merci, t'es un chef ! Je te revaudrai ça. » /
    « Bon, maintenant, au boulot : ton stage chez Corning commence aujourd'hui. C'est le grand manoir de la rue. Laurent
    t'attend ! »
 5. **Corning : la campagne.** Laurent : **« Bienvenue chez Corning ! Pour ton premier jour, je te confie une vraie mission :
@@ -1000,7 +1001,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 - **Utilisées** : **Autonomie** (la campagne de Corning), **Insouciance** (la nuit au canal).
 
 ### Objets et souvenir
-**Marchandise** (le coffee shop, rendue à Romain), **Billet d'avion pour New Delhi** (remis par Romain), souvenir **Photo
+**Bouquet de fleurs** (le marchand de fleurs, donné à Romain), **Billet d'avion pour New Delhi** (remis par Romain), souvenir **Photo
 du canal** (carnet).
 
 ### Départ et trajet

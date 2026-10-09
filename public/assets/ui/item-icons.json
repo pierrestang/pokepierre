@@ -128,7 +128,7 @@
     "h": 32
    }
   },
-  "velo": {
+  "bouquet": {
    "frame": {
     "x": 512,
     "y": 0,
@@ -136,7 +136,7 @@
     "h": 32
    }
   },
-  "pierre-gravee": {
+  "velo": {
    "frame": {
     "x": 544,
     "y": 0,
@@ -144,7 +144,7 @@
     "h": 32
    }
   },
-  "vieille-canne-petite": {
+  "pierre-gravee": {
    "frame": {
     "x": 576,
     "y": 0,
@@ -152,7 +152,7 @@
     "h": 32
    }
   },
-  "super-canne-petite": {
+  "vieille-canne-petite": {
    "frame": {
     "x": 608,
     "y": 0,
@@ -160,7 +160,7 @@
     "h": 32
    }
   },
-  "mega-canne-petite": {
+  "super-canne-petite": {
    "frame": {
     "x": 640,
     "y": 0,
@@ -168,9 +168,17 @@
     "h": 32
    }
   },
-  "pierre-gravee-petite": {
+  "mega-canne-petite": {
    "frame": {
     "x": 672,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pierre-gravee-petite": {
+   "frame": {
+    "x": 704,
     "y": 0,
     "w": 32,
     "h": 32

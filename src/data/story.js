@@ -124,9 +124,9 @@ export const FLAGS = {
   appelRomain: 'appel-romain',                  //   Romain t'appelle : il t'attend à Amsterdam (le vol s'ouvre)
   arriveeAmsterdam: 'arrivee-amsterdam',        // arrivé à Amsterdam
   appelAmsterdam: 'appel-amsterdam',            //   à l'arrivée, Romain appelle : rendez-vous à la maison commune
-  romainDemande: 'romain-demande',              //   Romain t'a demandé d'aller chercher sa marchandise au coffee shop
-  marchandiseAchetee: 'marchandise-achetee',    //   achetée au coffee shop
-  marchandiseDonnee: 'marchandise-donnee',      //   rendue à Romain : il t'envoie à ton stage chez Corning
+  romainDemande: 'romain-demande',              //   Romain t'a demandé d'aller chercher son bouquet chez le marchand de fleurs
+  marchandiseAchetee: 'marchandise-achetee',    //   le bouquet, pris chez le marchand de fleurs
+  marchandiseDonnee: 'marchandise-donnee',      //   donné à Romain : il t'envoie à ton stage chez Corning
   stageCorning: 'stage-corning',                //   la campagne présentée à Laurent (Autonomie, Audace)
   moisAmsterdam: 'mois-amsterdam',              //   en sortant de Corning : « Quelques mois plus tard… » (la nuit tombe)
   canalNuit: 'canal-nuit',                      //   la nuit au bord du canal avec Romain (Insouciance), le billet pour New Delhi
@@ -249,7 +249,7 @@ export const ITEMS = {
   // Hanoï : les consignes du premier jour, écrites en vietnamien (le patron) ; facultatif, la pièce des papis du lac.
   consignesVietnamien: { id: 'consignes-vietnamien', name: 'Consignes en vietnamien' },
   pieceEchecs: { id: 'piece-echecs', name: "Pièce d'échecs chinois" },
-  marchandise: { id: 'marchandise', name: 'Marchandise' },
+  marchandise: { id: 'marchandise', name: 'Bouquet de fleurs' },   // id d'origine gardé (sauvegardes)
   billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },  // remis par Romain, à Amsterdam
   pierreGravee: { id: 'pierre-gravee', name: 'Pierre gravée' },                // New Delhi : le vieux sage du fort
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },

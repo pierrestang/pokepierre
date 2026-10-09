@@ -95,9 +95,10 @@ export const hanoiMap = {
       ifFlags: [FLAGS.arriveeHanoi], unlessFlags: [FLAGS.touristesSuivent],
       script: TOURISTS_MEET,
     },
-    // Après la visite, ils restent de chaque côté de la porte du temple.
-    { id: 'touriste-1-merci', ...TOURIST_1, x: 25, y: 17, facing: 'right', ...AFTER_VISIT, dialogue: ['Merci encore ! J\'ai tout regardé, pour de vrai.'] },
-    { id: 'touriste-2-merci', ...TOURIST_2, x: 27, y: 17, facing: 'left', ...AFTER_VISIT, dialogue: ['Le meilleur guide de Hanoï !'] },
+    // Après la visite, ils restent de chaque côté de la porte du temple. Même id que les suiveurs : en sortant du temple,
+    // ils reprennent la main là où ils suivaient Pierre, puis vont à leur place (hanoiStory.js TOURISTS_THANKS).
+    { id: 'touriste-1', ...TOURIST_1, x: 25, y: 17, facing: 'right', ...AFTER_VISIT, dialogue: ['Merci encore ! J\'ai tout regardé, pour de vrai.'] },
+    { id: 'touriste-2', ...TOURIST_2, x: 27, y: 17, facing: 'left', ...AFTER_VISIT, dialogue: ['Le meilleur guide de Hanoï !'] },
     // Les passants de la rue : ils ne parlent pas français.
     { id: 'passante', name: 'Passante', sprite: 'g19', x: 22, y: 9, facing: 'down', script: PASSANTE },
     { id: 'vendeuse', name: 'Vendeuse', sprite: 'g70', x: 18, y: 23, facing: 'up', still: true, script: VENDEUSE },

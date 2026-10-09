@@ -17,7 +17,7 @@ const ICON_OF_ITEM = {
   'diplome-anglais': 'livre',
   'diplome-hull': 'carnet',
   'objet-chance': 'amulette',
-  marchandise: 'sac',
+  marchandise: 'bouquet',
   'billet-new-delhi': 'billet',
   'diplome-bordeaux': 'carte',
   'piece-tracteur': 'piece-metal',
