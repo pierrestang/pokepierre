@@ -261,7 +261,8 @@ export const ITEMS = {
   pieceEchecs: { id: 'piece-echecs', name: "Pièce d'échecs chinois" },
   marchandise: { id: 'marchandise', name: 'Bouquet de fleurs' },   // id d'origine gardé (sauvegardes)
   billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },  // remis par Romain, à Amsterdam
-  pierreGravee: { id: 'pierre-gravee', name: 'Pierre gravée' },                // New Delhi : le vieux sage du fort
+  pierreGravee: { id: 'pierre-gravee', name: 'Pierre gravée' },
+  talismanIndien: { id: 'talisman-indien', name: 'Talisman indien' },             // la fin : dans la chambre de Fort-de-France                // New Delhi : le vieux sage du fort
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },
   clesParis: { id: 'cles-paris', name: 'Clés du studio' },                          // Paris : le propriétaire
   placeConcert: { id: 'place-concert', name: 'Place de concert' },                  // Paris : rendue par Clara

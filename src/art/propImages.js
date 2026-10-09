@@ -2,7 +2,8 @@
 // public/assets/props/<nom>.png. L'image est posée au milieu du bas de l'emprise du prop, triée en profondeur avec les
 // personnages (on passe derrière ce qui dépasse au-dessus).
 // Le repas de New Delhi (`repas`, le tapis garni ; `plat`, l'assiette tendue à Pierre) : scripts/build_meal.py.
-export const PROP_IMAGES = ['tracteur', 'repas', 'plat'];
+// La porte de Notre-Dame (Paris), sous l'arche du dessin : scripts/build_props.py.
+export const PROP_IMAGES = ['tracteur', 'repas', 'plat', 'porte-notre-dame'];
 
 export const propKey = (name) => `prop-${name}`;
 

@@ -1205,7 +1205,7 @@ studio**, l'immeuble aux balcons fleuris (6, 22, avec les clés du propriétaire
 à terrasse. Tu n'as jamais le temps de t'y asseoir. »), le jardin au bassin, l'opéra (41, 22). La Seine, deux yachts,
 deux ponts. Au sud : **l'immeuble crème, chez Hugues** (8, 40, le soir du match ; sinon « Tu frappes. Personne ne
 répond. »), **le restaurant au store rayé**, où Thomas travaille (14, 40, le soir du match ; sinon « Le restaurant au
-store rayé est complet. »), Notre-Dame (25, 41, en travaux) et **la tour de bureaux** vitrée (42, 41, fermée avant les
+store rayé est complet. »), Notre-Dame (25, 41, en travaux ; une grande porte de bois à deux battants sous l'arche, dessinée par scripts/build_props.py, le dessin n'ayant qu'une ouverture noire) et **la tour de bureaux** vitrée (42, 41, fermée avant les
 clés). La rue sud ne mène nulle part. Le trajet du studio à la tour : à pied (ou à vélo), par le pont de gauche. Toujours
 de jour.
 
@@ -1337,14 +1337,16 @@ une, de la Joie de vivre à la Liberté ; la Liberté s'illumine en dernier (en 
 (systems/VirtuesFade.js).
 
 ### Le réveil (le twist)
-On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu (le même décor). Pierre est couché. On **rejoue telle
-quelle la cinématique d'ouverture** (`fortDeFranceStory.js OPENING_CINEMATIC`, la même qu'en début de partie) : l'image
-de l'île et le bruit des vagues, « C'est le dernier matin à Fort-de-France. », puis Maman, d'en bas : « Pierre ! Le
-ferry part cet après-midi ! Descends ! » Pierre se lève ; le joueur reprend la main et va vers l'escalier. Juste avant
-l'escalier, il passe forcément devant la table de chevet : dessus, le **pendentif** (la même image que le talisman du
-vieux sage de New Delhi). Bulle « ! » au-dessus de Pierre ; Pierre : **« Je ne suis jamais parti de Fort-de-France.
-Alors ça, d'où ça vient ? »** Écran noir final, puis retour à l'écran titre. « Continuer » reprend Pierre dans sa chambre
-de Fort-de-France, libre (la scène ne se rejoue pas).
+On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu, et **la cinématique d'ouverture est exactement la
+même** (`fortDeFranceStory.js OPENING_CINEMATIC`, partagée avec le début de partie) : Pierre debout au milieu de sa
+chambre, à côté du lit (pas couché), l'image de l'île et le bruit des vagues, « C'est le dernier matin à
+Fort-de-France. », puis Maman, d'en bas : « Pierre ! Le ferry part cet après-midi ! Descends ! » Le joueur reprend la
+main. Par terre, au milieu de la pièce (6, 6), un petit objet (la même image que la pierre gravée du vieux sage). **Au
+premier pas** de Pierre, où qu'il aille : bulle « ! » ; Pierre : « Ouais… c'est quoi, cet objet ? » ; il va jusqu'à
+l'objet et le ramasse → **Talisman indien** (encart d'objet reçu, comme partout dans le jeu : « Tu as reçu : Talisman
+indien. ») ; Pierre : **« Je ne suis jamais parti de Fort-de-France. Alors ça, d'où ça vient ? »** Écran noir final, puis
+retour à l'écran titre. « Continuer » reprend Pierre dans sa chambre de Fort-de-France, libre (la scène ne se rejoue
+pas).
 
 ### Après Paris
 L'histoire se termine ici : Toulon, le Chemin de Saint-Jacques, la Corse, Bali, le Sri Lanka, la Thaïlande, le Népal et le

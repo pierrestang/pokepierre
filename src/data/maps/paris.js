@@ -116,6 +116,9 @@ export const parisMap = {
   ],
   // Les bâtiments sont dans le dessin (scripts/build_paris.py).
   buildings: [],
+  // La grande porte de Notre-Dame, sous l'arche (le dessin n'a qu'une ouverture noire) : posée sur les deux rangées
+  // au-dessus de la porte du jeu (25, 41), l'image descend d'une case pour couvrir toute l'ouverture.
+  props: [{ type: 'porte', image: 'porte-notre-dame', x: 24, y: 39, w: 3, h: 2, dy: 16 }],
   npcs: [
     // Le propriétaire, devant l'immeuble.
     // Le propriétaire, juste devant l'immeuble aux balcons fleuris : Pierre doit le trouver (il ne vient pas à lui).

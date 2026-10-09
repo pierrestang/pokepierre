@@ -26,6 +26,7 @@ const ICON_OF_ITEM = {
   'cle-antivol': 'cles',
   velo: 'velo',
   'pierre-gravee': 'pierre-gravee',
+  'talisman-indien': 'pierre-gravee',
 };
 
 // Image de l'atlas pour un objet (null s'il n'a pas d'icône).

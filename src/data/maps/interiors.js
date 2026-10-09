@@ -26,7 +26,7 @@ import {
   COLLEAGUE, CONCERT, DIRECTOR, DIRECTOR_AFTER, DIRECTOR_CALLS, HALL_LINES, HUGUES_AFTER, MANAGER_CALLS, MANAGER_TALK, MATCH,
   OFFICE_FIRST, PROMOTION, THOMAS_SERVICE,
 } from '../parisStory.js';
-import { PENDANT, WAKE_UP } from '../reveStory.js';
+import { TALISMAN, TALISMAN_SPOT, WAKE_UP } from '../reveStory.js';
 import { DELHI_PARTY, FORT_SILENCE, SAGE, SAGE_AFTER, GUESTS } from '../newDelhiStory.js';
 
 // L'accueil de KEDGE (Bordeaux) : on lui parle par-dessus le comptoir.
@@ -222,21 +222,19 @@ export const interiors = {
     spawn: { x: 2, y: 5, facing: 'left' },             // au réveil, à côté du lit
     triggers: [
       ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
-      { x: 2, y: 3, ifFlags: [FLAGS.reveilFin], unlessFlags: [FLAGS.talismanPris], script: PENDANT },
+      ...[[2, 4], [3, 4], [4, 4], [6, 4], [8, 4], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5],
+        [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [8, 6], [9, 6], [2, 7], [3, 7], [4, 7], [6, 7], [7, 7], [8, 7],
+        [2, 3], [3, 3]].map(([x, y]) => ({ x, y, ifFlags: [FLAGS.reveilFin], unlessFlags: [FLAGS.talismanPris], script: TALISMAN })),
     ],
-    // La fin du jeu (reveStory.js WAKE_UP) : la chambre s'ouvre dans le noir ; Pierre couché dans son lit, la table de
-    // chevet à côté et, dessus, le pendentif (la pierre gravée du vieux sage de New Delhi, même image). En allant vers
-    // l'escalier, Pierre passe forcément devant (2, 3) : il le voit (PENDANT).
+    // La fin du jeu (reveStory.js WAKE_UP) : la chambre s'ouvre dans le noir, la cinématique d'ouverture est rejouée
+    // telle quelle ; par terre, le talisman (la même image que la pierre gravée du vieux sage de New Delhi). Au premier
+    // pas de Pierre (n'importe quelle case), il le repère (TALISMAN).
     openDark: { ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.reveilFin] },
-    npcs: [
-      {
-        id: 'pierre-lit', name: 'Pierre', sprite: 'g198', x: 1, y: 5, facing: 'down', still: true, inBed: true,
-        ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.reveilFin], dialogue: ['…'],
-      },
-    ],
-    props: [{ type: 'nightstand', x: 2, y: 4, w: 1, h: 1, ifFlags: [FLAGS.finDuJeu] }],
     decals: [
-      { icons: [['pierre-gravee-petite', -8, -12, 32]], x: 2, y: 4, ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.talismanPris] },
+      {
+        icons: [['pierre-gravee-petite', -8, -8, 32]], x: TALISMAN_SPOT[0], y: TALISMAN_SPOT[1],
+        ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.talismanPris],
+      },
     ],
     objects: [
       { x: 6, y: 3, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
