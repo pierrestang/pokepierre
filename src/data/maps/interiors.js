@@ -2139,9 +2139,9 @@ export const interiors = {
     ]),
     spawn: { x: 11, y: 15, facing: 'up' },
     night: { lights: [[8, 8, 0xffc060], [16, 8, 0xffc060], [4, 9, 0xffd890], [20, 9, 0xffd890]] },
-    // Le grand repas, au milieu de la cour : un tapis tissé couvert de plats (dessiné dans le code, art/mealArt.js ;
-    // provisoire, en attendant des sprites de nourriture). Les convives sont assis tout autour.
-    props: [{ type: 'repas', x: 10, y: 10, w: 4, h: 2, flat: true }],
+    // Le grand repas, au milieu de la cour : un tapis tissé couvert de plats (scripts/build_meal.py : plats de
+    // ghostpixxells, vaisselle de PeekyChew). Les convives sont assis tout autour.
+    props: [{ type: 'repas', image: 'repas', x: 10, y: 10, w: 4, h: 2, flat: true }],
     npcs: [
       { id: 'harsh-fete', name: 'Harsh', x: 13, y: 14, facing: 'left', unlessFlags: [FLAGS.feteDelhi], dialogue: ['Viens, assieds-toi avec nous !'] },
       {

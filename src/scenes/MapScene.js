@@ -6,7 +6,6 @@ import { CATCHES, FISHING_ROD } from '../data/fishing.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
 import { drawDecal, drawPulleyFixed, drawPulleyStuck } from '../art/tileArt.js';
-import { drawDish, drawMeal } from '../art/mealArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
@@ -70,7 +69,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // et peuvent définir
 // `surroundingTile` (tuile de remplissage par défaut).
 // Objets posés au sol, dessinés dans le code : la poulie de la cabane des cousins (Saint-Ay).
-const FLOOR_PROPS = { pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed, repas: drawMeal };
+const FLOOR_PROPS = { pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
 
 // Clés de conditions d'une étape (voir systems/flags.js meetsConditions).
 const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenirs', 'ifItems', 'unlessItems'];
@@ -411,20 +410,20 @@ export class MapScene extends Phaser.Scene {
         this.props.push({ data, graphics });
         continue;
       }
-      // Objet en image (art/propImages.js, style Gen 4) : au milieu du bas de son emprise, trié en profondeur. (Le désordre
-      // de la soirée, `type: 'image'`, a sa propre planche : plus bas.)
+      // Objet en image (art/propImages.js, style Gen 4) : au milieu du bas de son emprise, trié en profondeur ; `flat` (un
+      // tapis) : à plat sur le sol, sous tous les personnages. (Le désordre de la soirée, `type: 'image'`, a sa propre
+      // planche : plus bas.)
       if (data.image && data.type !== 'image') {
         const bottom = (data.y + data.h) * TILE_SIZE;
         const graphics = this.add.image((data.x + data.w / 2) * TILE_SIZE, bottom, propKey(data.image))
-          .setOrigin(0.5, 1).setDepth(10 + (bottom - 1) / 10000);
+          .setOrigin(0.5, 1).setDepth(data.flat ? 9.5 : 10 + (bottom - 1) / 10000);
         this.props.push({ data, graphics });
         continue;
       }
       // Objets posés au sol, dessinés dans le code (voir FLOOR_PROPS) : triés en profondeur avec les personnages.
       if (FLOOR_PROPS[data.type]) {
-        // `flat` (un tapis, une nappe) : à plat sur le sol, sous tous les personnages.
-        const graphics = this.add.graphics().setDepth(data.flat ? 9.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000);
-        FLOOR_PROPS[data.type](graphics, data.x * TILE_SIZE, data.y * TILE_SIZE, data);
+        const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);
+        FLOOR_PROPS[data.type](graphics, data.x * TILE_SIZE, data.y * TILE_SIZE);
         this.props.push({ data, graphics });
         continue;
       }
@@ -1317,15 +1316,13 @@ export class MapScene extends Phaser.Scene {
     for (const [id, dir] of Object.entries(facing)) this.actorSprite(id)?.setFacing(dir);
   }
 
-  // Des plats tendus à Pierre (le repas de New Delhi) : de chaque convive de `ids`, une petite assiette glisse jusqu'à
-  // lui, l'une après l'autre (décalées), puis disparaît à son arrivée.
+  // Des plats tendus à Pierre (le repas de New Delhi) : de chaque convive de `ids`, un plat (props/plat.png) glisse
+  // jusqu'à lui, l'un après l'autre (décalés), puis disparaît à son arrivée.
   async passDishes(ids) {
     const to = this.player.sprite;
     const all = [ids].flat().map((id) => this.actorSprite(id)).filter(Boolean);
     await Promise.all(all.map((from, i) => new Promise((resolve) => {
-      const dish = this.add.graphics().setDepth(TOP_DEPTH + 0.3);
-      drawDish(dish);
-      dish.setPosition(from.x, from.y - 6);
+      const dish = this.add.image(from.x, from.y - 6, propKey('plat')).setDepth(TOP_DEPTH + 0.3);
       this.tweens.add({
         targets: dish, x: to.x, y: to.y - 4, delay: i * 260, duration: 520, ease: 'Sine.easeInOut',
         onComplete: () => { dish.destroy(); resolve(); },

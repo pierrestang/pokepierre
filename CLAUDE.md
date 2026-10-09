@@ -24,6 +24,8 @@ rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (f
   objets, bâtiments, arbres). Ce qui n'a pas d'équivalent Rouge Feu reste dessiné dans le code (src/art/).
 - Ressources de fans (assets-source/fan/) : voiture de la famille tirée de « FRLG Tilesets - Cars » de
   pinkscales (DeviantArt), libre pour un projet de fan non commercial, avec crédit à pinkscales.
+  Le grand repas de New Delhi (scripts/build_meal.py, assets-source/fan/food/CREDITS.txt) : plats de « Free Pixel
+  foods » de ghostpixxells (itch.io, CC0), vaisselle Gen 4 de PeekyChew (DeviantArt, crédit demandé).
 - Écran : format GBA dézoomé, 360 x 240 px (22,5 x 15 cases), voir src/systems/screen.js.
 - Police des dialogues et du menu : police bitmap de Rouge Feu, extraite par scripts/extract_frlg_font.py
   vers public/assets/fonts/ (voir src/systems/frlgFont.js) ; deux lignes par page, pages coupées automatiquement.

@@ -1041,10 +1041,12 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
   de la carte de New Delhi : dallage de grès, couronne de palmiers, au fond trois pavillons à coupole (dont le mausolée
   au dôme blanc), deux mâts à fanions, deux lanternes de bronze, le stand de chai, un étal rayé rose, des soucis.
   Toujours la nuit, lanternes allumées ; sobre, sans cliché. L'entrée en bas, au milieu (la sortie vers la carte, devant
-  la porte du palais). Au milieu, **le grand repas** : un tapis tissé rouge et ocre posé par terre (4 x 2 cases), couvert
-  de plats : quatre assiettes de métal (riz, dal, légumes, galette), la marmite de cuivre pleine de riz, une pile de
-  galettes, deux bols (curry, dal). Version provisoire dessinée dans le code (`src/art/mealArt.js`, objet `repas`), en
-  attendant des sprites de nourriture Gen 4 choisis par l'utilisateur. Neuf convives assis par terre en cercle autour
+  la porte du palais). Au milieu, **le grand repas** : un tapis tissé rouge et ocre posé par terre (4 x 2 cases), avec
+  une assiette blanche devant chaque coin, le grand bol de riz parfumé, les boulettes en sauce, les beignets, le bol de
+  lentilles et une carafe d'eau (`scripts/build_meal.py` → `public/assets/props/repas.png`). Les plats viennent de « Free
+  Pixel foods » de ghostpixxells (itch.io, CC0), réduits de 32 à 16 px, sans leur ombre portée ; l'assiette et la carafe,
+  de la vaisselle Gen 4 de PeekyChew (DeviantArt, crédit demandé) ; crédits dans `assets-source/fan/food/CREDITS.txt`.
+  L'assiette tendue à Pierre est la galette (`plat.png`). Neuf convives assis par terre en cercle autour
   (les personnages assis : jambes cachées, buste abaissé ; option `seated` des PNJ, étape `sit`), qui restent à chaque
   visite : « Tu reviens ? Il y a toujours une place pour toi, et toujours de quoi manger ! », « Reprends du riz, va ! Il
   en reste plein la marmite. », « Le dal, c'est la recette de ma grand-mère. Elle ne la donne à personne ! », « Ici, on
@@ -1076,7 +1078,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    cour du palais brille de lanternes. Au milieu, tout le monde est assis en cercle par terre, autour d'un grand repas
    étalé sur un tapis. » ; Harsh : **« Viens, assieds-toi avec nous ! Ici, un invité ne reste jamais le ventre
    vide. »** Prophecy va s'asseoir (« Ça sent incroyablement bon… »), Harsh aussi, et Pierre s'assoit entre eux deux,
-   sur le côté gauche du tapis. Les assiettes arrivent vers lui (on les voit glisser jusqu'à lui, étape `pass`) : « À
+   sur le côté gauche du tapis. Les plats arrivent vers lui (on voit une galette glisser jusqu'à lui depuis chaque convive, étape `pass`) : « À
    peine assis, une assiette arrive devant toi : du riz, du dal, une galette encore chaude. » ; Harsh : « Goûte
    celui-là ! C'est ma mère qui l'a préparé ce matin. » ; puis de tout le cercle : « Et ça continue. De gauche, de
    droite, d'en face : un bol, une galette, encore un peu de riz. On te ressert sans que tu demandes. » ; bulle « … » sur
