@@ -1054,7 +1054,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 - **La cour du palais** (`delhiCour`, 24 x 18, scripts/build_delhi_cour.py) : une cour à ciel ouvert faite des éléments
   de la carte de New Delhi : dallage de grès, couronne de palmiers, au fond trois pavillons à coupole (dont le mausolée
   au dôme blanc), deux mâts à fanions, deux lanternes de bronze, le stand de chai, un étal rayé rose, des soucis.
-  Toujours la nuit, lanternes allumées ; sobre, sans cliché. L'entrée en bas, au milieu (la sortie vers la carte, devant
+  En plein jour ; sobre, sans cliché. L'entrée en bas, au milieu (la sortie vers la carte, devant
   la porte du palais). Au milieu, **le grand repas** : un tapis tissé rouge et ocre posé par terre (4 x 2 cases), avec
   une assiette blanche devant chaque coin, le grand bol de riz parfumé, les boulettes en sauce, les beignets, le bol de
   lentilles et une carafe d'eau (`scripts/build_meal.py` → `public/assets/props/repas.png`). Les plats viennent de « Free
@@ -1088,11 +1088,11 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    moins de lui (ou quand on lui parle) : bulle « ! » ; Prophecy
    s'avance : **« Pierre ! Te voilà enfin ! Ça y est, on y est. L'Inde, pour de vrai. »** Harsh arrive de la foule, à
    l'est, et vient vers eux deux : **« Vous êtes les étudiants en échange, c'est ça ? Moi c'est Harsh ! Venez, je vais
-   vous montrer. »** / « Ce soir, il y a une fête dans la cour du palais de grès. Suivez-moi ! » Pas d'écran noir : Harsh
+   vous montrer. »** / « Aujourd'hui, il y a une fête dans la cour du palais de grès. Suivez-moi ! » Pas d'écran noir : Harsh
    part devant, à pied, jusqu'à la porte du palais (16, 12) (il attend Pierre s'il traîne : « C'est par ici : la porte du
    palais de grès. Entrez, la fête a commencé ! »), puis il entre ; Prophecy suit Pierre. Pierre entre à son tour.
 3. **Le grand repas partagé (Joie de vivre, dans le sens renversé).** Il remplace l'ancienne danse. Dans la cour : « La
-   cour du palais brille de lanternes. Au milieu, tout le monde est assis en cercle par terre, autour d'un grand repas
+   cour du palais est baignée de soleil. Au milieu, tout le monde est assis en cercle par terre, autour d'un grand repas
    étalé sur un tapis. » ; Harsh : **« Viens, assieds-toi avec nous ! Ici, un invité ne reste jamais le ventre
    vide. »** Prophecy va s'asseoir (« Ça sent incroyablement bon… »), Harsh aussi, et Pierre s'assoit entre eux deux,
    sur le côté gauche du tapis. Les plats arrivent vers lui (on voit une galette glisser jusqu'à lui depuis chaque convive, étape `pass`) : « À

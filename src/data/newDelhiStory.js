@@ -58,7 +58,7 @@ export const PROPHECY_WELCOME = [
   { speaker: 'Prophecy', say: ['Pierre ! Te voilà enfin ! Ça y est, on y est. L\'Inde, pour de vrai.'] },
   { setFlag: FLAGS.prophecyDelhi },
   { approach: 'harsh' },
-  { speaker: 'Harsh', say: ['Vous êtes les étudiants en échange, c\'est ça ? Moi c\'est Harsh ! Venez, je vais vous montrer.', 'Ce soir, il y a une fête dans la cour du palais de grès. Suivez-moi !'] },
+  { speaker: 'Harsh', say: ['Vous êtes les étudiants en échange, c\'est ça ? Moi c\'est Harsh ! Venez, je vais vous montrer.', 'Aujourd\'hui, il y a une fête dans la cour du palais de grès. Suivez-moi !'] },
   HARSH_WALK,
 ];
 
@@ -69,7 +69,7 @@ export const HARSH_LEADING = [
 
 // ---------- 2. La fête (Joie de vivre) ----------
 
-// Dans la cour du palais, à la nuit tombée (interiors.js delhiCour) : le grand repas partagé. Tout le monde est assis
+// Dans la cour du palais, en plein jour (interiors.js delhiCour) : le grand repas partagé. Tout le monde est assis
 // en cercle par terre, autour d'un tapis couvert de plats. Prophecy, qui suivait Pierre, devient le PNJ `prophecy-fete`
 // et s'assoit ; Harsh fait asseoir Pierre à côté de lui. Joie de vivre, dans le sens renversé : ce sont les autres qui
 // donnent, de tous les côtés ; Pierre, débordé, apprend à recevoir (étape `pass` : les assiettes glissent vers lui).
@@ -78,7 +78,7 @@ const LEFT = ['etudiante-fete', 'harsh-fete'];
 const ACROSS = ['etudiant-dal', 'grand-mere-fete', 'etudiante-riz', 'voisin-fete'];
 export const DELHI_PARTY = [
   { setFlag: FLAGS.courArrivee },
-  { say: ['La cour du palais brille de lanternes. Au milieu, tout le monde est assis en cercle par terre, autour d\'un grand repas étalé sur un tapis.'] },
+  { say: ['La cour du palais est baignée de soleil. Au milieu, tout le monde est assis en cercle par terre, autour d\'un grand repas étalé sur un tapis.'] },
   { speaker: 'Harsh', say: ['Viens, assieds-toi avec nous ! Ici, un invité ne reste jamais le ventre vide.'] },
   { walk: 'prophecy-fete', to: MEAL_SEATS.prophecy, block: true },
   { face: { 'prophecy-fete': 'up' }, sit: { 'prophecy-fete': true } },

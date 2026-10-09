@@ -2111,10 +2111,10 @@ export const interiors = {
     events: [{ on: 'enter', unlessFlags: [FLAGS.romainDemande], steps: ROMAIN_WELCOME }],
   },
 
-  // New Delhi — la cour du palais de grès, un soir de fête (scripts/build_delhi_cour.py : dallage de grès, couronne de
+  // New Delhi — la cour du palais de grès, un jour de fête (scripts/build_delhi_cour.py : dallage de grès, couronne de
   // palmiers, trois pavillons à coupole au fond, mâts à fanions, lanternes, stand de chai, un étal, des soucis ; les
-  // éléments de la carte de New Delhi). Toujours la nuit, lanternes allumées. Au milieu, le grand repas partagé, assis en
-  // cercle par terre (voir newDelhiStory.js DELHI_PARTY) ; il continue à chaque visite.
+  // éléments de la carte de New Delhi). En plein jour. Au milieu, le grand repas partagé, assis en cercle par terre
+  // (voir newDelhiStory.js DELHI_PARTY) ; il continue à chaque visite.
   delhiCour: {
     name: 'Cour du palais',
     grid: parseGrid([
@@ -2138,7 +2138,6 @@ export const interiors = {
       'oooooooooooEEooooooooooo', // l'entrée de la cour (sortie vers la carte)
     ]),
     spawn: { x: 11, y: 15, facing: 'up' },
-    night: { lights: [[8, 8, 0xffc060], [16, 8, 0xffc060], [4, 9, 0xffd890], [20, 9, 0xffd890]] },
     // Le grand repas, au milieu de la cour : un tapis tissé couvert de plats (scripts/build_meal.py : plats de
     // ghostpixxells, vaisselle de PeekyChew). Les convives sont assis tout autour.
     props: [{ type: 'repas', image: 'repas', x: 10, y: 10, w: 4, h: 2, flat: true }],
