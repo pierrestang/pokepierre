@@ -96,7 +96,7 @@ export const DELHI_PARTY = [
   { emote: 'player', kind: 'dots' },
   { speaker: 'Grand-mère', say: ['Non, non, on ne refuse pas ! Chez nous, l\'invité, on le ressert toujours.'] },
   { say: ['Je ne sais même pas quoi faire de toute cette générosité. Juste… l\'accepter, peut-être.'] },
-  { say: ['À Fort-de-France, c\'est toi qui menais la danse. Ici, pour une fois, ce sont les autres qui donnent.'] },
+  { speaker: 'Harsh', say: ['Atithi Devo Bhava. Chez nous, ça veut dire que l\'invité est sacré.'] },
   { useTrait: TRAITS.joie },
   { say: ['Tu prends ce qu\'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin.'] },
   { pass: LEFT },

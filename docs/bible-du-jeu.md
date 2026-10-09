@@ -1097,9 +1097,9 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    celui-là ! C'est ma mère qui l'a préparé ce matin. » ; puis de tout le cercle : « Et ça continue. De gauche, de
    droite, d'en face : un bol, une galette, encore un peu de riz. On te ressert sans que tu demandes. » ; bulle « … » sur
    Pierre ; la grand-mère : « Non, non, on ne refuse pas ! Chez nous, l'invité, on le ressert toujours. » ; Pierre, en
-   lui-même : **« Je ne sais même pas quoi faire de toute cette générosité. Juste… l'accepter, peut-être. »** ; « À
-   Fort-de-France, c'est toi qui menais la danse. Ici, pour une fois, ce sont les autres qui donnent. » → **« Pierre
-   utilise Joie de vivre ! »** → « Tu prends ce qu'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat
+   lui-même : **« Je ne sais même pas quoi faire de toute cette générosité. Juste… l'accepter, peut-être. »** ; Harsh :
+   **« Atithi Devo Bhava. Chez nous, ça veut dire que l'invité est sacré. »** → **« Pierre utilise Joie de
+   vivre ! »** → « Tu prends ce qu'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat
    à ton voisin. » ; Harsh : « Tu vois ? Tu es des nôtres, maintenant ! » / **« Maintenant que vous avez vu la fête, il
    faut que je vous montre autre chose. Un endroit très ancien. Venez. »** / « C'est derrière la vieille porte du fort,
    au bout de l'avenue. » Pierre se relève ; Harsh et Prophecy le suivent ensuite.
@@ -1136,24 +1136,46 @@ lac de Saint-Ay et au coquillage de Manon.
 l'histoire) ; trajet en avion, sans encart (pas de vertu reçue) ; Pierre et Prophecy arrivent à Bordeaux, à côté de la
 sortie vers l'aéroport ; le stade s'ouvre (drapeau `semestre-termine`).
 
-## 11. Bordeaux : la remise des diplômes
+## 11. Bordeaux, le retour : la remise des diplômes
 
-- **L'arrivée** (le vol depuis Delhi, devant la sortie vers l'aéroport) : Prophecy, rentré avec Pierre : **« Bordeaux !
-  Ça fait bizarre, hein ? Comme si on n'était jamais partis. »** / **« La remise des diplômes, c'est aujourd'hui, au
-  stade : la grande rotonde, un peu plus loin dans la rue, à gauche. On y va ? »** Il suit Pierre jusqu'au stade.
-- **Le stade** (porte (21, 10), ouvert une fois le semestre terminé ; `bordeauxStory.js GRADUATION`), en entrant, joué
-  en entier : « Les gradins sont pleins. Toute la promotion est là, en toge et en chapeau. » ; le directeur (`g120`), sur
-  l'estrade : « Bienvenue à tous pour la remise des diplômes de la promotion ! » / **« Pierre ! Avance-toi jusqu'à
-  l'estrade. »** ; Pierre s'avance devant l'estrade → **Diplôme de Bordeaux** (« Le directeur te remet ton diplôme.
-  Toute la promotion applaudit ! ») ; les douze diplômés applaudissent ; le directeur : « Félicitations, Pierre. La
-  suite, maintenant, c'est à toi de l'écrire. » ; Prophecy vient à Pierre : « On l'a fait, Pierre ! Diplômés ! » /
-  **« Moi, je reste un peu à Bordeaux. Et toi ? Paris, non ? La route part au bout de la rue, au sud-est. »** Ensuite,
-  Prophecy reste dans le stade (« Paris, Pierre ! La route part au bout de la rue, au sud-est. Tu m'enverras une
-  carte ? ») ; les diplômés : « On l'a fait ! », « Félicitations à nous tous ! », « Je n'en reviens pas : diplômés ! »,
-  « Quelle belle journée ! ».
-- **Départ** : l'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton diplôme de Bordeaux en poche, tu
-  prends la route de Paris ! » Pas de scène de trajet : Pierre arrive à Paris par l'ouest de l'avenue, en (1, 11), et
-  marche jusqu'à son immeuble.
+Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **Pas de vertu**, **aucune ligne
+« Objectif : »** : ce sont Prophecy et le directeur qui disent où aller.
+
+1. **L'arrivée.** Pierre arrive de l'aéroport à Bordeaux (devant la sortie vers l'aéroport, (30, 10)) avec **Prophecy**,
+   rentré de New Delhi avec lui, qui marche à ses côtés (il le suit). Aussitôt, Prophecy : « Bordeaux ! Ça fait
+   bizarre, hein ? Comme si on n'était jamais partis. » / **« Allez, viens ! Tout le monde nous attend au stade, la
+   grande rotonde, juste là. C'est le grand jour ! »** Le stade est ouvert (porte (21, 10)).
+2. **Dans le stade.** En entrant : « Les gradins sont pleins. Toute la promotion est là, en toge… et, au bord de la piste,
+   des visages que tu connais. » Prophecy ne suit plus Pierre : « Je file rejoindre les autres. Vas-y, toi : c'est ton
+   moment ! » et va se placer parmi les diplômés (15, 9). Le directeur, sur l'estrade : « Bienvenue à tous pour la
+   remise des diplômes de la promotion ! » / **« Pierre ! Quand tu es prêt, avance-toi jusqu'à l'estrade. »** Pierre
+   a la main et se déplace seul. Au bord de la piste, devant la tribune, **toute la bande, revenue de ses échanges, et
+   les parents**, à qui l'on peut parler :
+   - Maman : « Mon Pierre ! Regarde-toi, diplômé ! Viens là que je te serre fort ! Je suis tellement fière, mon
+     grand ! »
+   - Papa : « Un diplôme. Du concret, enfin. » / « … Bon. Je suis fier de toi, fiston. Mais ne le répète pas trop. »
+   - Ousmane : « Pierre ! Hull, Hanoï, Amsterdam, New Delhi… T'as fait le tour du monde, toi. Aujourd'hui, on finit ce
+     qu'on a commencé ensemble. »
+   - Léo : « Bro ! Je rentre de Hull pour l'occasion. La maison est bien gardée, t'inquiète. »
+   - Paul : « Tu te souviens de mon enceinte ? Je ne l'ai jamais revue… Allez, c'est oublié. Aujourd'hui, c'est la
+     fête ! »
+   - Rémi : « Moi, les States, c'était avant. Cette fois, je suis resté à Bordeaux… mais j'ai suivi tous vos trips en
+     photo, man ! »
+   - Anaïs : « Bali, c'était magique. Mais rien ne vaut ça : tous ensemble, ici. »
+   - Charlotte : « Le Canada, la neige, le sirop d'érable… et me revoilà ! Je n'aurais raté ça pour rien au monde. »
+   - Romain : « Hong Kong, puis Amsterdam avec toi… Maintenant, je me sens chez moi n'importe où. Mais ici, avec vous,
+     c'est autre chose. »
+   - Prophecy : « Les États-Unis, puis New Delhi avec toi… Quel voyage. Et maintenant, le diplôme ! »
+   - Huit diplômés en toge sur le terrain, tournés vers l'estrade (« On l'a fait ! », « Félicitations à nous tous ! »,
+     « Je n'en reviens pas : diplômés ! », « Quelle belle journée ! ») ; l'allée du milieu reste libre.
+3. **La cérémonie** (le seul geste : avancer devant l'estrade, rangée 6, x 11 à 14) : « Tu t'avances jusqu'à l'estrade.
+   Tout le stade applaudit. » (toute la bande, les parents et les diplômés sautent de joie) ; le directeur :
+   « Félicitations, Pierre. » → **Diplôme de Bordeaux** (« Le directeur te remet ton diplôme. ») ; nouveaux
+   applaudissements ; « La suite, maintenant, c'est à toi de l'écrire. »
+4. **La sortie.** En sortant du stade, Pierre : **« Bon… toutes les bonnes choses ont une fin. Il paraît qu'il faut
+   grandir un jour. Direction Paris. »** L'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton
+   diplôme de Bordeaux en poche, tu prends la route de Paris ! » Pierre arrive à Paris par l'ouest de l'avenue, en
+   (1, 11), et marche jusqu'à son immeuble.
 
 ## 12. Paris : la dernière ville
 
@@ -1303,8 +1325,8 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Personnage | Sprite | Où il apparaît |
 |---|---|---|
 | Pierre | `g198` (Red) | Partout |
-| Maman | `g126` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve |
-| Papa | `g119` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve |
+| Maman | `g126` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
+| Papa | `g119` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
 | Manon | `g57` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy |
 | Fanny | `g49` | Saint-Ay, Montépilloy |
 | Jean | `g52` | Montépilloy |
@@ -1333,16 +1355,16 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Geoffrey | `g41` | Prytanée |
 | Militaires | `g87` / `g8` | Prytanée |
 | Agent immobilier | `g35` | Bordeaux |
-| Ousmane | `g105` | Bordeaux, aéroport, Hull |
-| Paul | `g86` | Bordeaux |
-| Rémi | `g117` | Bordeaux |
+| Ousmane | `g105` | Bordeaux, aéroport, Hull, Bordeaux (le stade) |
+| Paul | `g86` | Bordeaux (et le stade, au retour) |
+| Rémi | `g117` | Bordeaux (et le stade, au retour) |
 | Professeure d'anglais | `g106` | Bordeaux (KEDGE) |
 | Hôtesse | `g64` | Aéroport |
-| Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull |
-| Romain | `g202` (characterLooks) | Hull, Hanoï (téléphone), Amsterdam |
-| Prophecy | `g94` | Hull, New Delhi, Bordeaux (le stade) |
-| Charlotte | `g44` | Hull |
-| Anaïs | `g107` | Bordeaux (la soirée), Hull |
+| Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
+| Romain | `g202` (characterLooks) | Hull, Hanoï (téléphone), Amsterdam, Bordeaux (le stade) |
+| Prophecy | `g94` | Hull, New Delhi, Bordeaux (le retour, le stade) |
+| Charlotte | `g44` | Hull, Bordeaux (le stade) |
+| Anaïs | `g107` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
 | Barman | `g101` | Hull |
 | Habitué | figurant | Hull |
 | Nouveau | `g58` | Prytanée (hall de l'internat) |

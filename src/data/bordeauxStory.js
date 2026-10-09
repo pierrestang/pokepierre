@@ -280,36 +280,69 @@ export const ANTITHEFT_KEY = [
 
 // ---------- Le retour de New Delhi : la remise des diplômes ----------
 
-// À l'arrivée (le vol depuis Delhi, à côté de la sortie vers l'aéroport) : Prophecy, rentré avec Pierre, indique le
-// stade (la rotonde, un peu plus loin dans la rue, à gauche). Il le suit jusque-là (story.js FOLLOWERS).
+// Court, sans vertu ni « Objectif : » : Prophecy mène Pierre au stade, toute la bande et les parents y sont, Pierre
+// s'avance seul vers l'estrade, reçoit son diplôme, puis part pour Paris.
+
+// À l'arrivée (le vol depuis Delhi, devant la sortie vers l'aéroport) : Prophecy, rentré avec Pierre et qui marche à
+// ses côtés (story.js FOLLOWERS), indique le stade (la rotonde, juste à côté, porte (21, 10)).
 export const BACK_FROM_DELHI = [
+  { faceTo: 'prophecy-depart' },
   {
     speaker: 'Prophecy',
     say: [
       'Bordeaux ! Ça fait bizarre, hein ? Comme si on n\'était jamais partis.',
-      'La remise des diplômes, c\'est aujourd\'hui, au stade : la grande rotonde, un peu plus loin dans la rue, à gauche. On y va ?',
+      'Allez, viens ! Tout le monde nous attend au stade, la grande rotonde, juste là. C\'est le grand jour !',
     ],
   },
   { setFlag: FLAGS.stadeIndique },
 ];
 
-// Dans le stade : toute la promotion, le directeur sur l'estrade ; Pierre est appelé, reçoit son diplôme ; Prophecy
-// (qui ne le suit plus) lui montre la suite : la route de Paris.
-const GRADUATES = Array.from({ length: 12 }, (_, i) => `diplome-${i}`);
-export const GRADUATION = [
-  { say: ['Les gradins sont pleins. Toute la promotion est là, en toge et en chapeau.'] },
-  { speaker: 'Directeur', say: ['Bienvenue à tous pour la remise des diplômes de la promotion !', 'Pierre ! Avance-toi jusqu\'à l\'estrade.'] },
-  { goTo: [12, 6], facing: 'up' },
-  { give: ITEMS.diplomeBordeaux, text: 'Le directeur te remet ton diplôme. Toute la promotion applaudit !' },
-  { cheer: GRADUATES },
-  { speaker: 'Directeur', say: ['Félicitations, Pierre. La suite, maintenant, c\'est à toi de l\'écrire.'] },
+// Les places dans le stade (interiors.js stade) : Prophecy rejoint la foule des diplômés ; devant l'estrade, la case
+// où Pierre reçoit son diplôme (déclencheurs sur la rangée 6, x 11 à 14).
+export const STADIUM = { prophecy: [15, 9], stage: [11, 12, 13, 14].map((x) => [x, 6]) };
+const GRADUATES = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => `diplome-${i}`);
+const BAND = ['ousmane-stade', 'leo-stade', 'paul-stade', 'remi-stade', 'anais-stade', 'charlotte-stade', 'romain-stade',
+  'maman-stade', 'papa-stade', 'prophecy-depart'];
+
+// En entrant : la foule ; Prophecy (qui ne suit plus Pierre) va rejoindre les autres ; le directeur appelle Pierre.
+export const STADIUM_ARRIVAL = [
+  { say: ['Les gradins sont pleins. Toute la promotion est là, en toge… et, au bord de la piste, des visages que tu connais.'] },
+  { setFlag: FLAGS.stadeEntree },
+  { faceTo: 'prophecy-depart' },
+  { speaker: 'Prophecy', say: ['Je file rejoindre les autres. Vas-y, toi : c\'est ton moment !'] },
+  { walk: 'prophecy-depart', to: STADIUM.prophecy, block: true },
+  { face: { 'prophecy-depart': 'up' } },
+  { speaker: 'Directeur', say: ['Bienvenue à tous pour la remise des diplômes de la promotion !', 'Pierre ! Quand tu es prêt, avance-toi jusqu\'à l\'estrade.'] },
+];
+
+// Devant l'estrade (Pierre y est allé seul) : les applaudissements, le diplôme.
+export const CEREMONY = [
+  { face: { player: 'up' } },
+  { say: ['Tu t\'avances jusqu\'à l\'estrade. Tout le stade applaudit.'] },
+  { cheer: [...GRADUATES, ...BAND] },
+  { speaker: 'Directeur', say: ['Félicitations, Pierre.'] },
+  { give: ITEMS.diplomeBordeaux, text: 'Le directeur te remet ton diplôme.' },
+  { cheer: [...GRADUATES, ...BAND] },
+  { speaker: 'Directeur', say: ['La suite, maintenant, c\'est à toi de l\'écrire.'] },
   { setFlag: FLAGS.diplomeBordeaux },
-  { approach: 'prophecy-depart' },
-  {
-    speaker: 'Prophecy',
-    say: [
-      'On l\'a fait, Pierre ! Diplômés !',
-      'Moi, je reste un peu à Bordeaux. Et toi ? Paris, non ? La route part au bout de la rue, au sud-est.',
-    ],
-  },
+];
+
+// La bande et les parents, au bord de la piste : les retrouvailles (chacun dit d'où il revient).
+export const REUNION_LINES = {
+  ousmane: ['Pierre ! Hull, Hanoï, Amsterdam, New Delhi… T\'as fait le tour du monde, toi. Aujourd\'hui, on finit ce qu\'on a commencé ensemble.'],
+  leo: ['Bro ! Je rentre de Hull pour l\'occasion. La maison est bien gardée, t\'inquiète.'],
+  paul: ['Tu te souviens de mon enceinte ? Je ne l\'ai jamais revue… Allez, c\'est oublié. Aujourd\'hui, c\'est la fête !'],
+  remi: ['Moi, les States, c\'était avant. Cette fois, je suis resté à Bordeaux… mais j\'ai suivi tous vos trips en photo, man !'],
+  anais: ['Bali, c\'était magique. Mais rien ne vaut ça : tous ensemble, ici.'],
+  charlotte: ['Le Canada, la neige, le sirop d\'érable… et me revoilà ! Je n\'aurais raté ça pour rien au monde.'],
+  romain: ['Hong Kong, puis Amsterdam avec toi… Maintenant, je me sens chez moi n\'importe où. Mais ici, avec vous, c\'est autre chose.'],
+  prophecy: ['Les États-Unis, puis New Delhi avec toi… Quel voyage. Et maintenant, le diplôme !'],
+  maman: ['Mon Pierre ! Regarde-toi, diplômé ! Viens là que je te serre fort ! Je suis tellement fière, mon grand !'],
+  papa: ['Un diplôme. Du concret, enfin.', '… Bon. Je suis fier de toi, fiston. Mais ne le répète pas trop.'],
+};
+
+// En sortant du stade, le diplôme en poche : Pierre, tourné vers Paris (la route s'ouvre au sud-est).
+export const LEAVING_BORDEAUX = [
+  { speaker: 'Pierre', say: ['Bon… toutes les bonnes choses ont une fin. Il paraît qu\'il faut grandir un jour. Direction Paris.'] },
+  { setFlag: FLAGS.adieuxBordeaux },
 ];

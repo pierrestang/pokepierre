@@ -8,7 +8,7 @@ import {
 } from '../saintAyStory.js';
 import { MAMAN_FDF } from '../fortDeFranceStory.js';
 import {
-  AGENT_KEYS, GRADUATION, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_END, PARTY_LEO, PAULFIT, REMI_CUPS,
+  AGENT_KEYS, CEREMONY, REUNION_LINES, STADIUM, STADIUM_ARRIVAL, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_END, PARTY_LEO, PAULFIT, REMI_CUPS,
   TIDY_BED, TIDY_CUPS, TIDY_LIVING_ROOM,
 } from '../bordeauxStory.js';
 import { GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
@@ -2233,26 +2233,33 @@ export const interiors = {
         ifFlags: [FLAGS.diplomeBordeaux],
         dialogue: ['Félicitations, Pierre. La suite, maintenant, c\'est à toi de l\'écrire.'],
       },
-      { id: 'diplome-0', name: 'Diplômé', x: 5, y: 8, facing: 'up', color: 0x202028, hat: true, dialogue: ['On l\'a fait !'] },
-      { id: 'diplome-1', name: 'Diplômé', x: 7, y: 9, facing: 'up', color: 0x2c2c3c, hat: true, dialogue: ['Félicitations à nous tous !'] },
-      { id: 'diplome-2', name: 'Diplômé', x: 9, y: 8, facing: 'up', color: 0x1c1c24, hat: true, dialogue: ['Je n\'en reviens pas : diplômés !'] },
-      { id: 'diplome-3', name: 'Diplômé', x: 16, y: 8, facing: 'up', color: 0x202028, hat: true, dialogue: ['Quelle belle journée !'] },
-      { id: 'diplome-4', name: 'Diplômé', x: 18, y: 9, facing: 'up', color: 0x2c2c3c, hat: true, dialogue: ['On l\'a fait !'] },
-      { id: 'diplome-5', name: 'Diplômé', x: 20, y: 8, facing: 'up', color: 0x1c1c24, hat: true, dialogue: ['Félicitations à nous tous !'] },
-      { id: 'diplome-6', name: 'Diplômé', x: 6, y: 11, facing: 'up', color: 0x202028, hat: true, dialogue: ['Je n\'en reviens pas : diplômés !'] },
-      { id: 'diplome-7', name: 'Diplômé', x: 8, y: 10, facing: 'up', color: 0x2c2c3c, hat: true, dialogue: ['Quelle belle journée !'] },
-      { id: 'diplome-8', name: 'Diplômé', x: 18, y: 11, facing: 'up', color: 0x1c1c24, hat: true, dialogue: ['On l\'a fait !'] },
-      { id: 'diplome-9', name: 'Diplômé', x: 20, y: 10, facing: 'up', color: 0x202028, hat: true, dialogue: ['Félicitations à nous tous !'] },
-      { id: 'diplome-10', name: 'Diplômé', x: 10, y: 11, facing: 'up', color: 0x2c2c3c, hat: true, dialogue: ['Je n\'en reviens pas : diplômés !'] },
-      { id: 'diplome-11', name: 'Diplômé', x: 16, y: 11, facing: 'up', color: 0x1c1c24, hat: true, dialogue: ['Quelle belle journée !'] },
-      // Prophecy, qui suivait Pierre depuis Delhi : une fois le diplôme remis, il reste là (à la place où il était).
+      // Les diplômés, sur le terrain, tournés vers l'estrade (l'allée du milieu, x 11 à 14, reste libre pour Pierre).
+      ...[[5, 8], [7, 9], [9, 8], [16, 8], [18, 9], [20, 8], [8, 11], [17, 11]].map(([x, y], i) => ({
+        id: `diplome-${i}`, name: 'Diplômé', x, y, facing: 'up', color: [0x202028, 0x2c2c3c, 0x1c1c24][i % 3], hat: true,
+        dialogue: [['On l\'a fait !', 'Félicitations à nous tous !', 'Je n\'en reviens pas : diplômés !', 'Quelle belle journée !'][i % 4]],
+      })),
+      // La bande, revenue de ses échanges, et les parents : au bord de la piste, devant la tribune (voir
+      // bordeauxStory.js REUNION_LINES).
+      ...[
+        ['maman-stade', 'Maman', 3, 2, 'maman'], ['papa-stade', 'Papa', 4, 2, 'papa'],
+        ['ousmane-stade', 'Ousmane', 7, 2, 'ousmane'], ['romain-stade', 'Romain', 8, 3, 'romain'],
+        ['leo-stade', 'Léo', 9, 2, 'leo'], ['paul-stade', 'Paul', 17, 2, 'paul'],
+        ['remi-stade', 'Rémi', 18, 3, 'remi'], ['anais-stade', 'Anaïs', 20, 2, 'anais'],
+        ['charlotte-stade', 'Charlotte', 21, 3, 'charlotte'],
+      ].map(([id, name, x, y, line]) => ({ id, name, x, y, facing: 'down', dialogue: REUNION_LINES[line] })),
+      // Prophecy, qui suivait Pierre depuis Delhi : en entrant, il va rejoindre la foule (même id que le suiveur : il
+      // part de là où il était).
       {
-        id: 'prophecy-depart', name: 'Prophecy', x: 12, y: 8, facing: 'up', ifFlags: [FLAGS.diplomeBordeaux],
-        dialogue: ['Paris, Pierre ! La route part au bout de la rue, au sud-est. Tu m\'enverras une carte ?'],
+        id: 'prophecy-depart', name: 'Prophecy', x: 15, y: 9, facing: 'up', ifFlags: [FLAGS.stadeEntree],
+        dialogue: REUNION_LINES.prophecy,
       },
     ],
-    // En entrant (le semestre de Delhi fini) : la cérémonie, jouée en entier (voir bordeauxStory.js GRADUATION).
-    events: [{ on: 'enter', unlessFlags: [FLAGS.diplomeBordeaux], steps: GRADUATION }],
+    // Devant l'estrade, Pierre (seul) déclenche la remise du diplôme (bordeauxStory.js CEREMONY).
+    triggers: STADIUM.stage.map(([x, y]) => ({
+      x, y, ifFlags: [FLAGS.stadeEntree], unlessFlags: [FLAGS.diplomeBordeaux], script: CEREMONY,
+    })),
+    // En entrant (le semestre de Delhi fini) : Prophecy rejoint la foule, le directeur appelle Pierre.
+    events: [{ on: 'enter', unlessFlags: [FLAGS.stadeEntree], steps: STADIUM_ARRIVAL }],
   },
 
   // Paris — ton appartement, dans l'immeuble aux balcons fleuris (modèle « maison-type-2 ») : le soir, la pensée du

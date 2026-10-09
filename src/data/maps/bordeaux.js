@@ -8,7 +8,7 @@ import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
   ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AFTER_ORAL, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST,
-  ANTITHEFT_KEY, BACK_FROM_DELHI,
+  ANTITHEFT_KEY, BACK_FROM_DELHI, LEAVING_BORDEAUX,
 } from '../bordeauxStory.js';
 
 // Les gardiens des sorties est : leurs répliques, et l'arrêt quand Pierre passe à côté d'eux (il se tourne vers lui, parle,
@@ -155,6 +155,8 @@ export const bordeauxMap = {
     { on: 'enter', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.ousmaneDiplome], steps: OUSMANE_AFTER_ORAL },
     // De retour de New Delhi (le vol, avec Prophecy) : Prophecy indique le stade.
     { on: 'enter', ifFlags: [FLAGS.retourBordeaux], unlessFlags: [FLAGS.stadeIndique], steps: BACK_FROM_DELHI },
+    // En sortant du stade, diplômé : « Direction Paris. »
+    { on: 'enter', ifFlags: [FLAGS.diplomeBordeaux], unlessFlags: [FLAGS.adieuxBordeaux], steps: LEAVING_BORDEAUX },
   ],
   // Panneaux « Aéroport » à côté des sorties ; les noms sur les portes.
   objects: [
