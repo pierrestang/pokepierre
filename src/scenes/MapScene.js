@@ -1237,12 +1237,13 @@ export class MapScene extends Phaser.Scene {
     const start = `${this.player.tileX},${this.player.tileY}`;
     const seen = new Set([start]);
     const queue = [[this.player.tileX, this.player.tileY]];
-    const interior = this.scene.key === 'Interior';
-    // Sorties d'un intérieur : tapis de sortie et escaliers (ex. le couloir des casiers n'a que des escaliers).
+    // Sorties d'un intérieur : tapis de sortie et escaliers (ex. le couloir des casiers n'a que des escaliers). Une pièce
+    // sans aucune (les étages de la tour de Paris : on n'en sort que par l'ascenseur) suit la règle du dehors.
     const exit = (cx, cy) => {
       const code = this.grid[cy]?.[cx];
       return code !== undefined && (getTile(code).exit || getTile(code).stairs);
     };
+    const interior = this.scene.key === 'Interior' && this.grid.some((row, cy) => [...row].some((_, cx) => exit(cx, cy)));
     while (queue.length) {
       const [cx, cy] = queue.shift();
       if (interior ? exit(cx, cy) : seen.size >= 40) return true;

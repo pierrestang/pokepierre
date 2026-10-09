@@ -71,8 +71,9 @@ export const HALL_LINES = {
 };
 
 // De retour au bureau après le concert : le bouton du 1er étage s'est allumé (un collègue le dit).
+// (La collègue de l'accueil, près de l'entrée : elle n'a que quelques pas à faire.)
 export const MANAGER_CALLS = [
-  { approach: 'collegue-point' },
+  { approach: 'collegue-accueil' },
   { speaker: 'Collègue', say: ['Pierre ! Le manager te cherchait. Il t\'attend au 1er étage : l\'ascenseur, au fond.'] },
 ];
 
@@ -92,7 +93,7 @@ export const MANAGER_TALK = [
 
 // De retour au bureau après le match : le dernier étage s'allume.
 export const DIRECTOR_CALLS = [
-  { approach: 'collegue-point' },
+  { approach: 'collegue-accueil' },
   { speaker: 'Collègue', say: ['Pierre ! Le directeur veut te voir. Dernier étage, rien que ça !'] },
   { setFlag: FLAGS.directeurInvite },
 ];

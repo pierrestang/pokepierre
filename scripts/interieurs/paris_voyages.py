@@ -17,7 +17,8 @@ from interieurs_plans import T, sirmaio, stretch
 RADIO = '012i_Goldenrod radio tower'
 GOLD = '012i_Goldenrod interiors'
 SPROUT = '006i_Sprout Tower'
-# Morceau à coller : les portes rouges de l'ascenseur de la Tour Radio (3 x 2).
+# Morceau à coller : les portes rouges de l'ascenseur de la Tour Radio (3 x 2), à plat (`flat`) : jamais au-dessus de
+# Pierre quand il attend devant.
 ELEVATOR_DOORS = (RADIO, 21, 29, 3, 2)
 
 
@@ -287,18 +288,18 @@ PLANS = {
     'entreprise': {
         'hgss': (RADIO, 10, 111, 25, 12),
         'erase': [(23, 0, 2, 4)],
-        'paste': [{'from': (RADIO, 30, 111, 2, 2), 'to': (23, 0)}, {'from': ELEVATOR_DOORS, 'to': (22, 0)}],
+        'paste': [{'from': (RADIO, 30, 111, 2, 2), 'to': (23, 0)}, {'from': ELEVATOR_DOORS, 'to': (22, 0), 'flat': True}],
     },
     # Paris — 1er étage : un plateau de bureaux de la Tour Radio ; l'ascenseur en haut à gauche (0..2, 0..1).
     'entrepriseManager': {
         'hgss': (RADIO, 10, 71, 14, 12),
         'erase': [(0, 0, 2, 4)],
-        'paste': [{'from': (RADIO, 14, 71, 2, 2), 'to': (0, 0)}, {'from': ELEVATOR_DOORS, 'to': (0, 0)}],
+        'paste': [{'from': (RADIO, 14, 71, 2, 2), 'to': (0, 0)}, {'from': ELEVATOR_DOORS, 'to': (0, 0), 'flat': True}],
     },
     # Paris — dernier étage : le bureau du directeur de la Tour Radio (tapis rouge, plantes, grand bureau).
     'entrepriseDirecteur': {
         'hgss': (RADIO, 10, 31, 9, 12),
         'erase': [(0, 0, 2, 4)],
-        'paste': [{'from': (RADIO, 13, 31, 2, 2), 'to': (0, 0)}, {'from': ELEVATOR_DOORS, 'to': (0, 0)}],
+        'paste': [{'from': (RADIO, 13, 31, 2, 2), 'to': (0, 0)}, {'from': ELEVATOR_DOORS, 'to': (0, 0), 'flat': True}],
     },
 }

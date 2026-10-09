@@ -1212,7 +1212,7 @@ de jour.
 ### Les intérieurs
 - **Ton studio** (modèle « maison type 2 ») : la télé (« Tu ne l'allumes presque jamais. »).
 - **La tour de bureaux**, trois niveaux reliés par l'ascenseur (Rez-de-chaussée, « 1er étage (manager) », « Dernier étage
-  (directeur) » ; un bouton éteint : « Le bouton « manager » est éteint : ton badge n'y donne pas accès. »).
+  (directeur) » ; les portes rouges de l'ascenseur restent sous Pierre quand il attend devant ; un bouton éteint : « Le bouton « manager » est éteint : ton badge n'y donne pas accès. »).
   - Le rez-de-chaussée (hall de la Tour Radio de HGSS) : vivant, des collègues debout qui parlent à Pierre comme à l'un
     des leurs : « Salut Pierre ! Encore là de bonne heure, toi. », « Tiens, Pierre, tu passes au point d'équipe tout à
     l'heure ? », « Bonne journée, hein ! On se voit en haut. » ; l'accueil (« La machine à café est encore en panne.
@@ -1265,8 +1265,8 @@ de jour.
    « Donc, y'a plus rien qui m'attache, c'est un jour la baie ou le Taj, moi j'voulais répondre à ces messages… »
    (paroles fournies par l'utilisateur) ; la foule saute de joie ; **« Le concert se termine. »** ; Pierre, en lui-même :
    **« Allez, faut que je rentre. Demain, grosse journée. »**
-4. **La promotion.** Au bureau, un collègue : « Pierre ! Le manager te cherchait. Il t'attend au 1er étage : l'ascenseur,
-   au fond. » Le bouton « manager » s'est allumé. Au 1er étage, le manager : **« Pierre ! Tu t'en sors très bien. À
+4. **La promotion.** Au bureau, la collègue de l'accueil, près de l'entrée, vient à Pierre : « Pierre ! Le manager te cherchait. Il t'attend au 1er étage : l'ascenseur,
+   au fond. » Le bouton « manager » s'est allumé. Au 1er étage, le manager traverse le plateau et vient à Pierre : **« Pierre ! Tu t'en sors très bien. À
    partir d'aujourd'hui, tu travailles ici, avec moi. »** ; « Une promotion. Un bureau plus grand, plus haut. »
 5. **Le match.** En sortant de la tour, un message de Hugues : **« Match ce soir chez moi ! Passe prendre Thomas en
    chemin, et ramenez de quoi manger. »** / « Thomas finit son service au resto au store rayé, de l'autre côté de la
@@ -1279,7 +1279,7 @@ de jour.
    Hugues : « Allez la France ! » ; « Mais l'Argentine revient. Une fois… puis une deuxième. » ; Hugues : « Non… c'est
    pas possible… » ; **« Le match se termine. »** ; Thomas : « Bon. On les aura la prochaine fois. Allez, il reste à
    manger ! » ; Pierre, en lui-même : **« On a perdu, mais c'était une belle soirée pour le GOAT… »**
-6. **Le directeur (Liberté).** Au bureau, un collègue : « Pierre ! Le directeur veut te voir. Dernier étage, rien que
+6. **Le directeur (Liberté).** Au bureau, la collègue de l'accueil : « Pierre ! Le directeur veut te voir. Dernier étage, rien que
    ça ! » Le bouton « directeur » s'est allumé. Le directeur : **« Entre, Pierre, assieds-toi. Ça fait un moment que je
    te regarde, et je dois dire que tu te débrouilles vraiment bien. Il y a une belle place pour toi ici, tu sais. »** ;
    Pierre : **« C'est gentil, vraiment… Mais je crois que ce n'est pas ma place. Il faut que je parte. »** → **« Pierre
