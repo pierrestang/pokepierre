@@ -20,19 +20,18 @@ const CROWD = Array.from({ length: 18 }, (_, i) => `fan-${i}`);
 
 // ---------- 1. L'arrivée ----------
 
-// Pierre arrive par la route de Bordeaux (bord ouest) et marche jusqu'à l'immeuble (6, 23) ; le propriétaire attend à
-// côté de la porte.
-export const ARRIVAL = [
-  { goTo: [6, 23], facing: 'up' },
-  { approach: 'proprietaire' },
+// Pierre arrive par la route de Bordeaux (bord ouest) ; personne ne vient le chercher. Le propriétaire attend juste
+// devant l'immeuble aux balcons fleuris (7, 23) : c'est à Pierre de le trouver et de lui parler.
+const KEYS = [
   { speaker: 'Propriétaire', say: ['Bienvenue ! C\'est petit, mais vous verrez, on s\'y fait. Le bureau n\'est pas loin.'] },
   { give: ITEMS.clesParis, text: 'Le propriétaire te tend les clés du studio.' },
   { say: ['Bon. Un appartement, un bureau. C\'est ça, maintenant.'] },
   { setFlag: FLAGS.parisCles },
 ];
 
-// Le propriétaire ensuite : où est le bureau (la tour de verre, de l'autre côté de la Seine).
+// Le propriétaire : les clés, puis où est le bureau (la tour de verre, de l'autre côté de la Seine).
 export const LANDLORD = [
+  { unlessFlags: [FLAGS.parisCles], steps: KEYS, end: true },
   { ifFlags: [FLAGS.liberteParis], speaker: 'Propriétaire', say: ['Vous avez l\'air… plus léger, aujourd\'hui.'], end: true },
   { speaker: 'Propriétaire', say: ['Votre bureau ? La grande tour de verre, de l\'autre côté de la Seine, tout en bas à droite.'] },
 ];
@@ -40,8 +39,17 @@ export const LANDLORD = [
 // ---------- 2. Le bureau ----------
 
 // Premier passage : le hall de la tour, vivant ; le collègue blasé vient à Pierre.
+// Le premier jour : en passant les portes, une collègue vient accueillir Pierre ; puis le collègue blasé.
 export const OFFICE_FIRST = [
   { say: ['Le hall de la tour. Cette fois, ton badge passe.'] },
+  { approach: 'collegue-accueil' },
+  {
+    speaker: COLLEGUE,
+    say: [
+      'Salut ! Tu dois être Pierre ? Bienvenue dans l\'équipe !',
+      'Ici, c\'est le hall : l\'accueil, le salon, la machine à café. Les étages, ça viendra. Tu vas voir, on est une bonne équipe.',
+    ],
+  },
   { approach: 'collegue' },
   { speaker: COLLEGUE, say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
   { setFlag: FLAGS.jour1Bureau },

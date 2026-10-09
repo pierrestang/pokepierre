@@ -1183,7 +1183,7 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
 4. **La sortie.** En sortant du stade, Pierre : **« Bon… toutes les bonnes choses ont une fin. Il paraît qu'il faut
    grandir un jour. Direction Paris. »** L'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton
    diplôme de Bordeaux en poche, tu prends la route de Paris ! » Pierre arrive à Paris par l'ouest de l'avenue, en
-   (1, 11), et marche jusqu'à son immeuble.
+   (1, 11).
 
 ## 12. Paris : la dernière ville
 
@@ -1240,12 +1240,16 @@ de jour.
 | Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g90` |
 
 ### Quêtes, dans l'ordre
-1. **L'arrivée.** Pas de métro : par la route de Bordeaux, Pierre arrive au bord ouest de l'avenue (1, 11) et marche
-   jusqu'à l'immeuble aux balcons fleuris (6, 23). Le propriétaire : **« Bienvenue ! C'est petit, mais vous verrez, on
+1. **L'arrivée.** Pas de métro : par la route de Bordeaux, Pierre arrive au bord ouest de l'avenue (1, 11). Personne
+   ne vient le chercher : le propriétaire attend juste devant l'immeuble aux balcons fleuris (7, 23), et c'est à Pierre
+   de le trouver et de lui parler. Le propriétaire : **« Bienvenue ! C'est petit, mais vous verrez, on
    s'y fait. Le bureau n'est pas loin. »** → **Clés du studio** (« Le propriétaire te tend les clés du studio. ») ;
    Pierre, en lui-même : **« Bon. Un appartement, un bureau. C'est ça, maintenant. »** Ensuite le propriétaire : « Votre
    bureau ? La grande tour de verre, de l'autre côté de la Seine, tout en bas à droite. »
-2. **Premier passage au bureau.** « Le hall de la tour. Cette fois, ton badge passe. » ; le collègue vient à Pierre :
+2. **Premier passage au bureau.** « Le hall de la tour. Cette fois, ton badge passe. » ; une collègue vient accueillir
+   Pierre : **« Salut ! Tu dois être Pierre ? Bienvenue dans l'équipe ! »** / « Ici, c'est le hall : l'accueil, le
+   salon, la machine à café. Les étages, ça viendra. Tu vas voir, on est une bonne équipe. » (ensuite : « Alors, ce
+   premier jour ? Si tu cherches quoi que ce soit, demande-moi ! ») ; puis le collègue blasé vient à Pierre :
    **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** Les boutons « manager » et « directeur » de
    l'ascenseur sont éteints. Pierre ressort.
 3. **Le concert (la place qui a voyagé).** En sortant de la tour, le téléphone sonne. Hugues : **« Pierre ! Ce soir,

@@ -5,7 +5,7 @@ import { parseGrid } from './parseGrid.js';
 import BUILT from '../builtMaps/paris.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
-import { ARRIVAL, CLARA, HUGUES_CALL, HUGUES_MESSAGE, INES, INTO_THE_DREAM, LANDLORD, MALIK } from '../parisStory.js';
+import { CLARA, HUGUES_CALL, HUGUES_MESSAGE, INES, INTO_THE_DREAM, LANDLORD, MALIK } from '../parisStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la Seine, l'avenue et la rue sud se prolongent ; des arbres ailleurs.
@@ -118,7 +118,8 @@ export const parisMap = {
   buildings: [],
   npcs: [
     // Le propriétaire, devant l'immeuble.
-    { id: 'proprietaire', name: 'Propriétaire', sprite: 'g35', x: 7, y: 23, facing: 'left', script: LANDLORD },
+    // Le propriétaire, juste devant l'immeuble aux balcons fleuris : Pierre doit le trouver (il ne vient pas à lui).
+    { id: 'proprietaire', name: 'Propriétaire', sprite: 'g35', x: 7, y: 23, facing: 'down', script: LANDLORD },
     // La place de concert, de main en main (parisStory.js) : Inès devant l'Opéra, Malik dans la file du Louvre, Clara
     // au café à terrasse.
     { id: 'ines', name: 'Inès', x: 39, y: 23, facing: 'right', script: INES },
@@ -129,8 +130,6 @@ export const parisMap = {
     { id: 'clara', name: 'Clara', x: 15, y: 23, facing: 'left', script: CLARA },
   ],
   events: [
-    // L'arrivée, devant l'immeuble : les clés.
-    { on: 'enter', ifFlags: [FLAGS.arriveeParis], unlessFlags: [FLAGS.parisCles], steps: ARRIVAL },
     // En sortant de la tour la première fois : Hugues appelle (la place de concert) ; promu : son message (le match).
     { on: 'enter', ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.concertAppel], steps: HUGUES_CALL },
     { on: 'enter', ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.messageHugues], steps: HUGUES_MESSAGE },

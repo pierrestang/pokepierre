@@ -2308,6 +2308,8 @@ export const interiors = {
     npcs: [
       { id: 'collegue', name: 'Collègue', sprite: 'g36', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
       { id: 'collegue-tot', name: 'Collègue', sprite: 'g74', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
+      // Celle qui accueille Pierre le premier jour (parisStory.js OFFICE_FIRST).
+      { id: 'collegue-accueil', name: 'Collègue', sprite: 'g130', x: 2, y: 8, facing: 'down', fidget: true, dialogue: ['Alors, ce premier jour ? Si tu cherches quoi que ce soit, demande-moi !'] },
       { id: 'collegue-point', name: 'Collègue', sprite: 'g3', x: 13, y: 4, facing: 'left', fidget: true, dialogue: HALL_LINES.point },
       { id: 'collegue-bonne', name: 'Collègue', sprite: 'g75', x: 20, y: 3, facing: 'down', fidget: true, dialogue: HALL_LINES.bonne },
       { id: 'accueil', name: 'Accueil', sprite: 'g51', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
