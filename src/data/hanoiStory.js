@@ -5,7 +5,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 //   2. L'agence : le patron (français) l'accueille pour son premier jour et lui tend les consignes, écrites en vietnamien.
 //   3. Dans la rue, les passants ne peuvent pas l'aider ; M. Lam, au bord du lac, parle un peu français et traduit les
 //      consignes (guider deux touristes au temple) : Adaptation.
-//   4. Les deux touristes le suivent jusqu'au temple ; l'une panique, son téléphone est à plat (Insouciance) ; l'objet de
+//   4. Les deux touristes (qui attendent dans la grande rue dès l'arrivée) le suivent jusqu'au temple ; l'une panique, son téléphone est à plat (Insouciance) ; l'objet de
 //      chance sur l'autel ; leurs remerciements en sortant.
 //   5. Le patron le remercie ; en sortant de l'agence, six mois plus tard, Romain appelle : il l'attend à Amsterdam.
 //   6. Au guichet de l'aéroport, le vol pour Amsterdam, en écho au départ de Hull.
@@ -15,9 +15,10 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 const PATRON = 'Patron';
 const TOURISTE = 'Touriste';
 
-// Places sur la carte (voir maps/hanoi.js) : devant l'agence, où attendent les touristes ; devant le temple.
+// Places sur la carte (voir maps/hanoi.js) : dans la grande rue, un peu plus loin que l'agence (après ta maison), où
+// attendent les touristes dès l'arrivée ; devant le temple.
 export const HANOI_SPOTS = {
-  agencyFront: [12, 8],
+  touristsWait: [25, 8],
   templeFront: [26, 17],
 };
 
@@ -45,7 +46,7 @@ export const MAILBOX = [
 
 // Le patron parle français : il accueille Pierre et lui tend les consignes du jour… en vietnamien.
 export const PATRON_WELCOME = [
-  { ifFlags: [FLAGS.consignesTraduites], speaker: PATRON, say: ['Les touristes t\'attendent devant l\'agence. Le temple, c\'est de l\'autre côté du lac !'], end: true },
+  { ifFlags: [FLAGS.consignesTraduites], speaker: PATRON, say: ['Les touristes t\'attendent dans la grande rue, un peu plus loin. Le temple, c\'est de l\'autre côté du lac !'], end: true },
   { ifFlags: [FLAGS.travailEtape1], speaker: PATRON, say: ['Toujours pas lu tes consignes ? Demande dehors, quelqu\'un saura bien te les lire.'], end: true },
   {
     speaker: PATRON,
@@ -105,7 +106,7 @@ export const MR_LAM = [
   {
     speaker: 'M. Lam',
     say: [
-      '« Aller chercher les deux touristes devant l\'agence. Leur faire visiter le temple. Ne pas les perdre. »',
+      '« Aller chercher les deux touristes qui attendent dans la grande rue, un peu plus loin que l\'agence. Leur faire visiter le temple. Ne pas les perdre. »',
       'Le temple, c\'est le grand bâtiment au toit rouge, de l\'autre côté du lac.',
     ],
   },
@@ -116,9 +117,14 @@ export const MR_LAM = [
 
 // ---------- 4. Les touristes et le temple ----------
 
-// Devant l'agence : les deux touristes attendent leur guide ; ils suivent Pierre jusqu'au temple.
+// Dans la grande rue, un peu plus loin que l'agence : les deux touristes attendent leur guide dès l'arrivée de Pierre.
+// Avant que M. Lam ait lu les consignes, Pierre ne sait pas que c'est lui ; ensuite, ils le suivent jusqu'au temple.
 export const TOURISTS_MEET = [
-  { speaker: TOURISTE, say: ['Bonjour ! C\'est vous, notre guide ? On vous attendait devant l\'agence.', 'On aimerait tellement voir le temple !'] },
+  {
+    unlessFlags: [FLAGS.consignesTraduites], speaker: TOURISTE,
+    say: ['Bonjour ! On attend notre guide. L\'agence nous a dit de patienter ici, dans la grande rue.'], end: true,
+  },
+  { speaker: TOURISTE, say: ['Bonjour ! C\'est vous, notre guide ? On vous attendait !', 'On aimerait tellement voir le temple !'] },
   { say: ['Tu leur fais signe de te suivre.'] },
   { setFlag: FLAGS.touristesSuivent },
 ];

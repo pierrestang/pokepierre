@@ -843,12 +843,12 @@ choix.
 Pour la première fois, Pierre arrive seul dans une ville dont il ne parle pas la langue (`src/data/hanoiStory.js`).
 
 ### La carte (36 x 30, redessinée en Gen 4)
-Au nord, le long de la grande rue (est-ouest, vers l'aéroport par ses deux bouts) : une maison violette (porte (4, 7),
-fermée), la maison noire = l'agence de voyage (12, 7), ta maison = la seconde maison violette (20, 7), avec sa boîte aux
+Au nord, le long de la grande rue (est-ouest, vers l'aéroport par ses deux bouts) : une maison violette (porte (4, 6),
+fermée), la maison noire = l'agence de voyage (11, 6), ta maison = la seconde maison violette (20, 5, porte en retrait), avec sa boîte aux
 lettres rouge à droite (24, 7), et la maison bleue aux lanternes (29, 7, fermée). Au milieu : le lac Hoàn Kiếm, son îlot
 à la cloche et son pont de bois ; le banc de M. Lam au bord du lac (7, 10) ; les papis aux échecs à l'est du pont (18, 12)
 et (20, 12) ; le temple au toit rouge (porte (26, 16)). Au sud : le portique rouge, les étals, la maison sur pilotis, la
-grande maison bleue (27, 23, fermée). Portes fermées : « Tu frappes. Personne ne répond… ou alors, en vietnamien. »
+grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée dans le créateur (octobre 2026). Portes fermées : « Tu frappes. Personne ne répond… ou alors, en vietnamien. »
 
 ### Arrivée et image d'accueil
 - Carte postale `hanoi` (« antre du Dragon ») : **« Hanoï, Vietnam. »** ; « Personne ne t'attend à la sortie de
@@ -879,10 +879,12 @@ grande maison bleue (27, 23, fermée). Portes fermées : « Tu frappes. Personne
    la vendeuse « La vendeuse hausse les épaules en riant, et te tend une mangue à la place. » ; le passant « Il fronce
    les sourcils, retourne le papier dans tous les sens, puis te le rend avec un petit salut d'excuse. ». M. Lam, sur le
    banc : « Oh ! Tu parles français ? Je l'ai appris à l'école, il y a… très longtemps. » / « Voyons voir. Mes yeux ne
-   sont plus tout jeunes… » / **« « Aller chercher les deux touristes devant l'agence. Leur faire visiter le temple. Ne
-   pas les perdre. » »** / « Le temple, c'est le grand bâtiment au toit rouge, de l'autre côté du lac. » ; **« Tu ne
+   sont plus tout jeunes… » / **« « Aller chercher les deux touristes qui attendent dans la grande rue, un peu plus loin
+   que l'agence. Leur faire visiter le temple. Ne pas les perdre. » »** / « Le temple, c'est le grand bâtiment au toit rouge, de l'autre côté du lac. » ; **« Tu ne
    parles pas un mot de vietnamien… et pourtant, tu as trouvé ton chemin. »** → vertu **Adaptation**.
-3. **Les touristes.** Devant l'agence : « Bonjour ! C'est vous, notre guide ? On vous attendait devant l'agence. » / « On
+3. **Les touristes.** Ils attendent dès l'arrivée de Pierre dans la grande rue, un peu plus loin que l'agence (après ta
+   maison, (25, 8) et (26, 8)). Avant la traduction : « Bonjour ! On attend notre guide. L'agence nous a dit de patienter
+   ici, dans la grande rue. » ; après : « Bonjour ! C'est vous, notre guide ? On vous attendait ! » / « On
    aimerait tellement voir le temple ! » ; « Tu leur fais signe de te suivre. » Ils suivent Pierre (le temple est fermé
    sans eux : « Le temple. Un lieu de recueillement : on ne le visite qu'accompagné d'un guide. »).
 4. **Le temple.** Une touriste : « Oh non… Mon téléphone est à plat ! Pas une seule photo du temple… » / « Tout ce
@@ -933,9 +935,9 @@ réservée à Paris) : Autonomie et Audace servent au stage, Insouciance à la n
 ### La carte (36 x 30, Gen 4)
 Première version par scripts/build_amsterdam.py, puis retouchée à la main dans le créateur. Au nord, le long de la grande
 rue (vers l'aéroport par ses deux bouts) : une maison de canal, le manoir à pignons = Corning (porte (13, 7)), la maison
-de canal à la porte en cœur = la maison commune, « la deuxième en haut à gauche » (22, 8), la maison à pignon rouge (28,
-8, fermée). Le premier canal, une péniche, deux ponts de planches. Au sud : le coffee shop (porte et fleurs, (4, 22)), une
-maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal (22, 22, fermée) et une maison à pignon
+de canal à la porte en cœur = la maison commune, « la deuxième en haut à gauche » (22, 9), la maison à pignon rouge (28,
+9, fermée). Le premier canal, une péniche, deux ponts de planches. Au sud : le coffee shop (porte et fleurs, (4, 23)), une
+maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal (22, 23, fermée) et une maison à pignon
 (29, 22, fermée) ; le quai sud et ses jardinières, le second canal ; une bordure d'arbres d'automne dorés. Arrivée en
 (1, 10). Portes fermées : « Tu frappes. Personne ne répond… « Niemand thuis », peut-être. »
 

@@ -41,9 +41,9 @@ export const hanoiMap = {
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 2
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 3
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 4
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 5
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 6
-    'TTɔɔDɔɔɔɔɔɔɔDɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔDɔɔɔɔTT', // 7  portes : maison violette (4), agence (12), ta maison (20), maison bleue (29)
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 5
+    'TTɔɔDɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 6
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔTT', // 7  portes : maison violette (4), agence (12), ta maison (20), maison bleue (29)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 8  grande rue (vers l'aéroport, la bordure y est ouverte)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 9
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 10
@@ -59,8 +59,8 @@ export const hanoiMap = {
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 20
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 21
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 22
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔTT', // 23  porte de la grande maison bleue (27, 23)
-    'TTɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐTT', // 24  rue sud
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 23  porte de la grande maison bleue (27, 23)
+    'TTɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐDɐɐɐɐɐɐɐTT', // 24  rue sud
     'TTɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐTT', // 25
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 26
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 27
@@ -68,9 +68,9 @@ export const hanoiMap = {
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 29
   ]),
   doors: [
-    { x: 4, y: 7, lockedDialogue: NOT_HOME },        // la maison violette
-    { x: 12, y: 7, interior: 'travelAgency' },       // l'agence de voyage (la maison noire)
-    { x: 20, y: 7, interior: 'hanoiHome' },          // ta maison (la seconde maison violette)
+    { x: 4, y: 6, lockedDialogue: NOT_HOME },        // la maison violette
+    { x: 11, y: 6, interior: 'travelAgency' },       // l'agence de voyage (la maison noire)
+    { x: 20, y: 5, interior: 'hanoiHome' },          // ta maison (la seconde maison violette, porte en retrait)
     { x: 29, y: 7, lockedDialogue: NOT_HOME },       // la maison bleue aux lanternes
     // Le temple (toit rouge) : on y entre en guidant les touristes.
     {
@@ -78,20 +78,21 @@ export const hanoiMap = {
       lock: { ifFlags: [FLAGS.touristesSuivent] },
       lockedDialogue: ['Le temple. Un lieu de recueillement : on ne le visite qu\'accompagné d\'un guide.'],
     },
-    { x: 27, y: 23, lockedDialogue: NOT_HOME },      // la grande maison bleue
+    { x: 26, y: 24, lockedDialogue: NOT_HOME },      // la grande maison bleue
   ],
   // Les bâtiments sont dans le dessin.
   buildings: [],
   npcs: [
-    // Devant l'agence, une fois les consignes traduites : deux touristes attendent leur guide.
+    // Dans la grande rue, un peu plus loin que l'agence (après ta maison) : deux touristes attendent leur guide, dès
+    // l'arrivée (les consignes traduites par M. Lam disent où les trouver).
     {
-      id: 'touriste-1', ...TOURIST_1, x: 13, y: 8, facing: 'left',
-      ifFlags: [FLAGS.consignesTraduites], unlessFlags: [FLAGS.touristesSuivent],
+      id: 'touriste-1', ...TOURIST_1, x: 25, y: 8, facing: 'down',
+      ifFlags: [FLAGS.arriveeHanoi], unlessFlags: [FLAGS.touristesSuivent],
       script: TOURISTS_MEET,
     },
     {
-      id: 'touriste-2', ...TOURIST_2, x: 14, y: 8, facing: 'left',
-      ifFlags: [FLAGS.consignesTraduites], unlessFlags: [FLAGS.touristesSuivent],
+      id: 'touriste-2', ...TOURIST_2, x: 26, y: 8, facing: 'down',
+      ifFlags: [FLAGS.arriveeHanoi], unlessFlags: [FLAGS.touristesSuivent],
       script: TOURISTS_MEET,
     },
     // Après la visite, ils restent de chaque côté de la porte du temple.

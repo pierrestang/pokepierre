@@ -265,7 +265,7 @@ export const FOLLOWERS = [
   { id: 'margaux', name: 'Margaux', color: 0xf08080, ifFlags: [FLAGS.trouveMargaux], ...COPAINS_DONE },
   { id: 'etienne', name: 'Étienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], ...COPAINS_DONE },
   { id: 'benoit', name: 'Benoît', color: 0xa07040, ifFlags: [FLAGS.trouveBenoit], ...COPAINS_DONE },
-  // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
+  // Hanoï : les deux touristes te suivent de la grande rue jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', name: 'Touriste', sprite: 'g24', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', name: 'Touriste', sprite: 'g22', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   // New Delhi : après la fête, Harsh et Prophecy suivent Pierre jusqu'au vieux sage, derrière la porte du fort.

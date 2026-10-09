@@ -39,8 +39,8 @@ export const amsterdamMap = {
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 5
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 6
     'TTɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 7  porte de Corning (le manoir, 13)
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔDɔɔɔɔɔTT', // 8  portes : maison commune (22), maison à pignon (28)
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 9
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 8  portes : maison commune (22), maison à pignon (28)
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔDɔɔɔɔɔTT', // 9
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 10  grande rue (vers l'aéroport, la bordure y est ouverte)
     'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 11
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 12  quai nord (panneaux de l'aéroport)
@@ -53,8 +53,8 @@ export const amsterdamMap = {
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 19
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 20
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 21
-    'TTɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔDɔɔɔɔTT', // 22  portes : coffee shop (4), maison de canal (22), maison à pignon (29)
-    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 23  quai sud
+    'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔTT', // 22  portes : coffee shop (4), maison de canal (22), maison à pignon (29)
+    'TTɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔTT', // 23  quai sud
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 24
     'TTɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔTT', // 25
     'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 26
@@ -69,15 +69,15 @@ export const amsterdamMap = {
       lock: { ifFlags: [FLAGS.marchandiseDonnee] },
       lockedDialogue: ['Les bureaux de Corning. Ton stage commence bientôt : va d\'abord t\'installer chez Romain.'],
     },
-    { x: 22, y: 8, interior: 'maisonCommune' },                 // la maison commune (la deuxième en haut à gauche)
-    { x: 28, y: 8, lockedDialogue: NOT_HOME },                  // la maison à pignon rouge
+    { x: 22, y: 9, interior: 'maisonCommune' },                 // la maison commune (la deuxième en haut à gauche)
+    { x: 28, y: 9, lockedDialogue: NOT_HOME },                  // la maison à pignon rouge
     // Le coffee shop : une fois que Romain t'a demandé sa marchandise.
     {
-      x: 4, y: 22, interior: 'coffeeShop',
+      x: 4, y: 23, interior: 'coffeeShop',
       lock: { ifFlags: [FLAGS.romainDemande] },
       lockedDialogue: ['Un coffee shop. Rien à y faire pour l\'instant.'],
     },
-    { x: 22, y: 22, lockedDialogue: NOT_HOME },                 // la maison de canal du sud
+    { x: 22, y: 23, lockedDialogue: NOT_HOME },                 // la maison de canal du sud
     { x: 29, y: 22, lockedDialogue: NOT_HOME },                 // la maison à pignon du sud
   ],
   // Les bâtiments sont dans le dessin.
