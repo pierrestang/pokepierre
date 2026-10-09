@@ -202,7 +202,7 @@ export const bordeauxMap = {
       dialogue: ['La route est bloquée.'],
       readyDialogue: ['Ton diplôme de Bordeaux en poche, tu prends la route de Paris !'],
       setFlags: [FLAGS.arriveeParis],
-      warp: { map: 'paris', x: 1, y: 6, facing: 'right' },
+      warp: { map: 'paris', x: 1, y: 11, facing: 'right' },
     })),
     // Est : l'aéroport, débloqué par le diplôme d'anglais.
     ...[10, 11, 12].map((y) => ({

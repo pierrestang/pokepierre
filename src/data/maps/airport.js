@@ -23,7 +23,7 @@ const NEXT_FLIGHTS = [
   // New Delhi : avec le billet que Romain remet à Amsterdam, la nuit au bord du canal.
   {
     label: 'New Delhi (Inde)', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
-    setFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 12, facing: 'right' },
+    setFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 16, facing: 'right' },
   },
   { label: 'Bali (Indonésie)', ...TOULON_QUESTS, unlessFlags: [visitedFlag('bali')], plane: { map: 'bali', x: 15, y: 23, facing: 'up' } },
   { label: 'Sri Lanka', ifItems: [ITEMS.objetMagiqueBali.id], unlessFlags: [visitedFlag('sriLanka')], plane: { map: 'sriLanka', x: 1, y: 10, facing: 'right' } },
@@ -45,8 +45,8 @@ const OTHER_FLIGHTS = [
   { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], plane: { map: 'hull', x: 1, y: 35, facing: 'right' } },
   { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], plane: { map: 'hanoi', x: 1, y: 8, facing: 'right' } },
   { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.arriveeAmsterdam], plane: { map: 'amsterdam', x: 1, y: 10, facing: 'right' } },
-  { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 12, facing: 'right' } },
-  { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: { map: 'paris', x: 1, y: 6, facing: 'right' } },
+  { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 16, facing: 'right' } },
+  { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: { map: 'paris', x: 1, y: 11, facing: 'right' } },
   { label: 'Toulon', ifFlags: [FLAGS.arriveeToulon], plane: { map: 'toulon', x: 1, y: 6, facing: 'right' } },
   { label: 'Bali (Indonésie)', ifFlags: [visitedFlag('bali')], plane: { map: 'bali', x: 15, y: 23, facing: 'up' } },
   { label: 'Sri Lanka', ifFlags: [visitedFlag('sriLanka')], plane: { map: 'sriLanka', x: 1, y: 10, facing: 'right' } },

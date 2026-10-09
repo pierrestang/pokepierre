@@ -1781,7 +1781,7 @@ async function save({ force = false } = {}) {
 // Les cartes du projet dans l'ordre d'arrivée dans le jeu (la route de Montépilloy entre Saint-Ay et Montépilloy, qu'elle
 // relie ; l'aéroport juste avant Hull) ; une carte qui n'est pas dans la liste vient ensuite, par nom.
 const GAME_ORDER = ['fort-de-france', 'saint-ay', 'route-de-montepilloy', 'montepilloy', 'bonsecours', 'prytanee', 'bordeaux',
-  'airport', 'hull', 'hanoi', 'amsterdam', 'new-delhi'];
+  'airport', 'hull', 'hanoi', 'amsterdam', 'new-delhi', 'paris'];
 const gameRank = (id) => {
   const i = GAME_ORDER.indexOf(id);
   return i < 0 ? GAME_ORDER.length : i;

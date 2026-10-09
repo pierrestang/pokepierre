@@ -20,7 +20,7 @@ function outside(x, y, grid) {
 
 const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
 
-// New Delhi — capitale de l'Inde, 36 x 30 cases avec sa bordure de palmiers. Au nord, le long de la grande avenue :
+// New Delhi — capitale de l'Inde, 40 x 34 cases avec sa bordure de palmiers. Au nord, le long de la grande avenue :
 // l'université (le bâtiment à coupole et lanternes dorées), le palais de grès, la porte du fort, le minaret. Les jardins :
 // la grande arche (India Gate), le bassin aux lotus, la fontaine octogonale. Au sud : maisons à toit plat et à coupole,
 // la tente du bazar, les étals et le stand de chai. Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = avenue, . = jardin,
@@ -30,52 +30,55 @@ export const newDelhiMap = {
   name: 'New Delhi',
   built: BUILT,
   sourceGrid: parseGrid([
-    'YYYYYYYYYYYY............YYYYYYYYYYYY', // 0  bordure : palmiers (dessinés) ; le palais monte jusqu'en haut
-    'YYYYYYYYYYYY............YYYYYYYYYYYY', // 1
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 2
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 3
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 4
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 5
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 6
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 7
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 8
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 9
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 10
-    'YYɔɔɔɔDɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔYY', // 11  portes : université (6), palais (17), porte du fort (26)
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 12  grande avenue (vers l'aéroport, la bordure y est ouverte)
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 13
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 14  trottoir (panneaux de l'aéroport)
-    'YY................................YY', // 15  jardins : India Gate, bassin aux lotus (x 16-21), fontaine
-    'YY..............~~~~~~............YY', // 16
-    'YY..............~~~~~~............YY', // 17
-    'YY................................YY', // 18
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 19  allée
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 20
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 21
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 22
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 23
-    'YYɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔYY', // 24
-    'YYɔɔDɔɔɔɔDɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔYY', // 25  portes : maison à toit plat (4), maison à coupole (9), bazar (14), maison de grès (29)
-    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐYY', // 26  rue sud
-    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐYY', // 27
-    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 28  bordure
-    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 29
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 0  bordure : palmiers (dessinés)
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 1
+    'YY....................................YY', // 2  les pavés du nord
+    'YY.ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔ.YY', // 3  l'université, le palais de grès, la porte du fort, le minaret
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 4
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 5
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 6
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 7
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 8
+    'YYɐɐɐɐɐɐɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔDɔɔɔɔɔɔɔɔɔ.YY', // 9  porte : la porte du fort (27)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 10
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐDɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 11  porte : le palais (16)
+    'YYɐɐɐɐDɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔ.YY', // 12  porte : l'université (6)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔ.YY', // 13
+    '..ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɐɐɐɔɔ...', // 14  la grande avenue (vers l'aéroport, la bordure y est ouverte, rangées 14 à 17)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ.......ɐɐɐɐɔɔɔɐɐɐɐɐɐɐɐɐ', // 15
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ.ɔ~~~~ɔ..ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 16
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ.ɔ~~~~~~ɔ.ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 17
+    'YYɐɐɐɐɐ...ɐɐɐ...~~~~~~~~ɔ.ɐɐɐɐɐɐɐɐɐɐɔ.YY', // 18  les jardins : India Gate, le bassin aux lotus et son île (banian)
+    'YY......ɔ.ɐɐɐ..ɔ~~ɔ..ɔ~~~ɔ.ɐɐɐɐɔɔɔɔɔɔ.YY', // 19  la place de grès : la tente du bazar, le stand de chai
+    'YY........ɐɐɐ..~~.....~~~~.ɔɔɔɔɔɔɔɔɔɔ.YY', // 20
+    'YY........ɐɐɐ..~~ɔ...ɔ~~~ɔ.ɔɔɔɔɔɔɔɔɔɔ.YY', // 21
+    'YY.ɐɐɐɐɐ..ɐɐɐ..ɔ~~~~~~~~ɔ..ɔɔɔɔɔɔDɔɔɔ.YY', // 22  porte : la tente du bazar (33)
+    'YYɐɐ.ɐɐɐɐɐɐɐɐɐ..ɔ~~~~~~ɔ...ɔɔɔɔɔɔɔɔɔɔ.YY', // 23  les maisons du sud
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐ...ɔ~~~ɔ...ɔɔɔɔɔɔɔɔɔɔɔ.YY', // 24
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐ.........ɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 25
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 26
+    'YYɐɐɐDɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 27  porte : la maison à toit plat (5)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐDɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔ.YY', // 28  porte : la maison à coupole (16)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔ.YY', // 29
+    'YY.ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔ.YY', // 30
+    'YY....................................YY', // 31  herbe sous les palmiers du bas
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 32
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 33
   ]),
   doors: [
-    { x: 6, y: 11, interior: 'delhiUniversity' },   // ton université d'échange (la coupole aux lanternes dorées)
-    { x: 17, y: 11, lockedDialogue: ['[Texte provisoire] Le palais est fermé aux visiteurs.'] },
-    { x: 26, y: 11, lockedDialogue: ['[Texte provisoire] La porte du fort est fermée.'] },
-    { x: 4, y: 25, lockedDialogue: NOT_HOME },
-    { x: 9, y: 25, lockedDialogue: NOT_HOME },
-    { x: 14, y: 25, lockedDialogue: ['[Texte provisoire] Le bazar est fermé pour aujourd\'hui.'] },
-    { x: 29, y: 25, lockedDialogue: NOT_HOME },
+    { x: 6, y: 12, interior: 'delhiUniversity' },   // ton université d'échange (la coupole aux lanternes dorées)
+    { x: 16, y: 11, lockedDialogue: ['[Texte provisoire] Le palais est fermé aux visiteurs.'] },
+    { x: 27, y: 9, lockedDialogue: ['[Texte provisoire] La porte du fort est fermée.'] },
+    { x: 33, y: 22, lockedDialogue: ['[Texte provisoire] Le bazar est fermé pour aujourd\'hui.'] },
+    { x: 5, y: 27, lockedDialogue: NOT_HOME },
+    { x: 16, y: 28, lockedDialogue: NOT_HOME },
   ],
   // Les bâtiments sont dans le dessin (scripts/build_new_delhi.py).
   buildings: [],
   npcs: [
     // Harsh, étudiant à l'université : il t'attend à la sortie et propose d'aller dans le désert.
     {
-      id: 'harsh', ...HARSH, x: 8, y: 12, facing: 'left',
+      id: 'harsh', ...HARSH, x: 8, y: 13, facing: 'left',
       ifFlags: [FLAGS.echangeCommence],
       unlessFlags: [FLAGS.potionDonnee],
       dialogue: [
@@ -98,7 +101,7 @@ export const newDelhiMap = {
       },
     },
     {
-      id: 'harsh-retour', ...HARSH, x: 8, y: 12, facing: 'left',
+      id: 'harsh-retour', ...HARSH, x: 8, y: 13, facing: 'left',
       ifFlags: [FLAGS.potionDonnee],
       dialogue: ['[Harsh - texte provisoire] Quel voyage ! Va raconter ça à la professeure.'],
     },
@@ -113,10 +116,10 @@ export const newDelhiMap = {
     },
   ],
   // Panneaux « Aéroport » (dessinés) à côté des sorties ; les deux bouts de la grande avenue mènent à l'aéroport.
-  objects: [airportSign(2, 14, false), airportSign(33, 14, true)],
-  triggers: [toAirport(0, 12), toAirport(0, 13), toAirport(35, 12), toAirport(35, 13)],
+  objects: [airportSign(2, 18, false), airportSign(22, 15, true)],
+  triggers: [14, 15, 16, 17].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),
   surroundings: { outside },
-  spawn: { x: 1, y: 12, facing: 'right' },
+  spawn: { x: 1, y: 16, facing: 'right' },
 };
 
 // La grille du jeu : celle ci-dessus, accordée aux collisions du dessin.

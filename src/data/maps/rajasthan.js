@@ -64,7 +64,7 @@ export const rajasthanMap = {
           {
             label: 'Oui',
             dialogue: ['[Harsh - texte provisoire] En route !'],
-            warp: { map: 'newDelhi', x: 7, y: 12, facing: 'up' },
+            warp: { map: 'newDelhi', x: 7, y: 13, facing: 'up' },
           },
           { label: 'Pas encore', dialogue: ['[Harsh - texte provisoire] Prends ton temps, je t\'attends ici.'] },
         ],

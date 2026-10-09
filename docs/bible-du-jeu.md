@@ -1000,13 +1000,13 @@ Vol « New Delhi (Inde) », directement (il n'y a plus de retour à Hull) ; traj
 
 ## 10. New Delhi et le Rajasthan (Inde) : textes provisoires
 
-- **La carte de New Delhi** (36 x 30, redessinée en Gen 4, scripts/build_new_delhi.py) : au nord, le long de la grande
-  avenue (vers l'aéroport par ses deux bouts), l'université (bâtiment à coupole et lanternes dorées, porte (6, 11)), le
-  palais de grès (17, 11, fermé), la porte du fort (26, 11, fermée) et le minaret. Les jardins : la grande arche (India
-  Gate), un palmier, le bassin aux lotus, la fontaine octogonale, des soucis. Au sud : une maison à toit plat (4, 25), une
-  maison à coupole dorée (9, 25), la tente du bazar (14, 25, fermée), les étals et le stand de chai, une maison de grès à
-  coupole (29, 25). Une bordure de palmiers. Arrivée en (1, 12) ; Harsh attend devant l'université (8, 12) ; retour du
-  Rajasthan en (7, 12).
+- **La carte de New Delhi** (40 x 34, premier jet de scripts/build_new_delhi.py retouché à la main dans le créateur en
+  octobre 2026) : au nord, l'université (bâtiment à coupole et lanternes dorées, porte (6, 12)), le palais de grès
+  (16, 11, fermé), la porte du fort (27, 9, fermée) et le minaret. La grande avenue (rangées 14 à 17) mène à l'aéroport
+  par ses deux bouts. Au centre, les jardins : la grande arche (India Gate) et le bassin aux lotus avec son île au banian.
+  À l'est, la place de grès : la tente du bazar (33, 22, fermée), l'étal et le stand de chai. Au sud : une maison à toit
+  plat (5, 27) et une maison à coupole (16, 28). Une bordure de palmiers. Arrivée en (1, 16) ; Harsh attend devant
+  l'université (8, 13) ; retour du Rajasthan en (7, 13).
 - **PNJ** : la professeure de l'université de Delhi (`g54`), Harsh (`g89`), le vieux sage (`g71`).
 - **Quêtes** :
   1. La professeure : « [Professeure - texte provisoire] Namaste ! Bienvenue à l'université. » / « Tu es le bienvenu dans
@@ -1031,8 +1031,16 @@ Vol « New Delhi (Inde) », directement (il n'y a plus de retour à Hull) ; traj
 
 ## 12. Paris : textes provisoires
 
-- **Arrivée** : « [Texte provisoire] Bienvenue à Paris ! » / « Première mission : aller manger au bistrot (2e bâtiment en
-  haut à gauche). »
+- **La carte de Paris** (52 x 48, premier jet de scripts/build_paris.py retouché à la main dans le créateur en octobre
+  2026, thème « Paris (monuments et cafés) ») : au nord, le grand dôme de Bercy (9, 11), le Louvre et son drapeau
+  (portes (21, 14) et (29, 14), fermé), le musée-gare (39, 9, fermé) ; l'avenue (rangées 10 à 13) mène à l'ouest à la
+  route de Bordeaux, à l'est à l'aéroport. Puis ton appartement, l'immeuble aux balcons fleuris (6, 22), le bistrot, le
+  café à terrasse (13, 22), le jardin au bassin et l'opéra (41, 22, fermé). La Seine, deux yachts, deux ponts. Au sud :
+  un immeuble crème (8, 40), le café au store rayé (14, 40, complet), Notre-Dame (25, 41, en travaux) et la tour de
+  bureaux vitrée de l'entreprise (42, 41) ; la rue sud (rangées 40 à 45) mène à Toulon. Arrivée en (1, 11). La tour
+  Eiffel, l'Arc de Triomphe et la pyramide du Louvre de l'ancienne carte n'existent pas dans la bibliothèque Gen 4.
+- **Arrivée** : « [Texte provisoire] Bienvenue à Paris ! » / « Première mission : aller manger au bistrot (le café à
+  terrasse, à gauche, avant la Seine). »
 - **PNJ** : le cuisinier (`g63`), Hugues (`g91`), Thomas (`g90`), une responsable (`g36`), le manager (`g122`), le
   directeur (`g120`) ; à Bercy, le chanteur (`g69`), le guitariste (`g68`), le batteur (`g16`) et des fans (`g40`).
 - **Quêtes** :

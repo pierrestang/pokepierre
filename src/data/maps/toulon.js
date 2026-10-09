@@ -105,7 +105,7 @@ export const toulonMap = {
       x: 0,
       y,
       readyDialogue: ['Tu remontes vers Paris.'],
-      warp: { map: 'paris', x: 30, y: 25, facing: 'left' },
+      warp: { map: 'paris', x: 50, y: 43, facing: 'left' },
     })),
     // Est : l'aéroport.
     toAirport(31, 6),

@@ -429,8 +429,32 @@ l'université = la coupole aux lanternes, le palais, la porte du fort, le minare
 fontaine ; au sud les maisons, le bazar, les étals), la bordure de palmiers (forêt du créateur, arbre `g4-palmier`,
 scripts/paint_forest.mjs), ouverte sur la grande avenue (l'aéroport). Le script refuse sans `--force` (une retouche faite
 dans le créateur serait perdue). La grille du jeu (src/data/maps/newDelhi.js sourceGrid) reprend GROUND, la bordure en
-'Y', les portes sur les portes dessinées. Le créateur range désormais Hanoï, Amsterdam et New Delhi dans l'ordre du jeu
+'Y', les portes sur les portes dessinées. La carte a depuis été retouchée à la main dans le créateur (40 x 34, octobre
+2026) : la grille du jeu suit ce dessin (sol relu d'après les couleurs, portes recalées), et `--force` l'effacerait. Le créateur range désormais Hanoï, Amsterdam et New Delhi dans l'ordre du jeu
 (builder.js GAME_ORDER).
+
+## Paris (octobre 2026)
+
+Thème « Paris (monuments et cafés) » du catalogue (scripts/build_catalogue.py, THEMES['paris']), fait de dessins de la
+bibliothèque Gen 4 qui n'étaient pas encore au catalogue. Bâtiments (LIB_BUILDINGS, ids `maison-…`) : opéra, cathédrale
+gothique, Grand Palais, grande salle (Bercy), tour de bureaux vitrée, palais à deux ailes, musée-gare, grand immeuble à
+mansardes, immeubles d'ardoise, aux balcons fleuris, crème, de brique et pierre, café à terrasse, bistrot à auvent,
+boutique au store rayé, gratte-ciel, pavillon d'ardoise. Éléments : réverbères à globe (la lampe du thème) et à
+lanterne, fontaine à jet, petite fontaine de pierre, bancs de métal et jaune, statue sur socle, table de terrasse à
+parasol, deux monospaces, bateau-mouche, yacht, ponts de pierre (arche, tablier), bassin à fontaine, haies (jardinière,
+bac), if en cône, platane, arbres d'alignement (sans la grille d'arbre sombre sous le tronc : build_catalogue.py
+no_grate), arbre en colonne. Quelques dessins gardent un emblème Pokémon (cathédrale,
+opéra, Grand Palais, grande salle) ; le toit de l'opéra est violet et celui du musée-gare rose.
+
+Paris est redessiné par scripts/build_paris.py (src/data/builtMaps/paris.json), comme New Delhi : le sol du
+convertisseur (avenue, pavés, jardin, Seine), les éléments du thème, la bordure d'arbres ronds (forêt du créateur,
+scripts/paint_forest.mjs), ouverte sur la grande avenue (Bordeaux, l'aéroport), la Seine et la rue sud (Toulon). Les
+ponts de pierre (élément `pont-pierre-vertical`, 4 x 4) se traversent par leurs deux colonnes du milieu (SOLID_FIX), sur
+des cases 'I'. Le script refuse sans `--force`. La grille du jeu (src/data/maps/paris.js sourceGrid) reprend GROUND
+(bordure 'ƀ', Seine 'G'), les portes sur les portes dessinées. Paris est dans l'ordre du créateur (builder.js GAME_ORDER). La carte a depuis été retouchée à
+la main dans le créateur (52 x 48, octobre 2026) : la grille du jeu suit ce dessin (sol relu d'après les couleurs, portes
+recalées, deux cases de porte rendues traversables : l'opéra (41, 22) et l'immeuble crème (8, 40)), et `--force`
+l'effacerait.
 
 ## L'aéroport (octobre 2026)
 

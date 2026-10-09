@@ -16,6 +16,9 @@ De haut en bas :
 La grille du jeu (src/data/maps/newDelhi.js, sourceGrid) reprend GROUND, la bordure en 'Y', les portes sur les portes
 dessinées (imprimées à la fin).
 
+La carte a été retouchée à la main depuis dans le créateur (40 x 34 : avenue au centre, bassin à l'île, place du bazar) :
+le jeu suit ce dessin retouché (grille et portes de src/data/maps/newDelhi.js), et --force l'effacerait.
+
 Usage : python3 scripts/build_new_delhi.py [--force]   (une carte retouchée dans le créateur : --force efface ces retouches)
 """
 import json

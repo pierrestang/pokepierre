@@ -1,129 +1,139 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : Paris en Gen 4 (scripts/build_paris.py, thème « Paris (monuments et cafés) » du catalogue) ;
+// ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille ci-dessous (sourceGrid) suit ce dessin :
+// avenue, pavés, jardin, Seine, ponts, portes (sur les portes dessinées).
+import BUILT from '../builtMaps/paris.json' with { type: 'json' };
+import { builtGrid } from './builtGrid.js';
 import { FLAGS } from '../story.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
-// Hors de la carte : la Seine, l'avenue et les trottoirs se prolongent ; herbe près de l'eau, pavés ailleurs.
+// Hors de la carte : la Seine, l'avenue et la rue sud se prolongent ; des arbres ailleurs.
 function outside(x, y, grid) {
   if (y >= 0 && y < grid.length) {
     const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
     if (['G', 'ɐ', 'ɔ'].includes(edge)) return edge;
   }
-  return 'ɔ';
+  return 'ƀ';
 }
 
 const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
 
-// Paris — tour Eiffel, Arc de Triomphe, Louvre, Notre-Dame, la Seine, cafés, bistrots et Bercy, 32 x 34 cases.
-// Légende : voir src/data/tiles.js ($ = terrasse de café, ! = bouche de métro, J = drapeau français,
-// l = réverbère, G = Seine, I = pont)
+// Paris — 52 x 48 cases avec sa bordure d'arbres (premier jet de scripts/build_paris.py, retouché à la main dans le
+// créateur). Au nord : le grand dôme (Bercy), le Louvre et son drapeau, le musée-gare ; l'avenue les traverse (ouest :
+// Bordeaux, est : l'aéroport). Puis ton appartement (l'immeuble aux balcons fleuris), le bistrot (le café à terrasse), le
+// jardin au bassin, l'opéra. La Seine, deux yachts, deux ponts. Au sud : un immeuble crème, le café au store rayé,
+// Notre-Dame, la tour de bureaux vitrée (l'entreprise) ; la rue sud mène à Toulon (est).
+// Légende : voir src/data/tiles.js (ɔ = pavés, . = jardin, G = Seine, D = porte, ƀ = arbres).
 export const parisMap = {
   id: 'paris',
   name: 'Paris',
-  grid: parseGrid([
-    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  arbres : bord de l'écran
-    'ɔɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔ', // 1  immeubles haussmanniens, bistrot, café
-    'ɔɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔRRRRRɔ', // 2
-    'ɔɔWWWWWɔWWWWWɔWWWWWɔWWWWWɔWWWWWɔ', // 3
-    'ɔɔWDWWWɔWDWWWɔWDWWWɔWDWWWɔWDWWWɔ', // 4  portes (bistrot : 2e à gauche)
-    'ɔlɔɔɔɔɔ!ɔɔɔɔlɔɔɔ$$$ɔɔɔɔɔɔlɔɔɔɔlɔ', // 5  métro, terrasse du café, réverbères
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  avenue (ouest : Bordeaux, est : aéroport)
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
-    'ɔɔɔlɔɔɔɔɔɔɔɔɔlɔɔɔɔɔɔlɔɔɔɔɔɔɔlɔ>ɔ', // 8  panneaux aéroport
-    'ɔɔRRRRRɔɔɔɔɔɔɔɔɔ.ƀ...RRRRR.RRRRɔ', // 9  Arc de Triomphe, Champ-de-Mars, tour Eiffel, l'entreprise
-    'ɔɔRRRRRɔɔɔɔɔɔɔɔɔ.....RRRRR.RRRRɔ', // 10
-    'ɔɔWWWWWɔɔɔRRRRɔɔ..f..RRRRR.RRRRɔ', // 11 pyramide du Louvre
-    'ɔɔWWWWWɔJɔWWWWɔɔ...f.WWWWW.WWWWɔ', // 12
-    'ɔɔWWWWWɔɔɔWWWWɔɔ.....WWWWW.WDWWɔ', // 13 porte de l'entreprise
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀ...WWWWW....ƀɔ', // 14
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ..f.J..f...f.f.ɔ', // 15
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16 quai
-    'GGGGGGGIIGGGGGGGGGGGGGGGIIGGGGGG', // 17 la Seine et ses ponts
-    'GGGGGGGIIGGGGGGGGGGGGGGGIIGGGGGG', // 18
-    'ɔɔɔƀɔɔɔɔɔɔɔɔƀɔɔɔƀɔɔɔƀɔɔɔɔɔɔɔɔƀɔɔ', // 19 quai arboré
-    'ɔɔRRRRRɔɔRRRRRRRɔRRRRRɔ.ƀ..f..ƀɔ', // 20 immeuble, Notre-Dame, café, square
-    'ɔɔRRRRRɔɔRRRRRRRɔRRRRRɔ.....ƀ..ɔ', // 21
-    'ɔɔWWWWWɔɔWWWWWWWɔWWWWWɔ..f.....ɔ', // 22
-    'ɔɔWDWWWɔɔWWWDWWWɔWDWWWɔf..ƀ..f.ɔ', // 23 portes
-    'ɔɔɔɔɔɔɔ!ɔɔɔɔɔɔɔlɔɔɔɔ$$ɔɔɔɔɔɔɔɔɔɔ', // 24
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 25 rue sud (est : Toulon)
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 26
-    'ɔɔɔƀɔɔɔɔƀɔɔɔɔɔɔɔɔɔɔɔɔɔɔƀɔɔɔɔƀɔɔɔ', // 27
-    'ɔ.ƀ.......ɔRRRRRRRRRRɔ..ƀ......ɔ', // 28 parc de Bercy, Accor Arena
-    'ɔ...f.ƀ...ɔRRRRRRRRRRɔ....f.ƀ..ɔ', // 29
-    'ɔf......ƀ.ɔWWWWWWWWWWɔ.f......ƀɔ', // 30
-    'ɔ..ƀ...f..ɔWWWWDWWWWWɔ...ƀ...f.ɔ', // 31 porte de Bercy
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 32
-    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 33 arbres : bord de l'écran
+  built: BUILT,
+  sourceGrid: parseGrid([
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 0  bordure : arbres (dessinés)
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 1
+    'ƀƀ....................ɔɔɔɔɔɔɔ.....................ƀƀ', // 2  le dôme (Bercy), le Louvre, le musée-gare
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.....ɔɔɔɔɔɔɔ.....ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 3
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.....ɔɔɔɔɔɔ......ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 4
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.....ɔɔɔɔɔɔ......ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 5
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.....ɔɔɔɔɔɔ......ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 6
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.....ɔɔɔɔɔɔ......ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 7
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.....ɔ...........ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 8
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.....ɔ...........ɔɔɔɔɔDɔɔɔɔɔɔɔɔɔ.ƀƀ', // 9  porte : le musée-gare (39)
+    '...ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ...', // 10  l'avenue (ouverte aux deux bouts, rangées 10 à 13 : ouest Bordeaux, est aéroport)
+    'ɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 11  porte : Bercy (9)
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 12
+    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 13
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ....D.......D....ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 14  portes : le Louvre (21, 29) ; le jardin au bassin
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 15
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 16
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 17
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 18
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 19
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 20
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.................ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 21
+    'ƀƀ.ɔɔɔDɔɔɔɔɔɔDɔɔɔ.................ɔɔɔɔɔɔɔDɔɔɔɔɔɔɔ.ƀƀ', // 22  portes : ton appartement (6), le bistrot (13), l'opéra (41)
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 23
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 24
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 25
+    'GGGGGGGGɔɔɔGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGɔɔɔGGGGGGGG', // 26  la Seine et ses deux ponts (8-10, 41-43)
+    'GGGGGGGGɔɔɔGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGɔɔɔGGGGGGGG', // 27
+    'GGGGGGGGɔɔɔGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGɔɔɔGGGGGGGG', // 28
+    'GGGGGGGGɔɔɔGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGɔɔɔGGGGGGGG', // 29
+    'ƀƀ......ɔɔɔ..............................ɔɔɔ......ƀƀ', // 30
+    'ƀƀ......ɔɔɔ..............................ɔɔɔ......ƀƀ', // 31
+    'ƀƀ......ɔɔɔ..............................ɔɔɔ......ƀƀ', // 32
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 33
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 34
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 35
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 36
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 37
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 38
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ.ƀƀ', // 39
+    'ƀƀ.ɔɔɔɔɔDɔɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ...', // 40  portes : immeuble (8), café (14) ; rue sud ouverte à l'est (Toulon), rangées 40 à 45
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔDɔɔɔɔɔɔ...', // 41  portes : Notre-Dame (25), l'entreprise (42)
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 42
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 43
+    'ƀƀ.ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 44
+    'ƀƀ.....................................ɔ............', // 45
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 46  bordure
+    'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 47
   ]),
   doors: [
-    { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 9,  y: 4,  interior: 'bistro' },   // le bistrot : ta première mission à Paris
-    { x: 15, y: 4,  lockedDialogue: ['[Texte provisoire] Le café est complet ! Essaie le bistrot à côté.'] },
-    { x: 21, y: 4,  lockedDialogue: NOT_HOME },
-    // Ton appartement (immeuble en haut à droite) : après avoir dit au chef que tu emménages.
+    // Bercy (le grand dôme, en haut à gauche) : le concert, après le verre avec Hugues et Thomas.
     {
-      x: 27, y: 4, interior: 'parisAppart',
-      lock: { ifFlags: [FLAGS.emmenagementParis] },
-      lockedDialogue: ["[Texte provisoire] C'est ton futur appartement. Va d'abord manger au bistrot !"],
-    },
-    // L'entreprise (à droite de la tour Eiffel) : une fois l'offre trouvée sur l'ordinateur.
-    {
-      x: 28, y: 13, interior: 'entreprise',
-      lock: { ifFlags: [FLAGS.rechercheTravail] },
-      lockedDialogue: ["[Texte provisoire] Une grande entreprise. Tu n'as rien à y faire pour l'instant."],
-    },
-    { x: 3,  y: 23, lockedDialogue: NOT_HOME },
-    { x: 12, y: 23, lockedDialogue: ['[Texte provisoire] Notre-Dame est en travaux.'] },
-    { x: 18, y: 23, lockedDialogue: ['[Texte provisoire] Le café est fermé.'] },
-    // Bercy : le concert, après le verre avec Hugues et Thomas.
-    {
-      x: 15, y: 31, interior: 'bercy',
+      x: 9, y: 11, interior: 'bercy',
       lock: { ifFlags: [FLAGS.verreBistro] },
       lockedDialogue: ['[Texte provisoire] Pas de concert ce soir à Bercy.'],
     },
+    { x: 39, y: 9, lockedDialogue: ['[Texte provisoire] Le musée est fermé le lundi.'] },
+    { x: 21, y: 14, lockedDialogue: ['[Texte provisoire] La file d\'attente du Louvre fait le tour de la cour. Une autre fois !'] },
+    { x: 29, y: 14, lockedDialogue: ['[Texte provisoire] La file d\'attente du Louvre fait le tour de la cour. Une autre fois !'] },
+    // Ton appartement (l'immeuble aux balcons fleuris) : après avoir dit au chef que tu emménages.
+    {
+      x: 6, y: 22, interior: 'parisAppart',
+      lock: { ifFlags: [FLAGS.emmenagementParis] },
+      lockedDialogue: ["[Texte provisoire] C'est ton futur appartement. Va d'abord manger au bistrot !"],
+    },
+    { x: 13, y: 22, interior: 'bistro' },   // le bistrot (le café à terrasse) : ta première mission à Paris
+    { x: 41, y: 22, lockedDialogue: ["[Texte provisoire] L'Opéra est fermé jusqu'à ce soir."] },
+    { x: 8, y: 40, lockedDialogue: NOT_HOME },
+    { x: 14, y: 40, lockedDialogue: ['[Texte provisoire] Le café est complet ! Essaie le bistrot, de l\'autre côté de la Seine.'] },
+    { x: 25, y: 41, lockedDialogue: ['[Texte provisoire] Notre-Dame est en travaux.'] },
+    // L'entreprise (la tour de bureaux vitrée) : une fois l'offre trouvée sur l'ordinateur.
+    {
+      x: 42, y: 41, interior: 'entreprise',
+      lock: { ifFlags: [FLAGS.rechercheTravail] },
+      lockedDialogue: ["[Texte provisoire] Une grande entreprise. Tu n'as rien à y faire pour l'instant."],
+    },
   ],
-  buildings: [
-    { type: 'slateHouse', x: 2, y: 1 },
-    { type: 'bistro',   x: 8,  y: 1 },
-    { type: 'cafe',     x: 14, y: 1 },
-    { type: 'slateHouse', x: 20, y: 1 },
-    { type: 'house', x: 26, y: 1 },
-    { type: 'arcTriomphe', x: 2, y: 9 },
-    { type: 'louvrePyramid', x: 10, y: 11 },
-    { type: 'eiffelTower', x: 21, y: 9 },
-    { type: 'officeTower', x: 27, y: 9 },
-    { type: 'slateHouse', x: 2, y: 20 },
-    { type: 'notreDame', x: 9, y: 20 },
-    { type: 'cafe',     x: 17, y: 20 },
-    { type: 'bercy',    x: 11, y: 28 },
-  ],
+  // Les bâtiments sont dans le dessin (scripts/build_paris.py).
+  buildings: [],
   events: [
     // À l'arrivée : ta première mission.
     {
       on: 'enter',
       unlessFlags: [FLAGS.repasParis, FLAGS.parisAccueil],
       steps: [
-        { say: ['[Texte provisoire] Bienvenue à Paris !', "Première mission : aller manger au bistrot (2e bâtiment en haut à gauche)."] },
+        { say: ['[Texte provisoire] Bienvenue à Paris !', "Première mission : aller manger au bistrot (le café à terrasse, à gauche, avant la Seine)."] },
         { setFlag: FLAGS.parisAccueil },
       ],
     },
   ],
-  // Panneaux « Aéroport » à côté des sorties.
-  objects: [airportSign(30, 8, true)],
+  // Panneau « Aéroport » (dessiné) à côté de la sortie est.
+  objects: [airportSign(45, 13, true)],
   triggers: [
     // Ouest : retour à Bordeaux par la route (arrivée dans la rue sud).
-    ...[6, 7].map((y) => ({
+    ...[10, 11, 12, 13].map((y) => ({
       x: 0,
       y,
       readyDialogue: ['Tu reprends la route de Bordeaux.'],
       warp: { map: 'bordeaux', x: 30, y: 30, facing: 'left' },
     })),
     // Est : l'aéroport.
-    toAirport(31, 6),
-    toAirport(31, 7),
+    ...[10, 11, 12, 13].map((y) => toAirport(51, y)),
     // Rue sud, vers l'est : Toulon, une fois la rupture conventionnelle acceptée.
-    ...[25, 26].map((y) => ({
-      x: 31,
+    ...[40, 41, 42, 43, 44, 45].map((y) => ({
+      x: 51,
       y,
       ifFlags: [FLAGS.ruptureConventionnelle],
       dialogue: ['[Texte provisoire] La route du sud... Tu as encore des choses à faire à Paris.'],
@@ -132,6 +142,9 @@ export const parisMap = {
       warp: { map: 'toulon', x: 1, y: 6, facing: 'right' },
     })),
   ],
-  surroundings: { outside, border: 'ƀ', borderSkip: ['G', 'ɐ'] },
-  spawn: { x: 1, y: 6, facing: 'right' },
+  surroundings: { outside },
+  spawn: { x: 1, y: 11, facing: 'right' },
 };
+
+// La grille du jeu : celle ci-dessus, accordée aux collisions du dessin.
+parisMap.grid = builtGrid(parisMap.sourceGrid, BUILT);

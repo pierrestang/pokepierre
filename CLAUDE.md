@@ -61,7 +61,7 @@ puis Hanoï. Pas de combats.
   le jeu avec ?carte=<id>. Les cartes de Fort-de-France à Hull sont générées par scripts/convert_maps_v2.py puis
   retouchées à la main ; --force efface ces retouches. Hanoï : scripts/build_hanoi.py (sol du convertisseur, éléments du
   catalogue) ; Amsterdam : scripts/build_amsterdam.py (même principe, forêt par scripts/paint_forest.mjs) ; New Delhi :
-  scripts/build_new_delhi.py (même principe, assets Gen 4 nouveaux au catalogue) ; les villes
+  scripts/build_new_delhi.py (même principe, assets Gen 4 nouveaux au catalogue) ; Paris : scripts/build_paris.py (idem) ; les villes
   suivantes ne sont que des premiers jets dans le créateur, pas encore utilisés par le jeu. Ordre de reconstruction : build_v2_tiles.py, puis
   convert_maps_v2.py et build_g4_library.py. Avant de changer un bâtiment : check_paths.js (les rues de Hull et
   Bordeaux sont étroites). Détails : docs/technique/createur-de-cartes.md, à lire avant de toucher au créateur, aux

@@ -195,6 +195,24 @@ LIB_BUILDINGS = {
     'toit-plat-aveugle': ('Maison à toit plat (sans porte)', (208, 19136, 80, 96), None, (), ['new-delhi']),
     'tente-bazar': ('Grande tente de bazar', (96, 19792, 80, 112), 2, (), ['new-delhi']),
     'tente-petite': ('Petite tente de bazar', (80, 9920, 80, 64), 2, (), ['new-delhi']),
+    # Paris (octobre 2026) : bâtiments de la bibliothèque Gen 4 pas encore au catalogue (monuments, immeubles, cafés).
+    'opera': ('Opéra', (0, 6009, 144, 135), 4, (), ['paris']),
+    'cathedrale': ('Cathédrale gothique', (1, 5796, 174, 204), 5, (), ['paris']),
+    'grand-palais': ('Grand Palais (dôme de verre)', (80, 4701, 175, 147), 5, (), ['paris']),
+    'arene': ('Grande salle (Bercy)', (128, 7765, 144, 123), 4, (), ['paris']),
+    'tour-verre': ('Tour de bureaux vitrée', (176, 5797, 160, 187), 4, (), ['paris']),
+    'palais-ailes': ('Palais à deux ailes', (1, 5567, 238, 225), 3, (), ['paris']),
+    'musee-gare': ('Musée-gare', (1, 5163, 221, 117), 5, (), ['paris']),
+    'mansardes': ('Grand immeuble à mansardes', (5, 13077, 245, 203), 7, (), ['paris']),
+    'immeuble-ardoise': ('Immeuble d\'ardoise à portique', (208, 25493, 80, 107), 2, (), ['paris']),
+    'immeuble-fleuri': ('Immeuble aux balcons fleuris', (269, 13406, 86, 132), 3, (), ['paris']),
+    'immeuble-creme': ('Immeuble crème', (0, 1727, 78, 81), 2, (), ['paris']),
+    'cafe-terrasse': ('Café à terrasse sur le toit', (80, 1727, 79, 81), 2, (), ['paris']),
+    'fleuriste': ('Boutique au store rayé rouge', (256, 21552, 80, 70), 2, (), ['paris']),
+    'cafe-auvent': ('Bistrot à auvent', (128, 21557, 80, 93), 2, (), ['paris']),
+    'immeuble-pierre': ('Immeuble de brique et pierre', (0, 21680, 80, 105), 2, (), ['paris']),
+    'gratte-ciel': ('Gratte-ciel', (2, 4538, 60, 150), 2, (), ['paris']),
+    'pavillon-ardoise': ('Pavillon au toit d\'ardoise', (12, 6419, 84, 86), 2, (), ['paris']),
 }
 
 
@@ -229,6 +247,17 @@ def lib_building(box, greys=(), sid='g4-batiments', shadow=False, dark=40, insid
     out.alpha_composite(img.crop((bx0, by0, bx1, by1)), (left, th * TILE - (by1 - by0)))
     return out
 
+
+
+def no_grate(img):
+    """Sans la grille d'arbre (l'ellipse grise sous le tronc, prise pour une ombre) : les pixels gris neutres de la
+    moitié basse du dessin deviennent transparents ; le tronc (brun) reste."""
+    a = np.array(img)
+    rgb = a[..., :3].astype(int)
+    grey = (np.abs(rgb[..., 0] - rgb[..., 1]) < 6) & (np.abs(rgb[..., 1] - rgb[..., 2]) < 6) & (rgb.max(-1) <= 96)
+    grey[:a.shape[0] // 2] = False
+    a[grey & (a[..., 3] > 0)] = 0
+    return Image.fromarray(a)
 
 ELEMENTS = {
     # Arbres (le bas, ou le tronc, bloque ; la cime passe devant Pierre).
@@ -270,6 +299,29 @@ ELEMENTS = {
     'banian': ('Banian', 'arbres', lambda: lib_building((96, 2560, 80, 96), sid='g4-arbres', shadow=True), 4, 'land'),
     'soucis': ('Soucis', 'plantes', lambda: lib_building((16, 208, 16, 16), sid='g4-plantes', shadow=True), None, 'land'),
     'fleurs-tulipes': ('Fleurs en tulipe (lotus)', 'plantes', lambda: lib_building((0, 592, 48, 48), sid='g4-plantes', shadow=True), None, 'land'),
+    # Paris (octobre 2026) : éléments de la bibliothèque Gen 4 pas encore au catalogue.
+    'reverbere-globe': ('Réverbère à globe (petit)', 'mobilier', lambda: lib_building((103, 4121, 13, 36), sid='g4-mobilier'), -1, 'land'),
+    'reverbere-lanterne': ('Réverbère à lanterne', 'mobilier', lambda: lib_building((296, 3860, 18, 40), sid='g4-mobilier'), -1, 'land'),
+    'fontaine-jet': ('Fontaine octogonale à jet', 'mobilier', lambda: lib_building((0, 2605, 63, 51), sid='g4-mobilier'), 0, 'land'),
+    'petite-fontaine-pierre': ('Petite fontaine de pierre', 'mobilier', lambda: lib_building((10, 4268, 27, 30), sid='g4-mobilier'), -1, 'land'),
+    'banc-metal': ('Banc de métal', 'mobilier', lambda: lib_building((208, 4262, 28, 23), sid='g4-mobilier'), -1, 'land'),
+    'banc-jaune': ('Long banc jaune', 'mobilier', lambda: lib_building((17, 3329, 46, 13), sid='g4-mobilier'), -1, 'land'),
+    'statue-socle': ('Statue sur socle', 'mobilier', lambda: lib_building((217, 2759, 43, 69), sid='g4-mobilier'), -2, 'land'),
+    'parasol-cafe': ('Table de terrasse à parasol', 'mobilier', lambda: lib_building((155, 1168, 69, 64), sid='g4-mobilier', dark=100), -1, 'land'),
+    'van-noir': ('Monospace noir', 'mobilier', lambda: lib_building((1, 2623, 63, 49), sid='g4-vehicules'), 1, 'land'),
+    'monospace-blanc': ('Monospace blanc', 'mobilier', lambda: lib_building((256, 161, 63, 47), sid='g4-vehicules'), 1, 'land'),
+    'bateau-mouche': ('Bateau-mouche', 'eau', lambda: lib_building((5, 2751, 163, 90), sid='g4-vehicules'), None, 'water'),
+    'yacht-blanc': ('Yacht blanc', 'eau', lambda: lib_building((132, 1125, 120, 43), sid='g4-vehicules'), None, 'water'),
+    'pont-pierre': ('Arche de pont de pierre', 'eau', lambda: lib_building((80, 1254, 112, 54), sid='g4-ponts'), None, 'water'),
+    'pont-pierre-vertical': ('Pont de pierre', 'eau', lambda: lib_building((194, 1249, 60, 63), sid='g4-ponts'), None, 'water'),
+    'bassin-fontaine': ('Bassin à fontaine', 'mobilier', lambda: lib_building((3, 500, 110, 138), sid='g4-eau'), 0, 'land'),
+    'haie-jardiniere': ('Haie taillée en jardinière', 'plantes', lambda: lib_building((1, 3366, 78, 23), sid='g4-arbres', shadow=True), -1, 'land'),
+    'haie-bac': ('Haie en bac', 'plantes', lambda: lib_building((228, 4580, 87, 28), sid='g4-mobilier', shadow=True), -1, 'land'),
+    'if-cone': ('If taillé en cône', 'plantes', lambda: lib_building((161, 4577, 14, 31), sid='g4-mobilier', shadow=True), -1, 'land'),
+    'platane': ('Platane', 'arbres', lambda: no_grate(lib_building((0, 947, 64, 93), sid='g4-arbres', shadow=True)), -1, 'land'),
+    'arbre-grille': ('Arbre d\'alignement', 'arbres', lambda: no_grate(lib_building((71, 1040, 50, 64), sid='g4-arbres', shadow=True)), -1, 'land'),
+    'arbre-grille-sombre': ('Arbre d\'alignement sombre', 'arbres', lambda: no_grate(lib_building((70, 1104, 50, 64), sid='g4-arbres', shadow=True)), -1, 'land'),
+    'arbre-alignement': ('Arbre en colonne', 'arbres', lambda: lib_building((3, 3693, 42, 67), sid='g4-arbres', shadow=True), -1, 'land'),
     'champignon': ('Champignon', 'plantes', lambda: lib_building((17, 481, 14, 14), sid='g4-plantes', shadow=True), None, 'land'),
     'baies-sombres': ('Buisson à baies', 'plantes', lambda: lib_building((6, 564, 36, 28), sid='g4-plantes', shadow=True), -1, 'land'),
     'hortensias': ('Hortensias', 'plantes', lambda: lib_building((2, 643, 44, 29), sid='g4-plantes', shadow=True), -1, 'land'),
@@ -411,6 +463,12 @@ THEMES = {
                             'stand-chai', 'brasero', 'barriere-doree', 'cloche-temple', 'mat-fanions', 'taxi-jaune',
                             'palmier-g4', 'gulmohar', 'banian', 'soucis', 'fleurs-tulipes', 'palmier', 'palmier-2',
                             'hibiscus', 'fleurs-tropicales', 'pot', 'etal', 'velo', 'nenuphar']},
+    'paris': {'name': 'Paris (monuments et cafés)', 'forest': 'dppt', 'paving': None, 'lamp': 'reverbere-globe',
+              'extra': ['reverbere-lanterne', 'fontaine-jet', 'petite-fontaine-pierre', 'banc-metal', 'banc-jaune',
+                        'statue-socle', 'parasol-cafe', 'van-noir', 'monospace-blanc', 'bateau-mouche', 'yacht-blanc',
+                        'pont-pierre', 'pont-pierre-vertical', 'bassin-fontaine', 'haie-jardiniere', 'haie-bac', 'if-cone',
+                        'platane', 'arbre-grille', 'arbre-grille-sombre', 'arbre-alignement', 'peniche', 'velo',
+                        'drapeau-france', 'cabine', 'hortensias', 'arbuste-taille']},
     'amsterdam': {'name': 'Amsterdam (canaux)', 'forest': 'automne', 'paving': None, 'lamp': 'reverbere-noir',
                   'extra': ['fontaine', 'peniche', 'velo', 'banc', 'banc-bois', 'jardiniere-rose', 'jardiniere-rouge',
                             'hortensias', 'iris', 'arbuste-taille', 'poubelle-rouge']},
@@ -428,6 +486,7 @@ MORE_TREES = {
     'hanoi': ['arbre-pointu', 'pin-bleu'],
     'amsterdam': ['arbre-foret', 'arbre-roux', 'feuillu-orange', 'arbre-pointu-brun', 'peuplier'],
     'new-delhi': ['arbre-olive'],
+    'paris': ['arbre-foret', 'cerisier'],
 }
 for _tid, _more in MORE_TREES.items():
     THEMES[_tid]['extra'] = THEMES[_tid]['extra'] + _more

@@ -41,6 +41,7 @@ Ordre de reconstruction : `build_v2_tiles.py`, puis `convert_maps_v2.py` et `bui
 | `build_fanions.py` | Guirlandes de fanions. |
 | `build_icons.py` | Logo et icônes d'écran d'accueil. |
 | `build_amsterdam.py` | Amsterdam en Gen 4 : `src/data/builtMaps/amsterdam.json` (canaux, maisons de canal, manoir, fontaine ; thème « Amsterdam » du catalogue). `--force` : refait la carte même si elle a été retouchée. |
+| `build_paris.py` | Paris en Gen 4 : `src/data/builtMaps/paris.json` (opéra, Grand Palais, Seine, Notre-Dame, Bercy ; thème « Paris » du catalogue). `--force` : refait la carte même si elle a été retouchée. |
 | `build_new_delhi.py` | New Delhi en Gen 4 : `src/data/builtMaps/new-delhi.json` (palais, université à coupole, India Gate, bazar ; thème « New Delhi » du catalogue). `--force` : refait la carte même si elle a été retouchée. |
 | `paint_forest.mjs` | Dessine la forêt d'une carte du créateur (`studio.forest`) comme le pinceau Forêt : `node scripts/paint_forest.mjs <id>`. |
 | `build_airport.py` | L'aéroport en Gen 4 : `src/data/builtMaps/airport.json` et sa planche `aeroport.png` (avions, guichet, salle d'attente ; meubles de TobalCR). À relancer après `build_travel_art.py` (l'avion du tarmac). |
