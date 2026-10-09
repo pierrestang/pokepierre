@@ -48,12 +48,14 @@ Fort-de-France → Saint-Ay → (route de Montépilloy) → Montépilloy → rou
 Bordeaux → Hull → Hanoï → Amsterdam → New Delhi → Bordeaux (stade) → Paris → le rêve → le réveil à Fort-de-France
 (fin du jeu, retour au titre).
 
-Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux, redessiné en Gen 4, tout entier à l'écran : tarmac
+Après Bordeaux, tous les vols passent par l'**aéroport** (une seule carte, redessinée en Gen 4, tout entier à l'écran : tarmac
 et avions garés derrière la baie vitrée, tableau des départs, guichet, file à cordons, salle d'attente ; pas de vélo). L'hôtesse (`g64`), derrière son comptoir
 (on lui parle par-dessus), propose deux choix : la destination de la suite de l'histoire et « Autre » (les lieux déjà
 visités, et « Rester ici ») ; sans vol de l'histoire en attente, la liste « Autre » s'ouvre directement. Chaque vol joue
 le **trajet en avion** : l'avion de ligne file au-dessus de l'océan et de ses îles, entre deux couches de nuages, deux
-traînées derrière lui, au bruit des réacteurs.
+traînées derrière lui, au bruit des réacteurs. C'est l'aéroport de la ville d'où l'on vient : le jeu la retient (memo
+`aeroport`), ses portes y ramènent (« Tu sors de l'aéroport. »), et la liste des vols ne la propose pas ; « Autre »
+propose Bordeaux quand on n'y est pas. Les vols atterrissent à côté des sorties vers l'aéroport de chaque ville.
 
 ---
 
@@ -930,7 +932,7 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 ## 9. Amsterdam (Pays-Bas)
 
 Le stage chez Corning, avec Romain en colocataire (`src/data/amsterdamStory.js`). Pas de vertu nouvelle (la 8e est
-réservée à Paris) : Autonomie et Audace servent au stage, Insouciance à la nuit au bord du canal. Une seule ellipse.
+réservée à Paris) : Autonomie sert au stage, Insouciance à la nuit au bord du canal. Une seule ellipse.
 
 ### La carte (36 x 30, Gen 4)
 Première version par scripts/build_amsterdam.py, puis retouchée à la main dans le créateur. Au nord, le long de la grande
@@ -972,14 +974,15 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
      pas. », « Du verre, mais en mieux. » ;
    - la diffusion : « Une vidéo de chute en ligne », « Un salon professionnel », « Des affiches dans le métro ».
    « Tu rassembles tout sur trois pages, sans demander d'aide à personne. » → **« Pierre utilise Autonomie ! »** →
-   « Devant toute l'équipe, tu présentes ta campagne… et tu lâches ton propre téléphone par terre. L'écran tient. » →
-   **« Pierre utilise Audace ! »** ; Laurent : **« Pas mal du tout pour un premier jour ! Tu as l'instinct du marketing,
+   « Devant toute l'équipe, tu présentes ta campagne… et tu lâches ton propre téléphone par terre. L'écran tient. » ;
+   Laurent : **« Pas mal du tout pour un premier jour ! Tu as l'instinct du marketing,
    toi. »**
 6. **Quelques mois plus tard.** En sortant de Corning : **« Quelques mois plus tard… »** (la seule ellipse de la ville). La
    nuit tombe sur Amsterdam (nuit forcée, quelle que soit l'heure, jusqu'à la fin de la scène du canal) : réverbères
    allumés, appliques des portes, fenêtres de la péniche.
 7. **La nuit au bord du canal.** Romain est assis sur le quai devant la péniche (17, 12) : « Romain est assis au bord du
-   quai, les jambes au-dessus de l'eau. Les lumières des péniches tremblent sur le canal. » ; **« Viens t'asseoir deux
+   quai, les jambes au-dessus de l'eau. Les lumières des péniches tremblent sur le canal. » ; Pierre s'assoit à côté de
+   lui (16, 12), et pendant toute la discussion tous les deux regardent le canal ; **« Viens t'asseoir deux
    minutes. Regarde-moi ça. »** / « Y a six mois, t'étais à l'autre bout du monde, à Hanoï. Et nous à Bordeaux. Et là, on
    est posés ensemble à Amsterdam. » / « Profite, va. Demain c'est encore le stage, mais là, maintenant, on est bien. » →
    **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de demain. Il y a juste l'eau, les lumières, et Romain qui
@@ -987,11 +990,11 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
    prochain échange, c'est à New Delhi, en Inde ! Tiens, voilà ton billet d'avion. »** → **Billet d'avion pour New
    Delhi** ; Pierre, en lui-même : **« Une ville de plus. Et à chaque fois, des gens que je quitte. Je me demande ce qu'ils
    deviennent, tous. »** ; « Le lendemain, ton billet en poche, tu prends la route de l'aéroport. » (Pierre arrive au
-   guichet.)
+   guichet de l'aéroport d'Amsterdam ; en ressortant, il est encore à Amsterdam.)
 
 ### Vertus
 - **Gagnée** : aucune.
-- **Utilisées** : **Autonomie** et **Audace** (la campagne de Corning), **Insouciance** (la nuit au canal).
+- **Utilisées** : **Autonomie** (la campagne de Corning), **Insouciance** (la nuit au canal).
 
 ### Objets et souvenir
 **Marchandise** (le coffee shop, rendue à Romain), **Billet d'avion pour New Delhi** (remis par Romain), souvenir **Photo
@@ -1081,7 +1084,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 6. **Le retour.** Prophecy (26, 11) : **« Bon, la parenthèse indienne se termine. On rentre à Bordeaux finir nos études.
    Tu te rends compte, on revient là où tout a commencé ? »** ; Harsh (28, 11) : « Vous allez me manquer, tous les deux.
    Revenez quand vous voulez : ici, vous serez toujours chez vous. » ; écran noir : « Ta valise bouclée, tu prends
-   l'avion pour Bordeaux avec Prophecy. »
+   la route de l'aéroport avec Prophecy. Le vol pour Bordeaux t'attend au guichet. »
 
 ### Vertus
 - **Gagnée** : aucune.
@@ -1094,8 +1097,9 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 lac de Saint-Ay et au coquillage de Manon.
 
 ### Départ et trajet
-Trajet en avion (sans encart : pas de vertu reçue) jusqu'à l'aéroport de Bordeaux, Pierre tourné vers les portes ; le
-stade s'ouvre (drapeau `semestre-termine`).
+À l'aéroport de Delhi, l'hôtesse propose le vol « Bordeaux (France) » (la suite de l'histoire) ; trajet en avion, sans
+encart (pas de vertu reçue) ; Pierre arrive à Bordeaux, à côté de sa sortie vers l'aéroport ; le stade s'ouvre (drapeau
+`semestre-termine`).
 
 ## 11. Bordeaux (le stade) : textes provisoires
 
@@ -1233,7 +1237,7 @@ Paris.
 | Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum ; New Delhi : la fête (dans le sens renversé : les étudiants entraînent Pierre) |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
 | Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
-| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) ; Amsterdam : la présentation de la campagne |
+| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) |
 | Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (obligatoire avant de sortir ; photo) ; Hull : le guichet de l'aéroport, avant Hanoï ; Amsterdam : la campagne de Corning |
 | Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Hanoï : la touriste au téléphone à plat, au temple ; Amsterdam : la nuit au canal avec Romain |
 | Adaptation | Hanoï | M. Lam, qui traduit les consignes en vietnamien | « Trouver son chemin partout, même sans en parler la langue. » | Nulle part pour l'instant |

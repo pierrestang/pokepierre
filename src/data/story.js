@@ -137,6 +137,7 @@ export const FLAGS = {
   sageDelhi: 'sage-delhi',                      //   le vieux sage, derrière la porte du fort : la pierre gravée
   moisDelhi: 'mois-delhi',                      //   « Quelques mois plus tard… » (la seule ellipse de la ville)
   semestreTermine: 'semestre-termine',          //   Prophecy : on rentre à Bordeaux (le stade s'ouvre)
+  retourBordeaux: 'retour-bordeaux',            // de retour à Bordeaux, par le vol depuis l'aéroport de Delhi
   diplomeBordeaux: 'diplome-bordeaux',          // diplôme reçu devant l'estrade du stade (la route de Paris s'ouvre)
   arriveeParis: 'arrivee-paris',                // arrivé à Paris, devant l'immeuble du propriétaire
   parisCles: 'paris-cles',                      //   le propriétaire a donné les clés

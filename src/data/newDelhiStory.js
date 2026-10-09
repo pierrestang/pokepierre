@@ -129,7 +129,8 @@ export const SAGE_AFTER = ['Rien ne se perd, jeune voyageur. Rien.'];
 
 // ---------- 5. Le retour ----------
 
-// Devant la porte du fort, le semestre fini : Prophecy amorce le retour (il partage le cursus de Pierre) ; l'avion.
+// Devant la porte du fort, le semestre fini : Prophecy amorce le retour (il partage le cursus de Pierre) ; l'aéroport de
+// Delhi, où l'hôtesse propose le vol pour Bordeaux (maps/airport.js).
 export const GOING_HOME = [
   { approach: 'prophecy-depart' },
   {
@@ -141,6 +142,6 @@ export const GOING_HOME = [
   { black: true },
   { wait: 700 },
   { setFlag: FLAGS.semestreTermine },
-  { say: ['Ta valise bouclée, tu prends l\'avion pour Bordeaux avec Prophecy.'] },
-  { travel: { map: 'airport', x: 10, y: 12, facing: 'down', plane: true } },
+  { say: ['Ta valise bouclée, tu prends la route de l\'aéroport avec Prophecy. Le vol pour Bordeaux t\'attend au guichet.'] },
+  { travel: { map: 'airport', x: 10, y: 12, facing: 'up' } },
 ];

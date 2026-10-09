@@ -1,13 +1,13 @@
 import { FLAGS, ITEMS, TRAITS } from './story.js';
 
-// Scénario d'Amsterdam : le stage chez Corning, avec Romain en colocataire. Pas de vertu nouvelle (la 8e est réservée à
-// Paris) : Autonomie et Audace servent au stage, Insouciance à la nuit au bord du canal.
+// Scénario d'Amsterdam : le stage chez Corning, avec Romain en colocataire. Pas de vertu nouvelle (la 8e se gagne à
+// Paris) : Autonomie sert au stage, Insouciance à la nuit au bord du canal.
 //   1. L'arrivée : Romain appelle (téléphone) et donne rendez-vous à la maison commune.
 //   2. La maison commune : Romain envoie Pierre chercher sa marchandise au coffee shop.
 //   3. Le coffee shop : le vendeur parle un mélange de français et de néerlandais (« Ja » ou « Nee », sans conséquence).
 //   4. Retour chez Romain : la marchandise rendue, il envoie Pierre à son stage.
 //   5. Corning : Laurent confie une campagne pour le nouveau produit ; trois choix (cible, slogan, diffusion), Laurent
-//      encourage ou recadre, sans échec ; la présentation (Autonomie, Audace).
+//      encourage ou recadre, sans échec ; la présentation (Autonomie).
 //   6. En sortant de Corning : « Quelques mois plus tard… » (la seule ellipse de la ville) ; la nuit tombe.
 //   7. La nuit, au bord du canal, Romain (Insouciance) ; le billet pour New Delhi ; le souvenir du canal ; l'aéroport.
 // Scénettes partagées par la carte et les intérieurs (étapes : voir MapScene.runSteps).
@@ -113,7 +113,6 @@ export const CAMPAIGN = [
   { say: ['Tu rassembles tout sur trois pages, sans demander d\'aide à personne.'] },
   { useTrait: TRAITS.autonomie },
   { say: ['Devant toute l\'équipe, tu présentes ta campagne… et tu lâches ton propre téléphone par terre. L\'écran tient.'] },
-  { useTrait: TRAITS.audace },
   { speaker: LAURENT, say: ['Pas mal du tout pour un premier jour ! Tu as l\'instinct du marketing, toi.'] },
   { setFlag: FLAGS.stageCorning },
 ];
@@ -135,7 +134,9 @@ export const MONTHS_LATER = [
 const PHOTO = { id: 'souvenir-canal', name: 'Photo du canal' };
 export const CANAL_NIGHT = [
   { say: ['Romain est assis au bord du quai, les jambes au-dessus de l\'eau. Les lumières des péniches tremblent sur le canal.'] },
-  { faceTo: 'romain-canal' },
+  // Pierre s'assoit à côté de Romain : tous les deux regardent le canal.
+  { goTo: [CANAL_SPOT[0] - 1, CANAL_SPOT[1]], facing: 'down' },
+  { face: { player: 'down', 'romain-canal': 'down' } },
   { speaker: 'Romain', say: ['Viens t\'asseoir deux minutes. Regarde-moi ça.'] },
   { speaker: 'Romain', say: ['Y a six mois, t\'étais à l\'autre bout du monde, à Hanoï. Et nous à Bordeaux. Et là, on est posés ensemble à Amsterdam.'] },
   { speaker: 'Romain', say: ['Profite, va. Demain c\'est encore le stage, mais là, maintenant, on est bien.'] },

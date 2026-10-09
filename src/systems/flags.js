@@ -1,5 +1,6 @@
 import { items } from './items.js';
 import { souvenirs } from './souvenirs.js';
+import { memo } from './memo.js';
 
 // Drapeaux d'histoire (« la famille te suit », « parti de Fort-de-France »…).
 // État global sauvegardé dans localStorage, comme les souvenirs.
@@ -42,11 +43,15 @@ export const flags = {
 //   ifItems : le joueur doit posséder tous ces objets ;
 //   ifSouvenirs : le joueur doit avoir tous ces souvenirs ;
 //   unlessItems / unlessSouvenirs : il ne doit en avoir aucun ;
-//   anyOf : liste de conditions, il suffit que l'une soit remplie (ex. la nuit de deux soirs différents).
+//   anyOf : liste de conditions, il suffit que l'une soit remplie (ex. la nuit de deux soirs différents) ;
+//   unlessMemo : { clé: valeur } — aucune de ces valeurs libres (systems/memo.js) ne doit être celle-là (ex. ne pas
+//   proposer le vol pour la ville dont on est parti : { aeroport: 'paris' }).
 export function meetsConditions({
   ifFlags = [], unlessFlags = [], ifItems = [], unlessItems = [], ifSouvenirs = [], unlessSouvenirs = [], anyOf = null,
+  unlessMemo = null,
 } = {}) {
   return (
+    (!unlessMemo || !Object.entries(unlessMemo).some(([k, v]) => memo.get(k) === v)) &&
     (!anyOf || anyOf.some((c) => meetsConditions(c))) &&
     ifFlags.every(flags.has) &&
     !unlessFlags.some(flags.has) &&

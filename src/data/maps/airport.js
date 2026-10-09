@@ -4,6 +4,7 @@ import { parseGrid } from './parseGrid.js';
 import BUILT from '../builtMaps/airport.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
+import { AIRPORT_EXITS } from './airportLinks.js';
 import { FLIGHT_TO_HULL } from '../bordeauxStory.js';
 import { FLIGHT_TO_HANOI } from '../hullStory.js';
 import { FLIGHT_TO_AMSTERDAM } from '../hanoiStory.js';
@@ -23,26 +24,35 @@ const NEXT_FLIGHTS = [
   // New Delhi : avec le billet que Romain remet à Amsterdam, la nuit au bord du canal.
   {
     label: 'New Delhi (Inde)', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
-    setFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 16, facing: 'right' },
+    setFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi,
+  },
+  // Bordeaux : le semestre de New Delhi fini, depuis l'aéroport de Delhi, avec Prophecy (le stade s'ouvre).
+  {
+    label: 'Bordeaux (France)', ifFlags: [FLAGS.semestreTermine], unlessFlags: [FLAGS.retourBordeaux],
+    setFlags: [FLAGS.retourBordeaux], plane: AIRPORT_EXITS.bordeaux,
   },
 ];
 
 // « Autre » : les lieux déjà visités (on y retourne en avion), sauf la suite de l'histoire, déjà proposée.
 const OTHER_FLIGHTS = [
+  { label: 'Bordeaux', ifFlags: [FLAGS.arriveeBordeaux], plane: AIRPORT_EXITS.bordeaux },
   { label: 'Fort-de-France (Martinique)', plane: { map: 'fortDeFrance', x: 15, y: 10, facing: 'down' } },
   { label: 'Saint-Ay', ifFlags: [FLAGS.departFortDeFrance], plane: { map: 'saintAy', x: 5, y: 10, facing: 'left' } },
   { label: 'Montépilloy', ifFlags: [FLAGS.arriveeMontepilloy], plane: { map: 'montepilloy', x: 16, y: 27, facing: 'up' } },
   { label: 'Prytanée', ifFlags: [FLAGS.arriveePrytanee], plane: { map: 'prytanee', x: 16, y: 23, facing: 'up' } },
-  { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], plane: { map: 'hull', x: 1, y: 35, facing: 'right' } },
-  { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], plane: { map: 'hanoi', x: 1, y: 8, facing: 'right' } },
-  { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.arriveeAmsterdam], plane: { map: 'amsterdam', x: 1, y: 10, facing: 'right' } },
-  { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 16, facing: 'right' } },
-  { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: { map: 'paris', x: 1, y: 11, facing: 'right' } },
+  { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], plane: AIRPORT_EXITS.hull },
+  { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], plane: AIRPORT_EXITS.hanoi },
+  { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.arriveeAmsterdam], plane: AIRPORT_EXITS.amsterdam },
+  { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi },
+  { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: AIRPORT_EXITS.paris },
   { label: 'Rester ici', dialogue: ['Très bien, reviens me voir quand tu veux !'] },
 ];
 
-// Un vol : le trajet en avion (FerryScene.playPlane), puis l'arrivée.
-const flight = ({ plane, ...choice }) => (plane ? { ...choice, warp: { ...plane, plane: true } } : choice);
+// Un vol : le trajet en avion (FerryScene.playPlane), puis l'arrivée. On ne propose pas la ville dont l'aéroport est
+// celui où l'on se trouve (memo `aeroport`, voir airportLinks.js).
+const flight = ({ plane, ...choice }) => (plane
+  ? { ...choice, unlessMemo: { aeroport: plane.map }, warp: { ...plane, plane: true } }
+  : choice);
 
 const DESTINATIONS = [
   ...NEXT_FLIGHTS.map(flight),
@@ -98,7 +108,7 @@ export const airportMap = {
     x,
     y: 13,
     readyDialogue: ["Tu sors de l'aéroport."],
-    warp: { map: 'bordeaux', x: 30, y: 10, facing: 'left' },
+    warp: { airportExit: true },                // dans la ville d'où l'on vient (voir airportLinks.js)
   })),
   // Les écrans du guichet, de part et d'autre de l'hôtesse.
   objects: [8, 12].map((x) => ({ x, y: 7, dialogue: ['Sur l\'écran, les départs du jour : Hull, Hanoï, Amsterdam, New Delhi… Le monde entier.'] })),

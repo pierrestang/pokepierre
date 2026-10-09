@@ -25,6 +25,7 @@ import { propKey } from '../art/propImages.js';
 import { MESS_SHEET, messFrame } from '../art/partyMess.js';
 import { savePosition } from '../systems/save.js';
 import { memo } from '../systems/memo.js';
+import { AIRPORT_EXITS } from '../data/maps/airportLinks.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
 import {
@@ -1570,7 +1571,15 @@ export class MapScene extends Phaser.Scene {
   // `car: true` : on passe d'abord par le trajet en voiture (même écran de voyage, voir FerryScene).
   // `carry` : encart affiché à la fin du trajet (ex. « Tu emportes : … », voir FerryScene).
   // `plane: true` : en avion (même écran de voyage).
-  travel({ map, interior, fromMap, ferry, deck, car, plane, carry, ...spawn }) {
+  travel({ map, interior, fromMap, ferry, deck, car, plane, carry, airportExit, ...spawn }) {
+    // L'aéroport : on retient la ville d'où l'on y entre (ses portes y ramènent) ; `airportExit` : ses portes.
+    if (airportExit) {
+      const exit = AIRPORT_EXITS[memo.get('aeroport')] ?? AIRPORT_EXITS.bordeaux;
+      const { map: city, ...at } = exit;
+      this.goTo('Overworld', { mapId: city, spawn: at });
+      return;
+    }
+    if (map === 'airport' && !plane && this.map.id !== 'airport') memo.set('aeroport', this.fromMap ?? this.map.id);
     // `fromMap` : la ville où l'on ressort d'un intérieur (par défaut, celle où l'on est).
     if (interior) this.goTo('Interior', { interior, fromMap: fromMap ?? this.fromMap ?? this.map.id, spawn });
     else if (ferry || car || plane) {
