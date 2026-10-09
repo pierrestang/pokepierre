@@ -1,0 +1,191 @@
+{
+ "frames": {
+  "vieille-canne": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "super-canne": {
+   "frame": {
+    "x": 32,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "mega-canne": {
+   "frame": {
+    "x": 64,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "coquillage": {
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "planches": {
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "corde": {
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "diplome": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "livre": {
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "carnet": {
+   "frame": {
+    "x": 256,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "carte": {
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "cles": {
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "sac": {
+   "frame": {
+    "x": 352,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "billet": {
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "potion": {
+   "frame": {
+    "x": 416,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "piece-metal": {
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "amulette": {
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "bouquet": {
+   "frame": {
+    "x": 512,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "velo": {
+   "frame": {
+    "x": 544,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pierre-gravee": {
+   "frame": {
+    "x": 576,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "vieille-canne-petite": {
+   "frame": {
+    "x": 608,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "super-canne-petite": {
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "mega-canne-petite": {
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pierre-gravee-petite": {
+   "frame": {
+    "x": 704,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  }
+ },
+ "meta": {
+  "image": "item-icons.png"
+ }
+}

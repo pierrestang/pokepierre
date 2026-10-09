@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Créateur de cartes — Poképierre</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/pokepierre/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet" />
+    <style>:root{--bg:#14161b;--panel:#1b1e25;--raise:#242832;--hover:#2c313c;--line:#2a2e38;--text:#e7e9ee;--muted:#8a92a3;--accent:#e8473f;--accent-soft:#e8473f26;--ok:#3fb563}*{box-sizing:border-box}html,body{background:var(--bg);height:100%;color:var(--text);margin:0;font:13px/1.35 system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}button,select,input{font:inherit;color:inherit}.app{grid-template-rows:auto 1fr auto;height:100%;display:grid}.i{fill:none;stroke:currentColor;stroke-width:1.8px;stroke-linecap:round;stroke-linejoin:round;flex:none;width:18px;height:18px}.grow{flex:1}header{background:var(--panel);border-bottom:1px solid var(--line);align-items:center;gap:4px;min-width:0;padding:6px 10px;display:flex}.brand{white-space:nowrap;margin-right:10px;font:600 16px Pixelify Sans,system-ui}.brand b{color:var(--accent)}.btn{cursor:pointer;white-space:nowrap;color:var(--muted);background:0 0;border:0;border-radius:7px;align-items:center;gap:6px;padding:6px 9px;transition:background .12s,color .12s;display:inline-flex}.btn:hover:not(:disabled){background:var(--hover);color:var(--text)}.btn.primary{background:var(--accent);color:#fff;font-weight:600}.btn.primary:hover:not(:disabled){color:#fff;background:#f05a52}.btn.icon{padding:6px}.btn:disabled{opacity:.3;cursor:default}.map-meta{align-items:center;gap:2px;min-width:0;margin:0 8px;display:flex}input[type=text],input[type=number],select{background:var(--raise);border:1px solid #0000;border-radius:7px;outline:none;padding:5px 8px}input:focus,select:focus{border-color:var(--accent)}#map-name{width:200px;color:var(--text);background:0 0;font-weight:600}#map-name:hover{background:var(--raise)}.size{color:var(--muted);align-items:center;gap:2px;display:flex}.size input{text-align:center;-moz-appearance:textfield;background:0 0;width:46px;padding:5px 2px}.size input:hover{background:var(--raise)}.size input::-webkit-inner-spin-button{display:none}#resize{color:var(--accent)}#resize[hidden]{display:none}.resize-side{color:var(--muted,#aaa);white-space:nowrap;margin-left:6px;font-size:12px}.resize-side[hidden]{display:none}.resize-side select{font:inherit}main{--aside:460px;grid-template-columns:var(--aside) 48px 1fr;min-height:0;display:grid}aside{background:var(--panel);border-right:1px solid var(--line);flex-direction:column;gap:12px;min-height:0;padding:12px;display:flex;position:relative}#aside-resize{cursor:col-resize;z-index:2;width:6px;height:100%;position:absolute;top:0;right:-3px}#aside-resize:hover,#aside-resize.on{background:var(--accent);opacity:.6}.section-title{text-transform:uppercase;letter-spacing:.08em;color:var(--muted);justify-content:space-between;align-items:center;gap:8px;margin-bottom:-6px;font-size:11px;font-weight:600;display:flex}.section-title span:not(.seg){letter-spacing:0;text-transform:none;font-weight:400}.layers{gap:2px;display:grid}.layer{cursor:pointer;border-radius:7px;grid-template-columns:1fr auto;align-items:center;gap:6px;padding:6px 6px 6px 10px;display:grid}.layer:hover{background:var(--hover)}.layer.on{background:var(--accent-soft);box-shadow:inset 2px 0 var(--accent)}.layer b{font-weight:600}.layer small{color:var(--muted);font-size:11px;display:block}.layer .short{display:none}.layers.auto{grid-template-columns:repeat(3,1fr);gap:4px}.layers.auto .layer{background:var(--raise);grid-template-columns:auto 1fr;gap:6px;padding:5px 8px}.layers.auto .layer:hover{background:var(--hover)}.layers.auto .layer.on{background:var(--raise);box-shadow:none}.layers.auto .layer .full{display:none}.layers.auto .layer .short{font-weight:500;display:block}.layers.auto .layer.hidden{opacity:.45}.layers.auto .layer.hidden .short{text-decoration:line-through}.layers.auto .eye{order:-1;padding:0}.eye{cursor:pointer;color:var(--muted);background:0 0;border:0;border-radius:5px;place-items:center;padding:2px;display:grid}.eye .i{width:15px;height:15px}.eye:hover{color:var(--text)}.eye.off{opacity:.4}.seg{background:var(--raise);border-radius:6px;padding:2px;display:inline-flex}.seg button{color:var(--muted);text-transform:none;letter-spacing:0;cursor:pointer;background:0 0;border:0;border-radius:4px;padding:2px 9px;font-size:11px;font-weight:500}.seg button.on{background:var(--hover);color:var(--text)}.sheet-row{gap:4px;display:flex}.sheet-row select{flex:1;min-width:0}#palette-zoom{color:var(--muted);background:var(--raise);justify-content:center;min-width:38px}#palette-wrap{background:repeating-conic-gradient(#262a33 0 25%, #20232b 0 50%) 0 0 / 16px 16px;border-radius:8px;flex:1;min-height:120px;overflow:auto}#palette{cursor:crosshair;height:auto;image-rendering:pixelated;display:block}#palette.fit{width:100%;height:auto}.stamp{align-items:center;gap:10px;display:flex}.stamp:has(#stamp-info:empty){display:none}#stamp-preview{image-rendering:pixelated;background:var(--raise);border-radius:6px;max-width:48px;max-height:48px}.stamp p{color:var(--muted);margin:0;font-size:12px}#tools{background:var(--panel);border-right:1px solid var(--line);flex-direction:column;align-items:center;gap:2px;padding:8px 0;display:flex}.tool{cursor:pointer;width:36px;height:36px;color:var(--muted);background:0 0;border:0;border-radius:8px;place-items:center;display:grid}.tool:hover{background:var(--hover);color:var(--text)}.tool.on{background:var(--accent-soft);color:var(--accent)}#tools hr{border:0;border-top:1px solid var(--line);width:20px;margin:6px 0}#view{background:var(--bg);min-height:0;position:relative;overflow:hidden}#map{image-rendering:pixelated;position:absolute;inset:0}#view.pan,#view.pan #map{cursor:grab}.float{-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);background:#1b1e25e6;border-radius:10px;align-items:center;gap:2px;padding:3px;display:flex;position:absolute;box-shadow:0 4px 16px #0000004d}#zoombar{bottom:12px;right:12px}#assistant{flex-direction:column;align-items:stretch;gap:6px;width:300px;padding:8px 10px;top:12px;right:12px}#assistant.closed>:not(.asst-head){display:none}#assistant .asst-head{cursor:pointer;align-items:center;gap:6px;font-weight:600;display:flex}#assistant .asst-head small{color:var(--muted);text-overflow:ellipsis;white-space:nowrap;flex:1;font-weight:400;overflow:hidden}#assistant form{gap:4px;display:flex}#assistant form input{flex:1;min-width:0}#assistant .asst-cat{text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px;font-size:11px;font-weight:600}#assistant .asst-row{flex-wrap:wrap;align-items:center;gap:4px;display:flex}#assistant .asst-row .btn{background:var(--raise);color:var(--text);padding:5px 8px}#assistant .asst-row .btn:hover:not(:disabled){background:var(--hover)}#assistant input[type=range]{accent-color:var(--accent);flex:1}#asst-zone-clear[hidden]{display:none}#asst-log{color:var(--muted);min-height:1.3em;margin:2px 0 0;font-size:12px}#asst-log.ok{color:var(--ok)}#asst-log.warn{color:#f0b24a}#erasebar{color:var(--muted);padding:3px 3px 3px 10px;font-size:12px;bottom:12px;left:12px}#erasebar[hidden],#selbar[hidden],#npcbar[hidden],#npc-detail[hidden],#npc-extra[hidden]{display:none}#ecartsbar{z-index:3;flex-direction:column;align-items:stretch;gap:6px;width:330px;padding:10px 12px;top:56px;bottom:12px;right:12px;overflow:auto}#ecartsbar[hidden]{display:none}#ecartsbar .ecarts-head{align-items:center;gap:6px;font-size:14px;font-weight:700;display:flex}#ecartsbar .ecarts-head small{opacity:.7;flex:1;font-weight:400}#ecartsbar .help{opacity:.8;margin:0;font-size:11px}#ecartsbar .btn.mini{min-width:0;padding:2px 6px;font-size:11px}#ecarts-list{flex-direction:column;gap:6px;display:flex}.ecart{border:1px solid var(--line);border-radius:8px;grid-template-columns:60px 1fr auto;align-items:center;gap:8px;padding:6px;display:grid}.ecart.on{background:var(--hover);border-color:#fff}.ecart-thumb{cursor:pointer;background:#ffffff0f;border:0;border-radius:6px;place-items:center;width:60px;height:60px;padding:0;display:grid}.ecart-thumb canvas{image-rendering:pixelated}.ecart-text{min-width:0;font-size:12px;line-height:1.35}.ecart-text small{opacity:.7;font-size:11px;display:block}.ecart-text div{color:#f0a050}.ecart-acts{flex-direction:column;gap:4px;display:flex}.ecart-acts .btn{justify-content:center;padding:3px 8px;font-size:11px}.ecart-acts .btn.danger{color:#ff8a80}.ecart-acts .btn:disabled{opacity:.4;cursor:not-allowed}.tool{position:relative}.tool-badge{color:#fff;text-align:center;background:#e0802c;border-radius:7px;min-width:14px;height:14px;padding:0 3px;font-size:9px;font-weight:700;line-height:14px;position:absolute;top:1px;right:1px}.tool-badge[hidden]{display:none}#npcbar{flex-direction:column;align-items:stretch;gap:6px;width:330px;padding:10px 12px;top:12px;bottom:12px;left:12px;overflow:auto}#npcbar .npc-head{align-items:center;gap:6px;font-size:14px;font-weight:700;display:flex}#npcbar .npc-head small{opacity:.7;flex:1;font-weight:400}#npcbar .help{opacity:.8;margin:4px 0 0;font-size:11px}#npcbar label{align-items:center;gap:6px;margin-top:4px;font-size:12px;display:flex}#npcbar label input,#npcbar label select{flex:1;min-width:0}#npcbar #npc-detail,#npcbar #npc-extra{flex-direction:column;gap:4px;display:flex}#npcbar [hidden],#npcbar.simple .npc-adv{display:none!important}#npcbar.simple{max-height:calc(100% - 24px);bottom:auto;overflow:auto}#npcbar .npc-intro{margin:0;font-size:12px;line-height:1.4}#npcbar .npc-toggle{opacity:.85;margin-top:0}#npcbar .npc-toggle input{flex:none}#npcbar .npc-look-row{align-items:center;gap:8px;margin-top:4px;font-size:12px;display:flex}#npc-look-modal{z-index:50;background:var(--panel,#1b1e27);border:1px solid var(--line);border-radius:12px;flex-direction:column;width:min(760px,92vw);max-height:80vh;padding:10px;display:flex;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 12px 40px #00000080}#npc-look-modal[hidden]{display:none!important}.npc-look-head{align-items:center;gap:6px;margin-bottom:8px;font-size:14px;display:flex}.npc-look-head small{opacity:.7;flex:1;font-size:11px}#npc-look-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px;display:grid;overflow:auto}.npc-look-item{cursor:pointer;color:inherit;font:inherit;background:#ffffff0a;border:1px solid #0000;border-radius:8px;flex-direction:column;align-items:center;gap:2px;padding:4px;display:flex}.npc-look-item:hover{background:var(--hover)}.npc-look-item.on{border-color:var(--accent);background:var(--accent-soft)}.npc-look-item canvas{width:64px;height:60px;image-rendering:pixelated}.npc-look-item span{text-align:center;opacity:.85;font-size:10px;line-height:1.2}#npcbar small{opacity:.7;font-size:11px}#npcbar .btn.mini{min-width:0;padding:2px 6px;font-size:11px}#npcbar .btn.mini.on{background:var(--accent-soft);color:var(--accent)}.npc-sec{text-transform:uppercase;letter-spacing:.04em;opacity:.75;align-items:center;gap:4px;margin-top:6px;font-size:11px;font-weight:700;display:flex}.npc-sec small{text-transform:none;letter-spacing:0;flex:1;font-weight:400}#npc-steps{border:1px solid var(--line);border-radius:8px;max-height:190px;margin:0;padding:0;list-style:none;overflow:auto}#npc-steps li{cursor:pointer;grid-template-columns:22px 1fr;gap:0 6px;padding:4px 6px;font-size:12px;line-height:1.3;display:grid}#npc-steps li:hover{background:var(--hover)}#npc-steps li.on{background:var(--accent-soft)}#npc-steps li b{text-align:center;opacity:.8}#npc-steps li small{grid-column:2}#npc-roster{flex-wrap:wrap;gap:4px;display:flex}.npc-chip{border:1px solid var(--line);color:var(--text);cursor:pointer;background:0 0;border-radius:999px;align-items:center;gap:4px;padding:3px 8px;font-size:12px;display:inline-flex}.npc-chip i{font-style:normal}.npc-chip.story i{color:#f2c14e}.npc-chip.figurant i{color:#9aa3b5}.npc-chip.extra i{color:#4fd1c5}.npc-chip.on{background:var(--hover);border-color:#fff}.npc-card{border:1px solid var(--line);border-radius:10px;grid-template-columns:64px 1fr auto;align-items:center;gap:8px;margin-top:8px;padding:8px;display:grid}#npc-face{width:64px;height:60px;image-rendering:pixelated;background:#ffffff0f;border-radius:8px}#npc-title{font-size:14px;font-weight:700}#npc-dirs{grid-template-columns:repeat(3,22px);gap:2px;display:grid}#npc-dirs [data-dir=up]{grid-column:2}#npc-presence{font-size:12px;line-height:1.5}.npc-warn{color:#e0a64a;font-weight:600}.npc-muted{opacity:.7}#npc-actions .act,#npc-links .link{flex-wrap:wrap;gap:6px;padding:1px 0;font-size:12px;line-height:1.35;display:flex}#npc-actions .act i,#npc-links .link i{text-align:center;flex:none;width:16px;font-style:normal}#npc-actions .act span,#npc-links .link span{flex:1;min-width:0}#npc-actions .act.flag,#npc-links .link{color:#f2c14e}#npc-actions .act.cond{opacity:.75;font-style:italic}#npc-links .link small{color:var(--text);flex-basis:100%;padding-left:22px}#npc-links .link.from{color:#9ec9ff}#npc-links .link.click{cursor:pointer}#npc-links .link.click:hover span{text-decoration:underline}.npc-kind{font-size:11px;font-weight:600}.npc-kind.story{color:#f2c14e}.npc-kind.figurant{color:#9aa3b5}.npc-kind.extra{color:#4fd1c5}.npc-story{color:#f2c14e}.npc-fig{color:#9aa3b5}.npc-extra{color:#4fd1c5}#npc-add.on{outline:2px solid #4fd1c5}#selbar{bottom:12px;left:12px}#erasebar button{justify-content:center;min-width:28px;padding:5px 6px}#erasebar button.on{background:var(--accent-soft);color:var(--accent)}#zoombar .btn{padding:5px}#zoom{text-align:center;font-variant-numeric:tabular-nums;min-width:48px;color:var(--text);font-size:12px}footer{background:var(--panel);border-top:1px solid var(--line);color:var(--muted);font-variant-numeric:tabular-nums;gap:16px;padding:4px 12px;font-size:11px;display:flex}#status.ok{color:var(--ok)}#status.err{color:var(--accent)}dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;min-width:340px;padding:18px;box-shadow:0 20px 60px #00000080}dialog::backdrop{background:#0000008c}dialog h3{margin:0 0 12px;font-size:15px}dialog .row{align-items:center;gap:8px;margin:8px 0;display:flex}dialog .row input[type=number]{width:60px}dialog .actions{justify-content:flex-end;gap:6px;margin-top:16px;display:flex}#open-dialog{width:min(600px,92vw)}#map-list{height:60vh;margin:0;padding:0;list-style:none;overflow:auto}#map-list li{cursor:pointer;border-radius:7px;justify-content:space-between;gap:12px;padding:8px 10px;display:flex}#map-list li:hover{background:var(--hover)}#map-list small{color:var(--muted)}#map-list li[hidden]{display:none}#map-list li.group{cursor:pointer;background:var(--raise);z-index:1;margin-top:6px;padding:5px 10px;font-weight:700;position:sticky;top:0}#map-list li.group i{width:12px;font-style:normal;transition:transform .1s;display:inline-block}#map-list li.group.folded i{transform:rotate(-90deg)}#map-list li.room{align-items:baseline;padding:3px 10px 3px 24px}#map-list li.room>span{white-space:nowrap;flex:none}#map-list li.room small.also{color:#e0a64a;text-align:right}#map-list li.room.current span{color:var(--accent)}#map-list li.room.modele>span{font-weight:600}.model-room{color:var(--muted);align-items:center;gap:6px;margin-left:8px;font-size:12px;display:inline-flex}.model-room[hidden]{display:none}.model-room select{max-width:220px}#map-list li.room em{color:var(--muted);margin-left:6px;font-size:11px;font-style:normal}.open-sort{color:var(--muted);align-items:center;gap:8px;margin:-4px 0 8px;font-size:12px;display:flex}.open-sort[hidden]{display:none}#open-sort button.on{background:var(--accent-soft);color:var(--accent)}.help{color:var(--muted);font-size:12px;line-height:1.6}@media (width<=1200px){.btn .label{display:none}.btn.primary .label{display:inline}#map-name{width:140px}}.mode-switch{margin:0 0 10px;display:flex}.space-switch{margin:0 6px}.space-switch button.on,#open-space button.on{background:var(--accent-soft);color:var(--accent)}#open-space{margin:0 0 10px;display:flex}#open-space button{flex:1}body.space-int .ext-only,body:not(.space-int) .int-only{display:none!important}body.space-int #new,body.space-int #assistant{display:none}.mode-switch button{flex:1}#detail{flex-direction:column;flex:1;gap:12px;min-height:0;display:flex}body.simple #detail,body:not(.simple) #studio,body.simple .detail-only{display:none}#studio{flex-direction:column;flex:1;gap:6px;min-height:0;display:flex;overflow-y:auto}.studio-theme{align-items:center;gap:8px;font-weight:600;display:flex}.studio-theme select{flex:1}#studio .help{opacity:.7;margin:0;font-size:11px}#studio-materials{grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;display:grid}#studio-border{width:100%;margin-top:6px}#studio-trees-row{margin-top:10px;font-weight:500}.swatch,.elem{color:inherit;font:inherit;cursor:pointer;background:#ffffff0d;border:2px solid #0000;border-radius:8px;flex-direction:column;align-items:center;gap:2px;padding:4px;font-size:11px;display:flex}.swatch canvas{width:32px;height:32px;image-rendering:pixelated;border-radius:4px}.swatch.on,.elem.on{background:#e8473f26;border-color:#e8473f}.swatch:hover,.elem:hover{background:#ffffff1f}.studio-cat{text-transform:uppercase;letter-spacing:.05em;opacity:.7;margin-top:4px;font-size:11px;font-weight:700}.studio-grid{grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;display:grid}.elem{justify-content:center;min-height:64px}.elem canvas{image-rendering:pixelated;max-width:100%}.elem-cell{display:flex;position:relative}.elem-cell .elem{flex:1}.colour-badge{cursor:pointer;border:2px solid #fff;border-radius:50%;width:14px;height:14px;padding:0;position:absolute;top:3px;right:3px;box-shadow:0 0 0 1px #00000080}.colour-pop{z-index:20;background:#1f2128;border:1px solid #3a3d47;border-radius:8px;flex-wrap:wrap;gap:4px;max-width:150px;padding:6px;display:flex;position:absolute;top:20px;right:0;box-shadow:0 6px 18px #00000080}.colour-swatch{cursor:pointer;border:2px solid #0000;border-radius:50%;width:22px;height:22px;padding:0}.colour-swatch.on{border-color:#fff}</style>
+    <script type="module" crossorigin src="/pokepierre/assets/builder-DUVWeaN3.js"></script>
+    <link rel="modulepreload" crossorigin href="/pokepierre/assets/maps-B5AMcauy.js">
+    <link rel="modulepreload" crossorigin href="/pokepierre/assets/characters-Dy6U-xWm.js">
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <span class="brand">Poké<b>pierre</b></span>
+        <div class="seg space-switch" id="space-switch" title="Extérieurs (villes et routes) ou intérieurs (pièces) : chacun a ses planches, son catalogue et sa liste dans « Ouvrir »">
+          <button data-space="ext">Extérieurs</button><button data-space="int">Intérieurs</button>
+        </div>
+        <button class="btn" id="new" title="Nouvelle carte"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="label">Nouvelle</span></button>
+        <button class="btn" id="open" title="Ouvrir une carte"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="label">Ouvrir</span></button>
+        <div class="map-meta">
+          <input type="text" id="map-name" title="Nom de la carte" />
+          <span class="size" title="Taille de la carte (cases)"><input type="number" id="map-w" min="6" max="200" step="2" title="Largeur (cases, paire)" />×<input type="number" id="map-h" min="6" max="200" step="2" title="Hauteur (cases, paire)" /></span>
+          <span class="resize-side" id="resize-cols" hidden title="De quel côté ajouter (ou retirer) les colonnes">
+            colonnes <select id="resize-x"><option value="right">à droite</option><option value="left">à gauche</option></select>
+          </span>
+          <span class="resize-side" id="resize-rows" hidden title="De quel côté ajouter (ou retirer) les rangées">
+            rangées <select id="resize-y"><option value="bottom">en bas</option><option value="top">en haut</option></select>
+          </span>
+          <button class="btn" id="resize" title="Appliquer la nouvelle taille" hidden>Redimensionner</button>
+          <label class="model-room" id="model-room-wrap" hidden title="Modèle partagé : ce que tu dessines vaut pour toutes les pièces qui le reprennent. La pièce choisie ici : ses personnages (outil Personnages) et « Tester ».">Pièce <select id="model-room"></select></label>
+        </div>
+        <span class="grow"></span>
+        <button class="btn icon" id="undo" title="Annuler (Ctrl+Z)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+        <button class="btn icon" id="redo" title="Rétablir (Ctrl+Maj+Z)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+        <button class="btn" id="test" title="Jouer la carte dans le jeu"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span class="label">Tester</span></button>
+        <button class="btn primary" id="save" title="Enregistrer (Ctrl+S)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg><span class="label">Enregistrer</span></button>
+        <button class="btn" id="back" title="Revenir au jeu"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span class="label">Jeu</span></button>
+      </header>
+
+      <main>
+        <aside>
+          <div id="aside-resize" title="Tirer pour élargir ou réduire le panneau (double-clic : largeur par défaut)"></div>
+          <div class="seg mode-switch" id="mode-switch" title="Simple : peindre des matières et poser des éléments entiers. Case par case : les planches et les calques, pour le détail (touche Tab)">
+            <button data-mode="simple">Simple</button><button data-mode="detail">Case par case</button>
+          </div>
+          <div id="studio">
+            <label class="studio-theme"><span id="studio-theme-label">Ville</span> <select id="studio-theme" title="Le thème : ses sols, ses éléments (extérieurs : la ville ; intérieurs : le type de pièce). « Libre » ou « Tout » propose tout."></select></label>
+            <div class="section-title">Matières
+              <span class="seg" title="Taille du pinceau">
+                <button data-bsize="1">1</button><button data-bsize="2">2</button><button data-bsize="3">3</button><button data-bsize="5">5</button>
+              </span>
+            </div>
+            <p class="help ext-only">Peindre, Zone ou Remplir : les bords se font tout seuls. Gomme : repeint de l'herbe.</p>
+            <p class="help int-only">Sols : Peindre, Zone ou Remplir. Murs : la bande entière, de la case cliquée vers le bas. Gomme : retire les meubles, garde le sol.</p>
+            <div id="studio-materials"></div>
+            <label class="studio-theme ext-only" id="studio-trees-row">Arbres <select id="studio-trees" title="L'arbre de cette carte : la bordure (« Refaire la bordure d'arbres ») et le pinceau Forêt. « Selon la ville » : l'arbre de la forêt déjà posée, sinon celui de la ville."></select></label>
+            <button class="btn ext-only" id="studio-border" title="Toute la carte : retire les bordures d'arbres existantes et pose une bordure neuve qui longe le rectangle de la carte, un arbre tous les 2 cases ; pas d'arbre sur l'eau, le relief, les chemins (sorties), les objets ni les cases importantes">Refaire la bordure d'arbres</button>
+            <div class="section-title">Éléments</div>
+            <p class="help ext-only">Clic sur la carte pour poser (contour rouge : pas ici, la raison s'affiche en bas). Une maison choisie, au-dessus d'une maison de la carte : contour bleu, clic pour la remplacer (porte sur porte). Gomme sur un élément : il est retiré.</p>
+            <p class="help int-only">Clic dans la pièce pour poser un meuble (contour rouge : pas ici, la raison s'affiche en bas). Gomme sur un meuble : il est retiré.</p>
+            <div id="studio-elements"></div>
+          </div>
+          <div id="detail">
+          <div class="section-title">Calques
+            <span class="seg" id="layer-mode" title="Auto : chaque case posée se range toute seule (sol, objet, au-dessus de Pierre, collisions) ; Manuel : tu choisis le calque (touche A pour basculer)">
+              <button data-mode="auto">Auto</button><button data-mode="manuel">Manuel</button>
+            </span>
+          </div>
+          <div class="layers" id="layers"></div>
+          <div class="section-title">Planche <span id="sheet-size"></span></div>
+          <div class="sheet-row">
+            <select id="sheet"></select>
+            <button class="btn" id="palette-zoom" title="Taille de la palette (×1 : toute la largeur du panneau)">×1</button>
+          </div>
+          <div id="palette-wrap"><canvas id="palette"></canvas></div>
+          <div class="stamp">
+            <canvas id="stamp-preview" width="16" height="16"></canvas>
+            <p id="stamp-info"></p>
+          </div>
+          </div>
+        </aside>
+
+        <nav id="tools">
+          <button class="tool" data-tool="brush" title="Pinceau — pose la sélection (B)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></svg></button>
+          <button class="tool" data-tool="rect" title="Zone — remplit un rectangle avec la sélection (R)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="1.5"/></svg></button>
+          <button class="tool" data-tool="fill" title="Remplir — les cases identiques reliées (G)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l7-7 7 7-7 7z"/><path d="M4 11h14"/><path d="M20 15c0 1.6 1 2.6 1 3.6a1 1 0 0 1-2 0c0-1 1-2 1-3.6z"/></svg></button>
+          <button class="tool" data-tool="erase" title="Gomme — enlève la case du dessus ; taille : [ et ] (E)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 20h12"/><path d="M4 15l9-9 6 6-8 8H8z"/><path d="M9 10l6 6"/></svg></button>
+          <button class="tool detail-only" data-tool="pick" title="Pipette — reprend une case de la carte (I)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3l6 6-3 3-6-6z"/><path d="M12 8l-7 7v4h4l7-7"/></svg></button>
+          <button class="tool" data-tool="move" title="Déplacer — glisser un élément ; ailleurs (ou avec Maj), tracer une zone puis la glisser ; avec Alt : copier ; Ctrl+D : dupliquer ; Suppr ou lâcher hors de la carte : supprimer (M)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/><path d="M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></svg></button>
+          <hr />
+          <button class="tool detail-only" data-tool="solid" title="Collisions — clic : bloquer / libérer (C)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M6.5 6.5l11 11"/></svg></button>
+          <button class="tool" data-tool="npc" title="Personnages (N) — la quête du lieu étape par étape, qui est là, ce que chacun fait ; glisser ou flèches pour déplacer"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></button>
+          <button class="tool" data-tool="spawn" title="Départ de Pierre (S)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4"/><path d="M6 4h11l-2.5 4L17 12H6"/></svg></button>
+          <hr />
+          <button class="tool" id="grid" title="Grille (H)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9.3h16M4 14.7h16M9.3 4v16M14.7 4v16"/></svg></button>
+          <button class="tool" id="show-npcs" title="Toujours voir les PNJ"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A5 5 0 0 1 21 19v1"/></svg></button>
+          <button class="tool" id="show-solid" title="Toujours voir les collisions (V)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          <hr />
+          <button class="tool" id="show-ecarts" title="Écarts — les assets qui s'écartent de leur famille (contour, ombre, style, échelle, couleurs : check-up visuel)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span class="tool-badge" id="ecarts-count" hidden></span></button>
+        </nav>
+
+        <div id="view">
+          <canvas id="map"></canvas>
+          <div class="float" id="erasebar" hidden title="Taille de la gomme ([ et ] pour la changer)">Gomme
+            <button class="btn" data-erase="1">1</button><button class="btn" data-erase="2">2</button><button class="btn" data-erase="3">3</button><button class="btn" data-erase="5">5</button>
+          </div>
+          <div class="float" id="ecartsbar" hidden>
+            <div class="ecarts-head">Écarts <small id="ecarts-where"></small>
+              <button class="btn mini" id="ecarts-reset" title="Montrer aussi ceux qu'on a ignorés">Tout</button>
+              <button class="btn mini" id="ecarts-close" title="Fermer">×</button></div>
+            <p class="help">Assets qui s'écartent de leur famille (scripts/audit_assets.py). Clic sur une vignette : la voir sur la carte. « Supprimer » : retirée d'un clic (Ctrl+Z pour annuler).</p>
+            <div id="ecarts-list"></div>
+          </div>
+          <div class="float" id="npcbar" hidden>
+            <div class="npc-head">Personnages <small id="npc-where"></small>
+              <button class="btn npc-adv" id="npc-add" title="Puis clique sur la carte : un figurant (une réplique) à cet endroit">+ Figurant</button></div>
+            <p class="npc-intro">Glisse un personnage sur la carte pour changer sa place (ou choisis-le, puis les flèches du
+              clavier). Ses trajets dans l'histoire ne changent pas : il part de sa nouvelle place vers les mêmes endroits.</p>
+            <label class="npc-toggle"><input type="checkbox" id="npc-advanced" /> Plus d'options (quête, trajets, figurants)</label>
+            <div id="npc-time" class="npc-adv">
+              <div class="npc-sec">Quête du lieu <small id="npc-step-now"></small>
+                <button class="btn mini" id="npc-prev" title="Étape précédente">◀</button>
+                <button class="btn mini" id="npc-next" title="Étape suivante">▶</button>
+                <button class="btn mini" id="npc-all" title="Montrer tous les personnages, toutes étapes confondues">Toutes</button></div>
+              <ol id="npc-steps"></ol>
+            </div>
+            <div class="npc-sec">Personnages de ce lieu</div>
+            <div id="npc-roster"></div>
+            <div id="npc-detail" hidden>
+              <div class="npc-card">
+                <canvas id="npc-face" width="64" height="60"></canvas>
+                <div class="npc-id"><div id="npc-title"></div><div class="npc-kind" id="npc-kind"></div><small id="npc-pos"></small></div>
+                <div id="npc-dirs" title="Direction (Maj + flèche)">
+                  <button class="btn mini" data-dir="up">▲</button>
+                  <button class="btn mini" data-dir="left">◀</button><button class="btn mini" data-dir="down">▼</button><button class="btn mini" data-dir="right">▶</button>
+                </div>
+              </div>
+              <div id="npc-presence"></div>
+              <div id="npc-look-box">
+                <div class="npc-look-row">Apparence <button class="btn" id="npc-look-open">Choisir…</button></div>
+                <label class="npc-toggle" title="Décoché : l'apparence change partout où ce nom apparaît dans le jeu">
+                  <input type="checkbox" id="npc-look-here" /> Seulement ici (pas les autres « <span id="npc-look-name"></span> »)</label>
+              </div>
+              <button class="btn" id="npc-reset" hidden title="Le personnage revient à la place prévue dans le code">Remettre à sa place</button>
+              <div class="npc-adv">
+                <div class="npc-sec">Ce qu'il fait</div>
+                <div id="npc-actions"></div>
+                <div class="npc-sec" id="npc-links-head">Fait avancer la quête</div>
+                <div id="npc-links"></div>
+              </div>
+              <div id="npc-extra" hidden>
+                <label>Nom <input type="text" id="npc-name" /></label>
+                <label>Apparence <select id="npc-sprite"><option value="">au hasard (figurant)</option></select></label>
+                <label>Réplique <input type="text" id="npc-line" /></label>
+                <button class="btn" id="npc-delete">Supprimer ce figurant</button>
+              </div>
+            </div>
+            <div id="npc-look-modal" hidden>
+              <div class="npc-look-head">Apparence de <b id="npc-look-who"></b> <small id="npc-look-scope"></small>
+                <button class="btn icon" id="npc-look-close" title="Fermer (Échap)">×</button></div>
+              <div id="npc-look-grid"></div>
+            </div>
+            <p class="help">Flèches : une case · Maj + flèche : sa direction · Tab : le suivant · puis « Enregistrer ».<span class="npc-adv">
+              Sur la carte : <b style="color:#60aaff">→</b> ses marches, <b class="npc-story">⇢</b> ce qu'il débloque.</span></p>
+          </div>
+          <div class="float" id="selbar" hidden>
+            <button class="btn" id="sel-dup" title="Dupliquer la sélection : la copie suit la souris, clic pour la poser (Ctrl+D)">Dupliquer</button>
+            <button class="btn" id="sel-del" title="Supprimer la sélection (Suppr)">Supprimer</button>
+          </div>
+          <div class="float" id="assistant" title="">
+            <div class="asst-head" id="asst-toggle" title="Ouvrir ou replier l'assistant">Assistant <small id="asst-zone">toute la carte</small>
+              <button class="btn icon" id="asst-zone-clear" title="Oublier la zone : les commandes s'appliquent à toute la carte (Échap)" hidden>×</button></div>
+            <form id="asst-form" autocomplete="off">
+              <input type="text" id="asst-input" placeholder="Ex. : sème des hautes herbes, 30 %" title="Demande en français : régulariser le chemin, corriger les transitions, refaire la bordure d'arbres, semer des hautes herbes (avec une densité), régénérer" />
+              <button class="btn primary" type="submit">OK</button>
+            </form>
+            <div class="asst-cat">Nettoyage</div>
+            <div class="asst-row">
+              <button class="btn" data-asst="path" title="Boucher trous et coupures, relier les diagonales, couper les bosses d'une case, refaire les bords du chemin">Régulariser le chemin</button>
+              <button class="btn" data-asst="transitions" title="Chaque case de chemin, sable, eau ou hautes herbes reçoit le bord qui va avec ses voisines">Corriger les transitions</button>
+            </div>
+            <div class="asst-cat">Bordure</div>
+            <div class="asst-row">
+              <button class="btn" data-asst="forest" title="Toute la carte : retire les bordures d'arbres existantes et pose une bordure neuve qui longe le rectangle de la carte, un arbre tous les 2 cases ; pas d'arbre sur l'eau, le relief, les chemins (sorties), les objets ni les cases importantes">Refaire la bordure d'arbres</button>
+            </div>
+            <div class="asst-cat">Remplissage</div>
+            <div class="asst-row">
+              <button class="btn" data-asst="sow" title="Semer des touffes de hautes herbes sur l'herbe libre de la zone">Semer des hautes herbes</button>
+              <button class="btn" data-asst="regen" title="Retirer le dernier semis et semer un autre tirage, sans toucher au reste" disabled>Régénérer cette zone</button>
+            </div>
+            <div class="asst-row" title="Part de l'herbe libre de la zone couverte de hautes herbes">Densité
+              <input type="range" id="asst-density" min="5" max="60" value="25" step="5" /> <span id="asst-density-val">25 %</span></div>
+            <p id="asst-log">Choisis une zone avec l'outil Déplacer (M), ou rien : toute la carte.</p>
+          </div>
+          <div class="float" id="zoombar">
+            <button class="btn icon" id="zoom-out" title="Dézoomer (−)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+            <span id="zoom">×2</span>
+            <button class="btn icon" id="zoom-in" title="Zoomer (+)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+            <button class="btn icon" id="zoom-fit" title="Voir toute la carte (0)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <span id="coords">—</span>
+        <span id="tile-info"></span>
+        <span class="grow"></span>
+        <span id="status"></span>
+      </footer>
+    </div>
+
+    <dialog id="open-dialog">
+      <h3 id="open-title">Ouvrir une carte</h3>
+      <div class="seg" id="open-space"><button data-space="ext">Extérieurs</button><button data-space="int">Intérieurs</button></div>
+      <div class="open-sort" id="open-sort" hidden>Classer par <span class="seg"><button data-sort="ville">ville</button><button data-sort="type">type de pièce</button></span></div>
+      <ul id="map-list"></ul>
+      <div class="actions"><button class="btn" id="open-cancel">Fermer</button></div>
+    </dialog>
+
+    <dialog id="new-dialog">
+      <form method="dialog">
+        <h3>Nouvelle carte</h3>
+        <div class="row"><label>Nom <input type="text" id="new-name" value="Nouvelle carte" /></label></div>
+        <div class="row">Taille <input type="number" id="new-w" value="30" min="6" max="200" step="2" /> ×
+          <input type="number" id="new-h" value="20" min="6" max="200" step="2" /> cases</div>
+        <p class="help">L'écran du jeu montre environ 22 × 15 cases. Taille toujours paire (les arbres des bordures font 2 × 2 cases).</p>
+        <div class="actions"><button class="btn" value="cancel">Annuler</button><button class="btn primary" value="ok">Créer</button></div>
+      </form>
+    </dialog>
+
+  </body>
+</html>
