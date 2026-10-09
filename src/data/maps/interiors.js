@@ -22,6 +22,10 @@ import {
 } from '../hullStory.js';
 import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC } from '../hanoiStory.js';
 import { CAMPAIGN, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
+import {
+  COLLEAGUE, DAY_1, DAY_2, DAY_3, DIRECTOR, DIRECTOR_AFTER, EVENING_1, EVENING_2, MANAGER_TALK, PROMOTION,
+} from '../parisStory.js';
+import { WAKE_UP } from '../reveStory.js';
 import { DELHI_PARTY, FORT_SILENCE, SAGE, SAGE_AFTER, STUDENTS } from '../newDelhiStory.js';
 
 // L'accueil de KEDGE (Bordeaux) : on lui parle par-dessus le comptoir.
@@ -44,7 +48,7 @@ const RACK_RODS = [['mega-canne-petite', -11, -20, 26], ['super-canne-petite', -
 const CRATE_RODS = [['super-canne-petite', -10, -17, 19], ['vieille-canne-petite', -4, -17, 19]];
 const OLD_ROD_IN_CRATE = [['vieille-canne-petite', -7, -17, 19]];
 
-// Ascenseur de l'entreprise parisienne : les portes rouges de la Tour Radio (cases du mur `doors`, rangée 1) ; on
+// Ascenseur de la tour de bureaux parisienne : les portes rouges de la Tour Radio (cases du mur `doors`, rangée 1) ; on
 // arrive devant, case `at`, tourné vers le bas.
 const ELEVATORS = {
   entreprise: { doors: [22, 23, 24], at: [23, 2] },
@@ -59,13 +63,10 @@ const elevator = (room) => ELEVATORS[room].doors.map((x) => ({
     question: 'Ascenseur : quel étage ?',
     choices: [
       { label: 'Rez-de-chaussée', warp: floor('entreprise') },
-      { label: '1er étage (manager)', warp: floor('entrepriseManager') },
-      { label: 'Dernier étage (directeur)', ifFlags: [FLAGS.verreBistro], warp: floor('entrepriseDirecteur') },
-      {
-        label: 'Dernier étage (directeur)',
-        unlessFlags: [FLAGS.verreBistro],
-        dialogue: ["[Texte provisoire] Le bouton du dernier étage ne répond pas : l'accès est bloqué pour l'instant."],
-      },
+      { label: '1er étage', ifFlags: [FLAGS.jour2], warp: floor('entrepriseManager') },
+      { label: '1er étage', unlessFlags: [FLAGS.jour2], dialogue: ['Le bouton du 1er étage ne s\'allume pas : ton badge n\'y donne pas accès.'] },
+      { label: 'Dernier étage', ifFlags: [FLAGS.directeurInvite], warp: floor('entrepriseDirecteur') },
+      { label: 'Dernier étage', unlessFlags: [FLAGS.directeurInvite], dialogue: ['Le bouton du dernier étage ne s\'allume pas : ton badge n\'y donne pas accès.'] },
       { label: 'Rester ici' },
     ],
   },
@@ -219,6 +220,19 @@ export const interiors = {
     ],
     spawn: { x: 2, y: 5, facing: 'left' },             // au réveil, à côté du lit
     triggers: [0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
+    // La fin du jeu (reveStory.js WAKE_UP) : la chambre s'ouvre dans le noir ; Pierre couché dans son lit, la table de
+    // chevet à côté et, dessus, la pierre gravée du vieux sage de New Delhi.
+    openDark: { ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.reveilFin] },
+    npcs: [
+      {
+        id: 'pierre-lit', name: 'Pierre', sprite: 'g198', x: 1, y: 5, facing: 'down', still: true, inBed: true,
+        ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.reveilFin], dialogue: ['…'],
+      },
+    ],
+    props: [{ type: 'nightstand', x: 2, y: 4, w: 1, h: 1, ifFlags: [FLAGS.finDuJeu] }],
+    decals: [
+      { icons: [['pierre-gravee-petite', -8, -12, 32]], x: 2, y: 4, ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.talismanPris] },
+    ],
     objects: [
       { x: 6, y: 3, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
       ...FF_UP_CARTONS.map(([x, y]) => ({ x, y, dialogue: ['Des cartons à moitié faits.'] })),
@@ -238,6 +252,7 @@ export const interiors = {
           { setFlag: FLAGS.reveilFortDeFrance },
         ],
       },
+      { on: 'enter', ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.talismanPris], steps: WAKE_UP },
     ],
   },
 
@@ -2251,92 +2266,8 @@ export const interiors = {
     })),
   },
 
-  // Paris — le bistrot : tu y manges et rencontres le cuisinier, gentil et drôle.
-  bistro: {
-    name: 'Bistrot',
-    grid: parseGrid([
-      'XXXXXXXXX',
-      'XXXXXXXXX',
-      'mmmooommm',
-      'ooooooooo',
-      '###oommoo',
-      'ooooommoo',
-      'oooooooom',
-      'oooEooooo',
-    ]),
-    decor: [
-      { kind: 'kitchen', x: 0, y: 1 },
-      { kind: 'kitchen', x: 2, y: 1 },
-      { kind: 'window', x: 4, y: 0 },
-      { kind: 'glassCabinet', x: 6, y: 1 },
-      { kind: 'fridge', x: 7, y: 1 },
-      { kind: 'blueShelf', x: 8, y: 1 },
-      { kind: 'cabinet', x: 9, y: 1 },
-      { kind: 'paperDesk', x: 0, y: 4 },
-      { kind: 'paperDesk', x: 3, y: 4 },
-      { kind: 'paperDesk', x: 6, y: 4 },
-      { kind: 'paperDesk', x: 0, y: 6 },
-      { kind: 'paperDesk', x: 3, y: 6 },
-      { kind: 'paperDesk', x: 6, y: 6 },
-      { kind: 'pottedPlant', x: 9, y: 4 },
-      { kind: 'pottedPlant', x: 9, y: 6 },
-    ],
-    spawn: { x: 3, y: 6, facing: 'up' },
-    // Après la promotion : Hugues et Thomas t'attendent pour trinquer.
-    events: [
-      {
-        on: 'enter',
-        ifFlags: [FLAGS.promotion],
-        unlessFlags: [FLAGS.verreBistro],
-        steps: [
-          { speaker: 'Hugues', say: ['[Hugues - texte provisoire] Le voilà ! On fête ta promotion !'] },
-          { speaker: 'Thomas', say: ['[Thomas - texte provisoire] Viens trinquer avec nous, et raconte-nous tout !'] },
-          { setFlag: FLAGS.verreBistro },
-        ],
-      },
-    ],
-    npcs: [
-      {
-        id: 'hugues', name: 'Hugues', x: 4, y: 4, facing: 'right', color: 0x7c4c2c,
-        ifFlags: [FLAGS.promotion],
-        dialogue: ['[Hugues - texte provisoire] Santé ! Bravo pour ta promotion !'],
-        after: ['[Hugues - texte provisoire] Encore un petit verre ?'],
-        souvenir: { id: 'souvenir-hugues', name: "Souvenir d'Hugues" },
-      },
-      {
-        id: 'thomas', name: 'Thomas', x: 7, y: 4, facing: 'left', color: 0x2c7c9c,
-        ifFlags: [FLAGS.promotion],
-        dialogue: ['[Thomas - texte provisoire] On est fiers de toi ! À la tienne !'],
-        after: ['[Thomas - texte provisoire] Ce soir il y a un concert à Bercy, tu devrais y aller !'],
-        souvenir: { id: 'souvenir-thomas', name: 'Souvenir de Thomas' },
-      },
-      {
-        id: 'cuisinier', name: 'Cuisinier', x: 1, y: 3, facing: 'down', color: 0xf4f4f4,
-        dialogue: [
-          '[Cuisinier - texte provisoire] Bonjour bonjour ! Bienvenue dans mon bistrot !',
-          "Aujourd'hui, c'est boeuf bourguignon... et le boeuf, c'est moi qui l'ai motivé ce matin !",
-          'Installe-toi, je t\'apporte ça tout de suite. Bon appétit !',
-        ],
-        after: ['[Cuisinier - texte provisoire] Alors, c\'était bon ? Reviens quand tu veux, la maison ne mord pas !'],
-        souvenir: { id: 'souvenir-cuisinier', name: 'Souvenir du cuisinier' },
-        setFlag: FLAGS.repasParis,
-        ask: {
-          question: 'Dis-moi, tu as emménagé dans le coin ?',
-          unlessFlags: [FLAGS.emmenagementParis],
-          choices: [
-            {
-              label: 'Oui, je suis nouveau à Paris !',
-              reply: ["Oui ! Je suis nouveau à Paris, j'emménage juste après manger."],
-              dialogue: ['[Cuisinier - texte provisoire] Bienvenue dans le quartier, voisin ! Passe me voir quand tu veux.'],
-              setFlags: [FLAGS.emmenagementParis],
-            },
-          ],
-        },
-      },
-    ],
-  },
-
-  // Paris — ton appartement (immeuble en haut à droite) : l'ordinateur pour chercher un travail.
+  // Paris — ton appartement, dans l'immeuble aux balcons fleuris (modèle « maison-type-2 ») : le soir, la pensée du
+  // jour, puis « Le lendemain… » (voir parisStory.js EVENING_1 / EVENING_2).
   parisAppart: {
     name: 'Ton appartement',
     grid: parseGrid([ // dessin de la maison de Pierre à Amsterdam (maison de Léo, Hull)
@@ -2354,51 +2285,20 @@ export const interiors = {
       'moooooooooomX',
       'XooooooooooXX',
     ]),
-    decor: [
-      { kind: 'bed', x: 0, y: 2 },
-      { kind: 'computerDesk', x: 4, y: 2 },
-      { kind: 'window', x: 2, y: 0 },
-      { kind: 'painting', x: 7, y: 0 },
-      { kind: 'pottedPlant', x: 0, y: 5 },
-    ],
     spawn: { x: 10, y: 6, facing: 'left' },
     events: [
-      {
-        on: 'enter',
-        unlessFlags: [FLAGS.rechercheTravail],
-        steps: [{ say: ["[Texte provisoire] Ton nouvel appartement parisien ! Il y a un ordinateur sur le bureau."] }],
-      },
+      { on: 'enter', ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.jour2], steps: EVENING_1 },
+      { on: 'enter', ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.jour3], steps: EVENING_2 },
     ],
     objects: [
-      {
-        x: 5, y: 3,                 // l'ordinateur (sur le meuble télé)
-        unlessFlags: [FLAGS.rechercheTravail],
-        ask: {
-          question: 'Chercher un travail ?',
-          choices: [
-            {
-              label: 'Oui',
-              dialogue: [
-                '[Texte provisoire] Une offre correspond à ton profil !',
-                "Rends-toi à l'entreprise, le grand bâtiment à droite de la tour Eiffel.",
-              ],
-              setFlags: [FLAGS.rechercheTravail],
-            },
-            { label: 'Non', dialogue: ['[Texte provisoire] Tu éteins l\'ordinateur. Plus tard, peut-être.'] },
-          ],
-        },
-      },
-      {
-        x: 5, y: 3,                 // l'ordinateur (sur le meuble télé)
-        ifFlags: [FLAGS.rechercheTravail],
-        dialogue: ["[Texte provisoire] Ton rendez-vous : l'entreprise, à droite de la tour Eiffel."],
-      },
+      { x: 5, y: 3, dialogue: ['La télé. Tu ne l\'allumes presque jamais.'] },
     ],
   },
 
-  // Paris — l'entreprise (tour de bureaux à droite de la tour Eiffel) : ton nouveau travail commence.
+  // Paris — la tour de bureaux, rez-de-chaussée : le hall, le comptoir (ton poste, jour 1) et le collègue blasé.
+  // L'ascenseur (au fond à droite) ouvre le 1er étage le jour 2, le dernier le jour 3.
   entreprise: {
-    name: 'Entreprise',
+    name: 'Tour de bureaux',
     grid: parseGrid([
       'XXXXXXXXXXXXXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXXXXXXXXXXXXX',
@@ -2413,37 +2313,28 @@ export const interiors = {
       'ooomooooooooomooommmmoooo',
       'oEomooooooooomoooooooooom',
     ]),
-    decor: [
-      { kind: 'bookshelf', x: 0, y: 0 },
-      { kind: 'window', x: 3, y: 0 },
-      { kind: 'notice', x: 7, y: 0 },
-      { kind: 'longTable', x: 4, y: 3 },
-      { kind: 'crtTv', x: 7, y: 3 },
-      { kind: 'paperDesk', x: 0, y: 5 },
-      { kind: 'paperDesk', x: 4, y: 5 },
-      { kind: 'paperDesk', x: 8, y: 5 },
-      { kind: 'paperDesk', x: 0, y: 7 },
-      { kind: 'paperDesk', x: 4, y: 7 },
-      { kind: 'paperDesk', x: 8, y: 7 },
-    ],
     spawn: { x: 1, y: 10, facing: 'up' },
     npcs: [
+      { id: 'collegue', name: 'Collègue', sprite: 'g36', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
+      // Jour 2 : le manager attend devant l'ascenseur.
       {
-        id: 'responsable-paris', name: 'Responsable', x: 8, y: 7, facing: 'down', color: 0x2c3c6c,
-        dialogue: [
-          "[Responsable - texte provisoire] Bonjour ! On t'attendait.",
-          "Bienvenue dans l'entreprise : ton nouveau travail commence aujourd'hui !",
-        ],
-        after: ["[Responsable - texte provisoire] Au travail ! L'ascenseur mène aux étages."],
-        setFlag: FLAGS.travailParis,
+        id: 'manager-rdc', name: 'Manager', x: 22, y: 3, facing: 'down',
+        ifFlags: [FLAGS.jour2], unlessFlags: [FLAGS.promotionParis], dialogue: ['Pierre, monte une minute.'],
       },
     ],
-    objects: elevator('entreprise'),
+    objects: [
+      ...elevator('entreprise'),
+      ...[6, 7].map((x) => ({ x, y: 8, dialogue: ['Ton poste. Un écran, un clavier, une pile de dossiers.'] })),
+    ],
+    events: [
+      { on: 'enter', ifFlags: [FLAGS.parisCles], unlessFlags: [FLAGS.jour1Bureau], steps: DAY_1 },
+      { on: 'enter', ifFlags: [FLAGS.jour2], unlessFlags: [FLAGS.promotionParis], steps: DAY_2 },
+    ],
   },
 
-  // Paris — l'entreprise, 1er étage : le manager (promotion).
+  // Paris — la tour, 1er étage : les bureaux du manager (jour 2 : la promotion ; jour 3 : il envoie Pierre au directeur).
   entrepriseManager: {
-    name: 'Entreprise - 1er étage',
+    name: 'Tour de bureaux - 1er étage',
     grid: parseGrid([
       'XXXXXXXXXXXXXX',
       'XXXXXXXXXXXXXX',
@@ -2458,48 +2349,20 @@ export const interiors = {
       'oooooooooooooo',
       'mooooooooooooo',
     ]),
-    decor: [
-      { kind: 'window', x: 1, y: 0 },
-      { kind: 'painting', x: 6, y: 0 },
-      { kind: 'longTable', x: 4, y: 3 },
-      { kind: 'crtTv', x: 7, y: 3 },
-      { kind: 'paperDesk', x: 0, y: 5 },
-      { kind: 'paperDesk', x: 10, y: 5 },
-      { kind: 'paperDesk', x: 0, y: 7 },
-      { kind: 'paperDesk', x: 10, y: 7 },
-    ],
     spawn: { x: 1, y: 2, facing: 'down' },
     npcs: [
-      {
-        id: 'manager', name: 'Manager', x: 7, y: 3, facing: 'down', color: 0x3c6c9c,
-        unlessFlags: [FLAGS.promotion],
-        dialogue: ['[Manager - texte provisoire] Bonjour ! Je suis ton manager.'],
-        ask: {
-          question: 'Demander une promotion ?',
-          ifFlags: [FLAGS.travailParis],
-          choices: [
-            {
-              label: 'Oui',
-              reply: ["J'aimerais demander une promotion."],
-              dialogue: ['[Manager - texte provisoire] Tu la mérites ! Promotion accordée, félicitations !'],
-              setFlags: [FLAGS.promotion],
-            },
-            { label: 'Non', dialogue: ['[Manager - texte provisoire] Reviens me voir quand tu veux.'] },
-          ],
-        },
-      },
-      {
-        id: 'manager-fin', name: 'Manager', x: 7, y: 3, facing: 'down', color: 0x3c6c9c,
-        ifFlags: [FLAGS.promotion],
-        dialogue: ['[Manager - texte provisoire] Encore bravo ! Va fêter ta promotion au bistrot, tes amis t\'y attendent.'],
-      },
+      { id: 'manager', name: 'Manager', x: 7, y: 7, facing: 'down', script: MANAGER_TALK },
     ],
     objects: elevator('entrepriseManager'),
+    events: [
+      { on: 'enter', ifFlags: [FLAGS.jour2], unlessFlags: [FLAGS.promotionParis], steps: PROMOTION },
+      { on: 'enter', ifFlags: [FLAGS.jour3], unlessFlags: [FLAGS.directeurInvite], steps: DAY_3 },
+    ],
   },
 
-  // Paris — l'entreprise, dernier étage : le directeur (rupture conventionnelle, après le concert).
+  // Paris — la tour, dernier étage : le bureau du directeur (jour 3 : la belle place, et la Liberté).
   entrepriseDirecteur: {
-    name: 'Entreprise - dernier étage',
+    name: 'Tour de bureaux - dernier étage',
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
@@ -2514,336 +2377,15 @@ export const interiors = {
       'ooooooooo',
       'mooooooom',
     ]),
-    decor: [
-      { kind: 'window', x: 1, y: 0 },
-      { kind: 'painting', x: 6, y: 0 },
-      { kind: 'longTable', x: 4, y: 3 },
-      { kind: 'crtTv', x: 7, y: 3 },
-      { kind: 'paperDesk', x: 0, y: 5 },
-      { kind: 'paperDesk', x: 10, y: 5 },
-      { kind: 'paperDesk', x: 0, y: 7 },
-      { kind: 'paperDesk', x: 10, y: 7 },
-    ],
     spawn: { x: 1, y: 2, facing: 'down' },
     npcs: [
       {
-        id: 'directeur-paris', name: 'Directeur', x: 4, y: 7, facing: 'down', color: 0x3c2c4c,
-        unlessFlags: [FLAGS.concertBercy],
-        dialogue: ['[Directeur - texte provisoire] Ah, notre nouvelle recrue promue ! Profite bien de Paris.'],
-      },
-      {
-        id: 'directeur-paris-concert', name: 'Directeur', x: 4, y: 7, facing: 'down', color: 0x3c2c4c,
-        ifFlags: [FLAGS.concertBercy],
-        unlessFlags: [FLAGS.ruptureConventionnelle],
-        dialogue: ['[Directeur - texte provisoire] Tu voulais me voir ?'],
-        ask: {
-          question: 'Demander une rupture conventionnelle ?',
-          choices: [
-            {
-              label: 'Oui',
-              reply: ["J'aimerais demander une rupture conventionnelle."],
-              dialogue: [
-                "[Directeur - texte provisoire] C'est d'accord. Merci pour tout ton travail !",
-                'Bonne chance pour la suite : la route du sud mène à Toulon.',
-              ],
-              setFlags: [FLAGS.ruptureConventionnelle],
-            },
-            { label: 'Non', dialogue: ['[Directeur - texte provisoire] Très bien. Ma porte reste ouverte.'] },
-          ],
-        },
-      },
-      {
-        id: 'directeur-paris-fin', name: 'Directeur', x: 4, y: 7, facing: 'down', color: 0x3c2c4c,
-        ifFlags: [FLAGS.ruptureConventionnelle],
-        dialogue: ['[Directeur - texte provisoire] Bonne route vers Toulon !'],
+        id: 'directeur', name: 'Directeur', x: 4, y: 7, facing: 'down',
+        ifFlags: [FLAGS.directeurInvite], dialogue: DIRECTOR_AFTER,
       },
     ],
     objects: elevator('entrepriseDirecteur'),
-  },
-
-  // Paris — Bercy (Accor Arena) : le concert.
-  bercy: {
-    name: 'Bercy',
-    // Salle de concert (scripts/interieurs/paris_voyages.py) : l'estrade au fond (x 2-10, rangées 3-5), le groupe dessus,
-    // la fosse devant pour la foule ; on parle aux musiciens depuis le bord de la scène.
-    grid: parseGrid([
-      'XXXXXXXXXXXXX',
-      'XXXXXXXXXXXXX',
-      'XXXXXXXXXXXXX',
-      'mommmmmmmmmom',
-      'oommmmmmmmmoo',
-      'oommmmmmmmmoo',
-      'ooooooooooooo',
-      'ooooooooooooo',
-      'XXoooooooooXX',
-      'XXoooooooooXX',
-      'XXoooooooooXX',
-      'ooooooooooooo',
-      'ooooooEoooooo',
-    ]),
-    spawn: { x: 6, y: 11, facing: 'up' },
-    events: [
-      {
-        on: 'enter',
-        ifFlags: [FLAGS.verreBistro],
-        unlessFlags: [FLAGS.concertBercy],
-        steps: [
-          { say: ["[Texte provisoire] Les lumières s'éteignent... la foule hurle !"] },
-          { speaker: 'Chanteur', say: ['[Chanteur - texte provisoire] Bonsoir Paris ! Vous êtes prêts ?!'] },
-          { say: ['[Texte provisoire] Quel concert incroyable ! Une soirée inoubliable.'] },
-          { setFlag: FLAGS.concertBercy },
-        ],
-      },
-    ],
-    npcs: [
-      { id: 'chanteur', name: 'Chanteur', x: 6, y: 4, facing: 'down', still: true, color: 0xd83060 },
-      { id: 'guitariste', name: 'Guitariste', x: 4, y: 4, facing: 'down', still: true, color: 0x3c3c3c },
-      { id: 'batteur', name: 'Batteur', x: 8, y: 4, facing: 'down', still: true, color: 0x5c2c8c },
-      ...[[3, 6], [5, 6], [7, 6], [9, 6], [4, 8], [6, 8], [8, 8], [3, 10], [9, 10], [4, 11]].map(([x, y], i) => ({
-        id: `fan-${i}`, name: 'Fan', x, y, facing: 'up', color: [0xe86040, 0x40a0e8, 0xe8c040, 0x60c060][i % 4],
-        dialogue: [['[Fan - texte provisoire] Quel son !', '[Fan - texte provisoire] Encore ! Encore !'][i % 2]],
-      })),
-    ],
-    // Le groupe joue sur l'estrade : on lui parle depuis le bord de la scène (chacun derrière sa case).
-    objects: [
-      { x: 4, y: 5, dialogue: ['[Guitariste - texte provisoire] Yeah !'] },
-      { x: 6, y: 5, dialogue: ['[Chanteur - texte provisoire] Merci Paris !'] },
-      { x: 8, y: 5, dialogue: ['[Batteur - texte provisoire] Boum boum !'] },
-    ],
-  },
-
-  // Toulon — l'appartement de Yanis.
-  yanisAppart: {
-    name: 'Appartement de Yanis',
-    grid: parseGrid([ // dessin de la maison de Pierre à Amsterdam (maison de Léo, Hull)
-      'XXXXXXXXXXXXX',
-      'XXXXXXXXXXXXX',
-      'XXXXXXXXXXXXX',
-      'XmmoommommmXX',
-      'moooooooooomX',
-      'ooomoooooooom',
-      'mmmmoooooooEm',
-      'oooooooooooom',
-      'oooommmmooooX',
-      'oooommmmooooX',
-      'ooooooooooooX',
-      'moooooooooomX',
-      'XooooooooooXX',
-    ]),
-    spawn: { x: 10, y: 6, facing: 'left' },
-    npcs: [
-      {
-        id: 'yanis-toulon', name: 'Yanis', x: 7, y: 4, facing: 'left', color: 0xc0b040,
-        dialogue: [
-          '[Yanis - texte provisoire] Pierre ! Te voilà enfin à Toulon !',
-          'Installe-toi, fais comme chez toi. Bienvenue au bord de la mer !',
-        ],
-        after: ['[Yanis - texte provisoire] Alors, tu as vu la plage ?'],
-        souvenir: { id: 'souvenir-yanis-toulon', name: 'Souvenir de Yanis à Toulon' },
-        setFlag: FLAGS.chezYanis,
-        // Première quête de Toulon : le Chemin de Saint-Jacques avec Yanis.
-        ask: {
-          question: 'Partir faire le Chemin de Saint-Jacques-de-Compostelle avec Yanis ?',
-          unlessFlags: [FLAGS.caminoEnCours],
-          choices: [
-            {
-              label: 'Oui',
-              reply: ["Allez, on part faire le Chemin de Saint-Jacques !"],
-              dialogue: ["[Yanis - texte provisoire] ¡Vamos ! Direction la côte nord de l'Espagne !"],
-              setFlags: [FLAGS.caminoEnCours],
-              warp: { map: 'camino', x: 1, y: 10, facing: 'right' },
-            },
-            { label: 'Non', dialogue: ['[Yanis - texte provisoire] Quand tu veux, je suis prêt !'] },
-          ],
-        },
-      },
-    ],
-  },
-
-  // Corse — la maison de tes parents.
-  corseParents: {
-    name: 'Maison de tes parents',
-    grid: parseGrid([ // dessin de la maison familiale (Fort-de-France), sans cartons
-      'XXXXXXXXXXX',
-      'XXXXXXXXXXX',
-      'oooommmmmmm',   // maison de plain-pied : l'escalier du modèle est effacé (ajouts de la fiche)
-      'oooooomoooo',
-      'oooooommoom',
-      'ooooooooooo',
-      'mooooommooo',
-      'oooooommooo',
-      'ooooooooooo',
-      'moEooooooom',
-    ]),
-    spawn: { x: 2, y: 8, facing: 'up' },
-    events: [
-      {
-        on: 'enter',
-        unlessFlags: [FLAGS.parentsCorse],
-        steps: [
-          { speaker: 'Maman', say: ['[Maman - texte provisoire] Mon grand ! Quelle joie de te voir en Corse !'] },
-          { speaker: 'Papa', say: ['[Papa - texte provisoire] Bienvenue dans le maquis ! Va aussi dire bonjour à Léo et Théo, à côté.'] },
-          { setFlag: FLAGS.parentsCorse },
-        ],
-      },
-    ],
-    npcs: [
-      {
-        id: 'maman-corse', name: 'Maman', x: 3, y: 5, facing: 'right', color: 0xe86fa0,
-        dialogue: ['[Maman - texte provisoire] Reste manger, j\'ai préparé du fiadone !'],
-      },
-      {
-        id: 'papa-corse', name: 'Papa', x: 6, y: 5, facing: 'left', color: 0x3f6fd8,
-        dialogue: ['[Papa - texte provisoire] Le maquis sent bon aujourd\'hui, hein ?'],
-      },
-    ],
-  },
-
-  // Corse — la maison voisine : Léo et Théo.
-  corseVoisins: {
-    name: 'Maison de Léo et Théo',
-    grid: parseGrid([ // dessin de la maison familiale (Fort-de-France), sans cartons
-      'XXXXXXXXXXX',
-      'XXXXXXXXXXX',
-      'oooommmmmmm',   // maison de plain-pied : l'escalier du modèle est effacé (ajouts de la fiche)
-      'oooooomoooo',
-      'oooooommoom',
-      'ooooooooooo',
-      'mooooommooo',
-      'oooooommooo',
-      'ooooooooooo',
-      'moEooooooom',
-    ]),
-    spawn: { x: 2, y: 8, facing: 'up' },
-    npcs: [
-      {
-        id: 'leo', name: 'Léo', x: 4, y: 4, facing: 'right', color: 0x4c9c5c,
-        dialogue: ['[Léo - texte provisoire] Salut ! Ceci est le premier dialogue de Léo.'],
-        after: ['[Léo - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-leo', name: 'Souvenir de Léo' },
-      },
-      {
-        id: 'theo', name: 'Théo', x: 8, y: 4, facing: 'left', color: 0xc07c3c,
-        dialogue: ['[Théo - texte provisoire] Hé ! Ceci est le premier dialogue de Théo.'],
-        after: ['[Théo - texte provisoire] Dialogue une fois le souvenir obtenu.'],
-        souvenir: { id: 'souvenir-theo', name: 'Souvenir de Théo' },
-      },
-    ],
-  },
-
-  // Bali — la cabane près de la mer : l'objet magique.
-  baliCabane: {
-    name: 'Cabane',
-    grid: parseGrid([
-      'XXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXX',
-      'mmmmmmmmmmmmmmmm',
-      'mmmmmmooommmmmmm',
-      'moooooooooommmmm',
-      'moooooommoomooom',
-      'ooooooooooomooom',
-      'oooooooooooooooo',
-      'oooooooooooooooo',
-      'oooEoooooooooooo',
-    ]),
-    spawn: { x: 3, y: 8, facing: 'up' },
-    objects: [7, 8].map((x) => ({
-      x,
-      y: 5,
-      dialogue: ['[Texte provisoire] Dans le coffre de bois, un objet scintille : un objet magique !'],
-      after: ['[Texte provisoire] Le coffre est vide.'],
-      item: ITEMS.objetMagiqueBali,
-    })),
-  },
-
-  // Sri Lanka — l'intérieur du temple (stupa) : l'objet magique sur l'autel.
-  sriLankaTemple: {
-    name: 'Temple',
-    grid: parseGrid([
-      'XXXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXXX',
-      'ooooomommmmomoooo',
-      'ooooooooooooooooo',
-      'ooooooooooooooooo',
-      'ooooooooooooooooo',
-      'ooooooooooooooooo',
-      'ooooooooEoooooooo',
-    ]),
-    spawn: { x: 8, y: 7, facing: 'up' },
-    npcs: [
-      {
-        id: 'moine', name: 'Moine', x: 4, y: 5, facing: 'right', color: 0xe88820,
-        dialogue: ["[Moine - texte provisoire] Ayubowan. L'objet sacré t'attend sur l'autel."],
-      },
-    ],
-    objects: [7, 8, 9, 10].map((x) => ({
-      x,
-      y: 3,
-      dialogue: ["[Texte provisoire] Sur l'autel, entre les fleurs de lotus, un objet magique rayonne !"],
-      after: ["[Texte provisoire] L'autel est paisible."],
-      item: ITEMS.objetMagiqueSriLanka,
-    })),
-  },
-
-  // Thaïlande — l'intérieur du wat : l'objet magique au pied du Bouddha doré.
-  watInterieur: {
-    name: 'Wat',
-    grid: parseGrid([
-      'XXXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXXX',
-      'ooooomommmmomoooo',
-      'ooooooooooooooooo',
-      'ooooooooooooooooo',
-      'ooooooooooooooooo',
-      'ooooooooooooooooo',
-      'ooooooooEoooooooo',
-    ]),
-    spawn: { x: 8, y: 7, facing: 'up' },
-    npcs: [
-      {
-        id: 'moine-thai', name: 'Moine', x: 4, y: 5, facing: 'right', color: 0xe88820,
-        dialogue: ["[Moine - texte provisoire] Sawasdee. L'objet magique repose au pied du Bouddha."],
-      },
-    ],
-    objects: [7, 8, 9, 10].map((x) => ({
-      x,
-      y: 3,
-      dialogue: ["[Texte provisoire] Au pied du grand Bouddha doré, un objet magique brille !"],
-      after: ["[Texte provisoire] L'autel est paisible."],
-      item: ITEMS.objetMagiqueThailande,
-    })),
-  },
-
-  // Népal — le monastère du grand stupa : l'objet magique parmi les lampes à beurre.
-  monastere: {
-    name: 'Monastère',
-    grid: parseGrid([
-      'XXXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXXXX',
-      'ooooooommmmoooooo',
-      'oomooooooooooomoo',
-      'ooooooooooooooooo',
-      'ooooooooooooooooo',
-      'ooooooooooooooooo',
-      'ooooooooEoooooooo',
-    ]),
-    spawn: { x: 8, y: 7, facing: 'up' },
-    npcs: [
-      {
-        id: 'moine-nepal', name: 'Moine', x: 4, y: 5, facing: 'right', color: 0x9c2830,
-        dialogue: ["[Moine - texte provisoire] Namaste. L'objet sacré t'attend sur l'autel, parmi les lampes."],
-      },
-    ],
-    objects: [7, 8, 9, 10].map((x) => ({
-      x,
-      y: 3,
-      dialogue: ["[Texte provisoire] Parmi les lampes à beurre, un objet magique rayonne !"],
-      after: ["[Texte provisoire] L'autel est paisible."],
-      item: ITEMS.objetMagiqueNepal,
-    })),
+    events: [{ on: 'enter', ifFlags: [FLAGS.directeurInvite], unlessFlags: [FLAGS.liberteParis], steps: DIRECTOR }],
   },
 };
 

@@ -14,11 +14,5 @@ export const CITY_MUSIC = {
   amsterdam: 'amsterdam',
   newDelhi: 'newDelhi',
   paris: 'paris',
-  toulon: 'toulon',
-  camino: 'toulon',
-  corse: 'corse',
-  bali: 'bali',
-  sriLanka: 'sriLanka',
-  thailand: 'thailand',
-  nepal: 'nepal',
+  reve: 'title',
 };

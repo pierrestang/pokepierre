@@ -141,6 +141,47 @@ export function startFallingLeaves(scene, map) {
   });
 }
 
+// ---------- Brume du rêve ----------
+
+// Le rêve de la fin (map.mist) : un voile pâle sur toute la carte, des nappes de brume blanche qui dérivent lentement, et
+// de petites étincelles qui s'allument et s'éteignent çà et là. Au-dessus des personnages, sous les dialogues.
+export function startDreamMist(scene, map) {
+  if (!map.mist) return;
+  const W = map.grid[0].length * S;
+  const H = map.grid.length * S;
+  const M = 40 * S;
+  scene.add.rectangle(-M, -M, W + 2 * M, H + 2 * M, 0xe6ecff, 0.22).setOrigin(0).setDepth(37);
+  if (!scene.textures.exists('dream-mist')) {
+    const g = scene.make.graphics({ x: 0, y: 0 }, false);
+    for (let i = 0; i < 14; i++) {
+      g.fillStyle(0xffffff, 0.09);
+      g.fillEllipse(48 + Phaser.Math.Between(-30, 30), 24 + Phaser.Math.Between(-8, 8), Phaser.Math.Between(40, 80), Phaser.Math.Between(14, 26));
+    }
+    g.generateTexture('dream-mist', 96, 48);
+    g.destroy();
+  }
+  for (let i = 0; i < 12; i++) {
+    const cloud = scene.add.image(Phaser.Math.Between(-48, W), Phaser.Math.Between(0, H), 'dream-mist')
+      .setDepth(38).setScale(Phaser.Math.FloatBetween(1.2, 2.4)).setAlpha(Phaser.Math.FloatBetween(0.5, 1));
+    const drift = () => {
+      const from = cloud.x;
+      scene.tweens.add({
+        targets: cloud, x: W + 60, duration: (W + 60 - from) * Phaser.Math.Between(90, 160), ease: 'Linear',
+        onComplete: () => { cloud.setPosition(-120, Phaser.Math.Between(0, H)); drift(); },
+      });
+    };
+    drift();
+  }
+  scene.time.addEvent({
+    delay: 260,
+    loop: true,
+    callback: () => {
+      const spark = scene.add.rectangle(Phaser.Math.Between(0, W), Phaser.Math.Between(0, H), 1, 1, 0xffffff).setDepth(39).setAlpha(0);
+      scene.tweens.add({ targets: spark, alpha: 0.9, duration: 700, yoyo: true, onComplete: () => spark.destroy() });
+    },
+  });
+}
+
 // ---------- Mer animée ----------
 
 // Vaguelettes claires qui défilent lentement sur toutes les cases d'eau (carte et décor autour),

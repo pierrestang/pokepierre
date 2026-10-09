@@ -4,7 +4,8 @@ import { parseGrid } from './parseGrid.js';
 // avenue, pavés, jardin, Seine, ponts, portes (sur les portes dessinées).
 import BUILT from '../builtMaps/paris.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS } from '../story.js';
+import { FLAGS, ITEMS } from '../story.js';
+import { ARRIVAL, INTO_THE_DREAM, LANDLORD } from '../parisStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la Seine, l'avenue et la rue sud se prolongent ; des arbres ailleurs.
@@ -16,13 +17,14 @@ function outside(x, y, grid) {
   return 'ƀ';
 }
 
-const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
+const NOT_HOME = ['Tu frappes. Personne ne répond.'];
 
 // Paris — 52 x 48 cases avec sa bordure d'arbres (premier jet de scripts/build_paris.py, retouché à la main dans le
 // créateur). Au nord : le grand dôme (Bercy), le Louvre et son drapeau, le musée-gare ; l'avenue les traverse (ouest :
-// Bordeaux, est : l'aéroport). Puis ton appartement (l'immeuble aux balcons fleuris), le bistrot (le café à terrasse), le
-// jardin au bassin, l'opéra. La Seine, deux yachts, deux ponts. Au sud : un immeuble crème, le café au store rayé,
-// Notre-Dame, la tour de bureaux vitrée (l'entreprise) ; la rue sud mène à Toulon (est).
+// Bordeaux, est : l'aéroport). Puis ton appartement (l'immeuble aux balcons fleuris), le café à terrasse, le jardin au
+// bassin, l'opéra. La Seine, deux yachts, deux ponts. Au sud : un immeuble crème, le café au store rayé, Notre-Dame, la
+// tour de bureaux vitrée (ton travail). Le trajet de chaque matin : de l'appartement à la tour, par le pont de gauche
+// (voir parisStory.js).
 // Légende : voir src/data/tiles.js (ɔ = pavés, . = jardin, G = Seine, D = porte, ƀ = arbres).
 export const parisMap = {
   id: 'paris',
@@ -79,46 +81,48 @@ export const parisMap = {
     'ƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀƀ', // 47
   ]),
   doors: [
-    // Bercy (le grand dôme, en haut à gauche) : le concert, après le verre avec Hugues et Thomas.
-    {
-      x: 9, y: 11, interior: 'bercy',
-      lock: { ifFlags: [FLAGS.verreBistro] },
-      lockedDialogue: ['[Texte provisoire] Pas de concert ce soir à Bercy.'],
-    },
-    { x: 39, y: 9, lockedDialogue: ['[Texte provisoire] Le musée est fermé le lundi.'] },
-    { x: 21, y: 14, lockedDialogue: ['[Texte provisoire] La file d\'attente du Louvre fait le tour de la cour. Une autre fois !'] },
-    { x: 29, y: 14, lockedDialogue: ['[Texte provisoire] La file d\'attente du Louvre fait le tour de la cour. Une autre fois !'] },
-    // Ton appartement (l'immeuble aux balcons fleuris) : après avoir dit au chef que tu emménages.
+    { x: 9, y: 11, lockedDialogue: ['Bercy. Ce soir, pas de concert.'] },
+    { x: 39, y: 9, lockedDialogue: ['Le musée est fermé le lundi.'] },
+    { x: 21, y: 14, lockedDialogue: ['La file d\'attente du Louvre fait le tour de la cour. Une autre fois.'] },
+    { x: 29, y: 14, lockedDialogue: ['La file d\'attente du Louvre fait le tour de la cour. Une autre fois.'] },
+    // Ton appartement (l'immeuble aux balcons fleuris) : avec les clés du propriétaire.
     {
       x: 6, y: 22, interior: 'parisAppart',
-      lock: { ifFlags: [FLAGS.emmenagementParis] },
-      lockedDialogue: ["[Texte provisoire] C'est ton futur appartement. Va d'abord manger au bistrot !"],
+      lock: { ifItems: [ITEMS.clesParis.id] },
+      lockedDialogue: ['La porte de l\'immeuble est fermée à clé.'],
     },
-    { x: 13, y: 22, interior: 'bistro' },   // le bistrot (le café à terrasse) : ta première mission à Paris
-    { x: 41, y: 22, lockedDialogue: ["[Texte provisoire] L'Opéra est fermé jusqu'à ce soir."] },
+    { x: 13, y: 22, lockedDialogue: ['Le café à terrasse. Tu n\'as jamais le temps de t\'y asseoir.'] },
+    { x: 41, y: 22, lockedDialogue: ['L\'Opéra est fermé jusqu\'à ce soir.'] },
     { x: 8, y: 40, lockedDialogue: NOT_HOME },
-    { x: 14, y: 40, lockedDialogue: ['[Texte provisoire] Le café est complet ! Essaie le bistrot, de l\'autre côté de la Seine.'] },
-    { x: 25, y: 41, lockedDialogue: ['[Texte provisoire] Notre-Dame est en travaux.'] },
-    // L'entreprise (la tour de bureaux vitrée) : une fois l'offre trouvée sur l'ordinateur.
+    { x: 14, y: 40, lockedDialogue: ['Le café au store rayé est complet.'] },
+    { x: 25, y: 41, lockedDialogue: ['Notre-Dame est en travaux.'] },
+    // La tour de bureaux vitrée : ton travail, une fois installé.
     {
       x: 42, y: 41, interior: 'entreprise',
-      lock: { ifFlags: [FLAGS.rechercheTravail] },
-      lockedDialogue: ["[Texte provisoire] Une grande entreprise. Tu n'as rien à y faire pour l'instant."],
+      lock: { ifFlags: [FLAGS.parisCles] },
+      lockedDialogue: ['Une grande tour de bureaux. Le badge à l\'entrée ne te laisse pas passer.'],
     },
   ],
   // Les bâtiments sont dans le dessin (scripts/build_paris.py).
   buildings: [],
-  events: [
-    // À l'arrivée : ta première mission.
-    {
-      on: 'enter',
-      unlessFlags: [FLAGS.repasParis, FLAGS.parisAccueil],
-      steps: [
-        { say: ['[Texte provisoire] Bienvenue à Paris !', "Première mission : aller manger au bistrot (le café à terrasse, à gauche, avant la Seine)."] },
-        { setFlag: FLAGS.parisAccueil },
-      ],
-    },
+  npcs: [
+    // Le propriétaire, devant l'immeuble.
+    { id: 'proprietaire', name: 'Propriétaire', sprite: 'g35', x: 7, y: 23, facing: 'left', script: LANDLORD },
   ],
+  events: [
+    // L'arrivée, devant l'immeuble : les clés.
+    { on: 'enter', ifFlags: [FLAGS.arriveeParis], unlessFlags: [FLAGS.parisCles], steps: ARRIVAL },
+    // En sortant de la tour, la Liberté choisie : le rêve.
+    { on: 'enter', ifFlags: [FLAGS.liberteParis], unlessFlags: [FLAGS.reveParis], steps: INTO_THE_DREAM },
+  ],
+  // Le soir des jours 1 et 2 (en rentrant de la tour) : la nuit tombe sur Paris.
+  night: {
+    anyOf: [
+      { ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.jour2] },
+      { ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.jour3] },
+    ],
+    doorLamps: true,
+  },
   // Panneau « Aéroport » (dessiné) à côté de la sortie est.
   objects: [airportSign(45, 13, true)],
   triggers: [
@@ -131,19 +135,11 @@ export const parisMap = {
     })),
     // Est : l'aéroport.
     ...[10, 11, 12, 13].map((y) => toAirport(51, y)),
-    // Rue sud, vers l'est : Toulon, une fois la rupture conventionnelle acceptée.
-    ...[40, 41, 42, 43, 44, 45].map((y) => ({
-      x: 51,
-      y,
-      ifFlags: [FLAGS.ruptureConventionnelle],
-      dialogue: ['[Texte provisoire] La route du sud... Tu as encore des choses à faire à Paris.'],
-      readyDialogue: ['Tu prends la route du sud, direction Toulon et la mer !'],
-      setFlags: [FLAGS.arriveeToulon],
-      warp: { map: 'toulon', x: 1, y: 6, facing: 'right' },
-    })),
+    // Rue sud, vers l'est : elle continue dans Paris, sans rien pour Pierre.
+    ...[40, 41, 42, 43, 44, 45].map((y) => ({ x: 51, y, dialogue: ['La rue continue vers d\'autres quartiers. Rien à faire par là.'] })),
   ],
   surroundings: { outside },
-  spawn: { x: 1, y: 11, facing: 'right' },
+  spawn: { x: 6, y: 23, facing: 'up' },
 };
 
 // La grille du jeu : celle ci-dessus, accordée aux collisions du dessin.

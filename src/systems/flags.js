@@ -41,11 +41,13 @@ export const flags = {
 //   ifFlags : tous doivent être levés ; unlessFlags : aucun ne doit l'être ;
 //   ifItems : le joueur doit posséder tous ces objets ;
 //   ifSouvenirs : le joueur doit avoir tous ces souvenirs ;
-//   unlessItems / unlessSouvenirs : il ne doit en avoir aucun.
+//   unlessItems / unlessSouvenirs : il ne doit en avoir aucun ;
+//   anyOf : liste de conditions, il suffit que l'une soit remplie (ex. la nuit de deux soirs différents).
 export function meetsConditions({
-  ifFlags = [], unlessFlags = [], ifItems = [], unlessItems = [], ifSouvenirs = [], unlessSouvenirs = [],
+  ifFlags = [], unlessFlags = [], ifItems = [], unlessItems = [], ifSouvenirs = [], unlessSouvenirs = [], anyOf = null,
 } = {}) {
   return (
+    (!anyOf || anyOf.some((c) => meetsConditions(c))) &&
     ifFlags.every(flags.has) &&
     !unlessFlags.some(flags.has) &&
     ifItems.every(items.has) &&

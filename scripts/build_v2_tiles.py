@@ -60,6 +60,12 @@ SHEETS = [
      'terriblejared', 4),
     ('jared-camping', 'Camping, caravanes, tentes et nature (terriblejared)',
      'tilesets/vehicules/camping-caravanes_terriblejared.png', 1, 'terriblejared', 4),
+    # Pokémon Gaia Project (PixelMister, d'après zetavares852 ; voir credits/gaia-pixelmister.txt) : cases de 16 px.
+    # Le rêve de la fin du jeu (scripts/build_reve.py, qui les copie aussi lui-même).
+    ('gaia-distorsion', 'Gaia Project : Monde Distorsion (PixelMister)',
+     'tilesets/exterieurs/monde-distorsion_gaia-pixelmister.png', 1, 'Gaia Project (PixelMister)', 4),
+    ('gaia-colonne', 'Gaia Project : ruines de la Colonne Lance (PixelMister)',
+     'tilesets/exterieurs/colonne-lance-ruines_gaia-pixelmister.png', 1, 'Gaia Project (PixelMister)', 4),
 ]
 
 

@@ -12,15 +12,9 @@ import { amsterdamMap } from './amsterdam.js';
 import { newDelhiMap } from './newDelhi.js';
 import { airportMap } from './airport.js';
 import { parisMap } from './paris.js';
-import { toulonMap } from './toulon.js';
-import { caminoMap } from './camino.js';
-import { corseMap } from './corse.js';
-import { baliMap } from './bali.js';
-import { sriLankaMap } from './sriLanka.js';
-import { thailandMap } from './thailand.js';
-import { nepalMap } from './nepal.js';
+import { reveMap } from './reve.js';
 
-// Cartes extérieures, par id. L'ordre du jeu : Fort-de-France -> Saint-Ay -> (route de Montépilloy) -> Montépilloy -> (route et collège Bonsecours) -> Prytanée -> Bordeaux -> Hull -> Hanoï -> Amsterdam -> (Hull) -> New Delhi -> Bordeaux (stade) -> Paris -> Toulon (Chemin de Saint-Jacques, Corse) -> Bali -> Sri Lanka -> Thaïlande -> Népal.
+// Cartes extérieures, par id. L'ordre du jeu : Fort-de-France -> Saint-Ay -> (route de Montépilloy) -> Montépilloy -> (route et collège Bonsecours) -> Prytanée -> Bordeaux -> Hull -> Hanoï -> Amsterdam -> New Delhi -> Bordeaux (stade) -> Paris (la fin : le rêve, le réveil à Fort-de-France).
 // Les voyages en avion passent par l'aéroport (depuis Bordeaux).
 export const MAPS = {
   [fortDeFranceMap.id]: fortDeFranceMap,
@@ -36,13 +30,7 @@ export const MAPS = {
   [newDelhiMap.id]: newDelhiMap,
   [airportMap.id]: airportMap,
   [parisMap.id]: parisMap,
-  [toulonMap.id]: toulonMap,
-  [caminoMap.id]: caminoMap,
-  [corseMap.id]: corseMap,
-  [baliMap.id]: baliMap,
-  [sriLankaMap.id]: sriLankaMap,
-  [thailandMap.id]: thailandMap,
-  [nepalMap.id]: nepalMap,
+  [reveMap.id]: reveMap,
 };
 
 // PNJ placés dans le créateur de cartes (déplacés, figurants ajoutés : voir npcEdits.js).

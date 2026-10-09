@@ -1,6 +1,7 @@
-"""Intérieurs HGSS : Paris (bistrot, appartement, entreprise sur trois étages, Bercy), Toulon (Yanis), Corse (les
-parents, les voisins), Bali (la cabane), Sri Lanka, Thaïlande et Népal (temples). Voir scripts/interieurs_plans.py et
-docs/technique/interieurs-gen4.md.
+"""Intérieurs HGSS : Paris (l'appartement, la tour de bureaux sur trois étages). Voir scripts/interieurs_plans.py et
+docs/technique/interieurs-gen4.md. Les meubles dessinés ici (bouddhas, autels, lampes à beurre, moulins à prières,
+thangkas, drapeaux de prières, batterie et micro, coffre) servaient aux pièces d'après Paris, retirées en octobre 2026 :
+ils restent pour le catalogue d'intérieurs (scripts/interieurs/catalogue_int.py).
 
 Chaque pièce part d'une vraie pièce de HeartGold / SoulSilver (pack de SirMaIo, scripts/hgss_rooms.py), retouchée :
 'erase' (meubles retirés), 'paste' (morceaux d'autres pièces HGSS : portes d'ascenseur de la Tour Radio, murs, tapis de
@@ -256,27 +257,7 @@ ITEMS = {
 
 
 # ---------- Pièces ----------
-def temple(extra):
-    """Salle de temple : le haut du premier étage de la tour Chétiflor (mur sombre à lanternes, plancher), sans ses
-    barrières ni ses échelles, un tapis de sortie en bas au milieu ; `extra` : l'autel (cases (7..10, 3)) et sa
-    décoration."""
-    return {
-        'hgss': (SPROUT, 11, 8, 17, 9),
-        'erase': [(0, 5, 17, 4)],
-        'items': [['pv-tapis-sortie', 7, 8], *extra],
-    }
-
-
 PLANS = {
-    # Paris — le bistrot : une maison de Doublonville (coin cuisine, bibliothèque, table et ses chaises) avec le comptoir
-    # rouge du café d'Oliville ; le cuisinier derrière le comptoir (1, 3), on lui parle par-dessus (1, 4).
-    'bistro': {
-        'hgss': (GOLD, 47, 8, 9, 8),
-        'items': [
-            ['pv-comptoir-cafe', 0, 5], ['pv-caisse', 2, 4, {'dy': -7}], ['pv-assiette', 0, 4, {'dy': -6}],
-            ['pv-sauce', 1, 4, {'dy': -8}], ['pv-menu', 4, 1, {'dy': -3}], ['pv-plante-cafe', 8, 6],
-        ],
-    },
     # Paris — ton appartement : le salon de M. Pokémon (aquarium, lit, ordinateur et ses câbles, table, bibliothèque).
     'parisAppart': {'hgss': ('004i_Mr Pokémon House', 10, 8, 12, 9)},
     # Paris — l'entreprise, rez-de-chaussée : le hall de la Tour Radio (accueil en U, grand tapis, salon) ; l'escalier
@@ -298,48 +279,4 @@ PLANS = {
         'erase': [(0, 0, 2, 4)],
         'paste': [{'from': (RADIO, 13, 31, 2, 2), 'to': (0, 0)}, {'from': ELEVATOR_DOORS, 'to': (0, 0)}],
     },
-    # Paris — Bercy : le théâtre de danse de Rosalia (colonnes dorées, rideaux, grand tapis), sans ses banquettes,
-    # transformé en salle de concert (demande de l'utilisateur) : une estrade en planches au fond (x 2-10, rangées 3-5)
-    # où jouent le chanteur, le guitariste et le batteur (enceintes, batterie, micro), la fosse devant pour la foule.
-    'bercy': {
-        'hgss': ('012i_Goldenrod game corner', 10, 8, 13, 13),
-        'erase': [(5, 4, 3, 4), (5, 8, 3, 2), (10, 4, 3, 2)],
-        'items': [
-            ['pv-scene', 2, 5],
-            ['pv-enceinte', 2, 4, {'solid': 0}], ['pv-enceinte', 10, 4, {'solid': 0}],
-            ['pv-batterie', 7, 3], ['pv-micro', 6, 4],
-        ],
-        'npc_on_solid': ['chanteur', 'guitariste', 'batteur'],
-    },
-    # Toulon — l'appartement de Yanis : une maison de Doublonville (cuisine, télé, grand tapis bleu, table).
-    'yanisAppart': {'hgss': (GOLD, 104, 40, 9, 8)},
-    # Corse — les parents : la maison de pierre et de bois d'Écorcia (cheminée, bûches, coffres).
-    'corseParents': {'hgss': ('010i_Azalea Houses', 10, 7, 11, 10)},
-    # Corse — les voisins : une maison de Mauville (sol de pierre, cuisine, table).
-    'corseVoisins': {'hgss': ('006i_Violet houses', 10, 8, 9, 8)},
-    # Bali — la cabane : la maison de bois de Fargas (tatamis, établis), sa table remplacée par le coffre (7..8, 5).
-    'baliCabane': {
-        'hgss': ('010i_Azalea Houses', 10, 25, 16, 10),
-        'erase': [(7, 5, 2, 2)],
-        'items': [['pv-coffre', 7, 5]],
-    },
-    # Sri Lanka — bouddha blanc sur l'autel, fleurs de lotus, encens.
-    'sriLankaTemple': temple([
-        ['pv-autel', 7, 3], ['pv-bouddha-blanc', 8, 3, {'dy': -6}],
-        ['pv-lotus', 7, 3, {'dy': -5}], ['pv-lotus', 10, 3, {'dy': -5}],
-        ['pv-encens', 5, 3], ['pv-encens', 12, 3], ['pv-lotus', 4, 4], ['pv-lotus', 13, 4],
-    ]),
-    # Thaïlande — bouddha doré sur l'autel doré, lampes et lotus.
-    'watInterieur': temple([
-        ['pv-autel-or', 7, 3], ['pv-bouddha', 8, 3, {'dy': -6}],
-        ['pv-lotus', 7, 3, {'dy': -5}], ['pv-lotus', 10, 3, {'dy': -5}],
-        ['pv-lampe-beurre', 5, 3], ['pv-lampe-beurre', 12, 3],
-    ]),
-    # Népal — monastère : l'autel aux lampes à beurre, thangkas, drapeaux de prière, moulins à prières.
-    'monastere': temple([
-        ['pv-drapeaux-8', 5, 0, {'dy': 6}],
-        ['pv-autel', 7, 3], ['pv-bouddha', 8, 3, {'dy': -6}], ['pv-lampes', 7, 3, {'dy': -4}],
-        ['pv-thangka', 4, 2], ['pv-thangka', 12, 2],
-        ['pv-moulin', 2, 4], ['pv-moulin', 14, 4],
-    ]),
 }

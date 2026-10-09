@@ -138,32 +138,22 @@ export const FLAGS = {
   moisDelhi: 'mois-delhi',                      //   « Quelques mois plus tard… » (la seule ellipse de la ville)
   semestreTermine: 'semestre-termine',          //   Prophecy : on rentre à Bordeaux (le stade s'ouvre)
   diplomeBordeaux: 'diplome-bordeaux',          // diplôme reçu devant l'estrade du stade (la route de Paris s'ouvre)
-  arriveeParis: 'arrivee-paris',                // arrivé à Paris
-  repasParis: 'repas-paris',                    // mangé au restaurant, rencontré le cuisinier
-  parisAccueil: 'paris-accueil',                // message d'arrivée à Paris déjà montré
-  emmenagementParis: 'emmenagement-paris',      // tu as dit au chef que tu emménages : l'appartement s'ouvre
-  rechercheTravail: 'recherche-travail',        // offre trouvée sur l'ordinateur : l'entreprise s'ouvre
-  travailParis: 'travail-paris',                // premier jour dans l'entreprise parisienne
-  promotion: 'promotion',                       // promotion accordée par le manager (1er étage)
-  verreBistro: 'verre-bistro',                  // verre avec Hugues et Thomas au bistrot
-  concertBercy: 'concert-bercy',                // concert vu à Bercy
-  ruptureConventionnelle: 'rupture-conventionnelle', // acceptée par le directeur : la route de Toulon s'ouvre
-  arriveeToulon: 'arrivee-toulon',              // arrivé à Toulon
-  toulonAccueil: 'toulon-accueil',              // message d'arrivée à Toulon déjà montré
-  chezYanis: 'chez-yanis',                      // arrivé dans l'appartement de Yanis
-  caminoEnCours: 'camino-en-cours',             // parti sur le Chemin de Saint-Jacques avec Yanis
-  caminoFini: 'camino-fini',                    // arrivé à Saint-Jacques, bus du retour pris
-  parentsCorse: 'parents-corse',                // tu as dit bonjour à tes parents en Corse
-};
-
-// Quêtes de Toulon terminées (Chemin de Saint-Jacques + Corse) : Bali s'ouvre à l'aéroport.
-export const TOULON_QUESTS = {
-  ifFlags: [FLAGS.caminoFini, FLAGS.parentsCorse],
-  ifSouvenirs: ['souvenir-leo', 'souvenir-theo'],
+  arriveeParis: 'arrivee-paris',                // arrivé à Paris, devant l'immeuble du propriétaire
+  parisCles: 'paris-cles',                      //   le propriétaire a donné les clés
+  jour1Bureau: 'jour1-bureau',                  //   jour 1 : la journée au rez-de-chaussée de la tour est finie (le soir tombe)
+  jour2: 'jour2',                               //   « Le lendemain… » (jour 2) : le 1er étage s'ouvre
+  promotionParis: 'promotion-paris',            //   jour 2 : le manager prend Pierre avec lui (le soir tombe)
+  jour3: 'jour3',                               //   « Le lendemain… » (jour 3) : le bureau du directeur s'ouvre
+  directeurInvite: 'directeur-invite',          //   jour 3 : le manager envoie Pierre au dernier étage
+  liberteParis: 'liberte-paris',                //   Pierre refuse la place du directeur (Liberté)
+  reveParis: 'reve-paris',                      //   en sortant de la tour : le rêve (la grande réunion)
+  finDuJeu: 'fin-du-jeu',                       //   la réunion, le fondu, le réveil à Fort-de-France : la fin
+  reveilFin: 'reveil-fin',                      //   la fin : Pierre se lève de son lit, à Fort-de-France
+  talismanPris: 'talisman-pris',                //   il prend la pierre sur la table de chevet : écran noir, retour au titre
 };
 
 // Vertus (traits de caractère) : une seule collection, qui grandit de ville en ville ; 8 au plus dans tout le jeu, une
-// par ville au plus (6 jusqu'à Hull, Adaptation à Hanoï, 1 place réservée après). Encart « Pierre a reçu la vertu X ! » (étape `trait`),
+// par ville au plus (6 jusqu'à Hull, Adaptation à Hanoï, la Liberté à Paris). Encart « Pierre a reçu la vertu X ! » (étape `trait`),
 // « Pierre utilise X ! » quand une vertu débloque une situation (étape `useTrait`, comptée dans le carnet), carnet
 // (Start > VERTUS) et compteur « Vertus : X sur 8 » (UIScene). `city` : la ville où on la reçoit (id de carte) ;
 // `phrase` : sa phrase dans le carnet. Les `id` gardent ceux des anciennes sauvegardes quand c'est la même vertu ;
@@ -196,6 +186,10 @@ export const TRAITS = {
   adaptation: {
     id: 'vertu-adaptation', name: 'Adaptation', city: 'hanoi',
     phrase: 'Trouver son chemin partout, même sans en parler la langue.',
+  },
+  liberte: {
+    id: 'vertu-liberte', name: 'Liberté', city: 'paris',
+    phrase: 'Écouter qui l\'on est vraiment, et refuser une vie qui n\'est pas la sienne.',
   },
 };
 export const MAX_TRAITS = 8;
@@ -254,11 +248,8 @@ export const ITEMS = {
   billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },  // remis par Romain, à Amsterdam
   pierreGravee: { id: 'pierre-gravee', name: 'Pierre gravée' },                // New Delhi : le vieux sage du fort
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },
+  clesParis: { id: 'cles-paris', name: "Clés de l'appartement de Paris" },          // Paris : le propriétaire
   pieceTracteur: { id: 'piece-tracteur', name: 'Pièce de tracteur' },
-  objetMagiqueBali: { id: 'objet-magique-bali', name: 'Objet magique de Bali' },
-  objetMagiqueSriLanka: { id: 'objet-magique-sri-lanka', name: 'Objet magique du Sri Lanka' },
-  objetMagiqueThailande: { id: 'objet-magique-thailande', name: 'Objet magique de Thaïlande' },
-  objetMagiqueNepal: { id: 'objet-magique-nepal', name: 'Objet magique du Népal' },
 };
 
 // Personnages qui marchent derrière le joueur, dans cet ordre, quand leurs conditions sont remplies.
@@ -280,8 +271,6 @@ export const FOLLOWERS = [
   // New Delhi : après la fête, Harsh et Prophecy suivent Pierre jusqu'au vieux sage, derrière la porte du fort.
   { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
   { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
-  // Chemin de Saint-Jacques : Yanis marche avec toi jusqu'à Saint-Jacques.
-  { id: 'yanis', color: 0xc0b040, ifFlags: [FLAGS.caminoEnCours], unlessFlags: [FLAGS.caminoFini] },
   // Hull, la tournée des bars : Léo part devant en éclaireur ; Ousmane, Charlotte et Anaïs suivent Pierre à la queue
   // leu leu, du premier pub au second, puis du second à l'Asylum (mêmes id que leurs PNJ dans les bars : ils partent de
   // leur place à table, et s'y rassoient en arrivant, voir hullStory.js et interiors.js).

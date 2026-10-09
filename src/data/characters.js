@@ -45,17 +45,16 @@ export const BY_NAME = {
   Maman: 'g126', Papa: 'g119', Manon: 'g57',
   // Amis (garçons : jeunes gens des villes de Sinnoh et Johto ; filles : idem)
   Jean: 'g52', Felix: 'g93', Romain: 'g92', Prophecy: 'g94', Yanis: 'g96', Ousmane: 'g105', Harsh: 'g89',
-  Tom: 'g22', 'Théo': 'g23', 'Léo': 'g55', Tanguy: 'g56', Thomas: 'g90', Hugues: 'g91', Geoffrey: 'g41',
+  Tom: 'g22', 'Léo': 'g55', Tanguy: 'g56', Geoffrey: 'g41',
   'Benoît': 'g38', 'Étienne': 'g108', Joshua: 'g18', Laurent: 'g53',
   Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g117', Paul: 'g86', Camille: 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g49',
   Charlotte: 'g44', 'Anaïs': 'g107', Anais: 'g107',
   // Métiers
   'M. Bouly': 'g33', Militaire: 'g87', Directeur: 'g120', Directrice: 'g37', Principale: 'g37', Sentinelle: 'g87',
-  Manager: 'g122', Responsable: 'g36', 'Agent immobilier': 'g35', Vendeur: 'g112', Cuisinier: 'g63',
+  Manager: 'g122', Responsable: 'g36', 'Agent immobilier': 'g35', Vendeur: 'g112',
   'Capitaine du ferry': 'g118', 'Vieux pêcheur': 'g67', 'Vieux sage': 'g71',
-  Moine: 'g72', Capitaine: 'g87', Surveillant: 'g116', Professor: 'g138', Professeur: 'g138', Professeure: 'g54',
-  "Professeure d'anglais": 'g106', 'Hôtesse': 'g64', 'Pèlerine': 'g15', Fan: 'g40', Chanteur: 'g69',
-  Guitariste: 'g68', Batteur: 'g16', Promeneuse: 'g82', Gamin: 'g59', Barman: 'g101', Leo: 'g55',
+  Capitaine: 'g87', Surveillant: 'g116', Professor: 'g138', Professeur: 'g138', Professeure: 'g54',
+  "Professeure d'anglais": 'g106', 'Hôtesse': 'g64', Promeneuse: 'g82', Gamin: 'g59', Barman: 'g101', Leo: 'g55',
 };
 
 // Figurants sans attribution (ex. les diplômés, les touristes) : choisis d'après leur id et leur place.

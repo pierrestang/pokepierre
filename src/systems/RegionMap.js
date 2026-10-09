@@ -17,8 +17,7 @@ import { FullScreenPanel, BAR } from './FullScreenPanel.js';
 // Étapes du voyage, dans l'ordre de l'histoire.
 const STOPS = [
   'fortDeFrance', 'saintAy', 'montepilloy', 'prytanee', 'bordeaux', 'hull',
-  'hanoi', 'amsterdam', 'newDelhi', 'paris', 'toulon',
-  'camino', 'corse', 'bali', 'sriLanka', 'thailand', 'nepal',
+  'hanoi', 'amsterdam', 'newDelhi', 'paris',
 ];
 const PER_ROW = 6;
 const ROUTE = 0xe7a500;       // orange des routes de Rouge Feu

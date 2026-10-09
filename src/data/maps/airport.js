@@ -3,7 +3,7 @@ import { parseGrid } from './parseGrid.js';
 // du jeu (voir builtGrid).
 import BUILT from '../builtMaps/airport.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS, ITEMS, TOULON_QUESTS, visitedFlag } from '../story.js';
+import { FLAGS, ITEMS } from '../story.js';
 import { FLIGHT_TO_HULL } from '../bordeauxStory.js';
 import { FLIGHT_TO_HANOI } from '../hullStory.js';
 import { FLIGHT_TO_AMSTERDAM } from '../hanoiStory.js';
@@ -25,15 +25,6 @@ const NEXT_FLIGHTS = [
     label: 'New Delhi (Inde)', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
     setFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 16, facing: 'right' },
   },
-  { label: 'Bali (Indonésie)', ...TOULON_QUESTS, unlessFlags: [visitedFlag('bali')], plane: { map: 'bali', x: 15, y: 23, facing: 'up' } },
-  { label: 'Sri Lanka', ifItems: [ITEMS.objetMagiqueBali.id], unlessFlags: [visitedFlag('sriLanka')], plane: { map: 'sriLanka', x: 1, y: 10, facing: 'right' } },
-  { label: 'Thaïlande', ifItems: [ITEMS.objetMagiqueSriLanka.id], unlessFlags: [visitedFlag('thailand')], plane: { map: 'thailand', x: 1, y: 6, facing: 'right' } },
-  { label: 'Népal', ifItems: [ITEMS.objetMagiqueThailande.id], unlessFlags: [visitedFlag('nepal')], plane: { map: 'nepal', x: 1, y: 12, facing: 'right' } },
-  {
-    label: 'Nouveau pays',
-    ifItems: [ITEMS.objetMagiqueNepal.id],
-    dialogue: ["[Texte provisoire] Ce vol n'est pas encore ouvert : la suite du voyage arrive bientôt !"],
-  },
 ];
 
 // « Autre » : les lieux déjà visités (on y retourne en avion), sauf la suite de l'histoire, déjà proposée.
@@ -47,11 +38,6 @@ const OTHER_FLIGHTS = [
   { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.arriveeAmsterdam], plane: { map: 'amsterdam', x: 1, y: 10, facing: 'right' } },
   { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 16, facing: 'right' } },
   { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: { map: 'paris', x: 1, y: 11, facing: 'right' } },
-  { label: 'Toulon', ifFlags: [FLAGS.arriveeToulon], plane: { map: 'toulon', x: 1, y: 6, facing: 'right' } },
-  { label: 'Bali (Indonésie)', ifFlags: [visitedFlag('bali')], plane: { map: 'bali', x: 15, y: 23, facing: 'up' } },
-  { label: 'Sri Lanka', ifFlags: [visitedFlag('sriLanka')], plane: { map: 'sriLanka', x: 1, y: 10, facing: 'right' } },
-  { label: 'Thaïlande', ifFlags: [visitedFlag('thailand')], plane: { map: 'thailand', x: 1, y: 6, facing: 'right' } },
-  { label: 'Népal', ifFlags: [visitedFlag('nepal')], plane: { map: 'nepal', x: 1, y: 12, facing: 'right' } },
   { label: 'Rester ici', dialogue: ['Très bien, reviens me voir quand tu veux !'] },
 ];
 

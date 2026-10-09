@@ -330,84 +330,6 @@ const PARIS_LEAD = [
 ];
 const PARIS_CHORDS = ['Am', 'Dm', 'E', 'Am', 'Dm', 'Am', 'E', 'Am'];
 
-// Toulon et le Chemin : le port au soleil, en sol majeur.
-const TOULON_LEAD = [
-  ['D5', 2], ['G5', 2], ['B5', 2], ['G5', 2],
-  ['C6', 2], ['B5', 1], ['A5', 1], ['G5', 2], ['E5', 2],
-  ['F#5', 2], ['A5', 2], ['D6', 3], ['C6', 1],
-  ['B5', 4], ['G5', 4],
-  ['E5', 2], ['G5', 2], ['B5', 2], ['E6', 2],
-  ['D6', 2], ['C6', 2], ['G5', 4],
-  ['A5', 2], ['F#5', 2], ['D5', 2], ['F#5', 2],
-  ['G5', 6], [r, 2],
-];
-const TOULON_CHORDS = ['G', 'C', 'D', 'G', 'Em', 'C', 'D', 'G'];
-
-// La Corse : montagne et maquis, mode de ré, posé.
-const CORSE_LEAD = [
-  ['D5', 2], ['F5', 2], ['A5', 3], ['G5', 1],
-  ['E5', 2], ['G5', 2], ['C5', 4],
-  ['F5', 2], ['E5', 1], ['D5', 1], ['A5', 4],
-  ['C6', 2], ['B5', 2], ['A5', 4],
-  ['A5', 2], ['D6', 2], ['C6', 2], ['A5', 2],
-  ['G5', 2], ['E5', 2], ['C5', 2], ['E5', 2],
-  ['E5', 3], ['D5', 1], ['C5', 2], ['E5', 2],
-  ['D5', 6], [r, 2],
-];
-const CORSE_CHORDS = ['Dm', 'C', 'Dm', 'Am', 'Dm', 'C', 'Am', 'Dm'];
-
-// Bali : couleurs de gamelan, en mi, sans batterie.
-const BALI_LEAD = [
-  ['E5', 1], ['G5', 1], ['B5', 2], ['E6', 2], ['B5', 2],
-  ['C6', 2], ['B5', 1], ['G5', 1], ['E5', 4],
-  ['A5', 2], ['C6', 2], ['E5', 2], ['A5', 2],
-  ['G5', 2], ['F5', 2], ['E5', 4],
-  ['B4', 2], ['E5', 2], ['F5', 2], ['G5', 2],
-  ['B5', 2], ['C6', 2], ['G5', 4],
-  ['E5', 2], ['A5', 2], ['C6', 2], ['B5', 2],
-  ['E5', 6], [r, 2],
-];
-const BALI_CHORDS = ['Em', 'C', 'Am', 'Em', 'Em', 'C', 'Am', 'Em'];
-
-// Le Sri Lanka : la jungle et ses cascades, en la majeur, entraînant.
-const SRILANKA_LEAD = [
-  ['C#5', 2], ['E5', 2], ['A5', 2], ['E5', 2],
-  ['F#5', 2], ['A5', 2], ['D6', 4],
-  ['B5', 2], ['G#5', 2], ['E5', 2], ['G#5', 2],
-  ['A5', 6], [r, 2],
-  ['F#5', 2], ['A5', 2], ['C#6', 2], ['A5', 2],
-  ['D6', 2], ['C#6', 1], ['B5', 1], ['A5', 4],
-  ['G#5', 2], ['B5', 2], ['E5', 2], ['G#5', 2],
-  ['A5', 6], [r, 2],
-];
-const SRILANKA_CHORDS = ['A', 'D', 'E', 'A', 'F#m', 'D', 'E', 'A'];
-
-// La Thaïlande : pentatonique en sol, comme une cloche de temple.
-const THAILAND_LEAD = [
-  ['B4', 2], ['D5', 2], ['E5', 2], ['D5', 2],
-  ['B4', 2], ['A4', 2], ['G4', 4],
-  ['E5', 2], ['G5', 2], ['A5', 2], ['G5', 2],
-  ['A5', 3], ['G5', 1], ['D5', 4],
-  ['D5', 2], ['E5', 2], ['G5', 2], ['B5', 2],
-  ['A5', 2], ['G5', 2], ['E5', 4],
-  ['D5', 2], ['E5', 2], ['A4', 2], ['B4', 2],
-  ['G4', 6], [r, 2],
-];
-const THAILAND_CHORDS = ['G', 'Em', 'C', 'D', 'G', 'Em', 'D', 'G'];
-
-// Le Népal : les sommets, lent et majestueux, en mi mineur.
-const NEPAL_LEAD = [
-  ['B4', 4], ['E5', 4],
-  ['G5', 4], ['E5', 4],
-  ['D5', 3], ['G5', 1], ['B5', 4],
-  ['A5', 4], ['F#5', 4],
-  ['G5', 2], ['A5', 2], ['B5', 4],
-  ['C6', 2], ['B5', 2], ['G5', 4],
-  ['A5', 2], ['F#5', 2], ['D5', 4],
-  ['E5', 8],
-];
-const NEPAL_CHORDS = ['Em', 'C', 'G', 'D', 'Em', 'C', 'D', 'Em'];
-
 // Vélo : air vif et sautillant en ré majeur, pour rouler (voir systems/bike.js). Mélodie originale.
 const VELO_LEAD = [
   ['D5', 1], ['F#5', 1], ['A5', 2], ['F#5', 1], ['A5', 1], ['D6', 2],
@@ -439,13 +361,7 @@ const SONGS = {
   amsterdam: { tempo: 120, lead: AMSTERDAM_LEAD, chords: AMSTERDAM_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
   newDelhi: { tempo: 110, lead: NEWDELHI_LEAD, chords: NEWDELHI_CHORDS, duty: 0.125, drums: 'biguine', leadVol: 0.11, arp: true },
   paris: { tempo: 126, lead: PARIS_LEAD, chords: PARIS_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
-  toulon: { tempo: 124, lead: TOULON_LEAD, chords: TOULON_CHORDS, duty: 0.5, drums: true, leadVol: 0.11, arp: true },
-  corse: { tempo: 96, lead: CORSE_LEAD, chords: CORSE_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
-  bali: { tempo: 100, lead: BALI_LEAD, chords: BALI_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
-  sriLanka: { tempo: 116, lead: SRILANKA_LEAD, chords: SRILANKA_CHORDS, duty: 0.25, drums: 'biguine', leadVol: 0.11, arp: true },
-  thailand: { tempo: 108, lead: THAILAND_LEAD, chords: THAILAND_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
   velo: { tempo: 152, lead: VELO_LEAD, chords: VELO_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
-  nepal: { tempo: 84, lead: NEPAL_LEAD, chords: NEPAL_CHORDS, duty: 0.5, drums: false, leadVol: 0.11, arp: true },
 };
 
 let current = null;       // musique en cours : { name, timer, ... }
@@ -545,6 +461,12 @@ export function playMusic(name, volume = 1) {
   }
   current = startSong(name, mainGain);
   applyVolume();
+}
+
+// La musique du lieu s'éteint (ou baisse jusqu'à `to`) lentement, en `ms` millisecondes (ex. l'entrée dans le rêve).
+export function fadeMusic(ms, to = 0) {
+  mainVolume = to;
+  if (ctx) mainGain.gain.setTargetAtTime(to, ctx.currentTime, ms / 3000);
 }
 
 export function stopMusic() {

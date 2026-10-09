@@ -21,12 +21,9 @@ const ICON_OF_ITEM = {
   'billet-new-delhi': 'billet',
   'diplome-bordeaux': 'carte',
   'piece-tracteur': 'piece-metal',
-  'objet-magique-bali': 'orbe-turquoise',
-  'objet-magique-sri-lanka': 'orbe-rouge',
-  'objet-magique-thailande': 'orbe-verte',
-  'objet-magique-nepal': 'orbe-bleue',
   'cle-antivol': 'cles',
   velo: 'velo',
+  'pierre-gravee': 'pierre-gravee',
 };
 
 // Image de l'atlas pour un objet (null s'il n'a pas d'icône).

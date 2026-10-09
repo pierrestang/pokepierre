@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { MAPS, START_MAP } from '../data/maps/index.js';
+import { interiors } from '../data/maps/interiors.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { applyBuiltLook } from '../systems/builtMaps.js';
 import { startSeaShimmer, startFallingLeaves } from '../systems/effects.js';
@@ -81,7 +82,8 @@ export class TitleScene extends Phaser.Scene {
     if (!this.canContinue) return START_MAP;
     const saved = loadPosition();
     const data = saved?.data ?? {};
-    return data.mapId ?? data.fromMap ?? data.next?.data?.mapId ?? START_MAP;
+    const id = data.mapId ?? data.fromMap ?? data.next?.data?.mapId ?? START_MAP;
+    return MAPS[id] ? id : 'paris';                   // un lieu retiré du jeu (ancienne sauvegarde) : Paris
   }
 
   // Lent travelling sur la carte, d'un bout à l'autre et retour.
@@ -202,6 +204,10 @@ export class TitleScene extends Phaser.Scene {
 
   continueGame() {
     const saved = loadPosition();
+    // Une ancienne sauvegarde sur un lieu retiré du jeu (les villes d'après Paris, le bistrot, Bercy…) : reprise à Paris.
+    const gone = (saved?.scene === 'Interior' && !interiors[saved.data?.interior])
+      || (saved?.scene === 'Overworld' && !MAPS[saved.data?.mapId]);
+    if (gone) return this.launchGame('Overworld', { mapId: 'paris', spawn: { x: 6, y: 23, facing: 'down' } });
     if (saved) return this.launchGame(saved.scene, { ...saved.data, spawn: saved.spawn });
     // Progression sans position enregistrée : reprise à l'arrivée de la dernière ville atteinte.
     if (flags.has(FLAGS.departFortDeFrance)) {

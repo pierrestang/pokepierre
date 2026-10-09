@@ -4,8 +4,8 @@
 
 ## Vision
 RPG 2D vue de dessus, inspiré de Pokémon Rouge Feu / Vert Feuille.
-Le jeu retrace le parcours de vie de Pierre : une ville par lieu vécu (une dizaine), de Fort-de-France à Hull,
-puis Hanoï. Pas de combats.
+Le jeu retrace le parcours de vie de Pierre : une ville par lieu vécu, de Fort-de-France à Paris, la dernière ; puis un
+rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (fin du jeu). Pas de combats.
 
 ## Stack
 - Phaser 3 + Vite, JavaScript.
@@ -61,8 +61,8 @@ puis Hanoï. Pas de combats.
   le jeu avec ?carte=<id>. Les cartes de Fort-de-France à Hull sont générées par scripts/convert_maps_v2.py puis
   retouchées à la main ; --force efface ces retouches. Hanoï : scripts/build_hanoi.py (sol du convertisseur, éléments du
   catalogue) ; Amsterdam : scripts/build_amsterdam.py (même principe, forêt par scripts/paint_forest.mjs) ; New Delhi :
-  scripts/build_new_delhi.py (même principe, assets Gen 4 nouveaux au catalogue) ; Paris : scripts/build_paris.py (idem) ; les villes
-  suivantes ne sont que des premiers jets dans le créateur, pas encore utilisés par le jeu. Ordre de reconstruction : build_v2_tiles.py, puis
+  scripts/build_new_delhi.py (même principe, assets Gen 4 nouveaux au catalogue) ; Paris : scripts/build_paris.py (idem) ; le rêve
+  de la fin : scripts/build_reve.py (planches du Gaia Project, PixelMister : Monde Distorsion, ruines de la Colonne Lance). Ordre de reconstruction : build_v2_tiles.py, puis
   convert_maps_v2.py et build_g4_library.py. Avant de changer un bâtiment : check_paths.js (les rues de Hull et
   Bordeaux sont étroites). Détails : docs/technique/createur-de-cartes.md, à lire avant de toucher au créateur, aux
   planches V2/Gen 4 ou aux cartes générées.
@@ -79,13 +79,13 @@ puis Hanoï. Pas de combats.
 - src/systems/ : déplacement, collisions, dialogues.
 
 ## Vertus
-- 8 vertus au maximum dans tout le jeu, une par ville au maximum : 6 jusqu'à Hull, Adaptation à Hanoï, la 8e réservée
-  à Paris (src/data/story.js TRAITS).
-- Les 7 vertus, leur ville et leur situation type : Joie de vivre (Fort-de-France : une ambiance éteinte à
+- 8 vertus dans tout le jeu, une par ville au maximum : 6 jusqu'à Hull, Adaptation à Hanoï, Liberté à Paris (la
+  dernière ; src/data/story.js TRAITS).
+- Les 8 vertus, leur ville et leur situation type : Joie de vivre (Fort-de-France : une ambiance éteinte à
   rallumer) ; Esprit d'équipe (Saint-Ay : un obstacle qu'on ne franchit qu'à plusieurs) ; Ingéniosité (Montépilloy :
   un mécanisme à réparer ou bricoler) ; Audace (collège : une situation intimidante) ; Autonomie (Prytanée : faire
   seul, sans qu'on le demande) ; Insouciance (Hull : un souci qui gâche le moment, à mettre de côté) ; Adaptation
-  (Hanoï : se débrouiller sans parler la langue, dans l'inconnu).
+  (Hanoï : se débrouiller sans parler la langue, dans l'inconnu) ; Liberté (Paris : refuser une vie qui n'est pas la sienne).
 - Pas de ligne « Objectif : » : ce sont les PNJ qui disent où aller.
 - Les vertus servent comme des CS : chaque ville utilise au moins une vertu déjà acquise sur la route principale, et
   une dans un passage optionnel, y compris en revenant dans les anciennes villes. Sans la bonne vertu, une réplique

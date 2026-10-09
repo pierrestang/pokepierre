@@ -39,14 +39,14 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
   moment de monter sur ton vélo : on t'accompagne. »), il descend si quelqu'un se met à le suivre ; pendant une
   scénette, il descend et remonte à la fin. Une partie reprise dehors repart à vélo.
-- **Textes provisoires** : à partir du stade de Bordeaux (Hanoï, Amsterdam et New Delhi sont écrits), presque toutes les répliques commencent par « [Texte provisoire] » ou
-  « [Nom - texte provisoire] ».
+- **Textes provisoires** : seul le stade de Bordeaux en garde (« [Texte provisoire] » ou « [Nom - texte provisoire] ») ;
+  tout le reste, de Fort-de-France à la fin du jeu, est écrit.
 
 ## Ordre du jeu
 
 Fort-de-France → Saint-Ay → (route de Montépilloy) → Montépilloy → route et collège de Bonsecours → Prytanée →
-Bordeaux → Hull → Hanoï → Amsterdam → New Delhi → Bordeaux (stade) → Paris → Toulon
-(Chemin de Saint-Jacques, Corse) → Bali → Sri Lanka → Thaïlande → Népal → « Nouveau pays » (non ouvert).
+Bordeaux → Hull → Hanoï → Amsterdam → New Delhi → Bordeaux (stade) → Paris → le rêve → le réveil à Fort-de-France
+(fin du jeu, retour au titre).
 
 Après Bordeaux, tous les vols passent par l'**aéroport** (à Bordeaux, redessiné en Gen 4, tout entier à l'écran : tarmac
 et avions garés derrière la baie vitrée, tableau des départs, guichet, file à cordons, salle d'attente ; pas de vélo). L'hôtesse (`g64`), derrière son comptoir
@@ -1102,75 +1102,129 @@ stade s'ouvre (drapeau `semestre-termine`).
 - Devant l'estrade : « Tu t'avances devant l'estrade sous les applaudissements ! » / « Le directeur te remet ton diplôme. » →
   **Diplôme de Bordeaux**.
 - **Départ** : l'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton diplôme de Bordeaux en poche, tu
-  prends la route de Paris ! » Pas de scène de trajet.
+  prends la route de Paris ! » Pas de scène de trajet : Pierre arrive devant son immeuble parisien.
 
-## 12. Paris : textes provisoires
+## 12. Paris : la dernière ville
 
-- **La carte de Paris** (52 x 48, premier jet de scripts/build_paris.py retouché à la main dans le créateur en octobre
-  2026, thème « Paris (monuments et cafés) ») : au nord, le grand dôme de Bercy (9, 11), le Louvre et son drapeau
-  (portes (21, 14) et (29, 14), fermé), le musée-gare (39, 9, fermé) ; l'avenue (rangées 10 à 13) mène à l'ouest à la
-  route de Bordeaux, à l'est à l'aéroport. Puis ton appartement, l'immeuble aux balcons fleuris (6, 22), le bistrot, le
-  café à terrasse (13, 22), le jardin au bassin et l'opéra (41, 22, fermé). La Seine, deux yachts, deux ponts. Au sud :
-  un immeuble crème (8, 40), le café au store rayé (14, 40, complet), Notre-Dame (25, 41, en travaux) et la tour de
-  bureaux vitrée de l'entreprise (42, 41) ; la rue sud (rangées 40 à 45) mène à Toulon. Arrivée en (1, 11). La tour
-  Eiffel, l'Arc de Triomphe et la pyramide du Louvre de l'ancienne carte n'existent pas dans la bibliothèque Gen 4.
-- **Arrivée** : « [Texte provisoire] Bienvenue à Paris ! » / « Première mission : aller manger au bistrot (le café à
-  terrasse, à gauche, avant la Seine). »
-- **PNJ** : le cuisinier (`g63`), Hugues (`g91`), Thomas (`g90`), une responsable (`g36`), le manager (`g122`), le
-  directeur (`g120`) ; à Bercy, le chanteur (`g69`), le guitariste (`g68`), le batteur (`g16`) et des fans (`g40`).
-- **Quêtes** :
-  1. Le bistrot. Le cuisinier : « Aujourd'hui, c'est boeuf bourguignon... et le boeuf, c'est moi qui l'ai motivé ce
-     matin ! » ; « Dis-moi, tu as emménagé dans le coin ? » → « Oui, je suis nouveau à Paris ! » ouvre l'appartement.
-  2. L'appartement : l'ordinateur, « Chercher un travail ? » → « Une offre correspond à ton profil ! »
-  3. L'entreprise : la responsable (« Bienvenue dans l'entreprise : ton nouveau travail commence aujourd'hui ! ») ;
-     l'ascenseur ; au 1er étage, le manager : « Demander une promotion ? » → « Tu la mérites ! Promotion accordée,
-     félicitations ! »
-  4. Le bistrot : Hugues « Le voilà ! On fête ta promotion ! » ; Thomas « Viens trinquer avec nous, et raconte-nous
-     tout ! » / « Ce soir il y a un concert à Bercy, tu devrais y aller ! »
-  5. Bercy : « Les lumières s'éteignent... la foule hurle ! » ; le chanteur « Bonsoir Paris ! Vous êtes prêts ?! »
-  6. Le dernier étage (bloqué avant le verre au bistrot) : le directeur, « Demander une rupture conventionnelle ? » →
-     « C'est d'accord. Merci pour tout ton travail ! » / « Bonne chance pour la suite : la route du sud mène à Toulon. »
-- **Vertus** : aucune. Des **souvenirs de PNJ** (rangés dans le carnet après les vertus) : « Souvenir du cuisinier »,
-  « Souvenir d'Hugues », « Souvenir de Thomas ».
-- **Départ** : la rue sud, vers Toulon. Pas de scène de trajet.
+Pierre a bougé toute sa vie ; à Paris, pour la première fois, il doit vraiment s'installer, et il n'est pas prêt. Une
+routine qui ne lui ressemble pas : il grimpe les étages de la tour de bureaux en trois jours, comprend que ce n'est pas sa
+vie, et choisit la **Liberté**, la 8e et dernière vertu (`src/data/parisStory.js`). Aucune ligne « Objectif : » ; deux
+ellipses « Le lendemain… » (une par soir). L'ancien Paris (le bistrot, l'ordinateur et la recherche d'emploi, le concert
+à Bercy, la rupture conventionnelle, Hugues, Thomas, le cuisinier) n'existe plus.
 
-## 13. Toulon, le Chemin de Saint-Jacques et la Corse : textes provisoires
+### La carte (52 x 48, Gen 4)
+Premier jet de scripts/build_paris.py, retouché à la main dans le créateur ; les portes du jeu sont sur les portes
+dessinées (audit sans `porte_hors_dessin`), et chacune a été essayée en jeu. Au nord, le grand dôme (« Bercy. Ce soir, pas
+de concert. »), le Louvre (« La file d'attente du Louvre fait le tour de la cour. Une autre fois. ») et le musée-gare
+(« Le musée est fermé le lundi. ») ; l'avenue (rangées 10 à 13) mène à l'ouest à la route de Bordeaux, à l'est à
+l'aéroport. Puis **ton appartement**, l'immeuble aux balcons fleuris (6, 22, avec les clés du propriétaire), le café à
+terrasse (13, 22, « Le café à terrasse. Tu n'as jamais le temps de t'y asseoir. »), le jardin au bassin, l'opéra (41, 22).
+La Seine, deux yachts, deux ponts. Au sud : un immeuble crème (8, 40, « Tu frappes. Personne ne répond. »), le café au
+store rayé (14, 40, complet), Notre-Dame (25, 41, en travaux) et **la tour de bureaux** vitrée (42, 41, fermée avant les
+clés : « Le badge à l'entrée ne te laisse pas passer. »). La rue sud, ouverte à l'est, ne mène plus nulle part (« La rue
+continue vers d'autres quartiers. Rien à faire par là. »). Le trajet de chaque matin : de l'appartement à la tour, par le
+pont de gauche, à pied (ou à vélo). Le soir des jours 1 et 2, la nuit tombe sur la carte (lampes des portes allumées).
 
-- **Arrivée** : « [Texte provisoire] Bienvenue à Toulon ! » / « Mission : rejoindre l'appartement de Yanis (2e maison en
-  haut à gauche). »
-- **PNJ** : Yanis (`g96`, même couleur que le cousin de Saint-Ay) ; des pèlerins sur le Chemin ; en Corse, Maman, Papa,
-  et les voisins Léo (`g55`) et Théo (`g23`).
-- **Quêtes** :
-  1. Yanis : « Pierre ! Te voilà enfin à Toulon ! » → « Souvenir de Yanis à Toulon » ; « Partir faire le Chemin de
-     Saint-Jacques-de-Compostelle avec Yanis ? » → le Chemin (côte nord de l'Espagne), Yanis suit Pierre. Six bornes
-     (« Saint-Jacques-de-Compostelle, 90 km. »… « 15 km. ») ; la cathédrale ; le bus du retour : « ¡Buen Camino ! Vous
-     voici à Saint-Jacques-de-Compostelle. » / « Le bus vous ramène à Toulon, Yanis et toi. »
-  2. Le ferry du port, vers la Corse : « Tu embarques sur le ferry pour la Corse, chez tes parents ! » Maman « Mon grand !
-     Quelle joie de te voir en Corse ! » ; Papa « Bienvenue dans le maquis ! Va aussi dire bonjour à Léo et Théo, à
-     côté. » Léo et Théo n'ont que des répliques de remplissage (« Ceci est le premier dialogue de Léo. ») → « Souvenir
-     de Léo », « Souvenir de Théo ».
-- **Vertus** : aucune.
-- **Départ** : vol « Bali (Indonésie) », ouvert une fois le Chemin fini, la visite aux parents faite, et les souvenirs de
-  Léo et de Théo obtenus.
+### La tour de bureaux (trois intérieurs)
+Le rez-de-chaussée (hall de la Tour Radio de HGSS : comptoir d'accueil, salon, ascenseur au fond à droite), le 1er étage
+(un plateau de bureaux), le dernier étage (le bureau du directeur). L'ascenseur propose Rez-de-chaussée, 1er étage, Dernier
+étage ; un étage fermé : « Le bouton du 1er étage ne s'allume pas : ton badge n'y donne pas accès. » Le 1er étage s'ouvre
+le jour 2, le dernier le jour 3 (quand le manager y envoie Pierre).
 
-## 14. Bali, Sri Lanka, Thaïlande, Népal : textes provisoires
+### PNJ présents
+| Nom | Rôle | Sprite |
+|---|---|---|
+| Propriétaire | Devant l'immeuble : les clés, puis où est le bureau | `g35` |
+| Collègue | Le blasé du rez-de-chaussée, près de la machine à café | `g36` |
+| Manager | Le 1er étage : la promotion | `g122` |
+| Directeur | Le dernier étage : la belle place | `g120` |
 
-Chaque destination donne un objet magique qui ouvre la suivante. Pas de PNJ à Bali ; un moine (`g72`) dans les temples
-des trois autres.
-- **Bali** : dans la cabane près de la mer, « Dans le coffre de bois, un objet scintille : un objet magique ! » → **Objet
-  magique de Bali**.
-- **Sri Lanka** : au temple, le moine « Ayubowan. L'objet sacré t'attend sur l'autel. » → **Objet magique du Sri Lanka**.
-- **Thaïlande** : au wat, « Au pied du grand Bouddha doré, un objet magique brille ! » → **Objet magique de Thaïlande**.
-- **Népal** : au monastère, « Parmi les lampes à beurre, un objet magique rayonne ! » → **Objet magique du Népal**.
-- **Suite** : à l'aéroport, « Nouveau pays » : « [Texte provisoire] Ce vol n'est pas encore ouvert : la suite du voyage
-  arrive bientôt ! »
+### Quêtes, dans l'ordre
+1. **L'arrivée.** La route de Bordeaux pose Pierre devant l'immeuble aux balcons fleuris. Le propriétaire : **« Bienvenue !
+   C'est petit, mais vous verrez, on s'y fait. Le bureau n'est pas loin. »** → **Clés de l'appartement de Paris** (« Le
+   propriétaire te tend les clés. ») ; Pierre, en lui-même : **« Bon. Un appartement, un bureau. C'est ça,
+   maintenant. »** Ensuite le propriétaire : « Votre bureau ? La grande tour de verre, de l'autre côté de la Seine, tout
+   en bas à droite. »
+2. **Jour 1, le rez-de-chaussée.** « Le hall de la tour. Ton poste t'attend derrière le comptoir. » ; le collègue vient à
+   Pierre : **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** ; « Des mails, des tableaux, des réunions.
+   L'après-midi passe sans que tu t'en rendes compte. » ; écran noir ; le collègue : « Dix-huit heures ! Allez, on
+   rentre. » (le poste, au comptoir : « Ton poste. Un écran, un clavier, une pile de dossiers. »). La nuit tombe. En
+   entrant dans l'appartement : **« Une journée. Puis une autre. Toutes pareilles. »** → **« Le lendemain… »** → Pierre
+   ressort le matin devant l'immeuble ; le même trajet.
+3. **Jour 2, le manager.** « Le même trajet. Le même hall. » ; le manager, devant l'ascenseur : **« Pierre, monte une
+   minute. »** ; au 1er étage : **« Tu t'en sors très bien. À partir d'aujourd'hui, tu travailles ici, avec moi. »** ;
+   « Un bureau plus grand, plus haut. Les heures passent pareil. » ; écran noir ; « Il est tard, Pierre. À demain. » Le
+   soir : **« Ils sont contents de moi. Pourquoi je ne le suis pas, moi ? »** → **« Le lendemain… »**
+4. **Jour 3, le directeur (Liberté).** Au 1er étage, le manager : « Ah, Pierre. Le directeur veut te voir. Dernier étage,
+   l'ascenseur est à gauche. » Le directeur : **« Entre, Pierre, assieds-toi. Ça fait un moment que je te regarde, et je
+   dois dire que tu te débrouilles vraiment bien. Il y a une belle place pour toi ici, tu sais. »** ; Pierre : **« C'est
+   gentil, vraiment… Mais je crois que ce n'est pas ma place. Il faut que je parte. »** → **« Pierre utilise
+   LIBERTÉ ! »** (la vertu entre au carnet sans l'encart « a reçu ») → **« Tu emportes : Liberté. »**
+5. **Le pont vers le rêve.** En sortant de la tour, Pierre fait un pas et s'arrête ; le joueur n'a plus la main. L'écran
+   se brouille doucement (flou), la musique s'éteint, un voile clair monte : le rêve (section suivante).
 
----
+Rappels : le collègue (« Le même café, la même machine, le même bonjour. Tu vois, on s'habitue. », « Alors, monsieur du
+premier étage ? Ton bureau, c'est en haut maintenant. »…), le manager, le directeur ensuite (« La porte est ouverte,
+Pierre. Dans les deux sens. »).
+
+### Vertus
+- **Gagnée** : **Liberté** (« Écouter qui l'on est vraiment, et refuser une vie qui n'est pas la sienne. »), la 8e et
+  dernière.
+- **Utilisée** : Liberté (le bureau du directeur).
+
+### Objet
+**Clés de l'appartement de Paris** (le propriétaire).
+
+## 13. Le rêve et la fin du jeu
+
+`src/data/reveStory.js`, `src/data/maps/reve.js`.
+
+### La carte du rêve (28 x 22)
+Dessinée par scripts/build_reve.py avec deux planches du Pokémon Gaia Project (PixelMister, d'après zetavares852 ; voir
+ASSETTILESPOKEMONV2/credits/gaia-pixelmister.txt) : une grande plate-forme de brique flotte dans le bleu du Monde
+Distorsion, quatre colonnes brisées de la Colonne Lance à ses coins ; autour, des îlots, des arbres qui poussent de
+travers, un tourbillon, deux tablettes gravées. Un voile pâle, des nappes de brume blanche qui dérivent et de petites
+étincelles (effects.js startDreamMist). La musique du titre, très douce. Pas de nom de ville affiché.
+
+### La grande réunion
+Pierre est immobile au centre ; le joueur n'a plus la main. Le voile clair se dissipe et le décor se forme autour de lui.
+Tous les personnages nommés du jeu sont là, en cercle (sauf M. Lam, Laurent, Camille et M. Bouly, à la demande de
+l'utilisateur) : Maman, Papa, Manon, Fanny, Jean ; Felix, Joshua, Yanis, Val ; Margaux, Benoît, Étienne ; Rémy ; Tanguy,
+Geoffrey ; Ousmane, Paul, Rémi, Léo, Anaïs ; Charlotte, Romain, Prophecy ; Harsh. Huit prennent la parole, un par ville :
+chacun s'avance vers Pierre, dit son mot, puis se range près de lui.
+- Felix (Saint-Ay) : « Depuis Saint-Ay qu'on te suit ! On savait que tu finirais par tous nous réunir. »
+- Margaux (Montépilloy) : « Tu te cachais toujours au même endroit… Mais là, tu es allé tellement loin qu'on a failli ne
+  jamais te trouver ! »
+- Rémy (collège) : « Tu te rappelles le collège ? On n'imaginait pas tout ça, à l'époque. »
+- Ousmane (Bordeaux) : « Bordeaux, les études, nos débuts… On en a fait du chemin depuis, hein ? »
+- Léo (Hull) : « De Hull à aujourd'hui, mec… On en a vécu, hein ? »
+- Romain (Amsterdam) : « Amsterdam, les canaux, nos galères de coloc… Franchement, je recommencerais demain. »
+- Harsh (New Delhi) : « Tu es venu de si loin, et tu es reparti avec un peu de nous. Reviens quand tu veux, mon ami. »
+- Fanny (la famille) : « Tu es parti partout, mais tu es toujours revenu nous voir. C'est ça que je retiens. »
+
+Puis Pierre, au milieu de tous : **« J'ai l'impression d'avoir déjà tout vécu. Et pourtant, tout commence. »**
+
+### Le fondu au noir
+Le décor s'efface dans un fondu au noir lent (pas de flash). Pendant ce temps, le carnet des huit vertus s'affiche une à
+une, de la Joie de vivre à la Liberté ; la Liberté s'illumine en dernier (en or), sa phrase dessous ; puis noir complet
+(systems/VirtuesFade.js).
+
+### Le réveil
+On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu (le même décor), au bruit de la mer. Pierre est
+couché ; il se lève. Sur la table de chevet, à côté du lit : la **pierre gravée** de New Delhi (la même icône que l'objet
+du vieux sage). « Sur la table de chevet, une petite pierre polie, gravée d'un chemin qui tourne sur lui-même. » / « Tu la
+prends dans ta main. » ; Pierre : **« … Attends. Ça, ça vient d'où ? »** Écran noir final, puis retour à l'écran titre.
+Rien ne tranche entre le rêve et la réalité. « Continuer » reprend Pierre dans sa chambre de Fort-de-France, libre (la
+scène ne se rejoue pas).
+
+### Après Paris
+L'histoire se termine ici : Toulon, le Chemin de Saint-Jacques, la Corse, Bali, le Sri Lanka, la Thaïlande, le Népal et le
+vol « Nouveau pays » ont été retirés du jeu (octobre 2026). Une ancienne sauvegarde placée dans un de ces lieux reprend à
+Paris.
 
 ## Tableau des vertus
 
-8 vertus au plus dans tout le jeu, une par ville au plus : 6 jusqu'à Hull, Adaptation à Hanoï, 1 place encore libre
-(rien n'est codé).
+8 vertus dans tout le jeu, une par ville au plus : 6 jusqu'à Hull, Adaptation à Hanoï, Liberté à Paris.
 
 | Vertu | Ville | Où et auprès de qui elle se gagne | Phrase du carnet | Où elle resert |
 |---|---|---|---|---|
@@ -1181,15 +1235,15 @@ des trois autres.
 | Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (obligatoire avant de sortir ; photo) ; Hull : le guichet de l'aéroport, avant Hanoï ; Amsterdam : la campagne de Corning |
 | Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Hanoï : la touriste au téléphone à plat, au temple ; Amsterdam : la nuit au canal avec Romain |
 | Adaptation | Hanoï | M. Lam, qui traduit les consignes en vietnamien | « Trouver son chemin partout, même sans en parler la langue. » | Nulle part pour l'instant |
+| Liberté | Paris | Le directeur, au dernier étage de la tour (la place refusée ; pas d'encart « a reçu », directement « Pierre utilise ») | « Écouter qui l'on est vraiment, et refuser une vie qui n'est pas la sienne. » | Paris : le bureau du directeur ; elle s'illumine en dernier dans le fondu de la fin |
 
 Vertus supprimées (leurs scènes restent, sans encart) : Pragmatisme (le tri des cannes), Confiance (le coquillage de
 Manon), Patience (la main de Fanny), Loyauté (le cache-cache), Indépendance (le compteur de Bordeaux). Les anciennes
 sauvegardes sont converties au chargement : l'ancienne Insouciance du collège devient Audace, l'ancien Lâcher-prise de
 Hull devient la nouvelle Insouciance, les vertus supprimées sont retirées.
 
-Après Hanoï, aucune vertu n'est encore gagnée (la 8e est réservée à Paris). Le carnet range aussi des « souvenirs de
-PNJ » : la Photo du canal (Amsterdam, avec Romain), et, de Paris à la Corse, cuisinier, Hugues, Thomas, Yanis à Toulon,
-Léo, Théo.
+Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « souvenir de PNJ » : la Photo du canal
+(Amsterdam, avec Romain).
 
 ---
 
@@ -1198,8 +1252,8 @@ Léo, Théo.
 | Personnage | Sprite | Où il apparaît |
 |---|---|---|
 | Pierre | `g198` (Red) | Partout |
-| Maman | `g126` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, Corse |
-| Papa | `g119` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, Corse |
+| Maman | `g126` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve |
+| Papa | `g119` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve |
 | Manon | `g57` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy |
 | Fanny | `g49` | Saint-Ay, Montépilloy |
 | Jean | `g52` | Montépilloy |
@@ -1208,7 +1262,7 @@ Léo, Théo.
 | Gamin | `g59` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
 | Felix | `g93` | Saint-Ay ; sa carte postale à Montépilloy |
 | Joshua | `g18` | Saint-Ay |
-| Yanis | `g96` | Saint-Ay, Toulon, Chemin de Saint-Jacques |
+| Yanis | `g96` | Saint-Ay |
 | Val | `g42` | Saint-Ay |
 | Vieux pêcheur | `g67` | Saint-Ay |
 | M. Bouly | `g33` | Montépilloy |
@@ -1251,15 +1305,13 @@ Léo, Théo.
 | Vendeur | `g112` | Amsterdam |
 | Harsh | `g89` | New Delhi |
 | Vieux sage | `g71` | New Delhi (le vieux fort) |
-| Directeur | `g120` | Bordeaux (stade), Paris (entreprise) |
-| Cuisinier | `g63` | Paris |
-| Hugues, Thomas | `g91`, `g90` | Paris |
-| Responsable, Manager | `g36`, `g122` | Paris |
-| Chanteur, Guitariste, Batteur, Fans | `g69`, `g68`, `g16`, `g40` | Paris (Bercy) |
-| Pèlerins / Pèlerine | figurant / `g15` | Chemin de Saint-Jacques |
-| Léo (voisin), Théo | `g55`, `g23` | Corse |
-| Moine | `g72` | Sri Lanka, Thaïlande, Népal |
+| Directeur | `g120` | Bordeaux (stade), Paris (le dernier étage de la tour) |
+| Propriétaire | `g35` | Paris (devant l'immeuble) |
+| Collègue | `g36` | Paris (rez-de-chaussée de la tour) |
+| Manager | `g122` | Paris (1er étage de la tour) |
 
+Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, Laurent, Camille et M. Bouly (voir la
+section 13) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
 
 ## Incohérences repérées
@@ -1272,17 +1324,14 @@ Léo, Théo.
   `remy-sciences`, `remyAutocollant`, `remyRepart`).
 - **Les deux Paul** : le code ne contient qu'un seul Paul, **Paul** (Bordeaux). Je n'ai trouvé aucun autre
   personnage nommé Paul.
-- **Deux Léo** : Léo, meneur de la bande de Hull, et Léo, voisin des parents en Corse (avec Théo). Ils portent le même
-  nom et ont donc le même sprite (`g55`). La Corse ne dit pas s'il s'agit du même Léo. `characters.js` attribue aussi
+- **Léo** : un seul Léo depuis le retrait de la Corse (le meneur de la bande de Hull). `characters.js` attribue aussi
   « Leo » (sans accent) au même sprite.
-- **Yanis** : cousin à Saint-Ay, puis hôte à Toulon, avec la même couleur et le même sprite. Aucune réplique de Toulon ne
-  rappelle qu'il est le cousin.
 - **Romain** : de la bande de Hull, il annonce partir à Hong Kong ; six mois après l'arrivée de Pierre à Hanoï, il
   l'appelle (« Hong Kong, c'est fini ! ») et l'attend à Amsterdam, où ils partagent une « maison commune » ; c'est lui
   qui remet à Pierre son billet pour New Delhi.
 - **Sprites partagés** par des personnages différents : `g87` (les militaires, les sentinelles, le capitaine du
   Prytanée), `g138` (le prof de maths, le Professor de Hull), `g55` (Léo
-  de Hull, Léo de Corse, « Leo »). La liste des figurants au hasard (`EXTRAS`) contient aussi les sprites de Tom, Fanny,
+  et « Leo »). La liste des figurants au hasard (`EXTRAS`) contient aussi les sprites de Tom, Fanny,
   Léo, Manon, Thomas, Felix, Yanis, Harsh, Étienne, Anaïs et de la professeure d'anglais : un figurant peut ressembler
   à un personnage.
 
@@ -1294,17 +1343,13 @@ Léo, Théo.
 ### Images d'accueil
 - Fort-de-France, Saint-Ay et le matin de septembre à Montépilloy utilisent la **même illustration** (bois aux Chênes, le
   matin).
-- Amsterdam (arrivée par un appel de Romain), New Delhi, Paris, Toulon, la Corse, Bali, le Sri Lanka, la Thaïlande et le Népal n'ont pas d'ouverture.
-  Des cartes postales existent pourtant pour Paris, la Corse, le Sri Lanka, la Thaïlande et le Népal.
+- Amsterdam (arrivée par un appel de Romain), New Delhi et Paris n'ont pas d'ouverture. Une carte postale existe pourtant
+  pour Paris.
 
 ### Quêtes inachevées ou textes provisoires
-- Tout ce qui suit New Delhi est en **texte provisoire** : le stade de
-  Bordeaux, Paris, Toulon, le Chemin, la Corse, Bali, Sri Lanka, Thaïlande, Népal.
-- Léo et Théo, en Corse, n'ont que des répliques de remplissage (« Ceci est le premier dialogue de Léo. »), alors qu'ils
-  ouvrent la route de Bali.
-- Le vol **« Nouveau pays »** n'est pas ouvert (« la suite du voyage arrive bientôt ! »).
+- Seul **le stade de Bordeaux** reste en texte provisoire.
 - Plusieurs répliques provisoires restent aussi avant Hull, à Fort-de-France : la télé, la console de Manon et le frigo
-  (« [Texte provisoire] … »). Dans l'entreprise parisienne, le dernier étage bloqué l'est aussi.
+  (« [Texte provisoire] … »).
 - **Objets sans usage** : l'objet de chance et les consignes en vietnamien (Hanoï) restent dans le sac. Les objets
   optionnels (vieille canne exceptée : elle sert à pêcher) ne servent plus après leur ville : galet du lac, autocollant,
   insigne du Prytanée, photo de la soirée, règlement du QG, pièce d'échecs chinois.
@@ -1313,7 +1358,7 @@ Léo, Théo.
   rien.
 
 ### Vertus jamais utilisées
-Adaptation (Hanoï) ne sert encore nulle part ; Insouciance sert une fois (Hanoï, le temple). Joie de vivre sert six
+Adaptation (Hanoï) ne sert nulle part ; Liberté (Paris) sert une fois, au moment où elle est gagnée ; Insouciance sert une fois (Hanoï, le temple). Joie de vivre sert six
 fois (dont trois en passage optionnel ; la dernière à New Delhi, dans le sens renversé), Audace cinq fois (dont une optionnelle, à Hanoï), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
 Esprit d'équipe et Autonomie deux fois chacune (Autonomie une fois en passage optionnel). Chaque ville de Saint-Ay à
 Hull a désormais un passage optionnel qui utilise une vertu ; Fort-de-France n'en a pas (aucune vertu n'est acquise
@@ -1323,9 +1368,8 @@ avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instan
 ### Objectifs manquants
 - À Saint-Ay, si la corde est trouvée **après** les planches, personne ne dit « On a tout ! » (Joshua est resté devant
   l'enclos) : rien n'indique de retourner chez Felix, sauf en reparlant à Joshua, Yanis ou Felix.
-- Il n'y a plus aucune réplique « Objectif : » : partout, le joueur suit les rappels des PNJ. Paris et Toulon ont une
-  « mission » d'arrivée ; les pays d'Asie n'ont rien ; à New Delhi, Prophecy
-  et Harsh disent où aller. À Bordeaux, après « Quelques mois plus
+- Il n'y a plus aucune réplique « Objectif : » : partout, le joueur suit les rappels des PNJ. À New Delhi, Prophecy et
+  Harsh disent où aller ; à Paris, le propriétaire, le collègue et le manager. À Bordeaux, après « Quelques mois plus
   tard… », seul Rémi, devant KEDGE, indique l'oral.
 - À Fort-de-France, la boîte aux lettres annonce « Peut-être une carte postale de Saint-Ay, un jour ? ». Cette carte
   n'existe pas : celle de Saint-Ay vient du capitaine, et la boîte de Fort-de-France ne change jamais.

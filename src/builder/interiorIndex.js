@@ -21,18 +21,17 @@ function interiorRefs(root, { deep }) {
 
 // Type de chaque pièce (« Ouvrir » : classer par type, pour voir toutes les chambres, toutes les cabanes…), dans l'ordre.
 export const TYPES = [
-  ['salon', 'Rez-de-chaussée et salons', ['ffHouse', 'playerHouse', 'montHouse', 'felixHouse', 'hullHouse', 'corseParents',
-    'corseVoisins', 'hanoiHome', 'maisonCommune', 'appartement', 'studioPaulfit', 'appartRemi', 'hullColoc', 'parisAppart',
-    'yanisAppart']],
+  ['salon', 'Rez-de-chaussée et salons', ['ffHouse', 'playerHouse', 'montHouse', 'felixHouse', 'hullHouse', 'hanoiHome',
+    'maisonCommune', 'appartement', 'studioPaulfit', 'appartRemi', 'hullColoc', 'parisAppart']],
   ['chambre', 'Chambres et dortoirs', ['ffHouseUp', 'playerHouseUp', 'montHouseUp', 'dortoir', 'dortoirEtage2']],
-  ['cabane', 'Cabanes et tentes', ['cabane', 'baliCabane']],
+  ['cabane', 'Cabanes et tentes', ['cabane']],
   ['atelier', 'Ateliers et granges', ['ffHut', 'boulyBarn']],
   ['ecole', 'Écoles et universités', ['school', 'bonsecours', 'bonsecoursCasiers', 'bonsecoursMaths', 'bonsecoursFrancais',
     'bonsecoursSciences', 'dortoirHall', 'kedge', 'kedgeCasiers', 'kedgeSalle1', 'kedgeSalle2', 'kedgeSalle3', 'hullUniversity',
     'hullLibrary', 'delhiUniversity']],
   ['bureau', 'Bureaux et agences', ['agence', 'travelAgency', 'corning', 'entreprise', 'entrepriseManager', 'entrepriseDirecteur']],
-  ['sortie', 'Bars, cafés et salles', ['hullPubA', 'hullPubB', 'hullAsylum', 'coffeeShop', 'bistro', 'bercy', 'stade']],
-  ['temple', 'Temples', ['temple', 'sriLankaTemple', 'watInterieur', 'monastere']],
+  ['sortie', 'Bars, cafés et salles', ['hullPubA', 'hullPubB', 'hullAsylum', 'coffeeShop', 'stade']],
+  ['temple', 'Temples', ['temple']],
   ['sante', 'Santé', ['hospital']],
 ];
 const TYPE_OF = Object.fromEntries(TYPES.flatMap(([, label, ids]) => ids.map((id) => [id, label])));

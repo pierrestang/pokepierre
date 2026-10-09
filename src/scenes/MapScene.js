@@ -28,10 +28,10 @@ import { memo } from '../systems/memo.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
 import {
-  GrassCovers, TALL_PLANTS, InteractHint, ensureSmallBubbles, stepEffect, footprint, startFallingLeaves, startSeaShimmer,
+  GrassCovers, TALL_PLANTS, InteractHint, ensureSmallBubbles, stepEffect, footprint, startFallingLeaves, startSeaShimmer, startDreamMist,
   startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay, drawnWater,
 } from '../systems/effects.js';
-import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
+import { fadeMusic, playMusic, setSeaAmbience, sfx, stopMusic } from '../systems/audio.js';
 import { toggleBike, resumeBike, checkBike, pauseBike, unpauseBike } from '../systems/bike.js';
 import { CITY_MUSIC } from '../data/music.js';
 import { applyBuiltLook, lostLook, hiddenUnderTop, TOP_DEPTH } from '../systems/builtMaps.js';
@@ -95,7 +95,9 @@ export class MapScene extends Phaser.Scene {
     // (sinon ils réapparaîtraient à leur place de départ à la visite suivante).
     this.pendingWalkFlags = new Set();
     this.events.once('shutdown', () => this.pendingWalkFlags.forEach(flags.add));
-    this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
+    // Rideau noir d'une scénette précédente : levé, sauf pour un lieu qui s'ouvre dans le noir (`openDark` : conditions,
+    // ex. le réveil de la fin, après le fondu des vertus).
+    if (!(map.openDark && meetsConditions(map.openDark))) this.scene.get('UI')?.curtain?.setAlpha(0);
     // Carte dessinée avec le créateur de cartes (map.built) : son dessin remplace le rendu Rouge Feu.
     if (map.built) applyBuiltLook(this, map);
     this.drawLook();
@@ -129,6 +131,7 @@ export class MapScene extends Phaser.Scene {
     this.hint = new InteractHint(this);
     this.startIdleNpcs();
     startFallingLeaves(this, map);
+    startDreamMist(this, map);
     // Autour de la carte : la mer animée (voir renderMap) ou un décor répété.
     const fillTile = map.surroundings ?? this.surroundingTile;
     this.surroundings = fillTile && fillTile !== 'w' ? createSurroundings(this, map, fillTile) : null;
@@ -623,6 +626,11 @@ export class MapScene extends Phaser.Scene {
   //   { walkLine: [ids], to: [x, y], block?, then? }  les PNJ marchent en file, l'un derrière l'autre (walkLine)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
+  //   { dream: ms }                      l'écran se brouille (flou), un voile clair monte, la musique s'éteint : l'entrée
+  //                                      dans le rêve (Paris) ; { veil: false | ms } dissipe le voile à l'arrivée
+  //   { virtuesFade: true }              fondu au noir lent, le carnet des huit vertus une à une (systems/VirtuesFade.js)
+  //   { hidePlayer: true | false }       Pierre caché ou montré (ex. couché dans son lit : un PNJ le remplace)
+  //   { endGame: true }                  fin du jeu : retour à l'écran titre
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
   //   { hop: id | [ids], times? } : petits sauts sur place ('player' : Pierre)
   //   { cheer: [ids] } : tous sautent ensemble, des notes et des cœurs s'envolent
@@ -653,6 +661,10 @@ export class MapScene extends Phaser.Scene {
         return steps.slice(i + 1).some((rest) => rest.end && meetsConditions(rest));
       }
       if (step.black !== undefined) await this.setCurtain(step.black);
+      if (step.dream) await this.dreamFade(step.dream);
+      if (step.veil !== undefined) await this.liftVeil(step.veil);
+      if (step.virtuesFade) await this.scene.get('UI').virtuesFade.play(this.scene.get('UI').curtain);
+      if (step.hidePlayer !== undefined) this.player.sprite.setVisible(!step.hidePlayer);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
       if (step.emote) await this.emote(step.emote, step.kind);
@@ -717,8 +729,11 @@ export class MapScene extends Phaser.Scene {
       if (step.souvenir) await giveSouvenir(this.dialog, step.souvenir);
       if (step.take && items.remove(step.take)) this.refreshActors();
       if (step.trait && souvenirs.add(step.trait)) {
-        sfx('trait');
-        await this.dialog.open([`Pierre a reçu la vertu ${step.trait.name.toUpperCase()} !`]);
+        // `quiet` : la vertu entre dans le carnet sans l'encart « a reçu » (Paris : « Pierre utilise » suit aussitôt).
+        if (!step.quiet) {
+          sfx('trait');
+          await this.dialog.open([`Pierre a reçu la vertu ${step.trait.name.toUpperCase()} !`]);
+        }
         this.refreshActors();                       // PNJ et suiveurs qui dépendent du trait
       }
       if (step.useTrait) {
@@ -735,9 +750,42 @@ export class MapScene extends Phaser.Scene {
         this.travel(step.travel);
         return true;
       }
+      if (step.endGame) {
+        this.endGame();
+        return true;
+      }
       if (step.end) return true;
     }
     return false;
+  }
+
+  // L'entrée dans le rêve : la caméra se brouille peu à peu, un voile clair monte (UIScene.veil), la musique et la mer
+  // s'éteignent ; le tout en `ms`. Le voile reste : la carte suivante le dissipe (étape `veil: false`).
+  async dreamFade(ms) {
+    const cam = this.cameras.main;
+    const blur = cam.postFX?.addBlur(1, 1, 1, 0);
+    fadeMusic(ms);
+    setSeaAmbience(false);
+    if (blur) this.tweens.add({ targets: blur, strength: 3, duration: ms, ease: 'Sine.easeIn' });
+    const veil = this.scene.get('UI').veil;
+    await new Promise((resolve) => this.tweens.add({ targets: veil, alpha: 1, duration: ms, ease: 'Sine.easeIn', onComplete: resolve }));
+  }
+
+  // Le voile clair du rêve se dissipe (en `ms`, 2,5 s par défaut) : le décor se forme autour de Pierre.
+  liftVeil(ms) {
+    const veil = this.scene.get('UI').veil;
+    return new Promise((resolve) => this.tweens.add({ targets: veil, alpha: 0, duration: ms || 2500, ease: 'Sine.easeOut', onComplete: resolve }));
+  }
+
+  // Fin du jeu : la musique s'arrête, retour à l'écran titre (la partie reste enregistrée : « Continuer » reprend Pierre
+  // dans sa chambre de Fort-de-France).
+  endGame() {
+    this.transitioning = true;
+    stopMusic();
+    const ui = this.scene.get('UI');
+    ui.curtain.setAlpha(1);
+    this.scene.stop('UI');
+    this.scene.start('Title');
   }
 
   // Le joueur monte dans la voiture (prop de type `type`), qui démarre en tremblant puis file du côté où elle
@@ -1522,8 +1570,9 @@ export class MapScene extends Phaser.Scene {
   // `car: true` : on passe d'abord par le trajet en voiture (même écran de voyage, voir FerryScene).
   // `carry` : encart affiché à la fin du trajet (ex. « Tu emportes : … », voir FerryScene).
   // `plane: true` : en avion (même écran de voyage).
-  travel({ map, interior, ferry, deck, car, plane, carry, ...spawn }) {
-    if (interior) this.goTo('Interior', { interior, fromMap: this.fromMap ?? this.map.id, spawn });
+  travel({ map, interior, fromMap, ferry, deck, car, plane, carry, ...spawn }) {
+    // `fromMap` : la ville où l'on ressort d'un intérieur (par défaut, celle où l'on est).
+    if (interior) this.goTo('Interior', { interior, fromMap: fromMap ?? this.fromMap ?? this.map.id, spawn });
     else if (ferry || car || plane) {
       this.goTo('Ferry', { deck, road: car, plane, carry, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
     }
