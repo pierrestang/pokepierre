@@ -6,7 +6,7 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 //   2. La maison commune : Romain envoie Pierre chercher son bouquet de fleurs chez le marchand de fleurs.
 //   3. Le marchand de fleurs : le vendeur parle un mélange de français et de néerlandais (« Ja » ou « Nee », sans conséquence).
 //   4. Retour chez Romain : le bouquet donné, il envoie Pierre à son stage.
-//   5. Corning : Laurent confie une campagne pour le nouveau produit ; trois choix (cible, slogan, diffusion), Laurent
+//   5. Corning : le patron confie une campagne pour le nouveau produit ; trois choix (cible, slogan, diffusion), le patron
 //      encourage ou recadre, sans échec ; la présentation (Autonomie).
 //   6. En sortant de Corning : « Quelques mois plus tard… » (la seule ellipse de la ville) ; la nuit tombe.
 //   7. La nuit, au bord du canal, Romain (Insouciance) ; le billet pour New Delhi ; le souvenir du canal ; l'aéroport.
@@ -38,8 +38,8 @@ export const ROMAIN_WELCOME = [
 
 // Romain dans la maison commune : il attend son bouquet, le reprend, puis envoie Pierre à son stage.
 export const ROMAIN_HOME = [
-  { ifFlags: [FLAGS.stageCorning], speaker: 'Romain', say: ['Alors, ce stage ? Laurent est content de toi, j\'en suis sûr.'], end: true },
-  { ifFlags: [FLAGS.marchandiseDonnee], speaker: 'Romain', say: ['Ton stage, c\'est chez Corning, le grand manoir de la rue. Laurent t\'attend !'], end: true },
+  { ifFlags: [FLAGS.stageCorning], speaker: 'Romain', say: ['Alors, ce stage ? Le patron est content de toi, j\'en suis sûr.'], end: true },
+  { ifFlags: [FLAGS.marchandiseDonnee], speaker: 'Romain', say: ['Ton stage, c\'est chez Corning, le grand manoir de la rue. Le patron t\'attend !'], end: true },
   {
     ifItems: [ITEMS.marchandise.id],
     steps: [
@@ -49,7 +49,7 @@ export const ROMAIN_HOME = [
         speaker: 'Romain',
         say: [
           'Merci, t\'es un chef ! Je te revaudrai ça.',
-          'Bon, maintenant, au boulot : ton stage chez Corning commence aujourd\'hui. C\'est le grand manoir de la rue. Laurent t\'attend !',
+          'Bon, maintenant, au boulot : ton stage chez Corning commence aujourd\'hui. C\'est le grand manoir de la rue. Le patron t\'attend !',
         ],
       },
       { setFlag: FLAGS.marchandiseDonnee },
@@ -79,17 +79,17 @@ export const VENDOR = [
 
 // ---------- 5. Corning : la campagne ----------
 
-const LAURENT = 'Laurent';
-// Une étape de la campagne : la question, puis la réaction de Laurent à chaque choix (aucun ne bloque).
+const PATRON = 'Patron';
+// Une étape de la campagne : la question, puis la réaction du patron à chaque choix (aucun ne bloque).
 const step = (question, choices) => ({
-  speaker: LAURENT,
+  speaker: PATRON,
   choose: question,
-  choices: choices.map(([label, reply]) => ({ label, steps: [{ speaker: LAURENT, say: reply }] })),
+  choices: choices.map(([label, reply]) => ({ label, steps: [{ speaker: PATRON, say: reply }] })),
 });
 export const CAMPAIGN = [
-  { ifFlags: [FLAGS.stageCorning], speaker: LAURENT, say: ['Continue comme ça, Pierre. L\'équipe parle encore de ta démonstration.'], end: true },
+  { ifFlags: [FLAGS.stageCorning], speaker: PATRON, say: ['Continue comme ça, Pierre. L\'équipe parle encore de ta démonstration.'], end: true },
   {
-    speaker: LAURENT,
+    speaker: PATRON,
     say: [
       'Bienvenue chez Corning ! Pour ton premier jour, je te confie une vraie mission : prépare-moi une campagne pour notre nouveau produit.',
       'Un verre pour écrans de téléphone. Presque incassable. À toi de le faire connaître.',
@@ -113,7 +113,7 @@ export const CAMPAIGN = [
   { say: ['Tu rassembles tout sur trois pages, sans demander d\'aide à personne.'] },
   { useTrait: TRAITS.autonomie },
   { say: ['Devant toute l\'équipe, tu présentes ta campagne… et tu lâches ton propre téléphone par terre. L\'écran tient.'] },
-  { speaker: LAURENT, say: ['Pas mal du tout pour un premier jour ! Tu as l\'instinct du marketing, toi.'] },
+  { speaker: PATRON, say: ['Pas mal du tout pour un premier jour ! Tu as l\'instinct du marketing, toi.'] },
   { setFlag: FLAGS.stageCorning },
 ];
 

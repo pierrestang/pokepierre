@@ -127,7 +127,7 @@ export const FLAGS = {
   romainDemande: 'romain-demande',              //   Romain t'a demandé d'aller chercher son bouquet chez le marchand de fleurs
   marchandiseAchetee: 'marchandise-achetee',    //   le bouquet, pris chez le marchand de fleurs
   marchandiseDonnee: 'marchandise-donnee',      //   donné à Romain : il t'envoie à ton stage chez Corning
-  stageCorning: 'stage-corning',                //   la campagne présentée à Laurent (Autonomie, Audace)
+  stageCorning: 'stage-corning',                //   la campagne présentée au patron de Corning (Autonomie, Audace)
   moisAmsterdam: 'mois-amsterdam',              //   en sortant de Corning : « Quelques mois plus tard… » (la nuit tombe)
   canalNuit: 'canal-nuit',                      //   la nuit au bord du canal avec Romain (Insouciance), le billet pour New Delhi
   arriveeNewDelhi: 'arrivee-new-delhi',         // arrivé à New Delhi (Inde)

@@ -957,7 +957,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 |---|---|---|
 | Romain | Le colocataire : le bouquet de fleurs, puis la nuit au canal et le billet pour New Delhi | `g202` |
 | Vendeur | Le marchand de fleurs, en français mêlé de néerlandais | `g112` |
-| Laurent | Le patron de Corning : la campagne du nouveau produit | `g53` |
+| Patron | Le patron de Corning : la campagne du nouveau produit | `g53` |
 
 ### Quêtes, dans l'ordre
 1. **L'arrivée.** « Ton téléphone sonne. C'est Romain ! » ; Romain, au téléphone : **« Pierre, t'es arrivé ! Rejoins-moi à
@@ -971,11 +971,11 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
    Alors tu lui dis : de volgende fois, il vient lui-même, hè ! » ; « Nee » : « Nee ? Dan is deze niet voor jou ! Allez, je
    rigole. Tiens, prends-le quand même. » → **Bouquet de fleurs** (dans les deux cas ; icône : la Gracidée de HGSS).
 4. **Retour chez Romain.** « Tu donnes le bouquet de fleurs à Romain. » ; Romain : « Merci, t'es un chef ! Je te revaudrai ça. » /
-   « Bon, maintenant, au boulot : ton stage chez Corning commence aujourd'hui. C'est le grand manoir de la rue. Laurent
+   « Bon, maintenant, au boulot : ton stage chez Corning commence aujourd'hui. C'est le grand manoir de la rue. Le patron
    t'attend ! »
-5. **Corning : la campagne.** Laurent : **« Bienvenue chez Corning ! Pour ton premier jour, je te confie une vraie mission :
+5. **Corning : la campagne.** Le patron : **« Bienvenue chez Corning ! Pour ton premier jour, je te confie une vraie mission :
    prépare-moi une campagne pour notre nouveau produit. »** / « Un verre pour écrans de téléphone. Presque incassable. À
-   toi de le faire connaître. » Trois choix, chacun commenté par Laurent, sans échec :
+   toi de le faire connaître. » Trois choix, chacun commenté par le patron, sans échec :
    - la cible : « Aux fabricants de téléphones » (« Exactement. Ce sont eux qui achètent le verre. Bon instinct. »),
      « Aux grands-mères », « À tout le monde » (« Tout le monde, c'est personne. On vise les fabricants de téléphones,
      d'accord ? ») ;
@@ -984,7 +984,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
    - la diffusion : « Une vidéo de chute en ligne », « Un salon professionnel », « Des affiches dans le métro ».
    « Tu rassembles tout sur trois pages, sans demander d'aide à personne. » → **« Pierre utilise Autonomie ! »** →
    « Devant toute l'équipe, tu présentes ta campagne… et tu lâches ton propre téléphone par terre. L'écran tient. » ;
-   Laurent : **« Pas mal du tout pour un premier jour ! Tu as l'instinct du marketing,
+   Le patron : **« Pas mal du tout pour un premier jour ! Tu as l'instinct du marketing,
    toi. »**
 6. **Quelques mois plus tard.** En sortant de Corning : **« Quelques mois plus tard… »** (la seule ellipse de la ville). La
    nuit tombe sur Amsterdam (nuit forcée, quelle que soit l'heure, jusqu'à la fin de la scène du canal) : réverbères
@@ -1311,7 +1311,7 @@ Les personnages nommés du jeu sont là, en cercle (27, répartis régulièremen
 Jean ; Felix, Joshua, Yanis, Val ; Margaux, Benoît, Étienne ; Rémy ; Tanguy, Geoffrey ; Ousmane, Paul, Rémi, Léo, Anaïs ;
 Charlotte, Romain, Prophecy ; Harsh ; **Dalil, Hugues et Thomas**, silencieux. Huit prennent la parole, un par ville :
 chacun s'avance vers Pierre, dit son mot, puis se range près de lui. **Absents** (personnages nommés, signalés sans être
-ajoutés) : M. Lam, Laurent, Camille et M. Bouly (à la demande de l'utilisateur), Inès, Malik et Clara (Paris).
+ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de l'utilisateur), Inès, Malik et Clara (Paris).
 - Felix (Saint-Ay) : « Depuis Saint-Ay qu'on te suit ! On savait que tu finirais par tous nous réunir. »
 - Margaux (Montépilloy) : « Tu te cachais toujours au même endroit… Mais là, tu es allé tellement loin qu'on a failli ne
   jamais te trouver ! »
@@ -1423,7 +1423,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Passante, Vendeuse, Passant | `g19`, `g70`, `g14` | Hanoï |
 | Touriste (x 2) | `g24`, `g22` | Hanoï |
 | Papi (x 2) | `g39`, `g48` | Hanoï (échecs chinois, optionnel) |
-| Laurent | `g53` | Amsterdam |
+| Patron (Corning) | `g53` | Amsterdam |
 | Vendeur | `g112` | Amsterdam |
 | Harsh | `g89` | New Delhi |
 | Vieux sage | `g71` | New Delhi (le vieux fort) |
@@ -1437,7 +1437,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Inès, Malik, Clara | `g5`, `g4`, `g15` | Paris (la place de concert) |
 | Chanteur | `g69` | Paris (Bercy) |
 
-Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, Laurent, Camille et M. Bouly (voir la
+Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
 section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Inès, Malik, Clara et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
 

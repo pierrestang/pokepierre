@@ -58,7 +58,7 @@ PLANS = {
         'items': [['aa-tapis', 5, 10]],
         'block': [[5, 4], [6, 4], [7, 4]],
     },
-    # Corning : un étage de bureaux de la Tour Radio ; Laurent au bout de la table de réunion. Sans les escaliers
+    # Corning : un étage de bureaux de la Tour Radio ; le patron au bout de la table de réunion. Sans les escaliers
     # (demande de l'utilisateur) : mur nu à leur place, une seconde armoire au fond à droite, un troisième poste de
     # travail (bureau, ordinateur, chaise) à gauche.
     'corning': {

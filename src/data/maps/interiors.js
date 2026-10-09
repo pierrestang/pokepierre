@@ -2026,9 +2026,9 @@ export const interiors = {
     objects: [5, 6, 7].map((x) => ({ x, y: 4, ...ALTAR, item: ITEMS.objetChance })),
   },
 
-  // Amsterdam — le bureau CORNING : Laurent, le patron, confie à Pierre la campagne du nouveau produit (voir
+  // Amsterdam — le bureau CORNING : le patron confie à Pierre la campagne du nouveau produit (voir
   // amsterdamStory.js CAMPAIGN). Un étage de bureaux de la Tour Radio (HGSS) : table de réunion, postes informatiques ;
-  // Laurent près des fenêtres.
+  // Le patron près des fenêtres.
   corning: {
     name: 'Corning',
     grid: parseGrid([
@@ -2048,7 +2048,7 @@ export const interiors = {
     spawn: { x: 6, y: 10, facing: 'up' },
     npcs: [
       {
-        id: 'laurent', name: 'Laurent', x: 11, y: 3, facing: 'down', color: 0x2c4c8c,
+        id: 'laurent', name: 'Patron', sprite: 'g53', x: 11, y: 3, facing: 'down', color: 0x2c4c8c,
         script: CAMPAIGN,
       },
     ],

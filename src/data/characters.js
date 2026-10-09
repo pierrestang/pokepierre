@@ -47,7 +47,7 @@ export const BY_NAME = {
   Jean: 'g52', Felix: 'g93', Romain: 'g92', Prophecy: 'g94', Yanis: 'g96', Ousmane: 'g105', Harsh: 'g89',
   Tom: 'g22', 'Léo': 'g55', Tanguy: 'g56', Geoffrey: 'g41', Thomas: 'g90', Hugues: 'g121', Dalil: 'g2',
   'Inès': 'g5', Malik: 'g4', Clara: 'g15',
-  'Benoît': 'g38', 'Étienne': 'g108', Joshua: 'g18', Laurent: 'g53',
+  'Benoît': 'g38', 'Étienne': 'g108', Joshua: 'g18',
   Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g140', Paul: 'g86', Camille: 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g49',
   Charlotte: 'g44', 'Anaïs': 'g107', Anais: 'g107',
   // Métiers
