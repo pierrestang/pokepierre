@@ -129,8 +129,12 @@ export const TOURISTS_MEET = [
   { setFlag: FLAGS.touristesSuivent },
 ];
 
-// Au temple : l'une des touristes panique, son téléphone est à plat ; Pierre (Insouciance) lui dit de profiter du moment.
+// Au temple : Pierre avance de trois pas (les touristes entrent derrière lui, on les voit tous), puis se retourne ; l'une
+// des touristes panique, son téléphone est à plat ; Pierre (Insouciance) lui dit de profiter du moment.
 export const TEMPLE_PANIC = [
+  { goTo: [6, 6], facing: 'up' },
+  { wait: 400 },
+  { face: { player: 'down' } },
   { speaker: TOURISTE, say: ['Oh non… Mon téléphone est à plat ! Pas une seule photo du temple…', 'Tout ce voyage, et je ne pourrai rien montrer. Je veux rentrer à l\'hôtel.'] },
   { useTrait: TRAITS.insouciance },
   { speaker: 'Pierre', say: ['Laisse tomber les photos. Regarde autour de toi : tu y es, là, maintenant. Profite.'] },

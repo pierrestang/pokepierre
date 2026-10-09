@@ -887,7 +887,7 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
    ici, dans la grande rue. » ; après : « Bonjour ! C'est vous, notre guide ? On vous attendait ! » / « On
    aimerait tellement voir le temple ! » ; « Tu leur fais signe de te suivre. » Ils suivent Pierre (le temple est fermé
    sans eux : « Le temple. Un lieu de recueillement : on ne le visite qu'accompagné d'un guide. »).
-4. **Le temple.** Une touriste : « Oh non… Mon téléphone est à plat ! Pas une seule photo du temple… » / « Tout ce
+4. **Le temple.** Pierre avance de trois pas et se retourne vers les touristes (on les voit tous les trois). Une touriste : « Oh non… Mon téléphone est à plat ! Pas une seule photo du temple… » / « Tout ce
    voyage, et je ne pourrai rien montrer. Je veux rentrer à l'hôtel. » → **« Pierre utilise Insouciance ! »** → Pierre :
    **« Laisse tomber les photos. Regarde autour de toi : tu y es, là, maintenant. Profite. »** ; « Elle range son
    téléphone, lève les yeux vers les statues… et sourit. » ; « Vous avez raison. Je m'en souviendrai mieux comme ça. »
