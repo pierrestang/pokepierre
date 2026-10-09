@@ -26,7 +26,7 @@ import {
   COLLEAGUE, DAY_1, DAY_2, DAY_3, DIRECTOR, DIRECTOR_AFTER, EVENING_1, EVENING_2, MANAGER_TALK, PROMOTION,
 } from '../parisStory.js';
 import { WAKE_UP } from '../reveStory.js';
-import { DELHI_PARTY, FORT_SILENCE, SAGE, SAGE_AFTER, STUDENTS } from '../newDelhiStory.js';
+import { DELHI_PARTY, FORT_SILENCE, SAGE, SAGE_AFTER, GUESTS } from '../newDelhiStory.js';
 
 // L'accueil de KEDGE (Bordeaux) : on lui parle par-dessus le comptoir.
 const KEDGE_DESK = ['Bienvenue à KEDGE ! L\'oral d\'anglais, c\'est en salle 1 : le couloir des casiers, puis l\'étage au-dessus.'];
@@ -2112,9 +2112,9 @@ export const interiors = {
   },
 
   // New Delhi — la cour du palais de grès, un soir de fête (scripts/build_delhi_cour.py : dallage de grès, couronne de
-  // palmiers, trois pavillons à coupole au fond, la fontaine octogonale au milieu, mâts à fanions, lanternes, stand de
-  // chai, un étal, des soucis ; les éléments de la carte de New Delhi). Toujours la nuit, lanternes allumées. Harsh et
-  // les étudiants y font la fête (voir newDelhiStory.js DELHI_PARTY) ; elle continue à chaque visite.
+  // palmiers, trois pavillons à coupole au fond, mâts à fanions, lanternes, stand de chai, un étal, des soucis ; les
+  // éléments de la carte de New Delhi). Toujours la nuit, lanternes allumées. Au milieu, le grand repas partagé, assis en
+  // cercle par terre (voir newDelhiStory.js DELHI_PARTY) ; il continue à chaque visite.
   delhiCour: {
     name: 'Cour du palais',
     grid: parseGrid([
@@ -2139,23 +2139,28 @@ export const interiors = {
     ]),
     spawn: { x: 11, y: 15, facing: 'up' },
     night: { lights: [[8, 8, 0xffc060], [16, 8, 0xffc060], [4, 9, 0xffd890], [20, 9, 0xffd890]] },
+    // Le grand repas, au milieu de la cour : un tapis tissé couvert de plats (dessiné dans le code, art/mealArt.js ;
+    // provisoire, en attendant des sprites de nourriture). Les convives sont assis tout autour.
+    props: [{ type: 'repas', x: 10, y: 10, w: 4, h: 2, flat: true }],
     npcs: [
-      { id: 'harsh-fete', name: 'Harsh', x: 12, y: 13, facing: 'down', unlessFlags: [FLAGS.feteDelhi], dialogue: ['Viens danser !'] },
+      { id: 'harsh-fete', name: 'Harsh', x: 13, y: 14, facing: 'left', unlessFlags: [FLAGS.feteDelhi], dialogue: ['Viens, assieds-toi avec nous !'] },
       {
         id: 'prophecy-fete', name: 'Prophecy', x: 10, y: 14, facing: 'up',
-        ifFlags: [FLAGS.courArrivee], unlessFlags: [FLAGS.feteDelhi], dialogue: ['Quelle ambiance !'],
+        ifFlags: [FLAGS.courArrivee], unlessFlags: [FLAGS.feteDelhi], dialogue: ['Ça sent incroyablement bon…'],
       },
-      {
-        id: 'etudiante-fete', name: 'Étudiante', sprite: 'g25', x: 14, y: 13, facing: 'down', dancing: true,
-        dialogue: STUDENTS.etudiante,
-      },
+      // Les convives, assis par terre en cercle, tournés vers le tapis ([id, nom, sprite, x, y, regard, réplique]).
       ...[
-        ['etudiante-musique', 'g97', 8, 10, 'musique'], ['etudiant-rythme', 'g95', 15, 10, 'rythme'],
-        ['etudiant-chanteur', 'g110', 17, 12, 'chanteur'], ['etudiante-ronde', 'g104', 9, 8, 'rythme'],
-        ['etudiant-ronde', 'g102', 6, 11, 'musique'], ['etudiante-chant', 'g103', 14, 8, 'chanteur'],
-      ].map(([id, sprite, x, y, line]) => ({
-        id, name: id.startsWith('etudiante') ? 'Étudiante' : 'Étudiant', sprite, x, y, facing: 'down', dancing: true,
-        dialogue: STUDENTS[line],
+        ['etudiante-fete', 'Étudiante', 'g25', 11, 12, 'up', 'etudiante'],
+        ['etudiant-dal', 'Étudiant', 'g95', 12, 12, 'up', 'dal'],
+        ['etudiante-ensemble', 'Étudiante', 'g97', 13, 12, 'up', 'ensemble'],
+        ['grand-mere-fete', 'Grand-mère', 'g42', 14, 11, 'left', 'grandMere'],
+        ['etudiant-riz', 'Étudiant', 'g110', 14, 10, 'left', 'riz'],
+        ['etudiante-riz', 'Étudiante', 'g104', 13, 9, 'down', 'riz'],
+        ['voisin-fete', 'Voisin', 'g38', 12, 9, 'down', 'voisin'],
+        ['etudiant-ensemble', 'Étudiant', 'g102', 11, 9, 'down', 'ensemble'],
+        ['etudiante-dal', 'Étudiante', 'g103', 10, 9, 'down', 'dal'],
+      ].map(([id, name, sprite, x, y, facing, line]) => ({
+        id, name, sprite, x, y, facing, seated: true, still: true, dialogue: GUESTS[line],
       })),
     ],
     // En entrant la première fois (derrière Harsh, avec Prophecy) : la fête.

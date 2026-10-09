@@ -4,8 +4,9 @@
 On y entre par la porte du palais de grès (carte de New Delhi) ; c'est la cour du palais, un soir de fête. Même principe
 et mêmes éléments que la carte de New Delhi (scripts/build_new_delhi.py, thème « New Delhi (palais moghols) » du
 catalogue) : un dallage de grès, une couronne de palmiers (scripts/paint_forest.mjs), au fond trois pavillons à coupole,
-au milieu la fontaine octogonale (on danse autour), deux mâts à fanions, des lanternes de bronze, le stand de chai, un
-étal, des soucis. Rien de plus : une fête, sobre.
+deux mâts à fanions, des lanternes de bronze, le stand de chai, un étal, des soucis. Le milieu reste libre : le grand
+repas partagé, assis en cercle par terre (le tapis et les plats sont un objet du jeu, `props` de interiors.js
+delhiCour). Rien de plus : une fête, sobre.
 
 Le dessin est d'abord écrit comme une carte du créateur (src/data/builtMaps/delhi-cour.json, pour peindre les palmiers),
 puis déplacé dans src/data/builtInteriors/delhiCour.json (relancer ensuite `python3 scripts/build_interiors.py --index`).
@@ -48,8 +49,6 @@ ELEMENTS = [
     # Les mâts à fanions et les lanternes, autour de la piste.
     ('mat-fanions', 3, 9), ('mat-fanions', 19, 9),
     ('lanterne-bronze', 7, 7), ('lanterne-bronze', 15, 7),
-    # Au milieu : la fontaine octogonale.
-    ('fontaine-octogonale', 10, 9),
     # Les côtés : le stand de chai, un étal ; des soucis.
     ('stand-chai', 2, 13),
     ('etal-raye-rose', 16, 13),

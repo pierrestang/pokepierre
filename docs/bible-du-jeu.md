@@ -1039,11 +1039,17 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 ### Les intérieurs
 - **La cour du palais** (`delhiCour`, 24 x 18, scripts/build_delhi_cour.py) : une cour à ciel ouvert faite des éléments
   de la carte de New Delhi : dallage de grès, couronne de palmiers, au fond trois pavillons à coupole (dont le mausolée
-  au dôme blanc), au milieu la fontaine octogonale, deux mâts à fanions, deux lanternes de bronze, le stand de chai, un
-  étal rayé rose, des soucis. Toujours la nuit, lanternes allumées ; sobre, sans cliché. L'entrée en bas, au milieu (la
-  sortie vers la carte, devant la porte du palais). Six étudiants dansent en continu (« Tu reviens danser ? Il y a toujours une fête quelque part, ici ! », « C'est ma chanson
-  préférée ! Enfin… elles sont toutes ma chanson préférée. », « Un, deux, trois… et on tourne ! Tu vois, tu as le
-  rythme ! », « Le prochain qui s'assoit chante devant tout le monde ! ») ; la fête continue à chaque visite.
+  au dôme blanc), deux mâts à fanions, deux lanternes de bronze, le stand de chai, un étal rayé rose, des soucis.
+  Toujours la nuit, lanternes allumées ; sobre, sans cliché. L'entrée en bas, au milieu (la sortie vers la carte, devant
+  la porte du palais). Au milieu, **le grand repas** : un tapis tissé rouge et ocre posé par terre (4 x 2 cases), couvert
+  de plats : quatre assiettes de métal (riz, dal, légumes, galette), la marmite de cuivre pleine de riz, une pile de
+  galettes, deux bols (curry, dal). Version provisoire dessinée dans le code (`src/art/mealArt.js`, objet `repas`), en
+  attendant des sprites de nourriture Gen 4 choisis par l'utilisateur. Neuf convives assis par terre en cercle autour
+  (les personnages assis : jambes cachées, buste abaissé ; option `seated` des PNJ, étape `sit`), qui restent à chaque
+  visite : « Tu reviens ? Il y a toujours une place pour toi, et toujours de quoi manger ! », « Reprends du riz, va ! Il
+  en reste plein la marmite. », « Le dal, c'est la recette de ma grand-mère. Elle ne la donne à personne ! », « Ici, on
+  ne mange jamais seul. C'est ça, le meilleur ingrédient. », la grand-mère « Mange, mon garçon, mange ! Tu es tout
+  maigre. », le voisin « Encore une galette ? Si, si, j'insiste ! ».
 - **Le vieux fort** (`delhiFort`, 21 x 16) : le bas de l'arène de Mauville (HGSS), sans l'arène : dalles de pierre,
   grands piliers, balustrades, marches, deux statues. La musique se tait (musique de la ville à volume nul). Le vieux
   sage attend sur la terrasse, en haut des marches ; ensuite : « Rien ne se perd, jeune voyageur. Rien. »
@@ -1054,7 +1060,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 | Prophecy | De la bande de Hull ; il enchaîne son échange aux États-Unis par ce semestre (prévu de longue date) et accueille Pierre ; il rentre lui aussi finir ses études à Bordeaux | `g94` |
 | Harsh | Étudiant indien, rencontré sur place (nouveau pour Pierre et pour Prophecy) : la porte d'entrée dans la culture locale | `g89` |
 | Vieux sage | Le vieux fort : il transmet, et donne la pierre gravée | `g71` |
-| Étudiante, étudiants | La fête (l'étudiante qui vient chercher Pierre : `g25`) | `g25`, `g97`, `g95`, `g110`, `g104`, `g102`, `g103` |
+| Étudiante, étudiants, grand-mère, voisin | Les convives du repas, assis en cercle (la grand-mère : `g42`, le voisin : `g38`) | `g25`, `g97`, `g95`, `g110`, `g104`, `g102`, `g103`, `g42`, `g38` |
 | Passants, passantes | La foule de l'avenue | sprites imposés (`g14`, `g42`, `g86`…) |
 
 ### Quêtes, dans l'ordre
@@ -1066,17 +1072,21 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    vous montrer. »** / « Ce soir, il y a une fête dans la cour du palais de grès. Suivez-moi ! » Pas d'écran noir : Harsh
    part devant, à pied, jusqu'à la porte du palais (16, 12) (il attend Pierre s'il traîne : « C'est par ici : la porte du
    palais de grès. Entrez, la fête a commencé ! »), puis il entre ; Prophecy suit Pierre. Pierre entre à son tour.
-3. **La fête (Joie de vivre, dans le sens renversé).** Dans la cour : « La cour du palais brille de lanternes. La musique
-   fait trembler les dalles ; tout le monde danse, chante, tape dans ses mains. » ; Harsh : **« Ce soir, c'est la fête ! Venez, chez nous on sait faire la fête ! »** ; Prophecy :
-   « Moi, j'y vais ! » (il rejoint la piste) ; bulle « … » sur Pierre : « Toi, tu restes à l'entrée de la cour. Trop de bruit,
-   trop de monde, des pas que tu ne connais pas. » ; Harsh vient le chercher : « Eh, Pierre ! Ici, personne ne regarde
-   les autres danser. Allez, viens ! » ; une étudiante : « Viens, on te montre ! C'est facile : tu fais comme nous. » ;
-   **« Pour une fois, ce n'est pas toi qui entraînes les autres. Ce sont eux qui t'entraînent. »** → **« Pierre utilise
-   Joie de vivre ! »** → « Tu te laisses porter. » → la danse de Fort-de-France (étape `dance`, avec Harsh et
-   l'étudiante) → « Tu ris, tu rates tous les pas, et ça n'a aucune importance. » ; Harsh : « Tu vois ? Tu es des nôtres,
-   maintenant ! » / **« Maintenant que vous avez vu la fête, il faut que je vous montre autre chose. Un endroit très
-   ancien. Venez. »** / « C'est derrière la vieille porte du fort, au bout de l'avenue. » Harsh et Prophecy suivent
-   ensuite Pierre.
+3. **Le grand repas partagé (Joie de vivre, dans le sens renversé).** Il remplace l'ancienne danse. Dans la cour : « La
+   cour du palais brille de lanternes. Au milieu, tout le monde est assis en cercle par terre, autour d'un grand repas
+   étalé sur un tapis. » ; Harsh : **« Viens, assieds-toi avec nous ! Ici, un invité ne reste jamais le ventre
+   vide. »** Prophecy va s'asseoir (« Ça sent incroyablement bon… »), Harsh aussi, et Pierre s'assoit entre eux deux,
+   sur le côté gauche du tapis. Les assiettes arrivent vers lui (on les voit glisser jusqu'à lui, étape `pass`) : « À
+   peine assis, une assiette arrive devant toi : du riz, du dal, une galette encore chaude. » ; Harsh : « Goûte
+   celui-là ! C'est ma mère qui l'a préparé ce matin. » ; puis de tout le cercle : « Et ça continue. De gauche, de
+   droite, d'en face : un bol, une galette, encore un peu de riz. On te ressert sans que tu demandes. » ; bulle « … » sur
+   Pierre ; la grand-mère : « Non, non, on ne refuse pas ! Chez nous, l'invité, on le ressert toujours. » ; Pierre, en
+   lui-même : **« Je ne sais même pas quoi faire de toute cette générosité. Juste… l'accepter, peut-être. »** ; « À
+   Fort-de-France, c'est toi qui menais la danse. Ici, pour une fois, ce sont les autres qui donnent. » → **« Pierre
+   utilise Joie de vivre ! »** → « Tu prends ce qu'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat
+   à ton voisin. » ; Harsh : « Tu vois ? Tu es des nôtres, maintenant ! » / **« Maintenant que vous avez vu la fête, il
+   faut que je vous montre autre chose. Un endroit très ancien. Venez. »** / « C'est derrière la vieille porte du fort,
+   au bout de l'avenue. » Pierre se relève ; Harsh et Prophecy le suivent ensuite.
 4. **Le vieux sage (ni vertu, ni mini-jeu).** En entrant dans le fort : « Derrière toi, le bruit de la ville s'est éteint
    d'un coup. Il n'y a plus que le vent entre les vieilles pierres. » ; Harsh : « Ces murs sont là depuis plus de mille
    ans. Ici, on parle doucement. » En haut des marches, le vieux sage vient à Pierre : **« Tu viens de loin, et tu iras
@@ -1098,8 +1108,8 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 ### Vertus
 - **Gagnée** : aucune.
 - **Utilisée** : **Joie de vivre**, dans le sens renversé : à Fort-de-France, à la cabane, à Hull, c'est Pierre qui
-  entraîne les autres ; ici, ce sont Harsh et les étudiants qui l'entraînent, lui. Un Pierre plus mûr, qui a appris à
-  recevoir la joie des autres.
+  entraîne les autres ; ici, au grand repas, ce sont les autres qui donnent : on le sert de tous les côtés, on le
+  ressert sans qu'il demande. Un Pierre plus mûr, qui apprend à recevoir.
 
 ### Objet
 **Pierre gravée** (le vieux sage) : un objet-souvenir sans usage, qui remplace la potion magique et fait écho au galet du
@@ -1253,7 +1263,7 @@ Paris.
 
 | Vertu | Ville | Où et auprès de qui elle se gagne | Phrase du carnet | Où elle resert |
 |---|---|---|---|---|
-| Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum ; New Delhi : la fête (dans le sens renversé : les étudiants entraînent Pierre) |
+| Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum ; New Delhi : le grand repas partagé (dans le sens renversé : Pierre apprend à recevoir) |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
 | Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
 | Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) |

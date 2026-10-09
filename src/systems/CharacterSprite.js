@@ -11,6 +11,10 @@ export const DIRECTIONS = {
   right: { dx: 1,  dy: 0 },
 };
 
+// Assis : pixels de jambes cachés en bas de l'image, et descente du buste.
+const SEAT_CUT = 8;
+const SEAT_DROP = 5;
+
 export const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
 export function tileCenter(x, y) {
@@ -71,6 +75,17 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     if (this.inBed) return;
     this.facing = dir;
     this.image.setFrame(`${this.prefix}${dir}-0`);
+    if (this.seated) this.image.setCrop(0, 0, this.image.width, this.image.height - SEAT_CUT);
+  }
+
+  // Assis par terre (le repas de New Delhi) : les jambes sont coupées et le buste descend sur la case.
+  sit(on = true) {
+    if (on === Boolean(this.seated)) return;
+    this.seated = on;
+    this.walkTimer?.remove();
+    this.image.setFrame(`${this.prefix}${this.facing}-0`);
+    if (on) this.image.setCrop(0, 0, this.image.width, this.image.height - SEAT_CUT).setY(this.image.y + SEAT_DROP);
+    else this.image.setCrop().setY(this.image.y - SEAT_DROP);
   }
 
   // À vélo (le joueur, voir systems/bike.js) : l'image passe à la planche du vélo, et revient à la marche.

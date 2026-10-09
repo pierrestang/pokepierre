@@ -6,6 +6,7 @@ import { CATCHES, FISHING_ROD } from '../data/fishing.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
 import { drawDecal, drawPulleyFixed, drawPulleyStuck } from '../art/tileArt.js';
+import { drawDish, drawMeal } from '../art/mealArt.js';
 import { createWalkableCheck } from '../systems/collision.js';
 import { Player, WALK_DURATION } from '../systems/Player.js';
 import { CharacterSprite, OPPOSITE, DIRECTIONS, tileCenter } from '../systems/CharacterSprite.js';
@@ -69,7 +70,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 // et peuvent définir
 // `surroundingTile` (tuile de remplissage par défaut).
 // Objets posés au sol, dessinés dans le code : la poulie de la cabane des cousins (Saint-Ay).
-const FLOOR_PROPS = { pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed };
+const FLOOR_PROPS = { pulleyStuck: drawPulleyStuck, pulleyFixed: drawPulleyFixed, repas: drawMeal };
 
 // Clés de conditions d'une étape (voir systems/flags.js meetsConditions).
 const CONDITION_KEYS = ['ifFlags', 'unlessFlags', 'ifSouvenirs', 'unlessSouvenirs', 'ifItems', 'unlessItems'];
@@ -368,6 +369,7 @@ export class MapScene extends Phaser.Scene {
       const bed = data.inBed && bedAt(this.map, data.x, data.y);
       const sprite = new CharacterSprite(this, data.x, data.y, lookOf(data), data.facing, { bed: bed && { ...bed, child: data.child } });
       if (data.dancing) this.startDancing(sprite, data);
+      if (data.seated) sprite.sit(true);
       this.npcs.push({ data, sprite });
     }
 
@@ -420,8 +422,9 @@ export class MapScene extends Phaser.Scene {
       }
       // Objets posés au sol, dessinés dans le code (voir FLOOR_PROPS) : triés en profondeur avec les personnages.
       if (FLOOR_PROPS[data.type]) {
-        const graphics = this.add.graphics().setDepth(10 + ((data.y + 1) * TILE_SIZE) / 10000);
-        FLOOR_PROPS[data.type](graphics, data.x * TILE_SIZE, data.y * TILE_SIZE);
+        // `flat` (un tapis, une nappe) : à plat sur le sol, sous tous les personnages.
+        const graphics = this.add.graphics().setDepth(data.flat ? 9.5 : 10 + ((data.y + 1) * TILE_SIZE) / 10000);
+        FLOOR_PROPS[data.type](graphics, data.x * TILE_SIZE, data.y * TILE_SIZE, data);
         this.props.push({ data, graphics });
         continue;
       }
@@ -668,6 +671,8 @@ export class MapScene extends Phaser.Scene {
       if (step.hidePlayer !== undefined) this.player.sprite.setVisible(!step.hidePlayer);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
+      if (step.sit) for (const [id, on] of Object.entries(step.sit)) this.actorSprite(id)?.sit(on);
+      if (step.pass) await this.passDishes(step.pass);
       if (step.emote) await this.emote(step.emote, step.kind);
       if (step.sound) sfx(step.sound);
       if (step.gather) await this.gather(step.gather, step.area);
@@ -1310,6 +1315,22 @@ export class MapScene extends Phaser.Scene {
 
   faceActors(facing) {
     for (const [id, dir] of Object.entries(facing)) this.actorSprite(id)?.setFacing(dir);
+  }
+
+  // Des plats tendus à Pierre (le repas de New Delhi) : de chaque convive de `ids`, une petite assiette glisse jusqu'à
+  // lui, l'une après l'autre (décalées), puis disparaît à son arrivée.
+  async passDishes(ids) {
+    const to = this.player.sprite;
+    const all = [ids].flat().map((id) => this.actorSprite(id)).filter(Boolean);
+    await Promise.all(all.map((from, i) => new Promise((resolve) => {
+      const dish = this.add.graphics().setDepth(TOP_DEPTH + 0.3);
+      drawDish(dish);
+      dish.setPosition(from.x, from.y - 6);
+      this.tweens.add({
+        targets: dish, x: to.x, y: to.y - 4, delay: i * 260, duration: 520, ease: 'Sine.easeInOut',
+        onComplete: () => { dish.destroy(); resolve(); },
+      });
+    })));
   }
 
   // Petits sauts sur place (un personnage qui parle avec entrain, ou la joie de toute la bande).

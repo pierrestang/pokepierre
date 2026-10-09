@@ -3,12 +3,12 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 // Scénario de New Delhi : un semestre d'échange étudiant, Pierre loge à l'internat. Le plus grand choc culturel du
 // voyage : une ville dense et grouillante, une grande joie de vivre, et quelque chose de très ancien. Pas de vertu
 // nouvelle (la 8e se gagne à Paris) : Joie de vivre sert à la fête, mais à l'envers (ce sont les autres qui
-// entraînent Pierre). Aucune ligne « Objectif : », une seule ellipse.
+// donnent à Pierre). Aucune ligne « Objectif : », une seule ellipse.
 //   1. L'arrivée : la foule de la grande avenue ; Pierre n'a jamais rien vu de pareil. Au bout de l'avenue, Prophecy
 //      (de la bande de Hull, qui enchaîne son échange aux États-Unis par ce semestre) l'accueille ; Harsh, étudiant
 //      d'ici, vient se présenter à tous les deux ; on le suit à pied jusqu'à la porte du palais de grès.
-//   2. La fête, dans la cour du palais : Harsh et les étudiants entraînent Pierre (Joie de vivre) ; la danse de
-//      Fort-de-France. Harsh et Prophecy suivent ensuite Pierre.
+//   2. La fête, dans la cour du palais : le grand repas partagé, assis en cercle par terre ; on sert Pierre de tous les
+//      côtés (Joie de vivre, à l'envers : il apprend à recevoir). Harsh et Prophecy suivent ensuite Pierre.
 //   3. Derrière la vieille porte du fort : le silence, le vieux sage, la pierre gravée. Ni vertu ni mini-jeu.
 //   4. « Quelques mois plus tard… » (la seule ellipse de la ville).
 //   5. Devant le fort, Prophecy : on rentre à Bordeaux ; à pied jusqu'à l'aéroport, Prophecy avec Pierre ; l'avion.
@@ -59,29 +59,38 @@ export const HARSH_LEADING = [
 
 // ---------- 2. La fête (Joie de vivre) ----------
 
-// Dans la cour du palais, à la nuit tombée (interiors.js delhiCour) : Prophecy, qui suivait Pierre, devient le PNJ
-// `prophecy-fete` et part danser tout de suite ; Pierre reste à l'entrée de la cour, puis Harsh et une étudiante viennent
-// le chercher.
-export const DANCE_FLOOR = [9, 13];
+// Dans la cour du palais, à la nuit tombée (interiors.js delhiCour) : le grand repas partagé. Tout le monde est assis
+// en cercle par terre, autour d'un tapis couvert de plats. Prophecy, qui suivait Pierre, devient le PNJ `prophecy-fete`
+// et s'assoit ; Harsh fait asseoir Pierre à côté de lui. Joie de vivre, dans le sens renversé : ce sont les autres qui
+// donnent, de tous les côtés ; Pierre, débordé, apprend à recevoir (étape `pass` : les assiettes glissent vers lui).
+export const MEAL_SEATS = { pierre: [9, 10], harsh: [9, 11], prophecy: [10, 12] };
+const LEFT = ['etudiante-fete', 'harsh-fete'];
+const ACROSS = ['etudiant-dal', 'grand-mere-fete', 'etudiante-riz', 'voisin-fete'];
 export const DELHI_PARTY = [
   { setFlag: FLAGS.courArrivee },
-  { say: ['La cour du palais brille de lanternes. La musique fait trembler les dalles ; tout le monde danse, chante, tape dans ses mains.'] },
-  { speaker: 'Harsh', say: ['Ce soir, c\'est la fête ! Venez, chez nous on sait faire la fête !'] },
-  { speaker: 'Prophecy', say: ['Moi, j\'y vais !'] },
-  { walk: 'prophecy-fete', to: DANCE_FLOOR, block: true },
+  { say: ['La cour du palais brille de lanternes. Au milieu, tout le monde est assis en cercle par terre, autour d\'un grand repas étalé sur un tapis.'] },
+  { speaker: 'Harsh', say: ['Viens, assieds-toi avec nous ! Ici, un invité ne reste jamais le ventre vide.'] },
+  { walk: 'prophecy-fete', to: MEAL_SEATS.prophecy, block: true },
+  { face: { 'prophecy-fete': 'up' }, sit: { 'prophecy-fete': true } },
+  { speaker: 'Prophecy', say: ['Ça sent incroyablement bon…'] },
+  { walk: 'harsh-fete', to: MEAL_SEATS.harsh, block: true },
+  { face: { 'harsh-fete': 'right' }, sit: { 'harsh-fete': true } },
+  { goTo: MEAL_SEATS.pierre, facing: 'right' },
+  { sit: { player: true } },
+  { pass: 'etudiante-fete' },
+  { say: ['À peine assis, une assiette arrive devant toi : du riz, du dal, une galette encore chaude.'] },
+  { pass: 'harsh-fete' },
+  { speaker: 'Harsh', say: ['Goûte celui-là ! C\'est ma mère qui l\'a préparé ce matin.'] },
+  { pass: ACROSS },
+  { say: ['Et ça continue. De gauche, de droite, d\'en face : un bol, une galette, encore un peu de riz. On te ressert sans que tu demandes.'] },
   { emote: 'player', kind: 'dots' },
-  { say: ['Toi, tu restes à l\'entrée de la cour. Trop de bruit, trop de monde, des pas que tu ne connais pas.'] },
-  { approach: 'harsh-fete' },
-  { speaker: 'Harsh', say: ['Eh, Pierre ! Ici, personne ne regarde les autres danser. Allez, viens !'] },
-  { comeBeside: 'etudiante-fete' },
-  { speaker: 'Étudiante', say: ['Viens, on te montre ! C\'est facile : tu fais comme nous.'] },
-  { say: ['Pour une fois, ce n\'est pas toi qui entraînes les autres. Ce sont eux qui t\'entraînent.'] },
+  { speaker: 'Grand-mère', say: ['Non, non, on ne refuse pas ! Chez nous, l\'invité, on le ressert toujours.'] },
+  { say: ['Je ne sais même pas quoi faire de toute cette générosité. Juste… l\'accepter, peut-être.'] },
+  { say: ['À Fort-de-France, c\'est toi qui menais la danse. Ici, pour une fois, ce sont les autres qui donnent.'] },
   { useTrait: TRAITS.joie },
-  { say: ['Tu te laisses porter.'] },
-  { dance: ['harsh-fete', 'etudiante-fete'] },
-  { say: ['Tu ris, tu rates tous les pas, et ça n\'a aucune importance.'] },
+  { say: ['Tu prends ce qu\'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin.'] },
+  { pass: LEFT },
   { speaker: 'Harsh', say: ['Tu vois ? Tu es des nôtres, maintenant !'] },
-  { approach: 'prophecy-fete' },
   {
     speaker: 'Harsh',
     say: [
@@ -89,15 +98,18 @@ export const DELHI_PARTY = [
       'C\'est derrière la vieille porte du fort, au bout de l\'avenue.',
     ],
   },
+  { sit: { player: false, 'harsh-fete': false, 'prophecy-fete': false } },
   { setFlag: FLAGS.feteDelhi },
 ];
 
-// Les étudiants qui dansent (la fête continue à chaque visite).
-export const STUDENTS = {
-  etudiante: ['Tu reviens danser ? Il y a toujours une fête quelque part, ici !'],
-  musique: ['C\'est ma chanson préférée ! Enfin… elles sont toutes ma chanson préférée.'],
-  rythme: ['Un, deux, trois… et on tourne ! Tu vois, tu as le rythme !'],
-  chanteur: ['Le prochain qui s\'assoit chante devant tout le monde !'],
+// Les convives, assis autour du repas (le repas continue à chaque visite).
+export const GUESTS = {
+  etudiante: ['Tu reviens ? Il y a toujours une place pour toi, et toujours de quoi manger !'],
+  riz: ['Reprends du riz, va ! Il en reste plein la marmite.'],
+  dal: ['Le dal, c\'est la recette de ma grand-mère. Elle ne la donne à personne !'],
+  ensemble: ['Ici, on ne mange jamais seul. C\'est ça, le meilleur ingrédient.'],
+  grandMere: ['Mange, mon garçon, mange ! Tu es tout maigre.'],
+  voisin: ['Encore une galette ? Si, si, j\'insiste !'],
 };
 
 // ---------- 3. Le vieux sage ----------
