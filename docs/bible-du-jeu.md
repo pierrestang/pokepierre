@@ -39,8 +39,8 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
   moment de monter sur ton vélo : on t'accompagne. »), il descend si quelqu'un se met à le suivre ; pendant une
   scénette, il descend et remonte à la fin. Une partie reprise dehors repart à vélo.
-- **Textes provisoires** : seul le stade de Bordeaux en garde (« [Texte provisoire] » ou « [Nom - texte provisoire] ») ;
-  tout le reste, de Fort-de-France à la fin du jeu, est écrit.
+- **Textes provisoires** : plus aucun dans l'histoire (le stade de Bordeaux est écrit depuis octobre 2026) ; il en
+  reste trois à Fort-de-France (télé, console, frigo).
 
 ## Ordre du jeu
 
@@ -54,8 +54,9 @@ et avions garés derrière la baie vitrée, tableau des départs, guichet, file 
 visités, et « Rester ici ») ; sans vol de l'histoire en attente, la liste « Autre » s'ouvre directement. Chaque vol joue
 le **trajet en avion** : l'avion de ligne file au-dessus de l'océan et de ses îles, entre deux couches de nuages, deux
 traînées derrière lui, au bruit des réacteurs. C'est l'aéroport de la ville d'où l'on vient : le jeu la retient (memo
-`aeroport`), ses portes y ramènent (« Tu sors de l'aéroport. »), et la liste des vols ne la propose pas ; « Autre »
-propose Bordeaux quand on n'y est pas. Les vols atterrissent à côté des sorties vers l'aéroport de chaque ville.
+`aeroport`), ses portes y ramènent (« Tu sors de l'aéroport. ») sur la case exacte et du côté par lequel Pierre est
+entré (memo `aeroportRetour` ; à défaut, la sortie habituelle de la ville), et la liste des vols ne la propose pas ;
+« Autre » propose Bordeaux quand on n'y est pas. Les vols atterrissent à côté des sorties vers l'aéroport de chaque ville.
 
 ---
 
@@ -848,7 +849,7 @@ Pour la première fois, Pierre arrive seul dans une ville dont il ne parle pas l
 Au nord, le long de la grande rue (est-ouest, vers l'aéroport par ses deux bouts) : une maison violette (porte (4, 6),
 fermée), la maison noire = l'agence de voyage (11, 6), ta maison = la seconde maison violette (20, 5, porte en retrait), avec sa boîte aux
 lettres rouge à droite (24, 7), et la maison bleue aux lanternes (29, 7, fermée). Au milieu : le lac Hoàn Kiếm, son îlot
-à la cloche et son pont de bois ; le banc de M. Lam au bord du lac (7, 10) ; les papis aux échecs à l'est du pont (18, 12)
+à la cloche et son pont de bois ; M. Lam sur le petit îlot à gauche du pont, près de la cloche (8, 15) ; les papis aux échecs à l'est du pont (18, 12)
 et (20, 12) ; le temple au toit rouge (porte (26, 16)). Au sud : le portique rouge, les étals, la maison sur pilotis, la
 grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée dans le créateur (octobre 2026). Portes fermées : « Tu frappes. Personne ne répond… ou alors, en vietnamien. »
 
@@ -863,7 +864,7 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Patron | Le patron (français) de l'agence de voyage | `g141` (imposé) |
-| M. Lam | Vieux monsieur du banc, au bord du lac ; a appris le français à l'école | `g129` (imposé) |
+| M. Lam | Vieux monsieur de l'îlot, près de la cloche ; a appris le français à l'école | `g129` (imposé) |
 | Passante, Vendeuse, Passant | Ne parlent pas français | `g19`, `g70`, `g14` (imposés) |
 | Touriste (x 2) | Les deux touristes à guider ; tous deux nommés « Touriste » à l'écran | `g24`, `g22` (imposés, aussi quand ils suivent) |
 | Papi (x 2) | Jouent aux échecs chinois au bord du lac (passage optionnel) | `g39`, `g48` (imposés) |
@@ -879,8 +880,8 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
 2. **La traduction → Adaptation.** Les passants, quand on leur montre le papier (« Tu montres ton papier. », bulle « … ») :
    la passante « Elle lit, te regarde, relit… puis joint les mains devant elle, désolée. Elle ne parle pas français. » ;
    la vendeuse « La vendeuse hausse les épaules en riant, et te tend une mangue à la place. » ; le passant « Il fronce
-   les sourcils, retourne le papier dans tous les sens, puis te le rend avec un petit salut d'excuse. ». M. Lam, sur le
-   banc : « Oh ! Tu parles français ? Je l'ai appris à l'école, il y a… très longtemps. » / « Voyons voir. Mes yeux ne
+   les sourcils, retourne le papier dans tous les sens, puis te le rend avec un petit salut d'excuse. ». M. Lam, sur
+   l'îlot près de la cloche : « Oh ! Tu parles français ? Je l'ai appris à l'école, il y a… très longtemps. » / « Voyons voir. Mes yeux ne
    sont plus tout jeunes… » / **« « Aller chercher les deux touristes qui attendent dans la grande rue, un peu plus loin
    que l'agence. Leur faire visiter le temple. Ne pas les perdre. » »** / « Le temple, c'est le grand bâtiment au toit rouge, de l'autre côté du lac. » ; **« Tu ne
    parles pas un mot de vietnamien… et pourtant, tu as trouvé ton chemin. »** → vertu **Adaptation**.
@@ -894,8 +895,10 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
    **« Laisse tomber les photos. Regarde autour de toi : tu y es, là, maintenant. Profite. »** ; « Elle range son
    téléphone, lève les yeux vers les statues… et sourit. » ; « Vous avez raison. Je m'en souviendrai mieux comme ça. »
    Sur l'autel : « Sur l'autel, entre deux bâtons d'encens, une petite amulette porte-bonheur. Un gardien te fait
-   signe : elle est pour toi. » → **Objet de chance**. En sortant : « Merci pour la visite ! Sans téléphone, j'ai tout
-   regardé. Vraiment regardé. » / « Un super guide. Et même pas besoin de parler vietnamien ! »
+   signe : elle est pour toi. » → **Objet de chance** (facultatif). En sortant, avec ou sans l'amulette (la visite est
+   finie dès que la touriste a rangé son téléphone) : « Merci pour la visite ! Sans téléphone, j'ai tout regardé.
+   Vraiment regardé. » / « Un super guide. Et même pas besoin de parler vietnamien ! » / **« On va dire à ton patron, à
+   l'agence, que tu es le meilleur. Va vite lui raconter ! »**
 5. **Le retour à l'agence.** Le patron : « Les touristes sont passés me voir. Ils ne parlent que de toi ! » / « Premier
    jour, pas un mot de vietnamien, et tu t'en sors comme un chef. Merci, Pierre. » (il ne parle pas d'Amsterdam).
 6. **Six mois plus tard.** En sortant du bureau du patron : **« Six mois plus tard… »** ; « Ton téléphone sonne. C'est
@@ -1007,15 +1010,16 @@ Vol « New Delhi (Inde) », directement (il n'y a plus de retour à Hull) ; traj
 
 Un semestre d'échange étudiant (`src/data/newDelhiStory.js`) : Pierre loge à l'internat, parmi les étudiants indiens.
 C'est le plus grand choc culturel du parcours : une ville dense et grouillante, une grande joie de vivre, et quelque chose
-de très ancien, rendu sans jamais nommer de religion. Pas de vertu nouvelle (la 8e est réservée à Paris) : Joie de vivre
+de très ancien, rendu sans jamais nommer de religion. Pas de vertu nouvelle (la 8e se gagne à Paris) : Joie de vivre
 sert à la fête, dans le sens renversé. Aucune ligne « Objectif : », une seule ellipse. Le Rajasthan, sa tente et la
 « potion magique » n'existent plus (carte, intérieur et objet retirés du jeu).
 
 ### La carte (40 x 34, Gen 4)
 Premier jet de scripts/build_new_delhi.py, retouché à la main dans le créateur ; les portes du jeu sont sur les portes
 dessinées (audit sans `porte_hors_dessin`). Au nord, le long de la grande avenue : l'université (bâtiment à coupole et
-lanternes dorées, porte (6, 12) : la grande salle de la fête, fermée avant : « L'université, où tu passes le semestre.
-Les portes sont encore fermées. »), le palais de grès (16, 11, « Le palais est fermé aux visiteurs. »), la vieille porte
+lanternes dorées, porte (6, 12), fermée : « L'université, où tu passes le semestre. Les cours reprennent demain. »), le
+palais de grès (porte (16, 11) : sa cour, où se tient la fête ; fermée avant la rencontre avec Harsh : « Le palais est
+fermé aux visiteurs. »), la vieille porte
 du fort (27, 9 : le vieux fort, fermé avant la fête : « Une vieille porte de pierre, plus ancienne que tout le reste de la
 ville. Elle est fermée. ») et le minaret. La grande avenue (rangées 14 à 17) mène à l'aéroport par ses deux bouts. Au
 centre, les jardins : la grande arche (India Gate) et le bassin aux lotus avec son île au banian. À l'est, la tente du
@@ -1033,9 +1037,11 @@ nouveau à l'université ? Tu vas voir, ici, on n'est jamais seul. » ; « Mange
 tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait signe de passer devant. »
 
 ### Les intérieurs
-- **La grande salle de l'université** (`delhiUniversity`, 15 x 11) : la classe de l'école de Mauville (HGSS) sans ses
-  pupitres ni ses chaises ; le bureau du professeur reste ; des guirlandes de fanions le long du mur du fond. Six
-  étudiants dansent en continu (« Tu reviens danser ? Il y a toujours une fête quelque part, ici ! », « C'est ma chanson
+- **La cour du palais** (`delhiCour`, 24 x 18, scripts/build_delhi_cour.py) : une cour à ciel ouvert faite des éléments
+  de la carte de New Delhi : dallage de grès, couronne de palmiers, au fond trois pavillons à coupole (dont le mausolée
+  au dôme blanc), au milieu la fontaine octogonale, deux mâts à fanions, deux lanternes de bronze, le stand de chai, un
+  étal rayé rose, des soucis. Toujours la nuit, lanternes allumées ; sobre, sans cliché. L'entrée en bas, au milieu (la
+  sortie vers la carte, devant la porte du palais). Six étudiants dansent en continu (« Tu reviens danser ? Il y a toujours une fête quelque part, ici ! », « C'est ma chanson
   préférée ! Enfin… elles sont toutes ma chanson préférée. », « Un, deux, trois… et on tourne ! Tu vois, tu as le
   rythme ! », « Le prochain qui s'assoit chante devant tout le monde ! ») ; la fête continue à chaque visite.
 - **Le vieux fort** (`delhiFort`, 21 x 16) : le bas de l'arène de Mauville (HGSS), sans l'arène : dalles de pierre,
@@ -1055,13 +1061,14 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 1. **L'arrivée.** Quelques pas après l'aéroport (colonne 4 de la carte, sur toute sa hauteur) : bulle « ! », puis Pierre,
    en lui-même : **« Tant de monde, de bruit, de couleurs… Je n'ai jamais rien vu de pareil. »**
 2. **Prophecy et Harsh.** Au bout de l'avenue (colonne 24, ou en parlant à Prophecy, en (29, 15)) : bulle « ! » ; Prophecy
-   s'avance : **« Pierre ! Te voilà enfin ! Ça y est, on y est. L'Inde, pour de vrai. »** Harsh sort de la foule et vient
-   vers eux deux : **« Vous êtes les étudiants en échange, c'est ça ? Moi c'est Harsh ! Venez, je vais vous montrer. »** ;
-   écran noir : « Harsh vous entraîne à travers la foule, jusqu'à la grande salle de l'université. La musique s'entend de
-   loin. »
-3. **La fête (Joie de vivre, dans le sens renversé).** « La musique fait trembler le sol. Tout le monde danse, chante, tape
-   dans ses mains. » ; Harsh : **« Ce soir, c'est la fête ! Venez, chez nous on sait faire la fête ! »** ; Prophecy :
-   « Moi, j'y vais ! » (il rejoint la piste) ; bulle « … » sur Pierre : « Toi, tu restes près de la porte. Trop de bruit,
+   s'avance : **« Pierre ! Te voilà enfin ! Ça y est, on y est. L'Inde, pour de vrai. »** Harsh arrive de la foule, à
+   l'est, et vient vers eux deux : **« Vous êtes les étudiants en échange, c'est ça ? Moi c'est Harsh ! Venez, je vais
+   vous montrer. »** / « Ce soir, il y a une fête dans la cour du palais de grès. Suivez-moi ! » Pas d'écran noir : Harsh
+   part devant, à pied, jusqu'à la porte du palais (16, 12) (il attend Pierre s'il traîne : « C'est par ici : la porte du
+   palais de grès. Entrez, la fête a commencé ! »), puis il entre ; Prophecy suit Pierre. Pierre entre à son tour.
+3. **La fête (Joie de vivre, dans le sens renversé).** Dans la cour : « La cour du palais brille de lanternes. La musique
+   fait trembler les dalles ; tout le monde danse, chante, tape dans ses mains. » ; Harsh : **« Ce soir, c'est la fête ! Venez, chez nous on sait faire la fête ! »** ; Prophecy :
+   « Moi, j'y vais ! » (il rejoint la piste) ; bulle « … » sur Pierre : « Toi, tu restes à l'entrée de la cour. Trop de bruit,
    trop de monde, des pas que tu ne connais pas. » ; Harsh vient le chercher : « Eh, Pierre ! Ici, personne ne regarde
    les autres danser. Allez, viens ! » ; une étudiante : « Viens, on te montre ! C'est facile : tu fais comme nous. » ;
    **« Pour une fois, ce n'est pas toi qui entraînes les autres. Ce sont eux qui t'entraînent. »** → **« Pierre utilise
@@ -1083,8 +1090,10 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    ressort devant la porte du fort (27, 10).
 6. **Le retour.** Prophecy (26, 11) : **« Bon, la parenthèse indienne se termine. On rentre à Bordeaux finir nos études.
    Tu te rends compte, on revient là où tout a commencé ? »** ; Harsh (28, 11) : « Vous allez me manquer, tous les deux.
-   Revenez quand vous voulez : ici, vous serez toujours chez vous. » ; écran noir : « Ta valise bouclée, tu prends
-   la route de l'aéroport avec Prophecy. Le vol pour Bordeaux t'attend au guichet. »
+   Revenez quand vous voulez : ici, vous serez toujours chez vous. » ; Prophecy : « Allez, les valises sont prêtes.
+   L'aéroport, c'est au bout de la grande avenue. On y va ! » Pas d'écran noir : Prophecy suit Pierre à pied jusqu'à
+   l'aéroport (Harsh reste devant le fort : « Vous allez me manquer, tous les deux. L'aéroport, c'est au bout de la
+   grande avenue. Bon voyage ! »).
 
 ### Vertus
 - **Gagnée** : aucune.
@@ -1097,18 +1106,28 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 lac de Saint-Ay et au coquillage de Manon.
 
 ### Départ et trajet
-À l'aéroport de Delhi, l'hôtesse propose le vol « Bordeaux (France) » (la suite de l'histoire) ; trajet en avion, sans
-encart (pas de vertu reçue) ; Pierre arrive à Bordeaux, à côté de sa sortie vers l'aéroport ; le stade s'ouvre (drapeau
-`semestre-termine`).
+À l'aéroport de Delhi (Prophecy est là, avec Pierre), l'hôtesse propose le vol « Bordeaux (France) » (la suite de
+l'histoire) ; trajet en avion, sans encart (pas de vertu reçue) ; Pierre et Prophecy arrivent à Bordeaux, à côté de la
+sortie vers l'aéroport ; le stade s'ouvre (drapeau `semestre-termine`).
 
-## 11. Bordeaux (le stade) : textes provisoires
+## 11. Bordeaux : la remise des diplômes
 
-- Le stade s'ouvre une fois le semestre terminé. Le directeur (`g120`) : « [Directeur - texte provisoire] Bienvenue à la
-  cérémonie ! Avance-toi devant l'estrade pour recevoir ton diplôme. » ; douze diplômés (« Félicitations à nous tous ! »…).
-- Devant l'estrade : « Tu t'avances devant l'estrade sous les applaudissements ! » / « Le directeur te remet ton diplôme. » →
-  **Diplôme de Bordeaux**.
+- **L'arrivée** (le vol depuis Delhi, devant la sortie vers l'aéroport) : Prophecy, rentré avec Pierre : **« Bordeaux !
+  Ça fait bizarre, hein ? Comme si on n'était jamais partis. »** / **« La remise des diplômes, c'est aujourd'hui, au
+  stade : la grande rotonde, un peu plus loin dans la rue, à gauche. On y va ? »** Il suit Pierre jusqu'au stade.
+- **Le stade** (porte (21, 10), ouvert une fois le semestre terminé ; `bordeauxStory.js GRADUATION`), en entrant, joué
+  en entier : « Les gradins sont pleins. Toute la promotion est là, en toge et en chapeau. » ; le directeur (`g120`), sur
+  l'estrade : « Bienvenue à tous pour la remise des diplômes de la promotion ! » / **« Pierre ! Avance-toi jusqu'à
+  l'estrade. »** ; Pierre s'avance devant l'estrade → **Diplôme de Bordeaux** (« Le directeur te remet ton diplôme.
+  Toute la promotion applaudit ! ») ; les douze diplômés applaudissent ; le directeur : « Félicitations, Pierre. La
+  suite, maintenant, c'est à toi de l'écrire. » ; Prophecy vient à Pierre : « On l'a fait, Pierre ! Diplômés ! » /
+  **« Moi, je reste un peu à Bordeaux. Et toi ? Paris, non ? La route part au bout de la rue, au sud-est. »** Ensuite,
+  Prophecy reste dans le stade (« Paris, Pierre ! La route part au bout de la rue, au sud-est. Tu m'enverras une
+  carte ? ») ; les diplômés : « On l'a fait ! », « Félicitations à nous tous ! », « Je n'en reviens pas : diplômés ! »,
+  « Quelle belle journée ! ».
 - **Départ** : l'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton diplôme de Bordeaux en poche, tu
-  prends la route de Paris ! » Pas de scène de trajet : Pierre arrive devant son immeuble parisien.
+  prends la route de Paris ! » Pas de scène de trajet : Pierre arrive à Paris par l'ouest de l'avenue, en (1, 11), et
+  marche jusqu'à son immeuble.
 
 ## 12. Paris : la dernière ville
 
@@ -1146,7 +1165,7 @@ le jour 2, le dernier le jour 3 (quand le manager y envoie Pierre).
 | Directeur | Le dernier étage : la belle place | `g120` |
 
 ### Quêtes, dans l'ordre
-1. **L'arrivée.** La route de Bordeaux pose Pierre devant l'immeuble aux balcons fleuris. Le propriétaire : **« Bienvenue !
+1. **L'arrivée.** Par la route de Bordeaux, Pierre arrive au bord ouest de l'avenue (1, 11) et marche jusqu'à l'immeuble aux balcons fleuris (6, 23). Le propriétaire : **« Bienvenue !
    C'est petit, mais vous verrez, on s'y fait. Le bureau n'est pas loin. »** → **Clés de l'appartement de Paris** (« Le
    propriétaire te tend les clés. ») ; Pierre, en lui-même : **« Bon. Un appartement, un bureau. C'est ça,
    maintenant. »** Ensuite le propriétaire : « Votre bureau ? La grande tour de verre, de l'autre côté de la Seine, tout
@@ -1295,7 +1314,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Hôtesse | `g64` | Aéroport |
 | Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull |
 | Romain | `g202` (characterLooks) | Hull, Hanoï (téléphone), Amsterdam |
-| Prophecy | `g94` | Hull, New Delhi |
+| Prophecy | `g94` | Hull, New Delhi, Bordeaux (le stade) |
 | Charlotte | `g44` | Hull |
 | Anaïs | `g107` | Bordeaux (la soirée), Hull |
 | Barman | `g101` | Hull |
@@ -1311,7 +1330,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Vendeur | `g112` | Amsterdam |
 | Harsh | `g89` | New Delhi |
 | Vieux sage | `g71` | New Delhi (le vieux fort) |
-| Directeur | `g120` | Bordeaux (stade), Paris (le dernier étage de la tour) |
+| Directeur | `g120` | Bordeaux (le stade : la remise des diplômes), Paris (le dernier étage de la tour) |
 | Propriétaire | `g35` | Paris (devant l'immeuble) |
 | Collègue | `g36` | Paris (rez-de-chaussée de la tour) |
 | Manager | `g122` | Paris (1er étage de la tour) |
@@ -1353,8 +1372,8 @@ section 13) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Har
   pour Paris.
 
 ### Quêtes inachevées ou textes provisoires
-- Seul **le stade de Bordeaux** reste en texte provisoire.
-- Plusieurs répliques provisoires restent aussi avant Hull, à Fort-de-France : la télé, la console de Manon et le frigo
+- Plus aucun texte provisoire dans l'histoire (le stade de Bordeaux est écrit).
+- Plusieurs répliques provisoires restent avant Hull, à Fort-de-France : la télé, la console de Manon et le frigo
   (« [Texte provisoire] … »).
 - **Objets sans usage** : l'objet de chance et les consignes en vietnamien (Hanoï) restent dans le sac. Les objets
   optionnels (vieille canne exceptée : elle sert à pêcher) ne servent plus après leur ville : galet du lac, autocollant,

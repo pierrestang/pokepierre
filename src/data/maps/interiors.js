@@ -8,7 +8,7 @@ import {
 } from '../saintAyStory.js';
 import { MAMAN_FDF } from '../fortDeFranceStory.js';
 import {
-  AGENT_KEYS, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_END, PARTY_LEO, PAULFIT, REMI_CUPS,
+  AGENT_KEYS, GRADUATION, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_END, PARTY_LEO, PAULFIT, REMI_CUPS,
   TIDY_BED, TIDY_CUPS, TIDY_LIVING_ROOM,
 } from '../bordeauxStory.js';
 import { GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
@@ -2111,44 +2111,54 @@ export const interiors = {
     events: [{ on: 'enter', unlessFlags: [FLAGS.romainDemande], steps: ROMAIN_WELCOME }],
   },
 
-  // New Delhi — la grande salle de l'université, un soir de fête : la classe de l'école de Mauville (HGSS), pupitres
-  // et chaises retirés ; le bureau du professeur sert de table à la musique. Harsh et Prophecy accueillent Pierre, des
-  // étudiants dansent (voir newDelhiStory.js DELHI_PARTY) ; la fête continue à chaque visite.
-  delhiUniversity: {
-    name: 'Université de Delhi',
+  // New Delhi — la cour du palais de grès, un soir de fête (scripts/build_delhi_cour.py : dallage de grès, couronne de
+  // palmiers, trois pavillons à coupole au fond, la fontaine octogonale au milieu, mâts à fanions, lanternes, stand de
+  // chai, un étal, des soucis ; les éléments de la carte de New Delhi). Toujours la nuit, lanternes allumées. Harsh et
+  // les étudiants y font la fête (voir newDelhiStory.js DELHI_PARTY) ; elle continue à chaque visite.
+  delhiCour: {
+    name: 'Cour du palais',
     grid: parseGrid([
-      'XXXXXXXXXXXXXXX',
-      'XXXXXXXXXXXXXXX',
-      'mmmoooooooooomm',
-      'oooommmoooooooo',
-      'ooooooooooooooo',
-      'ooooooooooooomm',
-      'ooooooooooooomm',
-      'ooooooooooooooo',
-      'ooooooooooooooo',
-      'ooooooooooooooo',
-      'mooooEoooooooom',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooooooooooooooo',
+      'oooooooooooEEooooooooooo', // l'entrée de la cour (sortie vers la carte)
     ]),
-    spawn: { x: 5, y: 9, facing: 'up' },
-    // Des guirlandes de fanions le long du mur du fond.
-    decals: [{ kind: 'fanions', x: 0, y: 1, cords: [[4, 18, 116, 18, 8], [124, 18, 236, 18, 8]] }],
+    spawn: { x: 11, y: 15, facing: 'up' },
+    night: { lights: [[8, 8, 0xffc060], [16, 8, 0xffc060], [4, 9, 0xffd890], [20, 9, 0xffd890]] },
     npcs: [
-      { id: 'harsh-fete', name: 'Harsh', x: 6, y: 7, facing: 'down', unlessFlags: [FLAGS.feteDelhi], dialogue: ['Viens danser !'] },
-      { id: 'prophecy-fete', name: 'Prophecy', x: 4, y: 8, facing: 'right', unlessFlags: [FLAGS.feteDelhi], dialogue: ['Quelle ambiance !'] },
+      { id: 'harsh-fete', name: 'Harsh', x: 12, y: 13, facing: 'down', unlessFlags: [FLAGS.feteDelhi], dialogue: ['Viens danser !'] },
       {
-        id: 'etudiante-fete', name: 'Étudiante', sprite: 'g25', x: 8, y: 6, facing: 'down', dancing: true,
+        id: 'prophecy-fete', name: 'Prophecy', x: 10, y: 14, facing: 'up',
+        ifFlags: [FLAGS.courArrivee], unlessFlags: [FLAGS.feteDelhi], dialogue: ['Quelle ambiance !'],
+      },
+      {
+        id: 'etudiante-fete', name: 'Étudiante', sprite: 'g25', x: 14, y: 13, facing: 'down', dancing: true,
         dialogue: STUDENTS.etudiante,
       },
       ...[
-        ['etudiante-musique', 'g97', 3, 4, 'musique'], ['etudiant-rythme', 'g95', 9, 4, 'rythme'],
-        ['etudiant-chanteur', 'g110', 11, 7, 'chanteur'], ['etudiante-ronde', 'g104', 6, 5, 'rythme'],
-        ['etudiant-ronde', 'g102', 2, 6, 'musique'], ['etudiante-chant', 'g103', 12, 3, 'chanteur'],
+        ['etudiante-musique', 'g97', 8, 10, 'musique'], ['etudiant-rythme', 'g95', 15, 10, 'rythme'],
+        ['etudiant-chanteur', 'g110', 17, 12, 'chanteur'], ['etudiante-ronde', 'g104', 9, 8, 'rythme'],
+        ['etudiant-ronde', 'g102', 6, 11, 'musique'], ['etudiante-chant', 'g103', 14, 8, 'chanteur'],
       ].map(([id, sprite, x, y, line]) => ({
         id, name: id.startsWith('etudiante') ? 'Étudiante' : 'Étudiant', sprite, x, y, facing: 'down', dancing: true,
         dialogue: STUDENTS[line],
       })),
     ],
-    // En entrant la première fois (Harsh y conduit Pierre et Prophecy) : la fête.
+    // En entrant la première fois (derrière Harsh, avec Prophecy) : la fête.
     events: [{ on: 'enter', unlessFlags: [FLAGS.feteDelhi], steps: DELHI_PARTY }],
   },
 
@@ -2211,59 +2221,33 @@ export const interiors = {
       {
         id: 'directeur', name: 'Directeur', x: 13, y: 4, facing: 'down', still: true, color: 0x6c1c2c, hat: true,
         unlessFlags: [FLAGS.diplomeBordeaux],
-        dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Avance-toi devant l\'estrade pour recevoir ton diplôme.'],
+        dialogue: ['Bienvenue à la cérémonie ! Avance-toi jusqu\'à l\'estrade.'],
       },
       {
         id: 'directeur-fin', name: 'Directeur', x: 13, y: 4, facing: 'down', still: true, color: 0x6c1c2c, hat: true,
         ifFlags: [FLAGS.diplomeBordeaux],
-        dialogue: ['[Directeur - texte provisoire] Félicitations, jeune diplômé ! La route de Paris est ouverte.'],
+        dialogue: ['Félicitations, Pierre. La suite, maintenant, c\'est à toi de l\'écrire.'],
       },
-      { id: 'diplome-0', name: 'Diplômé', x: 5, y: 8, facing: 'up', color: 0x202028, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Félicitations à nous tous !"] },
-      { id: 'diplome-1', name: 'Diplômé', x: 7, y: 9, facing: 'up', color: 0x2c2c3c, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Quelle belle journée !"] },
-      { id: 'diplome-2', name: 'Diplômé', x: 9, y: 8, facing: 'up', color: 0x1c1c24, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] On l'a fait !"] },
-      { id: 'diplome-3', name: 'Diplômé', x: 16, y: 8, facing: 'up', color: 0x202028, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Je n'en reviens pas, diplômés !"] },
-      { id: 'diplome-4', name: 'Diplômé', x: 18, y: 9, facing: 'up', color: 0x2c2c3c, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Félicitations à nous tous !"] },
-      { id: 'diplome-5', name: 'Diplômé', x: 20, y: 8, facing: 'up', color: 0x1c1c24, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Quelle belle journée !"] },
-      { id: 'diplome-6', name: 'Diplômé', x: 6, y: 11, facing: 'up', color: 0x202028, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] On l'a fait !"] },
-      { id: 'diplome-7', name: 'Diplômé', x: 8, y: 10, facing: 'up', color: 0x2c2c3c, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Je n'en reviens pas, diplômés !"] },
-      { id: 'diplome-8', name: 'Diplômé', x: 18, y: 11, facing: 'up', color: 0x1c1c24, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Félicitations à nous tous !"] },
-      { id: 'diplome-9', name: 'Diplômé', x: 20, y: 10, facing: 'up', color: 0x202028, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Quelle belle journée !"] },
-      { id: 'diplome-10', name: 'Diplômé', x: 10, y: 11, facing: 'up', color: 0x2c2c3c, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] On l'a fait !"] },
-      { id: 'diplome-11', name: 'Diplômé', x: 16, y: 11, facing: 'up', color: 0x1c1c24, hat: true,
-        dialogue: ["[Diplômé - texte provisoire] Je n'en reviens pas, diplômés !"] },
-    ],
-    // Le directeur est sur l'estrade : on lui parle depuis le terrain, au bord de l'estrade.
-    objects: [12, 13].flatMap((x) => [
+      { id: 'diplome-0', name: 'Diplômé', x: 5, y: 8, facing: 'up', color: 0x202028, hat: true, dialogue: ['On l\'a fait !'] },
+      { id: 'diplome-1', name: 'Diplômé', x: 7, y: 9, facing: 'up', color: 0x2c2c3c, hat: true, dialogue: ['Félicitations à nous tous !'] },
+      { id: 'diplome-2', name: 'Diplômé', x: 9, y: 8, facing: 'up', color: 0x1c1c24, hat: true, dialogue: ['Je n\'en reviens pas : diplômés !'] },
+      { id: 'diplome-3', name: 'Diplômé', x: 16, y: 8, facing: 'up', color: 0x202028, hat: true, dialogue: ['Quelle belle journée !'] },
+      { id: 'diplome-4', name: 'Diplômé', x: 18, y: 9, facing: 'up', color: 0x2c2c3c, hat: true, dialogue: ['On l\'a fait !'] },
+      { id: 'diplome-5', name: 'Diplômé', x: 20, y: 8, facing: 'up', color: 0x1c1c24, hat: true, dialogue: ['Félicitations à nous tous !'] },
+      { id: 'diplome-6', name: 'Diplômé', x: 6, y: 11, facing: 'up', color: 0x202028, hat: true, dialogue: ['Je n\'en reviens pas : diplômés !'] },
+      { id: 'diplome-7', name: 'Diplômé', x: 8, y: 10, facing: 'up', color: 0x2c2c3c, hat: true, dialogue: ['Quelle belle journée !'] },
+      { id: 'diplome-8', name: 'Diplômé', x: 18, y: 11, facing: 'up', color: 0x1c1c24, hat: true, dialogue: ['On l\'a fait !'] },
+      { id: 'diplome-9', name: 'Diplômé', x: 20, y: 10, facing: 'up', color: 0x202028, hat: true, dialogue: ['Félicitations à nous tous !'] },
+      { id: 'diplome-10', name: 'Diplômé', x: 10, y: 11, facing: 'up', color: 0x2c2c3c, hat: true, dialogue: ['Je n\'en reviens pas : diplômés !'] },
+      { id: 'diplome-11', name: 'Diplômé', x: 16, y: 11, facing: 'up', color: 0x1c1c24, hat: true, dialogue: ['Quelle belle journée !'] },
+      // Prophecy, qui suivait Pierre depuis Delhi : une fois le diplôme remis, il reste là (à la place où il était).
       {
-        x, y: 5, unlessFlags: [FLAGS.diplomeBordeaux],
-        dialogue: ['[Directeur - texte provisoire] Bienvenue à la cérémonie ! Avance-toi devant l\'estrade pour recevoir ton diplôme.'],
+        id: 'prophecy-depart', name: 'Prophecy', x: 12, y: 8, facing: 'up', ifFlags: [FLAGS.diplomeBordeaux],
+        dialogue: ['Paris, Pierre ! La route part au bout de la rue, au sud-est. Tu m\'enverras une carte ?'],
       },
-      { x, y: 5, dialogue: ['[Directeur - texte provisoire] Félicitations, jeune diplômé ! La route de Paris est ouverte.'] },
-    ]),
-    // Devant l'estrade du directeur : remise du diplôme de Bordeaux (une seule fois).
-    triggers: [[11, 6], [12, 6], [13, 6], [14, 6]].map(([x, y]) => ({
-      x,
-      y,
-      unlessFlags: [FLAGS.diplomeBordeaux],
-      dialogue: ['[Texte provisoire] Tu repenses avec émotion à ta remise de diplôme.'],
-      readyDialogue: [
-        '[Texte provisoire] Tu t\'avances devant l\'estrade sous les applaudissements !',
-        'Le directeur te remet ton diplôme.',
-      ],
-      item: ITEMS.diplomeBordeaux,
-      setFlags: [FLAGS.diplomeBordeaux],
-    })),
+    ],
+    // En entrant (le semestre de Delhi fini) : la cérémonie, jouée en entier (voir bordeauxStory.js GRADUATION).
+    events: [{ on: 'enter', unlessFlags: [FLAGS.diplomeBordeaux], steps: GRADUATION }],
   },
 
   // Paris — ton appartement, dans l'immeuble aux balcons fleuris (modèle « maison-type-2 ») : le soir, la pensée du

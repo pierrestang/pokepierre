@@ -2,16 +2,16 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 
 // Scénario de New Delhi : un semestre d'échange étudiant, Pierre loge à l'internat. Le plus grand choc culturel du
 // voyage : une ville dense et grouillante, une grande joie de vivre, et quelque chose de très ancien. Pas de vertu
-// nouvelle (la 8e est réservée à Paris) : Joie de vivre sert à la fête, mais à l'envers (ce sont les autres qui
+// nouvelle (la 8e se gagne à Paris) : Joie de vivre sert à la fête, mais à l'envers (ce sont les autres qui
 // entraînent Pierre). Aucune ligne « Objectif : », une seule ellipse.
 //   1. L'arrivée : la foule de la grande avenue ; Pierre n'a jamais rien vu de pareil. Au bout de l'avenue, Prophecy
 //      (de la bande de Hull, qui enchaîne son échange aux États-Unis par ce semestre) l'accueille ; Harsh, étudiant
-//      d'ici, vient se présenter à tous les deux.
-//   2. La fête, dans la grande salle de l'université : Harsh et les étudiants entraînent Pierre (Joie de vivre) ; la
-//      danse de Fort-de-France. Harsh et Prophecy suivent ensuite Pierre.
+//      d'ici, vient se présenter à tous les deux ; on le suit à pied jusqu'à la porte du palais de grès.
+//   2. La fête, dans la cour du palais : Harsh et les étudiants entraînent Pierre (Joie de vivre) ; la danse de
+//      Fort-de-France. Harsh et Prophecy suivent ensuite Pierre.
 //   3. Derrière la vieille porte du fort : le silence, le vieux sage, la pierre gravée. Ni vertu ni mini-jeu.
 //   4. « Quelques mois plus tard… » (la seule ellipse de la ville).
-//   5. Devant le fort, Prophecy : on rentre à Bordeaux ; l'avion.
+//   5. Devant le fort, Prophecy : on rentre à Bordeaux ; à pied jusqu'à l'aéroport, Prophecy avec Pierre ; l'avion.
 // Scénettes partagées par la carte et les intérieurs (étapes : voir MapScene.runSteps).
 
 // ---------- 1. L'arrivée ----------
@@ -37,31 +37,40 @@ export const PASSERS_BY = {
 };
 
 // Au bout de l'avenue, Prophecy (retrouvailles prévues) ; puis Harsh vient vers eux deux : il ne connaît ni l'un ni
-// l'autre. Il les entraîne jusqu'à l'université, où la fête a commencé.
+// l'autre. Puis il part devant, à pied, vers la porte du palais de grès (la cour de la fête) ; Prophecy suit Pierre, et
+// tous deux suivent Harsh (rien n'est automatique : on marche jusqu'à la cour).
+export const PALACE_DOOR_FRONT = [16, 12];
+// Harsh part devant (il attend Pierre s'il traîne), puis entre dans la cour.
+export const HARSH_WALK = { walk: 'harsh', to: PALACE_DOOR_FRONT, lead: true, then: [FLAGS.harshCour] };
 export const PROPHECY_WELCOME = [
   { emote: 'prophecy', kind: 'surprise' },
   { approach: 'prophecy' },
   { speaker: 'Prophecy', say: ['Pierre ! Te voilà enfin ! Ça y est, on y est. L\'Inde, pour de vrai.'] },
-  { emerge: { id: 'harsh', name: 'Harsh', from: [[25, 12], [21, 13], [30, 18]] } },
-  { speaker: 'Harsh', say: ['Vous êtes les étudiants en échange, c\'est ça ? Moi c\'est Harsh ! Venez, je vais vous montrer.'] },
-  { black: true },
   { setFlag: FLAGS.prophecyDelhi },
-  { say: ['Harsh vous entraîne à travers la foule, jusqu\'à la grande salle de l\'université. La musique s\'entend de loin.'] },
-  { travel: { interior: 'delhiUniversity', x: 5, y: 9, facing: 'up' } },
+  { approach: 'harsh' },
+  { speaker: 'Harsh', say: ['Vous êtes les étudiants en échange, c\'est ça ? Moi c\'est Harsh ! Venez, je vais vous montrer.', 'Ce soir, il y a une fête dans la cour du palais de grès. Suivez-moi !'] },
+  HARSH_WALK,
+];
+
+// Harsh, s'il attend encore devant la porte du palais (ou qu'on lui reparle en chemin).
+export const HARSH_LEADING = [
+  { speaker: 'Harsh', say: ['C\'est par ici : la porte du palais de grès. Entrez, la fête a commencé !'] },
 ];
 
 // ---------- 2. La fête (Joie de vivre) ----------
 
-// Dans la salle : `prophecy-fete` part danser tout de suite ; Pierre reste près de la porte, puis Harsh et une
-// étudiante viennent le chercher.
-export const DANCE_FLOOR = [7, 5];
+// Dans la cour du palais, à la nuit tombée (interiors.js delhiCour) : Prophecy, qui suivait Pierre, devient le PNJ
+// `prophecy-fete` et part danser tout de suite ; Pierre reste à l'entrée de la cour, puis Harsh et une étudiante viennent
+// le chercher.
+export const DANCE_FLOOR = [9, 13];
 export const DELHI_PARTY = [
-  { say: ['La musique fait trembler le sol. Tout le monde danse, chante, tape dans ses mains.'] },
+  { setFlag: FLAGS.courArrivee },
+  { say: ['La cour du palais brille de lanternes. La musique fait trembler les dalles ; tout le monde danse, chante, tape dans ses mains.'] },
   { speaker: 'Harsh', say: ['Ce soir, c\'est la fête ! Venez, chez nous on sait faire la fête !'] },
   { speaker: 'Prophecy', say: ['Moi, j\'y vais !'] },
   { walk: 'prophecy-fete', to: DANCE_FLOOR, block: true },
   { emote: 'player', kind: 'dots' },
-  { say: ['Toi, tu restes près de la porte. Trop de bruit, trop de monde, des pas que tu ne connais pas.'] },
+  { say: ['Toi, tu restes à l\'entrée de la cour. Trop de bruit, trop de monde, des pas que tu ne connais pas.'] },
   { approach: 'harsh-fete' },
   { speaker: 'Harsh', say: ['Eh, Pierre ! Ici, personne ne regarde les autres danser. Allez, viens !'] },
   { comeBeside: 'etudiante-fete' },
@@ -129,8 +138,9 @@ export const SAGE_AFTER = ['Rien ne se perd, jeune voyageur. Rien.'];
 
 // ---------- 5. Le retour ----------
 
-// Devant la porte du fort, le semestre fini : Prophecy amorce le retour (il partage le cursus de Pierre) ; l'aéroport de
-// Delhi, où l'hôtesse propose le vol pour Bordeaux (maps/airport.js).
+// Devant la porte du fort, le semestre fini : Prophecy amorce le retour (il partage le cursus de Pierre) ; Harsh dit au
+// revoir. Puis on marche jusqu'à l'aéroport (un bout de la grande avenue), Prophecy suit Pierre ; à l'aéroport de Delhi,
+// l'hôtesse propose le vol pour Bordeaux (maps/airport.js).
 export const GOING_HOME = [
   { approach: 'prophecy-depart' },
   {
@@ -139,9 +149,9 @@ export const GOING_HOME = [
   },
   { approach: 'harsh-depart' },
   { speaker: 'Harsh', say: ['Vous allez me manquer, tous les deux. Revenez quand vous voulez : ici, vous serez toujours chez vous.'] },
-  { black: true },
-  { wait: 700 },
-  { setFlag: FLAGS.semestreTermine },
-  { say: ['Ta valise bouclée, tu prends la route de l\'aéroport avec Prophecy. Le vol pour Bordeaux t\'attend au guichet.'] },
-  { travel: { map: 'airport', x: 10, y: 12, facing: 'up' } },
+  { faceTo: 'prophecy-depart' },
+  { speaker: 'Prophecy', say: ['Allez, les valises sont prêtes. L\'aéroport, c\'est au bout de la grande avenue. On y va !'] },
+  { setFlags: [FLAGS.departDelhi, FLAGS.semestreTermine] },
 ];
+
+export const HARSH_GOODBYE = ['Vous allez me manquer, tous les deux. L\'aéroport, c\'est au bout de la grande avenue. Bon voyage !'];

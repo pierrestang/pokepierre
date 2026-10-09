@@ -16,8 +16,10 @@ const MANAGER = 'Manager';
 
 // ---------- 1. L'arrivée ----------
 
-// Pierre arrive devant l'immeuble (6, 23) ; le propriétaire attend à côté de la porte.
+// Pierre arrive par la route de Bordeaux (bord ouest) et marche jusqu'à l'immeuble (6, 23) ; le propriétaire attend à
+// côté de la porte.
 export const ARRIVAL = [
+  { goTo: [6, 23], facing: 'up' },
   { approach: 'proprietaire' },
   { speaker: 'Propriétaire', say: ['Bienvenue ! C\'est petit, mais vous verrez, on s\'y fait. Le bureau n\'est pas loin.'] },
   { give: ITEMS.clesParis, text: 'Le propriétaire te tend les clés.' },

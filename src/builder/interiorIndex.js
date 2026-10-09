@@ -28,9 +28,9 @@ export const TYPES = [
   ['atelier', 'Ateliers et granges', ['ffHut', 'boulyBarn']],
   ['ecole', 'Écoles et universités', ['school', 'bonsecours', 'bonsecoursCasiers', 'bonsecoursMaths', 'bonsecoursFrancais',
     'bonsecoursSciences', 'dortoirHall', 'kedge', 'kedgeCasiers', 'kedgeSalle1', 'kedgeSalle2', 'kedgeSalle3', 'hullUniversity',
-    'hullLibrary', 'delhiUniversity']],
+    'hullLibrary']],
   ['bureau', 'Bureaux et agences', ['agence', 'travelAgency', 'corning', 'entreprise', 'entrepriseManager', 'entrepriseDirecteur']],
-  ['sortie', 'Bars, cafés et salles', ['hullPubA', 'hullPubB', 'hullAsylum', 'coffeeShop', 'stade']],
+  ['sortie', 'Bars, cafés et salles', ['hullPubA', 'hullPubB', 'hullAsylum', 'coffeeShop', 'stade', 'delhiCour']],
   ['temple', 'Temples', ['temple']],
   ['sante', 'Santé', ['hospital']],
 ];

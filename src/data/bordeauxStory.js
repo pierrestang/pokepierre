@@ -277,3 +277,39 @@ export const ANTITHEFT_KEY = [
   { give: ITEMS.cleAntivol, text: 'Tu trouves la clé d\'antivol du cycliste !' },
 ];
 
+
+// ---------- Le retour de New Delhi : la remise des diplômes ----------
+
+// À l'arrivée (le vol depuis Delhi, à côté de la sortie vers l'aéroport) : Prophecy, rentré avec Pierre, indique le
+// stade (la rotonde, un peu plus loin dans la rue, à gauche). Il le suit jusque-là (story.js FOLLOWERS).
+export const BACK_FROM_DELHI = [
+  {
+    speaker: 'Prophecy',
+    say: [
+      'Bordeaux ! Ça fait bizarre, hein ? Comme si on n\'était jamais partis.',
+      'La remise des diplômes, c\'est aujourd\'hui, au stade : la grande rotonde, un peu plus loin dans la rue, à gauche. On y va ?',
+    ],
+  },
+  { setFlag: FLAGS.stadeIndique },
+];
+
+// Dans le stade : toute la promotion, le directeur sur l'estrade ; Pierre est appelé, reçoit son diplôme ; Prophecy
+// (qui ne le suit plus) lui montre la suite : la route de Paris.
+const GRADUATES = Array.from({ length: 12 }, (_, i) => `diplome-${i}`);
+export const GRADUATION = [
+  { say: ['Les gradins sont pleins. Toute la promotion est là, en toge et en chapeau.'] },
+  { speaker: 'Directeur', say: ['Bienvenue à tous pour la remise des diplômes de la promotion !', 'Pierre ! Avance-toi jusqu\'à l\'estrade.'] },
+  { goTo: [12, 6], facing: 'up' },
+  { give: ITEMS.diplomeBordeaux, text: 'Le directeur te remet ton diplôme. Toute la promotion applaudit !' },
+  { cheer: GRADUATES },
+  { speaker: 'Directeur', say: ['Félicitations, Pierre. La suite, maintenant, c\'est à toi de l\'écrire.'] },
+  { setFlag: FLAGS.diplomeBordeaux },
+  { approach: 'prophecy-depart' },
+  {
+    speaker: 'Prophecy',
+    say: [
+      'On l\'a fait, Pierre ! Diplômés !',
+      'Moi, je reste un peu à Bordeaux. Et toi ? Paris, non ? La route part au bout de la rue, au sud-est.',
+    ],
+  },
+];

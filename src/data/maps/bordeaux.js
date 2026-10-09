@@ -8,7 +8,7 @@ import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
   ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AFTER_ORAL, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST,
-  ANTITHEFT_KEY,
+  ANTITHEFT_KEY, BACK_FROM_DELHI,
 } from '../bordeauxStory.js';
 
 // Les gardiens des sorties est : leurs répliques, et l'arrêt quand Pierre passe à côté d'eux (il se tourne vers lui, parle,
@@ -153,6 +153,8 @@ export const bordeauxMap = {
     { on: 'enter', ifFlags: [FLAGS.soiree], unlessFlags: [FLAGS.soireeFinie], steps: MONTHS_LATER },
     // En sortant de KEDGE avec le diplôme d'anglais : Ousmane.
     { on: 'enter', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.ousmaneDiplome], steps: OUSMANE_AFTER_ORAL },
+    // De retour de New Delhi (le vol, avec Prophecy) : Prophecy indique le stade.
+    { on: 'enter', ifFlags: [FLAGS.retourBordeaux], unlessFlags: [FLAGS.stadeIndique], steps: BACK_FROM_DELHI },
   ],
   // Panneaux « Aéroport » à côté des sorties ; les noms sur les portes.
   objects: [
@@ -202,7 +204,7 @@ export const bordeauxMap = {
       dialogue: ['La route est bloquée.'],
       readyDialogue: ['Ton diplôme de Bordeaux en poche, tu prends la route de Paris !'],
       setFlags: [FLAGS.arriveeParis],
-      warp: { map: 'paris', x: 6, y: 23, facing: 'up' },
+      warp: { map: 'paris', x: 1, y: 11, facing: 'right' },   // le bord ouest de Paris, côté Bordeaux
     })),
     // Est : l'aéroport, débloqué par le diplôme d'anglais.
     ...[10, 11, 12].map((y) => ({

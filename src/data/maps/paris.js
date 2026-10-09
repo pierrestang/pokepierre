@@ -139,7 +139,7 @@ export const parisMap = {
     ...[40, 41, 42, 43, 44, 45].map((y) => ({ x: 51, y, dialogue: ['La rue continue vers d\'autres quartiers. Rien à faire par là.'] })),
   ],
   surroundings: { outside },
-  spawn: { x: 6, y: 23, facing: 'up' },
+  spawn: { x: 1, y: 11, facing: 'right' },
 };
 
 // La grille du jeu : celle ci-dessus, accordée aux collisions du dessin.

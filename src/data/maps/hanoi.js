@@ -5,7 +5,7 @@ import { parseGrid } from './parseGrid.js';
 import BUILT from '../builtMaps/hanoi.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
-import { FLAGS, ITEMS } from '../story.js';
+import { FLAGS } from '../story.js';
 import {
   ARRIVAL, CHESS_PLAYERS, MAILBOX, MR_LAM, PASSANT, PASSANTE, SIX_MONTHS_LATER, TOURISTS_MEET, TOURISTS_THANKS, VENDEUSE,
 } from '../hanoiStory.js';
@@ -102,8 +102,8 @@ export const hanoiMap = {
     { id: 'passante', name: 'Passante', sprite: 'g19', x: 22, y: 9, facing: 'down', script: PASSANTE },
     { id: 'vendeuse', name: 'Vendeuse', sprite: 'g70', x: 18, y: 23, facing: 'up', still: true, script: VENDEUSE },
     { id: 'passant', name: 'Passant', sprite: 'g14', x: 15, y: 25, facing: 'right', script: PASSANT },
-    // M. Lam, sur le banc au bord du lac : il parle un peu français.
-    { id: 'm-lam', name: 'M. Lam', sprite: 'g129', x: 7, y: 10, facing: 'left', still: true, script: MR_LAM },
+    // M. Lam, sur le petit îlot du lac, à gauche du pont, près de la cloche : il parle un peu français.
+    { id: 'm-lam', name: 'M. Lam', sprite: 'g129', x: 8, y: 15, facing: 'up', still: true, script: MR_LAM },
     // Facultatif : deux papis jouent aux échecs chinois au bord du lac (Audace).
     { id: 'papi-1', name: 'Papi', sprite: 'g39', x: 18, y: 12, facing: 'right', still: true, script: CHESS_PLAYERS },
     { id: 'papi-2', name: 'Papi', sprite: 'g48', x: 20, y: 12, facing: 'left', still: true, script: CHESS_PLAYERS },
@@ -111,11 +111,10 @@ export const hanoiMap = {
   events: [
     // L'arrivée : personne n'attend Pierre.
     { on: 'enter', ifFlags: [FLAGS.arriveeHanoi], unlessFlags: [FLAGS.hanoiOuverture], steps: ARRIVAL },
-    // En sortant du temple avec l'objet de chance : les touristes te remercient.
+    // En sortant du temple (la touriste calmée, avec ou sans l'objet de chance) : les touristes te remercient.
     {
       on: 'enter',
-      ifFlags: [FLAGS.touristesSuivent],
-      ifItems: [ITEMS.objetChance.id],
+      ifFlags: [FLAGS.touristesSuivent, FLAGS.templeCalme],
       unlessFlags: [FLAGS.visiteTerminee],
       steps: TOURISTS_THANKS,
     },

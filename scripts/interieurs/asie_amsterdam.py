@@ -10,8 +10,6 @@ Pièces de départ (cartes Tiled du pack, coordonnées en cases de la carte) :
 - corning : un étage de bureaux de la Tour Radio (table de réunion, postes informatiques).
 - coffeeShop : la fleuriste de Doublonville (plantes partout) ; le comptoir du vendeur : le bureau à fleurs du fond.
 - maisonCommune : la chambre du héros de Bourg Geon (bureau et PC, télé, lit, tapis) ; un second lit.
-- delhiUniversity : la classe de l'école de Mauville (tableau, bureau, plantes), sans pupitres ni chaises : la salle de
-  la fête.
 - delhiFort : le bas de l'arène de Mauville (dalles, piliers, marches, statues) : le vieux fort.
 Le tapis rouge de sortie, quand la pièce d'origine n'en a pas (étages), vient de la maison de Mauville.
 Crédit : « Intérieurs HGSS ripés et préparés par SirMaIo ».
@@ -88,12 +86,6 @@ PLANS = {
         'paste': [{'from': BED, 'to': (7, 6)}],
         'items': [['aa-tapis', 3, 9]],
         'block': [[0, 3], [1, 3], [2, 3], [1, 8], [8, 8]],
-    },
-    # Université de Delhi : la classe de l'école de Mauville, pupitres et chaises retirés (la grande salle de la fête) ;
-    # le bureau du professeur reste (la table de la musique).
-    'delhiUniversity': {
-        'hgss': ('006i_Violet School ', 10, 8, 15, 11),
-        'erase': [(2, 4, 7, 5)],
     },
     # Le vieux fort de New Delhi : le bas de l'arène de Mauville (dalles de pierre, grands piliers, balustrades, marches,
     # deux statues), sans l'arène elle-même ; le vieux sage sur la terrasse, au-dessus des marches.

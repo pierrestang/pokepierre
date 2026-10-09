@@ -6,7 +6,9 @@ import BUILT from '../builtMaps/new-delhi.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { getTile } from '../tiles.js';
 import { FLAGS } from '../story.js';
-import { CROWD, GOING_HOME, PASSERS_BY, PROPHECY_WELCOME } from '../newDelhiStory.js';
+import {
+  CROWD, GOING_HOME, HARSH_GOODBYE, HARSH_LEADING, HARSH_WALK, PASSERS_BY, PROPHECY_WELCOME,
+} from '../newDelhiStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la grande avenue se prolonge, les palmiers ailleurs.
@@ -104,13 +106,13 @@ export const newDelhiMap = {
     'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 33
   ]),
   doors: [
-    // L'université : la grande salle de la fête (Harsh y conduit Pierre et Prophecy).
+    { x: 6, y: 12, lockedDialogue: ['L\'université, où tu passes le semestre. Les cours reprennent demain.'] },
+    // Le palais de grès : sa cour, où se tient la fête (après la rencontre avec Harsh).
     {
-      x: 6, y: 12, interior: 'delhiUniversity',
-      lock: { ifFlags: [FLAGS.feteDelhi] },
-      lockedDialogue: ['L\'université, où tu passes le semestre. Les portes sont encore fermées.'],
+      x: 16, y: 11, interior: 'delhiCour',
+      lock: { ifFlags: [FLAGS.prophecyDelhi] },
+      lockedDialogue: ['Le palais est fermé aux visiteurs.'],
     },
-    { x: 16, y: 11, lockedDialogue: ['Le palais est fermé aux visiteurs.'] },
     // La vieille porte du fort : le vieux sage, après la fête.
     {
       x: 27, y: 9, interior: 'delhiFort',
@@ -127,19 +129,28 @@ export const newDelhiMap = {
     ...crowd,
     // Prophecy attend Pierre au bout de l'avenue (déclencheurs plus bas : on ne peut pas le manquer).
     { id: 'prophecy', name: 'Prophecy', x: 29, y: 15, facing: 'left', unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME },
-    // Le semestre fini, devant la porte du fort : le retour à Bordeaux.
+    // Harsh : il arrive de la foule à l'est quand Prophecy a retrouvé Pierre, puis part devant vers la porte du palais
+    // de grès (la cour de la fête), où il entre (voir newDelhiStory.js PROPHECY_WELCOME).
+    {
+      id: 'harsh', name: 'Harsh', x: 37, y: 12, facing: 'left',
+      ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.harshCour], script: HARSH_LEADING,
+    },
+    // Le semestre fini, devant la porte du fort : le retour à Bordeaux ; ensuite Prophecy suit Pierre (FOLLOWERS) et
+    // Harsh reste dire au revoir.
     {
       id: 'prophecy-depart', name: 'Prophecy', x: 26, y: 11, facing: 'right',
-      ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.semestreTermine], script: GOING_HOME,
+      ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.departDelhi], script: GOING_HOME,
     },
     {
       id: 'harsh-depart', name: 'Harsh', x: 28, y: 11, facing: 'left',
-      ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.semestreTermine], script: GOING_HOME,
+      ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.retourBordeaux], dialogue: HARSH_GOODBYE,
     },
   ],
   events: [
     // « Quelques mois plus tard… » : Pierre ressort du fort, Prophecy et Harsh l'attendent.
-    { on: 'enter', ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.semestreTermine], steps: GOING_HOME },
+    { on: 'enter', ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.departDelhi], steps: GOING_HOME },
+    // Harsh n'est pas encore arrivé à la porte du palais (partie reprise en chemin) : il repart devant.
+    { on: 'enter', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.harshCour], steps: [HARSH_WALK] },
   ],
   // Panneaux « Aéroport » (dessinés) à côté des sorties ; les deux bouts de la grande avenue mènent à l'aéroport.
   objects: [airportSign(2, 18, false), airportSign(22, 15, true)],

@@ -16,8 +16,8 @@ import boulyBarn from './boulyBarn.json' with { type: 'json' };
 import cabane from './cabane.json' with { type: 'json' };
 import coffeeShop from './coffeeShop.json' with { type: 'json' };
 import corning from './corning.json' with { type: 'json' };
+import delhiCour from './delhiCour.json' with { type: 'json' };
 import delhiFort from './delhiFort.json' with { type: 'json' };
-import delhiUniversity from './delhiUniversity.json' with { type: 'json' };
 import dortoir from './dortoir.json' with { type: 'json' };
 import dortoirEtage2 from './dortoirEtage2.json' with { type: 'json' };
 import dortoirHall from './dortoirHall.json' with { type: 'json' };
@@ -73,8 +73,8 @@ export const BUILT_INTERIORS = {
   cabane: composeInterior(cabane, MODELES),
   coffeeShop: composeInterior(coffeeShop, MODELES),
   corning: composeInterior(corning, MODELES),
+  delhiCour: composeInterior(delhiCour, MODELES),
   delhiFort: composeInterior(delhiFort, MODELES),
-  delhiUniversity: composeInterior(delhiUniversity, MODELES),
   dortoir: composeInterior(dortoir, MODELES),
   dortoirEtage2: composeInterior(dortoirEtage2, MODELES),
   dortoirHall: composeInterior(dortoirHall, MODELES),

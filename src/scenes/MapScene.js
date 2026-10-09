@@ -789,6 +789,20 @@ export class MapScene extends Phaser.Scene {
     this.scene.start('Title');
   }
 
+  // Case où revenir sur cette carte quand on la quitte par son bord (ex. vers l'aéroport) : la case voisine, vers
+  // l'intérieur, tournée vers l'intérieur ; null si Pierre n'est pas au bord.
+  edgeReturn() {
+    const { tileX: x, tileY: y } = this.player;
+    const W = this.grid[0].length;
+    const H = this.grid.length;
+    const at = (dx, dy, facing) => ({ map: this.map.id, x: x + dx, y: y + dy, facing });
+    if (x === 0) return at(1, 0, 'right');
+    if (x === W - 1) return at(-1, 0, 'left');
+    if (y === 0) return at(0, 1, 'down');
+    if (y === H - 1) return at(0, -1, 'up');
+    return null;
+  }
+
   // Le joueur monte dans la voiture (prop de type `type`), qui démarre en tremblant puis file du côté où elle
   // regarde en accélérant, avec des bouffées de fumée. `turnUp` (case x) : arrivée à cette colonne, elle tourne et
   // part vers le haut de la carte, vue de dos.
@@ -951,7 +965,10 @@ export class MapScene extends Phaser.Scene {
     while (alive() && (d.x !== tx || d.y !== ty) && !playerOnTarget() && stuck < 40) {
       // On contourne le joueur si possible ; sinon on attend qu'il se pousse.
       const path = this.pathTo(d, tx, ty, [this.player.tileX, this.player.tileY]) ?? this.pathTo(d, tx, ty);
-      const far = () => Math.abs(this.player.tileX - d.x) + Math.abs(this.player.tileY - d.y) > 6;
+      // `lead` : le PNJ attend le joueur resté en arrière (à plus de 6 cases, et plus loin que lui du but) ; s'il est
+      // passé devant, le PNJ continue.
+      const far = () => Math.abs(this.player.tileX - d.x) + Math.abs(this.player.tileY - d.y) > 6
+        && Math.abs(this.player.tileX - tx) + Math.abs(this.player.tileY - ty) > Math.abs(d.x - tx) + Math.abs(d.y - ty);
       if (!path?.length || (lead && far())) {
         if (!path?.length) stuck++;
         await this.wait(250);
@@ -1574,12 +1591,18 @@ export class MapScene extends Phaser.Scene {
   travel({ map, interior, fromMap, ferry, deck, car, plane, carry, airportExit, ...spawn }) {
     // L'aéroport : on retient la ville d'où l'on y entre (ses portes y ramènent) ; `airportExit` : ses portes.
     if (airportExit) {
-      const exit = AIRPORT_EXITS[memo.get('aeroport')] ?? AIRPORT_EXITS.bordeaux;
-      const { map: city, ...at } = exit;
-      this.goTo('Overworld', { mapId: city, spawn: at });
+      // On ressort à côté de l'endroit où l'on était entré (par le même bout de la rue) ; sinon (arrivée par une
+      // scénette, ancienne partie), à la sortie habituelle de la ville.
+      const city = memo.get('aeroport') ?? 'bordeaux';
+      const back = memo.get('aeroportRetour');
+      const { map: exitMap, ...at } = back?.map === city ? back : AIRPORT_EXITS[city] ?? AIRPORT_EXITS.bordeaux;
+      this.goTo('Overworld', { mapId: exitMap, spawn: at });
       return;
     }
-    if (map === 'airport' && !plane && this.map.id !== 'airport') memo.set('aeroport', this.fromMap ?? this.map.id);
+    if (map === 'airport' && !plane && this.map.id !== 'airport') {
+      memo.set('aeroport', this.fromMap ?? this.map.id);
+      memo.set('aeroportRetour', this.scene.key === 'Overworld' ? this.edgeReturn() : null);
+    }
     // `fromMap` : la ville où l'on ressort d'un intérieur (par défaut, celle où l'on est).
     if (interior) this.goTo('Interior', { interior, fromMap: fromMap ?? this.fromMap ?? this.map.id, spawn });
     else if (ferry || car || plane) {

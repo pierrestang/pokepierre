@@ -97,11 +97,11 @@ export const VENDEUSE = passer('vendeuse', 'La vendeuse hausse les épaules en r
 export const PASSANT = passer('passant', 'Il fronce les sourcils, retourne le papier dans tous les sens, puis te le rend avec un petit salut d\'excuse.',
   'Un passant vérifie la chaîne de son vélo. Il ne fait pas attention à toi.');
 
-// M. Lam, sur le banc du lac : il a appris le français à l'école, il y a longtemps. Il traduit les consignes.
+// M. Lam, sur le petit îlot du lac, près de la cloche : il a appris le français à l'école, il y a longtemps. Il traduit les consignes.
 export const MR_LAM = [
   { ifFlags: [FLAGS.consignesTraduites], speaker: 'M. Lam', say: ['Le temple au toit rouge, de l\'autre côté du lac. Bonne visite, jeune homme !'], end: true },
   { unlessItems: [ITEMS.consignesVietnamien.id], speaker: 'M. Lam', say: ['Bonjour, bonjour ! Le lac est beau, ce matin, n\'est-ce pas ?'], end: true },
-  { say: ['Tu montres ton papier au vieux monsieur du banc.'] },
+  { say: ['Tu montres ton papier au vieux monsieur, près de la cloche.'] },
   { speaker: 'M. Lam', say: ['Oh ! Tu parles français ? Je l\'ai appris à l\'école, il y a… très longtemps.', 'Voyons voir. Mes yeux ne sont plus tout jeunes…'] },
   {
     speaker: 'M. Lam',
@@ -149,10 +149,11 @@ export const ALTAR = {
   after: ['L\'autel est paisible. L\'encens fume doucement.'],
 };
 
-// En sortant du temple avec l'objet de chance : les touristes remercient Pierre.
+// En sortant du temple (avec ou sans l'objet de chance) : les touristes remercient Pierre, et l'envoient raconter sa
+// journée au patron de l'agence.
 export const TOURISTS_THANKS = [
   { speaker: TOURISTE, say: ['Merci pour la visite ! Sans téléphone, j\'ai tout regardé. Vraiment regardé.'] },
-  { speaker: TOURISTE, say: ['Un super guide. Et même pas besoin de parler vietnamien !'] },
+  { speaker: TOURISTE, say: ['Un super guide. Et même pas besoin de parler vietnamien !', 'On va dire à ton patron, à l\'agence, que tu es le meilleur. Va vite lui raconter !'] },
   { setFlag: FLAGS.visiteTerminee },
 ];
 

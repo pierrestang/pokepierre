@@ -133,11 +133,15 @@ export const FLAGS = {
   arriveeNewDelhi: 'arrivee-new-delhi',         // arrivé à New Delhi (Inde)
   delhiFoule: 'delhi-foule',                    //   la traversée de la foule : Pierre n'a jamais rien vu de pareil
   prophecyDelhi: 'prophecy-delhi',              //   Prophecy accueille Pierre au bout de l'avenue ; Harsh se présente
-  feteDelhi: 'fete-delhi',                      //   la fête à l'université (Joie de vivre) ; Harsh et Prophecy suivent Pierre
+  harshCour: 'harsh-cour',                      //   Harsh, parti devant, est entré dans la cour du palais (la fête)
+  courArrivee: 'cour-arrivee',                  //   Pierre et Prophecy arrivent dans la cour : Prophecy ne le suit plus
+  feteDelhi: 'fete-delhi',                      //   la fête dans la cour du palais (Joie de vivre) ; Harsh et Prophecy suivent Pierre
   sageDelhi: 'sage-delhi',                      //   le vieux sage, derrière la porte du fort : la pierre gravée
   moisDelhi: 'mois-delhi',                      //   « Quelques mois plus tard… » (la seule ellipse de la ville)
+  departDelhi: 'depart-delhi',                  //   Prophecy et Harsh devant le fort : on rentre ; Prophecy suit Pierre jusqu'à Bordeaux
   semestreTermine: 'semestre-termine',          //   Prophecy : on rentre à Bordeaux (le stade s'ouvre)
   retourBordeaux: 'retour-bordeaux',            // de retour à Bordeaux, par le vol depuis l'aéroport de Delhi
+  stadeIndique: 'stade-indique',                //   Prophecy, à l'arrivée : la remise des diplômes, au stade
   diplomeBordeaux: 'diplome-bordeaux',          // diplôme reçu devant l'estrade du stade (la route de Paris s'ouvre)
   arriveeParis: 'arrivee-paris',                // arrivé à Paris, devant l'immeuble du propriétaire
   parisCles: 'paris-cles',                      //   le propriétaire a donné les clés
@@ -269,7 +273,11 @@ export const FOLLOWERS = [
   // Hanoï : les deux touristes te suivent de la grande rue jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', name: 'Touriste', sprite: 'g24', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', name: 'Touriste', sprite: 'g22', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
-  // New Delhi : après la fête, Harsh et Prophecy suivent Pierre jusqu'au vieux sage, derrière la porte du fort.
+  // New Delhi : Prophecy suit Pierre de la rencontre jusqu'à la cour du palais (il y redevient le PNJ prophecy-fete) ;
+  // après la fête, Harsh et Prophecy le suivent jusqu'au vieux sage, derrière la porte du fort ; à la fin du semestre,
+  // Prophecy le suit jusqu'à l'aéroport, dans l'avion, puis à Bordeaux jusqu'au stade (il y devient prophecy-depart).
+  { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.courArrivee] },
+  { id: 'prophecy-depart', name: 'Prophecy', ifFlags: [FLAGS.departDelhi], unlessFlags: [FLAGS.diplomeBordeaux] },
   { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
   { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
   // Hull, la tournée des bars : Léo part devant en éclaireur ; Ousmane, Charlotte et Anaïs suivent Pierre à la queue
