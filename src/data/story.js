@@ -135,7 +135,8 @@ export const FLAGS = {
   prophecyDelhi: 'prophecy-delhi',              //   Prophecy accueille Pierre au bout de l'avenue ; Harsh se présente
   harshCour: 'harsh-cour',                      //   Harsh, parti devant, est entré dans la cour du palais (la fête)
   courArrivee: 'cour-arrivee',                  //   Pierre et Prophecy arrivent dans la cour : Prophecy ne le suit plus
-  feteDelhi: 'fete-delhi',                      //   la fête dans la cour du palais (Joie de vivre) ; Harsh et Prophecy suivent Pierre
+  feteDelhi: 'fete-delhi',                      //   le repas dans la cour (Joie de vivre) ; Harsh part devant, vers la porte du fort
+  harshRejoint: 'harsh-rejoint',                //   Pierre et Prophecy rejoignent Harsh devant la porte du fort ; ils entrent ensemble
   sageDelhi: 'sage-delhi',                      //   le vieux sage, derrière la porte du fort : la pierre gravée
   moisDelhi: 'mois-delhi',                      //   « Quelques mois plus tard… » (la seule ellipse de la ville)
   departDelhi: 'depart-delhi',                  //   Prophecy et Harsh devant le fort : on rentre ; Prophecy suit Pierre jusqu'à Bordeaux
@@ -292,7 +293,7 @@ export const FOLLOWERS = [
   { id: 'prophecy-depart', name: 'Prophecy', ifFlags: [FLAGS.departDelhi], unlessFlags: [FLAGS.stadeEntree] },
   // Paris : Thomas, son service fini, suit Pierre du restaurant jusque chez Hugues (il y redevient le PNJ thomas).
   { id: 'thomas', name: 'Thomas', ifFlags: [FLAGS.thomasSuit], unlessFlags: [FLAGS.matchArrivee] },
-  { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
+  { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.harshRejoint], unlessFlags: [FLAGS.sageDelhi] },
   { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
   // Hull, la tournée des bars : Léo part devant en éclaireur ; Ousmane, Charlotte et Anaïs suivent Pierre à la queue
   // leu leu, du premier pub au second, puis du second à l'Asylum (mêmes id que leurs PNJ dans les bars : ils partent de

@@ -74,6 +74,8 @@ export const HARSH_LEADING = [
 // et s'assoit ; Harsh fait asseoir Pierre à côté de lui. Joie de vivre, dans le sens renversé : ce sont les autres qui
 // donnent, de tous les côtés ; Pierre, débordé, apprend à recevoir (étape `pass` : les assiettes glissent vers lui).
 export const MEAL_SEATS = { pierre: [9, 10], harsh: [9, 11], prophecy: [10, 12] };
+// La sortie de la cour (au-dessus du tapis de sortie, en bas au milieu).
+const COUR_EXIT = [11, 16];
 const LEFT = ['etudiante-fete', 'harsh-fete'];
 const ACROSS = ['etudiant-dal', 'grand-mere-fete', 'etudiante-riz', 'voisin-fete'];
 export const DELHI_PARTY = [
@@ -101,15 +103,31 @@ export const DELHI_PARTY = [
   { say: ['Tu prends ce qu\'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin.'] },
   { pass: LEFT },
   { speaker: 'Harsh', say: ['Tu vois ? Tu es des nôtres, maintenant !'] },
+  { sit: { player: false, 'harsh-fete': false, 'prophecy-fete': false } },
   {
     speaker: 'Harsh',
     say: [
-      'Maintenant que vous avez vu la fête, il faut que je vous montre autre chose. Un endroit très ancien. Venez.',
-      'C\'est derrière la vieille porte du fort, au bout de l\'avenue.',
+      'Maintenant que vous avez vu la fête, il faut que je vous montre autre chose. Un endroit très ancien.',
+      'C\'est derrière la vieille porte du fort, de l\'autre côté de l\'avenue. Suivez-moi !',
     ],
   },
-  { sit: { player: false, 'harsh-fete': false, 'prophecy-fete': false } },
+  // Harsh part seul, le premier ; puis Pierre et Prophecy quittent la cour d'eux-mêmes (le joueur n'a pas la main).
+  { walk: 'harsh-fete', to: COUR_EXIT, block: true },
   { setFlag: FLAGS.feteDelhi },
+  { goTo: [COUR_EXIT[0] + 1, COUR_EXIT[1]], facing: 'down' },
+  { travel: { map: 'newDelhi', x: 16, y: 12, facing: 'down' } },
+];
+
+// Sur la carte, en sortant de la cour : Pierre et Prophecy (qui le suit) traversent l'avenue jusqu'à la porte du fort,
+// où Harsh les attend (newDelhi.js), puis entrent avec lui (il les suit à nouveau, story.js FOLLOWERS).
+export const FORT_DOOR_FRONT = [27, 10];
+export const JOIN_HARSH = [
+  { goTo: FORT_DOOR_FRONT, facing: 'right' },
+  { face: { 'harsh-fete': 'left' } },
+  { speaker: 'Harsh', say: ['Vous voilà. C\'est ici : la vieille porte du fort. Entrons.'] },
+  { setFlag: FLAGS.harshRejoint },
+  { face: { player: 'up' } },
+  { travel: { interior: 'delhiFort' } },
 ];
 
 // Les convives, assis autour du repas (le repas continue à chaque visite).

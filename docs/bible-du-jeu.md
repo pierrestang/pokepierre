@@ -1103,9 +1103,12 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    lui-même : **« Je ne sais même pas quoi faire de toute cette générosité. Juste… l'accepter, peut-être. »** ; Harsh :
    **« Atithi Devo Bhava. Chez nous, ça veut dire que l'invité est sacré. »** → **« Pierre utilise Joie de
    vivre ! »** → « Tu prends ce qu'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat
-   à ton voisin. » ; Harsh : « Tu vois ? Tu es des nôtres, maintenant ! » / **« Maintenant que vous avez vu la fête, il
-   faut que je vous montre autre chose. Un endroit très ancien. Venez. »** / « C'est derrière la vieille porte du fort,
-   au bout de l'avenue. » Pierre se relève ; Harsh et Prophecy le suivent ensuite.
+   à ton voisin. » ; Harsh : « Tu vois ? Tu es des nôtres, maintenant ! » Tous se relèvent ; Harsh : **« Maintenant que
+   vous avez vu la fête, il faut que je vous montre autre chose. Un endroit très ancien. »** / **« C'est derrière la
+   vieille porte du fort, de l'autre côté de l'avenue. Suivez-moi ! »** Harsh part seul, le premier, et quitte la cour.
+   Puis, d'eux-mêmes (le joueur n'a pas la main), Pierre et Prophecy quittent la cour, traversent l'avenue et
+   rejoignent Harsh, qui les attend devant la porte du fort (28, 10) : « Vous voilà. C'est ici : la vieille porte du
+   fort. Entrons. » Ils entrent tous les trois ; Harsh et Prophecy suivent Pierre dans le fort.
 4. **Le vieux sage (ni vertu, ni mini-jeu).** En entrant dans le fort : « Derrière toi, le bruit de la ville s'est éteint
    d'un coup. Il n'y a plus que le vent entre les vieilles pierres. » ; Harsh : « Ces murs sont là depuis plus de mille
    ans. Ici, on parle doucement. » En haut des marches, le vieux sage vient à Pierre : **« Tu viens de loin, et tu iras

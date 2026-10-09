@@ -7,7 +7,7 @@ import { builtGrid } from './builtGrid.js';
 import { getTile } from '../tiles.js';
 import { FLAGS } from '../story.js';
 import {
-  CROWD, GOING_HOME, HARSH_GOODBYE, HARSH_LEADING, HARSH_WALK, NEIGHBOURS, PASSERS_BY, PROPHECY_WELCOME,
+  CROWD, GOING_HOME, HARSH_GOODBYE, HARSH_LEADING, HARSH_WALK, JOIN_HARSH, NEIGHBOURS, PASSERS_BY, PROPHECY_WELCOME,
 } from '../newDelhiStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
@@ -160,6 +160,11 @@ export const newDelhiMap = {
       id: 'harsh', name: 'Harsh', x: 37, y: 12, facing: 'left',
       ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.harshCour], script: HARSH_LEADING,
     },
+    // Après le repas : Harsh, parti le premier, attend Pierre et Prophecy devant la porte du fort.
+    {
+      id: 'harsh-fete', name: 'Harsh', x: 28, y: 10, facing: 'left',
+      ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.harshRejoint], dialogue: ['C\'est ici : la vieille porte du fort.'],
+    },
     // Le semestre fini, devant la porte du fort : le retour à Bordeaux ; ensuite Prophecy suit Pierre (FOLLOWERS) et
     // Harsh reste dire au revoir.
     {
@@ -174,6 +179,8 @@ export const newDelhiMap = {
   events: [
     // « Quelques mois plus tard… » : Pierre ressort du fort, Prophecy et Harsh l'attendent.
     { on: 'enter', ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.departDelhi], steps: GOING_HOME },
+    // En sortant de la cour, après le repas : on rejoint Harsh devant la porte du fort, et on entre avec lui.
+    { on: 'enter', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.harshRejoint], steps: JOIN_HARSH },
     // Harsh n'est pas encore arrivé à la porte du palais (partie reprise en chemin) : il repart devant.
     { on: 'enter', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.harshCour], steps: [HARSH_WALK] },
   ],
