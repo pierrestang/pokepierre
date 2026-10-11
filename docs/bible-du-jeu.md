@@ -1099,7 +1099,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Prophecy | De la bande de Hull ; il enchaîne son échange aux États-Unis par ce semestre (prévu de longue date) et accueille Pierre ; il rentre lui aussi finir ses études à Bordeaux | `g94` |
-| Harsh | Étudiant indien, rencontré sur place (nouveau pour Pierre et pour Prophecy) : la porte d'entrée dans la culture locale | `g89` |
+| Harsh | Étudiant indien, rencontré sur place (nouveau pour Pierre et pour Prophecy) : la porte d'entrée dans la culture locale | `g83` (cheveux noirs, peau mate, tunique blanche) |
 | Vieux sage | Le vieux fort : il transmet, et donne la pierre gravée | `g71` |
 | Étudiante, étudiants, grand-mère, voisin | Les convives du repas, assis en cercle (la grand-mère : `g42`, le voisin : `g38`) | `g25`, `g97`, `g95`, `g110`, `g104`, `g102`, `g103`, `g42`, `g38` |
 | Passants, passantes | La foule de l'avenue | sprites imposés (`g14`, `g42`, `g86`…) |
@@ -1128,9 +1128,9 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    vivre ! »** → « Tu prends ce qu'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat
    à ton voisin. » ; Harsh : « Tu vois ? Tu es des nôtres, maintenant ! » Tous se relèvent ; Harsh : **« Maintenant que
    vous avez vu la fête, il faut que je vous montre autre chose. Un endroit très ancien. »** / **« C'est derrière la
-   vieille porte du fort, de l'autre côté de l'avenue. Suivez-moi ! »** Harsh part seul, le premier, et quitte la cour.
-   Puis, d'eux-mêmes (le joueur n'a pas la main), Pierre et Prophecy quittent la cour, traversent l'avenue et
-   rejoignent Harsh, qui les attend devant la porte du fort (28, 10) : « Vous voilà. C'est ici : la vieille porte du
+   vieille porte du fort, de l'autre côté de l'avenue. Suivez-moi ! »** Harsh part seul, le premier, et quitte la cour ;
+   fin de la scénette : le joueur reprend la main, Prophecy le suit. Pierre sort de la cour et traverse l'avenue
+   lui-même jusqu'à Harsh, qui attend devant la porte du fort (28, 10) ; sur la case devant la porte (27, 10) : « Vous voilà. C'est ici : la vieille porte du
    fort. Entrons. » Ils entrent tous les trois ; Harsh et Prophecy suivent Pierre dans le fort.
 4. **Le vieux sage (ni vertu, ni mini-jeu).** En entrant dans le fort : « Derrière toi, le bruit de la ville s'est éteint
    d'un coup. Il n'y a plus que le vent entre les vieilles pierres. » ; Harsh : « Ces murs sont là depuis plus de mille
@@ -1138,11 +1138,12 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    plus loin encore. Mais souviens-toi : ce n'est pas la destination qui compte, c'est ce que le chemin dépose en
    toi. »** / **« Chaque lieu que tu traverses, chaque visage que tu quittes, rien ne se perd. Tout cela voyage avec toi,
    ici. »** ; « En disant « ici », il pose la main sur son cœur. » → **Pierre gravée** (« Le vieux sage glisse dans ta
-   main une petite pierre, polie par les années, où l'on a gravé un chemin qui tourne sur lui-même. ») ; avec le galet
-   de Saint-Ay dans le sac : « Elle est lisse et tiède, comme le galet du lac de Saint-Ay. Comme le coquillage de
-   Manon. » ; sans : « Elle est lisse et tiède, comme le coquillage de Manon, à Fort-de-France. »
-5. **Quelques mois plus tard.** Écran noir : **« Quelques mois plus tard… »** (la seule ellipse de la ville) ; Pierre
-   ressort devant la porte du fort (27, 10).
+   main une petite pierre, polie par les années, où l'on a gravé un chemin qui tourne sur lui-même. ») ; le vieux sage :
+   **« Garde-la sur toi. Elle vient de loin, comme toi. »** ; Pierre, en pensée : **« Le poids dans ma paume… c'est le
+   même que le coquillage de Manon, sur la plage de Fort-de-France. Comme si le voyage bouclait quelque chose. »** Le
+   joueur reprend la main ; Harsh et Prophecy le suivent jusqu'à la sortie du fort.
+5. **Quelques mois plus tard.** En sortant du fort (et plus dans le temple) : écran noir, **« Quelques mois plus
+   tard… »** (la seule ellipse de la ville) ; Pierre est devant la porte du fort (27, 10).
 6. **Le retour.** Prophecy (26, 11) : **« Bon, la parenthèse indienne se termine. On rentre à Bordeaux finir nos études.
    Tu te rends compte, on revient là où tout a commencé ? »** ; Harsh (28, 11) : « Vous allez me manquer, tous les deux.
    Revenez quand vous voulez : ici, vous serez toujours chez vous. » ; Prophecy : « Allez, les valises sont prêtes.

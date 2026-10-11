@@ -10,7 +10,7 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 //   2. La fête, dans la cour du palais : le grand repas partagé, assis en cercle par terre ; on sert Pierre de tous les
 //      côtés (Joie de vivre, à l'envers : il apprend à recevoir). Harsh et Prophecy suivent ensuite Pierre.
 //   3. Derrière la vieille porte du fort : le silence, le vieux sage, la pierre gravée. Ni vertu ni mini-jeu.
-//   4. « Quelques mois plus tard… » (la seule ellipse de la ville).
+//   4. En sortant du fort : « Quelques mois plus tard… » (la seule ellipse de la ville).
 //   5. Devant le fort, Prophecy : on rentre à Bordeaux ; à pied jusqu'à l'aéroport, Prophecy avec Pierre ; l'avion.
 // Scénettes partagées par la carte et les intérieurs (étapes : voir MapScene.runSteps).
 
@@ -111,19 +111,17 @@ export const DELHI_PARTY = [
       'C\'est derrière la vieille porte du fort, de l\'autre côté de l\'avenue. Suivez-moi !',
     ],
   },
-  // Harsh part seul, le premier ; puis Pierre et Prophecy quittent la cour d'eux-mêmes (le joueur n'a pas la main).
+  // Harsh part seul, le premier ; le joueur reprend la main pendant qu'il s'en va (fin de la scénette), et Prophecy le
+  // suit dès que Harsh a quitté la cour (FOLLOWERS). Pierre sort de la cour et traverse l'avenue lui-même.
   { walk: 'harsh-fete', to: COUR_EXIT, block: true },
   { setFlag: FLAGS.feteDelhi },
-  { goTo: [COUR_EXIT[0] + 1, COUR_EXIT[1]], facing: 'down' },
-  { travel: { map: 'newDelhi', x: 16, y: 12, facing: 'down' } },
 ];
 
-// Sur la carte, en sortant de la cour : Pierre et Prophecy (qui le suit) traversent l'avenue jusqu'à la porte du fort,
-// où Harsh les attend (newDelhi.js), puis entrent avec lui (il les suit à nouveau, story.js FOLLOWERS).
+// Sur la carte : Harsh attend devant la porte du fort (newDelhi.js) ; quand Pierre arrive devant la porte (Prophecy le
+// suit), ils entrent ensemble (Harsh les suit à nouveau, story.js FOLLOWERS).
 export const FORT_DOOR_FRONT = [27, 10];
 export const JOIN_HARSH = [
-  { goTo: FORT_DOOR_FRONT, facing: 'right' },
-  { face: { 'harsh-fete': 'left' } },
+  { face: { player: 'right', 'harsh-fete': 'left' } },
   { speaker: 'Harsh', say: ['Vous voilà. C\'est ici : la vieille porte du fort. Entrons.'] },
   { setFlag: FLAGS.harshRejoint },
   { face: { player: 'up' } },
@@ -162,16 +160,20 @@ export const SAGE = [
   { say: ['En disant « ici », il pose la main sur son cœur.'] },
   { wait: 600 },
   { give: ITEMS.pierreGravee, text: 'Le vieux sage glisse dans ta main une petite pierre, polie par les années, où l\'on a gravé un chemin qui tourne sur lui-même.' },
-  { ifItems: [ITEMS.galetLac.id], say: ['Elle est lisse et tiède, comme le galet du lac de Saint-Ay. Comme le coquillage de Manon.'] },
-  { unlessItems: [ITEMS.galetLac.id], say: ['Elle est lisse et tiède, comme le coquillage de Manon, à Fort-de-France.'] },
-  { wait: 800 },
-  // ---------- 4. L'ellipse ----------
-  { black: true },
+  { speaker: 'Vieux sage', say: ['Garde-la sur toi. Elle vient de loin, comme toi.'] },
+  { say: ['Le poids dans ma paume… c\'est le même que le coquillage de Manon, sur la plage de Fort-de-France. Comme si le voyage bouclait quelque chose.'] },
   { setFlag: FLAGS.sageDelhi },
+];
+
+// ---------- 4. L'ellipse ----------
+
+// En sortant du fort (Harsh et Prophecy le suivent encore) : « Quelques mois plus tard… », puis le retour (GOING_HOME).
+export const MONTHS_LATER = [
+  { black: true },
   { wait: 800 },
   { say: ['Quelques mois plus tard…'] },
   { setFlag: FLAGS.moisDelhi },
-  { travel: { map: 'newDelhi', x: 27, y: 10, facing: 'down' } },
+  { black: false },
 ];
 
 export const SAGE_AFTER = ['Rien ne se perd, jeune voyageur. Rien.'];

@@ -7,7 +7,7 @@ import { builtGrid } from './builtGrid.js';
 import { getTile } from '../tiles.js';
 import { FLAGS } from '../story.js';
 import {
-  CROWD, GOING_HOME, HARSH_GOODBYE, HARSH_LEADING, HARSH_WALK, JOIN_HARSH, NEIGHBOURS, PASSERS_BY, PROPHECY_WELCOME,
+  CROWD, FORT_DOOR_FRONT, GOING_HOME, HARSH_GOODBYE, HARSH_LEADING, HARSH_WALK, JOIN_HARSH, MONTHS_LATER, NEIGHBOURS, PASSERS_BY, PROPHECY_WELCOME,
 } from '../newDelhiStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
@@ -140,7 +140,7 @@ export const newDelhiMap = {
     // La vieille porte du fort : le vieux sage, après la fête.
     {
       x: 27, y: 9, interior: 'delhiFort',
-      lock: { ifFlags: [FLAGS.feteDelhi] },
+      lock: { ifFlags: [FLAGS.harshRejoint] },
       lockedDialogue: ['Une vieille porte de pierre, plus ancienne que tout le reste de la ville. Elle est fermée.'],
     },
     { x: 33, y: 22, lockedDialogue: ['La tente du bazar est fermée pour aujourd\'hui.'] },
@@ -177,16 +177,19 @@ export const newDelhiMap = {
     },
   ],
   events: [
-    // « Quelques mois plus tard… » : Pierre ressort du fort, Prophecy et Harsh l'attendent.
+    // En sortant du fort, la pierre reçue : « Quelques mois plus tard… », puis Prophecy et Harsh devant la porte.
+    { on: 'enter', ifFlags: [FLAGS.sageDelhi], unlessFlags: [FLAGS.moisDelhi], steps: [...MONTHS_LATER, ...GOING_HOME] },
     { on: 'enter', ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.departDelhi], steps: GOING_HOME },
-    // En sortant de la cour, après le repas : on rejoint Harsh devant la porte du fort, et on entre avec lui.
-    { on: 'enter', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.harshRejoint], steps: JOIN_HARSH },
     // Harsh n'est pas encore arrivé à la porte du palais (partie reprise en chemin) : il repart devant.
     { on: 'enter', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.harshCour], steps: [HARSH_WALK] },
   ],
   // Panneaux « Aéroport » (dessinés) à côté des sorties ; les deux bouts de la grande avenue mènent à l'aéroport.
   objects: [airportSign(2, 18, false), airportSign(22, 15, true)],
-  triggers: [14, 15, 16, 17].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),
+  triggers: [
+    ...[14, 15, 16, 17].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),
+    // Après le repas, devant la porte du fort (la seule case qui y mène) : on rejoint Harsh et on entre avec lui.
+    { x: FORT_DOOR_FRONT[0], y: FORT_DOOR_FRONT[1], ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.harshRejoint], script: JOIN_HARSH },
+  ],
   surroundings: { outside },
   spawn: { x: 1, y: 16, facing: 'right' },
 };

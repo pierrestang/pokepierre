@@ -293,15 +293,15 @@ export const FOLLOWERS = [
   { id: 'touriste-1', name: 'Touriste', sprite: 'g24', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', name: 'Touriste', sprite: 'g22', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   // New Delhi : Prophecy suit Pierre de la rencontre jusqu'à la cour du palais (il y redevient le PNJ prophecy-fete) ;
-  // après la fête, Harsh et Prophecy le suivent jusqu'au vieux sage, derrière la porte du fort ; à la fin du semestre,
+  // après la fête, Prophecy le suit jusqu'à la porte du fort, puis Harsh aussi, jusqu'au vieux sage et à la sortie du fort ; à la fin du semestre,
   // Prophecy le suit jusqu'à l'aéroport, dans l'avion, puis à Bordeaux jusqu'au stade (il y redevient le PNJ
   // prophecy-depart et rejoint la foule).
   { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.courArrivee] },
   { id: 'prophecy-depart', name: 'Prophecy', ifFlags: [FLAGS.departDelhi], unlessFlags: [FLAGS.stadeEntree] },
   // Paris : Thomas, son service fini, suit Pierre du restaurant jusque chez Hugues (il y redevient le PNJ thomas).
   { id: 'thomas', name: 'Thomas', ifFlags: [FLAGS.thomasSuit], unlessFlags: [FLAGS.matchArrivee] },
-  { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.harshRejoint], unlessFlags: [FLAGS.sageDelhi] },
-  { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.sageDelhi] },
+  { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.harshRejoint], unlessFlags: [FLAGS.moisDelhi] },
+  { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.moisDelhi] },
   // Hull, la tournée des bars : Léo part devant en éclaireur ; Ousmane, Charlotte et Anaïs suivent Pierre à la queue
   // leu leu, du premier pub au second, puis du second à l'Asylum (mêmes id que leurs PNJ dans les bars : ils partent de
   // leur place à table, et s'y rassoient en arrivant, voir hullStory.js et interiors.js).
