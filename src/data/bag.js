@@ -33,6 +33,7 @@ export const SOUVENIRS = [
   { item: ITEMS.galetLac, text: 'Le galet porte-bonheur du vieux pêcheur, trouvé au fond du lac quand il avait ton âge.' },
   { item: ITEMS.reglementQG, text: 'Le règlement de la cabane des cousins, dont l\'article 5 dit seulement « Non. »' },
   { item: ITEMS.brevet, after: FLAGS.arriveePrytanee, text: 'Ton brevet, obtenu à l\'oral : français, maths et anglais.' },
+  { item: ITEMS.bonneEtoile, text: 'L\'étoile que Grand-père t\'a donnée avant le Prytanée : où que tu ailles, ta bonne étoile.' },
   { item: ITEMS.autocollant, text: 'L\'autocollant Pokémon de Rémy, le même que dans votre casier 12.' },
   { item: ITEMS.insigne, text: 'L\'insigne que le nouveau du Prytanée t\'a donné, parce qu\'il en avait deux.' },
   { item: ITEMS.baccalaureat, after: FLAGS.arriveeBordeaux, text: 'Ton baccalauréat, lu sur la liste de la place d\'armes.' },

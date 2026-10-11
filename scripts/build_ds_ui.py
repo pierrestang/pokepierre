@@ -54,6 +54,7 @@ ICONS = {
     'photo': (226, 377, 20, 16),            # Carte bleue (Pokégear) : la photo de la soirée
     'piece-echecs': (334, 223, 15, 20),     # Pierre Pyramide bleue : la pièce d'échecs chinois
     'repas': (462, 21, 18, 17),             # Galette Lava (biscuit) : de quoi manger, pour le match
+    'etoile': (299, 18, 23, 22),            # l'étoile jaune (objets de soin) : la bonne étoile du grand-père
     # Les huit vertus (onglet « Vertus » du sac, src/art/uiIcons.js traitIcon), même planche :
     'v-joie': (65, 411, 21, 18),            # Grelot Zen : la chanson de Maman, la danse (Joie de vivre)
     'v-equipe': (568, 138, 21, 21),         # Multi Exp : ce qu'on gagne ensemble (Esprit d'équipe)

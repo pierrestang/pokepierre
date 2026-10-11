@@ -257,6 +257,7 @@ export const ITEMS = {
   velo: { id: 'velo', name: 'Vélo' },
   corde: { id: 'corde', name: 'Vieille corde' },
   brevet: { id: 'brevet', name: 'Diplôme du brevet' },                         // collège : remis par le prof
+  bonneEtoile: { id: 'bonne-etoile', name: 'Bonne étoile' },                  // Montépilloy : le grand-père, avant le Prytanée
   autocollant: { id: 'autocollant', name: 'Autocollant de Rémy' },             // collège : objet-souvenir (le casier)
   reglementQG: { id: 'reglement-qg', name: 'Règlement du QG' },               // Saint-Ay : le panier de la cabane (verrou)
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },

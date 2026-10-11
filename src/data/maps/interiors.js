@@ -15,7 +15,7 @@ import { BAC_DAY, EVENING, GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_
 import {
   SURVEILLANT, COLLEGE_WELCOME, LOCKER, REMI, REMI_INVITE, REMI_WAIT, CAMILLE, PROF, LOCKER_SIDE, SURVEILLANT_SPOT, CLOSET,
 } from '../collegeStory.js';
-import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING } from '../montepilloyStory.js';
+import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING, GRANDPA } from '../montepilloyStory.js';
 import {
   LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
   LIBRARY, OLD_REVISIONS, OUSMANE_BOOK, LEO_BOOK, CHARLOTTE_BOOK, shelfBook, shelfJoke, FAKE_BOOKS, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
@@ -694,6 +694,11 @@ export const interiors = {
       {
         id: 'papa-mont', name: 'Papa', x: 4, y: 3, facing: 'down', color: 0x3f6fd8,
         unlessFlags: [FLAGS.septembre], script: PAPA,
+      },
+      // Le brevet en poche, avant le Prytanée : le grand-père attend Pierre, assis au salon (montepilloyStory.js GRANDPA).
+      {
+        id: 'grand-pere', name: 'Grand-père', x: 8, y: 7, facing: 'left', seated: true, still: true,
+        ifFlags: [FLAGS.bonsecoursFini], unlessFlags: [FLAGS.arriveePrytanee], script: GRANDPA,
       },
       // Dès que Pierre est arrivé au collège : Papa, Maman et Jean sont rentrés (ils disaient au revoir dehors, le matin).
       {

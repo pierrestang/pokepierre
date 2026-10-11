@@ -36,6 +36,7 @@ const ICON_OF_ITEM = {
   'photo-soiree': 'photo',
   'piece-echecs': 'piece-echecs',
   'plats-match': 'repas',
+  'bonne-etoile': 'etoile',
 };
 
 // Image de l'atlas pour un objet (null s'il n'a pas d'icône).

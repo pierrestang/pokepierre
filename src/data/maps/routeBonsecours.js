@@ -4,7 +4,7 @@ import { parseGrid } from './parseGrid.js';
 // d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
 import BUILT from '../builtMaps/bonsecours.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS, carryText } from '../story.js';
+import { FLAGS, ITEMS, carryText } from '../story.js';
 import { COLLEGE_ARRIVAL } from '../collegeStory.js';
 
 // Bonsecours, le village d'à côté — entre Montépilloy (au sud) et le Prytanée (au nord), 24 x 30 cases : la route
@@ -86,6 +86,8 @@ export const routeBonsecoursMap = {
       y: 0,
       script: [
         { unlessFlags: [FLAGS.bonsecoursFini], say: GUARD_LINES, end: true },
+        // Pas de départ sans être passé voir le grand-père, à la maison (montepilloyStory.js GRANDPA).
+        { unlessItems: [ITEMS.bonneEtoile.id], say: ['Avant de partir, je devrais passer voir Grand-père à la maison. Il est venu exprès.'], end: true },
         { say: ['Ton brevet en poche, tu prends la route du Prytanée pour y candidater.'] },
         { unlessFlags: [FLAGS.arriveePrytanee], say: [carryText('routeBonsecours')] },
         { setFlag: FLAGS.arriveePrytanee },

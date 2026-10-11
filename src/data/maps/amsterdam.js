@@ -91,7 +91,7 @@ export const amsterdamMap = {
     },
     // Facultatif : la vie du quartier (lignes validées le 11 octobre 2026).
     { id: 'cycliste-ams', name: 'Cycliste', sprite: 'g32', x: 5, y: 17, facing: 'right', still: true, dialogue: ['Attention, la piste cyclable ! Ici, c\'est nous qui avons la priorité.'] },
-    { id: 'marinier', name: 'Marinier', sprite: 'g74', x: 13, y: 12, facing: 'right', still: true, dialogue: ['Trente ans que je vis sur l\'eau. La terre ferme, ça me donne le mal de mer.'] },
+    { id: 'marinier', name: 'Marinier', sprite: 'g196', x: 13, y: 12, facing: 'right', still: true, dialogue: ['Trente ans que je vis sur l\'eau. La terre ferme, ça me donne le mal de mer.'] },
     { id: 'fleuriste', name: 'Fleuriste', sprite: 'g115', x: 24, y: 24, facing: 'down', still: true, dialogue: ['Des tulipes ? En cette saison, je n\'ai que des bulbes. Il faudra être patient.'] },
     { id: 'passante-pluie', name: 'Passante', sprite: 'g125', x: 30, y: 24, facing: 'left', still: true, dialogue: ['Il pleut ? Ici, on ne dit pas qu\'il pleut. On dit que c\'est mardi.'] },
   ],

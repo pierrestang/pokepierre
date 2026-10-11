@@ -211,4 +211,5 @@ export const PROF = [
   { give: ITEMS.brevet, text: 'Tu reçois ton diplôme du brevet !' },
   { setFlag: FLAGS.bonsecoursFini },
   { speaker: 'Professeur', say: ['Avec ça, tu peux candidater au Prytanée, au bout de la route du nord. Bonne chance !'] },
+  { say: ['Maman t\'a prévenu ce matin : Grand-père est arrivé à la maison. Il t\'attend à Montépilloy, avant ton départ.'] },
 ];

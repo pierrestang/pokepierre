@@ -254,3 +254,18 @@ export const NORTH_EXIT = [
   { ifFlags: [FLAGS.copainsPartent], unlessSouvenirs: [TRAITS.ingeniosite.id], say: ['Et Jean a un tracteur à réparer avec toi.'] },
   { ifFlags: [FLAGS.copainsPartent], unlessSouvenirs: [TRAITS.ingeniosite.id], unlessFlags: [FLAGS.jeanQuetes], say: ['Jean t\'attend dans sa chambre.'] },
 ];
+
+// ---------- Le grand-père (avant le Prytanée) ----------
+
+// Le brevet en poche, Pierre rentre à la maison : le grand-père l'attend, assis au salon (interiors.js montHouse). Il lui
+// donne la bonne étoile (un souvenir, pas une vertu) ; sans elle, la route du Prytanée ne s'ouvre pas (routeBonsecours.js).
+export const GRANDPA = [
+  { ifItems: [ITEMS.bonneEtoile.id], speaker: 'Grand-père', say: ['Allez, file. Et garde-la bien sur toi.'], end: true },
+  {
+    speaker: 'Grand-père',
+    say: ['On ne part jamais vraiment d\'un endroit qu\'on aime. On l\'emporte. C\'est pareil pour les gens… Même ceux qui partent les premiers, on continue de les emporter avec nous.'],
+  },
+  { say: ['Il te tend quelque chose au creux de sa main.'] },
+  { speaker: 'Grand-père', say: ['Tiens. Garde-la sur toi. Comme ça, où que tu ailles, t\'auras toujours ta bonne étoile.'] },
+  { give: ITEMS.bonneEtoile, text: 'Tu reçois un souvenir : la bonne étoile.' },
+];
