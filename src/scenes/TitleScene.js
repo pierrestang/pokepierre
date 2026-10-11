@@ -216,7 +216,7 @@ export class TitleScene extends Phaser.Scene {
     this.credits = { back, lines };
     this.creditsShown = true;
     this.creditsTween = this.tweens.add({
-      targets: lines, y: `-=${distance}`, duration: distance * 28, ease: 'Linear', onComplete: () => this.endCredits(),
+      targets: lines, y: `-=${distance}`, duration: distance * 22, ease: 'Linear', onComplete: () => this.endCredits(),
     });
     this.input.once('pointerdown', () => this.endCredits());
   }
