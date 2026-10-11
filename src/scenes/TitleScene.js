@@ -127,7 +127,10 @@ export class TitleScene extends Phaser.Scene {
     // Titre à la largeur de l'écran (téléphone en portrait).
     const titleSize = Math.min(96, Math.floor(width * 0.16), Math.floor(height * 0.17));
     this.title.setFontSize(titleSize).setStroke('#2c3858', titleSize / 8).setPosition(cx, height * 0.24);
-    this.subtitle.setFontSize(Math.min(26, Math.floor(width * 0.058))).setPosition(cx, height * 0.24 + titleSize * 0.83);
+    // « Génération 1 » : proportionné au titre (moins de la moitié de sa taille), juste sous lui.
+    const subSize = Math.min(44, Math.floor(width * 0.09), Math.floor(titleSize * 0.46));
+    this.subtitle.setFontSize(subSize).setStroke('#2c3858', Math.max(4, subSize / 5))
+      .setPosition(cx, height * 0.24 + titleSize * 0.62 + subSize * 0.6);
 
     const scale = height < 600 || width < 380 ? 2 : 3;
     const lineH = 17 * scale;
