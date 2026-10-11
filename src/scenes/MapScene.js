@@ -58,6 +58,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 //   props:    [{ type, x, y, w, h, dialogue?, ifFlags?, unlessFlags? }] — obstacles dessinés comme un
 //             bâtiment (voir art/buildingArt.js), bloquants tant que leurs conditions sont remplies
 //   events:   [{ on: 'enter', ifFlags?, unlessFlags?, steps: [{ say, speaker? } | { setFlag } | { talk: npcId }] }]
+//             { on: 'walk', count, … } : joué dès le `count`-ième pas du joueur depuis son arrivée sur la carte
 //             `talk` : le PNJ se tourne vers le joueur et dit son dialogue (+ souvenir éventuel).
 //             scénettes jouées automatiquement à l'arrivée sur la carte.
 //   surroundings: code de tuile qui remplit l'écran autour de la carte (sinon celui de la scène ; false : du noir).
@@ -89,6 +90,7 @@ export class MapScene extends Phaser.Scene {
     this.leaving = false;
     this.actorsReady = false;                       // voir refreshActors (place des nouveaux suiveurs)
     this.emerged = {};                              // personnages sortis de leur cachette (voir emerge)
+    this.stepsTaken = 0;                            // pas du joueur depuis son arrivée (événements `walk`)
     this.ambienceKey = undefined;                   // ambiance jour / nuit / petit matin (voir applyAmbience)
     this.ambience = null;
     this.events.once('shutdown', () => { this.leaving = true; });
@@ -632,8 +634,9 @@ export class MapScene extends Phaser.Scene {
   //   { dream: ms }                      l'écran se brouille (flou), un voile clair monte, la musique s'éteint : l'entrée
   //                                      dans le rêve (Paris) ; { veil: false | ms } dissipe le voile à l'arrivée
   //   { virtuesFade: true }              fondu au noir lent, le carnet des huit vertus une à une (systems/VirtuesFade.js)
+  //   { cards: [{ text, source? }] }     cartons de la toute fin sur fond noir, un à un (systems/EndCards.js)
   //   { hidePlayer: true | false }       Pierre caché ou montré (ex. couché dans son lit : un PNJ le remplace)
-  //   { endGame: true }                  fin du jeu : retour à l'écran titre
+  //   { endGame: true | { credits } }    fin du jeu : retour à l'écran titre (`credits` : avec le générique)
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
   //   { hop: id | [ids], times? } : petits sauts sur place ('player' : Pierre)
   //   { cheer: [ids] } : tous sautent ensemble, des notes et des cœurs s'envolent
@@ -667,6 +670,7 @@ export class MapScene extends Phaser.Scene {
       if (step.dream) await this.dreamFade(step.dream);
       if (step.veil !== undefined) await this.liftVeil(step.veil);
       if (step.virtuesFade) await this.scene.get('UI').virtuesFade.play(this.scene.get('UI').curtain);
+      if (step.cards) await this.scene.get('UI').endCards.play(step.cards, this.scene.get('UI').curtain);
       if (step.hidePlayer !== undefined) this.player.sprite.setVisible(!step.hidePlayer);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
@@ -756,7 +760,7 @@ export class MapScene extends Phaser.Scene {
         return true;
       }
       if (step.endGame) {
-        this.endGame();
+        this.endGame(step.endGame);
         return true;
       }
       if (step.end) return true;
@@ -784,13 +788,14 @@ export class MapScene extends Phaser.Scene {
 
   // Fin du jeu : la musique s'arrête, retour à l'écran titre (la partie reste enregistrée : « Continuer » reprend Pierre
   // dans sa chambre de Fort-de-France).
-  endGame() {
+  endGame({ credits = false } = {}) {
     this.transitioning = true;
     stopMusic();
     const ui = this.scene.get('UI');
     ui.curtain.setAlpha(1);
+    ui.veil.setAlpha(0);
     this.scene.stop('UI');
-    this.scene.start('Title');
+    this.scene.start('Title', { credits });
   }
 
   // Case où revenir sur cette carte quand on la quitte par son bord (ex. vers l'aéroport) : la case voisine, vers
@@ -1576,8 +1581,13 @@ export class MapScene extends Phaser.Scene {
 
   handleStep(x, y) {
     this.savePosition();
+    this.stepsTaken += 1;
     const trigger = this.map.triggers?.find((t) => t.x === x && t.y === y);
     if (trigger) this.runTrigger(trigger);
+    // Scénette à partir du n-ième pas depuis l'arrivée (ex. la sortie de la tour de Paris, avant le rêve) ; ses
+    // conditions doivent l'empêcher de se rejouer (un drapeau levé par la scénette).
+    const walk = (this.map.events ?? []).find((e) => e.on === 'walk' && this.stepsTaken >= e.count && meetsConditions(e));
+    if (walk && !trigger && !this.scripting) this.runScript(walk.steps);
     this.onTileEntered(getTile(this.grid[y][x]), x, y);
   }
 

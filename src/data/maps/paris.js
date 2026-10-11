@@ -136,8 +136,8 @@ export const parisMap = {
     // En sortant de la tour la première fois : Antoine appelle (la place de concert) ; promu : le message de Hugues (le match).
     { on: 'enter', ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.concertAppel], steps: ANTOINE_CALL },
     { on: 'enter', ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.messageHugues], steps: HUGUES_MESSAGE },
-    // En sortant de la tour, la Liberté choisie : le rêve.
-    { on: 'enter', ifFlags: [FLAGS.liberteParis], unlessFlags: [FLAGS.reveParis], steps: INTO_THE_DREAM },
+    // En sortant de la tour, la Liberté choisie : vingt pas libres dans Paris, puis le rêve.
+    { on: 'walk', count: 20, ifFlags: [FLAGS.liberteParis], unlessFlags: [FLAGS.reveParis], steps: INTO_THE_DREAM },
   ],
   // Panneau « Aéroport » (dessiné) à côté de la sortie est.
   objects: [airportSign(45, 13, true)],

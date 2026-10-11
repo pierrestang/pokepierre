@@ -14,5 +14,5 @@ export const CITY_MUSIC = {
   amsterdam: 'amsterdam',
   newDelhi: 'newDelhi',
   paris: 'paris',
-  reve: 'title',
+  reve: 'reve',
 };

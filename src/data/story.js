@@ -171,7 +171,9 @@ export const FLAGS = {
   reveParis: 'reve-paris',                      //   en sortant de la tour : le rêve (la grande réunion)
   finDuJeu: 'fin-du-jeu',                       //   la réunion, le fondu, le réveil à Fort-de-France : la fin
   reveilFin: 'reveil-fin',                      //   la fin : Pierre se lève de son lit, à Fort-de-France
-  talismanPris: 'talisman-pris',                //   il prend la pierre sur la table de chevet : écran noir, retour au titre
+  talismanPris: 'talisman-pris',                //   il prend le talisman posé sur son bureau
+  mamanFin: 'maman-fin',                        //   en bas, Maman rejoue la scène du matin (ton père, ta sœur…)
+  finVue: 'fin-vue',                            //   dehors : fondu blanc, les cartons, retour au titre et générique
 };
 
 // Vertus (traits de caractère) : une seule collection, qui grandit de ville en ville ; 8 au plus dans tout le jeu, une

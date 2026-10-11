@@ -1,6 +1,7 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON } from '../fortDeFranceStory.js';
+import { FINALE } from '../reveStory.js';
 // Le dessin de la carte : la version DS faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème DS, puis
 // retouches dans builder.html) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les
 // bâtiments d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
@@ -134,6 +135,9 @@ export const fortDeFranceMap = {
       unlessFlags: [FLAGS.manonDemande, FLAGS.departFortDeFrance],
       steps: [{ walk: 'manon', to: [16, 8], block: true }, { talk: 'manon' }],
     },
+    // La toute fin : Pierre sort de la maison après la scène de Maman ; l'île, puis le fondu blanc et les cartons
+    // (reveStory.js FINALE).
+    { on: 'enter', ifFlags: [FLAGS.mamanFin], unlessFlags: [FLAGS.finVue], steps: FINALE },
   ],
   // Guirlande de fanions (art/bunting.js) du faîte du toit au haut du mât, et le long de l'avant-toit : elle apparaît
   // quand Pierre reçoit la Joie de vivre (la danse avec Maman, voir data/fortDeFranceStory.js). Points en pixels.

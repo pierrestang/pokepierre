@@ -119,6 +119,21 @@ const MORNING_AFTER = { ifFlags: [FLAGS.lendemainSoiree], unlessFlags: [FLAGS.so
 // La famille quitte la maison de Fort-de-France une fois partie en bateau.
 const HOME_FDF = { unlessFlags: [FLAGS.departFortDeFrance] };
 
+// Maman, en bas, le dernier matin : le cadre de la journée. Jouée en descendant pour la première fois, et rejouée à
+// l'identique à la toute fin du jeu (après le talisman, voir reveStory.js).
+const MAMAN_MORNING = [
+  { approach: 'maman' },
+  {
+    speaker: 'Maman',
+    say: [
+      "Le ferry part cet après-midi, tous ensemble. D'ici là, va voir ton père et ta sœur :",
+      "ton père trie ses affaires à son atelier, à droite de la plage, et Manon prépare un coup dehors. Ensuite, reviens me voir !",
+    ],
+  },
+  // Maman retourne à sa place, à gauche du comptoir : elle ne bloque plus le bas de l'escalier.
+  { walk: 'maman', to: [5, 3], block: true },
+];
+
 // Intérieurs des bâtiments. `spawn` = position d'arrivée (juste au-dessus du tapis).
 export const interiors = {
   // Fort-de-France — la maison familiale, façon Rouge Feu (`frlg`, voir art/frlgArt.js) : mur de deux
@@ -162,26 +177,11 @@ export const interiors = {
       { x: 10, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
       ...FF_CARTONS.map(([x, y]) => ({ x, y, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] })),
     ],
-    // En descendant pour la première fois, Maman pose le cadre de la journée.
+    // En descendant pour la première fois, Maman pose le cadre de la journée ; à la toute fin, après le talisman, elle
+    // rejoue la même scène.
     events: [
-      {
-        on: 'enter',
-        ifFlags: [FLAGS.reveilFortDeFrance],
-        unlessFlags: [FLAGS.journeeLancee],
-        steps: [
-          { approach: 'maman' },
-          {
-            speaker: 'Maman',
-            say: [
-              "Le ferry part cet après-midi, tous ensemble. D'ici là, va voir ton père et ta sœur :",
-              "ton père trie ses affaires à son atelier, à droite de la plage, et Manon prépare un coup dehors. Ensuite, reviens me voir !",
-            ],
-          },
-          // Maman retourne à sa place, à gauche du comptoir : elle ne bloque plus le bas de l'escalier.
-          { walk: 'maman', to: [5, 3], block: true },
-          { setFlag: FLAGS.journeeLancee },
-        ],
-      },
+      { on: 'enter', ifFlags: [FLAGS.reveilFortDeFrance], unlessFlags: [FLAGS.journeeLancee], steps: [...MAMAN_MORNING, { setFlag: FLAGS.journeeLancee }] },
+      { on: 'enter', ifFlags: [FLAGS.talismanPris], unlessFlags: [FLAGS.mamanFin], steps: [...MAMAN_MORNING, { setFlag: FLAGS.mamanFin }] },
     ],
     npcs: [
       // Maman — Joie de vivre : la musique est allumée, elle t'entraîne dans une petite danse.
@@ -189,6 +189,12 @@ export const interiors = {
         id: 'maman', name: 'Maman', x: 5, y: 3, facing: 'left', color: 0xe86fa0,   // à gauche du comptoir, près de l'escalier
         ...HOME_FDF,
         script: MAMAN_FDF,
+      },
+      // La toute fin : Maman est de nouveau là, le dernier matin (même place, même id).
+      {
+        id: 'maman', name: 'Maman', x: 5, y: 3, facing: 'left', color: 0xe86fa0,
+        ifFlags: [FLAGS.talismanPris],
+        dialogue: ['Le ferry part cet après-midi, tous ensemble. Allez, file !'],
       },
     ],
   },
@@ -222,22 +228,25 @@ export const interiors = {
     spawn: { x: 2, y: 5, facing: 'left' },             // au réveil, à côté du lit
     triggers: [
       ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
-      ...[[2, 4], [3, 4], [4, 4], [6, 4], [8, 4], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5],
-        [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [8, 6], [9, 6], [2, 7], [3, 7], [4, 7], [6, 7], [7, 7], [8, 7],
-        [2, 3], [3, 3]].map(([x, y]) => ({ x, y, ifFlags: [FLAGS.reveilFin], unlessFlags: [FLAGS.talismanPris], script: TALISMAN })),
     ],
     // La fin du jeu (reveStory.js WAKE_UP) : la chambre s'ouvre dans le noir, la cinématique d'ouverture est rejouée
-    // telle quelle ; par terre, le talisman (la même image que la pierre gravée du vieux sage de New Delhi). Au premier
-    // pas de Pierre (n'importe quelle case), il le repère (TALISMAN).
+    // telle quelle ; sur le bureau, à côté de l'ordinateur, le talisman (la même image que la pierre gravée du vieux sage
+    // de New Delhi), signalé par une bulle « ! » ; Pierre le prend face au bureau (TALISMAN).
     openDark: { ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.reveilFin] },
     decals: [
       {
-        icons: [['pierre-gravee-petite', -8, -8, 32]], x: TALISMAN_SPOT[0], y: TALISMAN_SPOT[1],
+        icons: [['pierre-gravee-petite', -8, -14, 32]], x: TALISMAN_SPOT[0], y: TALISMAN_SPOT[1],
         ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.talismanPris],
       },
     ],
     objects: [
-      { x: 6, y: 3, dialogue: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
+      {
+        x: 6, y: 3,
+        script: [
+          { ifFlags: [FLAGS.reveilFin], unlessFlags: [FLAGS.talismanPris], steps: TALISMAN, end: true },
+          { say: ["L'écran affiche : « Fort-de-France → Saint-Ay ». Le voyage commence aujourd'hui."] },
+        ],
+      },
       ...FF_UP_CARTONS.map(([x, y]) => ({ x, y, dialogue: ['Des cartons à moitié faits.'] })),
       { x: 9, y: 7, dialogue: ['Une petite plante verte.'] },
     ],

@@ -1341,8 +1341,9 @@ de jour.
    regardé par cette fenêtre à votre âge. Et je me suis assis. »** / **« Je ne vous dirai pas si j'ai eu raison.
    Allez-y, Pierre. Et envoyez-moi une carte postale. »** → **« Pierre utilise LIBERTÉ ! »** (la vertu entre au carnet
    sans l'encart « a reçu ») → **« Tu emportes : Liberté. »**
-7. **Le pont vers le rêve.** En sortant de la tour, Pierre fait un pas et s'arrête ; le joueur n'a plus la main. L'écran
-   se brouille doucement (flou), la musique s'éteint, un voile clair monte : le rêve (section suivante).
+7. **Le pont vers le rêve.** En sortant de la tour, le joueur garde la main pendant une vingtaine de pas dans Paris
+   (événement `walk` de la carte, au 20e pas) ; puis Pierre s'arrête. L'écran se brouille doucement (flou), la musique
+   s'éteint, un voile clair monte : le rêve (section suivante).
 
 Rappels : Guillaume (« Alors, monsieur du premier étage ? On ne te voit plus, en bas. », après la Liberté « Tu pars ?
 Vraiment ? … Tu sais quoi, je t'envie un peu. »), le manager, Hugues après le match (« Ces tirs au but… Je ne les ai toujours pas
@@ -1367,7 +1368,9 @@ Dessinée par scripts/build_reve.py avec deux planches du Pokémon Gaia Project 
 ASSETTILESPOKEMONV2/credits/gaia-pixelmister.txt) : une grande plate-forme de brique flotte dans le bleu du Monde
 Distorsion, quatre colonnes brisées de la Colonne Lance à ses coins ; autour, des îlots, des arbres qui poussent de
 travers, un tourbillon, deux tablettes gravées. Un voile pâle, des nappes de brume blanche qui dérivent et de petites
-étincelles (effects.js startDreamMist). La musique du titre, très douce. Pas de nom de ville affiché.
+étincelles (effects.js startDreamMist). Sa propre musique, **« Le rêve »** : lente, onirique et mystique (mi mineur, un
+fa dièse sur l'accord de do ; nappe tenue, arpèges lents, cloches, une flûte lointaine), composition originale jouée par
+le synthétiseur du jeu (systems/audio.js `reve`), libre de droits, inscrite au générique. Pas de nom de ville affiché.
 
 ### La grande réunion
 Pierre est immobile au centre ; le joueur n'a plus la main. Le voile clair se dissipe et le décor se forme autour de lui.
@@ -1386,7 +1389,8 @@ ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de 
 - Harsh (New Delhi) : « Tu es venu de si loin, et tu es reparti avec un peu de nous. Reviens quand tu veux, mon ami. »
 - Fanny (la famille) : « Tu es parti partout, mais tu es toujours revenu nous voir. C'est ça que je retiens. »
 
-Puis Pierre, au milieu de tous : **« J'ai l'impression d'avoir déjà tout vécu. Et pourtant, tout commence. »**
+Puis Pierre, au milieu de tous : **« À chaque départ, je pensais tourner une page. Mais une page ne s'efface pas, elle
+s'ajoute. »** / **« Vous êtes tous là, dans le même livre. Et je crois qu'il reste beaucoup de pages blanches. »**
 
 ### Le fondu au noir
 Le décor s'efface dans un fondu au noir lent (pas de flash). Pendant ce temps, le carnet des huit vertus s'affiche une à
@@ -1397,13 +1401,29 @@ une, de la Joie de vivre à la Liberté ; la Liberté s'illumine en dernier (en 
 On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu, et **la cinématique d'ouverture est exactement la
 même** (`fortDeFranceStory.js OPENING_CINEMATIC`, partagée avec le début de partie) : Pierre debout au milieu de sa
 chambre, à côté du lit (pas couché), l'image de l'île et le bruit des vagues, « C'est le dernier matin à
-Fort-de-France. », puis Maman, d'en bas : « Pierre ! Le ferry part cet après-midi ! Descends ! » Le joueur reprend la
-main. Par terre, au milieu de la pièce (6, 6), un petit objet (la même image que la pierre gravée du vieux sage). **Au
-premier pas** de Pierre, où qu'il aille : bulle « ! » ; Pierre : « Ouais… c'est quoi, cet objet ? » ; il va jusqu'à
-l'objet et le ramasse → **Talisman indien** (encart d'objet reçu, comme partout dans le jeu : « Tu as reçu : Talisman
-indien. ») ; Pierre : **« Je ne suis jamais parti de Fort-de-France. Alors ça, d'où ça vient ? »** Écran noir final, puis
-retour à l'écran titre. « Continuer » reprend Pierre dans sa chambre de Fort-de-France, libre (la scène ne se rejoue
-pas).
+Fort-de-France. », puis Maman, d'en bas : « Pierre ! Le ferry part cet après-midi ! Descends ! » Puis une bulle « ! »
+au-dessus du **bureau** de Pierre (6, 3), où est posé un petit objet (la même image que la pierre gravée du vieux sage) ;
+Pierre : « Ouais… c'est quoi, cet objet ? » Le joueur reprend la main et prend l'objet face au bureau → **Talisman
+indien** (encart d'objet reçu) ; Pierre : **« Je n'ai jamais quitté Fort-de-France. C'était un rêve, ça ne peut être
+qu'un rêve. »** / **« Alors pourquoi ce talisman est sur mon bureau… et pourquoi je sais exactement ce que le vieil
+homme m'a dit en me le donnant ? »**
+
+Pierre descend : Maman, au salon, **rejoue à l'identique la scène du matin** (la même liste d'étapes que le début de
+partie, `interiors.js MAMAN_MORNING`) : « Le ferry part cet après-midi, tous ensemble. D'ici là, va voir ton père et ta
+sœur : » / « ton père trie ses affaires à son atelier, à droite de la plage, et Manon prépare un coup dehors. Ensuite,
+reviens me voir ! », puis elle retourne à sa place (ensuite : « Le ferry part cet après-midi, tous ensemble. Allez,
+file ! »). Pierre sort de la maison : la carte de Fort-de-France (l'île) s'affiche un instant.
+
+### La toute fin
+Le **fondu blanc** de l'entrée dans le rêve (flou, voile clair, la musique s'éteint) ; puis, sur fond noir, deux cartons
+qui apparaissent en fondu l'un après l'autre (systems/EndCards.js ; chacun reste au moins 2,5 s, puis jusqu'à un appui) :
+1. **« Car là où est ton trésor, là aussi sera ton cœur. »** (Matthieu 6, 21)
+2. **« Il a fallu tout ce voyage pour comprendre que le trésor n'était pas au bout du chemin. Il était dans la chambre
+   d'où tout est parti. Mais sans le voyage, il n'aurait jamais su le reconnaître. »**
+
+Puis retour à l'écran titre, et le **générique** défile par-dessus (src/data/credits.js : histoire, univers Nintendo /
+Game Freak, décors et intérieurs des ressources de fans, objets, musique dont « Le rêve » ; une touche le passe).
+« Continuer » reprend Pierre devant la maison de Fort-de-France, libre (la fin ne se rejoue pas).
 
 ### Après Paris
 L'histoire se termine ici : Toulon, le Chemin de Saint-Jacques, la Corse, Bali, le Sri Lanka, la Thaïlande, le Népal et le

@@ -55,7 +55,13 @@ export const REUNION = [
     { wait: 300 },
   ]),
   { wait: 800 },
-  { speaker: 'Pierre', say: ['J\'ai l\'impression d\'avoir déjà tout vécu. Et pourtant, tout commence.'] },
+  {
+    speaker: 'Pierre',
+    say: [
+      'À chaque départ, je pensais tourner une page. Mais une page ne s\'efface pas, elle s\'ajoute.',
+      'Vous êtes tous là, dans le même livre. Et je crois qu\'il reste beaucoup de pages blanches.',
+    ],
+  },
   { wait: 1200 },
   { virtuesFade: true },
   { setFlag: FLAGS.finDuJeu },
@@ -63,25 +69,43 @@ export const REUNION = [
 ];
 
 // Le réveil, à Fort-de-France : la cinématique d'ouverture du jeu, exactement la même (Pierre debout au milieu de sa
-// chambre, l'image de l'île, les vagues, Maman qui appelle : le ferry). Le joueur reprend la main ; au premier pas,
-// Pierre repère un objet posé par terre (TALISMAN).
+// chambre, l'image de l'île, les vagues, Maman qui appelle : le ferry). Puis une bulle « ! » au-dessus du bureau : le
+// talisman y est posé. Le joueur reprend la main et va le prendre (TALISMAN, interiors.js ffHouseUp).
+export const TALISMAN_SPOT = [6, 3];                  // sur le bureau de Pierre, à côté de l'ordinateur
 export const WAKE_UP = [
   ...OPENING_CINEMATIC,
   { setFlag: FLAGS.reveilFin },
+  { emote: TALISMAN_SPOT, kind: 'surprise' },
+  { speaker: 'Pierre', say: ['Ouais… c\'est quoi, cet objet ?'] },
 ];
 
-// Le talisman, par terre dans la chambre (interiors.js ffHouseUp) : « ! », Pierre va le voir, l'obtient comme un objet
-// du jeu, puis la phrase ; le noir final, le retour au titre. Rien ne tranche entre le rêve et la réalité.
-export const TALISMAN_SPOT = [6, 6];
+// Le talisman, sur le bureau (on le prend face au bureau) : l'objet du jeu, puis la phrase. Ensuite Pierre descend :
+// Maman rejoue la scène du matin (interiors.js ffHouse), et dehors, la fin (FINALE).
 export const TALISMAN = [
-  { emote: 'player', kind: 'surprise' },
-  { speaker: 'Pierre', say: ['Ouais… c\'est quoi, cet objet ?'] },
-  { goTo: [TALISMAN_SPOT[0] - 1, TALISMAN_SPOT[1]], facing: 'right' },
   { setFlag: FLAGS.talismanPris },
   { give: ITEMS.talismanIndien },
-  { speaker: 'Pierre', say: ['Je ne suis jamais parti de Fort-de-France. Alors ça, d\'où ça vient ?'] },
-  { wait: 900 },
-  { black: true },
-  { wait: 2500 },
-  { endGame: true },
+  {
+    speaker: 'Pierre',
+    say: [
+      'Je n\'ai jamais quitté Fort-de-France. C\'était un rêve, ça ne peut être qu\'un rêve.',
+      'Alors pourquoi ce talisman est sur mon bureau… et pourquoi je sais exactement ce que le vieil homme m\'a dit en me le donnant ?',
+    ],
+  },
+];
+
+// Dehors, devant la maison (maps/fortDeFrance.js) : l'île un instant, puis le fondu blanc de l'entrée dans le rêve ; les
+// deux cartons sur fond noir ; le retour à l'écran titre, avec le générique.
+export const FINALE = [
+  { wait: 1800 },
+  { dream: 4500 },
+  {
+    cards: [
+      { text: '« Car là où est ton trésor, là aussi sera ton cœur. »', source: 'Matthieu 6, 21' },
+      {
+        text: 'Il a fallu tout ce voyage pour comprendre que le trésor n\'était pas au bout du chemin. Il était dans la chambre d\'où tout est parti. Mais sans le voyage, il n\'aurait jamais su le reconnaître.',
+      },
+    ],
+  },
+  { setFlag: FLAGS.finVue },
+  { endGame: { credits: true } },
 ];

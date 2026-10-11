@@ -34,7 +34,7 @@ export const reveMap = {
   })),
   events: [{ on: 'enter', unlessFlags: [FLAGS.finDuJeu], steps: REUNION }],
   mist: true,
-  music: { song: 'title', volume: 0.35 },
+  music: { song: 'reve', volume: 0.8 },                 // la piste du rêve, onirique (systems/audio.js REVE_LEAD)
   surroundings: false,
   spawn: { x: CENTER[0], y: CENTER[1], facing: 'down' },
 };

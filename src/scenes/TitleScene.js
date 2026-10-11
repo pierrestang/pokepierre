@@ -10,13 +10,19 @@ import { FLAGS } from '../data/story.js';
 import { flags } from '../systems/flags.js';
 import { hasSave, loadPosition, eraseSave } from '../systems/save.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
+import { CREDITS } from '../data/credits.js';
 
 // Écran titre : la carte de la partie en cours (sa ville ; Fort-de-France pour une nouvelle partie) défile doucement en
 // fond (caméra zoomée), avec son dessin Gen 4 ; le titre et le menu sont affichés par une seconde caméra sans zoom. « Nouvelle partie » / « Continuer la partie » :
-// flèches haut/bas pour choisir, Entrée ou Espace pour valider.
+// flèches haut/bas pour choisir, Entrée ou Espace pour valider. Après la fin du jeu (`credits`), le générique défile
+// d'abord par-dessus l'écran titre (une touche le passe).
 export class TitleScene extends Phaser.Scene {
   constructor() {
     super('Title');
+  }
+
+  init(data) {
+    this.withCredits = Boolean(data?.credits);
   }
 
   create() {
@@ -71,6 +77,7 @@ export class TitleScene extends Phaser.Scene {
     this.uiObjects = [this.shade, this.title, this.subtitle, this.panel, this.hint];
 
     this.showMainMenu();
+    if (this.withCredits) this.rollCredits();
     this.input.keyboard.on('keydown', (e) => this.onKey(e));
     this.scale.on('resize', this.layout, this);
     this.events.once('shutdown', () => this.scale.off('resize', this.layout, this));
@@ -139,6 +146,7 @@ export class TitleScene extends Phaser.Scene {
       const o = options[i];
       if (o.header || o.disabled) return;
       t.setInteractive().on('pointerdown', () => {
+        if (this.creditsShown) return;                                 // le toucher passe d'abord le générique
         sfx('confirm');
         this.selected = i;
         o.action();
@@ -181,7 +189,54 @@ export class TitleScene extends Phaser.Scene {
     this.hint.setPosition(cx, top + panelH + 30);
   }
 
+  // Le générique : fond noir, les rubriques (en or) et leurs lignes montent lentement du bas de l'écran ; à la fin, ou
+  // à la première touche, il s'efface sur l'écran titre.
+  rollCredits() {
+    const { width, height } = this.scale;
+    const scale = height < 600 || width < 380 ? 2 : 3;
+    const lineH = 16 * scale;
+    this.creatingMenu = true;                                          // objets d'interface (voir create)
+    const back = this.add.rectangle(0, 0, width * 4, height * 4, 0x000000).setOrigin(0).setDepth(200);
+    const lines = [];
+    let y = height + lineH;
+    for (const [heading, rows] of CREDITS) {
+      lines.push(this.add.bitmapText(width / 2, y, FRLG_FONT, frlgText(this, heading)).setOrigin(0.5, 0).setScale(scale)
+        .setTint(0xf8d048).setDepth(201));
+      y += lineH * 1.3;
+      for (const row of rows) {
+        lines.push(this.add.bitmapText(width / 2, y, FRLG_FONT, frlgText(this, row)).setOrigin(0.5, 0).setScale(scale)
+          .setTint(0xe8e8f0).setDepth(201));
+        y += lineH;
+      }
+      y += lineH * 1.6;
+    }
+    this.creatingMenu = false;
+    this.cameras.main.ignore([back, ...lines]);
+    const distance = y;                                                // jusqu'à ce que la dernière ligne sorte en haut
+    this.credits = { back, lines };
+    this.creditsShown = true;
+    this.creditsTween = this.tweens.add({
+      targets: lines, y: `-=${distance}`, duration: distance * 28, ease: 'Linear', onComplete: () => this.endCredits(),
+    });
+    this.input.once('pointerdown', () => this.endCredits());
+  }
+
+  endCredits() {
+    if (!this.credits) return;
+    const { back, lines } = this.credits;
+    this.credits = null;
+    this.creditsTween?.stop();
+    this.tweens.add({
+      targets: [back, ...lines], alpha: 0, duration: 900,
+      onComplete: () => {
+        [back, ...lines].forEach((o) => o.destroy());
+        this.creditsShown = false;
+      },
+    });
+  }
+
   onKey(e) {
+    if (this.credits) return this.endCredits();                       // une touche passe le générique
     const selectable = this.options
       .map((o, i) => (o.header || o.disabled ? null : i))
       .filter((i) => i !== null);

@@ -107,7 +107,8 @@ function freq(note) {
 }
 
 // Une note : oscillateur + enveloppe (attaque nette, léger déclin, relâche courte).
-function tone(bus, { type = 'pulse', duty = 0.5, f, start, dur, vol = 0.2, slide = 0, decay = 0.6, vibrato = false }) {
+// `attack` : montée du volume en secondes (les nappes du rêve entrent doucement).
+function tone(bus, { type = 'pulse', duty = 0.5, f, start, dur, vol = 0.2, slide = 0, decay = 0.6, vibrato = false, attack = 0.005 }) {
   const osc = ctx.createOscillator();
   if (type === 'pulse') osc.setPeriodicWave(waves[duty]);
   else osc.type = type;
@@ -126,8 +127,8 @@ function tone(bus, { type = 'pulse', duty = 0.5, f, start, dur, vol = 0.2, slide
   }
   const g = ctx.createGain();
   g.gain.setValueAtTime(0, start);
-  g.gain.linearRampToValueAtTime(vol, start + 0.005);
-  g.gain.linearRampToValueAtTime(vol * decay, start + Math.min(dur * 0.6, 0.12));
+  g.gain.linearRampToValueAtTime(vol, start + attack);
+  g.gain.linearRampToValueAtTime(vol * decay, start + attack + Math.min(dur * 0.6, 0.12));
   g.gain.setValueAtTime(vol * decay, start + dur - 0.02);
   g.gain.linearRampToValueAtTime(0, start + dur);
   osc.connect(g).connect(bus);
@@ -343,6 +344,21 @@ const VELO_LEAD = [
 ];
 const VELO_CHORDS = ['D', 'A', 'Bm', 'A', 'G', 'D', 'G', 'D'];
 
+// Le rêve de la fin du jeu : lent, onirique, en mi mineur, avec un fa dièse sur l'accord de do (couleur lydienne,
+// mystérieuse). Nappe tenue, arpèges lents et cloches à la place de la basse sautillante (style 'dream'). Mélodie
+// originale, composée pour le jeu (libre de droits, voir src/data/credits.js).
+const REVE_LEAD = [
+  ['B5', 4], ['E6', 2], ['D6', 2],
+  ['C6', 6], ['G5', 2],
+  ['A5', 3], ['B5', 1], ['C6', 2], ['E6', 2],
+  ['B5', 8],
+  ['G5', 2], ['A5', 2], ['B5', 2], ['F#6', 2],
+  ['F#6', 4], ['E6', 2], ['D6', 2],
+  ['D6', 3], ['C#6', 1], ['B5', 4],
+  ['E5', 6], [r, 2],
+];
+const REVE_CHORDS = ['Em', 'C', 'Am', 'Em', 'C', 'D', 'Bm', 'Em'];
+
 const CHORDS = {
   C: ['C', 'E', 'G'], D: ['D', 'F#', 'A'], E: ['E', 'G#', 'B'], F: ['F', 'A', 'C'], G: ['G', 'B', 'D'], A: ['A', 'C#', 'E'],
   Bb: ['A#', 'D', 'F'], Am: ['A', 'C', 'E'], Gm: ['G', 'A#', 'D'], Bm: ['B', 'D', 'F#'], Dm: ['D', 'F', 'A'], Em: ['E', 'G', 'B'], 'F#m': ['F#', 'A', 'C#'],
@@ -362,6 +378,7 @@ const SONGS = {
   newDelhi: { tempo: 110, lead: NEWDELHI_LEAD, chords: NEWDELHI_CHORDS, duty: 0.125, drums: 'biguine', leadVol: 0.11, arp: true },
   paris: { tempo: 126, lead: PARIS_LEAD, chords: PARIS_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
   velo: { tempo: 152, lead: VELO_LEAD, chords: VELO_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
+  reve: { tempo: 66, lead: REVE_LEAD, chords: REVE_CHORDS, style: 'dream', drums: false, leadVol: 0.09 },
 };
 
 let current = null;       // musique en cours : { name, timer, ... }
@@ -382,6 +399,15 @@ function startSong(name, bus) {
   song.chords.forEach((chord, bar) => {
     const [root, third, fifth] = CHORDS[chord];
     const b = bar * 8;
+    if (song.style === 'dream') {
+      // Le rêve : la fondamentale tenue toute la mesure, une nappe (l'accord tenu, en sinusoïdes), des arpèges lents
+      // qui montent, et une cloche aiguë au début de chaque mesure paire.
+      events.push({ t: b, kind: 'drone', note: `${root}2`, len: 8 });
+      for (const n of [`${root}4`, `${third}4`, `${fifth}4`]) events.push({ t: b, kind: 'pad', note: n, len: 8 });
+      [`${root}5`, `${fifth}5`, `${third}5`, `${fifth}5`].forEach((n, i) => events.push({ t: b + i * 2 + 1, kind: 'glass', note: n, len: 3 }));
+      if (bar % 2 === 0) events.push({ t: b, kind: 'bell', note: `${fifth}6`, len: 6 });
+      return;
+    }
     if (song.drums === 'biguine') {
       // Basse sur le rythme 3 + 3 + 2, qui saute d'octave.
       [[0, 2, 2.6], [3, 3, 2.6], [6, 2, 1.8]].forEach(([i, o, len]) => events.push({ t: b + i, kind: 'bass', note: `${root}${o}`, len }));
@@ -423,7 +449,17 @@ function startSong(name, bus) {
       const at = state.loopStart + e.t * eighth;
       if (at > horizon) break;
       const dur = (e.len ?? 0.5) * eighth;
-      if (e.kind === 'lead') {
+      if (e.kind === 'lead' && song.style === 'dream') {
+        // Une flûte lointaine (triangle), et un long écho très doux.
+        tone(bus, { type: 'triangle', f: freq(e.note), start: at, dur: dur * 0.98, vol: song.leadVol * 1.6, decay: 0.8, vibrato: true, attack: 0.08 });
+        tone(bus, { type: 'sine', f: freq(e.note), start: at + eighth * 1.5, dur, vol: song.leadVol * 0.5, decay: 0.7, vibrato: true });
+      } else if (e.kind === 'drone') tone(bus, { type: 'triangle', f: freq(e.note), start: at, dur, vol: 0.14, decay: 0.9, attack: 0.8 });
+      else if (e.kind === 'pad') tone(bus, { type: 'sine', f: freq(e.note), start: at, dur, vol: 0.035, decay: 0.85, attack: 1.2 });
+      else if (e.kind === 'glass') tone(bus, { type: 'sine', f: freq(e.note), start: at, dur, vol: 0.05, decay: 0.3 });
+      else if (e.kind === 'bell') {
+        tone(bus, { type: 'sine', f: freq(e.note), start: at, dur, vol: 0.05, decay: 0.15 });
+        tone(bus, { type: 'sine', f: freq(e.note) * 2.76, start: at, dur: dur * 0.5, vol: 0.012, decay: 0.1 });
+      } else if (e.kind === 'lead') {
         tone(bus, { duty: song.duty, f: freq(e.note), start: at, dur: dur * 0.94, vol: song.leadVol, vibrato: true });
         // Écho : même note, un peu plus tard, plus douce et plus fine.
         tone(bus, { duty: 0.125, f: freq(e.note), start: at + eighth * 0.75, dur: dur * 0.9, vol: song.leadVol * 0.35, vibrato: true });

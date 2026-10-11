@@ -303,9 +303,9 @@ export const DIRECTOR = [
 
 // ---------- 7. En sortant de la tour : le rêve ----------
 
-// Pierre fait un pas dehors et s'arrête ; l'écran se brouille, la ville s'estompe, la lumière change.
+// Le joueur garde la main une vingtaine de pas dans Paris (maps/paris.js, événement `walk`) ; puis Pierre s'arrête,
+// l'écran se brouille, la ville s'estompe, la lumière change.
 export const INTO_THE_DREAM = [
-  { goTo: [42, 43], facing: 'down' },
   { wait: 600 },
   { dream: 4500 },
   { setFlag: FLAGS.reveParis },
