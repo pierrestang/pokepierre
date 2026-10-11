@@ -1214,7 +1214,8 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
 Pierre a bougé toute sa vie ; à Paris, pour la première fois, il doit vraiment s'installer, et il n'est pas prêt. Il
 grimpe les étages d'une entreprise, comprend que ce n'est pas sa vie, et choisit la **Liberté**, la 8e et dernière vertu
 (`src/data/parisStory.js`). **Le travail reste hors champ** : on ne joue jamais de scène de bureau ; on ne joue que des
-mini-quêtes à lui, dans Paris, sans lien avec l'entreprise. Aucune ligne « Objectif : », **aucune ellipse**.
+mini-quêtes à lui, dans Paris, sans lien avec l'entreprise. Aucune ligne « Objectif : ». Deux ellipses, **« Un an plus
+tard… »**, à la fin du concert et à la fin du match (depuis le 11 octobre 2026).
 
 **La boucle (l'ascenseur, fil rouge).** Pierre passe au bureau, ressort, vit une mini-quête en ville, revient au bureau,
 et l'étage suivant s'allume : le bouton du premier étage après le concert, celui du dernier étage après le match.
@@ -1262,13 +1263,14 @@ de jour.
 | Propriétaire | Devant l'immeuble : les clés du studio, puis où est le bureau | `g35` |
 | Guillaume | Le blasé du rez-de-chaussée, près de la machine à café | `g4` |
 | Camille | Accueille Pierre le premier jour, puis l'envoie au manager et au directeur | `g130` |
-| Anthony, Antoine | Collègues debout dans le hall | `g95`, `g98` |
+| Anthony | Collègue debout dans le hall (Antoine aussi, voir plus bas) | `g95` |
 | Andrea, Yasmine | Collègue du hall ; l'accueil | `g1`, `g50` |
 | Mariana, Quentin, Yaline | Collègues du premier étage | `g113`, `g110`, `g5` |
 | Manager | Le 1er étage : la promotion | `g122` |
 | Directeur | Le dernier étage : la belle place | `g120` |
-| Hugues | L'ami parisien de Pierre, fan de foot : la place de concert promise, puis le match chez lui | `g121` |
-| Inès, Malik, Clara | La place de concert, de main en main (l'Opéra, la file du Louvre, le café à terrasse) | `g5`, `g4`, `g15` |
+| Hugues | L'ami parisien de Pierre, fan de foot : le match chez lui | `g121` |
+| Antoine | Collègue de la tour : il appelle Pierre au sujet de la place de concert | `g98` |
+| Tam, Louis (hommes), Clara | La place de concert, de main en main (l'Opéra, la file du Louvre, le café à terrasse) | `g88`, `g155`, `g15` |
 | Chanteur | Bercy | `g69` |
 | Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g90` |
 
@@ -1285,19 +1287,22 @@ de jour.
    premier jour ? Si tu cherches quoi que ce soit, demande-moi ! ») ; puis Guillaume, le blasé, vient à Pierre :
    **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** Les boutons du premier et du dernier étage de
    l'ascenseur sont éteints. Pierre ressort.
-3. **Le concert (la place qui a voyagé).** En sortant de la tour, le téléphone sonne. Hugues : **« Pierre ! Ce soir,
-   concert à Bercy. Je t'avais promis une place… mais je l'ai passée à Inès pour qu'elle te la donne, et… bref, elle a un
-   peu voyagé. »** / « Inès est devant l'Opéra. Elle saura où elle est passée ! » Inès : « La place de Hugues ? Ah… Je
-   l'ai donnée à Malik, il en rêvait. Il fait la queue au Louvre, comme d'habitude. » ; Malik, dans la file du Louvre :
-   « Ta place ? Mince… Je l'ai laissée à Clara, au café à terrasse, à côté de ton immeuble. Elle adore ce chanteur. » ;
-   Clara : « Oh, c'était la tienne ? Je suis désolée ! Tiens, reprends-la. » → **Place de concert** / « Bercy, c'est le
-   grand dôme, en haut à gauche. Ça commence bientôt ! » (Avant l'appel, ce sont des Parisiens comme les autres.) À
-   Bercy : « Tu montres ta place à l'entrée. La salle est pleine. » ; Pierre avance de quelques pas dans l'allée ;
-   **« Le concert commence ! »** ; le chanteur : « J'garde le meilleur et j'ai tourné les pages, j'ai pas de rancœur et
-   j'oublie jamais rien. » / « J'ai passé l'été sous la neige et l'hiver à la plage, tu ferais quoi à ma place ? » /
-   « Donc, y'a plus rien qui m'attache, c'est un jour la baie ou le Taj, moi j'voulais répondre à ces messages… »
-   (paroles fournies par l'utilisateur) ; la foule saute de joie ; **« Le concert se termine. »** ; Pierre, en lui-même :
-   **« Allez, faut que je rentre. Demain, grosse journée. »**
+3. **Le concert (la place qui a voyagé).** En sortant de la tour, le téléphone sonne : « Ton téléphone sonne. C'est
+   Antoine, du bureau. » Antoine (collègue de la tour) : **« Pierre ! Ce soir, concert à Bercy. J'avais une place pour
+   toi… mais je l'ai passée à Tam pour qu'il te la donne, et… bref, elle a un peu voyagé. »** / « Tam est devant
+   l'Opéra. Il saura où elle est passée ! » Tam : « La place d'Antoine ? Ah… Je l'ai donnée à Louis, il en rêvait. Il
+   fait la queue au Louvre, comme d'habitude. » (ensuite : « Louis, dans la file du Louvre. Bonne chance ! ») ; Louis,
+   dans la file du Louvre : « Ta place ? Mince… Je l'ai laissée à Clara, au café à terrasse, à côté de ton immeuble. Elle
+   adore ce chanteur. » ; Clara : « Oh, c'était la tienne ? Je suis désolée ! Tiens, reprends-la. » → **Place de
+   concert** / « Bercy, c'est le grand dôme, en haut à gauche. Ça commence bientôt ! » (Avant l'appel, ce sont des
+   Parisiens comme les autres : Tam « L'Opéra ouvre ce soir. J'attends une amie. », Louis « Deux heures de queue pour le
+   Louvre. Mais ça vaut le coup, il paraît. ».) À Bercy : « Tu montres ta place à l'entrée. La salle est pleine. » ;
+   Pierre avance de quelques pas dans l'allée ; **« Le concert commence ! »** ; le chanteur : « J'garde le meilleur et
+   j'ai tourné les pages, j'ai pas de rancœur et j'oublie jamais rien. » / « J'ai passé l'été sous la neige et l'hiver à
+   la plage, tu ferais quoi à ma place ? » / « Donc, y'a plus rien qui m'attache, c'est un jour la baie ou le Taj, moi
+   j'voulais répondre à ces messages… » / **`[PAROLES À COMPLÉTER PAR PIERRE]`** (emplacement de la dernière ligne, à
+   écrire par l'utilisateur) ; la foule saute de joie ; **« Le concert se termine. »** ; Pierre, en lui-même : **« Allez,
+   faut que je rentre. Demain, grosse journée. »** ; écran noir, **« Un an plus tard… »** ; Pierre ressort devant Bercy.
 4. **La promotion.** Au bureau, Camille, près de l'entrée, vient à Pierre : « Pierre ! Le manager te cherchait. Il t'attend au premier étage : l'ascenseur,
    au fond. » Le bouton du premier étage s'est allumé. Au premier étage, le manager traverse le plateau et vient à Pierre : **« Pierre ! Tu t'en sors très bien. À
    partir d'aujourd'hui, tu travailles ici, avec moi. »** ; « Une promotion. Un bureau plus grand, plus haut. »
@@ -1351,7 +1356,7 @@ Les personnages nommés du jeu sont là, en cercle (27, répartis régulièremen
 Jean ; Felix, Joshua, Yanis, Val ; Margaux, Benoît, Étienne ; Rémy ; Tanguy, Geoffrey ; Ousmane, Paul, Rémi, Léo, Anaïs ;
 Charlotte, Romain, Prophecy ; Harsh ; **Dalil, Hugues et Thomas**, silencieux. Huit prennent la parole, un par ville :
 chacun s'avance vers Pierre, dit son mot, puis se range près de lui. **Absents** (personnages nommés, signalés sans être
-ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de l'utilisateur), Inès, Malik et Clara (Paris).
+ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de l'utilisateur), Tam, Louis et Clara (Paris).
 - Felix (Saint-Ay) : « Depuis Saint-Ay qu'on te suit ! On savait que tu finirais par tous nous réunir. »
 - Margaux (Montépilloy) : « Tu te cachais toujours au même endroit… Mais là, tu es allé tellement loin qu'on a failli ne
   jamais te trouver ! »
@@ -1476,11 +1481,11 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Hugues | `g121` | Paris (au téléphone, puis chez lui : le match), le rêve |
 | Dalil | `g2` | Bordeaux (la soirée d'intégration, le stade), le rêve |
 | Thomas | `g90` | Paris (le restaurant au store rayé, le match), le rêve |
-| Inès, Malik, Clara | `g5`, `g4`, `g15` | Paris (la place de concert) |
+| Tam, Louis, Clara | `g88`, `g155`, `g15` | Paris (la place de concert) |
 | Chanteur | `g69` | Paris (Bercy) |
 
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
-section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Inès, Malik, Clara et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
+section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis, Clara et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
 
 ## Incohérences repérées

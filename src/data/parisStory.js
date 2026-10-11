@@ -4,10 +4,10 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 // Le travail reste hors champ (aucune scène de bureau) : la tour de bureaux est le fil rouge, son ascenseur s'ouvre
 // étage par étage. La boucle : Pierre passe au bureau, ressort, vit une mini-quête à lui dans Paris, revient, et
 // l'étage suivant s'allume. Au dernier, le directeur lui offre une belle place ; il la refuse : la Liberté, 8e et
-// dernière vertu. Aucune ligne « Objectif : », pas d'ellipse.
+// dernière vertu. Aucune ligne « Objectif : » ; deux ellipses, « Un an plus tard », après le concert et après le match.
 //   1. L'arrivée devant l'immeuble aux balcons fleuris : le propriétaire et les clés du studio.
 //   2. Premier passage au bureau : le hall plein de collègues, le collègue blasé ; l'ascenseur ne monte pas.
-//   3. Le concert : la place promise par Hugues a passé de main en main (Inès, Malik, Clara) ; Bercy.
+//   3. Le concert : la place d'Antoine, un collègue, a passé de main en main (Tam, Louis, Clara) ; Bercy ; un an plus tard.
 //   4. Au bureau, le 1er étage s'allume : la promotion.
 //   5. Le match : Hugues invite, Thomas finit son service au restaurant, France-Argentine chez Hugues.
 //   6. Au bureau, le dernier étage s'allume : le directeur, la Liberté ; en sortant, le rêve (reveStory.js).
@@ -103,38 +103,38 @@ export const DIRECTOR_CALLS = [
 
 // ---------- 3. Le concert : la place qui a voyagé ----------
 
-// En sortant de la tour la première fois : Hugues appelle.
-export const HUGUES_CALL = [
+// En sortant de la tour la première fois : Antoine, un collègue de la tour, appelle.
+export const ANTOINE_CALL = [
   { emote: 'player', kind: 'surprise' },
-  { say: ['Ton téléphone sonne. C\'est Hugues.'] },
+  { say: ['Ton téléphone sonne. C\'est Antoine, du bureau.'] },
   {
-    speaker: 'Hugues',
+    speaker: 'Antoine',
     phone: true,
     say: [
-      'Pierre ! Ce soir, concert à Bercy. Je t\'avais promis une place… mais je l\'ai passée à Inès pour qu\'elle te la donne, et… bref, elle a un peu voyagé.',
-      'Inès est devant l\'Opéra. Elle saura où elle est passée !',
+      'Pierre ! Ce soir, concert à Bercy. J\'avais une place pour toi… mais je l\'ai passée à Tam pour qu\'il te la donne, et… bref, elle a un peu voyagé.',
+      'Tam est devant l\'Opéra. Il saura où elle est passée !',
     ],
   },
   { setFlag: FLAGS.concertAppel },
 ];
 
 // De main en main : chacun dit à qui il l'a passée (avant l'appel de Hugues, ce sont des Parisiens comme les autres).
-export const INES = [
-  { ifFlags: [FLAGS.placeInes], speaker: 'Inès', say: ['Malik, dans la file du Louvre. Bonne chance !'], end: true },
-  { ifFlags: [FLAGS.concertAppel], speaker: 'Inès', say: ['La place de Hugues ? Ah… Je l\'ai donnée à Malik, il en rêvait. Il fait la queue au Louvre, comme d\'habitude.'] },
-  { ifFlags: [FLAGS.concertAppel], setFlag: FLAGS.placeInes, end: true },
-  { speaker: 'Inès', say: ['L\'Opéra ouvre ce soir. J\'attends une amie.'] },
+export const TAM = [
+  { ifFlags: [FLAGS.placeTam], speaker: 'Tam', say: ['Louis, dans la file du Louvre. Bonne chance !'], end: true },
+  { ifFlags: [FLAGS.concertAppel], speaker: 'Tam', say: ['La place d\'Antoine ? Ah… Je l\'ai donnée à Louis, il en rêvait. Il fait la queue au Louvre, comme d\'habitude.'] },
+  { ifFlags: [FLAGS.concertAppel], setFlag: FLAGS.placeTam, end: true },
+  { speaker: 'Tam', say: ['L\'Opéra ouvre ce soir. J\'attends une amie.'] },
 ];
-export const MALIK = [
-  { ifFlags: [FLAGS.placeMalik], speaker: 'Malik', say: ['Clara, au café à terrasse. Elle ne l\'a pas encore utilisée, promis !'], end: true },
-  { ifFlags: [FLAGS.placeInes], speaker: 'Malik', say: ['Ta place ? Mince… Je l\'ai laissée à Clara, au café à terrasse, à côté de ton immeuble. Elle adore ce chanteur.'] },
-  { ifFlags: [FLAGS.placeInes], setFlag: FLAGS.placeMalik, end: true },
-  { speaker: 'Malik', say: ['Deux heures de queue pour le Louvre. Mais ça vaut le coup, il paraît.'] },
+export const LOUIS = [
+  { ifFlags: [FLAGS.placeLouis], speaker: 'Louis', say: ['Clara, au café à terrasse. Elle ne l\'a pas encore utilisée, promis !'], end: true },
+  { ifFlags: [FLAGS.placeTam], speaker: 'Louis', say: ['Ta place ? Mince… Je l\'ai laissée à Clara, au café à terrasse, à côté de ton immeuble. Elle adore ce chanteur.'] },
+  { ifFlags: [FLAGS.placeTam], setFlag: FLAGS.placeLouis, end: true },
+  { speaker: 'Louis', say: ['Deux heures de queue pour le Louvre. Mais ça vaut le coup, il paraît.'] },
 ];
 export const CLARA = [
   { ifFlags: [FLAGS.placeClara], speaker: 'Clara', say: ['Bon concert ! Tu me raconteras.'], end: true },
   {
-    ifFlags: [FLAGS.placeMalik],
+    ifFlags: [FLAGS.placeLouis],
     steps: [
       { speaker: 'Clara', say: ['Oh, c\'était la tienne ? Je suis désolée ! Tiens, reprends-la.'] },
       { give: ITEMS.placeConcert, text: 'Clara te rend la place de concert.' },
@@ -146,7 +146,8 @@ export const CLARA = [
   { speaker: 'Clara', say: ['Un café en terrasse, au soleil… Le vrai luxe parisien.'] },
 ];
 
-// À Bercy : la place est contrôlée, Pierre avance dans la fosse, le chanteur chante.
+// À Bercy : la place est contrôlée, Pierre avance dans la fosse, le chanteur chante (la dernière ligne de la chanson
+// reste à écrire par Pierre). À la fin : « Un an plus tard… », Pierre ressort devant Bercy.
 export const CONCERT = [
   { take: ITEMS.placeConcert.id },
   { say: ['Tu montres ta place à l\'entrée. La salle est pleine.'] },
@@ -158,12 +159,17 @@ export const CONCERT = [
       'J\'garde le meilleur et j\'ai tourné les pages, j\'ai pas de rancœur et j\'oublie jamais rien.',
       'J\'ai passé l\'été sous la neige et l\'hiver à la plage, tu ferais quoi à ma place ?',
       'Donc, y\'a plus rien qui m\'attache, c\'est un jour la baie ou le Taj, moi j\'voulais répondre à ces messages…',
+      '[PAROLES À COMPLÉTER PAR PIERRE]',
     ],
   },
   { cheer: CROWD },
   { say: ['Le concert se termine.'] },
   { say: ['Allez, faut que je rentre. Demain, grosse journée.'] },
   { setFlag: FLAGS.concertParis },
+  { black: true },
+  { wait: 700 },
+  { say: ['Un an plus tard…'] },
+  { travel: { map: 'paris', x: 9, y: 12, facing: 'down' } },
 ];
 
 // ---------- 5. Le match ----------

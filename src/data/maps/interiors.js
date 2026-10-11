@@ -2450,7 +2450,7 @@ export const interiors = {
       { id: 'batteur', name: 'Batteur', sprite: 'g16', x: 8, y: 4, facing: 'down', still: true },
       ...[[3, 6], [4, 6], [5, 6], [7, 6], [8, 6], [9, 6], [2, 7], [4, 7], [5, 7], [7, 7], [8, 7], [10, 7],
         [3, 8], [5, 8], [7, 8], [9, 8], [4, 9], [8, 9]].map(([x, y], i) => ({
-        id: `fan-${i}`, name: 'Fan', sprite: ['g10', 'g20', 'g21', 'g34', 'g73', 'g83', 'g9', 'g17', 'g65'][i % 9],
+        id: `fan-${i}`, name: 'Fan', sprite: ['g10', 'g20', 'g21', 'g34', 'g73', 'g58', 'g9', 'g17', 'g65'][i % 9],
         x, y, facing: 'up', still: true,
         // Au cœur de la foule, on ne les approche pas : seuls ceux du bord et des derniers rangs parlent.
         ...([2, 5, 7, 10].includes(x) || y >= 8 ? { dialogue: [['Quel son !', 'Encore ! Encore !', 'Je connais toutes les paroles !'][i % 3]] } : {}),

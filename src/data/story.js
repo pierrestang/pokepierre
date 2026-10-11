@@ -155,9 +155,10 @@ export const FLAGS = {
   arriveeParis: 'arrivee-paris',                // arrivé à Paris, devant l'immeuble du propriétaire
   parisCles: 'paris-cles',                      //   le propriétaire a donné les clés
   jour1Bureau: 'jour1-bureau',                  //   premier passage au rez-de-chaussée de la tour (le collègue)
-  concertAppel: 'concert-appel',                //   en sortant : Hugues appelle, la place de concert a voyagé (Inès)
-  placeInes: 'place-ines',                      //     Inès, devant l'Opéra : elle l'a donnée à Malik
-  placeMalik: 'place-malik',                    //     Malik, dans la file du Louvre : il l'a laissée à Clara
+  concertAppel: 'concert-appel',                //   en sortant : Antoine appelle, la place de concert a voyagé (Tam)
+  // (Tam et Louis remplacent Inès et Malik : les valeurs d'origine restent, pour les sauvegardes en cours.)
+  placeTam: 'place-ines',                       //     Tam, devant l'Opéra : il l'a donnée à Louis
+  placeLouis: 'place-malik',                    //     Louis, dans la file du Louvre : il l'a laissée à Clara
   placeClara: 'place-clara',                    //     Clara, au café à terrasse : elle rend la place
   concertParis: 'concert-paris',                //   le concert à Bercy (le bouton du 1er étage s'allume)
   promotionParis: 'promotion-paris',            //   au 1er étage, le manager prend Pierre avec lui

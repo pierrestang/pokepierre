@@ -5,7 +5,7 @@ import { parseGrid } from './parseGrid.js';
 import BUILT from '../builtMaps/paris.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
-import { CLARA, HUGUES_CALL, HUGUES_MESSAGE, INES, INTO_THE_DREAM, LANDLORD, MALIK } from '../parisStory.js';
+import { ANTOINE_CALL, CLARA, HUGUES_MESSAGE, INTO_THE_DREAM, LANDLORD, LOUIS, TAM } from '../parisStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la Seine, l'avenue et la rue sud se prolongent ; des arbres ailleurs.
@@ -123,18 +123,18 @@ export const parisMap = {
     // Le propriétaire, devant l'immeuble.
     // Le propriétaire, juste devant l'immeuble aux balcons fleuris : Pierre doit le trouver (il ne vient pas à lui).
     { id: 'proprietaire', name: 'Propriétaire', sprite: 'g35', x: 7, y: 23, facing: 'down', script: LANDLORD },
-    // La place de concert, de main en main (parisStory.js) : Inès devant l'Opéra, Malik dans la file du Louvre, Clara
+    // La place de concert, de main en main (parisStory.js) : Tam devant l'Opéra, Louis dans la file du Louvre, Clara
     // au café à terrasse.
-    { id: 'ines', name: 'Inès', x: 39, y: 23, facing: 'right', script: INES },
+    { id: 'tam', name: 'Tam', x: 39, y: 23, facing: 'right', script: TAM },
     // La file du Louvre, devant sa porte de gauche (21, 14).
     { id: 'file-louvre-1', name: 'Touriste', sprite: 'g21', x: 20, y: 15, facing: 'right', still: true, dialogue: ['La file avance… doucement. Très doucement.'] },
-    { id: 'malik', name: 'Malik', x: 19, y: 15, facing: 'right', script: MALIK },
+    { id: 'louis', name: 'Louis', x: 19, y: 15, facing: 'right', script: LOUIS },
     { id: 'file-louvre-2', name: 'Touriste', sprite: 'g34', x: 18, y: 15, facing: 'right', still: true, dialogue: ['On m\'a dit vingt minutes. Ça fait une heure.'] },
     { id: 'clara', name: 'Clara', x: 15, y: 23, facing: 'left', script: CLARA },
   ],
   events: [
-    // En sortant de la tour la première fois : Hugues appelle (la place de concert) ; promu : son message (le match).
-    { on: 'enter', ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.concertAppel], steps: HUGUES_CALL },
+    // En sortant de la tour la première fois : Antoine appelle (la place de concert) ; promu : le message de Hugues (le match).
+    { on: 'enter', ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.concertAppel], steps: ANTOINE_CALL },
     { on: 'enter', ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.messageHugues], steps: HUGUES_MESSAGE },
     // En sortant de la tour, la Liberté choisie : le rêve.
     { on: 'enter', ifFlags: [FLAGS.liberteParis], unlessFlags: [FLAGS.reveParis], steps: INTO_THE_DREAM },
