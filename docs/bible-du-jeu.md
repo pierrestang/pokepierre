@@ -1448,7 +1448,8 @@ qui apparaissent en fondu l'un après l'autre (systems/EndCards.js ; chacun rest
    d'où tout est parti. Mais sans le voyage, il n'aurait jamais su le reconnaître. »**
 
 Puis retour à l'écran titre, et le **générique** défile par-dessus (src/data/credits.js : histoire, univers Nintendo /
-Game Freak, décors et intérieurs des ressources de fans, objets, musique dont « Le rêve » ; une touche le passe).
+Game Freak, sprites des personnages (Vanilla Sunshine et ses contributeurs), décors et intérieurs (Gen 4 Pack complet,
+auteurs des planches de la bibliothèque, Gaia Project), objets, polices, musique dont « Le rêve » ; une touche le passe).
 « Continuer » reprend Pierre dans sa chambre de Fort-de-France, libre (la fin ne se rejoue pas) ; le ferry permet de
 quitter l'île.
 
