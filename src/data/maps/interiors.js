@@ -440,7 +440,7 @@ export const interiors = {
     // Fanny bébé, couchée dans son lit, de la sortie de la clinique jusqu'à l'ellipse (ensuite, elle joue au salon).
     npcs: [
       {
-        id: 'fanny-lit', name: 'Fanny', x: 1, y: 4, facing: 'down', still: true, inBed: true, child: true,
+        id: 'fanny-lit', name: 'Fanny', sprite: 'g60', x: 1, y: 4, facing: 'down', still: true, inBed: true, child: true,
         ifFlags: [FLAGS.familleRentree], unlessFlags: [FLAGS.ellipseSaintAy],
         dialogue: ['Fanny dort, son petit poing serré. Elle sourit dans son sommeil.'],
       },
@@ -582,7 +582,7 @@ export const interiors = {
       },
       // Le berceau : la main de Fanny (voir FANNY_CRADLE).
       {
-        id: 'fanny-hopital', name: 'Fanny', x: 7, y: 4, facing: 'down', still: true, inBed: true, child: true,
+        id: 'fanny-hopital', name: 'Fanny', sprite: 'g60', x: 7, y: 4, facing: 'down', still: true, inBed: true, child: true,
         ifFlags: [FLAGS.familleArrivee], unlessFlags: [FLAGS.familleRentree],
         script: FANNY_CRADLE,
       },

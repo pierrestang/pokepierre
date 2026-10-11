@@ -1526,7 +1526,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Maman | `g44` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
 | Papa | `g80` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
 | Manon | `g96` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy |
-| Fanny | `g153` (adolescente, 27 px : nettement plus grande que Jean, 23 px, son cadet de six ans ; `g60` petite fille à Saint-Ay) | Saint-Ay, Montépilloy |
+| Fanny | `g153` (adolescente, 27 px : nettement plus grande que Jean, 23 px, son cadet de six ans) dès Montépilloy ; `g60` (enfant) partout à Saint-Ay : le berceau de la maternité, son lit, le salon | Saint-Ay, Montépilloy |
 | Jean | `g22` | Montépilloy |
 | Capitaine du ferry | `g118` | Fort-de-France, le pont du ferry ; sa carte postale à Saint-Ay |
 | Rose | `g82` (panneau PNJ) | Fort-de-France (devant les statues) |
