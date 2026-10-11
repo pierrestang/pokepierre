@@ -14,7 +14,7 @@ export const BY_NAME = {
   Tam: 'g182', Louis: 'g155', Philippe: 'g6', Nico: 'g7',
   // Paris, les collègues de la tour (jeunes adultes) ; « Camille (Paris) » : la collègue (lookName). (La fille de la
   // classe de Pierre au collège s'appelle Clélia.)
-  Guillaume: 'g4', Anthony: 'g105', Antoine: 'g98', Quentin: 'g139',
+  Guillaume: 'g4', Antony: 'g105', Antoine: 'g98', Quentin: 'g139',
   Andrea: 'g1', Mariana: 'g113', Yasmine: 'g50', 'Camille (Paris)': 'g130', Yalin: 'g5',
   'Benoît': 'g38', 'Étienne': 'g14', Joshua: 'g18',
   Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g140', Paul: 'g86', 'Clélia': 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g153',

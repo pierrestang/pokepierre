@@ -2360,7 +2360,7 @@ export const interiors = {
 
   // Paris — la tour de bureaux, rez-de-chaussée : le hall (accueil, salon), vivant, des collègues debout qui parlent à
   // Pierre comme à l'un des leurs, Guillaume, le blasé, près de la machine à café. Les collègues de la tour sont de
-  // jeunes adultes : Guillaume, Anthony, Antoine, Quentin, Pablo, Julien ; Andrea, Mariana, Yasmine, Camille, Yalin, Juliette. Le travail reste hors champ. L'ascenseur
+  // jeunes adultes : Guillaume, Antony, Antoine, Quentin, Pablo, Julien ; Andrea, Mariana, Yasmine, Camille, Yalin, Juliette. Le travail reste hors champ. L'ascenseur
   // (au fond à droite) : « manager » s'allume après le concert, « directeur » après le match (voir parisStory.js).
   entreprise: {
     name: 'Tour de bureaux',
@@ -2381,7 +2381,7 @@ export const interiors = {
     spawn: { x: 1, y: 10, facing: 'up' },
     npcs: [
       { id: 'collegue', name: 'Guillaume', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
-      { id: 'collegue-tot', name: 'Anthony', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
+      { id: 'collegue-tot', name: 'Antony', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
       // Celle qui accueille Pierre le premier jour (parisStory.js OFFICE_FIRST).
       // Camille : « ce premier jour » seulement le premier jour (avant le concert et le premier « Un an plus tard… »).
       ...[[{ unlessFlags: [FLAGS.concertParis] }, 'Alors, ce premier jour ? Si tu cherches quoi que ce soit, demande-moi !'],
