@@ -1421,7 +1421,7 @@ export const interiors = {
       { id: 'etudiant-12', name: 'Étudiant', x: 5, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Ousmane m\'a dit que c\'était ici, la meilleure soirée.'] },
       { id: 'etudiant-13', name: 'Étudiant', x: 8, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Tu restes jusqu\'à quelle heure ?'] },
       // Dalil, discret, dans un coin : on ne le voit qu'à de rares moments (ici, puis au stade).
-      { id: 'dalil-fete', name: 'Dalil', x: 10, y: 12, facing: 'up', ...PARTY_TIME, still: true, dialogue: ['Moi, c\'est Dalil, un pote d\'Ousmane, de la fac. Il paraît qu\'il va faire beau ce week-end : parfait pour aller voir les vagues.'] },
+      { id: 'dalil-fete', name: 'Dalil', x: 10, y: 12, facing: 'up', ...PARTY_TIME, still: true, dialogue: ['Il paraît qu\'il va faire beau ce week-end. Parfait pour aller voir l\'océan et ses vagues.'] },
     ],
     // Le tableau électrique : au fond, sans bulle « ! » (on le cherche dans le noir).
     objects: [

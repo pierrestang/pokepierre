@@ -682,7 +682,7 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
      Charlotte : **« Salut ! Charlotte, de KEDGE. Moi aussi, je pars à Hull l'an prochain. On dirait que tout le monde y
      va ! »** (ensuite : « On se revoit à Hull, alors. Promis ? »).
    - Dans un coin, près des lits, sans danser : **Dalil**, discret (on ne le voit qu'à de rares moments : ici, puis au
-     stade, au retour) : « Moi, c'est Dalil, un pote d'Ousmane, de la fac. Il paraît qu'il va faire beau ce week-end : parfait pour aller voir les vagues. »
+     stade, au retour) : « Il paraît qu'il va faire beau ce week-end. Parfait pour aller voir l'océan et ses vagues. »
    - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous :
      gobelets, canettes, pizza froide, confettis… »** / « Ousmane dort encore, tout habillé. » (couché dans le lit de
      gauche). Voir le passage optionnel.
