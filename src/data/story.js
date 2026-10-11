@@ -296,8 +296,8 @@ export const FOLLOWERS = [
   { id: 'etienne', name: 'Étienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], ...COPAINS_DONE },
   { id: 'benoit', name: 'Benoît', color: 0xa07040, ifFlags: [FLAGS.trouveBenoit], ...COPAINS_DONE },
   // Hanoï : les deux touristes te suivent de la grande rue jusqu'au temple, et en ressortent avec toi.
-  { id: 'touriste-1', name: 'Touriste', sprite: 'g24', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
-  { id: 'touriste-2', name: 'Touriste', sprite: 'g22', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
+  { id: 'touriste-1', name: 'Touriste', sprite: 'g149', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
+  { id: 'touriste-2', name: 'Touriste', sprite: 'g158', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   // Delhi : Prophecy suit Pierre de la rencontre jusqu'à la cour du palais (il y redevient le PNJ prophecy-fete) ;
   // après la fête, Prophecy le suit jusqu'à la porte du fort, puis Harsh aussi, jusqu'au vieux sage et à la sortie du fort ; à la fin du semestre,
   // Prophecy le suit jusqu'à l'aéroport, dans l'avion, puis à Bordeaux jusqu'au stade (il y redevient le PNJ

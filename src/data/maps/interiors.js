@@ -1137,12 +1137,12 @@ export const interiors = {
         dialogue: ['Salut ! Ta chambre est au premier, l\'escalier au fond à droite.'],
       },
       {
-        id: 'eleve-hall', name: 'Élève', sprite: 'g56', x: 7, y: 7, facing: 'left', ...when,
+        id: 'eleve-hall', name: 'Élève', sprite: 'g145', x: 7, y: 7, facing: 'left', ...when,
         dialogue: ['Le deuxième étage, c\'est les terminales. Ils se croient chez eux.'],
       },
       // Facultatif, jusqu'au bac : le nouveau qui a le mal du pays (voir prytaneeStory.js HOMESICK).
       {
-        id: 'nouveau', name: 'Nouveau', sprite: 'g58', x: 1, y: 6, facing: 'right', still: true, ...when,
+        id: 'nouveau', name: 'Nouveau', sprite: 'g171', x: 1, y: 6, facing: 'right', still: true, ...when,
         unlessFlags: [...(when.unlessFlags ?? []), FLAGS.ellipseBac],
         script: HOMESICK,
       },
@@ -1266,8 +1266,8 @@ export const interiors = {
     ],
     npcs: PRYTANEE_DAY.flatMap((when) => [
       // Internat des garçons : des garçons (apparences imposées, les figurants au hasard comptent aussi des filles).
-      { id: 'terminale-1', name: 'Élève', sprite: 'g88', x: 4, y: 6, facing: 'left', ...when, dialogue: ['Vous êtes la chambre du dessous ? Vous ronflez.'] },
-      { id: 'terminale-2', name: 'Élève', sprite: 'g89', x: 7, y: 5, facing: 'down', ...when, dialogue: ['Le bac, c\'est dans un an. Ou dans deux. Je sais plus.'] },
+      { id: 'terminale-1', name: 'Élève', sprite: 'g92', x: 4, y: 6, facing: 'left', ...when, dialogue: ['Vous êtes la chambre du dessous ? Vous ronflez.'] },
+      { id: 'terminale-2', name: 'Élève', sprite: 'g156', x: 7, y: 5, facing: 'down', ...when, dialogue: ['Le bac, c\'est dans un an. Ou dans deux. Je sais plus.'] },
       { id: 'terminale-3', name: 'Élève', sprite: 'g23', x: 10, y: 6, facing: 'left', ...when, dialogue: ['Mon lit n\'est jamais assez au carré pour le capitaine. Jamais.'] },
     ]),
   },
@@ -2168,10 +2168,10 @@ export const interiors = {
       },
       // Les convives, assis par terre en cercle, tournés vers le tapis ([id, nom, sprite, x, y, regard, réplique]).
       ...[
-        ['etudiante-fete', 'Étudiante', 'g25', 11, 12, 'up', 'etudiante'],
-        ['etudiant-dal', 'Étudiant', 'g95', 12, 12, 'up', 'dal'],
+        ['etudiante-fete', 'Étudiante', 'g116', 11, 12, 'up', 'etudiante'],
+        ['etudiant-dal', 'Étudiant', 'g187', 12, 12, 'up', 'dal'],
         ['etudiante-ensemble', 'Étudiante', 'g97', 13, 12, 'up', 'ensemble'],
-        ['grand-mere-fete', 'Grand-mère', 'g42', 14, 11, 'left', 'grandMere'],
+        ['grand-mere-fete', 'Grand-mère', 'g143', 14, 11, 'left', 'grandMere'],
         ['etudiant-riz', 'Étudiant', 'g110', 14, 10, 'left', 'riz'],
         ['etudiante-riz', 'Étudiante', 'g104', 13, 9, 'down', 'riz'],
         ['voisin-fete', 'Voisin', 'g38', 12, 9, 'down', 'voisin'],
@@ -2392,7 +2392,7 @@ export const interiors = {
     spawn: { x: 1, y: 2, facing: 'down' },
     npcs: [
       {
-        id: 'directeur', name: 'Directeur', x: 4, y: 10, facing: 'up', seated: true,
+        id: 'directeur', name: 'Directeur', lookName: 'Directeur (Paris)', x: 4, y: 10, facing: 'up', seated: true,
         ifFlags: [FLAGS.directeurInvite], script: DIRECTOR,
       },
     ],
@@ -2449,11 +2449,11 @@ export const interiors = {
     npcs: [
       // Sur l'estrade : on leur parle depuis le bord de la scène (objets plus bas).
       { id: 'chanteur', name: 'Chanteur', x: 6, y: 4, facing: 'down', still: true },
-      { id: 'guitariste', name: 'Guitariste', sprite: 'g68', x: 4, y: 4, facing: 'down', still: true },
+      { id: 'guitariste', name: 'Guitariste', sprite: 'g181', x: 4, y: 4, facing: 'down', still: true },
       { id: 'batteur', name: 'Batteur', sprite: 'g16', x: 8, y: 4, facing: 'down', still: true },
       ...[[3, 6], [4, 6], [5, 6], [7, 6], [8, 6], [9, 6], [2, 7], [4, 7], [5, 7], [7, 7], [8, 7], [10, 7],
         [3, 8], [5, 8], [7, 8], [9, 8], [4, 9], [8, 9]].map(([x, y], i) => ({
-        id: `fan-${i}`, name: 'Fan', sprite: ['g10', 'g20', 'g21', 'g34', 'g73', 'g58', 'g9', 'g17', 'g65'][i % 9],
+        id: `fan-${i}`, name: 'Fan', sprite: ['g10', 'g20', 'g21', 'g34', 'g73', 'g172', 'g9', 'g17', 'g65'][i % 9],
         x, y, facing: 'up', still: true,
         // Au cœur de la foule, on ne les approche pas : seuls ceux du bord et des derniers rangs parlent.
         ...([2, 5, 7, 10].includes(x) || y >= 8 ? { dialogue: [['Quel son !', 'Encore ! Encore !', 'Je connais toutes les paroles !'][i % 3]] } : {}),

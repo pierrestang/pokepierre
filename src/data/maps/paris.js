@@ -122,7 +122,7 @@ export const parisMap = {
   npcs: [
     // Le propriétaire, devant l'immeuble.
     // Le propriétaire, juste devant l'immeuble aux balcons fleuris : Pierre doit le trouver (il ne vient pas à lui).
-    { id: 'proprietaire', name: 'Propriétaire', sprite: 'g35', x: 7, y: 23, facing: 'down', script: LANDLORD },
+    { id: 'proprietaire', name: 'Propriétaire', sprite: 'g161', x: 7, y: 23, facing: 'down', script: LANDLORD },
     // La place de concert, de main en main (parisStory.js) : Tam devant l'Opéra, puis Louis dans la file du Louvre, qui
     // la rend.
     { id: 'tam', name: 'Tam', x: 39, y: 23, facing: 'right', script: TAM },

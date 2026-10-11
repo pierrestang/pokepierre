@@ -21,8 +21,8 @@ function outside(x, y, grid) {
 
 const NOT_HOME = ['Tu frappes. Personne ne répond… ou alors, en vietnamien.'];
 // Les deux touristes (sprites d'origine) : ils s'appellent tous les deux « Touriste » à l'écran.
-const TOURIST_1 = { name: 'Touriste', sprite: 'g24', color: 0xe0a0d0 };
-const TOURIST_2 = { name: 'Touriste', sprite: 'g22', color: 0x80c0e0 };
+const TOURIST_1 = { name: 'Touriste', sprite: 'g149', color: 0xe0a0d0 };
+const TOURIST_2 = { name: 'Touriste', sprite: 'g158', color: 0x80c0e0 };
 // Après la visite, et jusqu'à l'ellipse des six mois : les touristes restent devant le temple.
 const AFTER_VISIT = { ifFlags: [FLAGS.visiteTerminee], unlessFlags: [FLAGS.sixMoisHanoi] };
 

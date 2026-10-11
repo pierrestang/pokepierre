@@ -117,7 +117,7 @@ de la ville. et la liste des vols ne la propose pas ;
 | Manon | Sœur, devant la maison : le coquillage caché | `g57` |
 | Capitaine du ferry | « L'ancien pêcheur » : sa canne est cassée, il garde le départ | `g118` |
 | Promeneuse | Devant le mémorial de l'Anse Caffard : « Je viens souvent ici, devant les statues. » / « Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés. » | `g82` |
-| Gamin | Sur la plage : « J'ai vu des poissons sauter près des rochers ! » / « Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ? » | `g59` |
+| Gamin | Sur la plage : « J'ai vu des poissons sauter près des rochers ! » / « Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ? » | `g58` |
 
 ### Quêtes, dans l'ordre (les trois premières dans n'importe quel ordre)
 1. **Manon : le coquillage.** En sortant de la maison, Manon vient se placer à droite de Pierre (sans lui barrer l'allée) : « Psst. Viens. » / « J'ai caché un
@@ -209,7 +209,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
 |---|---|---|
 | Papa, Maman, Manon | Famille : clinique, puis maison | `g119`, `g126`, `g57` |
 | Fanny | La petite sœur, qui vient de naître (berceau, lit), puis petite fille après l'ellipse | `g60` |
-| Felix | Cousin : lance et dirige le chantier de la cabane | `g93` |
+| Felix | Cousin : lance et dirige le chantier de la cabane | `g13` (garçon ; choisi dans le créateur) |
 | Joshua | Cousin : les planches de l'enclos à poules | `g18` |
 | Yanis | Cousin : la corde des hautes herbes | `g96` |
 | Val | Cousin·e, sculpte un cheval en bois dans la maison de Felix : « Regarde, il commence à ressembler à quelque chose. La crinière, c'est le plus dur. » / « Il me faudra encore quelques semaines. Il doit être parfait. » | `g42` |
@@ -345,7 +345,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 | Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `g52` |
 | M. Bouly | Le fermier, et son tracteur en panne | `g33` |
 | Margaux | Copine de classe : lance le cache-cache | `g43` |
-| Étienne | Copain de classe | `g108` |
+| Étienne | Copain de classe | `g30` |
 | Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul au bord de la mare | `g38` |
 
 ### Quêtes, dans l'ordre (les quêtes 2 et 3 dans n'importe quel ordre après l'école)
@@ -447,7 +447,7 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Surveillant | Accueil, tranche l'embrouille du casier, rappelle l'objectif | `g116` |
+| Surveillant | Accueil, tranche l'embrouille du casier, rappelle l'objectif | `g52` |
 | Principale | Derrière l'accueil : « Bienvenue au collège Bonsecours, Pierre. Le surveillant t'expliquera tout ce qu'il faut savoir. » | `g37` |
 | Rémy | Le « colocataire » du casier 12, apporte l'Audace | `g109` |
 | Camille | Nouvelle de 6e B, la scène du dialogue à choix | `g25` |
@@ -455,7 +455,7 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 | Professeure | Prof de français : « Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit ! » | `g54` |
 | Professeur de sciences | « Aujourd'hui, on observe des feuilles au microscope. Les feuilles des arbres de Bonsecours ! » | figurant |
 | Margaux | Cachée dans le placard d'entretien au début (passage optionnel) ; une fois trouvée, en salle de maths : « On est dans la même classe, comme promis ! Enfin… presque promis. » | `g43` |
-| Étienne | Tant que Margaux est cachée, en salle de maths, à sa place : « Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance ! » ; ensuite (ou après l'ellipse), en salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `g108` |
+| Étienne | Tant que Margaux est cachée, en salle de maths, à sa place : « Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance ! » ; ensuite (ou après l'ellipse), en salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `g30` |
 | Élèves | Une réplique chacun, dans le hall, le couloir et les trois salles | figurants |
 | Militaires (2) | Barrent la route du Prytanée, en haut de la carte : « Halte ! La route du Prytanée est réservée aux candidats. Reviens avec ton diplôme du brevet. » Le brevet obtenu, l'un d'eux s'écarte sur le bas-côté : « Ton brevet ? Garde-à-vous… C'est en règle. » / « Les portes du Prytanée te sont ouvertes. Droit devant, et tiens-toi bien ! » | `g87` |
 
@@ -545,7 +545,7 @@ Dialogue à choix (Camille), l'oral du brevet (trois questions : français, math
 | Tanguy | Camarade de chambre | `g56` |
 | Geoffrey | Camarade de chambre | `g41` |
 | Militaires | Porte sud, drapeau, cour ; la nuit, trois rondes avec lampe | `g87` ; `g8` imposé pour une ronde |
-| Élèves | Hall et dortoir des terminales | `g55`, `g56`, `g88`, `g89`, `g23` (imposés) |
+| Élèves | Hall et dortoir des terminales | `g55`, `g145`, `g92`, `g156`, `g23` (imposés, garçons) |
 | Nouveau | Dans le hall de l'internat, le jour, jusqu'au bac : le mal du pays (passage optionnel) | `g58` (imposé) |
 
 ### Quêtes, dans l'ordre
@@ -768,12 +768,12 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
 | Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `g55` |
 | Romain | Colocataire de Léo ; rencontre Pierre chez Léo | `g92` |
 | Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `g94` |
-| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontrée à la soirée de Bordeaux, retrouvée au premier pub | `g44` |
+| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontrée à la soirée de Bordeaux, retrouvée au premier pub | `g43` |
 | Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `g107` |
 | Barman, Barmaid, clients | Les deux pubs, l'Asylum | Barman `g101` ; les autres en figurants |
 | DJ, videur, vestiaire, danseurs, étudiants | The Asylum | figurants |
 | Habitué | Adversaire aux fléchettes, et le pari (passage optionnel) | figurant |
-| Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `g138` |
+| Professor | À l'université : « Welcome to Hull! Les résultats de l'examen seront affichés devant l'université. » | `g136` |
 
 ### Quêtes, dans l'ordre
 1. **La coloc, Léo.** Ousmane : « Au fait, Léo a appelé. Il veut te voir, il a un plan. » / « Il habite en haut de
@@ -1287,14 +1287,14 @@ de jour.
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Propriétaire | Devant l'immeuble : les clés du studio, puis où est le bureau | `g35` |
+| Propriétaire | Devant l'immeuble : les clés du studio, puis où est le bureau | `g161` |
 | Guillaume | Le blasé du rez-de-chaussée, près de la machine à café | `g4` |
 | Camille | Accueille Pierre le premier jour, puis l'envoie au manager et au directeur | `g130` |
-| Anthony | Collègue debout dans le hall (Antoine aussi, voir plus bas) | `g95` |
+| Anthony | Collègue debout dans le hall (Antoine aussi, voir plus bas) | `g105` |
 | Andrea, Yasmine | Collègue du hall ; l'accueil | `g1`, `g50` |
 | Mariana, Quentin, Yaline | Collègues du premier étage | `g113`, `g139`, `g5` |
 | Manager | Le 1er étage : la promotion | `g122` |
-| Directeur | Le dernier étage : la belle place | `g120` |
+| Directeur | Le dernier étage : la belle place | `g123` (« Directeur (Paris) », distinct de celui du stade) |
 | Hugues | L'ami parisien de Pierre, fan de foot : le match chez lui | `g121` |
 | Antoine | Collègue de la tour : il appelle Pierre au sujet de la place de concert | `g98` |
 | Tam, Louis (hommes) | La place de concert, de main en main (l'Opéra, la file du Louvre) ; Louis la rend | `g182`, `g155` |
@@ -1492,17 +1492,17 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Jean | `g52` | Montépilloy |
 | Capitaine du ferry | `g118` | Fort-de-France, le pont du ferry ; sa carte postale à Saint-Ay |
 | Promeneuse | `g82` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
-| Gamin | `g59` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
-| Felix | `g93` | Saint-Ay ; sa carte postale à Montépilloy |
+| Gamin | `g58` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
+| Felix | `g13` (garçon ; choisi dans le créateur) | Saint-Ay ; sa carte postale à Montépilloy |
 | Joshua | `g18` | Saint-Ay |
 | Yanis | `g96` | Saint-Ay |
 | Val | `g42` | Saint-Ay |
 | Vieux pêcheur | `g67` | Saint-Ay |
 | M. Bouly | `g33` | Montépilloy |
 | Margaux | `g43` | Montépilloy, collège |
-| Étienne | `g108` | Montépilloy, collège |
+| Étienne | `g30` | Montépilloy, collège |
 | Benoît | `g38` | Montépilloy (la classe, puis seul au bord de la mare) |
-| Surveillant | `g116` | Collège |
+| Surveillant | `g52` | Collège |
 | Principale | `g37` | Collège |
 | Rémy | `g109` | Collège |
 | Camille | `g25` | Collège |
@@ -1523,12 +1523,12 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
 | Romain | `g202` (characterLooks) | Hull, Hanoï (téléphone), Amsterdam, Bordeaux (le stade) |
 | Prophecy | `g94` | Hull, Delhi, Bordeaux (le retour, le stade) |
-| Charlotte | `g44` | Hull, Bordeaux (le stade) |
+| Charlotte | `g43` | Hull, Bordeaux (le stade) |
 | Anaïs | `g107` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
 | Barman | `g101` | Hull |
 | Habitué | figurant | Hull |
 | Nouveau | `g58` | Prytanée (hall de l'internat) |
-| Professor | `g138` | Hull |
+| Professor | `g136` | Hull |
 | Patron | `g141` | Hanoï (l'agence) |
 | M. Lam | `g129` | Hanoï (le banc du lac) |
 | Passante, Vendeuse, Passant | `g19`, `g70`, `g14` | Hanoï |
@@ -1538,8 +1538,8 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Vendeur | `g112` | Amsterdam |
 | Harsh | `g89` | Delhi |
 | Vieux sage | `g71` | Delhi (le vieux fort) |
-| Directeur | `g120` | Bordeaux (le stade : la remise des diplômes), Paris (le dernier étage de la tour) |
-| Propriétaire | `g35` | Paris (devant l'immeuble) |
+| Directeur | `g120` (le stade), `g123` (Paris) | Bordeaux (le stade : la remise des diplômes), Paris (le dernier étage de la tour) |
+| Propriétaire | `g161` | Paris (devant l'immeuble) |
 | Collègue | `g36` | Paris (rez-de-chaussée de la tour) |
 | Manager | `g122` | Paris (1er étage de la tour) |
 | Hugues | `g121` | Paris (au téléphone, puis chez lui : le match), le rêve |
@@ -1651,6 +1651,10 @@ devient le Talisman indien (systems/items.js).
 ## Incohérences repérées
 
 ### Noms incertains ou en double
+- **Sprites (11 octobre 2026)** : plus aucun personnage nommé ne partage son sprite avec un autre (sauf les alias d'une même
+  personne, Léo / Leo et Anaïs / Anais, et l'uniforme des militaires, sentinelles et agent de sécurité) ; les figurants
+  (`EXTRAS`, data/looks.js) et les passants à sprite imposé n'en reprennent plus aucun. Felix, le surveillant et les
+  élèves de l'internat des garçons ont des sprites masculins.
 - **Rémy / Rémi** : deux personnages distincts, et les deux orthographes sont voulues (confirmé le 11 octobre 2026). Rémy (`g109`) est le copain du collège ; Rémi (`g117`) est l'étudiant de
   Bordeaux revenu des USA, qui se présente comme un inconnu (« Hey ! Moi c'est Rémi. »). Dans le code du collège,
   l'orthographe hésite aussi : le personnage affiché est « Rémy », mais ses identifiants et drapeaux s'écrivent « remi »
