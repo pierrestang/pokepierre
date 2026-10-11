@@ -333,6 +333,16 @@ const TWO_DAYS_LATER = [
   { travel: { map: 'hull', x: 21, y: 11, facing: 'up' } },
 ];
 
+// Une ancienne partie arrêtée entre les anciennes révisions (tour de table, `revisions` levé tout de suite) et la sortie
+// de la bibliothèque (« Le surlendemain… », `jourResultats`) : on la mène aux résultats comme la nouvelle.
+export const OLD_REVISIONS = [
+  { black: true },
+  { wait: 700 },
+  { say: ['Le surlendemain…'] },
+  { setFlag: FLAGS.jourResultats },
+  { travel: { map: 'hull', x: 21, y: 11, facing: 'up' } },
+];
+
 // Le camarade qui attend un livre : avant de l'avoir, il le rappelle ; avec, Pierre le lui donne.
 const bookFor = (key, waiting, thanks, done) => [
   { ifFlags: [BOOKS[key].given], speaker: BOOKS[key].who, say: [done], end: true },

@@ -116,8 +116,10 @@ de rouge), avec les filtres Tous / Hommes / Femmes / Enfants / Âgés (classemen
 src/data/spriteTags.js) ; « Par défaut » revient à l'attribution du code. « Enregistrer » écrit tous les choix en
 attente d'un coup dans **src/data/characterLooks.json** (POST /__builder/looks { looks }, vite.config.js, qui refuse un
 sprite absent de la planche) ; data/characters.js l'importe : le jeu le prend au prochain lancement. Ordre d'apparence
-dans le jeu (characters.js lookOf) : characterLooks.json, puis le `sprite` imposé d'un PNJ, puis BY_NAME (le choix du
-joueur dans Start > PNJ n'existe plus ; d'anciens choix gardés dans une sauvegarde sont ignorés). Deux personnages du même prénom : `lookName` sur le PNJ (« Camille (Paris) »). `node
+dans le jeu (characters.js lookOf) : l'apparence « Seulement ici » de l'outil Personnages (npcEdits, `spriteHere`), puis
+characterLooks.json, puis le `sprite` imposé d'un PNJ, puis BY_NAME (le choix du
+joueur dans Start > PNJ n'existe plus ; d'anciens choix gardés dans une sauvegarde sont ignorés). Deux personnages du même prénom : `lookName` sur le PNJ (« Camille (Paris) »), que l'outil Personnages utilise aussi
+pour l'apparence « partout ». `node
 scripts/check_paths.js` vérifie que chaque sprite enregistré (BY_NAME, EXTRAS, characterLooks.json, `sprite` des PNJ)
 existe dans public/assets/characters/gen4-npcs.json.
 

@@ -128,6 +128,9 @@ export const TAM = [
 // Louis, le dernier maillon (Antoine → Tam → Louis) : il rend la place à Pierre.
 export const LOUIS = [
   { ifFlags: [FLAGS.placeLouis], speaker: 'Louis', say: ['Bon concert ! Tu me raconteras.'], end: true },
+  // Une ancienne partie où Clara avait déjà rendu la place (ou le concert passé) : rien à rendre.
+  { ifItems: [ITEMS.placeConcert.id], speaker: 'Louis', say: ['Bon concert ! Tu me raconteras.'], end: true },
+  { ifFlags: [FLAGS.concertParis], speaker: 'Louis', say: ['Alors, ce concert ? Raconte !'], end: true },
   {
     ifFlags: [FLAGS.placeTam],
     steps: [

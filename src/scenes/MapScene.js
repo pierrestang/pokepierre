@@ -90,6 +90,7 @@ export class MapScene extends Phaser.Scene {
     this.actorsReady = false;                       // voir refreshActors (place des nouveaux suiveurs)
     this.emerged = {};                              // personnages sortis de leur cachette (voir emerge)
     this.stepsTaken = 0;                            // pas du joueur depuis son arrivée (événements `walk`)
+    this.scripting = false;                         // une scénette interrompue par un changement de lieu ne bloque plus
     this.ambienceKey = undefined;                   // ambiance jour / nuit / petit matin (voir applyAmbience)
     this.ambience = null;
     this.events.once('shutdown', () => { this.leaving = true; });
@@ -1564,9 +1565,11 @@ export class MapScene extends Phaser.Scene {
     const trigger = this.map.triggers?.find((t) => t.x === x && t.y === y);
     if (trigger) this.runTrigger(trigger);
     // Scénette à partir du n-ième pas depuis l'arrivée (ex. la sortie de la tour de Paris, avant le rêve) ; ses
-    // conditions doivent l'empêcher de se rejouer (un drapeau levé par la scénette).
+    // conditions doivent l'empêcher de se rejouer (un drapeau levé par la scénette). Jamais sur une porte : Pierre
+    // changerait de lieu en pleine scénette (elle reprendra au pas suivant).
+    const door = getTile(this.grid[y][x]).door || (this.map.doors ?? []).some((d) => d.x === x && d.y === y);
     const walk = (this.map.events ?? []).find((e) => e.on === 'walk' && this.stepsTaken >= e.count && meetsConditions(e));
-    if (walk && !trigger && !this.scripting) this.runScript(walk.steps);
+    if (walk && !trigger && !door && !this.scripting) this.runScript(walk.steps);
     this.onTileEntered(getTile(this.grid[y][x]), x, y);
   }
 

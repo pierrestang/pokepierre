@@ -25,12 +25,13 @@ function hash(text) {
   return h;
 }
 
-// Apparence d'un PNJ ou d'un suiveur : l'apparence choisie dans le créateur pour son nom (characterLooks.json, panneau
-// PNJ), sinon `sprite` imposé (ex. des figurants garçons), sinon par nom (ou par id), sinon un figurant. `lookName` : le nom sous lequel chercher son apparence quand deux personnages portent le même prénom
+// Apparence d'un PNJ ou d'un suiveur : l'apparence choisie dans le créateur pour ce PNJ seulement (« Seulement ici »,
+// npcEdits), sinon celle choisie pour son nom (characterLooks.json, panneau PNJ), sinon `sprite` imposé (ex. des figurants garçons), sinon par nom (ou par id), sinon un figurant. `lookName` : le nom sous lequel chercher son apparence quand deux personnages portent le même prénom
 // (« Camille (Paris) »).
 export function lookOf(data) {
   if (data.id === 'chat') return fullLook({ kind: 'cat' });
   if (data.id?.startsWith('poule')) return fullLook({ kind: 'hen' });
+  if (data.spriteHere) return { sprite: data.spriteHere };      // « Seulement ici » (créateur, npcEdits)
   const name = data.lookName ?? data.name ?? capitalize(data.id);
   const chosen = projectLook(name);
   if (chosen) return { sprite: chosen };

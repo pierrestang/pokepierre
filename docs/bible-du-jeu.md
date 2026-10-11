@@ -817,7 +817,8 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
      « Chut ! On révise. »). Anaïs : « Les résultats, c'est après-demain. On va y arriver ! » ; Prophecy : « Ze exam. Ze
      exam. Ça passe, non ? »
    - Les trois rapportés, dans n'importe quel ordre : Charlotte **« Grammaire, vocabulaire, expressions : on a tout.
-     Maintenant, on révise pour de vrai. »** ; écran noir, « Le surlendemain… ». Pas de scène d'examen.
+     Maintenant, on révise pour de vrai. »** ; écran noir, « Le surlendemain… ». Pas de scène d'examen. Une ancienne
+     partie arrêtée après l'ancien tour de table (révisions faites, pas encore « Le surlendemain ») y passe directement.
 7. **Les résultats** : Pierre arrive directement devant le panneau « EXAM » dressé devant l'université (l'examen a eu
    lieu la veille, hors champ) ; « Les résultats de l'examen d'anglais sont affichés. Tu cherches ton nom… » ;
    Léo : **« Diplôme de Hull, bro ! »** → **Diplôme de Hull** (« Diplôme obtenu : diplôme de Hull ! ») ;

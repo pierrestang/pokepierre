@@ -18,7 +18,7 @@ import {
 import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING } from '../montepilloyStory.js';
 import {
   LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
-  LIBRARY, OUSMANE_BOOK, LEO_BOOK, CHARLOTTE_BOOK, shelfBook, shelfJoke, FAKE_BOOKS, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
+  LIBRARY, OLD_REVISIONS, OUSMANE_BOOK, LEO_BOOK, CHARLOTTE_BOOK, shelfBook, shelfJoke, FAKE_BOOKS, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
 } from '../hullStory.js';
 import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC, patronComes } from '../hanoiStory.js';
 import { CAMPAIGN, CORNING_ENTER, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
@@ -1940,7 +1940,12 @@ export const interiors = {
       { x: 10, y: 2, script: shelfBook('expressions') },
       ...[4, 7, 9].map((x, i) => ({ x, y: 2, script: shelfJoke(FAKE_BOOKS[i]) })),
     ],
-    events: [{ on: 'enter', ifFlags: [FLAGS.lendemainHull], unlessFlags: [FLAGS.revisions], steps: LIBRARY }],
+    events: [
+      // La répartition des livres, une seule fois ; une ancienne partie aux révisions déjà faites ne la joue pas.
+      { on: 'enter', ifFlags: [FLAGS.lendemainHull], unlessFlags: [FLAGS.missionLivres, FLAGS.revisions], steps: LIBRARY },
+      // Ancienne partie : révisions faites, pas encore « Le surlendemain » (hullStory.js OLD_REVISIONS).
+      { on: 'enter', ifFlags: [FLAGS.revisions], unlessFlags: [FLAGS.jourResultats], steps: OLD_REVISIONS },
+    ],
   },
 
 
