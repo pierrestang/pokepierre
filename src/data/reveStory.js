@@ -4,7 +4,7 @@ import { OPENING_CINEMATIC } from './fortDeFranceStory.js';
 // Le rêve, la fin du jeu : en sortant de la tour de Paris (voir parisStory.js INTO_THE_DREAM), Pierre se retrouve au
 // centre d'une grande plate-forme qui flotte dans le bleu (maps/reve.js). Tous les personnages nommés du jeu sont là,
 // autour de lui ; huit prennent la parole, un par ville : chacun s'avance, dit son mot, puis se range près de lui. Pierre
-// parle ; le décor s'efface dans un fondu au noir lent, le carnet des huit vertus s'affiche une à une ; puis le réveil à
+// parle ; le décor s'efface dans un fondu au noir lent ; puis le réveil à
 // Fort-de-France, la cinématique d'ouverture rejouée, et le talisman (interiors.js ffHouseUp, WAKE_UP, TALISMAN).
 
 // Pierre, au centre de la plate-forme.
@@ -43,7 +43,7 @@ const towardCenter = ([x, y]) => {
 export { towardCenter };
 
 // La réunion : le décor se forme (le voile clair se dissipe), Pierre ne sait pas où il est ; les huit parlent, Pierre
-// parle ; le fondu et les vertus ; le réveil.
+// parle ; le fondu au noir ; le réveil.
 export const REUNION = [
   { veil: 3500 },
   { wait: 400 },
@@ -65,7 +65,8 @@ export const REUNION = [
     ],
   },
   { wait: 1200 },
-  { virtuesFade: true },
+  { fadeOut: 3000 },
+  { wait: 800 },
   { setFlag: FLAGS.finDuJeu },
   { travel: { interior: 'ffHouseUp', fromMap: 'fortDeFrance', x: 2, y: 5, facing: 'left' } },
 ];

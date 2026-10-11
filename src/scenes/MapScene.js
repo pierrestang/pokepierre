@@ -100,7 +100,7 @@ export class MapScene extends Phaser.Scene {
     this.pendingWalkFlags = new Set();
     this.events.once('shutdown', () => this.pendingWalkFlags.forEach(flags.add));
     // Rideau noir d'une scénette précédente : levé, sauf pour un lieu qui s'ouvre dans le noir (`openDark` : conditions,
-    // ex. le réveil de la fin, après le fondu des vertus).
+    // ex. le réveil de la fin, après le fondu au noir du rêve).
     if (!(map.openDark && meetsConditions(map.openDark))) this.scene.get('UI')?.curtain?.setAlpha(0);
     // Carte dessinée avec le créateur de cartes (map.built) : son dessin remplace le rendu Rouge Feu.
     // Dans un bâtiment, le dessin de la ville reste en mémoire (on le retrouve intact en ressortant).
@@ -642,7 +642,7 @@ export class MapScene extends Phaser.Scene {
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
   //   { dream: ms }                      l'écran se brouille (flou), un voile clair monte, la musique s'éteint : l'entrée
   //                                      dans le rêve (Paris) ; { veil: false | ms } dissipe le voile à l'arrivée
-  //   { virtuesFade: true }              fondu au noir lent, le carnet des huit vertus une à une (systems/VirtuesFade.js)
+  //   { fadeOut: ms }                    fondu au noir lent, en `ms` (le rideau reste noir ; ex. la fin du rêve)
   //   { hidePlayer: true | false }       Pierre caché ou montré (ex. couché dans son lit : un PNJ le remplace)
   //   { endGame: true | { credits } }    fin du jeu : retour à l'écran titre (`credits` : avec le générique)
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
@@ -678,7 +678,7 @@ export class MapScene extends Phaser.Scene {
       if (step.black !== undefined) await this.setCurtain(step.black);
       if (step.dream) await this.dreamFade(step.dream);
       if (step.veil !== undefined) await this.liftVeil(step.veil);
-      if (step.virtuesFade) await this.scene.get('UI').virtuesFade.play(this.scene.get('UI').curtain);
+      if (step.fadeOut) await this.fadeOut(step.fadeOut);
       if (step.hidePlayer !== undefined) this.player.sprite.setVisible(!step.hidePlayer);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
@@ -1277,6 +1277,12 @@ export class MapScene extends Phaser.Scene {
   }
 
   // Rideau noir de l'interface (sous les dialogues) : posé d'un coup, levé en fondu.
+  // Fondu au noir lent (le rideau de l'UIScene), en `ms` ; le rideau reste noir.
+  fadeOut(ms) {
+    const curtain = this.scene.get('UI').curtain;
+    return new Promise((resolve) => this.tweens.add({ targets: curtain, alpha: 1, duration: ms, onComplete: resolve }));
+  }
+
   setCurtain(on) {
     const curtain = this.scene.get('UI').curtain;
     if (on) {

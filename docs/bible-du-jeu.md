@@ -1466,9 +1466,7 @@ Puis Pierre, au milieu de tous : **« À chaque départ, je pensais tourner une 
 s'ajoute. »** / **« Vous êtes tous là, dans le même livre. Et je crois qu'il reste beaucoup de pages blanches. »**
 
 ### Le fondu au noir
-Le décor s'efface dans un fondu au noir lent (pas de flash). Pendant ce temps, le carnet des huit vertus s'affiche une à
-une, de la Joie de vivre à la Liberté ; la Liberté s'illumine en dernier (en or), sa phrase dessous ; puis noir complet
-(systems/VirtuesFade.js).
+Le décor s'efface dans un fondu au noir lent (3 s, pas de flash), jusqu'au noir complet (étape `fadeOut`).
 
 ### Le réveil (le twist)
 On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu, et **la cinématique d'ouverture est rejouée**
