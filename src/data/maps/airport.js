@@ -22,12 +22,12 @@ const NEXT_FLIGHTS = [
   { label: 'Hanoï', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
   // Amsterdam : après l'appel de Romain, six mois après le premier jour à Hanoï (monologue au guichet, voir hanoiStory.js).
   { label: 'Amsterdam', ifFlags: [FLAGS.appelRomain], unlessFlags: [FLAGS.arriveeAmsterdam], steps: FLIGHT_TO_AMSTERDAM },
-  // New Delhi : avec le billet que Romain remet à Amsterdam, la nuit au bord du canal.
+  // Delhi : avec le billet que Romain remet à Amsterdam, la nuit au bord du canal.
   {
-    label: 'New Delhi', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
+    label: 'Delhi', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
     setFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi,
   },
-  // Bordeaux : le semestre de New Delhi fini, depuis l'aéroport de Delhi, avec Prophecy (le stade s'ouvre).
+  // Bordeaux : le semestre de Delhi fini, depuis l'aéroport de Delhi, avec Prophecy (le stade s'ouvre).
   {
     label: 'Bordeaux', ifFlags: [FLAGS.semestreTermine], unlessFlags: [FLAGS.retourBordeaux],
     setFlags: [FLAGS.retourBordeaux], plane: AIRPORT_EXITS.bordeaux,
@@ -44,7 +44,7 @@ const OTHER_FLIGHTS = [
   { label: 'Hull', ifFlags: [FLAGS.arriveeHull], plane: AIRPORT_EXITS.hull },
   { label: 'Hanoï', ifFlags: [FLAGS.arriveeHanoi], plane: AIRPORT_EXITS.hanoi },
   { label: 'Amsterdam', ifFlags: [FLAGS.arriveeAmsterdam], plane: AIRPORT_EXITS.amsterdam },
-  { label: 'New Delhi', ifFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi },
+  { label: 'Delhi', ifFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi },
   { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: AIRPORT_EXITS.paris },
   { label: 'Rester ici', dialogue: ['Très bien, reviens me voir quand tu veux !'] },
 ];
@@ -106,7 +106,7 @@ export const airportMap = {
     warp: { airportExit: true },                // dans la ville d'où l'on vient (voir airportLinks.js)
   })),
   // Les écrans du guichet, de part et d'autre de l'hôtesse.
-  objects: [8, 12].map((x) => ({ x, y: 7, dialogue: ['Sur l\'écran, les départs du jour : Hull, Hanoï, Amsterdam, New Delhi… Le monde entier.'] })),
+  objects: [8, 12].map((x) => ({ x, y: 7, dialogue: ['Sur l\'écran, les départs du jour : Hull, Hanoï, Amsterdam, Delhi… Le monde entier.'] })),
   spawn: { x: 10, y: 12, facing: 'up' },
 };
 

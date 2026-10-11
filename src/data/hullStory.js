@@ -361,7 +361,7 @@ export const RESULTS = [
   { say: ['Les résultats de l\'examen d\'anglais sont affichés. Tu cherches ton nom…'] },
   { faceTo: 'leo-resultats' },
   { speaker: 'Léo', say: ['Diplôme de Hull, bro !'] },
-  { give: ITEMS.diplomeHull, text: 'Diplôme obtenu : Anglais de Hull !' },
+  { give: ITEMS.diplomeHull, text: 'Diplôme obtenu : diplôme de Hull !' },
   { speaker: 'Léo', say: ['On se retrouve tous devant chez moi pour se dire au revoir. Ramène-toi !'] },
 ];
 

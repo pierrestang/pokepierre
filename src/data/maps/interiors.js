@@ -89,16 +89,6 @@ const PAPA_TO_SALON = {
   speaker: 'Papa', say: ['Maman t\'attend au salon.'],
 };
 
-// La vieille canne, restée dans la caisse « À DONNER » de Papa : on peut la prendre pour pêcher (facultatif).
-const OLD_ROD_CHOICE = [
-  {
-    choose: 'Il reste une vieille canne à pêche dans la caisse « À DONNER ». Tu la prends ?',
-    choices: [
-      { label: 'OUI', steps: [{ give: ITEMS.vieilleCanne, text: 'Tu prends la vieille canne. Elle pourra encore servir.' }] },
-      { label: 'NON', steps: [] },
-    ],
-  },
-];
 
 // Collège Bonsecours : des élèves dans les salles et les couloirs, une réplique chacun ([x, y, réplique, direction] ;
 // apparence de figurant au hasard). En classe, assis derrière un pupitre, face au bureau (vers le haut, par défaut).
@@ -230,8 +220,8 @@ export const interiors = {
       ...[0, 1].map((x) => ({ x, y: 3, warp: { interior: 'ffHouse', x: 2, y: 2, facing: 'down' } })),
     ],
     // La fin du jeu (reveStory.js WAKE_UP) : la chambre s'ouvre dans le noir, la cinématique d'ouverture est rejouée
-    // telle quelle ; sur le bureau, à côté de l'ordinateur, le talisman (la même image que la pierre gravée du vieux sage
-    // de New Delhi), signalé par une bulle « ! » ; Pierre le prend face au bureau (TALISMAN).
+    // telle quelle ; sur le bureau, à côté de l'ordinateur, le talisman indien (celui que le vieux sage
+    // de Delhi lui a remis), signalé par une bulle « ! » ; Pierre le prend face au bureau (TALISMAN).
     openDark: { ifFlags: [FLAGS.finDuJeu], unlessFlags: [FLAGS.reveilFin] },
     decals: [
       {
@@ -279,13 +269,13 @@ export const interiors = {
     decor: [],
     // Cannes debout aux couleurs de HeartGold (voir MapScene, décors `icons`) : les trois du râtelier (Méga, Super,
     // Vieille), puis la Méga Canne que Papa garde ; dans la caisse « À DONNER », la Super Canne (offerte au
-    // pêcheur) et la Vieille canne, puis la Vieille seule. Le bas des cannes est coupé (socle, bord de la caisse).
+    // pêcheur) et la Vieille canne, puis la Vieille seule (elle reste dans la caisse). Le bas des cannes est coupé.
     decals: [
       { x: 0, y: 4, unlessFlags: [FLAGS.papaFait], icons: RACK_RODS },
       { x: 0, y: 4, ifFlags: [FLAGS.papaFait], icons: [['mega-canne-petite', -3, -20, 26]] },
       { x: 0, y: 5, ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.canneOfferte], unlessItems: [ITEMS.canneAPeche.id], icons: CRATE_RODS },
-      { x: 0, y: 5, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
-      { x: 0, y: 5, ifItems: [ITEMS.canneAPeche.id], unlessItems: [ITEMS.vieilleCanne.id], icons: OLD_ROD_IN_CRATE },
+      { x: 0, y: 5, ifFlags: [FLAGS.papaFait, FLAGS.canneOfferte], icons: OLD_ROD_IN_CRATE },
+      { x: 0, y: 5, ifItems: [ITEMS.canneAPeche.id], icons: OLD_ROD_IN_CRATE },
     ],
     spawn: { x: 3, y: 4, facing: 'up' },
     npcs: [
@@ -336,10 +326,9 @@ export const interiors = {
           { speaker: 'Papa', say: ['Tu vois. « À donner », ça veut dire à donner.'] },
         ],
       },
-      // La canne qui reste, une fois l'autre prise pour le capitaine : Pierre peut la garder pour pêcher.
-      { x: 0, y: 5, ifItems: [ITEMS.vieilleCanne.id], dialogue: ['La caisse « À DONNER » est vide.'] },
-      { x: 0, y: 5, ifItems: [ITEMS.canneAPeche.id], script: OLD_ROD_CHOICE },
-      { x: 0, y: 5, ifFlags: [FLAGS.canneOfferte], script: OLD_ROD_CHOICE },
+      // La canne qui reste, une fois l'autre prise pour le capitaine : une vieille canne, qu'on laisse là.
+      { x: 0, y: 5, ifItems: [ITEMS.canneAPeche.id], dialogue: ['Une vieille canne à pêche reste au fond de la caisse « À DONNER ».'] },
+      { x: 0, y: 5, ifFlags: [FLAGS.canneOfferte], dialogue: ['Une vieille canne à pêche reste au fond de la caisse « À DONNER ».'] },
       { x: 0, y: 5, dialogue: ['Deux cannes à pêche dans la caisse « À DONNER ».'] },
     ],
   },
@@ -2135,9 +2124,9 @@ export const interiors = {
     events: [{ on: 'enter', unlessFlags: [FLAGS.romainDemande], steps: ROMAIN_WELCOME }],
   },
 
-  // New Delhi — la cour du palais de grès, un jour de fête (scripts/build_delhi_cour.py : dallage de grès, couronne de
+  // Delhi — la cour du palais de grès, un jour de fête (scripts/build_delhi_cour.py : dallage de grès, couronne de
   // palmiers, trois pavillons à coupole au fond, mâts à fanions, lanternes, stand de chai, un étal, des soucis ; les
-  // éléments de la carte de New Delhi). En plein jour. Au milieu, le grand repas partagé, assis en cercle par terre
+  // éléments de la carte de Delhi). En plein jour. Au milieu, le grand repas partagé, assis en cercle par terre
   // (voir newDelhiStory.js DELHI_PARTY) ; il continue à chaque visite.
   delhiCour: {
     name: 'Cour du palais',
@@ -2190,7 +2179,7 @@ export const interiors = {
     events: [{ on: 'enter', unlessFlags: [FLAGS.feteDelhi], steps: DELHI_PARTY }],
   },
 
-  // New Delhi — le vieux fort, derrière la porte de pierre : le bas de l'arène de Mauville (HGSS) : dalles, grands
+  // Delhi — le vieux fort, derrière la porte de pierre : le bas de l'arène de Mauville (HGSS) : dalles, grands
   // piliers, balustrades, marches, deux statues. Le bruit de la ville ne passe pas les murs (musique coupée). Le vieux
   // sage attend sur la terrasse, au-dessus des marches (voir newDelhiStory.js SAGE).
   delhiFort: {

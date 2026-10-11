@@ -1,6 +1,6 @@
 # Bible du jeu Poképierre
 
-Ce document décrit ce qui est **réellement codé** au 9 octobre 2026 (branche `cartes-gen4`), ville par ville, dans
+Ce document décrit ce qui est **réellement codé** au 11 octobre 2026 (branche `cartes-gen4`), ville par ville, dans
 l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/story.js`, `src/data/*Story.js`,
 `src/data/characters.js`, `src/data/hanoiStory.js`, `src/data/questStarts.js`, `src/data/fishing.js`, `src/data/maps/*.js`,
 `src/data/maps/interiors.js`, `src/scenes/FerryScene.js`, `scripts/build_ds_ui.py` (cartes postales).
@@ -28,10 +28,10 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
 - **Trajet** : scène de voyage (`FerryScene`) en ferry, en voiture ou en avion, qui se termine par l'encart
   « Tu emportes : … » (la vertu reçue dans la ville quittée ; pas d'encart en quittant une ville sans vertu). Sans scène
   de trajet, on passe directement à la carte suivante.
-- **Pêche** (valable partout) : avec la **Vieille canne** dans le sac, on peut lancer sa ligne face à n'importe quelle
-  eau. « Tu lances ta ligne… » ; 40 % de chances de « Rien ne mord… Tu remballes ta ligne. » ; sinon une prise selon
-  l'eau, relâchée : mer (maquereau, sardine, petit bar, dorade), étang (gardon, perche, carpe, poisson-chat), rivière
-  (truite, gardon, goujon), ou une vieille botte, « Tu la poses sur la rive. ».
+- **Pêche** : plus de pêche libre ni de vieille canne (retirées le 11 octobre 2026).
+- **Le sac** (Start > OBJETS, touche I) : deux onglets, « Objets » et « Souvenirs » (src/data/bag.js) ; gauche / droite
+  pour changer d'onglet. Un souvenir qui a d'abord servi reste dans « Objets » jusqu'à la fin de sa quête, puis y passe
+  tout seul ; sous la liste des souvenirs, le court texte de celui qu'on a choisi. Liste complète : section « Le sac ».
 - **Vélo** (offert à Bordeaux par le cycliste du quai, passage optionnel ; `?velo` dans l'adresse donne l'objet **Vélo**
   pour l'essayer) : Pierre monte ou descend avec la touche V (ou B), l'entrée « VÉLO : MONTER / DESCENDRE » du menu Start
   ou le bouton VÉLO des commandes tactiles ; sonnette en montant, musique du vélo tant qu'il roule ; il va environ
@@ -45,7 +45,7 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
 ## Ordre du jeu
 
 Fort-de-France → Saint-Ay → (route de Montépilloy) → Montépilloy → route et collège de Bonsecours → Prytanée →
-Bordeaux → Hull → Hanoï → Amsterdam → New Delhi → Bordeaux (stade) → Paris → le rêve → le réveil à Fort-de-France
+Bordeaux → Hull → Hanoï → Amsterdam → Delhi → Bordeaux (stade) → Paris → le rêve → le réveil à Fort-de-France
 (fin du jeu, retour au titre).
 
 Après Bordeaux, tous les vols passent par l'**aéroport** (une seule carte, redessinée en Gen 4, tout entier à l'écran : tarmac
@@ -153,15 +153,14 @@ de la ville. et la liste des vols ne la propose pas ;
 - **Utilisées** : aucune.
 
 ### Objet optionnel
-- **Vieille canne** : la canne restée dans la caisse « À DONNER », une fois l'autre prise. Choix : « Il reste une vieille
-  canne à pêche dans la caisse « À DONNER ». Tu la prends ? » → « Tu prends la vieille canne. Elle pourra encore
-  servir. » Elle permet de pêcher partout.
+Aucun. La vieille canne reste au fond de la caisse « À DONNER » (« Une vieille canne à pêche reste au fond de la caisse
+« À DONNER ». ») ; elle ne se prend plus.
 
 ### Boîte aux lettres
 « La boîte aux lettres de la famille. » / « Rien aujourd'hui… Peut-être une carte postale de Saint-Ay, un jour ? »
 
 ### Mini-jeux
-Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieille canne).
+Fouille des hautes herbes (coquillage), danse avec Maman.
 
 ### Départ et trajet
 - **Condition** : le tri, le coquillage et la danse, puis la canne offerte au capitaine. Le départ suit aussitôt le don de la canne :
@@ -648,7 +647,7 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
    Audace ! »** → trois traductions (« Je suis en
    retard », « Ça marche ! », « J'ai hâte ! » ; bonnes réponses « I am late. », « Deal! », « I can't wait! » ; une erreur :
    par exemple « Very French. Try again! ») → « Excellent! Well done, Pierre. » → **Diplôme d'anglais** (« Diplôme
-   obtenu : Anglais KEDGE ! ») ; « Avec ça, la route vers l'est t'est ouverte. »
+   obtenu : diplôme d'anglais ! ») ; « Avec ça, la route vers l'est t'est ouverte. »
    En sortant de KEDGE, Ousmane attend devant la porte : **« Ça y est, tu l'as, ton diplôme ! Moi, je pars pour Hull
    quelques semaines avant toi : je te garde une place à la coloc. »** / « L'aéroport, c'est par la sortie est. Prends
    ton billet pour Hull quand tu es prêt ! », puis il part (« On se retrouve à Hull ! » si on lui reparle).
@@ -817,7 +816,7 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
      Maintenant, on révise pour de vrai. »** ; écran noir, « Le surlendemain… ». Pas de scène d'examen.
 7. **Les résultats** : Pierre arrive directement devant le panneau « EXAM » dressé devant l'université (l'examen a eu
    lieu la veille, hors champ) ; « Les résultats de l'examen d'anglais sont affichés. Tu cherches ton nom… » ;
-   Léo : **« Diplôme de Hull, bro ! »** → **Diplôme d'anglais de Hull** (« Diplôme obtenu : Anglais de Hull ! ») ;
+   Léo : **« Diplôme de Hull, bro ! »** → **Diplôme de Hull** (« Diplôme obtenu : diplôme de Hull ! ») ;
    Léo : « On se retrouve tous devant chez moi pour se dire au revoir. Ramène-toi ! »
 8. **Les adieux**, devant chez Léo : « Toute la bande est là, devant chez Léo. Chacun part en échange. » ; Charlotte « Moi,
    c'est le Canada ! » ; Anaïs « Bali ! » ; Prophecy « Les États-Unis. Je vais enfin parler anglais pour de vrai. » ;
@@ -923,7 +922,7 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
    **« Laisse tomber les photos. Regarde autour de toi : tu y es, là, maintenant. Profite. »** ; « Elle range son
    téléphone, lève les yeux vers les statues… et sourit. » ; « Vous avez raison. Je m'en souviendrai mieux comme ça. »
    Sur l'autel : « Sur l'autel, entre deux bâtons d'encens, une petite amulette porte-bonheur. Un gardien te fait
-   signe : elle est pour toi. » → **Objet de chance** (facultatif). En sortant, avec ou sans l'amulette (la visite est
+   signe : elle est pour toi. » → **Amulette du temple** (facultatif). En sortant, avec ou sans l'amulette (la visite est
    finie dès que la touriste a rangé son téléphone), Pierre fait un pas devant la porte et les deux touristes vont se
    placer de chaque côté de la porte, chacun sur sa case, avant de parler : « Merci pour la visite ! Sans téléphone, j'ai tout regardé.
    Vraiment regardé. » / « Un super guide. Et même pas besoin de parler vietnamien ! » / **« On va dire à ton patron, à
@@ -953,7 +952,7 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 - **Utilisées** : **Insouciance**, au temple (route principale) ; **Audace**, avec les papis (optionnel).
 
 ### Objets
-**Consignes en vietnamien** (le patron, gardées), **Objet de chance** (l'autel), **Pièce d'échecs chinois** (optionnel).
+**Consignes en vietnamien** (le patron, gardées), **Amulette du temple** (l'autel), **Pièce d'échecs chinois** (optionnel).
 
 ### Départ et trajet
 - **Condition** : l'appel de Romain. Au guichet de l'aéroport, vol « Amsterdam » : « Il y a quelques mois, tu prenais ce
@@ -978,7 +977,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Romain | Le colocataire : le bouquet de fleurs, puis la nuit au canal et le billet pour New Delhi | `g202` |
+| Romain | Le colocataire : le bouquet de fleurs, puis la nuit au canal et le billet pour Delhi | `g202` |
 | Vendeur | Le marchand de fleurs, en français mêlé de néerlandais | `g112` |
 | Patron | Le patron de Corning : la campagne du nouveau produit | `g53` |
 
@@ -1019,7 +1018,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
    est posés ensemble à Amsterdam. » / « Profite, va. Demain c'est encore le stage, mais là, maintenant, on est bien. » →
    **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de demain. Il y a juste l'eau, les lumières, et Romain qui
    rigole. » ; Romain prend une photo → souvenir **Photo du canal** (carnet) ; **« Au fait, j'ai une nouvelle pour toi. Ton
-   prochain échange, c'est à New Delhi, en Inde ! Tiens, voilà ton billet d'avion. »** → **Billet d'avion pour New
+   prochain échange, c'est à Delhi, en Inde ! Tiens, voilà ton billet d'avion. »** → **Billet d'avion pour
    Delhi** ; Pierre, en lui-même : **« Une ville de plus. Et à chaque fois, des gens que je quitte. Je me demande ce qu'ils
    deviennent, tous. »** ; « Le lendemain, ton billet en poche, tu prends la route de l'aéroport. » (Pierre arrive au
    guichet de l'aéroport d'Amsterdam ; en ressortant, il est encore à Amsterdam.)
@@ -1029,13 +1028,13 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 - **Utilisées** : **Autonomie** (la campagne de Corning), **Insouciance** (la nuit au canal).
 
 ### Objets et souvenir
-**Bouquet de fleurs** (le marchand de fleurs, donné à Romain), **Billet d'avion pour New Delhi** (remis par Romain), souvenir **Photo
+**Bouquet de fleurs** (le marchand de fleurs, donné à Romain), **Billet d'avion pour Delhi** (remis par Romain), souvenir **Photo
 du canal** (carnet).
 
 ### Départ et trajet
-Vol « New Delhi », directement (il n'y a plus de retour à Hull) ; trajet en avion, sans encart.
+Vol « Delhi », directement (il n'y a plus de retour à Hull) ; trajet en avion, sans encart.
 
-## 10. New Delhi (Inde)
+## 10. Delhi (Inde)
 
 Un semestre d'échange étudiant (`src/data/newDelhiStory.js`) : Pierre loge à l'internat, parmi les étudiants indiens.
 C'est le plus grand choc culturel du parcours : une ville dense et grouillante, une grande joie de vivre, et quelque chose
@@ -1075,7 +1074,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 
 ### Les intérieurs
 - **La cour du palais** (`delhiCour`, 24 x 18, scripts/build_delhi_cour.py) : une cour à ciel ouvert faite des éléments
-  de la carte de New Delhi : dallage de grès, couronne de palmiers, au fond trois pavillons à coupole (dont le mausolée
+  de la carte de Delhi : dallage de grès, couronne de palmiers, au fond trois pavillons à coupole (dont le mausolée
   au dôme blanc), deux mâts à fanions, deux lanternes de bronze, le stand de chai, un étal rayé rose, des soucis.
   En plein jour ; sobre, sans cliché. L'entrée en bas, au milieu (la sortie vers la carte, devant
   la porte du palais). Au milieu, **le grand repas** : un tapis tissé rouge et ocre posé par terre (4 x 2 cases), avec
@@ -1100,7 +1099,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 |---|---|---|
 | Prophecy | De la bande de Hull ; il enchaîne son échange aux États-Unis par ce semestre (prévu de longue date) et accueille Pierre ; il rentre lui aussi finir ses études à Bordeaux | `g94` |
 | Harsh | Étudiant indien, rencontré sur place (nouveau pour Pierre et pour Prophecy) : la porte d'entrée dans la culture locale | `g83` (cheveux noirs, peau mate, tunique blanche) |
-| Vieux sage | Le vieux fort : il transmet, et donne la pierre gravée | `g71` |
+| Vieux sage | Le vieux fort : il transmet, et donne le talisman indien | `g71` |
 | Étudiante, étudiants, grand-mère, voisin | Les convives du repas, assis en cercle (la grand-mère : `g42`, le voisin : `g38`) | `g25`, `g97`, `g95`, `g110`, `g104`, `g102`, `g103`, `g42`, `g38` |
 | Passants, passantes | La foule de l'avenue | sprites imposés (`g14`, `g42`, `g86`…) |
 
@@ -1137,8 +1136,8 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    ans. Ici, on parle doucement. » En haut des marches, le vieux sage vient à Pierre : **« Tu viens de loin, et tu iras
    plus loin encore. Mais souviens-toi : ce n'est pas la destination qui compte, c'est ce que le chemin dépose en
    toi. »** / **« Chaque lieu que tu traverses, chaque visage que tu quittes, rien ne se perd. Tout cela voyage avec toi,
-   ici. »** ; « En disant « ici », il pose la main sur son cœur. » → **Pierre gravée** (« Le vieux sage glisse dans ta
-   main une petite pierre, polie par les années, où l'on a gravé un chemin qui tourne sur lui-même. ») ; le vieux sage :
+   ici. »** ; « En disant « ici », il pose la main sur son cœur. » → **Talisman indien** (« Le vieux sage glisse dans ta
+   main un talisman : une petite pierre, polie par les années, où l'on a gravé un chemin qui tourne sur lui-même. ») ; le vieux sage :
    **« Garde-la sur toi. Elle vient de loin, comme toi. »** ; Pierre, en pensée : **« Le poids dans ma paume… c'est le
    même que le coquillage de Manon, sur la plage de Fort-de-France. Comme si le voyage bouclait quelque chose. »** Le
    joueur reprend la main ; Harsh et Prophecy le suivent jusqu'à la sortie du fort.
@@ -1158,8 +1157,9 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
   ressert sans qu'il demande. Un Pierre plus mûr, qui apprend à recevoir.
 
 ### Objet
-**Pierre gravée** (le vieux sage) : un objet-souvenir sans usage, qui remplace la potion magique et fait écho au galet du
-lac de Saint-Ay et au coquillage de Manon.
+**Talisman indien** (le vieux sage) : la pierre gravée, qui porte ce nom dès sa remise ; c'est le même objet que celui
+posé sur le bureau de Pierre à la toute fin (au réveil, il n'est plus dans le sac : Pierre le reprend sur le bureau).
+Il fait écho au galet du lac de Saint-Ay et au coquillage de Manon.
 
 ### Départ et trajet
 À l'aéroport de Delhi (Prophecy est là, avec Pierre), l'hôtesse propose le vol « Bordeaux » (la suite de
@@ -1172,7 +1172,7 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
 « Objectif : »** : ce sont Prophecy et le directeur qui disent où aller.
 
 1. **L'arrivée.** Pierre arrive de l'aéroport à Bordeaux (devant la sortie vers l'aéroport, (30, 10)) avec **Prophecy**,
-   rentré de New Delhi avec lui, qui marche à ses côtés (il le suit). Aussitôt, Prophecy : « Bordeaux ! Ça fait
+   rentré de Delhi avec lui, qui marche à ses côtés (il le suit). Aussitôt, Prophecy : « Bordeaux ! Ça fait
    bizarre, hein ? Comme si on n'était jamais partis. » / **« Allez, viens ! Tout le monde nous attend au stade, la
    grande rotonde, juste là. C'est le grand jour ! »** Le stade est ouvert (porte (21, 10)).
 2. **Dans le stade.** En entrant : « Les gradins sont pleins. Toute la promotion est là, en toge… et, au bord de la piste,
@@ -1184,7 +1184,7 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
    - Maman : « Mon Pierre ! Regarde-toi, diplômé ! Viens là que je te serre fort ! Je suis tellement fière, mon
      grand ! »
    - Papa : « Un diplôme. Du concret, enfin. » / « … Bon. Je suis fier de toi, fiston. Mais ne le répète pas trop. »
-   - Ousmane : « Pierre ! Hull, Hanoï, Amsterdam, New Delhi… T'as fait le tour du monde, toi. Aujourd'hui, on finit ce
+   - Ousmane : « Pierre ! Hull, Hanoï, Amsterdam, Delhi… T'as fait le tour du monde, toi. Aujourd'hui, on finit ce
      qu'on a commencé ensemble. »
    - Léo : « Bro ! Je rentre de Hull pour l'occasion. La maison est bien gardée, t'inquiète. »
    - Paul : « Tu te souviens de mon enceinte ? Je ne l'ai jamais revue… Allez, c'est oublié. Aujourd'hui, c'est la
@@ -1195,7 +1195,7 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
    - Charlotte : « Le Canada, la neige, le sirop d'érable… et me revoilà ! Je n'aurais raté ça pour rien au monde. »
    - Romain : « Hong Kong, puis Amsterdam avec toi… Maintenant, je me sens chez moi n'importe où. Mais ici, avec vous,
      c'est autre chose. »
-   - Prophecy : « Les États-Unis, puis New Delhi avec toi… Quel voyage. Et maintenant, le diplôme ! »
+   - Prophecy : « Les États-Unis, puis Delhi avec toi… Quel voyage. Et maintenant, le diplôme ! »
    - Dalil, discret, dans les gradins : « Peu importe où on ira après… il y aura toujours un océan quelque part pour
      nous ramener ici. »
    - Huit diplômés en toge sur le terrain, tournés vers l'estrade (« On l'a fait ! », « Félicitations à nous tous ! »,
@@ -1272,7 +1272,7 @@ de jour.
 | Directeur | Le dernier étage : la belle place | `g120` |
 | Hugues | L'ami parisien de Pierre, fan de foot : le match chez lui | `g121` |
 | Antoine | Collègue de la tour : il appelle Pierre au sujet de la place de concert | `g98` |
-| Tam, Louis (hommes), Clara | La place de concert, de main en main (l'Opéra, la file du Louvre, le café à terrasse) | `g182`, `g155`, `g15` |
+| Tam, Louis (hommes) | La place de concert, de main en main (l'Opéra, la file du Louvre) ; Louis la rend | `g182`, `g155` |
 | Chanteur | Bercy | `g69` |
 | Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g90` |
 | Philippe, Nico, un ami | Les amis de Hugues, devant la télé le soir du match | `g6`, `g7`, `g137` |
@@ -1295,9 +1295,9 @@ de jour.
    toi… mais je l'ai passée à Tam pour qu'il te la donne, et… bref, elle a un peu voyagé. »** / « Tam est devant
    l'Opéra. Il saura où elle est passée ! » Tam : « La place d'Antoine ? Ah… Je l'ai donnée à Louis, il en rêvait. Il
    fait la queue au Louvre, comme d'habitude. » (ensuite : « Louis, dans la file du Louvre. Bonne chance ! ») ; Louis,
-   dans la file du Louvre : « Ta place ? Mince… Je l'ai laissée à Clara, au café à terrasse, à côté de ton immeuble. Elle
-   adore ce chanteur. » ; Clara : « Oh, c'était la tienne ? Je suis désolée ! Tiens, reprends-la. » → **Place de
-   concert** / « Bercy, c'est le grand dôme, en haut à gauche. Ça commence bientôt ! » (Avant l'appel, ce sont des
+   dans la file du Louvre, le dernier maillon (Antoine → Tam → Louis) : « Ta place ? Ah, c'était la tienne ! Je l'ai
+   gardée bien au chaud, promis. Tiens, reprends-la. » → **Place de concert** (« Louis te rend la place de concert. »)
+   / « Bercy, c'est le grand dôme, en haut à gauche. Ça commence bientôt ! » (Avant l'appel, ce sont des
    Parisiens comme les autres : Tam « L'Opéra ouvre ce soir. J'attends une amie. », Louis « Deux heures de queue pour le
    Louvre. Mais ça vaut le coup, il paraît. ».) À Bercy : « Tu montres ta place à l'entrée. La salle est pleine. » ;
    Pierre avance de quelques pas dans l'allée ; **« Le concert commence ! »** ; le chanteur : « J'garde le meilleur et
@@ -1356,7 +1356,7 @@ sens. »).
 - **Utilisée** : Liberté (le bureau du directeur).
 
 ### Objets
-**Clés du studio** (le propriétaire), **Place de concert** (Clara ; rendue à l'entrée de Bercy), **De quoi manger**
+**Clés du studio** (le propriétaire), **Place de concert** (Louis ; rendue à l'entrée de Bercy), **De quoi manger**
 (Thomas ; posé chez Hugues).
 
 ## 13. Le rêve et la fin du jeu
@@ -1378,7 +1378,7 @@ Les personnages nommés du jeu sont là, en cercle (27, répartis régulièremen
 Jean ; Felix, Joshua, Yanis, Val ; Margaux, Benoît, Étienne ; Rémy ; Tanguy, Geoffrey ; Ousmane, Paul, Rémi, Léo, Anaïs ;
 Charlotte, Romain, Prophecy ; Harsh ; **Dalil, Hugues et Thomas**, silencieux. Huit prennent la parole, un par ville :
 chacun s'avance vers Pierre, dit son mot, puis se range près de lui. **Absents** (personnages nommés, signalés sans être
-ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de l'utilisateur), Tam, Louis et Clara (Paris).
+ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de l'utilisateur), Tam et Louis (Paris).
 - Felix (Saint-Ay) : « Depuis Saint-Ay qu'on te suit ! On savait que tu finirais par tous nous réunir. »
 - Margaux (Montépilloy) : « Tu te cachais toujours au même endroit… Mais là, tu es allé tellement loin qu'on a failli ne
   jamais te trouver ! »
@@ -1386,7 +1386,7 @@ ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de 
 - Ousmane (Bordeaux) : « Bordeaux, les études, nos débuts… On en a fait du chemin depuis, hein ? »
 - Léo (Hull) : « De Hull à aujourd'hui, mec… On en a vécu, hein ? »
 - Romain (Amsterdam) : « Amsterdam, les canaux, nos galères de coloc… Franchement, je recommencerais demain. »
-- Harsh (New Delhi) : « Tu es venu de si loin, et tu es reparti avec un peu de nous. Reviens quand tu veux, mon ami. »
+- Harsh (Delhi) : « Tu es venu de si loin, et tu es reparti avec un peu de nous. Reviens quand tu veux, mon ami. »
 - Fanny (la famille) : « Tu es parti partout, mais tu es toujours revenu nous voir. C'est ça que je retiens. »
 
 Puis Pierre, au milieu de tous : **« À chaque départ, je pensais tourner une page. Mais une page ne s'efface pas, elle
@@ -1436,7 +1436,7 @@ Paris.
 
 | Vertu | Ville | Où et auprès de qui elle se gagne | Phrase du carnet | Où elle resert |
 |---|---|---|---|---|
-| Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum ; New Delhi : le grand repas partagé (dans le sens renversé : Pierre apprend à recevoir) |
+| Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum ; Delhi : le grand repas partagé (dans le sens renversé : Pierre apprend à recevoir) |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
 | Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
 | Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) |
@@ -1497,7 +1497,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Hôtesse | `g64` | Aéroport |
 | Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
 | Romain | `g202` (characterLooks) | Hull, Hanoï (téléphone), Amsterdam, Bordeaux (le stade) |
-| Prophecy | `g94` | Hull, New Delhi, Bordeaux (le retour, le stade) |
+| Prophecy | `g94` | Hull, Delhi, Bordeaux (le retour, le stade) |
 | Charlotte | `g44` | Hull, Bordeaux (le stade) |
 | Anaïs | `g107` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
 | Barman | `g101` | Hull |
@@ -1511,8 +1511,8 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Papi (x 2) | `g39`, `g48` | Hanoï (échecs chinois, optionnel) |
 | Patron (Corning) | `g53` | Amsterdam |
 | Vendeur | `g112` | Amsterdam |
-| Harsh | `g89` | New Delhi |
-| Vieux sage | `g71` | New Delhi (le vieux fort) |
+| Harsh | `g89` | Delhi |
+| Vieux sage | `g71` | Delhi (le vieux fort) |
 | Directeur | `g120` | Bordeaux (le stade : la remise des diplômes), Paris (le dernier étage de la tour) |
 | Propriétaire | `g35` | Paris (devant l'immeuble) |
 | Collègue | `g36` | Paris (rez-de-chaussée de la tour) |
@@ -1520,17 +1520,61 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Hugues | `g121` | Paris (au téléphone, puis chez lui : le match), le rêve |
 | Dalil | `g2` | Bordeaux (la soirée d'intégration, le stade), le rêve |
 | Thomas | `g90` | Paris (le restaurant au store rayé, le match), le rêve |
-| Tam, Louis, Clara | `g182`, `g155`, `g15` | Paris (la place de concert) |
+| Tam, Louis | `g182`, `g155` | Paris (la place de concert) |
 | Chanteur | `g69` | Paris (Bercy) |
 
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
-section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis, Clara et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
+section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
+
+## Le sac : objets et souvenirs
+
+Depuis le 11 octobre 2026, le sac a deux onglets (src/data/bag.js, systems/ItemBag.js). Un souvenir marqué « après X »
+reste dans « Objets » tant que sa quête n'est pas finie (le drapeau X), puis passe tout seul dans « Souvenirs ».
+
+### Objets (utilisés dans une quête ou pour avancer)
+| Objet | Ville, où | Ce qu'il débloque |
+|---|---|---|
+| Canne à pêche | Fort-de-France, caisse « À DONNER » de l'atelier de Papa | Offerte au capitaine : le ferry part |
+| Planches | Saint-Ay, fond de l'enclos à poules (pousser les poules) | La cabane des cousins |
+| Vieille corde | Saint-Ay, hautes herbes du sud-ouest | La cabane des cousins |
+| Pièce de tracteur | Montépilloy, sous le tas de foin de la grange | La réparation du tracteur (Ingéniosité) |
+| Clés de l'appartement | Bordeaux, l'agence | L'immeuble |
+| Enceinte, Gobelets | Bordeaux, chez Paul ; chez Rémi | La soirée d'intégration |
+| Clé d'antivol | Bordeaux, hautes herbes près de KEDGE (facultatif) | Rendue au cycliste : le vélo |
+| Vélo | Bordeaux, le cycliste du quai (facultatif) | Rouler (touche V) |
+| Consignes en vietnamien | Hanoï, le patron de l'agence | M. Lam les traduit (Adaptation) |
+| Bouquet de fleurs | Amsterdam, le marchand de fleurs | Donné à Romain |
+| Billet d'avion pour Delhi | Amsterdam, Romain, la nuit au canal | Le vol pour Delhi |
+| Clés du studio | Paris, le propriétaire | Le studio, la tour |
+| Place de concert | Paris, Louis (Antoine → Tam → Louis) | Bercy |
+| De quoi manger | Paris, Thomas au restaurant | La soirée du match chez Hugues |
+| Talisman indien | Delhi, le vieux sage du fort ; à la fin, sur le bureau de Pierre | La toute fin (le réveil) |
+
+### Souvenirs (ne servent plus, ou n'ont jamais servi)
+| Souvenir | Ville, où | Passe dans « Souvenirs » | Texte |
+|---|---|---|---|
+| Coquillage nacré | Fort-de-France, hautes herbes du petit pré | après le secret de Manon | « Le secret de Manon, sur l'île. Elle a le même : un pour toi, un pour elle. » |
+| Galet du lac | Saint-Ay, le vieux pêcheur (Joie de vivre) | tout de suite | « Trouvé au fond du lac de Saint-Ay par le vieux pêcheur, quand il avait ton âge. Il porte bonheur. » |
+| Règlement du QG | Saint-Ay, le panier de la cabane (Ingéniosité) | tout de suite | « Le règlement de la cabane des cousins. Article 5 : « Non. » (écrit par les autres). » |
+| Diplôme du brevet | Collège, l'oral | à l'arrivée au Prytanée | « Français, maths, anglais : l'oral du collège, réussi. La route du Prytanée. » |
+| Autocollant de Rémy | Collège, le casier 12 | tout de suite | « Le même que dans le casier 12, votre QG, à Rémy et toi. » |
+| Insigne du Prytanée | Prytanée, le nouveau | tout de suite | « Donné par le nouveau du Prytanée, qui avait le mal du pays : « J'en ai deux. » » |
+| Baccalauréat | Prytanée, panneau de la place d'armes | à l'arrivée à Bordeaux | « Ton nom sur la liste de la place d'armes. Direction Bordeaux. » |
+| Photo de la soirée | Bordeaux, Ousmane après le rangement | tout de suite | « La soirée d'intégration, retrouvée sous les confettis par Ousmane. » |
+| Diplôme d'anglais (ex-diplôme de KEDGE) | Bordeaux, l'oral de KEDGE | à l'arrivée à Hull | « L'oral de KEDGE : « I am late. », « Deal! », « I can't wait! ». » |
+| Diplôme de Hull | Hull, panneau des résultats | à l'arrivée à Hanoï | « Le panneau des résultats, devant l'université : « Diplôme de Hull, bro ! » » |
+| Amulette du temple (ex-objet de chance) | Hanoï, l'autel du temple | tout de suite | « Sur l'autel du temple de Hanoï, entre deux bâtons d'encens. Un gardien te l'a laissée. » |
+| Pièce d'échecs chinois | Hanoï, les papis du lac (Audace) | tout de suite | « Le cheval, glissé dans ta main par un papi du lac de Hanoï, après une partie perdue en riant. » |
+| Diplôme de Bordeaux | Bordeaux (le retour), le stade | à l'arrivée à Paris | « Remis au stade de Bordeaux, devant toute la bande et les parents. » |
+
+Retirés : la **Vieille canne** et la pêche libre. Une ancienne sauvegarde perd la vieille canne, et sa « Pierre gravée »
+devient le Talisman indien (systems/items.js).
 
 ## Incohérences repérées
 
 ### Noms incertains ou en double
-- **Rémy / Rémi** : deux personnages distincts. Rémy (`g109`) est le copain du collège ; Rémi (`g117`) est l'étudiant de
+- **Rémy / Rémi** : deux personnages distincts, et les deux orthographes sont voulues (confirmé le 11 octobre 2026). Rémy (`g109`) est le copain du collège ; Rémi (`g117`) est l'étudiant de
   Bordeaux revenu des USA, qui se présente comme un inconnu (« Hey ! Moi c'est Rémi. »). Dans le code du collège,
   l'orthographe hésite aussi : le personnage affiché est « Rémy », mais ses identifiants et drapeaux s'écrivent « remi »
   (`remi`, `remi-casier`, `remi-classe`, `remiArrive`, `remiEnClasse`, `remiInvite`) ou « remy » (`remy-autocollant`,
@@ -1541,7 +1585,7 @@ section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis, Clara et l
   « Leo » (sans accent) au même sprite.
 - **Romain** : de la bande de Hull, il annonce partir à Hong Kong ; six mois après l'arrivée de Pierre à Hanoï, il
   l'appelle (« Hong Kong, c'est fini ! ») et l'attend à Amsterdam, où ils partagent une « maison commune » ; c'est lui
-  qui remet à Pierre son billet pour New Delhi.
+  qui remet à Pierre son billet pour Delhi.
 - **Sprites partagés** par des personnages différents : `g87` (les militaires, les sentinelles, le capitaine du
   Prytanée), `g138` (le prof de maths, le Professor de Hull), `g55` (Léo
   et « Leo »). La liste des figurants au hasard (`EXTRAS`) contient aussi les sprites de Tom, Fanny,
@@ -1551,28 +1595,27 @@ section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis, Clara et l
 ### Répliques contradictoires ou répétées
 - **L'examen de Hull** n'est pas joué : « veille d'examen », révisions, puis « Le surlendemain… » directement aux
   résultats (l'examen a lieu hors écran, la veille des résultats).
-- **Deux diplômes d'anglais** se suivent : « Diplôme d'anglais » (KEDGE, Bordeaux), puis « Diplôme d'anglais de Hull ».
+- **Deux diplômes d'anglais** se suivent : « Diplôme d'anglais » (KEDGE, Bordeaux), puis « Diplôme de Hull ».
 
 ### Images d'accueil
 - Fort-de-France, Saint-Ay et le matin de septembre à Montépilloy utilisent la **même illustration** (bois aux Chênes, le
   matin).
-- Amsterdam (arrivée par un appel de Romain), New Delhi et Paris n'ont pas d'ouverture. Une carte postale existe pourtant
+- Amsterdam (arrivée par un appel de Romain), Delhi et Paris n'ont pas d'ouverture. Une carte postale existe pourtant
   pour Paris.
 
 ### Quêtes inachevées ou textes provisoires
 - Plus aucun texte provisoire dans l'histoire (le stade de Bordeaux est écrit).
 - Plusieurs répliques provisoires restent avant Hull, à Fort-de-France : la télé, la console de Manon et le frigo
   (« [Texte provisoire] … »).
-- **Objets sans usage** : l'objet de chance et les consignes en vietnamien (Hanoï) restent dans le sac. Les objets
-  optionnels (vieille canne exceptée : elle sert à pêcher) ne servent plus après leur ville : galet du lac, autocollant,
-  insigne du Prytanée, photo de la soirée, règlement du QG, pièce d'échecs chinois.
+- **Objets sans usage** : rangés dans l'onglet « Souvenirs » du sac, chacun avec son texte (section « Le sac »). Les
+  consignes en vietnamien (Hanoï) restent dans « Objets » après la traduction.
 - **Le gamin de la route de Montépilloy** parle d'un cerf-volant perdu, mais aucun cerf-volant n'est codé.
 - **La maison de la voisine** à Montépilloy est fermée (« Personne ne répond. »), et sa boîte aux lettres ne contient
   rien.
 
 ### Vertus jamais utilisées
 Adaptation (Hanoï) ne sert nulle part ; Liberté (Paris) sert une fois, au moment où elle est gagnée ; Insouciance sert une fois (Hanoï, le temple). Joie de vivre sert six
-fois (dont trois en passage optionnel ; la dernière à New Delhi, dans le sens renversé), Audace cinq fois (dont une optionnelle, à Hanoï), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
+fois (dont trois en passage optionnel ; la dernière à Delhi, dans le sens renversé), Audace cinq fois (dont une optionnelle, à Hanoï), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
 Esprit d'équipe et Autonomie deux fois chacune (Autonomie une fois en passage optionnel). Chaque ville de Saint-Ay à
 Hull a désormais un passage optionnel qui utilise une vertu ; Fort-de-France n'en a pas (aucune vertu n'est acquise
 avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instant : le panier de la cabane de Saint-Ay
@@ -1581,7 +1624,7 @@ avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instan
 ### Objectifs manquants
 - À Saint-Ay, si la corde est trouvée **après** les planches, personne ne dit « On a tout ! » (Joshua est resté devant
   l'enclos) : rien n'indique de retourner chez Felix, sauf en reparlant à Joshua, Yanis ou Felix.
-- Il n'y a plus aucune réplique « Objectif : » : partout, le joueur suit les rappels des PNJ. À New Delhi, Prophecy et
+- Il n'y a plus aucune réplique « Objectif : » : partout, le joueur suit les rappels des PNJ. À Delhi, Prophecy et
   Harsh disent où aller ; à Paris, le propriétaire, le collègue et le manager. À Bordeaux, après « Quelques mois plus
   tard… », seul Rémi, devant KEDGE, indique l'oral.
 - À Fort-de-France, la boîte aux lettres annonce « Peut-être une carte postale de Saint-Ay, un jour ? ». Cette carte

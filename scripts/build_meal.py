@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Le grand repas partagé de New Delhi (octobre 2026) : le tapis garni posé par terre au milieu de la cour, et l'assiette
+"""Le grand repas partagé de Delhi (octobre 2026) : le tapis garni posé par terre au milieu de la cour, et l'assiette
 qu'on tend à Pierre. Deux ressources de fans choisies par l'utilisateur (voir assets-source/fan/food/CREDITS.txt) :
 - les plats de « Free Pixel foods » (ghostpixxells, itch.io, CC0) : icônes de 32 px, ramenées à 16 px (chaque bloc de
   2 x 2 pixels prend sa couleur la plus fréquente, la plus sombre en cas d'égalité : les contours restent) ;

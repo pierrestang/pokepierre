@@ -93,7 +93,7 @@ export const bordeauxMap = {
       lockedDialogue: ["C'est ton futur immeuble, mais tu n'as pas les clés. Va à l'agence."],
     },
     { x: 11, y: 10, interior: 'agence' },                          // la boutique à auvent
-    // Le stade (la rotonde) : la remise des diplômes, une fois le semestre de New Delhi terminé.
+    // Le stade (la rotonde) : la remise des diplômes, une fois le semestre de Delhi terminé.
     {
       x: 21, y: 10, interior: 'stade',
       lock: { ifFlags: [FLAGS.semestreTermine] },
@@ -158,7 +158,7 @@ export const bordeauxMap = {
     { on: 'enter', ifFlags: [FLAGS.soiree], unlessFlags: [FLAGS.soireeFinie], steps: MONTHS_LATER },
     // En sortant de KEDGE avec le diplôme d'anglais : Ousmane.
     { on: 'enter', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.ousmaneDiplome], steps: OUSMANE_AFTER_ORAL },
-    // De retour de New Delhi (le vol, avec Prophecy) : Prophecy indique le stade.
+    // De retour de Delhi (le vol, avec Prophecy) : Prophecy indique le stade.
     { on: 'enter', ifFlags: [FLAGS.retourBordeaux], unlessFlags: [FLAGS.stadeIndique], steps: BACK_FROM_DELHI },
     // En sortant du stade, diplômé : « Direction Paris. »
     { on: 'enter', ifFlags: [FLAGS.diplomeBordeaux], unlessFlags: [FLAGS.adieuxBordeaux], steps: LEAVING_BORDEAUX },

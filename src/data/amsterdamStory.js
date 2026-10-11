@@ -9,7 +9,7 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 //   5. Corning : le patron confie une campagne pour le nouveau produit ; trois choix (cible, slogan, diffusion), le patron
 //      encourage ou recadre, sans échec ; la présentation (Autonomie).
 //   6. En sortant de Corning : « Quelques mois plus tard… » (la seule ellipse de la ville) ; la nuit tombe.
-//   7. La nuit, au bord du canal, Romain (Insouciance) ; le billet pour New Delhi ; le souvenir du canal ; l'aéroport.
+//   7. La nuit, au bord du canal, Romain (Insouciance) ; le billet pour Delhi ; le souvenir du canal ; l'aéroport.
 // Scénettes partagées par la carte et les intérieurs (étapes : voir MapScene.runSteps).
 
 // Places sur la carte (voir maps/amsterdam.js) : le quai devant la péniche, où Romain attend la nuit.
@@ -153,8 +153,8 @@ export const CANAL_NIGHT = [
   { speaker: 'Romain', say: ['Attends, bouge pas.'] },
   { say: ['Romain sort son téléphone et vous prend en photo, tous les deux, devant le canal.'] },
   { souvenir: PHOTO },
-  { speaker: 'Romain', say: ['Au fait, j\'ai une nouvelle pour toi. Ton prochain échange, c\'est à New Delhi, en Inde ! Tiens, voilà ton billet d\'avion.'] },
-  { give: ITEMS.billetNewDelhi, text: 'Romain te donne ton billet d\'avion pour New Delhi.' },
+  { speaker: 'Romain', say: ['Au fait, j\'ai une nouvelle pour toi. Ton prochain échange, c\'est à Delhi, en Inde ! Tiens, voilà ton billet d\'avion.'] },
+  { give: ITEMS.billetNewDelhi, text: 'Romain te donne ton billet d\'avion pour Delhi.' },
   { say: ['Une ville de plus. Et à chaque fois, des gens que je quitte. Je me demande ce qu\'ils deviennent, tous.'] },
   { black: true },
   { wait: 700 },

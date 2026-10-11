@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""New Delhi redessiné en Gen 4 (octobre 2026) : une carte du créateur, src/data/builtMaps/new-delhi.json.
+"""Delhi redessiné en Gen 4 (octobre 2026) : une carte du créateur, src/data/builtMaps/new-delhi.json.
 
 Comme Hanoï et Amsterdam (scripts/build_hanoi.py, build_amsterdam.py) : le sol vient du convertisseur
 (scripts/convert_maps_v2.py, thème Gen 4 : grande avenue, trottoirs, jardins, bassin) d'après la grille GROUND ; les
-bâtiments et le mobilier sont des éléments du thème « New Delhi (palais moghols) » du catalogue (scripts/build_catalogue.py :
+bâtiments et le mobilier sont des éléments du thème « Delhi (palais moghols) » du catalogue (scripts/build_catalogue.py :
 des bâtiments et objets de la bibliothèque Gen 4 qui n'y étaient pas encore), posés comme le mode simple ; la bordure est
 une forêt de palmiers du créateur (studio.forest, arbre « g4-palmier »), dessinée par scripts/paint_forest.mjs.
 De haut en bas :
@@ -122,7 +122,7 @@ def main():
     out = ROOT / 'src' / 'data' / 'builtMaps' / f'{MAP_ID}.json'
     if out.exists() and '--force' not in sys.argv:
         sys.exit(f'{MAP_ID}.json existe déjà : rien n\'est écrit ; --force pour le refaire')
-    game_map = {'id': MAP_ID, 'name': 'New Delhi', 'grid': GROUND, 'solid': SOLID, 'buildings': [],
+    game_map = {'id': MAP_ID, 'name': 'Delhi', 'grid': GROUND, 'solid': SOLID, 'buildings': [],
                 'spawn': {'x': 1, 'y': AVENUE[0], 'facing': 'right'}}
     assert all(len(r) == W for r in GROUND) and len(GROUND) == H
     builder = Builder(load_catalog())

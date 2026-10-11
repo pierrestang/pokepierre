@@ -14,7 +14,7 @@ import { airportMap } from './airport.js';
 import { parisMap } from './paris.js';
 import { reveMap } from './reve.js';
 
-// Cartes extérieures, par id. L'ordre du jeu : Fort-de-France -> Saint-Ay -> (route de Montépilloy) -> Montépilloy -> (route et collège Bonsecours) -> Prytanée -> Bordeaux -> Hull -> Hanoï -> Amsterdam -> New Delhi -> Bordeaux (stade) -> Paris (la fin : le rêve, le réveil à Fort-de-France).
+// Cartes extérieures, par id. L'ordre du jeu : Fort-de-France -> Saint-Ay -> (route de Montépilloy) -> Montépilloy -> (route et collège Bonsecours) -> Prytanée -> Bordeaux -> Hull -> Hanoï -> Amsterdam -> Delhi -> Bordeaux (stade) -> Paris (la fin : le rêve, le réveil à Fort-de-France).
 // Les voyages en avion passent par l'aéroport (depuis Bordeaux).
 export const MAPS = {
   [fortDeFranceMap.id]: fortDeFranceMap,

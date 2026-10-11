@@ -18,7 +18,7 @@ import boulyBarn from './boulyBarn.json' with { type: 'json' };
 import cabane from './cabane.json' with { type: 'json' };
 import coffeeShop from './coffeeShop.json' with { type: 'json' };
 import corning from './corning.json' with { type: 'json' };
-// La cour de la fête de New Delhi : un « intérieur » à ciel ouvert, dessiné comme une carte du créateur (planches
+// La cour de la fête de Delhi : un « intérieur » à ciel ouvert, dessiné comme une carte du créateur (planches
 // d'extérieur) ; son dessin est dans builtMaps (liste « Extérieurs » du créateur), pas ici.
 import delhiCour from '../builtMaps/delhi-cour.json' with { type: 'json' };
 import delhiFort from './delhiFort.json' with { type: 'json' };

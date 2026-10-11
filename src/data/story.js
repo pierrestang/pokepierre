@@ -135,15 +135,15 @@ export const FLAGS = {
   marchandiseDonnee: 'marchandise-donnee',      //   donné à Romain : il t'envoie à ton stage chez Corning
   stageCorning: 'stage-corning',                //   la campagne présentée au patron de Corning (Autonomie, Audace)
   moisAmsterdam: 'mois-amsterdam',              //   en sortant de Corning : « Quelques mois plus tard… » (la nuit tombe)
-  canalNuit: 'canal-nuit',                      //   la nuit au bord du canal avec Romain (Insouciance), le billet pour New Delhi
-  arriveeNewDelhi: 'arrivee-new-delhi',         // arrivé à New Delhi (Inde)
+  canalNuit: 'canal-nuit',                      //   la nuit au bord du canal avec Romain (Insouciance), le billet pour Delhi
+  arriveeNewDelhi: 'arrivee-new-delhi',         // arrivé à Delhi (Inde)
   delhiFoule: 'delhi-foule',                    //   la traversée de la foule : Pierre n'a jamais rien vu de pareil
   prophecyDelhi: 'prophecy-delhi',              //   Prophecy accueille Pierre au bout de l'avenue ; Harsh se présente
   harshCour: 'harsh-cour',                      //   Harsh, parti devant, est entré dans la cour du palais (la fête)
   courArrivee: 'cour-arrivee',                  //   Pierre et Prophecy arrivent dans la cour : Prophecy ne le suit plus
   feteDelhi: 'fete-delhi',                      //   le repas dans la cour (Joie de vivre) ; Harsh part devant, vers la porte du fort
   harshRejoint: 'harsh-rejoint',                //   Pierre et Prophecy rejoignent Harsh devant la porte du fort ; ils entrent ensemble
-  sageDelhi: 'sage-delhi',                      //   le vieux sage, derrière la porte du fort : la pierre gravée
+  sageDelhi: 'sage-delhi',                      //   le vieux sage, derrière la porte du fort : le talisman indien
   moisDelhi: 'mois-delhi',                      //   « Quelques mois plus tard… » (la seule ellipse de la ville)
   departDelhi: 'depart-delhi',                  //   Prophecy et Harsh devant le fort : on rentre ; Prophecy suit Pierre jusqu'à Bordeaux
   semestreTermine: 'semestre-termine',          //   Prophecy : on rentre à Bordeaux (le stade s'ouvre)
@@ -158,8 +158,7 @@ export const FLAGS = {
   concertAppel: 'concert-appel',                //   en sortant : Antoine appelle, la place de concert a voyagé (Tam)
   // (Tam et Louis remplacent Inès et Malik : les valeurs d'origine restent, pour les sauvegardes en cours.)
   placeTam: 'place-ines',                       //     Tam, devant l'Opéra : il l'a donnée à Louis
-  placeLouis: 'place-malik',                    //     Louis, dans la file du Louvre : il l'a laissée à Clara
-  placeClara: 'place-clara',                    //     Clara, au café à terrasse : elle rend la place
+  placeLouis: 'place-malik',                    //     Louis, dans la file du Louvre : il rend la place à Pierre
   concertParis: 'concert-paris',                //   le concert à Bercy (le bouton du 1er étage s'allume)
   promotionParis: 'promotion-paris',            //   au 1er étage, le manager prend Pierre avec lui
   messageHugues: 'message-hugues',              //   en sortant : « Match ce soir chez moi ! »
@@ -246,7 +245,6 @@ export const ITEMS = {
   // Objets-souvenirs facultatifs, un par ville.
   galetLac: { id: 'galet-lac', name: 'Galet du lac' },                            // Saint-Ay : le vieux pêcheur méfiant
   canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
-  vieilleCanne: { id: 'vieille-canne', name: 'Vieille canne' },     // pour pêcher face à l'eau (facultatif)
   planches: { id: 'planches', name: 'Planches' },
   // Bordeaux, facultatif : la clé d'antivol du cycliste, perdue dans les hautes herbes ; en remerciement, son vieux vélo,
   // réparé sur place (Ingéniosité). Voir bordeauxStory.js CYCLIST, systems/bike.js.
@@ -261,20 +259,20 @@ export const ITEMS = {
   enceinte: { id: 'enceinte', name: 'Enceinte' },                              // Bordeaux : prêtée par Paul
   gobelets: { id: 'gobelets', name: 'Gobelets' },                              // Bordeaux : prêtés par Rémi
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },
-  diplomeHull: { id: 'diplome-hull', name: 'Diplôme d\'anglais de Hull' },
+  diplomeHull: { id: 'diplome-hull', name: 'Diplôme de Hull' },
   insigne: { id: 'insigne-prytanee', name: 'Insigne du Prytanée' },          // Prytanée : objet-souvenir (le nouveau)
   photoSoiree: { id: 'photo-soiree', name: 'Photo de la soirée' },           // Bordeaux : objet-souvenir (le rangement)
-  objetChance: { id: 'objet-chance', name: 'Objet de chance' },
+  objetChance: { id: 'objet-chance', name: 'Amulette du temple' },                  // Hanoï : l'autel du temple
   // Hanoï : les consignes du premier jour, écrites en vietnamien (le patron) ; facultatif, la pièce des papis du lac.
   consignesVietnamien: { id: 'consignes-vietnamien', name: 'Consignes en vietnamien' },
   pieceEchecs: { id: 'piece-echecs', name: "Pièce d'échecs chinois" },
   marchandise: { id: 'marchandise', name: 'Bouquet de fleurs' },   // id d'origine gardé (sauvegardes)
-  billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },  // remis par Romain, à Amsterdam
-  pierreGravee: { id: 'pierre-gravee', name: 'Pierre gravée' },
-  talismanIndien: { id: 'talisman-indien', name: 'Talisman indien' },             // la fin : dans la chambre de Fort-de-France                // New Delhi : le vieux sage du fort
+  billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour Delhi" },  // remis par Romain, à Amsterdam
+  // Delhi : la pierre gravée que le vieux sage remet à Pierre ; le même objet, sur son bureau, à la toute fin.
+  talismanIndien: { id: 'talisman-indien', name: 'Talisman indien' },
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },
   clesParis: { id: 'cles-paris', name: 'Clés du studio' },                          // Paris : le propriétaire
-  placeConcert: { id: 'place-concert', name: 'Place de concert' },                  // Paris : rendue par Clara
+  placeConcert: { id: 'place-concert', name: 'Place de concert' },                  // Paris : rendue par Louis
   platsMatch: { id: 'plats-match', name: 'De quoi manger' },                         // Paris : Thomas, pour le match
   pieceTracteur: { id: 'piece-tracteur', name: 'Pièce de tracteur' },
 };
@@ -295,7 +293,7 @@ export const FOLLOWERS = [
   // Hanoï : les deux touristes te suivent de la grande rue jusqu'au temple, et en ressortent avec toi.
   { id: 'touriste-1', name: 'Touriste', sprite: 'g24', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
   { id: 'touriste-2', name: 'Touriste', sprite: 'g22', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
-  // New Delhi : Prophecy suit Pierre de la rencontre jusqu'à la cour du palais (il y redevient le PNJ prophecy-fete) ;
+  // Delhi : Prophecy suit Pierre de la rencontre jusqu'à la cour du palais (il y redevient le PNJ prophecy-fete) ;
   // après la fête, Prophecy le suit jusqu'à la porte du fort, puis Harsh aussi, jusqu'au vieux sage et à la sortie du fort ; à la fin du semestre,
   // Prophecy le suit jusqu'à l'aéroport, dans l'avion, puis à Bordeaux jusqu'au stade (il y redevient le PNJ
   // prophecy-depart et rejoint la foule).

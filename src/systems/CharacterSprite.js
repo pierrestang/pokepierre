@@ -83,7 +83,7 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     }
   }
 
-  // Assis par terre (le repas de New Delhi) : les jambes sont coupées et le buste descend sur la case.
+  // Assis par terre (le repas de Delhi) : les jambes sont coupées et le buste descend sur la case.
   sit(on = true) {
     if (on === Boolean(this.seated)) return;
     this.seated = on;

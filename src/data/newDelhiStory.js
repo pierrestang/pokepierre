@@ -1,6 +1,6 @@
 import { FLAGS, ITEMS, TRAITS } from './story.js';
 
-// Scénario de New Delhi : un semestre d'échange étudiant, Pierre loge à l'internat. Le plus grand choc culturel du
+// Scénario de Delhi : un semestre d'échange étudiant, Pierre loge à l'internat. Le plus grand choc culturel du
 // voyage : une ville dense et grouillante, une grande joie de vivre, et quelque chose de très ancien. Pas de vertu
 // nouvelle (la 8e se gagne à Paris) : Joie de vivre sert à la fête, mais à l'envers (ce sont les autres qui
 // donnent à Pierre). Aucune ligne « Objectif : », une seule ellipse.
@@ -9,7 +9,7 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 //      d'ici, vient se présenter à tous les deux ; on le suit à pied jusqu'à la porte du palais de grès.
 //   2. La fête, dans la cour du palais : le grand repas partagé, assis en cercle par terre ; on sert Pierre de tous les
 //      côtés (Joie de vivre, à l'envers : il apprend à recevoir). Harsh et Prophecy suivent ensuite Pierre.
-//   3. Derrière la vieille porte du fort : le silence, le vieux sage, la pierre gravée. Ni vertu ni mini-jeu.
+//   3. Derrière la vieille porte du fort : le silence, le vieux sage, le talisman indien (une pierre gravée). Ni vertu ni mini-jeu.
 //   4. En sortant du fort : « Quelques mois plus tard… » (la seule ellipse de la ville).
 //   5. Devant le fort, Prophecy : on rentre à Bordeaux ; à pied jusqu'à l'aéroport, Prophecy avec Pierre ; l'avion.
 // Scénettes partagées par la carte et les intérieurs (étapes : voir MapScene.runSteps).
@@ -159,7 +159,7 @@ export const SAGE = [
   },
   { say: ['En disant « ici », il pose la main sur son cœur.'] },
   { wait: 600 },
-  { give: ITEMS.pierreGravee, text: 'Le vieux sage glisse dans ta main une petite pierre, polie par les années, où l\'on a gravé un chemin qui tourne sur lui-même.' },
+  { give: ITEMS.talismanIndien, text: 'Le vieux sage glisse dans ta main un talisman : une petite pierre, polie par les années, où l\'on a gravé un chemin qui tourne sur lui-même.' },
   { speaker: 'Vieux sage', say: ['Garde-la sur toi. Elle vient de loin, comme toi.'] },
   { say: ['Le poids dans ma paume… c\'est le même que le coquillage de Manon, sur la plage de Fort-de-France. Comme si le voyage bouclait quelque chose.'] },
   { setFlag: FLAGS.sageDelhi },

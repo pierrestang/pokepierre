@@ -11,7 +11,7 @@ export const BY_NAME = {
   // Amis (garçons : jeunes gens des villes de Sinnoh et Johto ; filles : idem)
   Jean: 'g52', Felix: 'g93', Romain: 'g92', Prophecy: 'g94', Yanis: 'g96', Ousmane: 'g105', Harsh: 'g83',
   Tom: 'g22', 'Léo': 'g55', Tanguy: 'g56', Geoffrey: 'g41', Thomas: 'g90', Hugues: 'g121', Dalil: 'g2',
-  Tam: 'g182', Louis: 'g155', Clara: 'g15', Philippe: 'g6', Nico: 'g7',
+  Tam: 'g182', Louis: 'g155', Philippe: 'g6', Nico: 'g7',
   // Paris, les collègues de la tour (jeunes adultes) ; « Camille (Paris) » : la collègue (lookName), pas la Camille
   // de Montépilloy.
   Guillaume: 'g4', Anthony: 'g95', Antoine: 'g98', Quentin: 'g139',

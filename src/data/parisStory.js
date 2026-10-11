@@ -7,7 +7,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 // dernière vertu. Aucune ligne « Objectif : » ; deux ellipses, « Un an plus tard », après le concert et après le match.
 //   1. L'arrivée devant l'immeuble aux balcons fleuris : le propriétaire et les clés du studio.
 //   2. Premier passage au bureau : le hall plein de collègues, le collègue blasé ; l'ascenseur ne monte pas.
-//   3. Le concert : la place d'Antoine, un collègue, a passé de main en main (Tam, Louis, Clara) ; Bercy ; un an plus tard.
+//   3. Le concert : la place d'Antoine, un collègue, a passé de main en main (Tam, puis Louis, qui la rend) ; Bercy ; un an plus tard.
 //   4. Au bureau, le 1er étage s'allume : la promotion.
 //   5. Le match : Hugues invite, Thomas finit son service au restaurant, la finale France-Argentine chez Hugues ; un an plus tard.
 //   6. Au bureau, le dernier étage s'allume : le directeur, la Liberté ; en sortant, le rêve (reveStory.js).
@@ -125,25 +125,20 @@ export const TAM = [
   { ifFlags: [FLAGS.concertAppel], setFlag: FLAGS.placeTam, end: true },
   { speaker: 'Tam', say: ['L\'Opéra ouvre ce soir. J\'attends une amie.'] },
 ];
+// Louis, le dernier maillon (Antoine → Tam → Louis) : il rend la place à Pierre.
 export const LOUIS = [
-  { ifFlags: [FLAGS.placeLouis], speaker: 'Louis', say: ['Clara, au café à terrasse. Elle ne l\'a pas encore utilisée, promis !'], end: true },
-  { ifFlags: [FLAGS.placeTam], speaker: 'Louis', say: ['Ta place ? Mince… Je l\'ai laissée à Clara, au café à terrasse, à côté de ton immeuble. Elle adore ce chanteur.'] },
-  { ifFlags: [FLAGS.placeTam], setFlag: FLAGS.placeLouis, end: true },
-  { speaker: 'Louis', say: ['Deux heures de queue pour le Louvre. Mais ça vaut le coup, il paraît.'] },
-];
-export const CLARA = [
-  { ifFlags: [FLAGS.placeClara], speaker: 'Clara', say: ['Bon concert ! Tu me raconteras.'], end: true },
+  { ifFlags: [FLAGS.placeLouis], speaker: 'Louis', say: ['Bon concert ! Tu me raconteras.'], end: true },
   {
-    ifFlags: [FLAGS.placeLouis],
+    ifFlags: [FLAGS.placeTam],
     steps: [
-      { speaker: 'Clara', say: ['Oh, c\'était la tienne ? Je suis désolée ! Tiens, reprends-la.'] },
-      { give: ITEMS.placeConcert, text: 'Clara te rend la place de concert.' },
-      { speaker: 'Clara', say: ['Bercy, c\'est le grand dôme, en haut à gauche. Ça commence bientôt !'] },
-      { setFlag: FLAGS.placeClara },
+      { speaker: 'Louis', say: ['Ta place ? Ah, c\'était la tienne ! Je l\'ai gardée bien au chaud, promis. Tiens, reprends-la.'] },
+      { give: ITEMS.placeConcert, text: 'Louis te rend la place de concert.' },
+      { speaker: 'Louis', say: ['Bercy, c\'est le grand dôme, en haut à gauche. Ça commence bientôt !'] },
+      { setFlag: FLAGS.placeLouis },
     ],
     end: true,
   },
-  { speaker: 'Clara', say: ['Un café en terrasse, au soleil… Le vrai luxe parisien.'] },
+  { speaker: 'Louis', say: ['Deux heures de queue pour le Louvre. Mais ça vaut le coup, il paraît.'] },
 ];
 
 // À Bercy : la place est contrôlée, Pierre avance dans la fosse, le chanteur chante (la dernière ligne de la chanson

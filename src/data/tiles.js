@@ -1,6 +1,6 @@
 // Définition des tuiles : un code (1 caractère) -> propriétés.
-// `color` sert au rendu provisoire ; `frame` sera l'index dans le futur tileset ; `water` : on peut y pêcher
-// (mer, étang ou rivière, voir data/fishing.js) ; `road` : chemin, que les PNJ qui marchent seuls préfèrent (voir
+// `color` sert au rendu provisoire ; `frame` sera l'index dans le futur tileset ; `water` : de l'eau
+// (mer, étang ou rivière) ; `road` : chemin, que les PNJ qui marchent seuls préfèrent (voir
 // MapScene.pathTo) ; `exit` : tapis de sortie d'un intérieur ; `stairs` : escalier (passage vers une autre pièce).
 
 export const TILE_SIZE = 16;

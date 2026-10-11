@@ -95,11 +95,11 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   check_paths.js et les scripts d'export voient les mêmes places. Après avoir déplacé un PNJ de l'histoire : Tester et
   `node scripts/check_paths.js` (une scénette peut le faire marcher depuis sa place).
 
-## La cour de la fête de New Delhi, une carte du créateur (11 octobre 2026)
+## La cour de la fête de Delhi, une carte du créateur (11 octobre 2026)
 
 La cour du palais de grès (le grand repas, intérieur `delhiCour` du jeu) est dessinée avec des planches d'extérieur ;
 elle n'était que dans src/data/builtInteriors (liste « Intérieurs », sans ses planches). Son dessin est désormais la
-carte **src/data/builtMaps/delhi-cour.json** (« Cour du palais (New Delhi) » dans la liste « Extérieurs »), modifiable
+carte **src/data/builtMaps/delhi-cour.json** (« Cour du palais (Delhi) » dans la liste « Extérieurs »), modifiable
 et réenregistrée là comme les autres cartes ; src/data/builtInteriors/index.js la lit pour l'intérieur. « Tester »
 l'ouvre comme la cour, dans son contexte (systems/builtMaps.js gameInteriorOf retrouve un intérieur par l'id de son
 dessin), et l'outil Personnages montre ses convives. scripts/export_audit.mjs exporte aussi les intérieurs dessinés dans
@@ -439,9 +439,9 @@ La carte a depuis été retouchée à la main dans le créateur (maisons remont�
 du quai sud) : amsterdam.js suit ce dessin (portes : Corning (13, 7), maison commune (22, 8), coffee shop (4, 22)…), et
 `build_amsterdam.py --force` effacerait ces retouches.
 
-## New Delhi (octobre 2026)
+## Delhi (octobre 2026)
 
-Thème « New Delhi (palais moghols) » du catalogue (scripts/build_catalogue.py, THEMES['new-delhi']), fait d'éléments de
+Thème « Delhi (palais moghols) » du catalogue (scripts/build_catalogue.py, THEMES['new-delhi']), fait d'éléments de
 la bibliothèque Gen 4 qui n'étaient pas encore au catalogue (relevés dans public/assets/v2/g4-<type>.elements.json :
 attention, chaque élément y est noté [x0, y0, x1, y1] en cases, bornes comprises) : bâtiments (palais de grès, coupole aux
 lanternes dorées, maisons à coupole dorée (quatre), mausolées, porte du fort, minaret, maisons à toit plat, tentes de
@@ -449,14 +449,14 @@ bazar ; LIB_BUILDINGS, ombre gris-bleu SLATE retirée) et éléments (grande arc
 fontaine octogonale, étals rayés, stand de chai, brasero, lanterne de bronze, barrière dorée, cloche de temple, mât à
 fanions, taxi jaune et noir, palmier à grandes palmes, gulmohar, banian, soucis, fleurs en tulipe).
 
-New Delhi est redessiné par scripts/build_new_delhi.py (src/data/builtMaps/new-delhi.json), comme Hanoï et Amsterdam :
+Delhi est redessiné par scripts/build_new_delhi.py (src/data/builtMaps/new-delhi.json), comme Hanoï et Amsterdam :
 le sol du convertisseur (grande avenue, trottoirs, jardins, bassin aux lotus), les éléments du thème (au nord
 l'université = la coupole aux lanternes, le palais, la porte du fort, le minaret ; les jardins avec India Gate et la
 fontaine ; au sud les maisons, le bazar, les étals), la bordure de palmiers (forêt du créateur, arbre `g4-palmier`,
 scripts/paint_forest.mjs), ouverte sur la grande avenue (l'aéroport). Le script refuse sans `--force` (une retouche faite
 dans le créateur serait perdue). La grille du jeu (src/data/maps/newDelhi.js sourceGrid) reprend GROUND, la bordure en
 'Y', les portes sur les portes dessinées. La carte a depuis été retouchée à la main dans le créateur (40 x 34, octobre
-2026) : la grille du jeu suit ce dessin (sol relu d'après les couleurs, portes recalées), et `--force` l'effacerait. Le créateur range désormais Hanoï, Amsterdam et New Delhi dans l'ordre du jeu
+2026) : la grille du jeu suit ce dessin (sol relu d'après les couleurs, portes recalées), et `--force` l'effacerait. Le créateur range désormais Hanoï, Amsterdam et Delhi dans l'ordre du jeu
 (builder.js GAME_ORDER).
 
 ## Paris (octobre 2026)
@@ -472,7 +472,7 @@ bac), if en cône, platane, arbres d'alignement (sans la grille d'arbre sombre s
 no_grate), arbre en colonne. Quelques dessins gardent un emblème Pokémon (cathédrale,
 opéra, Grand Palais, grande salle) ; le toit de l'opéra est violet et celui du musée-gare rose.
 
-Paris est redessiné par scripts/build_paris.py (src/data/builtMaps/paris.json), comme New Delhi : le sol du
+Paris est redessiné par scripts/build_paris.py (src/data/builtMaps/paris.json), comme Delhi : le sol du
 convertisseur (avenue, pavés, jardin, Seine), les éléments du thème, la bordure d'arbres ronds (forêt du créateur,
 scripts/paint_forest.mjs), ouverte sur la grande avenue (Bordeaux, l'aéroport), la Seine et la rue sud (Toulon). Les
 ponts de pierre (élément `pont-pierre-vertical`, 4 x 4) se traversent par leurs deux colonnes du milieu (SOLID_FIX), sur

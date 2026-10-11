@@ -73,6 +73,8 @@ export const REUNION = [
 // talisman y est posé. Le joueur reprend la main et va le prendre (TALISMAN, interiors.js ffHouseUp).
 export const TALISMAN_SPOT = [6, 3];                  // sur le bureau de Pierre, à côté de l'ordinateur
 export const WAKE_UP = [
+  // Il ne serait jamais parti : le talisman du vieux sage n'est plus dans le sac… il est sur le bureau (TALISMAN).
+  { take: ITEMS.talismanIndien.id },
   ...OPENING_CINEMATIC,
   { setFlag: FLAGS.reveilFin },
   { emote: TALISMAN_SPOT, kind: 'surprise' },

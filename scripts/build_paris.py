@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Paris redessiné en Gen 4 (octobre 2026) : une carte du créateur, src/data/builtMaps/paris.json.
 
-Comme Hanoï, Amsterdam et New Delhi (scripts/build_hanoi.py, build_amsterdam.py, build_new_delhi.py) : le sol vient du
+Comme Hanoï, Amsterdam et Delhi (scripts/build_hanoi.py, build_amsterdam.py, build_new_delhi.py) : le sol vient du
 convertisseur (scripts/convert_maps_v2.py, thème Gen 4 : avenue, pavés, jardin, Seine) d'après la grille GROUND ; les
 bâtiments et le mobilier sont des éléments du thème « Paris (monuments et cafés) » du catalogue (scripts/build_catalogue.py :
 des bâtiments et objets de la bibliothèque Gen 4 qui n'y étaient pas encore), posés comme le mode simple ; la bordure est

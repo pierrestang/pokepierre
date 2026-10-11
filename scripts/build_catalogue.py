@@ -136,7 +136,7 @@ BUILDING_NAMES = {
 # auvent, reste) ; 'tile' (le toit passe au rouge tuile commun, TILE_RED).
 GRAY = (128, 128, 128)
 DARK = (28, 35, 38)
-SLATE = (123, 123, 136)                    # ombre gris-bleu des maisons à coupole (New Delhi)
+SLATE = (123, 123, 136)                    # ombre gris-bleu des maisons à coupole (Delhi)
 LIB_BUILDINGS = {
     'toit-orange': ('Case au toit orange', (69, 12257, 54, 79), 1, (), ['fort-de-france']),
     'toit-vert': ('Maison au toit vert d\'eau', (122, 23336, 96, 114), 2, (), ['fort-de-france']),
@@ -178,7 +178,7 @@ LIB_BUILDINGS = {
     'canal-basse': ('Petite maison de canal', (236, 22513, 76, 101), 2, [DARK], ['amsterdam']),
     'pignon-rouge': ('Maison à pignon rouge', (8, 22516, 99, 122), 2, [DARK], ['amsterdam']),
     'manoir-pignons': ('Manoir à pignons', (176, 193, 176, 95), 5, [DARK], ['amsterdam']),
-    # New Delhi (octobre 2026) : bâtiments de la bibliothèque Gen 4 pas encore au catalogue, aux airs moghols et indiens
+    # Delhi (octobre 2026) : bâtiments de la bibliothèque Gen 4 pas encore au catalogue, aux airs moghols et indiens
     # (planche des bâtiments Gen 4, éléments de g4-batiments.elements.json).
     'palais-gres': ('Palais de grès', (0, 10064, 192, 192), 5, (), ['new-delhi']),
     'coupole-lanternes': ('Coupole aux lanternes dorées', (64, 4528, 112, 160), 3, (), ['new-delhi']),
@@ -281,7 +281,7 @@ ELEMENTS = {
     'portique': ('Portique', 'mobilier', lambda: lib_building((128, 1904, 96, 64), sid='g4-mobilier', dark=300), 3, 'land'),
     'pont-arque': ('Pont arqué', 'eau', lambda: lib_building((240, 1392, 64, 64), sid='g4-ponts'), None, 'water'),
     'banniere-bleue': ('Bannière bleue', 'mobilier', lambda: lib_building((160, 3984, 32, 80), sid='g4-mobilier'), 4, 'land'),
-    # New Delhi (octobre 2026) : éléments de la bibliothèque Gen 4 pas encore au catalogue.
+    # Delhi (octobre 2026) : éléments de la bibliothèque Gen 4 pas encore au catalogue.
     'india-gate': ('Grande arche (India Gate)', 'mobilier', lambda: lib_building((160, 912, 112, 96), sid='g4-mobilier'), -1, 'land'),
     'bassin-moghol': ('Grand bassin moghol', 'mobilier', lambda: lib_building((0, 848, 160, 176), sid='g4-mobilier'), 0, 'land'),
     'fontaine-octogonale': ('Fontaine octogonale', 'mobilier', lambda: lib_building((176, 2512, 64, 64), sid='g4-mobilier'), 1, 'land'),
@@ -458,7 +458,7 @@ THEMES = {
               'extra': ['portique', 'pont-arque', 'banniere-bleue', 'cerisier', 'palmier', 'palmier-2', 'fleurs-tropicales',
                         'nenuphar', 'roseaux', 'cloche', 'etal', 'etal-bocaux', 'velo', 'oriflamme', 'fougere',
                         'lanterne-jardin', 'lanterne-bois', 'pot', 'hibiscus', 'arbuste-taille', 'reverbere-rouge']},
-    'new-delhi': {'name': 'New Delhi (palais moghols)', 'forest': None, 'paving': None, 'lamp': 'lanterne-bronze',
+    'new-delhi': {'name': 'Delhi (palais moghols)', 'forest': None, 'paving': None, 'lamp': 'lanterne-bronze',
                   'extra': ['india-gate', 'bassin-moghol', 'fontaine-octogonale', 'etal-raye-bleu', 'etal-raye-rose',
                             'stand-chai', 'brasero', 'barriere-doree', 'cloche-temple', 'mat-fanions', 'taxi-jaune',
                             'palmier-g4', 'gulmohar', 'banian', 'soucis', 'fleurs-tulipes', 'palmier', 'palmier-2',

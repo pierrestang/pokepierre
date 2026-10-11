@@ -5,7 +5,7 @@ import { getTile } from '../src/data/tiles.js';
 import { interiors } from '../src/data/maps/interiors.js';
 import { existsSync } from 'node:fs';
 const out = {};
-// Les cartes, et les intérieurs dont le dessin est une carte de builtMaps (la cour de New Delhi, builtMaps/delhi-cour.json).
+// Les cartes, et les intérieurs dont le dessin est une carte de builtMaps (la cour de Delhi, builtMaps/delhi-cour.json).
 const drawnAsMaps = Object.entries(interiors)
   .filter(([id, r]) => r.built && r.sourceGrid && !existsSync(new URL(`../src/data/builtInteriors/${id}.json`, import.meta.url))
     && existsSync(new URL(`../src/data/builtMaps/${r.built.id}.json`, import.meta.url)))

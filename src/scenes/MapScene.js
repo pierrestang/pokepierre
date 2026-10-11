@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { hiddenEdges } from '../builder/mapModel.js';
 import { TILE_SIZE, getTile } from '../data/tiles.js';
 import { FOLLOWERS } from '../data/story.js';
-import { CATCHES, FISHING_ROD } from '../data/fishing.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
 import { drawDecal, drawPulleyFixed, drawPulleyStuck } from '../art/tileArt.js';
@@ -1330,7 +1329,7 @@ export class MapScene extends Phaser.Scene {
     for (const [id, dir] of Object.entries(facing)) this.actorSprite(id)?.setFacing(dir);
   }
 
-  // Des plats tendus à Pierre (le repas de New Delhi) : de chaque convive de `ids`, un plat (props/plat.png) glisse
+  // Des plats tendus à Pierre (le repas de Delhi) : de chaque convive de `ids`, un plat (props/plat.png) glisse
   // jusqu'à lui, l'un après l'autre (décalés), puis disparaît à son arrivée.
   async passDishes(ids) {
     const to = this.player.sprite;
@@ -1517,26 +1516,6 @@ export class MapScene extends Phaser.Scene {
     const object = this.map.objects?.find((o) => o.x === x && o.y === y && (o.warp || meetsConditions(o)));
     if (object?.warp) this.runTrigger(object);
     else if (object) this.talkTo(object);
-    else if (this.grid[y]?.[x] && getTile(this.grid[y][x]).water && items.has(FISHING_ROD)) {
-      this.runScript(this.fishingSteps(getTile(this.grid[y][x]).water));
-    }
-  }
-
-  // Pêche avec la canne (voir data/fishing.js), face à l'eau : Pierre attend (« … »), puis ça mord ou non. Les prises sont
-  // relâchées (rien ne s'ajoute au sac).
-  fishingSteps(water) {
-    const catches = CATCHES[water];
-    const steps = [
-      { say: ['Tu lances ta ligne…'] },
-      { emote: 'player', kind: 'dots' },
-    ];
-    if (Math.random() < 0.4) return [...steps, { say: ['Rien ne mord… Tu remballes ta ligne.'] }];
-    const fish = Math.random() < 0.1 ? 'une vieille botte' : Phaser.Utils.Array.GetRandom(catches);
-    return [
-      ...steps,
-      { emote: 'player', kind: 'surprise' },
-      { say: [`Ça mord ! Tu remontes ${fish} !`, fish === 'une vieille botte' ? 'Tu la poses sur la rive.' : `Tu ${fish.startsWith('une') ? 'la' : 'le'} relâches doucement.`] },
-    ];
   }
 
   // Parler à un PNJ / examiner un objet, puis poser sa question éventuelle (`ask`).

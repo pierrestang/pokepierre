@@ -1,4 +1,4 @@
-"""Intérieurs Gen 4 : Hanoï, Amsterdam, New Delhi — de vraies pièces de HeartGold / SoulSilver (pack de
+"""Intérieurs Gen 4 : Hanoï, Amsterdam, Delhi — de vraies pièces de HeartGold / SoulSilver (pack de
 SirMaIo, scripts/hgss_rooms.py), retouchées pour le lieu (voir scripts/build_interiors.py : 'hgss', 'erase', 'paste').
 
 Pièces de départ (cartes Tiled du pack, coordonnées en cases de la carte) :
@@ -87,7 +87,7 @@ PLANS = {
         'items': [['aa-tapis', 3, 9]],
         'block': [[0, 3], [1, 3], [2, 3], [1, 8], [8, 8]],
     },
-    # Le vieux fort de New Delhi : le bas de l'arène de Mauville (dalles de pierre, grands piliers, balustrades, marches,
+    # Le vieux fort de Delhi : le bas de l'arène de Mauville (dalles de pierre, grands piliers, balustrades, marches,
     # deux statues), sans l'arène elle-même ; le vieux sage sur la terrasse, au-dessus des marches.
     'delhiFort': {
         'hgss': ('006i_Violet Gym', 10, 43, 21, 16),

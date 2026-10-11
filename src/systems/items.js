@@ -6,9 +6,15 @@ import Phaser from 'phaser';
 
 const STORAGE_KEY = 'pokepierre.items';
 
+// Anciens objets d'une sauvegarde (octobre 2026) : la vieille canne est retirée du jeu ; la pierre gravée du vieux sage
+// est devenue le talisman indien.
+const OLD_IDS = { 'vieille-canne': null, 'pierre-gravee': { id: 'talisman-indien', name: 'Talisman indien' } };
+
 function load() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
+      .map((i) => (i.id in OLD_IDS ? OLD_IDS[i.id] : i))
+      .filter(Boolean);
     return new Map(saved.map((i) => [i.id, i]));
   } catch {
     return new Map();

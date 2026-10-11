@@ -228,7 +228,7 @@ export const ENGLISH_ORAL = [
     'I am hasted!': ['Pardon? Try again!'],
   }),
   { speaker: PROF, say: ['Excellent! Well done, Pierre.'] },
-  { give: ITEMS.diplomeAnglais, text: 'Diplôme obtenu : Anglais KEDGE !' },
+  { give: ITEMS.diplomeAnglais, text: 'Diplôme obtenu : diplôme d\'anglais !' },
   { speaker: PROF, say: ['Avec ça, la route vers l\'est t\'est ouverte.'] },
 ];
 
@@ -294,7 +294,7 @@ export const ANTITHEFT_KEY = [
 ];
 
 
-// ---------- Le retour de New Delhi : la remise des diplômes ----------
+// ---------- Le retour de Delhi : la remise des diplômes ----------
 
 // Court, sans vertu ni « Objectif : » : Prophecy mène Pierre au stade, toute la bande et les parents y sont, Pierre
 // s'avance seul vers l'estrade, reçoit son diplôme, puis part pour Paris.
@@ -345,14 +345,14 @@ export const CEREMONY = [
 
 // La bande et les parents, au bord de la piste : les retrouvailles (chacun dit d'où il revient).
 export const REUNION_LINES = {
-  ousmane: ['Pierre ! Hull, Hanoï, Amsterdam, New Delhi… T\'as fait le tour du monde, toi. Aujourd\'hui, on finit ce qu\'on a commencé ensemble.'],
+  ousmane: ['Pierre ! Hull, Hanoï, Amsterdam, Delhi… T\'as fait le tour du monde, toi. Aujourd\'hui, on finit ce qu\'on a commencé ensemble.'],
   leo: ['Bro ! Je rentre de Hull pour l\'occasion. La maison est bien gardée, t\'inquiète.'],
   paul: ['Tu te souviens de mon enceinte ? Je ne l\'ai jamais revue… Allez, c\'est oublié. Aujourd\'hui, c\'est la fête !'],
   remi: ['Moi, les States, c\'était avant. Cette fois, je suis resté à Bordeaux… mais j\'ai suivi tous vos trips en photo, man !'],
   anais: ['Bali, c\'était magique. Mais rien ne vaut ça : tous ensemble, ici.'],
   charlotte: ['Le Canada, la neige, le sirop d\'érable… et me revoilà ! Je n\'aurais raté ça pour rien au monde.'],
   romain: ['Hong Kong, puis Amsterdam avec toi… Maintenant, je me sens chez moi n\'importe où. Mais ici, avec vous, c\'est autre chose.'],
-  prophecy: ['Les États-Unis, puis New Delhi avec toi… Quel voyage. Et maintenant, le diplôme !'],
+  prophecy: ['Les États-Unis, puis Delhi avec toi… Quel voyage. Et maintenant, le diplôme !'],
   maman: ['Mon Pierre ! Regarde-toi, diplômé ! Viens là que je te serre fort ! Je suis tellement fière, mon grand !'],
   papa: ['Un diplôme. Du concret, enfin.', '… Bon. Je suis fier de toi, fiston. Mais ne le répète pas trop.'],
   dalil: ['Peu importe où on ira après… il y aura toujours un océan quelque part pour nous ramener ici.'],

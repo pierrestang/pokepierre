@@ -57,7 +57,7 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     if (state.base?.kind === 'modele') return interiors[state.base.room] ?? null;
     if (state.base?.kind === 'interieur' && interiors[m.id]) return interiors[m.id];
     if (interiors[m.id]?.built) return interiors[m.id];
-    // Un intérieur dessiné comme une carte (la cour de New Delhi, builtMaps/delhi-cour.json).
+    // Un intérieur dessiné comme une carte (la cour de Delhi, builtMaps/delhi-cour.json).
     return Object.values(MAPS).find((g) => g.built?.id === m.id)
       ?? Object.values(interiors).find((r) => r.built?.id === m.id) ?? null;
   }

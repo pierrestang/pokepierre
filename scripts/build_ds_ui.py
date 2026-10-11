@@ -41,7 +41,7 @@ ICONS = {
     'amulette': (503, 384, 20, 22),
     'bouquet': (474, 382, 22, 22),          # Gracidée : le bouquet de fleurs de Romain (Amsterdam)
     'velo': (108, 375, 23, 21),             # Bicyclette (objet rare)
-    'pierre-gravee': (481, 223, 20, 17),    # Galet Lisse : la pierre gravée du vieux sage (New Delhi), aussi à la fin
+    'pierre-gravee': (481, 223, 20, 17),    # Galet Lisse : la pierre gravée du vieux sage (Delhi), aussi à la fin
 }
 
 

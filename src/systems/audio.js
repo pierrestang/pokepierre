@@ -305,7 +305,7 @@ const AMSTERDAM_LEAD = [
 ];
 const AMSTERDAM_CHORDS = ['F', 'Dm', 'Bb', 'C', 'F', 'Dm', 'C', 'F'];
 
-// New Delhi : mode oriental sur ré, rythme en 3 + 3 + 2.
+// Delhi : mode oriental sur ré, rythme en 3 + 3 + 2.
 const NEWDELHI_LEAD = [
   ['D5', 2], ['D#5', 1], ['F#5', 1], ['G5', 2], ['A5', 2],
   ['A#5', 2], ['A5', 1], ['G5', 1], ['F#5', 4],

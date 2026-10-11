@@ -1,5 +1,5 @@
 import { parseGrid } from './parseGrid.js';
-// Le dessin de la carte : New Delhi en Gen 4 (scripts/build_new_delhi.py, thème « New Delhi (palais moghols) » du
+// Le dessin de la carte : Delhi en Gen 4 (scripts/build_new_delhi.py, thème « Delhi (palais moghols) » du
 // catalogue) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille ci-dessous (sourceGrid) suit ce
 // dessin : avenue, trottoirs, jardins, bassin, portes (sur les portes dessinées).
 import BUILT from '../builtMaps/new-delhi.json' with { type: 'json' };
@@ -84,14 +84,14 @@ const crowd = [
   })),
 ];
 
-// New Delhi — capitale de l'Inde, 40 x 34 cases avec sa bordure de palmiers : un semestre d'échange (voir
+// Delhi — capitale de l'Inde, 40 x 34 cases avec sa bordure de palmiers : un semestre d'échange (voir
 // newDelhiStory.js). Au nord, le long de la grande avenue : l'université (le bâtiment à coupole et lanternes dorées),
 // le palais de grès, la porte du fort, le minaret. Les jardins : la grande arche (India Gate), le bassin aux lotus. Au
 // sud : l'internat (la maison à toit plat), une maison à coupole, la tente du bazar. La grande avenue est pleine de
 // monde. Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = avenue, . = jardin, ~ = bassin, D = porte, Y = palmiers).
 export const newDelhiMap = {
   id: 'newDelhi',
-  name: 'New Delhi',
+  name: 'Delhi',
   built: BUILT,
   sourceGrid: parseGrid([
     'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 0  bordure : palmiers (dessinés)

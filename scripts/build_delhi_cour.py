@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""La cour de la fête, à New Delhi (octobre 2026) : un « intérieur » à ciel ouvert, src/data/builtInteriors/delhiCour.json.
+"""La cour de la fête, à Delhi (octobre 2026) : un « intérieur » à ciel ouvert, src/data/builtInteriors/delhiCour.json.
 
-On y entre par la porte du palais de grès (carte de New Delhi) ; c'est la cour du palais, un soir de fête. Même principe
-et mêmes éléments que la carte de New Delhi (scripts/build_new_delhi.py, thème « New Delhi (palais moghols) » du
+On y entre par la porte du palais de grès (carte de Delhi) ; c'est la cour du palais, un soir de fête. Même principe
+et mêmes éléments que la carte de Delhi (scripts/build_new_delhi.py, thème « Delhi (palais moghols) » du
 catalogue) : un dallage de grès, une couronne de palmiers (scripts/paint_forest.mjs), au fond trois pavillons à coupole,
 deux mâts à fanions, des lanternes de bronze, le stand de chai, un étal, des soucis. Le milieu reste libre : le grand
 repas partagé, assis en cercle par terre (le tapis et les plats sont un objet du jeu, `props` de interiors.js
@@ -28,7 +28,7 @@ STRIDE = 100000
 W, H = 24, 18
 THEME = 'new-delhi'
 MAP_ID = 'delhi-cour'
-EXIT = (11, 12)                                   # l'entrée (x), en bas : la sortie vers la carte de New Delhi
+EXIT = (11, 12)                                   # l'entrée (x), en bas : la sortie vers la carte de Delhi
 
 
 def ground():
@@ -103,7 +103,7 @@ def main():
     # Reste dans builtMaps (le créateur l'ouvre comme les autres cartes) ; le jeu l'ouvre comme une pièce (l'intérieur
     # delhiCour : porte du palais, sortie en bas).
     m = json.loads(out.read_text())
-    m['name'] = 'Cour du palais (New Delhi)'
+    m['name'] = 'Cour du palais (Delhi)'
     out.write_text(json.dumps(m, ensure_ascii=False) + '\n')
     print(f'{MAP_ID} : {W} x {H} -> src/data/builtMaps/{MAP_ID}.json')
     for y in range(H):

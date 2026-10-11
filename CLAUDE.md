@@ -24,7 +24,7 @@ rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (f
   objets, bâtiments, arbres). Ce qui n'a pas d'équivalent Rouge Feu reste dessiné dans le code (src/art/).
 - Ressources de fans (assets-source/fan/) : voiture de la famille tirée de « FRLG Tilesets - Cars » de
   pinkscales (DeviantArt), libre pour un projet de fan non commercial, avec crédit à pinkscales.
-  Le grand repas de New Delhi (scripts/build_meal.py, assets-source/fan/food/CREDITS.txt) : plats de « Free Pixel
+  Le grand repas de Delhi (scripts/build_meal.py, assets-source/fan/food/CREDITS.txt) : plats de « Free Pixel
   foods » de ghostpixxells (itch.io, CC0), vaisselle Gen 4 de PeekyChew (DeviantArt, crédit demandé).
 - Écran : format GBA dézoomé, 360 x 240 px (22,5 x 15 cases), voir src/systems/screen.js.
 - Police des dialogues et du menu : police bitmap de Rouge Feu, extraite par scripts/extract_frlg_font.py
@@ -64,7 +64,7 @@ rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (f
   par case » : éditeur « V2 » à trois calques avec collisions. En dev, les cartes sont enregistrées dans src/data/builtMaps/<id>.json et s'ouvrent dans
   le jeu avec ?carte=<id>. Les cartes de Fort-de-France à Hull sont générées par scripts/convert_maps_v2.py puis
   retouchées à la main ; --force efface ces retouches. Hanoï : scripts/build_hanoi.py (sol du convertisseur, éléments du
-  catalogue) ; Amsterdam : scripts/build_amsterdam.py (même principe, forêt par scripts/paint_forest.mjs) ; New Delhi :
+  catalogue) ; Amsterdam : scripts/build_amsterdam.py (même principe, forêt par scripts/paint_forest.mjs) ; Delhi :
   scripts/build_new_delhi.py (même principe, assets Gen 4 nouveaux au catalogue) ; Paris : scripts/build_paris.py (idem) ; le rêve
   de la fin : scripts/build_reve.py (planches du Gaia Project, PixelMister : Monde Distorsion, ruines de la Colonne Lance). Ordre de reconstruction : build_v2_tiles.py, puis
   convert_maps_v2.py et build_g4_library.py. Avant de changer un bâtiment : check_paths.js (les rues de Hull et
