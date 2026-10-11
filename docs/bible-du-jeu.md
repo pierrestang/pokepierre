@@ -220,6 +220,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
 | Yanis | Cousin : la corde des hautes herbes | `g59` |
 | Val | Cousin·e, sculpte un cheval en bois dans la maison de Felix : « Regarde, il commence à ressembler à quelque chose. La crinière, c'est le plus dur. » / « Il me faudra encore quelques semaines. Il doit être parfait. » | `g42` |
 | Vieux pêcheur | Méfiant, au bord du lac (objet optionnel) | `g67` |
+| William | L'ami d'enfance de Pierre, au bord du lac pendant tout le séjour (« Eh, t'as vu le match hier soir ? Plus tard, je serai footballeur, c'est sûr ! » / « Et toi, t'as hâte de commencer l'école ? Moi trop ! Paraît qu'on apprend à lire. ») ; au départ, il court dire au revoir près de la voiture | `g30` |
 | Poules | Gardent le tas de planches | dessinées dans le code, au style des sprites DS |
 
 ### Quêtes, dans l'ordre
@@ -311,7 +312,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 
 ### Départ et trajet
 - **Condition** : la naissance de Fanny, la cabane (Esprit d'équipe), l'annonce de Papa, l'adieu aux cousins. On monte dans la voiture devant la maison :
-  « La voiture est chargée. » ; « Tu montes à l'arrière, à côté de Manon et de Fanny. » (les adieux ont eu lieu à la
+  William accourt : **« Attends ! … Alors c'est vrai, tu pars ? On se reverra, hein ? Promets-le-moi. »** ; Pierre :
+  « Promis, William. On se reverra. » (pas d'objet) ; « La voiture est chargée. » ; « Tu montes à l'arrière, à côté de Manon et de Fanny. » (les adieux ont eu lieu à la
   cabane : plus de scène de Felix devant la voiture depuis le 11 octobre 2026).
 - **Trajet en voiture** (écran noir) : « La voiture s'éloigne de Saint-Ay. À l'arrière, tu es serré entre Manon et le siège
   de Fanny. » ; Manon « Regarde, Fanny dort déjà. Elle rate tout. » ; Fanny (endormie) « … les poules… » ; Manon « Elle
@@ -1513,6 +1515,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Yanis | `g59` | Saint-Ay |
 | Val | `g42` | Saint-Ay |
 | Vieux pêcheur | `g67` | Saint-Ay |
+| William | `g30` (choisi dans le panneau PNJ) | Saint-Ay |
 | M. Bouly | `g33` | Montépilloy |
 | Grand-père | `g74` (choisi dans le panneau PNJ, characterLooks.json) | Montépilloy (après le brevet) |
 | Margaux | `g3` | Montépilloy, collège |

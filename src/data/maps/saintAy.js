@@ -171,6 +171,21 @@ export const saintAyMap = {
     },
     // Le vieux pêcheur de mauvaise humeur, au bord du lac : la chanson de Maman le déride (Joie de vivre).
     { id: 'vieux-pecheur', name: 'Vieux pêcheur', x: 8, y: 8, facing: 'left', still: true, script: OLD_FISHER },
+    // William, l'ami d'enfance de Pierre, au bord du lac pendant tout le séjour à Saint-Ay ; au départ, il court dire au
+    // revoir près de la voiture (saintAyStory.js CAR).
+    {
+      id: 'william', name: 'William', x: 11, y: 13, facing: 'left', still: true,
+      ifFlags: [FLAGS.saArrivee], unlessFlags: [FLAGS.adieuCousins],
+      dialogue: [
+        'Eh, t\'as vu le match hier soir ? Plus tard, je serai footballeur, c\'est sûr !',
+        'Et toi, t\'as hâte de commencer l\'école ? Moi trop ! Paraît qu\'on apprend à lire.',
+      ],
+    },
+    {
+      id: 'william-adieu', name: 'William', x: 15, y: 9, facing: 'right',
+      ifFlags: [FLAGS.adieuCousins], unlessFlags: [FLAGS.arriveeMontepilloy],
+      dialogue: ['On se reverra, hein ?'],
+    },
     // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis au bord du lac, côté sud (vers la corde).
     {
       id: 'joshua', name: 'Joshua', x: 28, y: 8, facing: 'left', color: COUSIN_COLORS.joshua,

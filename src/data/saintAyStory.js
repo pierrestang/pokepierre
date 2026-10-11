@@ -208,6 +208,10 @@ export const CAR = [
     say: ['La voiture est chargée. Va d\'abord dire au revoir à tes cousins, à la cabane.'],
     end: true,
   },
+  // Juste avant de monter : William, l'ami d'enfance, accourt pour dire au revoir.
+  { approach: 'william-adieu' },
+  { speaker: 'William', say: ['Attends ! … Alors c\'est vrai, tu pars ? On se reverra, hein ? Promets-le-moi.'] },
+  { speaker: 'Pierre', say: ['Promis, William. On se reverra.'] },
   { say: ['La voiture est chargée.'] },
   { say: ['Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
   { drive: 'familyCar' },
