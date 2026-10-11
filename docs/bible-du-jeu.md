@@ -351,7 +351,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 | Fanny | Adolescente : « Fanny, allongée sur le tapis avec un roman, ne lève même pas les yeux. » / « « Tu me caches la lumière, là. » » | `g153` |
 | Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `g22` |
 | M. Bouly | Le fermier, et son tracteur en panne | `g33` |
-| Grand-père | Après le brevet, au salon : la bonne étoile, avant le Prytanée | `g74` |
+| Papy | Après le brevet, au salon : la bonne étoile, avant le Prytanée | `g74` |
 | Margaux | Copine de classe : lance le cache-cache | `g3` |
 | Étienne | Copain de classe | `g14` (garçon en casquette verte, à la taille des collégiens) |
 | Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul au bord de la mare | `g12` |
@@ -503,15 +503,15 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
      (Goodbye, I am Pierre / Hello, my name is Pierre / Hello, I have Pierre). Une erreur ne bloque pas (« Hmm… »,
      on réessaie) → « Parfait ! Comme quoi, malgré le bruit… Tu as mérité ton diplôme du brevet. »
      → **Diplôme du brevet** (« Tu reçois ton diplôme du brevet ! ») ; « Avec ça, tu peux candidater au Prytanée, au bout
-     de la route du nord. Bonne chance ! » ; « Maman t'a prévenu ce matin : Grand-père est arrivé à la maison. Il
+     de la route du nord. Bonne chance ! » ; « Maman t'a prévenu ce matin : Papy est arrivé à la maison. Il
      t'attend à Montépilloy, avant ton départ. »
-  5. **Le grand-père** (Montépilloy, maison, au salon, assis à droite de la table, `g74`) : il n'est là qu'une fois le
+  5. **Papy** (Montépilloy, maison, au salon, assis à droite de la table, `g74`) : il n'est là qu'une fois le
      brevet obtenu, jusqu'au départ. **« On ne part jamais vraiment d'un endroit qu'on aime. On l'emporte. C'est pareil
      pour les gens… Même ceux qui partent les premiers, on continue de les emporter avec nous. »** ; « Il te tend
      quelque chose au creux de sa main. » ; **« Tiens. Garde-la sur toi. Comme ça, où que tu ailles, t'auras toujours ta
      bonne étoile. »** → souvenir **Bonne étoile** (onglet Souvenirs, icône d'étoile ; pas de vertu). Ensuite : « Allez,
      file. Et garde-la bien sur toi. » Sans la bonne étoile, la route du Prytanée ne s'ouvre pas : « Avant de partir, je
-     devrais passer voir Grand-père à la maison. Il est venu exprès. »
+     devrais passer voir Papy à la maison. Il est venu exprès. »
 
 ### Objectifs affichés (rappels du surveillant)
 « Avant le premier cours, va ranger tes affaires dans ton casier : le casier 12, au couloir des casiers. » → « Le cours de
@@ -1538,7 +1538,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Vieux pêcheur | `g67` | Saint-Ay |
 | William | `g30` (choisi dans le panneau PNJ) | Saint-Ay |
 | M. Bouly | `g33` | Montépilloy |
-| Grand-père | `g74` (choisi dans le panneau PNJ, characterLooks.json) | Montépilloy (après le brevet) |
+| Papy | `g74` (choisi dans le panneau PNJ, characterLooks.json) | Montépilloy (après le brevet) |
 | Margaux | `g3` | Montépilloy, collège |
 | Étienne | `g14` | Montépilloy, collège |
 | Benoît | `g12` | Montépilloy (la classe, puis seul au bord de la mare) |
@@ -1740,7 +1740,7 @@ ICONS, src/art/uiIcons.js), créditée au générique.
 | Galet du lac | Saint-Ay, le vieux pêcheur (Joie de vivre) | tout de suite | `galet` | « Le galet porte-bonheur du vieux pêcheur, trouvé au fond du lac quand il avait ton âge. » |
 | Règlement du QG | Saint-Ay, le panier de la cabane (Ingéniosité) | tout de suite | `plume` | « Le règlement de la cabane des cousins, dont l'article 5 dit seulement « Non. » » |
 | Diplôme du brevet | Collège, l'oral | à l'arrivée au Prytanée | `parchemin` | « Ton brevet, obtenu à l'oral : français, maths et anglais. » |
-| Bonne étoile | Montépilloy, le grand-père, après le brevet | tout de suite | `etoile` | « L'étoile que Grand-père t'a donnée avant le Prytanée : où que tu ailles, ta bonne étoile. » |
+| Bonne étoile | Montépilloy, Papy, après le brevet | tout de suite | `etoile` | « L'étoile que Papy t'a donnée avant le Prytanée : où que tu ailles, ta bonne étoile. » |
 | Autocollant de Rémy | Collège, le casier 12 | tout de suite | `autocollant` | « L'autocollant Pokémon de Rémy, le même que dans votre casier 12. » |
 | Insigne du Prytanée | Prytanée, le nouveau | tout de suite | `insigne` | « L'insigne que le nouveau du Prytanée t'a donné, parce qu'il en avait deux. » |
 | Baccalauréat | Prytanée, panneau de la place d'armes | à l'arrivée à Bordeaux | `diplome` | « Ton baccalauréat, lu sur la liste de la place d'armes. » |

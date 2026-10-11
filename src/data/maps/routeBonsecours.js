@@ -86,8 +86,8 @@ export const routeBonsecoursMap = {
       y: 0,
       script: [
         { unlessFlags: [FLAGS.bonsecoursFini], say: GUARD_LINES, end: true },
-        // Pas de départ sans être passé voir le grand-père, à la maison (montepilloyStory.js GRANDPA).
-        { unlessItems: [ITEMS.bonneEtoile.id], say: ['Avant de partir, je devrais passer voir Grand-père à la maison. Il est venu exprès.'], end: true },
+        // Pas de départ sans être passé voir Papy, à la maison (montepilloyStory.js GRANDPA).
+        { unlessItems: [ITEMS.bonneEtoile.id], say: ['Avant de partir, je devrais passer voir Papy à la maison. Il est venu exprès.'], end: true },
         { say: ['Ton brevet en poche, tu prends la route du Prytanée pour y candidater.'] },
         { unlessFlags: [FLAGS.arriveePrytanee], say: [carryText('routeBonsecours')] },
         { setFlag: FLAGS.arriveePrytanee },

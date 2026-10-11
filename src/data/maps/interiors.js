@@ -694,9 +694,9 @@ export const interiors = {
         id: 'papa-mont', name: 'Papa', x: 4, y: 3, facing: 'down', color: 0x3f6fd8,
         unlessFlags: [FLAGS.septembre], script: PAPA,
       },
-      // Le brevet en poche, avant le Prytanée : le grand-père attend Pierre, assis au salon (montepilloyStory.js GRANDPA).
+      // Le brevet en poche, avant le Prytanée : Papy attend Pierre, assis au salon (montepilloyStory.js GRANDPA).
       {
-        id: 'grand-pere', name: 'Grand-père', x: 8, y: 7, facing: 'left', seated: true, still: true,
+        id: 'grand-pere', name: 'Papy', x: 8, y: 7, facing: 'left', seated: true, still: true,
         ifFlags: [FLAGS.bonsecoursFini], unlessFlags: [FLAGS.arriveePrytanee], script: GRANDPA,
       },
       // Dès que Pierre est arrivé au collège : Papa, Maman et Jean sont rentrés (ils disaient au revoir dehors, le matin).
