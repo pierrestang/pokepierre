@@ -648,9 +648,10 @@ export class MapScene extends Phaser.Scene {
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
   //   { hop: id | [ids], times? } : petits sauts sur place ('player' : Pierre)
   //   { cheer: [ids] } : tous sautent ensemble, des notes et des cœurs s'envolent
-  //   { darts: { opponent, win, lose, onWin?, onLose? } } : partie de fléchettes, trois lancers (systems/Darts.js), contre
-  //                                      un adversaire au score tiré au hasard ; gagnée ou perdue, la scénette continue
-  //                                      (après les étapes `onWin` ou `onLose`, s'il y en a)
+  //   { darts: { opponent, win, lose, partner?, onWin?, onLose? } } : partie de fléchettes, trois lancers (systems/Darts.js),
+  //                                      contre un adversaire au score tiré au hasard ; `partner` ({ name, score }) : un
+  //                                      coéquipier dont le score s'ajoute (l'adversaire joue alors en équipe, lui aussi) ;
+  //                                      gagnée ou perdue, la scénette continue (après `onWin` ou `onLose`, s'il y en a)
   // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
   //   Fin de scène : une marche bloquante (`block`) suivie seulement de drapeaux (setFlag) ne fait plus attendre le
   //   joueur ; il reprend la main pendant que le PNJ s'en va, et ces drapeaux sont posés à son arrivée (voir walkNpc).
@@ -1720,13 +1721,17 @@ export class MapScene extends Phaser.Scene {
     this.player.update();
   }
 
-  // Partie de fléchettes : trois lancers de Pierre, puis le score de l'adversaire (au hasard) et sa réaction.
-  async dartsGame({ opponent, win, lose }) {
+  // Partie de fléchettes : trois lancers de Pierre (plus le score d'un coéquipier), puis le score de l'adversaire (au
+  // hasard ; en équipe, deux joueurs : un score plus haut) et sa réaction.
+  async dartsGame({ opponent, win, lose, partner }) {
     const throws = await playDarts(this.scene.get('UI'));
-    const total = throws.reduce((n, t) => n + t.points, 0);
-    const theirs = 10 + Math.floor(Math.random() * 90);
-    await this.dialog.open([`Tes lancers : ${throws.map((t) => t.label.replace(/[.!…]+$/, '')).join(', ')}. Total : ${total} points.`]);
-    await this.dialog.open([`${theirs} points pour moi.`, ...(total > theirs ? win : lose)], { speaker: opponent });
+    const mine = throws.reduce((n, t) => n + t.points, 0);
+    const total = mine + (partner?.score ?? 0);
+    const theirs = partner ? 100 + Math.floor(Math.random() * 80) : 10 + Math.floor(Math.random() * 90);
+    const pages = [`Tes lancers : ${throws.map((t) => t.label.replace(/[.!…]+$/, '')).join(', ')}. Total : ${mine} points.`];
+    if (partner) pages.push(`Avec les ${partner.score} points de ${partner.name} : ${total} points pour votre équipe.`);
+    await this.dialog.open(pages);
+    await this.dialog.open([`${theirs} points pour ${partner ? 'nous' : 'moi'}.`, ...(total > theirs ? win : lose)], { speaker: opponent });
     return total > theirs;
   }
 

@@ -80,6 +80,7 @@ export const FLAGS = {
   leoSoiree: 'leo-soiree',                      //     Léo (KEDGE) rencontré à la soirée
   anaisSoiree: 'anais-soiree',                  //     Anaïs (KEDGE) rencontrée à la soirée
   charlotteSoiree: 'charlotte-soiree',          //     Charlotte (KEDGE) rencontrée à la soirée
+  vincentSoiree: 'vincent-soiree',              //     Vincent (KEDGE) rencontré à la soirée
   lendemainSoiree: 'lendemain-soiree',          //   en quittant la fête : le lendemain matin, l'appartement en désordre
   ousmaneLeve: 'ousmane-leve',                  //     tout rangé : Ousmane sort du lit (la photo de la soirée)
   gobeletsRanges: 'gobelets-ranges',            //     à faire avant de sortir (Autonomie) : les gobelets ramassés
@@ -319,4 +320,6 @@ export const FOLLOWERS = [
     { id: 'charlotte-pub', name: 'Charlotte', ifFlags: [from], unlessFlags: [until] },
     { id: 'anais-pub', name: 'Anaïs', ifFlags: [from], unlessFlags: [until] },
   ]),
+  // Vincent, rencontré au second pub (la partie de fléchettes en équipe) : il suit la bande jusqu'à l'Asylum.
+  { id: 'vincent-pub', name: 'Vincent', ifFlags: [FLAGS.flechettesJouees], unlessFlags: [FLAGS.bandeAsylum] },
 ];

@@ -8,7 +8,7 @@ import {
 } from '../saintAyStory.js';
 import { MAMAN_FDF, OPENING_CINEMATIC } from '../fortDeFranceStory.js';
 import {
-  AGENT_KEYS, CEREMONY, REUNION_LINES, STADIUM, STADIUM_ARRIVAL, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_CHARLOTTE, PARTY_END, PARTY_LEO, PAULFIT, REMI_CUPS,
+  AGENT_KEYS, CEREMONY, REUNION_LINES, STADIUM, STADIUM_ARRIVAL, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_CHARLOTTE, PARTY_END, PARTY_LEO, PARTY_VINCENT, PAULFIT, REMI_CUPS,
   TIDY_BED, TIDY_CUPS, TIDY_LIVING_ROOM,
 } from '../bordeauxStory.js';
 import { BAC_DAY, EVENING, GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
@@ -1383,6 +1383,7 @@ export const interiors = {
       { id: 'leo-fete', name: 'Léo', x: 5, y: 5, facing: 'right', ...PARTY_TIME, dancing: true, script: PARTY_LEO },
       { id: 'anais-fete', name: 'Anaïs', x: 8, y: 5, facing: 'left', ...PARTY_TIME, dancing: true, script: PARTY_ANAIS },
       { id: 'charlotte-fete', name: 'Charlotte', x: 6, y: 7, facing: 'up', ...PARTY_TIME, dancing: true, script: PARTY_CHARLOTTE },
+      { id: 'vincent-fete', name: 'Vincent', x: 8, y: 7, facing: 'left', ...PARTY_TIME, dancing: true, script: PARTY_VINCENT },
       { id: 'etudiant-1', name: 'Étudiant', x: 1, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Première année à KEDGE ! Et toi ?'] },
       { id: 'etudiant-2', name: 'Étudiant', x: 10, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['C\'est toi qui as rallumé le courant ? Respect.'] },
       { id: 'etudiant-3', name: 'Étudiant', x: 6, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['L\'enceinte, elle envoie !'] },
@@ -1825,9 +1826,10 @@ export const interiors = {
       { id: 'client-b3', name: 'Client', x: 13, y: 7, facing: 'up', fidget: true, dialogue: ['Hull City a gagné, ce soir !'] },
       { id: 'client-b4', name: 'Cliente', x: 0, y: 8, facing: 'right', fidget: true, dialogue: ['Cheers!'] },
       { id: 'client-b5', name: 'Client', x: 7, y: 8, facing: 'left', fidget: true, dialogue: ['Le meilleur fish and chips de Hull, ici.'] },
-      // L'habitué, près de l'entrée (trajet court jusqu'à Pierre ; pas sur une place de la bande, PUB_B_SEATS) : la partie
-      // de fléchettes (voir hullStory.js DARTS).
-      { id: 'habitue', name: 'Habitué', x: 4, y: 6, facing: 'down', ...PUB_B_TIME, script: DARTS },
+      // Vincent, devant la cible : c'est lui qui vient chercher Pierre pour la partie de fléchettes en équipe contre les
+      // Anglais (voir hullStory.js DARTS) ; l'habitué, près de l'entrée, est leur adversaire.
+      { id: 'vincent-pub', name: 'Vincent', x: 5, y: 4, facing: 'down', ...PUB_B_TIME, unlessFlags: [FLAGS.flechettesJouees], script: DARTS },
+      { id: 'habitue', name: 'Habitué', x: 4, y: 6, facing: 'down', ...PUB_B_TIME, dialogue: ['Your French friend says you\'re good. We\'ll see about that!'] },
       { id: 'habitue-apres', name: 'Habitué', x: 4, y: 6, facing: 'down', ifFlags: [FLAGS.flechettesJouees], script: HABITUE_AFTER },
       // La bande, à la table du milieu : Léo, entré le premier, attend ; les autres suivaient Pierre et s'attablent en
       // arrivant (mêmes id que leurs suiveurs, voir hullStory.js PUB_B_ENTER).
@@ -1841,7 +1843,7 @@ export const interiors = {
     ],
     events: [
       { on: 'enter', ...PUB_B_TIME, unlessFlags: [FLAGS.flechettesJouees, FLAGS.bandePubB], steps: PUB_B_ENTER },
-      { on: 'enter', ifFlags: [FLAGS.tourneeServie, FLAGS.bandePubB], unlessFlags: [FLAGS.flechettesJouees], steps: [{ approach: 'habitue' }, ...DARTS] },
+      { on: 'enter', ifFlags: [FLAGS.tourneeServie, FLAGS.bandePubB], unlessFlags: [FLAGS.flechettesJouees], steps: [{ approach: 'vincent-pub' }, ...DARTS] },
     ],
     objects: [
       ...[[7, 5], [8, 6]].map(([x, y]) => ({ x, y, dialogue: ['Une table de bois, quelques ronds de bière.'] })),
@@ -1889,7 +1891,7 @@ export const interiors = {
       { id: 'prophecy-asylum', name: 'Prophecy', x: 17, y: 8, facing: 'left', ...ASYLUM_TIME, dialogue: ['Enfin au complet ! Et j\'ai les bonnes chaussures.'] },
       { id: 'leo-pub', name: 'Léo', x: 17, y: 10, facing: 'left', ...ASYLUM_TIME, dialogue: ['Allez, sur la piste !'] },
       ...[['ousmane-pub', 'Ousmane', 'Quelle soirée !'], ['charlotte-pub', 'Charlotte', 'On danse !'],
-        ['anais-pub', 'Anaïs', 'J\'adore cette chanson !']].map(([id, name, line]) => ({
+        ['anais-pub', 'Anaïs', 'J\'adore cette chanson !'], ['vincent-pub', 'Vincent', 'Regardez-moi cette piste ! Elle m\'appelle !']].map(([id, name, line]) => ({
         id, name, x: ASYLUM_SPOTS[id][0], y: ASYLUM_SPOTS[id][1], facing: 'up',
         ifFlags: [FLAGS.flechettesJouees, FLAGS.bandeAsylum], dialogue: [line],
       })),

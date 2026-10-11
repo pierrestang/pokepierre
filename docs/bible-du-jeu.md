@@ -643,6 +643,7 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 | Dalil | Discret, à la soirée d'intégration (puis au stade, au retour) | `g2` |
 | Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `g140` |
 | Anaïs | Étudiante de KEDGE (« de ta promo »), invitée à la soirée ; on la retrouve à Hull | `g107` |
+| Vincent | Étudiant de KEDGE, extravagant : « Vincent, KEDGE, et futur roi de la piste ! Hull l'an prochain ? Évidemment que j'en suis. Ils ne savent pas ce qui les attend ! » (ensuite : « Hull, prépare-toi : Vincent arrive ! ») ; on le retrouve à Hull | `g186` |
 | Étudiants (13) | À la soirée d'intégration | figurants |
 | Professeure d'anglais | L'oral à KEDGE | `g106` |
 | Hôtesse | Guichet de l'aéroport | `g64` |
@@ -792,6 +793,7 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
 | Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `g94` |
 | Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontrée à la soirée de Bordeaux, retrouvée au premier pub | `g43` |
 | Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `g107` |
+| Vincent | De la bande, extravagant ; rencontré à la soirée de Bordeaux, il entraîne Pierre aux fléchettes du second pub (en équipe contre les Anglais), puis part en Afrique du Sud | `g186` |
 | Barman, Barmaid, clients | Les deux pubs, l'Asylum | Barman `g101` ; les autres en figurants |
 | DJ, videur, vestiaire, danseurs, étudiants | The Asylum | figurants |
 | Habitué | Adversaire aux fléchettes, et le pari (passage optionnel) | figurant |
@@ -816,12 +818,19 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : tout le monde trinque ;
    Ousmane « Santé ! » ; Léo « Cheers ! Allez, on finit ça et on
    file au pub d'en bas. Je passe devant ! » (il sort ; les autres se lèvent et suivent Pierre).
-3. **Deuxième pub : les fléchettes.** L'habitué : « Hey, the new guy! Tu joues ? » ; choix « Allez ! » / « Pas
-   maintenant. » ; le pari (voir le passage optionnel), puis une partie de trois lancers (écran façon jeu Pokémon : la
+3. **Deuxième pub : les fléchettes, en équipe avec Vincent.** Vincent, devant la cible, vient chercher Pierre :
+   **« Pierreeee ! Mon pote, tombé du ciel pile au bon moment ! »** / « Je suis sur une partie de fléchettes avec les
+   Anglais, là. J'ai déjà planté un score de folie, crois-moi. » / **« À nous deux, on les explose. Nos deux scores
+   additionnés, et c'est plié. Allez, montre-leur ce qu'un Français a dans le bras ! »** ; choix « Une partie en équipe
+   avec Vincent ? » (« Allez ! » / « Pas maintenant. ») ; le pari avec l'habitué, l'Anglais (voir le passage
+   optionnel), puis une partie de trois lancers ; les 85 points de Vincent s'ajoutent à ceux de Pierre (« Avec les 85
+   points de Vincent : N points pour votre équipe. »), contre le score des Anglais (100 à 179, au hasard) (écran façon jeu Pokémon : la
    cible où se plantent les fléchettes, la liste des lancers et le total, la jauge de visée), gagnée ou perdue ; puis
    Romain, au téléphone (déjà à l'Asylum) : « L'Asylum nous attend, tout en haut
-   sur le campus ! Léo, montre le chemin. » ; Léo : « On file à l'Asylum ! Je passe devant, suivez Pierre ! »
-   (l'histoire continue dans les deux cas).
+   sur le campus ! Léo, montre le chemin. » ; Léo : « On file à l'Asylum ! Je passe devant, suivez Pierre ! » ; Vincent :
+   « L'Asylum ? J'en suis ! Personne ne danse comme moi. » (l'histoire continue dans les deux cas). Vincent suit
+   ensuite la bande jusqu'à l'Asylum (« Regardez-moi cette piste ! Elle m'appelle ! »), danse avec elle, est là au
+   petit matin (« J'ai dansé jusqu'à l'aube… et je recommencerais ! ») et aux adieux.
 4. **L'Asylum, l'aube → Insouciance.** Romain : « Vous en avez mis du temps ! » ; Léo : « Tout le monde sur la piste ! » /
    « C'est notre chanson ! Venez tous ! » → **« Pierre utilise Joie de vivre ! »** → « Tu entraînes toute la bande sur la
    piste, comme Maman au salon. » ; « Toute la bande danse sur la piste. » ; « La musique ralentit… Dernière
@@ -866,7 +875,7 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    Léo : « On se retrouve tous devant chez moi pour se dire au revoir. Ramène-toi ! »
 8. **Les adieux**, devant chez Léo : « Toute la bande est là, devant chez Léo. Chacun part en échange. » ; Charlotte « Moi,
    c'est le Canada ! » ; Anaïs « Bali ! » ; Prophecy « Les États-Unis. Je vais enfin parler anglais pour de vrai. » ;
-   Romain « Hong Kong ! » ; « Et toi, c'est Hanoï, au Vietnam. » ; Léo **« Hanoï, hein. Nous on garde la maison. »** ;
+   Romain « Hong Kong ! » ; Vincent « Et moi ? L'Afrique du Sud ! Ils ne sont pas prêts pour mes pas de danse. » ; « Et toi, c'est Hanoï, au Vietnam. » ; Léo **« Hanoï, hein. Nous on garde la maison. »** ;
    Ousmane **« Ton avion pour Hanoï part de l'aéroport, au bout de la grande rue. Allez, file. Reviens avec des
    histoires. »**
 
@@ -876,10 +885,11 @@ Plus aucune ligne « Objectif : ». Léo (le premier pub), le barman (la tourné
 aux résultats (les adieux devant chez lui).
 
 ### Passage optionnel : le pari des fléchettes (Audace)
-Avant la partie, l'habitué : « Un pari ? Si tu gagnes, je paie une tournée à toute ta bande. » → **« Pierre utilise
+Avant la partie, l'habitué : « Un pari ? Si vous gagnez, je paie une tournée à toute votre bande. » → **« Pierre utilise
 Audace ! »**, et la partie commence.
-- Gagné : **« Well played, mate! Un pari, c'est un pari. »** ; **« A round for everyone! Une tournée générale, c'est moi
-  qui offre ! »** : toute la bande saute de joie (notes et cœurs) ; Ousmane : « Pierre, t'es une légende. » Pas d'objet.
+- Gagné : **« Well played, mates! Un pari, c'est un pari. »** ; **« A round for everyone! Une tournée générale, c'est moi
+  qui offre ! »** : toute la bande saute de joie (notes et cœurs) ; Vincent : « QU'EST-CE QUE JE DISAIS ! Les deux
+  meilleurs bras de France ! » ; Ousmane : « Pierre, t'es une légende. » Pas d'objet.
 - Perdu : « Not bad! La prochaine fois, peut-être. », puis l'habitué : « Revanche ? » (Oui / Pas maintenant). On peut
   rejouer le pari autant qu'on veut tant que le pub est ouvert : en enchaînant les revanches, ou en reparlant à
   l'habitué (« Revanche ? »). Audace n'est utilisée qu'au premier pari.
@@ -1544,6 +1554,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Prophecy | `g94` | Hull, Delhi, Bordeaux (le retour, le stade) |
 | Charlotte | `g43` | Hull, Bordeaux (le stade) |
 | Anaïs | `g107` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
+| Vincent | `g186` (choisi dans le panneau PNJ) | Bordeaux (la soirée), Hull |
 | Barman | `g154` | Hull |
 | Habitué | figurant | Hull |
 | Nouveau | `g58` | Prytanée (hall de l'internat) |

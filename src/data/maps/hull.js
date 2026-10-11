@@ -181,7 +181,8 @@ export const hullMap = {
       ['charlotte-aube', 'Charlotte', 26, 9, 'down', 'Les exams… on en reparle demain.'],
       ['anais-aube', 'Anaïs', 31, 9, 'down', 'Je sens plus mes pieds.'],
       ['romain-aube', 'Romain', 32, 9, 'down', 'Quelle nuit !'],
-      ['prophecy-aube', 'Prophecy', 25, 9, 'down', 'On refait ça quand ?']].map(([id, name, x, y, facing, line]) => ({
+      ['prophecy-aube', 'Prophecy', 25, 9, 'down', 'On refait ça quand ?'],
+      ['vincent-aube', 'Vincent', 33, 10, 'left', 'J\'ai dansé jusqu\'à l\'aube… et je recommencerais !']].map(([id, name, x, y, facing, line]) => ({
       id, name, x, y, facing, ifFlags: [FLAGS.asylumFini], unlessFlags: [FLAGS.lendemainHull, FLAGS.bandeRentree], dialogue: [line],
     })),
     // Le jour des résultats : Léo à côté du panneau.
@@ -193,7 +194,8 @@ export const hullMap = {
     // Les adieux, devant chez Léo : chacun part en échange (voir hullStory.js FAREWELL).
     ...[['leo-adieux', 'Léo', 32, 21, 'down'], ['ousmane-adieux', 'Ousmane', 34, 21, 'down'],
       ['charlotte-adieux', 'Charlotte', 31, 22, 'right'], ['anais-adieux', 'Anaïs', 30, 21, 'right'],
-      ['prophecy-adieux', 'Prophecy', 35, 22, 'left'], ['romain-adieux', 'Romain', 30, 22, 'right']].map(([id, name, x, y, facing]) => ({
+      ['prophecy-adieux', 'Prophecy', 35, 22, 'left'], ['romain-adieux', 'Romain', 30, 22, 'right'],
+      ['vincent-adieux', 'Vincent', 36, 21, 'left']].map(([id, name, x, y, facing]) => ({
       id, name, x, y, facing, ...FAREWELL_TIME, script: FAREWELL,
     })),
     // Léo et Ousmane restent à Hull : ils gardent la maison.

@@ -152,6 +152,11 @@ export const PARTY_CHARLOTTE = [
   { speaker: 'Charlotte', say: ['Salut ! Charlotte, de KEDGE. Moi aussi, je pars à Hull l\'an prochain. On dirait que tout le monde y va !'] },
   { setFlag: FLAGS.charlotteSoiree },
 ];
+export const PARTY_VINCENT = [
+  { ifFlags: [FLAGS.vincentSoiree], speaker: 'Vincent', say: ['Hull, prépare-toi : Vincent arrive !'], end: true },
+  { speaker: 'Vincent', say: ['Vincent, KEDGE, et futur roi de la piste ! Hull l\'an prochain ? Évidemment que j\'en suis. Ils ne savent pas ce qui les attend !'] },
+  { setFlag: FLAGS.vincentSoiree },
+];
 export const PARTY_ANAIS = [
   { ifFlags: [FLAGS.anaisSoiree], speaker: 'Anaïs', say: ['À Hull, alors !'], end: true },
   { speaker: 'Anaïs', say: ['Anaïs, de ta promo ! Léo dit qu\'à Hull il pleut tout le temps. J\'espère qu\'il exagère.'] },

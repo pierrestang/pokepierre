@@ -141,27 +141,30 @@ export const PUB_A_BAR = [
 const BAND_PUB = ['leo-pub', 'ousmane-pub', 'charlotte-pub', 'anais-pub'];
 export const PUB_B_SEATS = { 'ousmane-pub': [9, 5], 'charlotte-pub': [6, 6], 'anais-pub': [9, 6] };
 
-// Le pari (Audace), obligatoire ; seule la victoire est facultative. Gagné, l'habitué offre une tournée générale (toute la bande saute de joie) ; perdu, il
-// propose une revanche, autant de fois qu'on veut tant qu'on est dans ce pub (ici, puis en lui reparlant, voir
-// HABITUE_AFTER).
+// Le pari (Audace), obligatoire ; seule la victoire est facultative. Pierre joue en équipe avec Vincent (son score de
+// folie s'ajoute aux trois lancers de Pierre) contre les Anglais (l'habitué). Gagné, l'habitué offre une tournée
+// générale (toute la bande saute de joie) ; perdu, il propose une revanche, autant de fois qu'on veut tant qu'on est
+// dans ce pub (ici, puis en lui reparlant, voir HABITUE_AFTER : sans Vincent, parti avec la bande).
 const LOST = ['Not bad! La prochaine fois, peut-être.'];
+const VINCENT = { name: 'Vincent', score: 85 };              // le « score de folie » déjà planté par Vincent
 const BET_WON = [
   { speaker: 'Habitué', say: ['A round for everyone! Une tournée générale, c\'est moi qui offre !'] },
-  { cheer: ['player', ...BAND_PUB] },
+  { cheer: ['player', ...BAND_PUB, 'vincent-pub'] },
+  { speaker: 'Vincent', say: ['QU\'EST-CE QUE JE DISAIS ! Les deux meilleurs bras de France !'] },
   { speaker: 'Ousmane', say: ['Pierre, t\'es une légende.'] },
   { setFlag: FLAGS.tourneeOfferte },
 ];
-const betGame = (rematches) => ({
+const betGame = (rematches, partner) => ({
   darts: {
-    opponent: 'Habitué', win: ['Well played, mate! Un pari, c\'est un pari.'], lose: LOST,
-    onWin: BET_WON, onLose: rematches > 0 ? rematch(rematches - 1) : [],
+    opponent: 'Habitué', partner, win: ['Well played, mates! Un pari, c\'est un pari.'], lose: LOST,
+    onWin: BET_WON, onLose: rematches > 0 ? rematch(rematches - 1, partner) : [],
   },
 });
-function rematch(rematches) {
+function rematch(rematches, partner) {
   return [{
     speaker: 'Habitué',
     choose: 'Revanche ?',
-    choices: [{ label: 'Oui', steps: [betGame(rematches)] }, { label: 'Pas maintenant', steps: [] }],
+    choices: [{ label: 'Oui', steps: [betGame(rematches, partner)] }, { label: 'Pas maintenant', steps: [] }],
   }];
 }
 const REMATCHES = 8;                              // revanches enchaînées sans reparler à l'habitué
@@ -170,32 +173,43 @@ export const HABITUE_AFTER = [
   ...rematch(REMATCHES),
 ];
 
+// Vincent vient chercher Pierre : la partie en équipe contre les Anglais.
 export const DARTS = [
-  { speaker: 'Habitué', say: ['Hey, the new guy! Tu joues ?'] },
+  // La partie jouée, Vincent suit la bande : lui reparler ne relance pas la partie.
+  { ifFlags: [FLAGS.flechettesJouees], speaker: 'Vincent', say: ['Allez, en route pour l\'Asylum ! La piste m\'attend.'], end: true },
   {
-    choose: 'Une partie de fléchettes ?',
+    speaker: 'Vincent',
+    say: [
+      'Pierreeee ! Mon pote, tombé du ciel pile au bon moment !',
+      'Je suis sur une partie de fléchettes avec les Anglais, là. J\'ai déjà planté un score de folie, crois-moi.',
+      'À nous deux, on les explose. Nos deux scores additionnés, et c\'est plié. Allez, montre-leur ce qu\'un Français a dans le bras !',
+    ],
+  },
+  {
+    choose: 'Une partie en équipe avec Vincent ?',
     choices: [
       {
         label: 'Allez !',
         steps: [
           // Le pari déjà gagné : la partie, sans pari.
-          { ifFlags: [FLAGS.tourneeOfferte], darts: { opponent: 'Habitué', win: ['Well played, mate! Tu reviens quand tu veux.'], lose: LOST } },
+          { ifFlags: [FLAGS.tourneeOfferte], darts: { opponent: 'Habitué', partner: VINCENT, win: ['Well played, mates! Vous revenez quand vous voulez.'], lose: LOST } },
           {
             unlessFlags: [FLAGS.tourneeOfferte],
             steps: [
-              { speaker: 'Habitué', say: ['Un pari ? Si tu gagnes, je paie une tournée à toute ta bande.'] },
+              { speaker: 'Habitué', say: ['Un pari ? Si vous gagnez, je paie une tournée à toute votre bande.'] },
               { useTrait: TRAITS.audace },
-              betGame(REMATCHES),
+              betGame(REMATCHES, VINCENT),
             ],
           },
           // Romain, déjà à l'Asylum avec Prophecy, appelle Pierre.
           { speaker: 'Romain', phone: true, say: ['L\'Asylum nous attend, tout en haut sur le campus ! Léo, montre le chemin.'] },
           { speaker: 'Léo', say: ['On file à l\'Asylum ! Je passe devant, suivez Pierre !'] },
+          { speaker: 'Vincent', say: ['L\'Asylum ? J\'en suis ! Personne ne danse comme moi.'] },
           { walk: 'leo-pub', to: PUB_B_EXIT, block: true },
           { setFlag: FLAGS.flechettesJouees },
         ],
       },
-      { label: 'Pas maintenant.', steps: [{ speaker: 'Habitué', say: ['Suit yourself. Je suis là, près de la cible.'] }] },
+      { label: 'Pas maintenant.', steps: [{ speaker: 'Vincent', say: ['Je t\'attends près de la cible. Les Anglais aussi !'] }] },
     ],
   },
 ];
@@ -212,7 +226,7 @@ export const PUB_B_ENTER = [
 
 // La bande (qui suivait Pierre) entre derrière lui ; Romain et Prophecy sont déjà là, Léo aussi (entré le premier) ;
 // rejoindre tout le monde sur la piste, dernière chanson, sortie.
-export const ASYLUM_SPOTS = { 'ousmane-pub': [11, 13], 'charlotte-pub': [13, 13], 'anais-pub': [10, 14] };
+export const ASYLUM_SPOTS = { 'ousmane-pub': [11, 13], 'charlotte-pub': [13, 13], 'anais-pub': [10, 14], 'vincent-pub': [12, 14] };
 export const ASYLUM_ENTER = [
   { setFlag: FLAGS.bandeAsylum },
   { walkAll: Object.entries(ASYLUM_SPOTS) },
@@ -220,7 +234,7 @@ export const ASYLUM_ENTER = [
   { speaker: 'Romain', say: ['Vous en avez mis du temps !'] },
   { speaker: 'Léo', say: ['Tout le monde sur la piste !'] },
 ];
-const BAND_ASYLUM = ['romain-asylum', 'prophecy-asylum', ...BAND_PUB];
+const BAND_ASYLUM = ['romain-asylum', 'prophecy-asylum', ...BAND_PUB, 'vincent-pub'];
 // La piste de danse de l'Asylum (cases x, y, largeur, hauteur ; voir interiors.js hullAsylum).
 export const DANCE_FLOOR = [6, 7, 9, 5];
 export const ASYLUM_DANCE = [
@@ -380,6 +394,7 @@ export const FAREWELL = [
   { speaker: 'Anaïs', say: ['Bali !'] },
   { speaker: 'Prophecy', say: ['Les États-Unis. Je vais enfin parler anglais pour de vrai.'] },
   { speaker: 'Romain', say: ['Hong Kong !'] },
+  { speaker: 'Vincent', say: ['Et moi ? L\'Afrique du Sud ! Ils ne sont pas prêts pour mes pas de danse.'] },
   { say: ['Et toi, c\'est Hanoï, au Vietnam.'] },
   { speaker: 'Léo', say: ['Hanoï, hein. Nous on garde la maison.'] },
   { speaker: 'Ousmane', say: ['Ton avion pour Hanoï part de l\'aéroport, au bout de la grande rue. Allez, file. Reviens avec des histoires.'] },
