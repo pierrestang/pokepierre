@@ -3,7 +3,7 @@ import { parseGrid } from './parseGrid.js';
 // catalogue) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille ci-dessous (sourceGrid) suit ce
 // dessin : avenue, trottoirs, jardins, bassin, portes (sur les portes dessinées).
 import BUILT from '../builtMaps/new-delhi.json' with { type: 'json' };
-import { builtGrid } from './builtGrid.js';
+import { builtGrid, extendEdges } from './builtGrid.js';
 import { getTile } from '../tiles.js';
 import { FLAGS } from '../story.js';
 import {
@@ -12,13 +12,7 @@ import {
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la grande avenue se prolonge, les palmiers ailleurs.
-function outside(x, y, grid) {
-  if (y >= 0 && y < grid.length) {
-    const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (edge === 'ɐ') return edge;
-  }
-  return 'Y';
-}
+const outside = extendEdges(['ɐ'], 'Y');
 
 // La foule de la grande avenue : chacun va et vient entre deux cases ([id, sprite, de, à, réplique]) ; quelques-uns
 // restent sur place et regardent autour d'eux. Pas d'étals ni d'animaux : le dépaysement, c'est la foule.

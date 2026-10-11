@@ -3,7 +3,7 @@ import { parseGrid } from './parseGrid.js';
 // bâtiments de Johto, pagode, pont, portique) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille
 // ci-dessous (sourceGrid) suit ce dessin : sols, lac, portes.
 import BUILT from '../builtMaps/hanoi.json' with { type: 'json' };
-import { builtGrid } from './builtGrid.js';
+import { builtGrid, extendEdges } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS } from '../story.js';
 import {
@@ -11,13 +11,7 @@ import {
 } from '../hanoiStory.js';
 
 // Hors de la carte : la grande rue se prolonge (vers l'aéroport), la forêt ailleurs.
-function outside(x, y, grid) {
-  if (y >= 0 && y < grid.length) {
-    const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (edge === 'ɐ') return edge;
-  }
-  return 'T';
-}
+const outside = extendEdges(['ɐ'], 'T');
 
 const NOT_HOME = ['Tu frappes. Personne ne répond… ou alors, en vietnamien.'];
 // Les deux touristes (sprites d'origine) : ils s'appellent tous les deux « Touriste » à l'écran.

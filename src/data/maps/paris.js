@@ -3,19 +3,13 @@ import { parseGrid } from './parseGrid.js';
 // ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille ci-dessous (sourceGrid) suit ce dessin :
 // avenue, pavés, jardin, Seine, ponts, portes (sur les portes dessinées).
 import BUILT from '../builtMaps/paris.json' with { type: 'json' };
-import { builtGrid } from './builtGrid.js';
+import { builtGrid, extendEdges } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
 import { ANTOINE_CALL, DIRECTOR_REMINDER, HUGUES_MESSAGE, LANDLORD_CALL, MANAGER_REMINDER, INTO_THE_DREAM, LANDLORD, LOUIS, TAM } from '../parisStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la Seine, l'avenue et la rue sud se prolongent ; des arbres ailleurs.
-function outside(x, y, grid) {
-  if (y >= 0 && y < grid.length) {
-    const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['G', 'ɐ', 'ɔ'].includes(edge)) return edge;
-  }
-  return 'ƀ';
-}
+const outside = extendEdges(['G', 'ɐ', 'ɔ'], 'ƀ');
 
 const NOT_HOME = ['Tu frappes. Personne ne répond.'];
 

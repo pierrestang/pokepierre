@@ -4,19 +4,13 @@ import { parseGrid } from './parseGrid.js';
 // s'imposent à la grille du jeu (voir builtGrid). La grille ci-dessous (sourceGrid) suit ce dessin : rue, quais, canaux,
 // ponts, portes (sur les portes dessinées).
 import BUILT from '../builtMaps/amsterdam.json' with { type: 'json' };
-import { builtGrid } from './builtGrid.js';
+import { builtGrid, extendEdges } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS } from '../story.js';
 import { ARRIVAL, CANAL_NIGHT, CANAL_SPOT, MONTHS_LATER } from '../amsterdamStory.js';
 
 // Hors de la carte : la rue et les canaux se prolongent, la forêt ailleurs.
-function outside(x, y, grid) {
-  if (y >= 0 && y < grid.length) {
-    const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (edge === 'ɐ' || edge === '~') return edge;
-  }
-  return 'T';
-}
+const outside = extendEdges(['ɐ', '~'], 'T');
 
 const NOT_HOME = ['Tu frappes. Personne ne répond… « Niemand thuis », peut-être.'];
 
