@@ -275,7 +275,7 @@ export const CYCLIST = [
       { say: ['Tu remets la chaîne sur le pignon, tu resserres la selle et tu regonfles les pneus. Il roule comme neuf !'] },
       { give: ITEMS.velo, text: 'Tu reçois le Vélo !' },
       { speaker: 'Cycliste', say: ['Eh ben ! T\'as des doigts de fée, toi.'] },
-      { say: ['Appuie sur V (ou sur le bouton VÉLO) pour monter dessus. Dans les bâtiments, on le laisse dehors.'] },
+      { say: ['Appuie sur V pour monter sur le vélo.'] },
     ],
     end: true,
   },

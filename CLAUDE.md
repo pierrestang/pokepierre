@@ -51,8 +51,8 @@ rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (f
   de ferme à M. Bouly ; caisses du marché de Slateport dans la cabane de pêche (scripts/extract_rs_buildings.py).
 
 - Vélo (src/systems/bike.js) : Lucas à vélo officiel (scripts/build_bike.py -> public/assets/characters/pierre-velo.png),
-  objet ITEMS.velo offert à Bordeaux par le cycliste du quai (facultatif, bordeauxStory.js CYCLIST ; ?velo dans l'adresse pour l'essayer), touche V / menu Start /
-  bouton tactile, seulement dehors et sans suiveur, Pierre descend pendant les scénettes.
+  objet ITEMS.velo offert à Bordeaux par le cycliste du quai (facultatif, bordeauxStory.js CYCLIST ; ?velo dans l'adresse pour l'essayer), touche V (Options > TOUCHES) /
+  bouton tactile, plus d'entrée dans le menu Start, seulement dehors et sans suiveur, Pierre descend pendant les scénettes.
 
 - Mobile (src/systems/TouchControls.js, src/systems/screen.js) : écran de jeu le plus grand possible (zoom non
   entier) ; en portrait, en haut, toute la largeur, et les

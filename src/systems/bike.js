@@ -5,7 +5,8 @@ import { sfx, playMusic } from './audio.js';
 // Le vélo de Pierre, comme dans Pokémon : il roule bien plus vite qu'il ne court (Player.BIKE_DURATION).
 // - Il faut l'objet Vélo (ITEMS.velo) : à Bordeaux, le cycliste du quai l'offre (facultatif, bordeauxStory.js CYCLIST) ;
 //   ?velo dans l'adresse le donne pour essayer.
-// - Monter ou descendre : touche V (ou B), entrée VÉLO du menu Start, bouton VÉLO des commandes tactiles.
+// - Monter ou descendre : touche V (rappelée une fois, à la réception du vélo ; listée dans Options > TOUCHES), bouton
+//   VÉLO des commandes tactiles. Plus d'entrée dans le menu Start.
 // - Seulement dehors : dans un bâtiment on descend (et on reste à pied en ressortant, comme dans Diamant / Perle) ;
 //   pas quand quelqu'un suit Pierre (on descend s'il se met à le suivre) ; pendant une scénette, Pierre descend et
 //   remonte à la fin.

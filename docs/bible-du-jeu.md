@@ -10,8 +10,10 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
 - **Sprites** : uniquement des personnages de la quatrième génération, `g{n}` (sprites officiels de Diamant / Perle /
   Platine et HeartGold / SoulSilver, `public/assets/characters/gen4-npcs.png`, liste et noms dans `gen4-npcs.json`) ;
   Pierre est Lucas (`g198`) ; pas de portrait dans les dialogues, comme dans les jeux DS. Attributions dans `src/data/characters.js` (`BY_NAME`). Un nom absent de cette liste
-  reçoit un **figurant** tiré au hasard d'après son identifiant et sa position (`EXTRAS`) ; le joueur peut changer
-  toute apparence dans Start > PNJ.
+  reçoit un **figurant** tiré au hasard d'après son identifiant et sa position (`EXTRAS`) ; les apparences se changent
+  dans le créateur (panneau PNJ, src/data/characterLooks.json), plus dans le jeu.
+- **Menu Start** (Échap), dans cet ordre : VERTUS, SAC, QUÊTES, CARTE, SAUVEGARDER, OPTIONS (musique, sons, TOUCHES : la
+  liste des touches), QUITTER (retour à l'écran titre). Plus d'entrée PNJ ni d'entrée vélo (11 octobre 2026).
 - **Décor** : bâtiments, mobilier et objets sans ombre portée, et bâtiments et objets cernés d'un même trait gris
   très foncé d'un pixel (pour que les planches DPPt et Gen 4 aillent ensemble) ;
   la végétation et les éléments naturels (arbres, buissons, fleurs, rochers) gardent la leur. Cartes aux dimensions
@@ -29,12 +31,12 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   « Tu emportes : … » (la vertu reçue dans la ville quittée ; pas d'encart en quittant une ville sans vertu). Sans scène
   de trajet, on passe directement à la carte suivante.
 - **Pêche** : plus de pêche libre ni de vieille canne (retirées le 11 octobre 2026).
-- **Le sac** (Start > OBJETS, touche I) : deux onglets, « Objets » et « Souvenirs » (src/data/bag.js) ; gauche / droite
+- **Le sac** (Start > SAC, touche I) : deux onglets, « Objets » et « Souvenirs » (src/data/bag.js) ; gauche / droite
   pour changer d'onglet. Un souvenir qui a d'abord servi reste dans « Objets » jusqu'à la fin de sa quête, puis y passe
   tout seul ; sous la liste des souvenirs, le court texte de celui qu'on a choisi. Liste complète : section « Le sac ».
 - **Vélo** (offert à Bordeaux par le cycliste du quai, passage optionnel ; `?velo` dans l'adresse donne l'objet **Vélo**
-  pour l'essayer) : Pierre monte ou descend avec la touche V (ou B), l'entrée « VÉLO : MONTER / DESCENDRE » du menu Start
-  ou le bouton VÉLO des commandes tactiles ; sonnette en montant, musique du vélo tant qu'il roule ; il va environ
+  pour l'essayer) : Pierre monte ou descend avec la touche V (rappelée une seule fois, à la
+  réception du vélo ; listée dans Options > TOUCHES) ou le bouton VÉLO des commandes tactiles ; sonnette en montant, musique du vélo tant qu'il roule ; il va environ
   trois fois plus vite qu'à pied (Lucas à vélo de Diamant / Perle). Seulement dehors : « Pas de vélo à l'intérieur ! »,
   et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
   moment de monter sur ton vélo : on t'accompagne. »), il descend si quelqu'un se met à le suivre ; pendant une
@@ -686,8 +688,8 @@ KEDGE. Tu pourrais jeter un œil ? » (ensuite : « Ma clé doit être dans les 
 KEDGE. »). Dans les hautes herbes du recoin sud-ouest (entre la Garonne et KEDGE) : « Tu fouilles les hautes herbes…
 Quelque chose brille ! » → **Clé d'antivol**. Rapportée : « Ma clé ! Tu l'as retrouvée ! » ; il offre son vieux vélo,
 chaîne sautée → **« Pierre utilise Ingéniosité ! »** → « Tu remets la chaîne sur le pignon, tu resserres la selle et tu
-regonfles les pneus. Il roule comme neuf ! » → **Vélo** ; « Eh ben ! T'as des doigts de fée, toi. » ; « Appuie sur V (ou
-sur le bouton VÉLO) pour monter dessus. » Ensuite : « Il te va bien, ce vélo ! Bordeaux, ça se découvre à deux roues. »
+regonfles les pneus. Il roule comme neuf ! » → **Vélo** ; « Eh ben ! T'as des doigts de fée, toi. » ; **« Appuie sur V pour
+monter sur le vélo. »** (le seul rappel) Ensuite : « Il te va bien, ce vélo ! Bordeaux, ça se découvre à deux roues. »
 
 ### Vertus
 - **Gagnée** : aucune. Le compteur de vertus n'est pas affiché à Bordeaux.

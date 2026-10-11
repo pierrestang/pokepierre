@@ -176,7 +176,7 @@ export class MapScene extends Phaser.Scene {
     this.input.keyboard.on('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') this.tryInteract(e);
       // Vélo : V (ou B), à l'arrêt, hors dialogue, menu et scénette.
-      if (['v', 'V', 'b', 'B'].includes(e.key) && !e.repeat && !this.dialog?.isOpen && !this.menuOpen && !this.scripting
+      if (['v', 'V'].includes(e.key) && !e.repeat && !this.dialog?.isOpen && !this.menuOpen && !this.scripting
         && !this.transitioning) toggleBike(this);
     });
 

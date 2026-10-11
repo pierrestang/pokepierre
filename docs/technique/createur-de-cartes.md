@@ -72,8 +72,8 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   personnages du lieu, toutes étapes confondues ; on en choisit un et on le place (glisser, flèches, Maj + flèche pour
   sa direction, « Remettre à sa place »). Ses marches dans l'histoire visent des cases fixes : il y va depuis sa
   nouvelle place. Apparence (« Choisir… » : la grille de tous les personnages Gen 4, de face, comme le menu PNJ du jeu) : « partout » (par nom, écrite tout de suite dans src/data/characterLooks.json
-  par le serveur de développement, /__builder/looks ; elle passe avant BY_NAME de characters.js, après le choix du
-  joueur dans le menu Start > PNJ) ou « Seulement ici » (npcEdits.moved[id].sprite, avec le dessin, à enregistrer). La
+  par le serveur de développement, /__builder/looks ; elle passe avant BY_NAME de characters.js ; le menu Start > PNJ
+  du jeu a été retiré) ou « Seulement ici » (npcEdits.moved[id].sprite, avec le dessin, à enregistrer). La
   molette sur un panneau le fait défiler (pas de zoom). La case « Plus d'options » (retenue dans le navigateur) ajoute le reste du panneau :
   - Quête du lieu : les étapes de l'histoire qui concernent ce lieu (drapeaux de story.js dans l'ordre du jeu, libellés
     = leurs commentaires) et qui les fait avancer (« par Papa », « ailleurs : Cabane de pêche ») ; choisir une étape
@@ -108,7 +108,7 @@ scripts/build_delhi_cour.py l'écrit directement là (le relancer efface les ret
 
 ## Panneau PNJ : l'apparence des personnages nommés (11 octobre 2026)
 
-Bouton « PNJ » du bandeau (src/builder/looksPanel.js) : un panneau dans la mise en page du menu Start > PNJ du jeu
+Bouton « PNJ » du bandeau (src/builder/looksPanel.js) : un panneau dans la mise en page de l'ancien menu Start > PNJ du jeu
 (bandeaux bleus, fond crème, police de Rouge Feu dessinée par src/builder/pixelFont.js), qui liste tous les personnages
 nommés du jeu (data/looks.js BY_NAME et ceux déjà choisis dans le créateur) avec leur sprite actuel ; point doré : choisi
 dans le créateur, « * » : choix pas encore enregistré. Un clic ouvre la grille des sprites Gen 4 (le sprite actuel cerclé
@@ -116,8 +116,8 @@ de rouge), avec les filtres Tous / Hommes / Femmes / Enfants / Âgés (classemen
 src/data/spriteTags.js) ; « Par défaut » revient à l'attribution du code. « Enregistrer » écrit tous les choix en
 attente d'un coup dans **src/data/characterLooks.json** (POST /__builder/looks { looks }, vite.config.js, qui refuse un
 sprite absent de la planche) ; data/characters.js l'importe : le jeu le prend au prochain lancement. Ordre d'apparence
-dans le jeu (characters.js lookOf) : choix du joueur (Start > PNJ), puis characterLooks.json, puis le `sprite` imposé d'un
-PNJ, puis BY_NAME. Deux personnages du même prénom : `lookName` sur le PNJ (« Camille (Paris) »). `node
+dans le jeu (characters.js lookOf) : characterLooks.json, puis le `sprite` imposé d'un PNJ, puis BY_NAME (le choix du
+joueur dans Start > PNJ n'existe plus ; d'anciens choix gardés dans une sauvegarde sont ignorés). Deux personnages du même prénom : `lookName` sur le PNJ (« Camille (Paris) »). `node
 scripts/check_paths.js` vérifie que chaque sprite enregistré (BY_NAME, EXTRAS, characterLooks.json, `sprite` des PNJ)
 existe dans public/assets/characters/gen4-npcs.json.
 
