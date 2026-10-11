@@ -108,8 +108,15 @@ export const FLAGS = {
   asylumFini: 'asylum-fini',                    //        dernière chanson à l'Asylum : sortie au petit matin
   bandeRentree: 'bande-rentree',                //        au petit matin, chacun est rentré chez soi
   lendemainHull: 'lendemain-hull',              //        rentré dormir : le lendemain, veille d'examen
-  revisions: 'revisions',                       //        révisions à la bibliothèque : « T'es prêt. »
-  jourResultats: 'jour-resultats',              //        le lendemain : les résultats affichés devant l'université
+  missionLivres: 'mission-livres',              //        à la bibliothèque, chacun demande un livre à Pierre
+  livreGrammaire: 'livre-grammaire',            //          le manuel de grammaire trouvé (pour Ousmane)
+  livreDico: 'livre-dico',                      //          le dictionnaire trouvé (pour Léo)
+  livreExpressions: 'livre-expressions',        //          le recueil d'expressions trouvé (pour Charlotte)
+  grammaireRendue: 'grammaire-rendue',          //          rapporté à Ousmane
+  dicoRendu: 'dico-rendu',                      //          rapporté à Léo
+  expressionsRendu: 'expressions-rendu',        //          rapporté à Charlotte
+  revisions: 'revisions',                       //        les trois livres rapportés : fin des révisions
+  jourResultats: 'jour-resultats',              //        le surlendemain : les résultats affichés devant l'université
   adieuxHull: 'adieux-hull',                    //        devant chez Léo, chacun part en échange (Pierre : Hanoï)
   arriveeHanoi: 'arrivee-hanoi',                // arrivé à Hanoï (Vietnam)
   hanoiOuverture: 'hanoi-ouverture',            //   image d'accueil de Hanoï vue : Pierre arrive seul

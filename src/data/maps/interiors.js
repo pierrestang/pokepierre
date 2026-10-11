@@ -18,7 +18,7 @@ import {
 import { MAMAN, MAMAN_WELCOME, PAPA, JEAN, LAST_DAY, BENOIT_HIDING } from '../montepilloyStory.js';
 import {
   LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
-  LIBRARY, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
+  LIBRARY, OUSMANE_BOOK, LEO_BOOK, CHARLOTTE_BOOK, shelfBook, shelfJoke, FAKE_BOOKS, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
 } from '../hullStory.js';
 import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC } from '../hanoiStory.js';
 import { CAMPAIGN, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
@@ -1716,6 +1716,8 @@ export const interiors = {
       'XooooooooooXX',
     ]),
     spawn: { x: 10, y: 6, facing: 'left' },
+    // Au petit matin, Pierre y arrive directement, dans le noir (hullStory.js DAWN) : « Le lendemain… » (SLEEP).
+    openDark: { ifFlags: [FLAGS.bandeRentree], unlessFlags: [FLAGS.lendemainHull] },
     npcs: [
       {
         id: 'ousmane-coloc', name: 'Ousmane', x: 8, y: 5, facing: 'down',
@@ -1904,7 +1906,8 @@ export const interiors = {
     })),
   },
 
-  // Hull — la bibliothèque Brynmor Jones : les révisions, la veille de l'examen (tour de table, voir hullStory.js).
+  // Hull — la bibliothèque Brynmor Jones : les révisions, la veille de l'examen ; trois livres à trouver dans les rayons
+  // du fond pour Ousmane, Léo et Charlotte, et des faux livres (voir hullStory.js LIBRARY).
   hullLibrary: {
     name: 'Bibliothèque Brynmor Jones',
     grid: parseGrid([
@@ -1924,13 +1927,20 @@ export const interiors = {
     ]),
     spawn: { x: 3, y: 10, facing: 'up' },
     npcs: [
-      ...[['leo-biblio', 'Léo', 3, 5, 'right', "J'ai lu la même page six fois."],
-        ['ousmane-biblio', 'Ousmane', 6, 5, 'left', 'Encore un chapitre, et on mange.'],
-        ['charlotte-biblio', 'Charlotte', 3, 6, 'right', 'Chut ! On révise.'],
-        ['anais-biblio', 'Anaïs', 7, 6, 'right', 'Les résultats, c\'est après-demain. On va y arriver !'],
-        ['prophecy-biblio', 'Prophecy', 10, 5, 'left', 'Ze exam. Ze exam. Ça passe, non ?']].map(([id, name, x, y, facing, line]) => ({
-        id, name, x, y, facing, still: true, ifFlags: [FLAGS.lendemainHull], unlessFlags: [FLAGS.jourResultats], dialogue: [line],
+      ...[['leo-biblio', 'Léo', 3, 5, 'right', LEO_BOOK],
+        ['ousmane-biblio', 'Ousmane', 6, 5, 'left', OUSMANE_BOOK],
+        ['charlotte-biblio', 'Charlotte', 3, 6, 'right', CHARLOTTE_BOOK],
+        ['anais-biblio', 'Anaïs', 7, 6, 'right', [{ speaker: 'Anaïs', say: ['Les résultats, c\'est après-demain. On va y arriver !'] }]],
+        ['prophecy-biblio', 'Prophecy', 10, 5, 'left', [{ speaker: 'Prophecy', say: ['Ze exam. Ze exam. Ça passe, non ?'] }]]].map(([id, name, x, y, facing, script]) => ({
+        id, name, x, y, facing, still: true, ifFlags: [FLAGS.lendemainHull], unlessFlags: [FLAGS.jourResultats], script,
       })),
+    ],
+    // Les étagères du fond (on les fouille par-dessous, depuis la rangée 3) : trois vrais livres et trois faux.
+    objects: [
+      { x: 5, y: 2, script: shelfBook('grammaire') },
+      { x: 8, y: 2, script: shelfBook('dico') },
+      { x: 10, y: 2, script: shelfBook('expressions') },
+      ...[4, 7, 9].map((x, i) => ({ x, y: 2, script: shelfJoke(FAKE_BOOKS[i]) })),
     ],
     events: [{ on: 'enter', ifFlags: [FLAGS.lendemainHull], unlessFlags: [FLAGS.revisions], steps: LIBRARY }],
   },

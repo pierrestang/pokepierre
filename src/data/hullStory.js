@@ -8,8 +8,8 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 //   De chez Léo au premier pub, puis d'un bar à l'autre jusqu'à l'Asylum, Léo part devant en éclaireur et entre le
 //   premier ; Pierre le suit, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu (data/story.js FOLLOWERS).
 //   4. L'Asylum (Joie de vivre), puis le petit matin devant la boîte : Insouciance ; rentrer dormir.
-//   5. La veille de l'examen, les révisions à la bibliothèque (tour de table, choix sans mauvaise réponse bloquante).
-//   6. Le surlendemain (l'examen a eu lieu entre-temps), les résultats devant l'université : le diplôme d'anglais de Hull.
+//   5. La veille de l'examen, les révisions à la bibliothèque : chacun envoie Pierre chercher un livre dans les rayons.
+//   6. Le surlendemain (l'examen a eu lieu entre-temps, hors champ), les résultats devant l'université : le diplôme.
 //   7. Les adieux devant chez Léo : chacun part en échange ; Léo et Ousmane restent. Puis l'avion pour Hanoï.
 // Scénettes partagées par la carte et les intérieurs.
 
@@ -252,22 +252,19 @@ export const DAWN = [
   { speaker: 'Léo', say: ['Demain, bibliothèque. Tout le monde.'] },
   { trait: TRAITS.insouciance },
   { speaker: 'Ousmane', say: ['Allez, on rentre dormir à la coloc. Demain… enfin, tout à l\'heure, révisions.'] },
-  // Chacun rentre chez soi : la bande quitte la rue (Léo, Romain et Prophecy chez eux, Ousmane à la coloc).
+  // Chacun rentre chez soi : Pierre se retrouve directement à la coloc, sans trajet (elle s'ouvre dans le noir, voir
+  // interiors.js hullColoc `openDark`).
   { say: ['Tout le monde rentre se coucher.'] },
   { black: true },
   { wait: 500 },
   { setFlag: FLAGS.bandeRentree },
-  { black: false },
+  { travel: { interior: 'hullColoc', fromMap: 'hull', x: 6, y: 5, facing: 'right' } },
 ];
 
-// Rentré à la coloc (Ousmane y est déjà) : on dort ; le lendemain, veille d'examen, Ousmane te réveille et t'envoie à la
-// bibliothèque.
+// À la coloc, dans le noir : le lendemain, veille d'examen ; Ousmane réveille Pierre et l'envoie à la bibliothèque.
 export const SLEEP = [
-  { speaker: 'Ousmane', say: ['Enfin ! Allez, au lit.'] },
-  { say: ['Tu t\'écroules sur ton lit.'] },
-  { black: true },
-  { wait: 800 },
-  { say: ['Le lendemain, veille d\'examen…'] },
+  { wait: 500 },
+  { say: ['Le lendemain…'] },
   { setFlag: FLAGS.lendemainHull },
   { black: false },
   { approach: 'ousmane-apres' },
@@ -282,49 +279,81 @@ export const SLEEP = [
 
 // ---------- 5. Les révisions ----------
 
-// Tour de table : Léo en franglais, Charlotte sérieuse, Prophecy… Prophecy. Aucune réponse ne bloque.
+// La bande s'est réparti les matières ; Ousmane, Léo et Charlotte envoient chacun Pierre chercher un livre dans les
+// rayons (les étagères du fond, voir interiors.js hullLibrary). Trois vrais livres, des faux pour rire ; une fois les
+// trois rapportés : le surlendemain, les résultats. Pas de scène d'examen.
+const BOOKS = {
+  grammaire: { taken: FLAGS.livreGrammaire, given: FLAGS.grammaireRendue, who: 'Ousmane', name: 'le manuel de grammaire' },
+  dico: { taken: FLAGS.livreDico, given: FLAGS.dicoRendu, who: 'Léo', name: 'le dictionnaire' },
+  expressions: { taken: FLAGS.livreExpressions, given: FLAGS.expressionsRendu, who: 'Charlotte', name: 'le recueil d\'expressions' },
+};
+const ALL_GIVEN = Object.values(BOOKS).map((b) => b.given);
+
 export const LIBRARY = [
-  { say: ['La bande révise autour d\'une table. Tour de table !'] },
-  { speaker: 'Léo', say: ['Moi d\'abord : « J\'ai checké le planning, on a un meeting ASAP. » En vrai français ?'] },
-  {
-    choose: 'Que réponds-tu ?',
-    choices: [
-      { label: 'On se réunit au plus vite.', steps: [{ speaker: 'Léo', say: ['Exactement. Bon, moi je continuerai à parler comme ça.'] }] },
-      { label: 'Réunion ASAP, checké.', steps: [{ speaker: 'Léo', say: ['C\'est ce que j\'ai dit, bro !'] }] },
-      { label: 'Je parle pas business.', steps: [{ speaker: 'Léo', say: ['Moi non plus, en vrai.'] }] },
-    ],
-  },
-  { speaker: 'Charlotte', say: ['Question sérieuse : le present perfect, on l\'emploie quand ?'] },
-  {
-    choose: 'Que réponds-tu ?',
-    choices: [
-      { label: 'Passé lié au présent.', steps: [{ speaker: 'Charlotte', say: ['Parfait. Tu vas l\'avoir, cet examen.'] }] },
-      { label: 'Quand on est parfait.', steps: [{ speaker: 'Charlotte', say: ['… On reprend la fiche ensemble, Pierre.'] }] },
-      { label: 'Quand le prof le dit.', steps: [{ speaker: 'Charlotte', say: ['Pas faux. Mais non.'] }] },
-    ],
-  },
-  { speaker: 'Prophecy', say: ['Question importante : si je dis « ze » au lieu de « the », ça passe ?'] },
-  {
-    choose: 'Que réponds-tu ?',
-    choices: [
-      { label: 'C\'est le charme français.', steps: [{ speaker: 'Prophecy', say: ['Je le savais !'] }] },
-      { label: 'Non.', steps: [{ speaker: 'Prophecy', say: ['T\'es dur, là.'] }] },
-      { label: 'Ça dépend du correcteur.', steps: [{ speaker: 'Prophecy', say: ['Donc oui.'] }] },
-    ],
-  },
-  { speaker: 'Charlotte', say: ['T\'es prêt.'] },
-  { setFlag: FLAGS.revisions },
+  { say: ['La bande s\'est installée autour des tables. Chacun a pris une matière.'] },
+  { goTo: [5, 7], facing: 'up' },                                 // au bout de la table de la bande
+  { speaker: 'Ousmane', say: ['Moi, je prends la grammaire. Pierre, trouve-moi un manuel de grammaire dans les rayons, au fond.'] },
+  { speaker: 'Léo', say: ['Et moi, un dictionnaire, bro. Le gros, celui qui fait mal quand il tombe sur le pied.'] },
+  { speaker: 'Charlotte', say: ['Moi, un recueil d\'expressions. « It\'s raining cats and dogs », ce genre de choses.'] },
+  { speaker: 'Prophecy', say: ['Moi, je garde les places. C\'est une matière, ça aussi.'] },
+  { setFlag: FLAGS.missionLivres },
 ];
 
-// En sortant de la bibliothèque : le surlendemain (l'examen a eu lieu la veille) ; Ousmane réveille Pierre.
-export const NEXT_DAY = [
+// Une étagère du fond : un vrai livre (pris une fois), ou un faux qui fait sourire.
+const BOOK_FOUND = {
+  grammaire: 'Un manuel de grammaire anglaise, tout corné. Tu le prends pour Ousmane.',
+  dico: 'Un dictionnaire anglais-français, énorme. Tu le prends pour Léo… Il pèse une tonne.',
+  expressions: 'Un recueil d\'expressions anglaises : « Break a leg! », « Piece of cake! »… Tu le prends pour Charlotte.',
+};
+const SHELVES = 'Des rayons entiers de livres, du sol au plafond.';
+export const shelfBook = (key) => [
+  { unlessFlags: [FLAGS.missionLivres], say: [SHELVES], end: true },
+  { ifFlags: [BOOKS[key].taken], say: ['Il y a un trou dans le rayon, là où tu as pris le livre.'], end: true },
+  { say: [BOOK_FOUND[key]] },
+  { setFlag: BOOKS[key].taken },
+];
+export const shelfJoke = (lines) => [
+  { unlessFlags: [FLAGS.missionLivres], say: [SHELVES], end: true },
+  { say: lines },
+];
+export const FAKE_BOOKS = [
+  ['« Guide des pubs de Hull », édition annotée. Les annotations sont de Léo.', 'Ce n\'est pas vraiment le moment.'],
+  ['« Apprendre l\'anglais en dormant ». Tentant… Mais tu as déjà assez dormi.'],
+  ['« La météo anglaise », tome 1. Il n\'y a qu\'une page : « Il pleut. »'],
+];
+
+// Quand les trois livres sont rapportés : le surlendemain, Pierre va directement voir les résultats (l'examen a eu lieu
+// hors champ).
+const TWO_DAYS_LATER = [
+  { speaker: 'Charlotte', say: ['Grammaire, vocabulaire, expressions : on a tout. Maintenant, on révise pour de vrai.'] },
   { black: true },
   { wait: 700 },
   { say: ['Le surlendemain…'] },
-  { speaker: 'Ousmane', say: ['Les résultats sont affichés devant l\'université. Viens, on va voir ça !'] },
-  { setFlag: FLAGS.jourResultats },
-  { black: false },
+  { setFlags: [FLAGS.revisions, FLAGS.jourResultats] },
+  { travel: { map: 'hull', x: 21, y: 11, facing: 'up' } },
 ];
+
+// Le camarade qui attend un livre : avant de l'avoir, il le rappelle ; avec, Pierre le lui donne.
+const bookFor = (key, waiting, thanks, done) => [
+  { ifFlags: [BOOKS[key].given], speaker: BOOKS[key].who, say: [done], end: true },
+  { unlessFlags: [BOOKS[key].taken], speaker: BOOKS[key].who, say: [waiting], end: true },
+  { say: [`Tu poses ${BOOKS[key].name} sur la table.`] },
+  { speaker: BOOKS[key].who, say: [thanks].flat() },
+  { setFlag: BOOKS[key].given },
+  { ifFlags: ALL_GIVEN, steps: TWO_DAYS_LATER },
+];
+export const OUSMANE_BOOK = bookFor('grammaire',
+  'Le manuel de grammaire, il est dans les rayons du fond. Je t\'attends !',
+  'Merci ! Present perfect, me voilà.',
+  'Le present perfect et moi, c\'est une longue histoire.');
+export const LEO_BOOK = bookFor('dico',
+  'Un dictionnaire, bro. Il doit traîner dans les rayons du fond.',
+  ['Ah, le voilà ! Bon, je cherche « hangover »…', 'Ça veut dire « veille d\'examen », je crois.'],
+  'J\'ai lu la même page six fois.');
+export const CHARLOTTE_BOOK = bookFor('expressions',
+  'Un recueil d\'expressions, dans les rayons du fond. Chut, on révise !',
+  'Parfait. « Piece of cake », cet examen.',
+  'Chut ! On révise.');
 
 // ---------- 6. Les résultats ----------
 

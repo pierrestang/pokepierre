@@ -786,20 +786,37 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    côté) ; Ousmane « Léo… c'est de l'autre côté. » ; Charlotte « Au fait… les exams, c'est après-demain. » ; Anaïs « Ne
    dis pas ça maintenant. » ; Léo « Demain, bibliothèque. Tout le monde. » → vertu **Insouciance** (phrase du
    carnet : « Profiter du moment, sans penser à demain. ») ; Ousmane : « Allez, on rentre dormir à la coloc. Demain…
-   enfin, tout à l'heure, révisions. » ; « Tout le monde rentre se coucher. » : la bande disparaît
-   (chacun chez soi : Léo, Romain et Prophecy chez eux, Ousmane à la coloc).
-5. **Dormir** : Ousmane, déjà rentré : « Enfin ! Allez, au lit. » ; « Tu t'écroules sur ton lit. » ; « Le lendemain,
-   veille d'examen… » ; Ousmane réveille Pierre : « Debout ! Les exams, c'est demain. Toute la bande révise à la
-   bibliothèque Brynmor Jones. » / « C'est la longère au toit d'ardoise, en haut de Newland Avenue, à gauche. On se
-   retrouve là-bas ! »
-6. **Les révisions** (bibliothèque Brynmor Jones) : « La bande révise autour d'une table. Tour de table ! » Trois questions
-   sans mauvaise réponse bloquante : Léo (« J'ai checké le planning, on a un meeting ASAP. »), Charlotte (le present
-   perfect), Prophecy (« si je dis « ze » au lieu de « the », ça passe ? »). Charlotte : **« T'es prêt. »** (Anaïs, à la
-   table : « Les résultats, c'est après-demain. On va y arriver ! »)
-7. **Les résultats**, sur le panneau « EXAM » dressé devant l'université : en sortant de la bibliothèque, « Le
-   surlendemain… » (l'examen a eu lieu la veille, hors écran) ; Ousmane, le matin : « Les résultats sont affichés devant
-   l'université. Viens, on va voir ça ! » ; « Les résultats de
-   l'examen d'anglais sont affichés. Tu cherches ton nom… » ;
+   enfin, tout à l'heure, révisions. » ; « Tout le monde rentre se coucher. » : écran noir, et Pierre se retrouve
+   directement à la coloc, sans trajet à pied (depuis le 11 octobre 2026).
+5. **Le lendemain** : la coloc s'ouvre dans le noir, « Le lendemain… » ; Ousmane réveille Pierre : « Debout ! Les exams,
+   c'est demain. Toute la bande révise à la bibliothèque Brynmor Jones. » / « C'est la longère au toit d'ardoise, en
+   haut de Newland Avenue, à gauche. On se retrouve là-bas ! »
+6. **Les révisions** (bibliothèque Brynmor Jones) : « La bande s'est installée autour des tables. Chacun a pris une
+   matière. » ; Pierre va au bout de la table ; Ousmane : **« Moi, je prends la grammaire. Pierre, trouve-moi un manuel
+   de grammaire dans les rayons, au fond. »** ; Léo : « Et moi, un dictionnaire, bro. Le gros, celui qui fait mal quand
+   il tombe sur le pied. » ; Charlotte : « Moi, un recueil d'expressions. « It's raining cats and dogs », ce genre de
+   choses. » ; Prophecy : « Moi, je garde les places. C'est une matière, ça aussi. »
+   - **Trois livres cachés** dans les trois étagères du fond (on les fouille par-dessous, depuis la rangée 3), un vrai et
+     un faux par étagère. Vrais : (5, 2) « Un manuel de grammaire anglaise, tout corné. Tu le prends pour Ousmane. » ;
+     (8, 2) « Un dictionnaire anglais-français, énorme. Tu le prends pour Léo… Il pèse une tonne. » ; (10, 2) « Un recueil
+     d'expressions anglaises : « Break a leg! », « Piece of cake! »… Tu le prends pour Charlotte. » Ensuite : « Il y a un
+     trou dans le rayon, là où tu as pris le livre. »
+   - **Faux livres** : (4, 2) « « Guide des pubs de Hull », édition annotée. Les annotations sont de Léo. » / « Ce n'est
+     pas vraiment le moment. » ; (7, 2) « « Apprendre l'anglais en dormant ». Tentant… Mais tu as déjà assez dormi. » ;
+     (9, 2) « « La météo anglaise », tome 1. Il n'y a qu'une page : « Il pleut. » ». Avant la répartition, chaque
+     étagère : « Des rayons entiers de livres, du sol au plafond. »
+   - **Rapporter** : parler au camarade avec son livre (« Tu poses le manuel de grammaire sur la table. »…). Ousmane :
+     « Merci ! Present perfect, me voilà. » (avant : « Le manuel de grammaire, il est dans les rayons du fond. Je
+     t'attends ! » ; après : « Le present perfect et moi, c'est une longue histoire. ») ; Léo : « Ah, le voilà ! Bon, je
+     cherche « hangover »… » / « Ça veut dire « veille d'examen », je crois. » (avant : « Un dictionnaire, bro. Il doit
+     traîner dans les rayons du fond. » ; après : « J'ai lu la même page six fois. ») ; Charlotte : « Parfait. « Piece of
+     cake », cet examen. » (avant : « Un recueil d'expressions, dans les rayons du fond. Chut, on révise ! » ; après :
+     « Chut ! On révise. »). Anaïs : « Les résultats, c'est après-demain. On va y arriver ! » ; Prophecy : « Ze exam. Ze
+     exam. Ça passe, non ? »
+   - Les trois rapportés, dans n'importe quel ordre : Charlotte **« Grammaire, vocabulaire, expressions : on a tout.
+     Maintenant, on révise pour de vrai. »** ; écran noir, « Le surlendemain… ». Pas de scène d'examen.
+7. **Les résultats** : Pierre arrive directement devant le panneau « EXAM » dressé devant l'université (l'examen a eu
+   lieu la veille, hors champ) ; « Les résultats de l'examen d'anglais sont affichés. Tu cherches ton nom… » ;
    Léo : **« Diplôme de Hull, bro ! »** → **Diplôme d'anglais de Hull** (« Diplôme obtenu : Anglais de Hull ! ») ;
    Léo : « On se retrouve tous devant chez moi pour se dire au revoir. Ramène-toi ! »
 8. **Les adieux**, devant chez Léo : « Toute la bande est là, devant chez Léo. Chacun part en échange. » ; Charlotte « Moi,

@@ -6,7 +6,7 @@ import { builtGrid } from './builtGrid.js';
 import { toAirport } from './airportLinks.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
-  ARRIVAL, OUSMANE_WALK, DAWN, NEXT_DAY, RESULTS, FAREWELL, HULL_SPOTS, NIGHT, DAWN_TIME, LEO_SCOUT_A, LEO_SCOUT_B,
+  ARRIVAL, OUSMANE_WALK, DAWN, RESULTS, FAREWELL, HULL_SPOTS, NIGHT, DAWN_TIME, LEO_SCOUT_A, LEO_SCOUT_B,
   LEO_SCOUT_ASYLUM,
 } from '../hullStory.js';
 
@@ -210,8 +210,8 @@ export const hullMap = {
     { on: 'enter', ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.leoEntrePubB], steps: LEO_SCOUT_B },
     { on: 'enter', ifFlags: [FLAGS.flechettesJouees], unlessFlags: [FLAGS.leoEntreAsylum], steps: LEO_SCOUT_ASYLUM },
     { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [INSOUCIANCE], steps: DAWN },
-    // En sortant de la bibliothèque : le lendemain, les résultats.
-    { on: 'enter', ifFlags: [FLAGS.revisions], unlessFlags: [FLAGS.jourResultats], steps: NEXT_DAY },
+    // Le surlendemain des révisions : Pierre arrive devant le panneau des résultats (voir hullStory.js LIBRARY).
+    { on: 'enter', ifFlags: [FLAGS.jourResultats], unlessItems: [ITEMS.diplomeHull.id], steps: RESULTS },
   ],
   // La grande rue mène à l'aéroport par ses deux bouts.
   triggers: [32, 33, 34, 35].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),
