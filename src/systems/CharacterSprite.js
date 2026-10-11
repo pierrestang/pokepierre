@@ -116,8 +116,31 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     return [...counts].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 0x506080;
   }
 
-  // Les jambes repliées, sous le buste : de face, en travers (les deux pieds aux bouts) ; de dos, elles dépassent de
-  // chaque côté, derrière le corps ; de profil, les genoux vers l'avant.
+  // Les hanches : la plus étroite des deux dernières rangées visibles du buste (sous les mains), en x du conteneur
+  // ({ left, right } inclus). Les jambes repliées prennent cette largeur : jamais plus larges que le corps.
+  hipSpan() {
+    const { key } = this.image.texture;
+    const frame = this.image.frame.name;
+    const w = this.image.frame.width;
+    const h = this.image.frame.height;
+    let best = null;
+    for (let y = h - SEAT_CUT - 2; y <= h - SEAT_CUT - 1; y++) {
+      let left = null;
+      let right = null;
+      for (let x = 0; x < w; x++) {
+        const c = this.scene.textures.getPixel(x, y, key, frame);
+        if (!c || c.alpha < 128) continue;
+        left ??= x;
+        right = x;
+      }
+      if (left !== null && (!best || right - left < best.right - best.left)) best = { left, right };
+    }
+    const half = Math.floor(w / 2);
+    return best ? { left: best.left - half, right: best.right - half } : { left: -5, right: 5 };
+  }
+
+  // Les jambes repliées, sous le buste, de la largeur des hanches : de face, en travers (les deux pieds aux bouts) ; de
+  // dos, sous le corps ; de profil, les genoux vers l'avant.
   drawLap() {
     this.lap?.destroy();
     const g = this.scene.add.graphics();
@@ -129,16 +152,20 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
       g.fillStyle(shade).fillRect(x + 1, y + h - 2, w - 2, 1);
     };
     const f = this.facing;
+    const { left, right } = this.hipSpan();
+    const width = right - left + 1;
     if (f === 'down') {
-      box(-7, 6, 15, 5);
-      g.fillStyle(LAP_EDGE).fillRect(0, 8, 1, 2);                // le croisement des jambes
-      g.fillRect(-6, 9, 2, 1).fillRect(5, 9, 2, 1);              // les pieds
+      box(left, 6, width, 5);
+      const mid = Math.floor((left + right) / 2);
+      g.fillStyle(LAP_EDGE).fillRect(mid, 8, 1, 2);              // le croisement des jambes
+      g.fillRect(left + 1, 9, 2, 1).fillRect(right - 2, 9, 2, 1); // les pieds
     } else if (f === 'up') {
-      box(-8, 4, 17, 5);
+      box(left, 4, width, 5);
     } else {
+      // De profil : les genoux dépassent un peu vers l'avant (2 pixels), jamais vers l'arrière.
       const dir = f === 'right' ? 1 : -1;
-      box(dir > 0 ? -3 : -7, 6, 11, 5);
-      g.fillStyle(LAP_EDGE).fillRect(dir > 0 ? 6 : -6, 9, 1, 1);   // le pied, devant
+      box(dir > 0 ? left : left - 2, 6, width + 2, 5);
+      g.fillStyle(LAP_EDGE).fillRect(dir > 0 ? right + 1 : left - 1, 9, 1, 1);   // le pied, devant
     }
     if (f === 'up') this.addAt(g, 0);
     else this.add(g);
