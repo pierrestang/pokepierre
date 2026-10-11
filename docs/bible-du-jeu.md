@@ -12,6 +12,13 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   Pierre est Lucas (`g198`) ; pas de portrait dans les dialogues, comme dans les jeux DS. Attributions dans `src/data/characters.js` (`BY_NAME`). Un nom absent de cette liste
   reçoit un **figurant** tiré au hasard d'après son identifiant et sa position (`EXTRAS`) ; les apparences se changent
   dans le créateur (panneau PNJ, src/data/characterLooks.json), plus dans le jeu.
+- **Écran titre** : le titre et le menu fixes au centre, sur leur voile ; en fond, la traversée des villes déjà atteintes
+  dans la partie enregistrée (Fort-de-France seule pour une nouvelle partie ; src/scenes/TitleBackground.js), chacune
+  sur un cadrage : la plage et le ferry (Fort-de-France), la cabane (Saint-Ay, une fois construite), la ferme et le
+  tracteur (Montépilloy), la cour (collège), la place d'armes (Prytanée), les quais (Bordeaux), l'Asylum (Hull), le lac
+  (Hanoï), un canal (Amsterdam), le fort (Delhi), la tour (Paris). Le sujet se lit dans la bande du bas, sous le menu ;
+  travelling lent de 9 secondes, un ou deux passants qui vont et viennent, fondu au noir d'une seconde entre deux
+  villes, puis on recommence. La musique du titre ne change pas.
 - **Menu Start** (Échap), dans cet ordre : SAC, QUÊTES, CARTE, SAUVEGARDER, OPTIONS (musique, sons, TOUCHES : la liste
   des touches), QUITTER (retour à l'écran titre). Plus d'entrée PNJ ni d'entrée vélo ; les vertus sont dans le sac
   (11 octobre 2026).

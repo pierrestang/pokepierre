@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene.js';
 import { TitleScene } from './scenes/TitleScene.js';
+import { TitleBackground } from './scenes/TitleBackground.js';
 import { OverworldScene } from './scenes/OverworldScene.js';
 import { InteriorScene } from './scenes/InteriorScene.js';
 import { UIScene } from './scenes/UIScene.js';
@@ -31,7 +32,7 @@ const game = new Phaser.Game({
   backgroundColor: '#000000',
   pixelArt: true,
   // UIScene en dernier : elle s'affiche par-dessus les scènes de jeu.
-  scene: [BootScene, TitleScene, OverworldScene, InteriorScene, FerryScene, UIScene],
+  scene: [BootScene, TitleBackground, TitleScene, OverworldScene, InteriorScene, FerryScene, UIScene],
 });
 
 // Téléphone tourné : le navigateur annonce le changement avant d'avoir la nouvelle taille de l'écran (iPhone),

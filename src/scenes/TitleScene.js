@@ -1,9 +1,6 @@
 import Phaser from 'phaser';
 import { MAPS, START_MAP } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
-import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
-import { applyBuiltLook } from '../systems/builtMaps.js';
-import { startSeaShimmer, startFallingLeaves } from '../systems/effects.js';
 import { FONT, touchScreen } from '../systems/screen.js';
 import { FRLG_FONT, FRLG_FONT_LIGHT, frlgText } from '../systems/frlgFont.js';
 import { FLAGS } from '../data/story.js';
@@ -12,8 +9,8 @@ import { hasSave, loadPosition, eraseSave } from '../systems/save.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
 import { CREDITS } from '../data/credits.js';
 
-// Écran titre : la carte de la partie en cours (sa ville ; Fort-de-France pour une nouvelle partie) défile doucement en
-// fond (caméra zoomée), avec son dessin Gen 4 ; le titre et le menu sont affichés par une seconde caméra sans zoom. « Nouvelle partie » / « Continuer la partie » :
+// Écran titre : en fond, la traversée des villes déjà atteintes (Fort-de-France seule pour une nouvelle partie), voir
+// TitleBackground.js ; le titre et le menu restent fixes au centre, sur leur voile semi-transparent. « Nouvelle partie » / « Continuer la partie » :
 // flèches haut/bas pour choisir, Entrée ou Espace pour valider. Après la fin du jeu (`credits`), le générique défile
 // d'abord par-dessus l'écran titre (une touche le passe).
 export class TitleScene extends Phaser.Scene {
@@ -30,23 +27,11 @@ export class TitleScene extends Phaser.Scene {
     playMusic('title');
     setSeaAmbience(true);
 
-    // Fond : la carte de la partie en cours, avec ses vaguelettes et ses feuilles qui tombent.
-    const map = MAPS[this.backgroundMapId()] ?? MAPS[START_MAP];
-    const fill = map.surroundings ?? 'T';
-    this.cameras.main.setBackgroundColor(fill === 'w' ? 0x4078e0 : 0x000000);
-    if (map.built) applyBuiltLook(this, map);
-    renderMap(this, map);
-    for (const o of map.overlays ?? []) {
-      this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(o.depth ?? 10 + (o.y + o.h) / 10000);
-    }
-    // Autour de la carte : la mer animée (ajoutée par renderMap) ou son décor répété, comme en jeu.
-    if (fill && fill !== 'w') {
-      const around = createSurroundings(this, map, fill);
-      around.resize(map.grid[0].length * 16 + 2 * this.scale.width, map.grid.length * 16 + 2 * this.scale.height);
-    }
-    startSeaShimmer(this, map);
-    startFallingLeaves(this, map);
-    const background = [...this.children.list];
+    // Fond : la traversée des villes déjà atteintes (scène TitleBackground, lancée dessous ; voir TitleBackground.js).
+    this.scene.launch('TitleBackground');
+    this.scene.sendToBack('TitleBackground');
+    this.events.once('shutdown', () => this.scene.stop('TitleBackground'));
+    const background = [];
 
     // Interface (seconde caméra, sans zoom)
     this.shade = this.add.graphics();
@@ -67,7 +52,7 @@ export class TitleScene extends Phaser.Scene {
     this.tweens.add({ targets: this.title, scale: 1.03, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
 
     this.uiCam = this.cameras.add(0, 0, this.scale.width, this.scale.height);
-    this.uiCam.ignore(background);
+    this.uiCam.ignore(background);                       // (le fond est dans sa propre scène)
     // Décor animé ajouté ensuite (feuilles qui tombent) : seulement dans la caméra du fond.
     const hideFromUi = (obj) => {
       if (!this.creatingMenu) this.uiCam.ignore(obj);
@@ -81,29 +66,6 @@ export class TitleScene extends Phaser.Scene {
     this.input.keyboard.on('keydown', (e) => this.onKey(e));
     this.scale.on('resize', this.layout, this);
     this.events.once('shutdown', () => this.scale.off('resize', this.layout, this));
-    this.panBackground(map);
-  }
-
-  // La ville de la partie en cours (celle d'un bâtiment pour un intérieur, l'arrivée d'un voyage), sinon Fort-de-France.
-  backgroundMapId() {
-    if (!this.canContinue) return START_MAP;
-    const saved = loadPosition();
-    const data = saved?.data ?? {};
-    const id = data.mapId ?? data.fromMap ?? data.next?.data?.mapId ?? START_MAP;
-    return MAPS[id] ? id : 'paris';                   // un lieu retiré du jeu (ancienne sauvegarde) : Paris
-  }
-
-  // Lent travelling sur la carte, d'un bout à l'autre et retour.
-  panBackground(map) {
-    const cam = this.cameras.main;
-    const w = map.grid[0].length * 16;
-    const h = map.grid.length * 16;
-    // Assez zoomé pour que la carte remplisse l'écran, et la caméra reste dans la carte (rien autour).
-    const zoom = Math.max(2, Math.ceil(this.scale.height / h), Math.ceil(this.scale.width / w));
-    cam.setZoom(zoom);
-    cam.setBounds(0, 0, w, h);
-    cam.centerOn(w * 0.3, h * 0.45);
-    this.tweens.add({ targets: cam, scrollX: cam.scrollX + w * 0.4, duration: 26000, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
 
   showMainMenu() {
