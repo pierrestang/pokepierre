@@ -54,6 +54,15 @@ ICONS = {
     'photo': (226, 377, 20, 16),            # Carte bleue (Pokégear) : la photo de la soirée
     'piece-echecs': (334, 223, 15, 20),     # Pierre Pyramide bleue : la pièce d'échecs chinois
     'repas': (462, 21, 18, 17),             # Galette Lava (biscuit) : de quoi manger, pour le match
+    # Les huit vertus (onglet « Vertus » du sac, src/art/uiIcons.js traitIcon), même planche :
+    'v-joie': (65, 411, 21, 18),            # Grelot Zen : la chanson de Maman, la danse (Joie de vivre)
+    'v-equipe': (568, 138, 21, 21),         # Multi Exp : ce qu'on gagne ensemble (Esprit d'équipe)
+    'v-ingeniosite': (311, 222, 20, 21),    # Cherch'Objet : l'outil qui trouve et répare (Ingéniosité)
+    'v-audace': (244, 137, 22, 22),         # Bandeau rouge : le courage d'oser (Audace)
+    'v-autonomie': (159, 374, 22, 22),      # Sac : faire son sac soi-même, au Prytanée (Autonomie)
+    'v-insouciance': (520, 140, 18, 17),    # Plume légère : ne pas s'en faire (Insouciance)
+    'v-adaptation': (277, 303, 20, 20),     # Pierre Plante : la pierre qui fait évoluer (Adaptation)
+    'v-liberte': (549, 222, 22, 22),        # Aile bleue : partir où l'on veut (Liberté)
 }
 
 

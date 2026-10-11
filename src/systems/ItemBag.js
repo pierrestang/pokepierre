@@ -3,7 +3,7 @@ import { sfx } from './audio.js';
 import { items } from './items.js';
 import { flags } from './flags.js';
 import { wrapText, textWidth, frlgText, LINE_HEIGHT } from './frlgFont.js';
-import { ITEM_ICONS, itemIcon } from '../art/uiIcons.js';
+import { ITEM_ICONS, itemIcon, traitIcon } from '../art/uiIcons.js';
 import { souvenirs } from './souvenirs.js';
 import { ITEMS, TRAITS, MAX_TRAITS } from '../data/story.js';
 import { MAPS } from '../data/maps/index.js';
@@ -42,7 +42,7 @@ export class ItemBag extends FullScreenPanel {
     if (this.tab === 2) {
       const times = (n) => (n ? `utilisée ${n} fois` : 'pas encore utilisée');
       return Object.values(TRAITS).filter((t) => souvenirs.has(t.id)).map((t) => ({
-        id: t.id, name: t.name, icon: null,
+        id: t.id, name: t.name, icon: traitIcon(t.id),
         about: `« ${t.phrase} » ${MAPS[t.city]?.name ?? t.city}, ${times(souvenirs.uses(t.id))}.`,
       }));
     }
@@ -91,7 +91,7 @@ export class ItemBag extends FullScreenPanel {
         g.fillStyle(0xf8c890, 1).fillRoundedRect(X(x - 2), Y(y), (SCREEN_W / 2 - 8) * u, (ROW_H - 2) * u, 2 * u);
       }
       if (item.icon) this.add(s.add.image(X(x + 14), Y(y + (ROW_H - 2) / 2), ITEM_ICONS, item.icon).setScale(u));
-      text(item.name, item.icon || this.tab !== 2 ? x + 32 : x + 8, y + 8);
+      text(item.name, x + 32, y + 8);
     });
 
     // Sous la grille, dans un cadre : la phrase de l'objet choisi.

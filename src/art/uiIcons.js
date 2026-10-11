@@ -41,6 +41,19 @@ const ICON_OF_ITEM = {
 // Image de l'atlas pour un objet (null s'il n'a pas d'icône).
 export const itemIcon = (id) => ICON_OF_ITEM[id] ?? null;
 
+// Icône de chaque vertu (id de data/story.js TRAITS), pour l'onglet « Vertus » du sac.
+const ICON_OF_TRAIT = {
+  'souvenir-maman': 'v-joie',
+  'role-cousins': 'v-equipe',
+  'role-bricoleur': 'v-ingeniosite',
+  'vertu-audace': 'v-audace',
+  'vertu-autonomie': 'v-autonomie',
+  'vertu-insouciance-hull': 'v-insouciance',
+  'vertu-adaptation': 'v-adaptation',
+  'vertu-liberte': 'v-liberte',
+};
+export const traitIcon = (id) => ICON_OF_TRAIT[id] ?? null;
+
 export function preloadUiIcons(scene) {
   const base = `${import.meta.env.BASE_URL}assets/ui/`;
   scene.load.atlas(ITEM_ICONS, `${base}item-icons.png`, `${base}item-icons.json`);

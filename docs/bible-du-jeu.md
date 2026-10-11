@@ -22,7 +22,9 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
 - **Vertus** : 8 au plus dans tout le jeu, une par ville au plus ; 6 jusqu'à Hull, Adaptation à Hanoï, la 8e
   réservée à Paris (Liberté). Encart « Pierre a reçu la vertu X ! » (étape `trait`) et « Pierre utilise X ! » (étape `useTrait`,
   comptée). Carnet dans le sac, onglet « Vertus » : le total (« 3 sur 8 ») dans le bandeau, chaque vertu reçue
-  dans la grille, et sous la grille sa phrase, sa ville et ses utilisations (« Fort-de-France, utilisée 3 fois. » ou
+  dans la grille avec son icône (objets de HeartGold / SoulSilver, même planche que le sac : Joie de vivre, le Grelot Zen ;
+  Esprit d'équipe, le Multi Exp ; Ingéniosité, le Cherch'Objet ; Audace, un bandeau rouge ; Autonomie, le sac ;
+  Insouciance, une plume légère ; Adaptation, la Pierre Plante ; Liberté, une aile bleue), et sous la grille sa phrase, sa ville et ses utilisations (« Fort-de-France, utilisée 3 fois. » ou
   « pas encore utilisée »). Le souvenir du carnet qui n'est pas une vertu (la photo du canal) est dans l'onglet
   « Souvenirs ». À l'écran, le compteur « Vertus : X sur 8 », seulement dans les villes qui donnent une vertu.
 - **Objectifs** : le jeu n'a ni journal de quêtes ni ligne « Objectif : » (supprimées le 8 octobre 2026). Le joueur est

@@ -21,7 +21,7 @@ export const CREDITS = [
     'Rips de pièces DS : The Spriters Resource',
   ]],
   ['Objets', [
-    'Icônes du sac : HeartGold et SoulSilver,',
+    'Icônes du sac et des vertus : HeartGold et SoulSilver,',
     'planche ripée par Nx-Kun (The Spriters Resource)',
     'Voiture de la famille : pinkscales',
     'Plats : Free Pixel foods, ghostpixxells (CC0)',

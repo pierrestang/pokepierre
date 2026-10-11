@@ -6,7 +6,8 @@ import { FRLG_FONT, FRLG_FONT_LIGHT, frlgText, isLightColor } from './frlgFont.j
 // Une sous-classe écrit render() en commençant par begin() ; ses objets (profondeur 120, ajoutés par add) sont
 // effacés à chaque rendu et à la fermeture, et le panneau est redessiné quand la fenêtre change de taille.
 // Coordonnées en pixels de l'écran de jeu (360 x 240), converties par X / Y ; u : facteur d'agrandissement.
-export const BAR = 16;                             // hauteur des bandeaux du haut et du bas
+export const BAR = 16;
+const TEXT = 0x303038;                             // le texte ordinaire : la police sans teinte                             // hauteur des bandeaux du haut et du bas
 
 export class FullScreenPanel {
   constructor(scene) {
@@ -50,10 +51,13 @@ export class FullScreenPanel {
     g.fillStyle(color, 1).fillRect(X(0), Y(SCREEN_H - BAR), SCREEN_W * u, BAR * u);
   }
 
-  // Texte dans la police de Rouge Feu ; une couleur claire (sur fond sombre) prend la variante claire, ombre sombre.
-  text(text, x, y, color = 0x303038) {
+  // Texte dans la police de Rouge Feu, comme les boîtes de dialogue : par défaut sans teinte (encre gris foncé, ombre
+  // claire) ; une couleur claire (sur fond sombre) prend la variante claire, ombre sombre ; une autre couleur teinte
+  // la police (setTint, multiplication). Jamais setTintFill : l'ombre prendrait la couleur et les lettres s'empâteraient.
+  text(text, x, y, color = TEXT) {
     const light = isLightColor(color);
     const t = this.scene.add.bitmapText(this.X(x), this.Y(y), light ? FRLG_FONT_LIGHT : FRLG_FONT, frlgText(this.scene, text)).setScale(this.u);
-    return this.add(light ? t.setTint(color) : t.setTintFill(color));
+    if (light || color !== TEXT) t.setTint(color);
+    return this.add(t);
   }
 }
