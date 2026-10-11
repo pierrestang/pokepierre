@@ -1306,7 +1306,8 @@ de jour.
   étage », sans rien entre parenthèses ; les portes rouges de l'ascenseur restent sous Pierre quand il attend devant ; un
   bouton éteint : « Le bouton du premier étage est éteint : ton badge n'y donne pas accès. », de même pour le dernier).
   Les collègues sont de jeunes adultes, chacun avec son nom : Guillaume, Anthony, Antoine, Quentin ; Andrea, Mariana,
-  Yasmine, Camille, Yalin.
+  Yasmine, Camille, Yalin ; et trois figurants sans réplique, Pablo, Julien (pas celui du collège : homonyme,
+  « Julien (Paris) ») et Juliette.
   - Le rez-de-chaussée (hall de la Tour Radio de HGSS) : vivant, des collègues debout qui parlent à Pierre comme à l'un
     des leurs : « Salut, Pierre ! Encore là de bonne heure, toi. », « Tiens, Pierre, tu passes au point d'équipe tout à
     l'heure ? », « Bonne journée, hein ! Le hall, c'est le meilleur étage : il y a le café. » (Anthony, Andrea, Antoine ;
@@ -1332,6 +1333,7 @@ de jour.
 | Propriétaire | Devant l'immeuble : les clés du studio, puis où est le bureau | `g161` |
 | Guillaume | Le blasé du rez-de-chaussée, près de la machine à café | `g4` |
 | Camille | Accueille Pierre le premier jour, puis l'envoie au manager et au directeur | `g130` |
+| Pablo, Julien, Juliette | Collègues du hall, figurants sans réplique. Julien de la tour est un autre personnage que Julien du collège (« Julien (Paris) ») | `g197`, `g147`, `g152` |
 | Anthony | Collègue debout dans le hall (Antoine aussi, voir plus bas) | `g105` |
 | Andrea, Yasmine | Collègue du hall ; l'accueil | `g1`, `g50` |
 | Mariana, Quentin, Yalin | Collègues du premier étage | `g113`, `g139`, `g5` |

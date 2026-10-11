@@ -2358,7 +2358,7 @@ export const interiors = {
 
   // Paris — la tour de bureaux, rez-de-chaussée : le hall (accueil, salon), vivant, des collègues debout qui parlent à
   // Pierre comme à l'un des leurs, Guillaume, le blasé, près de la machine à café. Les collègues de la tour sont de
-  // jeunes adultes : Guillaume, Anthony, Antoine, Quentin ; Andrea, Mariana, Yasmine, Camille, Yalin. Le travail reste hors champ. L'ascenseur
+  // jeunes adultes : Guillaume, Anthony, Antoine, Quentin, Pablo, Julien ; Andrea, Mariana, Yasmine, Camille, Yalin, Juliette. Le travail reste hors champ. L'ascenseur
   // (au fond à droite) : « manager » s'allume après le concert, « directeur » après le match (voir parisStory.js).
   entreprise: {
     name: 'Tour de bureaux',
@@ -2392,6 +2392,11 @@ export const interiors = {
         id: 'collegue-bonne', name: 'Antoine', x: 20, y: 3, facing: 'down', fidget: true, ...when, dialogue,
       })),
       { id: 'accueil', name: 'Yasmine', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
+      // Trois collègues de plus, figurants sans réplique (sprites choisis dans le panneau PNJ). Julien de la tour n'est PAS
+      // le Julien du collège : homonyme, apparence à part (`lookName` « Julien (Paris) »).
+      { id: 'collegue-pablo', name: 'Pablo', x: 10, y: 7, facing: 'right', fidget: true },
+      { id: 'collegue-julien', name: 'Julien', lookName: 'Julien (Paris)', x: 21, y: 7, facing: 'left', fidget: true },
+      { id: 'collegue-juliette', name: 'Juliette', x: 16, y: 4, facing: 'down', fidget: true },
     ],
     objects: elevator('entreprise'),
     events: [
