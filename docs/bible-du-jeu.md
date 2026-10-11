@@ -31,9 +31,9 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   « Tu emportes : … » (la vertu reçue dans la ville quittée ; pas d'encart en quittant une ville sans vertu). Sans scène
   de trajet, on passe directement à la carte suivante.
 - **Pêche** : plus de pêche libre ni de vieille canne (retirées le 11 octobre 2026).
-- **Le sac** (Start > SAC, touche I) : deux onglets, « Objets » et « Souvenirs » (src/data/bag.js) ; gauche / droite
-  pour changer d'onglet. Un souvenir qui a d'abord servi reste dans « Objets » jusqu'à la fin de sa quête, puis y passe
-  tout seul ; sous la liste des souvenirs, le court texte de celui qu'on a choisi. Liste complète : section « Le sac ».
+- **Le sac** (Start > SAC, touche I) : deux onglets, « Objets » et « Souvenirs » (src/data/bag.js), une icône par objet,
+  la grille remplie ligne par ligne dans l'ordre d'obtention, la phrase de l'objet choisi dessous. Un souvenir qui a
+  d'abord servi reste dans « Objets » jusqu'à la fin de sa quête. Liste complète : section « Le sac ».
 - **Vélo** (offert à Bordeaux par le cycliste du quai, passage optionnel ; `?velo` dans l'adresse donne l'objet **Vélo**
   pour l'essayer) : Pierre monte ou descend avec la touche V (rappelée une seule fois, à la
   réception du vélo ; listée dans Options > TOUCHES) ou le bouton VÉLO des commandes tactiles ; sonnette en montant, musique du vélo tant qu'il roule ; il va environ
@@ -1020,7 +1020,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
    est posés ensemble à Amsterdam. » / « Profite, va. Demain c'est encore le stage, mais là, maintenant, on est bien. » →
    **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de demain. Il y a juste l'eau, les lumières, et Romain qui
    rigole. » ; Romain prend une photo → souvenir **Photo du canal** (carnet) ; **« Au fait, j'ai une nouvelle pour toi. Ton
-   prochain échange, c'est à Delhi, en Inde ! Tiens, voilà ton billet d'avion. »** → **Billet d'avion pour
+   prochain échange, c'est à Delhi, en Inde ! Tiens, voilà ton billet d'avion. »** → **Billet d'avion
    Delhi** ; Pierre, en lui-même : **« Une ville de plus. Et à chaque fois, des gens que je quitte. Je me demande ce qu'ils
    deviennent, tous. »** ; « Le lendemain, ton billet en poche, tu prends la route de l'aéroport. » (Pierre arrive au
    guichet de l'aéroport d'Amsterdam ; en ressortant, il est encore à Amsterdam.)
@@ -1030,7 +1030,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 - **Utilisées** : **Autonomie** (la campagne de Corning), **Insouciance** (la nuit au canal).
 
 ### Objets et souvenir
-**Bouquet de fleurs** (le marchand de fleurs, donné à Romain), **Billet d'avion pour Delhi** (remis par Romain), souvenir **Photo
+**Bouquet de fleurs** (le marchand de fleurs, donné à Romain), **Billet d'avion Delhi** (remis par Romain), souvenir **Photo
 du canal** (carnet).
 
 ### Départ et trajet
@@ -1531,44 +1531,50 @@ section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chant
 
 ## Le sac : objets et souvenirs
 
-Depuis le 11 octobre 2026, le sac a deux onglets (src/data/bag.js, systems/ItemBag.js). Un souvenir marqué « après X »
-reste dans « Objets » tant que sa quête n'est pas finie (le drapeau X), puis passe tout seul dans « Souvenirs ».
+Depuis le 11 octobre 2026, le sac (Start > SAC, touche I) a deux onglets (src/data/bag.js, systems/ItemBag.js). La grille
+se remplit ligne par ligne (gauche, puis droite), dans l'ordre où Pierre a reçu les objets ; sous la grille, la phrase
+de l'objet choisi, comme dans Pokémon. Flèches pour choisir (à gauche de la colonne de gauche, ou à droite de celle de
+droite : l'autre onglet), Tab pour changer d'onglet. Un souvenir marqué « après X » reste dans « Objets » tant que sa
+quête n'est pas finie, puis passe tout seul dans « Souvenirs ». Chaque objet a son icône d'objet de HeartGold /
+SoulSilver (assets-source/ds/hgss-items.png, planche ripée par Nx-Kun pour The Spriters Resource ; scripts/build_ds_ui.py
+ICONS, src/art/uiIcons.js), créditée au générique.
 
 ### Objets (utilisés dans une quête ou pour avancer)
-| Objet | Ville, où | Ce qu'il débloque |
-|---|---|---|
-| Canne à pêche | Fort-de-France, caisse « À DONNER » de l'atelier de Papa | Offerte au capitaine : le ferry part |
-| Planches | Saint-Ay, fond de l'enclos à poules (pousser les poules) | La cabane des cousins |
-| Vieille corde | Saint-Ay, hautes herbes du sud-ouest | La cabane des cousins |
-| Pièce de tracteur | Montépilloy, sous le tas de foin de la grange | La réparation du tracteur (Ingéniosité) |
-| Clés de l'appartement | Bordeaux, l'agence | L'immeuble |
-| Enceinte, Gobelets | Bordeaux, chez Paul ; chez Rémi | La soirée d'intégration |
-| Clé d'antivol | Bordeaux, hautes herbes près de KEDGE (facultatif) | Rendue au cycliste : le vélo |
-| Vélo | Bordeaux, le cycliste du quai (facultatif) | Rouler (touche V) |
-| Consignes en vietnamien | Hanoï, le patron de l'agence | M. Lam les traduit (Adaptation) |
-| Bouquet de fleurs | Amsterdam, le marchand de fleurs | Donné à Romain |
-| Billet d'avion pour Delhi | Amsterdam, Romain, la nuit au canal | Le vol pour Delhi |
-| Clés du studio | Paris, le propriétaire | Le studio, la tour |
-| Place de concert | Paris, Louis (Antoine → Tam → Louis) | Bercy |
-| De quoi manger | Paris, Thomas au restaurant | La soirée du match chez Hugues |
-| Talisman indien | Delhi, le vieux sage du fort ; à la fin, sur le bureau de Pierre | La toute fin (le réveil) |
+| Objet | Ville, où | Ce qu'il débloque | Icône | Phrase |
+|---|---|---|---|---|
+| Canne à pêche | Fort-de-France, caisse « À DONNER » de l'atelier de Papa | Offerte au capitaine : le ferry part | `super-canne` | « Une canne de la caisse « À DONNER » de Papa, pour le capitaine du ferry. » |
+| Planches | Saint-Ay, fond de l'enclos à poules (pousser les poules) | La cabane des cousins | `planches` | « Des planches tirées de l'enclos à poules, pour la cabane des cousins. » |
+| Vieille corde | Saint-Ay, hautes herbes du sud-ouest | La cabane des cousins | `corde` | « Une vieille corde trouvée dans les hautes herbes, pour la cabane des cousins. » |
+| Pièce de tracteur | Montépilloy, sous le tas de foin de la grange | La réparation du tracteur (Ingéniosité) | `piece-metal` | « La pièce qui manque au tracteur de M. Bouly, trouvée sous le foin de la grange. » |
+| Clés de l'appartement | Bordeaux, l'agence | L'immeuble | `cles` | « Les clés de ton appartement de Bordeaux, remises par l'agence. » |
+| Enceinte | Bordeaux, chez Paul | La soirée d'intégration | `enceinte` | « L'enceinte de Paul, pour la soirée d'intégration. » |
+| Gobelets | Bordeaux, chez Rémi | La soirée d'intégration | `gobelets` | « Les gobelets de Rémi, pour la soirée d'intégration. » |
+| Clé d'antivol | Bordeaux, hautes herbes près de KEDGE (facultatif) | Rendue au cycliste : le vélo | `cles` | « La clé d'antivol perdue par le cycliste du quai, au bord de la Garonne. » |
+| Vélo | Bordeaux, le cycliste du quai (facultatif) | Rouler (touche V) | `velo` | « Le vieux vélo du cycliste, réparé de tes mains : appuie sur V pour monter dessus. » |
+| Consignes en vietnamien | Hanoï, le patron de l'agence | M. Lam les traduit (Adaptation) | `feuille` | « Les consignes de ton premier jour à l'agence, écrites en vietnamien. » |
+| Bouquet de fleurs | Amsterdam, le marchand de fleurs | Donné à Romain | `bouquet` | « Le bouquet que Romain t'a demandé de rapporter du marchand de fleurs. » |
+| Billet d'avion Delhi | Amsterdam, Romain, la nuit au canal | Le vol pour Delhi | `billet` | « Ton billet pour le prochain échange, remis par Romain au bord du canal. » |
+| Clés du studio | Paris, le propriétaire | Le studio, la tour | `cles` | « Les clés de ton studio parisien, remises par le propriétaire. » |
+| Place de concert | Paris, Louis (Antoine → Tam → Louis) | Bercy | `billet` | « La place pour Bercy, passée d'Antoine à Tam, puis à Louis. » |
+| De quoi manger | Paris, Thomas au restaurant | La soirée du match chez Hugues | `repas` | « Le repas que Thomas a rapporté du restaurant pour le match. » |
+| Talisman indien | Delhi, le vieux sage du fort ; à la fin, sur le bureau de Pierre | La toute fin (le réveil) | `pierre-gravee` | « Une petite pierre où l'on a gravé un chemin qui tourne sur lui-même, remise par le vieux sage. » |
 
 ### Souvenirs (ne servent plus, ou n'ont jamais servi)
-| Souvenir | Ville, où | Passe dans « Souvenirs » | Texte |
-|---|---|---|---|
-| Coquillage nacré | Fort-de-France, hautes herbes du petit pré | après le secret de Manon | « Le secret de Manon, sur l'île. Elle a le même : un pour toi, un pour elle. » |
-| Galet du lac | Saint-Ay, le vieux pêcheur (Joie de vivre) | tout de suite | « Trouvé au fond du lac de Saint-Ay par le vieux pêcheur, quand il avait ton âge. Il porte bonheur. » |
-| Règlement du QG | Saint-Ay, le panier de la cabane (Ingéniosité) | tout de suite | « Le règlement de la cabane des cousins. Article 5 : « Non. » (écrit par les autres). » |
-| Diplôme du brevet | Collège, l'oral | à l'arrivée au Prytanée | « Français, maths, anglais : l'oral du collège, réussi. La route du Prytanée. » |
-| Autocollant de Rémy | Collège, le casier 12 | tout de suite | « Le même que dans le casier 12, votre QG, à Rémy et toi. » |
-| Insigne du Prytanée | Prytanée, le nouveau | tout de suite | « Donné par le nouveau du Prytanée, qui avait le mal du pays : « J'en ai deux. » » |
-| Baccalauréat | Prytanée, panneau de la place d'armes | à l'arrivée à Bordeaux | « Ton nom sur la liste de la place d'armes. Direction Bordeaux. » |
-| Photo de la soirée | Bordeaux, Ousmane après le rangement | tout de suite | « La soirée d'intégration, retrouvée sous les confettis par Ousmane. » |
-| Diplôme d'anglais (ex-diplôme de KEDGE) | Bordeaux, l'oral de KEDGE | à l'arrivée à Hull | « L'oral de KEDGE : « I am late. », « Deal! », « I can't wait! ». » |
-| Diplôme de Hull | Hull, panneau des résultats | à l'arrivée à Hanoï | « Le panneau des résultats, devant l'université : « Diplôme de Hull, bro ! » » |
-| Amulette du temple (ex-objet de chance) | Hanoï, l'autel du temple | tout de suite | « Sur l'autel du temple de Hanoï, entre deux bâtons d'encens. Un gardien te l'a laissée. » |
-| Pièce d'échecs chinois | Hanoï, les papis du lac (Audace) | tout de suite | « Le cheval, glissé dans ta main par un papi du lac de Hanoï, après une partie perdue en riant. » |
-| Diplôme de Bordeaux | Bordeaux (le retour), le stade | à l'arrivée à Paris | « Remis au stade de Bordeaux, devant toute la bande et les parents. » |
+| Souvenir | Ville, où | Passe dans « Souvenirs » | Icône | Phrase |
+|---|---|---|---|---|
+| Coquillage nacré | Fort-de-France, hautes herbes du petit pré | après le secret de Manon | `coquillage` | « Le coquillage du secret de Manon, qui a gardé le même. » |
+| Galet du lac | Saint-Ay, le vieux pêcheur (Joie de vivre) | tout de suite | `galet` | « Le galet porte-bonheur du vieux pêcheur, trouvé au fond du lac quand il avait ton âge. » |
+| Règlement du QG | Saint-Ay, le panier de la cabane (Ingéniosité) | tout de suite | `plume` | « Le règlement de la cabane des cousins, dont l'article 5 dit seulement « Non. » » |
+| Diplôme du brevet | Collège, l'oral | à l'arrivée au Prytanée | `parchemin` | « Ton brevet, obtenu à l'oral : français, maths et anglais. » |
+| Autocollant de Rémy | Collège, le casier 12 | tout de suite | `autocollant` | « L'autocollant Pokémon de Rémy, le même que dans votre casier 12. » |
+| Insigne du Prytanée | Prytanée, le nouveau | tout de suite | `insigne` | « L'insigne que le nouveau du Prytanée t'a donné, parce qu'il en avait deux. » |
+| Baccalauréat | Prytanée, panneau de la place d'armes | à l'arrivée à Bordeaux | `diplome` | « Ton baccalauréat, lu sur la liste de la place d'armes. » |
+| Photo de la soirée | Bordeaux, Ousmane après le rangement | tout de suite | `photo` | « La photo de la soirée d'intégration, retrouvée sous les confettis par Ousmane. » |
+| Diplôme d'anglais (ex-diplôme de KEDGE) | Bordeaux, l'oral de KEDGE | à l'arrivée à Hull | `livre` | « Ton diplôme d'anglais, obtenu à l'oral de KEDGE. » |
+| Diplôme de Hull | Hull, panneau des résultats | à l'arrivée à Hanoï | `carnet` | « Ton diplôme de Hull, lu sur le panneau des résultats devant l'université. » |
+| Amulette du temple (ex-objet de chance) | Hanoï, l'autel du temple | tout de suite | `amulette` | « L'amulette porte-bonheur laissée pour toi sur l'autel du temple de Hanoï. » |
+| Pièce d'échecs chinois | Hanoï, les papis du lac (Audace) | tout de suite | `piece-echecs` | « Le cheval qu'un papi du lac de Hanoï t'a glissé dans la main après la partie. » |
+| Diplôme de Bordeaux | Bordeaux (le retour), le stade | à l'arrivée à Paris | `carte` | « Ton diplôme de Bordeaux, remis au stade devant toute la bande. » |
 
 Retirés : la **Vieille canne** et la pêche libre. Une ancienne sauvegarde perd la vieille canne, et sa « Pierre gravée »
 devient le Talisman indien (systems/items.js).

@@ -9,7 +9,6 @@ export const POSTCARDS = 'postcards';       // cartes postales de la carte du vo
 const ICON_OF_ITEM = {
   'coquillage-nacre': 'coquillage',
   'canne-a-peche': 'super-canne',
-  'vieille-canne': 'vieille-canne',
   planches: 'planches',
   corde: 'corde',
   baccalaureat: 'diplome',
@@ -25,8 +24,18 @@ const ICON_OF_ITEM = {
   'piece-tracteur': 'piece-metal',
   'cle-antivol': 'cles',
   velo: 'velo',
-  'pierre-gravee': 'pierre-gravee',
   'talisman-indien': 'pierre-gravee',
+  'consignes-vietnamien': 'feuille',
+  'galet-lac': 'galet',
+  brevet: 'parchemin',
+  autocollant: 'autocollant',
+  'reglement-qg': 'plume',
+  enceinte: 'enceinte',
+  gobelets: 'gobelets',
+  'insigne-prytanee': 'insigne',
+  'photo-soiree': 'photo',
+  'piece-echecs': 'piece-echecs',
+  'plats-match': 'repas',
 };
 
 // Image de l'atlas pour un objet (null s'il n'a pas d'icône).

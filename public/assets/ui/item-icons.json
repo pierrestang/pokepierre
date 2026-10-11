@@ -152,7 +152,7 @@
     "h": 32
    }
   },
-  "vieille-canne-petite": {
+  "feuille": {
    "frame": {
     "x": 608,
     "y": 0,
@@ -160,7 +160,7 @@
     "h": 32
    }
   },
-  "super-canne-petite": {
+  "galet": {
    "frame": {
     "x": 640,
     "y": 0,
@@ -168,7 +168,7 @@
     "h": 32
    }
   },
-  "mega-canne-petite": {
+  "parchemin": {
    "frame": {
     "x": 672,
     "y": 0,
@@ -176,9 +176,97 @@
     "h": 32
    }
   },
-  "pierre-gravee-petite": {
+  "autocollant": {
    "frame": {
     "x": 704,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "plume": {
+   "frame": {
+    "x": 736,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "enceinte": {
+   "frame": {
+    "x": 768,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "gobelets": {
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "insigne": {
+   "frame": {
+    "x": 832,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "photo": {
+   "frame": {
+    "x": 864,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "piece-echecs": {
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "repas": {
+   "frame": {
+    "x": 928,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "vieille-canne-petite": {
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "super-canne-petite": {
+   "frame": {
+    "x": 992,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "mega-canne-petite": {
+   "frame": {
+    "x": 1024,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pierre-gravee-petite": {
+   "frame": {
+    "x": 1056,
     "y": 0,
     "w": 32,
     "h": 32

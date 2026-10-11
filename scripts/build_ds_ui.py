@@ -41,7 +41,19 @@ ICONS = {
     'amulette': (503, 384, 20, 22),
     'bouquet': (474, 382, 22, 22),          # Gracidée : le bouquet de fleurs de Romain (Amsterdam)
     'velo': (108, 375, 23, 21),             # Bicyclette (objet rare)
-    'pierre-gravee': (481, 223, 20, 17),    # Galet Lisse : la pierre gravée du vieux sage (Delhi), aussi à la fin
+    'pierre-gravee': (481, 223, 20, 17),    # Galet Lisse : le talisman indien du vieux sage (Delhi), aussi à la fin
+    # Ajoutées le 11 octobre 2026 (même planche) : une icône pour chaque objet et souvenir du sac (data/bag.js).
+    'feuille': (351, 224, 17, 19),          # Rune Sort (papier aux signes rouges) : les consignes en vietnamien
+    'galet': (193, 262, 16, 17),            # Pierre Ovale : le galet du lac de Saint-Ay
+    'parchemin': (333, 181, 17, 19),        # Rune Sort (papier scellé) : le diplôme du brevet
+    'autocollant': (589, 390, 15, 15),      # Poupée Mélofée (la frimousse rose) : l'autocollant Pokémon de Rémy
+    'plume': (540, 140, 18, 17),            # Plume Blanche : le règlement du QG, écrit à la plume par les cousins
+    'enceinte': (251, 376, 19, 20),         # Radio (boîtier à grille) : l'enceinte de Paul
+    'gobelets': (349, 19, 15, 20),          # Pot de lait / bocal : les gobelets de Rémi
+    'insigne': (464, 142, 16, 16),          # Pièce Rune dorée : l'insigne du Prytanée
+    'photo': (226, 377, 20, 16),            # Carte bleue (Pokégear) : la photo de la soirée
+    'piece-echecs': (334, 223, 15, 20),     # Pierre Pyramide bleue : la pièce d'échecs chinois
+    'repas': (462, 21, 18, 17),             # Galette Lava (biscuit) : de quoi manger, pour le match
 }
 
 

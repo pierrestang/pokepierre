@@ -267,7 +267,7 @@ export const ITEMS = {
   consignesVietnamien: { id: 'consignes-vietnamien', name: 'Consignes en vietnamien' },
   pieceEchecs: { id: 'piece-echecs', name: "Pièce d'échecs chinois" },
   marchandise: { id: 'marchandise', name: 'Bouquet de fleurs' },   // id d'origine gardé (sauvegardes)
-  billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour Delhi" },  // remis par Romain, à Amsterdam
+  billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion Delhi" },  // remis par Romain, à Amsterdam
   // Delhi : la pierre gravée que le vieux sage remet à Pierre ; le même objet, sur son bureau, à la toute fin.
   talismanIndien: { id: 'talisman-indien', name: 'Talisman indien' },
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },
