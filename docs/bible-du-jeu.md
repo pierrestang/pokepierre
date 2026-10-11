@@ -652,7 +652,9 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
      l'enceinte (répliques des étudiants, par exemple « C'est toi qui as rallumé le courant ? Respect. »)
    - Parmi les invités, Léo : **« Moi c'est Léo, aussi à KEDGE. Paraît qu'on part tous à Hull l'an prochain pour
      l'échange… Ça va être quelque chose. »** (ensuite : « La prochaine soirée, c'est à Hull ! ») ; Anaïs : **« Anaïs, de ta
-     promo ! Léo dit qu'à Hull il pleut tout le temps. J'espère qu'il exagère. »** (ensuite : « À Hull, alors ! »).
+     promo ! Léo dit qu'à Hull il pleut tout le temps. J'espère qu'il exagère. »** (ensuite : « À Hull, alors ! ») ;
+     Charlotte : **« Salut ! Charlotte, de KEDGE. Moi aussi, je pars à Hull l'an prochain. On dirait que tout le monde y
+     va ! »** (ensuite : « On se revoit à Hull, alors. Promis ? »).
    - Dans un coin, près des lits, sans danser : **Dalil**, discret (on ne le voit qu'à de rares moments : ici, puis au
      stade, au retour) : « Il paraît qu'il va faire beau ce week-end. Parfait pour aller voir les vagues. »
    - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous :
@@ -749,7 +751,8 @@ l'université. Fermés, sauf pour les inscriptions. »), l'université (manoir d
 le panneau « EXAM » est dressé à sa droite, comme celui du bac au Prytanée), The Asylum (boutique au store rayé, à
 droite). Newland Avenue descend au milieu : la bibliothèque Brynmor Jones (longère au toit d'ardoise, à gauche) ; en face,
 un café, le premier pub (immeuble à jardinières) et chez Léo, Romain et Prophecy (la petite maison juste après le pub).
-Plus bas : la coloc de Pierre et Ousmane, celle de Charlotte et Anaïs, le second pub (immeuble à jardinières) et une
+Plus bas : la coloc de Pierre et Ousmane, celle de Charlotte et Anaïs (« Une maison. Personne ne répond. » tant que
+Charlotte n'est pas retrouvée au premier pub ; la maison de Léo de même tant que Léo n'a pas appelé), le second pub (immeuble à jardinières) et une
 maison fermée (« Ce n'est pas chez toi. »). Les pubs sont les immeubles à deux étages. La grande rue, est-ouest, mène à
 l'aéroport par ses deux bouts ; le square et sa fontaine, le quai, l'estuaire. Plus de bus rouge, de cabines, de Hull
 Minster ni de The Deep.
@@ -765,7 +768,7 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
 | Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `g55` |
 | Romain | Colocataire de Léo ; rencontre Pierre chez Léo | `g92` |
 | Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `g94` |
-| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; connaît Pierre d'avant Hull, le retrouve au premier pub | `g44` |
+| Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontrée à la soirée de Bordeaux, retrouvée au premier pub | `g44` |
 | Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `g107` |
 | Barman, Barmaid, clients | Les deux pubs, l'Asylum | Barman `g101` ; les autres en figurants |
 | DJ, videur, vestiaire, danseurs, étudiants | The Asylum | figurants |
@@ -783,8 +786,8 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    premier, part devant en éclaireur (il attend Pierre s'il traîne) et entre le premier ; Pierre le suit ; à partir du
    premier pub, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu, puis s'attablent en arrivant.
 2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** ; Anaïs : « Comme à Bordeaux, mais
-   c'est toi qui régales cette fois ! » ; Charlotte, qui connaît déjà Pierre (d'avant Hull) : **« Pierre ! Ça fait
-   plaisir de te revoir. Et devine qui est la coloc d'Anaïs… Le monde est petit ! »** ; le barman : « Alors, qu'est-ce
+   c'est toi qui régales cette fois ! » ; Charlotte, qui connaît déjà Pierre (la soirée de Bordeaux) : **« Pierre ! Depuis
+   la soirée de Bordeaux… Ça fait plaisir de te revoir. Et devine qui est la coloc d'Anaïs : moi ! »** ; le barman : « Alors, qu'est-ce
    que je te sers pour la bande ? » Chacun dit sa commande en
    français : Léo « Une Guinness, évidemment. », Ousmane « Un cidre, s'il te plaît. », Charlotte « Un gin tonic ! »,
    Anaïs « Un verre de vin rouge. ». Le barman les demande en anglais (« And for Léo? »…), parmi six boissons ; une
@@ -1035,7 +1038,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 7. **La nuit au bord du canal.** Romain est assis sur le quai devant la péniche (17, 12) : « Romain est assis au bord du
    quai, les jambes au-dessus de l'eau. Les lumières des péniches tremblent sur le canal. » ; Pierre s'assoit à côté de
    lui (16, 12), et pendant toute la discussion tous les deux regardent le canal ; **« Viens t'asseoir deux
-   minutes. Regarde-moi ça. »** / « Y a six mois, t'étais à l'autre bout du monde, à Hanoï. Et nous à Bordeaux. Et là, on
+   minutes. Regarde-moi ça. »** / « Y a six mois, t'étais à l'autre bout du monde, à Hanoï. Et moi à Hong Kong. Et là, on
    est posés ensemble à Amsterdam. » / « Profite, va. Demain c'est encore le stage, mais là, maintenant, on est bien. » →
    **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de demain. Il y a juste l'eau, les lumières, et Romain qui
    rigole. » ; Romain prend une photo → souvenir **Photo du canal** (carnet) ; **« Au fait, j'ai une nouvelle pour toi. Ton
@@ -1164,8 +1167,8 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    joueur reprend la main ; Harsh et Prophecy le suivent jusqu'à la sortie du fort.
 5. **Quelques mois plus tard.** En sortant du fort (et plus dans le temple) : écran noir, **« Quelques mois plus
    tard… »** (la seule ellipse de la ville) ; Pierre est devant la porte du fort (27, 10).
-6. **Le retour.** Prophecy (26, 11) : **« Bon, la parenthèse indienne se termine. On rentre à Bordeaux finir nos études.
-   Tu te rends compte, on revient là où tout a commencé ? »** ; Harsh (28, 11) : « Vous allez me manquer, tous les deux.
+6. **Le retour.** Prophecy (26, 11) : **« Bon, la parenthèse indienne se termine. On file à Bordeaux pour la remise des
+   diplômes. Toi, tu reviens là où tout a commencé ! »** ; Harsh (28, 11) : « Vous allez me manquer, tous les deux.
    Revenez quand vous voulez : ici, vous serez toujours chez vous. » ; Prophecy : « Allez, les valises sont prêtes.
    L'aéroport, c'est au bout de la grande avenue. On y va ! » Pas d'écran noir : Prophecy suit Pierre à pied jusqu'à
    l'aéroport (Harsh reste devant le fort : « Vous allez me manquer, tous les deux. L'aéroport, c'est au bout de la
@@ -1193,8 +1196,8 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
 « Objectif : »** : ce sont Prophecy et le directeur qui disent où aller.
 
 1. **L'arrivée.** Pierre arrive de l'aéroport à Bordeaux (devant la sortie vers l'aéroport, (30, 10)) avec **Prophecy**,
-   rentré de Delhi avec lui, qui marche à ses côtés (il le suit). Aussitôt, Prophecy : « Bordeaux ! Ça fait
-   bizarre, hein ? Comme si on n'était jamais partis. » / **« Allez, viens ! Tout le monde nous attend au stade, la
+   rentré de Delhi avec lui, qui marche à ses côtés (il le suit). Aussitôt, Prophecy : « Alors c'est ça, Bordeaux ! Ça
+   doit te faire bizarre, d'y revenir. » / **« Allez, viens ! Tout le monde nous attend au stade, la
    grande rotonde, juste là. C'est le grand jour ! »** Le stade est ouvert (porte (21, 10)).
 2. **Dans le stade.** En entrant : « Les gradins sont pleins. Toute la promotion est là, en toge… et, au bord de la piste,
    des visages que tu connais. » Prophecy ne suit plus Pierre : « Je file rejoindre les autres. Vas-y, toi : c'est ton

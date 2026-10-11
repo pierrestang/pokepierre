@@ -187,7 +187,7 @@ export const GOING_HOME = [
   { approach: 'prophecy-depart' },
   {
     speaker: 'Prophecy',
-    say: ['Bon, la parenthèse indienne se termine. On rentre à Bordeaux finir nos études. Tu te rends compte, on revient là où tout a commencé ?'],
+    say: ['Bon, la parenthèse indienne se termine. On file à Bordeaux pour la remise des diplômes. Toi, tu reviens là où tout a commencé !'],
   },
   { approach: 'harsh-depart' },
   { speaker: 'Harsh', say: ['Vous allez me manquer, tous les deux. Revenez quand vous voulez : ici, vous serez toujours chez vous.'] },

@@ -117,14 +117,18 @@ export const hullMap = {
     {
       x: 33, y: 20, interior: 'hullHouse',                        // chez Léo, avec Romain et Prophecy : après le pub
       lock: { ifFlags: [FLAGS.leoAppel] },
-      lockedDialogue: ["La maison de Léo, Romain et Prophecy. Personne ne répond pour l'instant."],
+      lockedDialogue: ["Une maison. Personne ne répond pour l'instant."],      // avant l'appel de Léo : ses colocs sont des inconnus
     },
     {
       x: 11, y: 31, interior: 'hullColoc',                        // la coloc de Pierre et Ousmane
       lock: { ifFlags: [FLAGS.hullAccueil] },
       lockedDialogue: NOT_HOME,
     },
-    { x: 22, y: 31, lockedDialogue: ['La coloc de Charlotte et Anaïs. Personne ne répond.'] },
+    // La coloc de Charlotte et Anaïs : nommée seulement une fois Charlotte retrouvée au premier pub.
+    {
+      x: 22, y: 31, lockedDialogue: ['Une maison. Personne ne répond.'],
+      lockedDialogues: [{ ifFlags: [FLAGS.tourneeServie], dialogue: ['La coloc de Charlotte et Anaïs. Personne ne répond.'] }],
+    },
     { x: 27, y: 31, lockedDialogue: NOT_HOME },
     {
       x: 33, y: 31, interior: 'hullPubB',                         // l'immeuble à jardinières, plus bas

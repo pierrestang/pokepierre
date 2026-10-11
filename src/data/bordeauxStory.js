@@ -141,6 +141,11 @@ export const PARTY_LEO = [
   { speaker: 'Léo', say: ['Moi c\'est Léo, aussi à KEDGE. Paraît qu\'on part tous à Hull l\'an prochain pour l\'échange… Ça va être quelque chose.'] },
   { setFlag: FLAGS.leoSoiree },
 ];
+export const PARTY_CHARLOTTE = [
+  { ifFlags: [FLAGS.charlotteSoiree], speaker: 'Charlotte', say: ['On se revoit à Hull, alors. Promis ?'], end: true },
+  { speaker: 'Charlotte', say: ['Salut ! Charlotte, de KEDGE. Moi aussi, je pars à Hull l\'an prochain. On dirait que tout le monde y va !'] },
+  { setFlag: FLAGS.charlotteSoiree },
+];
 export const PARTY_ANAIS = [
   { ifFlags: [FLAGS.anaisSoiree], speaker: 'Anaïs', say: ['À Hull, alors !'], end: true },
   { speaker: 'Anaïs', say: ['Anaïs, de ta promo ! Léo dit qu\'à Hull il pleut tout le temps. J\'espère qu\'il exagère.'] },
@@ -306,7 +311,7 @@ export const BACK_FROM_DELHI = [
   {
     speaker: 'Prophecy',
     say: [
-      'Bordeaux ! Ça fait bizarre, hein ? Comme si on n\'était jamais partis.',
+      'Alors c\'est ça, Bordeaux ! Ça doit te faire bizarre, d\'y revenir.',
       'Allez, viens ! Tout le monde nous attend au stade, la grande rotonde, juste là. C\'est le grand jour !',
     ],
   },

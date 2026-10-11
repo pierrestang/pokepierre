@@ -79,6 +79,7 @@ export const FLAGS = {
   soiree: 'soiree',                             //   la soirée d'intégration, dans l'appartement
   leoSoiree: 'leo-soiree',                      //     Léo (KEDGE) rencontré à la soirée
   anaisSoiree: 'anais-soiree',                  //     Anaïs (KEDGE) rencontrée à la soirée
+  charlotteSoiree: 'charlotte-soiree',          //     Charlotte (KEDGE) rencontrée à la soirée
   lendemainSoiree: 'lendemain-soiree',          //   en quittant la fête : le lendemain matin, l'appartement en désordre
   ousmaneLeve: 'ousmane-leve',                  //     tout rangé : Ousmane sort du lit (la photo de la soirée)
   gobeletsRanges: 'gobelets-ranges',            //     à faire avant de sortir (Autonomie) : les gobelets ramassés

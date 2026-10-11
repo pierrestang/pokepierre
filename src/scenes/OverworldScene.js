@@ -46,7 +46,8 @@ export class OverworldScene extends MapScene {
     // sont remplies. Une porte sans `interior` reste toujours fermée.
     if (!door.interior || (door.lock && !meetsConditions(door.lock))) {
       sfx('bump');
-      this.dialog.open(door.lockedDialogue);
+      // `lockedDialogues` : [{ conditions, dialogue }], le premier dont les conditions sont remplies, sinon lockedDialogue.
+      this.dialog.open((door.lockedDialogues ?? []).find(meetsConditions)?.dialogue ?? door.lockedDialogue);
       return;
     }
     this.enterDoor(x, y, door.interior);

@@ -146,7 +146,7 @@ export const CANAL_NIGHT = [
   { goTo: [CANAL_SPOT[0] - 1, CANAL_SPOT[1]], facing: 'down' },
   { face: { player: 'down', 'romain-canal': 'down' } },
   { speaker: 'Romain', say: ['Viens t\'asseoir deux minutes. Regarde-moi ça.'] },
-  { speaker: 'Romain', say: ['Y a six mois, t\'étais à l\'autre bout du monde, à Hanoï. Et nous à Bordeaux. Et là, on est posés ensemble à Amsterdam.'] },
+  { speaker: 'Romain', say: ['Y a six mois, t\'étais à l\'autre bout du monde, à Hanoï. Et moi à Hong Kong. Et là, on est posés ensemble à Amsterdam.'] },
   { speaker: 'Romain', say: ['Profite, va. Demain c\'est encore le stage, mais là, maintenant, on est bien.'] },
   { useTrait: TRAITS.insouciance },
   { say: ['Tu oublies le stage de demain. Il y a juste l\'eau, les lumières, et Romain qui rigole.'] },
