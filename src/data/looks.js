@@ -15,7 +15,7 @@ export const BY_NAME = {
   // Paris, les collègues de la tour (jeunes adultes) ; « Camille (Paris) » : la collègue (lookName), pas la Camille
   // de Montépilloy.
   Guillaume: 'g4', Anthony: 'g105', Antoine: 'g98', Quentin: 'g139',
-  Andrea: 'g1', Mariana: 'g113', Yasmine: 'g50', 'Camille (Paris)': 'g130', Yaline: 'g5',
+  Andrea: 'g1', Mariana: 'g113', Yasmine: 'g50', 'Camille (Paris)': 'g130', Yalin: 'g5',
   'Benoît': 'g38', 'Étienne': 'g30', Joshua: 'g18',
   Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g140', Paul: 'g86', Camille: 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g60',
   Charlotte: 'g43', 'Anaïs': 'g107', Anais: 'g107',

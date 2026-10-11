@@ -1267,7 +1267,7 @@ de jour.
   étage », sans rien entre parenthèses ; les portes rouges de l'ascenseur restent sous Pierre quand il attend devant ; un
   bouton éteint : « Le bouton du premier étage est éteint : ton badge n'y donne pas accès. », de même pour le dernier).
   Les collègues sont de jeunes adultes, chacun avec son nom : Guillaume, Anthony, Antoine, Quentin ; Andrea, Mariana,
-  Yasmine, Camille, Yaline.
+  Yasmine, Camille, Yalin.
   - Le rez-de-chaussée (hall de la Tour Radio de HGSS) : vivant, des collègues debout qui parlent à Pierre comme à l'un
     des leurs : « Salut Pierre ! Encore là de bonne heure, toi. », « Tiens, Pierre, tu passes au point d'équipe tout à
     l'heure ? », « Bonne journée, hein ! On se voit en haut. » (Anthony, Andrea, Antoine) ; Yasmine, à l'accueil (« La
@@ -1275,7 +1275,7 @@ de jour.
     blasé, près de la machine à café.
   - Le premier étage (un plateau de bureaux) : le manager, trois collègues debout (Mariana : « Bienvenue à l'étage,
     Pierre ! Ici, on a même du vrai café. » ; Quentin : « Réunion à onze heures. Et à quatorze heures. Et à seize
-    heures. » ; Yaline : « Le premier étage, c'est calme. Trop calme, parfois. »).
+    heures. » ; Yalin : « Le premier étage, c'est calme. Trop calme, parfois. »).
   - Le dernier étage : le bureau du directeur. Il est seul, assis dans son fauteuil derrière son bureau ; c'est Pierre
     qui va lui parler.
 - **Bercy** (le théâtre de danse de Doublonville, transformé en salle de concert) : une estrade au fond, le chanteur
@@ -1294,7 +1294,7 @@ de jour.
 | Camille | Accueille Pierre le premier jour, puis l'envoie au manager et au directeur | `g130` |
 | Anthony | Collègue debout dans le hall (Antoine aussi, voir plus bas) | `g105` |
 | Andrea, Yasmine | Collègue du hall ; l'accueil | `g1`, `g50` |
-| Mariana, Quentin, Yaline | Collègues du premier étage | `g113`, `g139`, `g5` |
+| Mariana, Quentin, Yalin | Collègues du premier étage | `g113`, `g139`, `g5` |
 | Manager | Le 1er étage : la promotion | `g122` |
 | Directeur | Le dernier étage : la belle place | `g123` (« Directeur (Paris) », distinct de celui du stade) |
 | Hugues | L'ami parisien de Pierre, fan de foot : le match chez lui | `g121` |

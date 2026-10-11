@@ -2309,7 +2309,7 @@ export const interiors = {
 
   // Paris — la tour de bureaux, rez-de-chaussée : le hall (accueil, salon), vivant, des collègues debout qui parlent à
   // Pierre comme à l'un des leurs, Guillaume, le blasé, près de la machine à café. Les collègues de la tour sont de
-  // jeunes adultes : Guillaume, Anthony, Antoine, Quentin ; Andrea, Mariana, Yasmine, Camille, Yaline. Le travail reste hors champ. L'ascenseur
+  // jeunes adultes : Guillaume, Anthony, Antoine, Quentin ; Andrea, Mariana, Yasmine, Camille, Yalin. Le travail reste hors champ. L'ascenseur
   // (au fond à droite) : « manager » s'allume après le concert, « directeur » après le match (voir parisStory.js).
   entreprise: {
     name: 'Tour de bureaux',
@@ -2368,7 +2368,7 @@ export const interiors = {
       { id: 'manager', name: 'Manager', x: 7, y: 7, facing: 'down', script: MANAGER_TALK },
       { id: 'collegue-etage-1', name: 'Mariana', x: 4, y: 7, facing: 'right', fidget: true, dialogue: ['Bienvenue à l\'étage, Pierre ! Ici, on a même du vrai café.'] },
       { id: 'collegue-etage-2', name: 'Quentin', x: 11, y: 7, facing: 'left', fidget: true, dialogue: ['Réunion à onze heures. Et à quatorze heures. Et à seize heures.'] },
-      { id: 'collegue-etage-3', name: 'Yaline', x: 9, y: 3, facing: 'down', fidget: true, dialogue: ['Le premier étage, c\'est calme. Trop calme, parfois.'] },
+      { id: 'collegue-etage-3', name: 'Yalin', x: 9, y: 3, facing: 'down', fidget: true, dialogue: ['Le premier étage, c\'est calme. Trop calme, parfois.'] },
     ],
     objects: elevator('entrepriseManager'),
     events: [{ on: 'enter', ifFlags: [FLAGS.concertParis], unlessFlags: [FLAGS.promotionParis], steps: PROMOTION }],
