@@ -21,7 +21,7 @@ import {
   LIBRARY, OUSMANE_BOOK, LEO_BOOK, CHARLOTTE_BOOK, shelfBook, shelfJoke, FAKE_BOOKS, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
 } from '../hullStory.js';
 import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC, patronComes } from '../hanoiStory.js';
-import { CAMPAIGN, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
+import { CAMPAIGN, CORNING_ENTER, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
 import {
   COLLEAGUE, CONCERT, DIRECTOR, DIRECTOR_AFTER, DIRECTOR_CALLS, HALL_LINES, HUGUES_AFTER, MANAGER_CALLS, MANAGER_TALK, MATCH,
   OFFICE_FIRST, PROMOTION, THOMAS_SERVICE,
@@ -2065,6 +2065,8 @@ export const interiors = {
         script: CAMPAIGN,
       },
     ],
+    // Le premier jour : trois pas, puis le patron vient à Pierre (amsterdamStory.js CORNING_ENTER).
+    events: [{ on: 'enter', unlessFlags: [FLAGS.stageCorning], steps: CORNING_ENTER }],
   },
 
   // Amsterdam — le marchand de fleurs : le vendeur (français mêlé de néerlandais) donne le bouquet de Romain (voir

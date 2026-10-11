@@ -117,6 +117,14 @@ export const CAMPAIGN = [
   { setFlag: FLAGS.stageCorning },
 ];
 
+// Le premier jour : Pierre entre et avance de trois pas ; le patron le voit (« ! ») et vient à lui lancer la campagne.
+export const CORNING_ENTER = [
+  { goTo: [6, 7], facing: 'up' },
+  { emote: 'laurent', kind: 'surprise' },
+  { approach: 'laurent' },
+  ...CAMPAIGN,
+];
+
 // ---------- 6. Quelques mois plus tard ----------
 
 // En sortant de Corning, la campagne présentée : l'ellipse ; la nuit tombe sur Amsterdam, Romain attend au canal.

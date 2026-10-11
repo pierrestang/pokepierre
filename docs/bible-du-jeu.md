@@ -996,7 +996,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 4. **Retour chez Romain.** « Tu donnes le bouquet de fleurs à Romain. » ; Romain : « Merci, t'es un chef ! Je te revaudrai ça. » /
    « Bon, maintenant, au boulot : ton stage chez Corning commence aujourd'hui. C'est le grand manoir de la rue. Le patron
    t'attend ! »
-5. **Corning : la campagne.** Le patron : **« Bienvenue chez Corning ! Pour ton premier jour, je te confie une vraie mission :
+5. **Corning : la campagne.** Pierre entre et avance de trois pas ; le patron le voit (bulle « ! ») et vient à lui : **« Bienvenue chez Corning ! Pour ton premier jour, je te confie une vraie mission :
    prépare-moi une campagne pour notre nouveau produit. »** / « Un verre pour écrans de téléphone. Presque incassable. À
    toi de le faire connaître. » Trois choix, chacun commenté par le patron, sans échec :
    - la cible : « Aux fabricants de téléphones » (« Exactement. Ce sont eux qui achètent le verre. Bon instinct. »),
