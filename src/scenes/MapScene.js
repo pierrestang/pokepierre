@@ -103,7 +103,9 @@ export class MapScene extends Phaser.Scene {
     // ex. le réveil de la fin, après le fondu des vertus).
     if (!(map.openDark && meetsConditions(map.openDark))) this.scene.get('UI')?.curtain?.setAlpha(0);
     // Carte dessinée avec le créateur de cartes (map.built) : son dessin remplace le rendu Rouge Feu.
-    if (map.built) applyBuiltLook(this, map);
+    // Dans un bâtiment, le dessin de la ville reste en mémoire (on le retrouve intact en ressortant).
+    const keepLooks = this.scene.key === 'Interior' && this.fromMap ? [this.fromMap] : [];
+    if (map.built) applyBuiltLook(this, map, keepLooks);
     this.drawLook();
     // Filet de sécurité : si le dessin cuit de la carte est perdu en cours de partie (texture retirée ou vidée, ex.
     // après une scénette ou un voyage), on le refait et on le réaffiche (sinon seule la forêt de bordure se voit).
@@ -111,7 +113,7 @@ export class MapScene extends Phaser.Scene {
       this.time.addEvent({
         delay: 1000, loop: true, callback: () => {
           if (!lostLook(this, map)) return;
-          applyBuiltLook(this, map);
+          applyBuiltLook(this, map, keepLooks);
           this.drawLook();
         },
       });

@@ -64,8 +64,11 @@ export function preloadBuiltLooks(scene, maps) {
 }
 
 // Une carte du jeu dessinée avec le créateur (map.built) : son dessin remplace le rendu Rouge Feu.
-// Seuls les dessins du lieu affiché restent en mémoire : ceux des autres cartes et pièces sont libérés (et refaits à la
-// prochaine visite). Sans cela, les grands canvas s'accumulaient au fil des portes ; sur téléphone (Safari limite la
+// Seuls les dessins du lieu affiché, et de la ville autour d'une pièce (`keep`), restent en mémoire : ceux des autres
+// cartes et pièces sont libérés (et refaits à la prochaine visite). La ville gardée pendant qu'on est dans un bâtiment,
+// on la retrouve telle quelle en ressortant : rien à refaire, donc pas d'image intermédiaire (avant, elle était
+// refaite à chaque sortie ; un dessin sorti vide ne se voyait réparé qu'une seconde plus tard, par le filet de sécurité
+// de MapScene, et entre-temps seule la forêt de bordure s'affichait). Sans cela, les grands canvas s'accumulaient au fil des portes ; sur téléphone (Safari limite la
 // mémoire des canvas), un nouveau dessin pouvait sortir vide : plus de sol en sortant d'une maison. Un dessin vide ou
 // disparu est refait.
 export const TOP_DEPTH = 30;                      // calque « au-dessus de Pierre » (personnages < 11, nuit 40)
@@ -95,16 +98,19 @@ export function lostLook(scene, map) {
   return points.every(([x, y]) => ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data[3] === 0);
 }
 
-export function applyBuiltLook(scene, map) {
+export function applyBuiltLook(scene, map, keep = []) {
   for (const [id, other] of baked) {
-    if (id === map.id && other === map) continue;
+    if ((id === map.id && other === map) || keep.includes(id)) continue;
     forgetLook(scene, other);
     baked.delete(id);
   }
   if (map.backdrop && !lostLook(scene, map)) return;
   if (map.backdrop) forgetLook(scene, map);
   map.baseOverlays ??= map.overlays ?? [];
-  const look = bakeLayers(scene, map.built, `jeu-${map.id}`);
+  // Un dessin sorti vide (mémoire des canvas pleine, sur téléphone) est refait tout de suite, avant le premier affichage.
+  let look = bakeLayers(scene, map.built, `jeu-${map.id}`);
+  map.backdrop = look.backdrop;
+  if (lostLook(scene, map)) look = bakeLayers(scene, map.built, `jeu-${map.id}`);
   map.backdrop = look.backdrop;
   map.topLayer = look.topLayer;
   map.overlays = [...map.baseOverlays, ...look.overlays];
