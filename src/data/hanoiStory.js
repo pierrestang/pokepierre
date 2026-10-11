@@ -62,6 +62,10 @@ export const PATRON_WELCOME = [
   { setFlag: FLAGS.travailEtape1 },
 ];
 
+// En entrant à l'agence (le premier jour, puis au retour de la visite) : le patron voit Pierre (« ! »), contourne son
+// bureau et vient à lui pour lancer le dialogue (voir interiors.js travelAgency).
+export const patronComes = (id, steps) => [{ emote: id, kind: 'surprise' }, { approach: id }, ...steps];
+
 // Le retour à l'agence, après la visite : le patron remercie Pierre.
 export const PATRON_THANKS = [
   { ifFlags: [FLAGS.travailTermine], speaker: PATRON, say: ['Ça fait plaisir de t\'avoir dans l\'équipe, Pierre.'], end: true },

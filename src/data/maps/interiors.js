@@ -20,7 +20,7 @@ import {
   LEO_CALLED, LEO_PLAN, ORDERS, orderScript, PUB_A_WELCOME, PUB_A_BAR, DARTS, HABITUE_AFTER, ASYLUM_ENTER, ASYLUM_DANCE, SLEEP,
   LIBRARY, OUSMANE_BOOK, LEO_BOOK, CHARLOTTE_BOOK, shelfBook, shelfJoke, FAKE_BOOKS, PUB_B_ENTER, PUB_B_SEATS, ASYLUM_SPOTS, DANCE_FLOOR,
 } from '../hullStory.js';
-import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC } from '../hanoiStory.js';
+import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC, patronComes } from '../hanoiStory.js';
 import { CAMPAIGN, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
 import {
   COLLEAGUE, CONCERT, DIRECTOR, DIRECTOR_AFTER, DIRECTOR_CALLS, HALL_LINES, HUGUES_AFTER, MANAGER_CALLS, MANAGER_TALK, MATCH,
@@ -2007,6 +2007,11 @@ export const interiors = {
         ifFlags: [FLAGS.visiteTerminee],
         script: PATRON_THANKS,
       },
+    ],
+    // À l'arrivée de Pierre, le premier jour puis au retour de la visite : « ! », et le patron vient à lui.
+    events: [
+      { on: 'enter', unlessFlags: [FLAGS.travailEtape1, FLAGS.visiteTerminee], steps: patronComes('patron-agence', PATRON_WELCOME) },
+      { on: 'enter', ifFlags: [FLAGS.visiteTerminee], unlessFlags: [FLAGS.travailTermine], steps: patronComes('patron-agence-fin', PATRON_THANKS) },
     ],
   },
 

@@ -899,7 +899,7 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
 | Romain | Au téléphone, six mois plus tard | — |
 
 ### Quêtes, dans l'ordre
-1. **L'agence.** Le patron : « Ah, Pierre ! Bienvenue à l'agence. Un Français dans l'équipe, enfin quelqu'un à qui
+1. **L'agence.** Dès que Pierre entre, le patron le voit (bulle « ! »), contourne son bureau et vient à lui : « Ah, Pierre ! Bienvenue à l'agence. Un Français dans l'équipe, enfin quelqu'un à qui
    parler ! » / « Ton premier jour commence maintenant. Les consignes de la journée sont là-dessus : c'est l'équipe du
    matin qui les a écrites. » → « Le patron te tend un papier. » → **Consignes en vietnamien** ; **« Tout est écrit en
    vietnamien. Tu n'y comprends pas un mot. »** ; le patron : « Moi, j'ai des clients au téléphone. Débrouille-toi : tu
@@ -928,7 +928,7 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
    placer de chaque côté de la porte, chacun sur sa case, avant de parler : « Merci pour la visite ! Sans téléphone, j'ai tout regardé.
    Vraiment regardé. » / « Un super guide. Et même pas besoin de parler vietnamien ! » / **« On va dire à ton patron, à
    l'agence, que tu es le meilleur. Va vite lui raconter ! »**
-5. **Le retour à l'agence.** Le patron : « Les touristes sont passés me voir. Ils ne parlent que de toi ! » / « Premier
+5. **Le retour à l'agence.** Même entrée en scène : bulle « ! », le patron vient à Pierre : « Les touristes sont passés me voir. Ils ne parlent que de toi ! » / « Premier
    jour, pas un mot de vietnamien, et tu t'en sors comme un chef. Merci, Pierre. » (il ne parle pas d'Amsterdam).
 6. **Six mois plus tard.** En sortant du bureau du patron : **« Six mois plus tard… »** ; « Ton téléphone sonne. C'est
    Romain ! » ; Romain, au téléphone : « Pierre ! Ça y est, je viens de prendre mon avion. Hong Kong, c'est fini ! » /
