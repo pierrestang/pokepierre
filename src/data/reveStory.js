@@ -102,7 +102,7 @@ export const FINALE = [
   { dream: 4500 },
   {
     cards: [
-      { text: '« Car là où est ton trésor, là aussi sera ton cœur. »', source: 'Matthieu 6, 21' },
+      { text: '« Car là où est ton trésor, là aussi sera ton cœur. »' },
       {
         text: 'Il a fallu tout ce voyage pour comprendre que le trésor n\'était pas au bout du chemin. Il était dans la chambre d\'où tout est parti. Mais sans le voyage, il n\'aurait jamais su le reconnaître.',
       },

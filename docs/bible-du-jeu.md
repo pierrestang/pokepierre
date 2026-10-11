@@ -1440,7 +1440,7 @@ file ! »). Pierre sort de la maison : la carte de Fort-de-France (l'île) s'aff
 ### La toute fin
 Le **fondu blanc** de l'entrée dans le rêve (flou, voile clair, la musique s'éteint) ; puis, sur fond noir, deux cartons
 qui apparaissent en fondu l'un après l'autre (systems/EndCards.js ; chacun reste au moins 2,5 s, puis jusqu'à un appui) :
-1. **« Car là où est ton trésor, là aussi sera ton cœur. »** (Matthieu 6, 21)
+1. **« Car là où est ton trésor, là aussi sera ton cœur. »** (la citation seule, sans sa référence)
 2. **« Il a fallu tout ce voyage pour comprendre que le trésor n'était pas au bout du chemin. Il était dans la chambre
    d'où tout est parti. Mais sans le voyage, il n'aurait jamais su le reconnaître. »**
 
