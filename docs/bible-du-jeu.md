@@ -348,7 +348,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 | Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `g22` |
 | M. Bouly | Le fermier, et son tracteur en panne | `g33` |
 | Margaux | Copine de classe : lance le cache-cache | `g3` |
-| Étienne | Copain de classe | `g30` |
+| Étienne | Copain de classe | `g14` (garçon en casquette verte, à la taille des collégiens) |
 | Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul au bord de la mare | `g12` |
 
 ### Quêtes, dans l'ordre (les quêtes 2 et 3 dans n'importe quel ordre après l'école)
@@ -1502,7 +1502,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Vieux pêcheur | `g67` | Saint-Ay |
 | M. Bouly | `g33` | Montépilloy |
 | Margaux | `g3` | Montépilloy, collège |
-| Étienne | `g30` | Montépilloy, collège |
+| Étienne | `g14` | Montépilloy, collège |
 | Benoît | `g12` | Montépilloy (la classe, puis seul au bord de la mare) |
 | Surveillant | `g52` | Collège |
 | Principale | `g194` | Collège |

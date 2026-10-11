@@ -102,7 +102,7 @@ export const hanoiMap = {
     // Les passants de la rue : ils ne parlent pas français.
     { id: 'passante', name: 'Passante', sprite: 'g19', x: 22, y: 9, facing: 'down', script: PASSANTE },
     { id: 'vendeuse', name: 'Vendeuse', sprite: 'g70', x: 18, y: 23, facing: 'up', still: true, script: VENDEUSE },
-    { id: 'passant', name: 'Passant', sprite: 'g14', x: 15, y: 25, facing: 'right', script: PASSANT },
+    { id: 'passant', name: 'Passant', sprite: 'g49', x: 15, y: 25, facing: 'right', script: PASSANT },
     // M. Lam, sur le petit îlot du lac, à gauche du pont, près de la cloche : il parle un peu français.
     { id: 'm-lam', name: 'M. Lam', sprite: 'g129', x: 8, y: 15, facing: 'up', still: true, script: MR_LAM },
     // Facultatif : deux papis jouent aux échecs chinois au bord du lac (Audace).

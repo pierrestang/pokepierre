@@ -23,7 +23,7 @@ function outside(x, y, grid) {
 // La foule de la grande avenue : chacun va et vient entre deux cases ([id, sprite, de, à, réplique]) ; quelques-uns
 // restent sur place et regardent autour d'eux. Pas d'étals ni d'animaux : le dépaysement, c'est la foule.
 const CROWD_WALKERS = [
-  ['passant-1', 'g14', [9, 14], [17, 14], 'curieux'],
+  ['passant-1', 'g195', [9, 14], [17, 14], 'curieux'],
   ['passante-1', 'g167', [14, 17], [7, 17], 'grandMere'],
   ['passant-2', 'g175', [21, 13], [11, 13], 'presse'],
   ['passante-2', 'g40', [10, 15], [18, 15], 'photo'],
