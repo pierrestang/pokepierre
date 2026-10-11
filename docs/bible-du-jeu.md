@@ -1685,8 +1685,7 @@ Chaque fois que le joueur reprend la main, une réplique dit quoi faire et où a
   Romain, « l'aéroport, c'est au bout de la grande rue ! ».
 - **Amsterdam** : Romain situe le marchand dès sa demande (« C'est de l'autre côté du canal, la maison à gauche avec
   les fleurs. Passe le pont ! ») ; le vendeur, « Rapporte-le vite à Romain, hè ! Avant qu'il fane. » ; après « Quelques
-  mois plus tard… », « Ton téléphone vibre : un message de Romain. « Ce soir, je suis au bord du canal, près du pont.
-  Viens, j'ai une nouvelle ! » ».
+  mois plus tard… », pas de message : Romain est assis au bord du canal, juste devant Corning.
 - **Delhi** : dans la foule, « Prophecy m'a écrit : il m'attend au bout de la grande avenue, vers l'est. » ; au fort,
   Harsh « Le vieux sage est là-haut, en haut des marches. Monte le voir. », puis, le talisman reçu, « Viens, on
   redescend. La ville nous attend dehors. ».

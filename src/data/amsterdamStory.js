@@ -131,14 +131,14 @@ export const CORNING_ENTER = [
 
 // ---------- 6. Quelques mois plus tard ----------
 
-// En sortant de Corning, la campagne présentée : l'ellipse ; la nuit tombe sur Amsterdam, Romain attend au canal.
+// En sortant de Corning, la campagne présentée : l'ellipse ; la nuit tombe sur Amsterdam, Romain attend au canal, juste
+// devant (pas besoin de message : on le voit).
 export const MONTHS_LATER = [
   { black: true },
   { wait: 800 },
   { say: ['Quelques mois plus tard…'] },
   { setFlag: FLAGS.moisAmsterdam },
   { black: false },
-  { say: ['Ton téléphone vibre : un message de Romain. « Ce soir, je suis au bord du canal, près du pont. Viens, j\'ai une nouvelle ! »'] },
 ];
 
 // ---------- 7. La nuit au bord du canal ----------
