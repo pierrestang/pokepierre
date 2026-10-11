@@ -17,9 +17,14 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 // ---------- 1. L'arrivée ----------
 
 // Au milieu de la foule, quelques pas après l'aéroport (déclencheurs de maps/newDelhi.js).
+// Les tuk-tuks, la foule, le bruit : Pierre s'y retrouve grâce à Adaptation (reçue à Hanoï) ; c'est ce qui ouvre la suite
+// (Prophecy ne l'attend qu'après, voir maps/newDelhi.js).
 export const CROWD = [
   { emote: 'player', kind: 'surprise' },
-  { say: ['Tant de monde, de bruit, de couleurs… Je n\'ai jamais rien vu de pareil.', 'Prophecy m\'a écrit : il m\'attend au bout de la grande avenue, vers l\'est.'] },
+  { say: ['Des tuk-tuks qui klaxonnent, une foule qui te bouscule, du bruit de partout… Je n\'ai jamais rien vu de pareil.'] },
+  { useTrait: TRAITS.adaptation },
+  { say: ['Tu respires, tu observes, et tu fais comme les gens d\'ici : tu te glisses dans le flot, sans lutter.'] },
+  { say: ['Prophecy m\'a écrit : il m\'attend au bout de la grande avenue, vers l\'est.'] },
   { setFlag: FLAGS.delhiFoule },
 ];
 
@@ -80,34 +85,30 @@ const LEFT = ['etudiante-fete', 'harsh-fete'];
 const ACROSS = ['etudiant-dal', 'grand-mere-fete', 'etudiante-riz', 'voisin-fete'];
 export const DELHI_PARTY = [
   { setFlag: FLAGS.courArrivee },
-  { say: ['La cour du palais est baignée de soleil. Au milieu, tout le monde est assis en cercle par terre, autour d\'un grand repas étalé sur un tapis.'] },
+  { say: ['La cour du palais est baignée de soleil. Tout le monde est assis en cercle par terre, autour d\'un grand repas.'] },
   { speaker: 'Harsh', say: ['Viens, assieds-toi avec nous ! Ici, un invité ne reste jamais le ventre vide.'] },
   { walk: 'prophecy-fete', to: MEAL_SEATS.prophecy, block: true },
   { face: { 'prophecy-fete': 'up' }, sit: { 'prophecy-fete': true } },
-  { speaker: 'Prophecy', say: ['Ça sent incroyablement bon…'] },
   { walk: 'harsh-fete', to: MEAL_SEATS.harsh, block: true },
   { face: { 'harsh-fete': 'right' }, sit: { 'harsh-fete': true } },
   { goTo: MEAL_SEATS.pierre, facing: 'right' },
   { sit: { player: true } },
   { pass: 'etudiante-fete' },
-  { say: ['À peine assis, une assiette arrive devant toi : du riz, du dal, une galette encore chaude.'] },
   { pass: 'harsh-fete' },
-  { speaker: 'Harsh', say: ['Goûte celui-là ! C\'est ma mère qui l\'a préparé ce matin.'] },
   { pass: ACROSS },
-  { say: ['Et ça continue. De gauche, de droite, d\'en face : un bol, une galette, encore un peu de riz. On te ressert sans que tu demandes.'] },
+  { say: ['À peine assis, une assiette arrive : du riz, du dal, une galette encore chaude. Et on te ressert sans que tu demandes.'] },
   { emote: 'player', kind: 'dots' },
   { speaker: 'Grand-mère', say: ['Non, non, on ne refuse pas ! Chez nous, l\'invité, on le ressert toujours.'] },
   { say: ['Je ne sais même pas quoi faire de toute cette générosité. Juste… l\'accepter, peut-être.'] },
   { speaker: 'Harsh', say: ['Atithi Devo Bhava. Chez nous, ça veut dire que l\'invité est sacré.'] },
   { useTrait: TRAITS.joie },
-  { say: ['Tu prends ce qu\'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin.'] },
+  { say: ['Tu goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin.'] },
   { pass: LEFT },
-  { speaker: 'Harsh', say: ['Tu vois ? Tu es des nôtres, maintenant !'] },
   { sit: { player: false, 'harsh-fete': false, 'prophecy-fete': false } },
   {
     speaker: 'Harsh',
     say: [
-      'Maintenant que vous avez vu la fête, il faut que je vous montre autre chose. Un endroit très ancien.',
+      'Tu vois ? Tu es des nôtres, maintenant ! Venez, je veux vous montrer un endroit très ancien.',
       'C\'est derrière la vieille porte du fort, de l\'autre côté de l\'avenue. Suivez-moi !',
     ],
   },
@@ -134,7 +135,7 @@ export const GUESTS = {
   riz: ['Reprends du riz, va ! Il en reste plein la marmite.'],
   dal: ['Le dal, c\'est la recette de ma grand-mère. Elle ne la donne à personne !'],
   ensemble: ['Ici, on ne mange jamais seul. C\'est ça, le meilleur ingrédient.'],
-  grandMere: ['Encore un peu de dal ? Je l\'ai fait ce matin, rien que pour vous.'],
+  grandMere: ['Encore un peu de dal ? Ici, une assiette vide, ça n\'existe pas.'],
   voisin: ['Encore une galette ? Si, si, j\'insiste !'],
 };
 

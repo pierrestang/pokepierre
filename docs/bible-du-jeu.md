@@ -796,13 +796,13 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    que je te sers pour la bande ? » Chacun dit sa commande en
    français : Léo « Une Guinness, évidemment. », Ousmane « Un cidre, s'il te plaît. », Charlotte « Un gin tonic ! »,
    Anaïs « Un verre de vin rouge. ». Le barman les demande en anglais (« And for Léo? »…), parmi six boissons ; une
-   erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : « Le barman pose les verres
-   sur un plateau. Tu rapportes la tournée à la table. » ; Ousmane « Santé ! » ; Léo « Cheers ! Allez, on finit ça et on
+   erreur : « Euh, c'est pas ça ? » / « Retourne lui redemander sa commande. » Tout servi : tout le monde trinque ;
+   Ousmane « Santé ! » ; Léo « Cheers ! Allez, on finit ça et on
    file au pub d'en bas. Je passe devant ! » (il sort ; les autres se lèvent et suivent Pierre).
 3. **Deuxième pub : les fléchettes.** L'habitué : « Hey, the new guy! Tu joues ? » ; choix « Allez ! » / « Pas
    maintenant. » ; le pari (voir le passage optionnel), puis une partie de trois lancers (écran façon jeu Pokémon : la
    cible où se plantent les fléchettes, la liste des lancers et le total, la jauge de visée), gagnée ou perdue ; puis
-   « Ton téléphone vibre. C'est Romain. » ; Romain, au téléphone (déjà à l'Asylum) : « L'Asylum nous attend, tout en haut
+   Romain, au téléphone (déjà à l'Asylum) : « L'Asylum nous attend, tout en haut
    sur le campus ! Léo, montre le chemin. » ; Léo : « On file à l'Asylum ! Je passe devant, suivez Pierre ! »
    (l'histoire continue dans les deux cas).
 4. **L'Asylum, l'aube → Insouciance.** Romain : « Vous en avez mis du temps ! » ; Léo : « Tout le monde sur la piste ! » /
@@ -860,7 +860,7 @@ aux résultats (les adieux devant chez lui).
 
 ### Passage optionnel : le pari des fléchettes (Audace)
 Avant la partie, l'habitué : « Un pari ? Si tu gagnes, je paie une tournée à toute ta bande. » → **« Pierre utilise
-Audace ! »** → « Tu tends la main. Pari tenu. »
+Audace ! »**, et la partie commence.
 - Gagné : **« Well played, mate! Un pari, c'est un pari. »** ; **« A round for everyone! Une tournée générale, c'est moi
   qui offre ! »** : toute la bande saute de joie (notes et cœurs) ; Ousmane : « Pierre, t'es une légende. » Pas d'objet.
 - Perdu : « Not bad! La prochaine fois, peut-être. », puis l'habitué : « Revanche ? » (Oui / Pas maintenant). On peut
@@ -1117,8 +1117,8 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
   avant ; option `seated` des PNJ, étape `sit`), qui restent à chaque
   visite : « Tu reviens ? Il y a toujours une place pour toi, et toujours de quoi manger ! », « Reprends du riz, va ! Il
   en reste plein la marmite. », « Le dal, c'est la recette de ma grand-mère. Elle ne la donne à personne ! », « Ici, on
-  ne mange jamais seul. C'est ça, le meilleur ingrédient. », la grand-mère « Encore un peu de dal ? Je l'ai fait ce
-  matin, rien que pour vous. », le voisin « Encore une galette ? Si, si, j'insiste ! ».
+  ne mange jamais seul. C'est ça, le meilleur ingrédient. », la grand-mère « Encore un peu de dal ? Ici, une assiette
+  vide, ça n'existe pas. », le voisin « Encore une galette ? Si, si, j'insiste ! ».
 - **Le vieux fort** (`delhiFort`, 21 x 16) : le bas de l'arène de Mauville (HGSS), sans l'arène : dalles de pierre,
   grands piliers, balustrades, marches, deux statues. La musique se tait (musique de la ville à volume nul). Le vieux
   sage attend sur la terrasse, en haut des marches ; ensuite : « Rien ne se perd, jeune voyageur. Rien. »
@@ -1134,7 +1134,10 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 
 ### Quêtes, dans l'ordre
 1. **L'arrivée.** Quelques pas après l'aéroport (colonne 4 de la carte, sur toute sa hauteur) : bulle « ! », puis Pierre,
-   en lui-même : **« Tant de monde, de bruit, de couleurs… Je n'ai jamais rien vu de pareil. »**
+   en lui-même : **« Des tuk-tuks qui klaxonnent, une foule qui te bouscule, du bruit de partout… Je n'ai jamais rien
+   vu de pareil. »** → **« Pierre utilise Adaptation ! »** → « Tu respires, tu observes, et tu fais comme les gens
+   d'ici : tu te glisses dans le flot, sans lutter. » / « Prophecy m'a écrit : il m'attend au bout de la grande avenue,
+   vers l'est. » Ce passage ouvre la suite : Prophecy n'attend Pierre qu'après.
 2. **Prophecy et Harsh.** Au bout de l'avenue, Prophecy (29, 15) ne repère Pierre que quand il arrive à 5 cases ou
    moins de lui (ou quand on lui parle) : bulle « ! » ; Prophecy
    s'avance : **« Pierre ! Te voilà enfin ! Ça y est, on y est. L'Inde, pour de vrai. »** Harsh arrive de la foule, à
@@ -1142,21 +1145,18 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    vous montrer. »** / « Aujourd'hui, il y a une fête dans la cour du palais de grès. Suivez-moi ! » Pas d'écran noir : Harsh
    part devant, à pied, jusqu'à la porte du palais (16, 12) (il attend Pierre s'il traîne : « C'est par ici : la porte du
    palais de grès. Entrez, la fête a commencé ! »), puis il entre ; Prophecy suit Pierre. Pierre entre à son tour.
-3. **Le grand repas partagé (Joie de vivre, dans le sens renversé).** Il remplace l'ancienne danse. Dans la cour : « La
-   cour du palais est baignée de soleil. Au milieu, tout le monde est assis en cercle par terre, autour d'un grand repas
-   étalé sur un tapis. » ; Harsh : **« Viens, assieds-toi avec nous ! Ici, un invité ne reste jamais le ventre
-   vide. »** Prophecy va s'asseoir (« Ça sent incroyablement bon… »), Harsh aussi, et Pierre s'assoit entre eux deux,
-   sur le côté gauche du tapis. Les plats arrivent vers lui (on voit une galette glisser jusqu'à lui depuis chaque convive, étape `pass`) : « À
-   peine assis, une assiette arrive devant toi : du riz, du dal, une galette encore chaude. » ; Harsh : « Goûte
-   celui-là ! C'est ma mère qui l'a préparé ce matin. » ; puis de tout le cercle : « Et ça continue. De gauche, de
-   droite, d'en face : un bol, une galette, encore un peu de riz. On te ressert sans que tu demandes. » ; bulle « … » sur
-   Pierre ; la grand-mère : « Non, non, on ne refuse pas ! Chez nous, l'invité, on le ressert toujours. » ; Pierre, en
-   lui-même : **« Je ne sais même pas quoi faire de toute cette générosité. Juste… l'accepter, peut-être. »** ; Harsh :
-   **« Atithi Devo Bhava. Chez nous, ça veut dire que l'invité est sacré. »** → **« Pierre utilise Joie de
-   vivre ! »** → « Tu prends ce qu'on te tend. Tu goûtes à tout, tu ris, et tu tends à ton tour le plat
-   à ton voisin. » ; Harsh : « Tu vois ? Tu es des nôtres, maintenant ! » Tous se relèvent ; Harsh : **« Maintenant que
-   vous avez vu la fête, il faut que je vous montre autre chose. Un endroit très ancien. »** / **« C'est derrière la
-   vieille porte du fort, de l'autre côté de l'avenue. Suivez-moi ! »** Harsh part seul, le premier, et quitte la cour ;
+3. **Le grand repas partagé (Joie de vivre, dans le sens renversé).** Il remplace l'ancienne danse. Dix bulles d'un
+   seul tenant, encart compris. Dans la cour : « La cour du palais est baignée de soleil. Tout le monde est assis en
+   cercle par terre, autour d'un grand repas. » ; Harsh : **« Viens, assieds-toi avec nous ! Ici, un invité ne reste
+   jamais le ventre vide. »** Prophecy et Harsh vont s'asseoir, et Pierre s'assoit entre eux deux, sur le côté gauche du
+   tapis. Les plats arrivent vers lui (une galette glisse jusqu'à lui depuis chaque convive, étape `pass`) : « À peine
+   assis, une assiette arrive : du riz, du dal, une galette encore chaude. Et on te ressert sans que tu demandes. » ;
+   bulle « … » sur Pierre ; la grand-mère : « Non, non, on ne refuse pas ! Chez nous, l'invité, on le ressert
+   toujours. » ; Pierre, en lui-même : **« Je ne sais même pas quoi faire de toute cette générosité. Juste…
+   l'accepter, peut-être. »** ; Harsh : **« Atithi Devo Bhava. Chez nous, ça veut dire que l'invité est sacré. »** →
+   **« Pierre utilise Joie de vivre ! »** → « Tu goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin. »
+   Tous se relèvent ; Harsh : **« Tu vois ? Tu es des nôtres, maintenant ! Venez, je veux vous montrer un endroit très
+   ancien. »** / **« C'est derrière la vieille porte du fort, de l'autre côté de l'avenue. Suivez-moi ! »** Harsh part seul, le premier, et quitte la cour ;
    fin de la scénette : le joueur reprend la main, Prophecy le suit. Pierre sort de la cour et traverse l'avenue
    lui-même jusqu'à Harsh, qui attend devant la porte du fort (28, 10) ; sur la case devant la porte (27, 10) : « Vous voilà. C'est ici : la vieille porte du
    fort. Entrons. » Ils entrent tous les trois ; Harsh et Prophecy suivent Pierre dans le fort.
@@ -1741,7 +1741,7 @@ Chaque « Pierre utilise X ! » (`useTrait`) du jeu, par vertu :
 - **Esprit d'équipe (2)** : retrouver Benoît (Montépilloy), le mur (Prytanée).
 - **Insouciance (2)** : la panique du temple (Hanoï), la nuit au canal (Amsterdam).
 - **Liberté (1)** : chez le directeur (Paris), au moment où elle est gagnée.
-- **Adaptation (0)** : reçue à Hanoï, elle ne sert encore nulle part.
+- **Adaptation (1)** : l'arrivée à Delhi (les tuk-tuks, la foule, le bruit), obligatoire : elle ouvre la suite.
 
 Chaque ville de Saint-Ay à Hull a un passage optionnel qui utilise une vertu ; Fort-de-France n'en a pas (aucune vertu
 n'est acquise avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instant : le panier de la

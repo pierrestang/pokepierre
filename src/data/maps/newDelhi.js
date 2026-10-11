@@ -153,7 +153,7 @@ export const newDelhiMap = {
     ...crowd,
     ...south,
     // Prophecy attend Pierre au bout de l'avenue (déclencheurs plus bas : on ne peut pas le manquer).
-    { id: 'prophecy', name: 'Prophecy', x: 29, y: 15, facing: 'left', unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME },
+    { id: 'prophecy', name: 'Prophecy', x: 29, y: 15, facing: 'left', ifFlags: [FLAGS.delhiFoule], unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME },
     // Harsh : il arrive de la foule à l'est quand Prophecy a retrouvé Pierre, puis part devant vers la porte du palais
     // de grès (la cour de la fête), où il entre (voir newDelhiStory.js PROPHECY_WELCOME).
     {
@@ -211,5 +211,5 @@ const around = ([cx, cy], r, spec) => Array.from({ length: (2 * r + 1) ** 2 }, (
 })).filter(({ x, y }) => (x !== cx || y !== cy) && walkable(x, y));
 newDelhiMap.triggers.push(
   ...column(4, { ifFlags: [FLAGS.arriveeNewDelhi], unlessFlags: [FLAGS.delhiFoule], script: CROWD }),
-  ...around(PROPHECY_AT, 5, { unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME }),
+  ...around(PROPHECY_AT, 5, { ifFlags: [FLAGS.delhiFoule], unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME }),
 );

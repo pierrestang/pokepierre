@@ -106,7 +106,6 @@ export const orderScript = ({ name, line, flag }) => [
 // Le comptoir : le barman demande chaque commande en anglais ; une erreur, et la personne concernée proteste.
 // Tout servi : on trinque ; Léo file devant vers le pub suivant, les autres se lèvent et suivent Pierre.
 const CHEERS = [
-  { say: ['Le barman pose les verres sur un plateau. Tu rapportes la tournée à la table.'] },
   { hop: ['player', ...ORDERS.map((o) => o.id)], times: 2 },
   { speaker: 'Ousmane', say: ['Santé !'] },
   { speaker: 'Léo', say: ['Cheers ! Allez, on finit ça et on file au pub d\'en bas. Je passe devant !'] },
@@ -186,12 +185,10 @@ export const DARTS = [
             steps: [
               { speaker: 'Habitué', say: ['Un pari ? Si tu gagnes, je paie une tournée à toute ta bande.'] },
               { useTrait: TRAITS.audace },
-              { say: ['Tu tends la main. Pari tenu.'] },
               betGame(REMATCHES),
             ],
           },
           // Romain, déjà à l'Asylum avec Prophecy, appelle Pierre.
-          { say: ['Ton téléphone vibre. C\'est Romain.'] },
           { speaker: 'Romain', phone: true, say: ['L\'Asylum nous attend, tout en haut sur le campus ! Léo, montre le chemin.'] },
           { speaker: 'Léo', say: ['On file à l\'Asylum ! Je passe devant, suivez Pierre !'] },
           { walk: 'leo-pub', to: PUB_B_EXIT, block: true },
