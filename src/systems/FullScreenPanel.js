@@ -1,5 +1,5 @@
 import { gameView, SCREEN_W, SCREEN_H } from './screen.js';
-import { FRLG_FONT, frlgText } from './frlgFont.js';
+import { FRLG_FONT, FRLG_FONT_LIGHT, frlgText, isLightColor } from './frlgFont.js';
 
 // Base des panneaux plein écran ouverts depuis le menu Start par-dessus le jeu (carte du voyage, sac, apparences
 // des PNJ), dans le style de la carte de Rouge Feu : bandeaux de couleur en haut et en bas de l'écran de jeu.
@@ -50,7 +50,10 @@ export class FullScreenPanel {
     g.fillStyle(color, 1).fillRect(X(0), Y(SCREEN_H - BAR), SCREEN_W * u, BAR * u);
   }
 
+  // Texte dans la police de Rouge Feu ; une couleur claire (sur fond sombre) prend la variante claire, ombre sombre.
   text(text, x, y, color = 0x303038) {
-    return this.add(this.scene.add.bitmapText(this.X(x), this.Y(y), FRLG_FONT, frlgText(this.scene, text)).setScale(this.u).setTintFill(color));
+    const light = isLightColor(color);
+    const t = this.scene.add.bitmapText(this.X(x), this.Y(y), light ? FRLG_FONT_LIGHT : FRLG_FONT, frlgText(this.scene, text)).setScale(this.u);
+    return this.add(light ? t.setTint(color) : t.setTintFill(color));
   }
 }

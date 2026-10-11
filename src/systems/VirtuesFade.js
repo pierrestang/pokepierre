@@ -33,7 +33,7 @@ export class VirtuesFade extends FullScreenPanel {
     await darkening;
     // La Liberté, la dernière, s'illumine : or, petite pulsation, et sa phrase dessous.
     const last = lines[lines.length - 1];
-    last.setTintFill(GOLD);
+    last.setTint(GOLD);
     scene.tweens.add({ targets: last, alpha: { from: 1, to: 0.55 }, duration: 600, yoyo: true, repeat: 3 });
     const phrase = traits[traits.length - 1].phrase;
     const words = phrase.split(' ');

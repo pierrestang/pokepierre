@@ -5,7 +5,7 @@ import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { applyBuiltLook } from '../systems/builtMaps.js';
 import { startSeaShimmer, startFallingLeaves } from '../systems/effects.js';
 import { FONT, touchScreen } from '../systems/screen.js';
-import { FRLG_FONT, frlgText } from '../systems/frlgFont.js';
+import { FRLG_FONT, FRLG_FONT_LIGHT, frlgText } from '../systems/frlgFont.js';
 import { FLAGS } from '../data/story.js';
 import { flags } from '../systems/flags.js';
 import { hasSave, loadPosition, eraseSave } from '../systems/save.js';
@@ -200,11 +200,11 @@ export class TitleScene extends Phaser.Scene {
     const lines = [];
     let y = height + lineH;
     for (const [heading, rows] of CREDITS) {
-      lines.push(this.add.bitmapText(width / 2, y, FRLG_FONT, frlgText(this, heading)).setOrigin(0.5, 0).setScale(scale)
+      lines.push(this.add.bitmapText(width / 2, y, FRLG_FONT_LIGHT, frlgText(this, heading)).setOrigin(0.5, 0).setScale(scale)
         .setTint(0xf8d048).setDepth(201));
       y += lineH * 1.3;
       for (const row of rows) {
-        lines.push(this.add.bitmapText(width / 2, y, FRLG_FONT, frlgText(this, row)).setOrigin(0.5, 0).setScale(scale)
+        lines.push(this.add.bitmapText(width / 2, y, FRLG_FONT_LIGHT, frlgText(this, row)).setOrigin(0.5, 0).setScale(scale)
           .setTint(0xe8e8f0).setDepth(201));
         y += lineH;
       }
