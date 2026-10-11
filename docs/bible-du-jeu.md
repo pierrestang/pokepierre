@@ -184,6 +184,10 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
   des daurades, des balarous… et même des poissons volants ! » … « Et mon plus gros ? Un marlin bleu, long comme ce
   ferry ! Bon… presque. Mais il tirait comme un bœuf ! » / « Le capitaine continue… et continue encore. La traversée va
   être longue. » Encart : « Tu emportes : Joie de vivre. »
+- **Après le départ**, le ferry reste en service (retour par l'aéroport, ou « Continuer » après la fin du jeu) : le
+  capitaine, devant le ferry : « Te revoilà, petit ! Le ferry fait toujours la traversée pour Saint-Ay. » ; « Tu prends le
+  ferry pour Saint-Ay ? » (Oui : la traversée, sans la scène du pont ; Non : « Je ne bouge pas d'ici. Reviens quand tu
+  veux. »).
 
 ---
 
@@ -1437,7 +1441,8 @@ qui apparaissent en fondu l'un après l'autre (systems/EndCards.js ; chacun rest
 
 Puis retour à l'écran titre, et le **générique** défile par-dessus (src/data/credits.js : histoire, univers Nintendo /
 Game Freak, décors et intérieurs des ressources de fans, objets, musique dont « Le rêve » ; une touche le passe).
-« Continuer » reprend Pierre devant la maison de Fort-de-France, libre (la fin ne se rejoue pas).
+« Continuer » reprend Pierre dans sa chambre de Fort-de-France, libre (la fin ne se rejoue pas) ; le ferry permet de
+quitter l'île.
 
 ### Après Paris
 L'histoire se termine ici : Toulon, le Chemin de Saint-Jacques, la Corse, Bali, le Sri Lanka, la Thaïlande, le Népal et le

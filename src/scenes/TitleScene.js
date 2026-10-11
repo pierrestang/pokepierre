@@ -225,6 +225,10 @@ export class TitleScene extends Phaser.Scene {
     const gone = (saved?.scene === 'Interior' && !interiors[saved.data?.interior])
       || (saved?.scene === 'Overworld' && !MAPS[saved.data?.mapId]);
     if (gone) return this.launchGame('Overworld', { mapId: 'paris', spawn: { x: 6, y: 23, facing: 'down' } });
+    // Après la fin du jeu : dans la chambre de Fort-de-France (le ferry permet ensuite de quitter l'île).
+    if (flags.has(FLAGS.finVue)) {
+      return this.launchGame('Interior', { interior: 'ffHouseUp', fromMap: START_MAP, spawn: { x: 2, y: 5, facing: 'left' } });
+    }
     if (saved) return this.launchGame(saved.scene, { ...saved.data, spawn: saved.spawn });
     // Progression sans position enregistrée : reprise à l'arrivée de la dernière ville atteinte.
     if (flags.has(FLAGS.departFortDeFrance)) {

@@ -1,6 +1,6 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
-import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON } from '../fortDeFranceStory.js';
+import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON, RETURN_FERRY } from '../fortDeFranceStory.js';
 import { FINALE } from '../reveStory.js';
 // Le dessin de la carte : la version DS faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème DS, puis
 // retouches dans builder.html) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les
@@ -122,8 +122,14 @@ export const fortDeFranceMap = {
     },
     {
       id: 'pecheur', name: 'Capitaine du ferry', x: 15, y: 27, facing: 'up', still: true,
-      ifFlags: [FLAGS.papaFait],
+      ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.departFortDeFrance],
       script: FISHER_AT_FERRY,
+    },
+    // Après le départ : le capitaine fait la navette pour Saint-Ay (l'île garde une sortie, voir RETURN_FERRY).
+    {
+      id: 'pecheur', name: 'Capitaine du ferry', x: 15, y: 27, facing: 'up', still: true,
+      ifFlags: [FLAGS.departFortDeFrance],
+      script: RETURN_FERRY,
     },
   ],
   // En sortant de la maison pour la première fois, Manon vient te parler : elle se place à ta droite (16, 8), sans te

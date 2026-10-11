@@ -65,8 +65,22 @@ export const FISHER_AT_FERRY = [
   { speaker: CAPITAINE, say: ["Ton père en a toute une collection, dans son atelier. Il en aurait pas une en trop, des fois ?"] },
 ];
 
-// Le ferry, face au joueur : on embarque par le capitaine, une fois la canne offerte.
+// Après le départ (retour par l'aéroport, ou « Continuer » après la fin du jeu) : le ferry reste en service et le
+// capitaine ramène Pierre à Saint-Ay. Sans cela, l'île n'aurait plus aucune sortie.
+export const RETURN_FERRY = [
+  { speaker: CAPITAINE, say: ['Te revoilà, petit ! Le ferry fait toujours la traversée pour Saint-Ay.'] },
+  {
+    choose: 'Tu prends le ferry pour Saint-Ay ?',
+    choices: [
+      { label: 'Oui', steps: [{ black: true }, { travel: { map: 'saintAy', x: 5, y: 10, facing: 'left', ferry: true } }] },
+      { label: 'Non', steps: [{ speaker: CAPITAINE, say: ['Je ne bouge pas d\'ici. Reviens quand tu veux.'] }] },
+    ],
+  },
+];
+
+// Le ferry, face au joueur : on embarque par le capitaine, une fois la canne offerte ; après le départ, il fait la navette.
 export const FERRY = [
+  { ifFlags: [FLAGS.departFortDeFrance], steps: RETURN_FERRY, end: true },
   { say: ["Le ferry n'embarque pas encore. Le capitaine, sur le ponton, sait ce qu'il te reste à faire."] },
 ];
 
