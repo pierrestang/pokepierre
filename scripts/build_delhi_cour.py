@@ -8,8 +8,9 @@ deux mâts à fanions, des lanternes de bronze, le stand de chai, un étal, des 
 repas partagé, assis en cercle par terre (le tapis et les plats sont un objet du jeu, `props` de interiors.js
 delhiCour). Rien de plus : une fête, sobre.
 
-Le dessin est d'abord écrit comme une carte du créateur (src/data/builtMaps/delhi-cour.json, pour peindre les palmiers),
-puis déplacé dans src/data/builtInteriors/delhiCour.json (relancer ensuite `python3 scripts/build_interiors.py --index`).
+Le dessin est une carte du créateur, src/data/builtMaps/delhi-cour.json (liste « Extérieurs » du créateur, modifiable
+et réenregistrée là) ; l'intérieur delhiCour du jeu la lit (src/data/builtInteriors/index.js). Relancer ce script
+écrase les retouches faites dans le créateur.
 
 Usage : python3 scripts/build_delhi_cour.py
 """
@@ -99,14 +100,12 @@ def main():
         m['solid'][y * W + x] = 1
     out.write_text(json.dumps(m, ensure_ascii=False) + '\n')
     subprocess.run(['node', str(ROOT / 'scripts' / 'paint_forest.mjs'), MAP_ID], check=True)
-    # Déplacé parmi les intérieurs : la cour s'ouvre comme une pièce (porte du palais, sortie en bas).
+    # Reste dans builtMaps (le créateur l'ouvre comme les autres cartes) ; le jeu l'ouvre comme une pièce (l'intérieur
+    # delhiCour : porte du palais, sortie en bas).
     m = json.loads(out.read_text())
-    out.unlink()
-    m['id'] = 'delhiCour'
-    m['name'] = 'Cour du palais'
-    m.pop('studio', None)
-    (ROOT / 'src' / 'data' / 'builtInteriors' / 'delhiCour.json').write_text(json.dumps(m, ensure_ascii=False) + '\n')
-    print(f'delhiCour : {W} x {H} -> src/data/builtInteriors/delhiCour.json')
+    m['name'] = 'Cour du palais (New Delhi)'
+    out.write_text(json.dumps(m, ensure_ascii=False) + '\n')
+    print(f'{MAP_ID} : {W} x {H} -> src/data/builtMaps/{MAP_ID}.json')
     for y in range(H):
         print(f'{y:2} ' + ''.join('#' if m['solid'][y * W + x] else '.' for x in range(W)))
 

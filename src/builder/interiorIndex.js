@@ -30,7 +30,7 @@ export const TYPES = [
     'bonsecoursSciences', 'dortoirHall', 'kedge', 'kedgeCasiers', 'kedgeSalle1', 'kedgeSalle2', 'kedgeSalle3', 'hullUniversity',
     'hullLibrary']],
   ['bureau', 'Bureaux et agences', ['agence', 'travelAgency', 'corning', 'entreprise', 'entrepriseManager', 'entrepriseDirecteur']],
-  ['sortie', 'Bars, cafés et salles', ['hullPubA', 'hullPubB', 'hullAsylum', 'coffeeShop', 'stade', 'delhiCour']],
+  ['sortie', 'Bars, cafés et salles', ['hullPubA', 'hullPubB', 'hullAsylum', 'coffeeShop', 'stade']],
   ['temple', 'Temples', ['temple']],
   ['sante', 'Santé', ['hospital']],
 ];

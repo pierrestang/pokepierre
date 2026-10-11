@@ -150,10 +150,14 @@ export function useBuiltLook(map, data) {
 }
 
 // L'intérieur du jeu dessiné avec ce dessin (même identifiant que l'intérieur : hullPubA…), ou null.
+// Un intérieur dont le dessin est une carte de builtMaps (la cour de New Delhi) se retrouve par l'id de son dessin.
 export function gameInteriorOf(interiors, data) {
-  const room = interiors[data.id];
+  const room = interiors[data.id] ?? Object.values(interiors).find((r) => r.built?.id === data.id && r.sourceGrid);
   return room?.sourceGrid && room.built ? room : null;
 }
+
+// La clé (dans interiors) de l'intérieur trouvé par gameInteriorOf.
+export const interiorIdOf = (interiors, room) => Object.keys(interiors).find((id) => interiors[id] === room);
 
 // Essai d'un intérieur depuis le créateur : le dessin en cours remplace le sien (grille et PNJ recalculés).
 export function useBuiltInterior(room, data) {

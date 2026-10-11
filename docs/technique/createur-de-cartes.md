@@ -95,6 +95,17 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   check_paths.js et les scripts d'export voient les mêmes places. Après avoir déplacé un PNJ de l'histoire : Tester et
   `node scripts/check_paths.js` (une scénette peut le faire marcher depuis sa place).
 
+## La cour de la fête de New Delhi, une carte du créateur (11 octobre 2026)
+
+La cour du palais de grès (le grand repas, intérieur `delhiCour` du jeu) est dessinée avec des planches d'extérieur ;
+elle n'était que dans src/data/builtInteriors (liste « Intérieurs », sans ses planches). Son dessin est désormais la
+carte **src/data/builtMaps/delhi-cour.json** (« Cour du palais (New Delhi) » dans la liste « Extérieurs »), modifiable
+et réenregistrée là comme les autres cartes ; src/data/builtInteriors/index.js la lit pour l'intérieur. « Tester »
+l'ouvre comme la cour, dans son contexte (systems/builtMaps.js gameInteriorOf retrouve un intérieur par l'id de son
+dessin), et l'outil Personnages montre ses convives. scripts/export_audit.mjs exporte aussi les intérieurs dessinés dans
+builtMaps : audit_maps.py la vérifie (les portes des deux pavillons, dessinées mais sans porte du jeu, sont bloquées).
+scripts/build_delhi_cour.py l'écrit directement là (le relancer efface les retouches).
+
 ## Panneau PNJ : l'apparence des personnages nommés (11 octobre 2026)
 
 Bouton « PNJ » du bandeau (src/builder/looksPanel.js) : un panneau dans la mise en page du menu Start > PNJ du jeu

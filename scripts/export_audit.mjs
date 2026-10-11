@@ -2,8 +2,15 @@
 // scripts/audit_maps.py.
 import { MAPS } from '../src/data/maps/index.js';
 import { getTile } from '../src/data/tiles.js';
+import { interiors } from '../src/data/maps/interiors.js';
+import { existsSync } from 'node:fs';
 const out = {};
-for (const m of Object.values(MAPS)) {
+// Les cartes, et les intérieurs dont le dessin est une carte de builtMaps (la cour de New Delhi, builtMaps/delhi-cour.json).
+const drawnAsMaps = Object.entries(interiors)
+  .filter(([id, r]) => r.built && r.sourceGrid && !existsSync(new URL(`../src/data/builtInteriors/${id}.json`, import.meta.url))
+    && existsSync(new URL(`../src/data/builtMaps/${r.built.id}.json`, import.meta.url)))
+  .map(([id, r]) => ({ ...r, id }));
+for (const m of [...Object.values(MAPS), ...drawnAsMaps]) {
   if (!m.built) continue;
   const pts = [];
   for (const n of m.npcs ?? []) pts.push({ k: 'npc', id: n.id ?? n.name, x: n.x, y: n.y });

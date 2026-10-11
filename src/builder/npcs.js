@@ -56,7 +56,10 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     // Un modèle partagé : la pièce choisie dans le sélecteur « Pièce » (builder.js, modèles d'intérieurs).
     if (state.base?.kind === 'modele') return interiors[state.base.room] ?? null;
     if (state.base?.kind === 'interieur' && interiors[m.id]) return interiors[m.id];
-    return interiors[m.id]?.built ? interiors[m.id] : Object.values(MAPS).find((g) => g.built?.id === m.id) ?? null;
+    if (interiors[m.id]?.built) return interiors[m.id];
+    // Un intérieur dessiné comme une carte (la cour de New Delhi, builtMaps/delhi-cour.json).
+    return Object.values(MAPS).find((g) => g.built?.id === m.id)
+      ?? Object.values(interiors).find((r) => r.built?.id === m.id) ?? null;
   }
 
   // ---------- Frise de la quête ----------
