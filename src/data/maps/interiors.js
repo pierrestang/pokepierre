@@ -641,9 +641,9 @@ export const interiors = {
       BENOIT_HIDING,
       { x: 0, y: 6, dialogue: ['Un tonneau de cidre. Ça sent la pomme.'] },
       // Le tas de foin du fond à droite cache la pièce de tracteur : on la trouve une fois que M. Bouly en a parlé, ou dès
-      // que le cache-cache est fini et que Jean a lancé la réparation (même sans parler à M. Bouly). Le premier objet
+      // que Jean a lancé la réparation (même sans parler à M. Bouly) ; jamais pendant le cache-cache. Le premier objet
       // dont les conditions sont remplies sert ; sinon, le foin.
-      ...[[FLAGS.boulyDemande], [FLAGS.copainsPartent, FLAGS.jeanQuetes]].flatMap((ifFlags) => [7, 8].map((y) => ({
+      ...[[FLAGS.copainsPartent, FLAGS.boulyDemande], [FLAGS.copainsPartent, FLAGS.jeanQuetes]].flatMap((ifFlags) => [7, 8].map((y) => ({
         x: 7,
         y,
         ifFlags,

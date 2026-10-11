@@ -370,12 +370,14 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
      Étienne « C'était trop cool, cette partie ! » ; Margaux « Allez, on file à l'école récupérer nos cartables ! » ;
      Benoît (si le tracteur n'est pas réparé) « Au fait, ton petit frère te cherche ! » et, si Jean n'a pas encore lancé la
      réparation, « Jean t'attend dans sa chambre. » (sans vertu).
-3. **Le tracteur → Ingéniosité.** Jean, dans la chambre : « Le tracteur de M. Bouly est en panne. Je peux le réparer,
+3. **Le tracteur → Ingéniosité** (seulement une fois le cache-cache fini ; pendant la partie, Jean, dans sa chambre :
+   « Tes copains te cherchent partout, va finir ta partie de cache-cache ! J'aurai besoin de toi après. »). Jean, dans
+   la chambre : « Le tracteur de M. Bouly est en panne. Je peux le réparer,
    mais il me faut un assistant. » / « Rejoins-moi à la ferme ! » M. Bouly : « Ah, Jean et son assistant ! Mon tracteur
    est en panne : il lui manque une pièce. » / « Elle doit traîner quelque part dans la grange… peut-être sous le gros
    tas de foin, en bas à droite ? » Sous le tas de foin (pas dans un tonneau : Benoît se cache dans celui de gauche),
-   une fois que M. Bouly en a parlé, ou dès que le cache-cache est fini et que Jean a lancé la réparation (même sans
-   parler à M. Bouly) :
+   le cache-cache fini, une fois que M. Bouly en a parlé ou que Jean a lancé la réparation (même sans parler à
+   M. Bouly) :
    « Tu fouilles le tas de foin… Dessous, une pièce de tracteur ! » / « Jean va être content. » →
    **Pièce de tracteur**, rapportée à M. Bouly ou à Jean. Le tracteur est un dessin Gen 4 (scripts/build_props.py).
    - « Jean ouvre sa caisse à outils et se glisse sous le tracteur. » ; Jean : **« Passe-moi la clé ! »** → trois
@@ -383,8 +385,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
      mauvaises réponses : « Ça, c'est une cuillère. Qui a mis une cuillère dans ma caisse ? », « Le gros ? Tu veux
      casser le tracteur ? », « Non, pas ça ! Regarde bien dans la caisse. »
    - « Le moteur tousse… puis repart ! » ; Jean : **« À nous deux, on répare tout. »** / « Il sent le gasoil, c'est trop
-     bien. » → vertu **Ingéniosité** ; si le cache-cache n'est pas fini, Jean : « Tes copains jouent encore à cache-cache
-     dans le village. Va les trouver ! » ; M. Bouly : « Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de
+     bien. » → vertu **Ingéniosité** ; M. Bouly : « Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de
      tracteur ! »
 4. **La fin de la journée** (le cache-cache fini et Ingéniosité reçue, dans n'importe quel ordre) : pas de soir ni de
    dîner, l'écran passe au noir et l'on enchaîne directement sur l'ellipse de septembre, devant la maison. Pas de caisse

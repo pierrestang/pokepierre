@@ -80,7 +80,6 @@ export const HIDE_AND_SEEK = [
   { setFlag: FLAGS.cacheCache },
   { black: false },
   { say: ['Ils se sont cachés dans tout le village : derrière les maisons, du côté de la ferme, près de la mare…'] },
-  { unlessFlags: [FLAGS.jeanQuetes], say: ['Et Jean te cherchait aussi : il t\'attend dans sa chambre, à la maison.'] },
 ];
 
 // Margaux, derrière les bottes de foin de la ferme ; Étienne, dans l'arbre de la prairie près de la mare ; Benoît,
@@ -148,12 +147,16 @@ export const BENOIT_HIDING = { ...BENOIT_LEFT, x: BENOIT_BARREL[0], y: BENOIT_BA
 export const JEAN_AT_TRACTOR = [4, 19];
 const JEAN_UPSTAIRS_STAIRS = [1, 3];
 
-// Jean, à l'étage de la maison : après l'école, il lance la quête, descend l'escalier et part devant à la ferme (il y
-// est, sous le tracteur, à l'arrivée de Pierre).
+// Jean, à l'étage de la maison : une fois le cache-cache fini, il lance la quête, descend l'escalier et part devant à la
+// ferme (il y est, sous le tracteur, à l'arrivée de Pierre). Pendant la partie, il renvoie Pierre à ses copains.
 export const JEAN = [
   {
     unlessFlags: [FLAGS.ecoleCm2], speaker: 'Jean',
     say: ['Salut, grand frère ! Je répare le grille-pain. Enfin… je l\'ai démonté. Presque pareil.', 'Dépêche-toi, tu vas être en retard à l\'école !'], end: true,
+  },
+  {
+    unlessFlags: [FLAGS.copainsPartent], speaker: 'Jean',
+    say: ['Tes copains te cherchent partout, va finir ta partie de cache-cache ! J\'aurai besoin de toi après.'], end: true,
   },
   { speaker: 'Jean', say: ['Le tracteur de M. Bouly est en panne. Je peux le réparer, mais il me faut un assistant.', 'Rejoins-moi à la ferme !'] },
   { walk: 'jean-maison', to: JEAN_UPSTAIRS_STAIRS, block: true, then: [FLAGS.jeanQuetes] },
@@ -180,7 +183,6 @@ const REPAIR = [
   { say: ['Le moteur tousse… puis repart !'] },
   { speaker: 'Jean', say: ['À nous deux, on répare tout.', 'Il sent le gasoil, c\'est trop bien.'] },
   { trait: TRAITS.ingeniosite },
-  { unlessFlags: [FLAGS.copainsPartent], speaker: 'Jean', say: ['Tes copains jouent encore à cache-cache dans le village. Va les trouver !'] },
   { speaker: 'M. Bouly', say: ['Bravo, les garçons ! Allez, Jean, grimpe : on va faire un tour de tracteur !'] },
   { black: true },
   { setFlag: FLAGS.tracteurRepare },
@@ -208,6 +210,8 @@ export const BOULY = [
 
 // Jean, sous le tracteur : il attend la pièce ; on peut aussi la lui donner directement.
 export const JEAN_TRACTOR = [
+  // (Ancienne partie : quête lancée avant la fin du cache-cache.)
+  { unlessFlags: [FLAGS.copainsPartent], speaker: 'Jean', say: ['Finis d\'abord ta partie de cache-cache, je t\'attends ici !'], end: true },
   { ifItems: [ITEMS.pieceTracteur.id], speaker: 'Jean', say: ['La pièce ! Parfait, passe-la-moi.'] },
   { ifItems: [ITEMS.pieceTracteur.id], steps: REPAIR, end: true },
   { speaker: 'Jean', say: ['Il manque une pièce à ce tracteur. Va voir M. Bouly, il sait peut-être où elle est.'] },
@@ -248,6 +252,6 @@ export const NORTH_EXIT = [
   { say: ['Ta journée n\'est pas finie.'] },
   { unlessFlags: [FLAGS.ecoleCm2], say: ['C\'est le dernier jour de CM2 : file à l\'école, le grand bâtiment au toit jaune !'], end: true },
   { unlessFlags: [FLAGS.copainsPartent], say: ['Tes copains t\'attendent pour leur partie de cache-cache.'] },
-  { unlessSouvenirs: [TRAITS.ingeniosite.id], say: ['Et Jean a un tracteur à réparer avec toi.'] },
-  { unlessSouvenirs: [TRAITS.ingeniosite.id], unlessFlags: [FLAGS.jeanQuetes], say: ['Jean t\'attend dans sa chambre.'] },
+  { ifFlags: [FLAGS.copainsPartent], unlessSouvenirs: [TRAITS.ingeniosite.id], say: ['Et Jean a un tracteur à réparer avec toi.'] },
+  { ifFlags: [FLAGS.copainsPartent], unlessSouvenirs: [TRAITS.ingeniosite.id], unlessFlags: [FLAGS.jeanQuetes], say: ['Jean t\'attend dans sa chambre.'] },
 ];
