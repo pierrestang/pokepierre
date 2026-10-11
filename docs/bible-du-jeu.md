@@ -640,7 +640,7 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 |---|---|---|
 | Agent immobilier | Remet les clés : « Vos parents ont tout réglé. Voici les clés, l'immeuble est juste à gauche. » | `g35` |
 | Ousmane | Le coloc ; part pour Hull quelques semaines avant Pierre | `g148` |
-| Paul | Fan de musculation : prête l'enceinte | `g86` |
+| Paul | Fan de musculation : prête l'enceinte ; présent à la soirée, dans le bas du salon (« Écoute-moi ce son ! Je te l'avais dit, qu'elle envoyait, mon enceinte. Fais gaffe à elle, hein. ») | `g86` |
 | Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `g0` |
 | Dalil | Discret, à la soirée d'intégration (puis au stade, au retour) | `g2` |
 | Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `g140` |
@@ -1558,7 +1558,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Militaires | `g87` / `g8` | Prytanée |
 | Agent immobilier | `g35` | Bordeaux |
 | Ousmane | `g148` | Bordeaux, aéroport, Hull, Bordeaux (le stade) |
-| Paul | `g86` | Bordeaux (et le stade, au retour) |
+| Paul | `g86` | Bordeaux (son studio, la soirée, et le stade au retour) |
 | Rémi | `g0` | Bordeaux (et le stade, au retour) |
 | Professeure d'anglais | `g106` | Bordeaux (KEDGE) |
 | Hôtesse | `g64` | Aéroport |

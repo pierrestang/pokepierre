@@ -1388,6 +1388,11 @@ export const interiors = {
       },
       // La soirée : Ousmane et Rémi dans la foule.
       { id: 'ousmane-fete', name: 'Ousmane', x: 7, y: 6, facing: 'left', ...PARTY_TIME, dancing: true, dialogue: ['Regarde-moi ça ! Et dire que tout à l\'heure on était dans le noir.'] },
+      // Paul, qui a prêté l'enceinte, dans le bas du salon (hors des passages).
+      {
+        id: 'paul-fete', name: 'Paul', x: 8, y: 11, facing: 'up', ...PARTY_TIME, dancing: true,
+        dialogue: ['Écoute-moi ce son ! Je te l\'avais dit, qu\'elle envoyait, mon enceinte. Fais gaffe à elle, hein.'],
+      },
       { id: 'remi-fete', name: 'Rémi', x: 5, y: 6, facing: 'right', ...PARTY_TIME, dancing: true, dialogue: ['This party is so lit! Enfin… grâce à toi, littéralement.'] },
       // Léo, Anaïs et Charlotte, de KEDGE, qu'on retrouve à Hull (sprites de Hull, par leur nom : voir characters.js).
       { id: 'leo-fete', name: 'Léo', x: 5, y: 5, facing: 'right', ...PARTY_TIME, dancing: true, script: PARTY_LEO },
