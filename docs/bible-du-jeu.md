@@ -189,7 +189,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman, pêche (avec la vieill
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Papa, Maman, Manon | Famille : clinique, puis maison | `g119`, `g126`, `g57` |
-| Fanny | La petite sœur, qui vient de naître (berceau, lit), puis enfant après l'ellipse | `g49` |
+| Fanny | La petite sœur, qui vient de naître (berceau, lit), puis petite fille après l'ellipse | `g60` |
 | Felix | Cousin : lance et dirige le chantier de la cabane | `g93` |
 | Joshua | Cousin : les planches de l'enclos à poules | `g18` |
 | Yanis | Cousin : la corde des hautes herbes | `g96` |
@@ -286,8 +286,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 
 ### Départ et trajet
 - **Condition** : la naissance de Fanny, la cabane (Esprit d'équipe), l'annonce de Papa, l'adieu aux cousins. On monte dans la voiture devant la maison :
-  « La voiture est chargée. » ; Felix descend de la cabane et accourt devant le capot : **« Le mot de passe, tu le gardes, hein ? »** ; « Tu
-  montes à l'arrière, à côté de Manon et de Fanny. »
+  « La voiture est chargée. » ; « Tu montes à l'arrière, à côté de Manon et de Fanny. » (les adieux ont eu lieu à la
+  cabane : plus de scène de Felix devant la voiture depuis le 11 octobre 2026).
 - **Trajet en voiture** (écran noir) : « La voiture s'éloigne de Saint-Ay. À l'arrière, tu es serré entre Manon et le siège
   de Fanny. » ; Manon « Regarde, Fanny dort déjà. Elle rate tout. » ; Fanny (endormie) « … les poules… » ; Manon « Elle
   rêve des poules de l'enclos. » ; Papa **« Allez. Montépilloy nous attend. »** Encart : « Tu emportes : Esprit d'équipe. »

@@ -27,7 +27,6 @@ export const FLAGS = {
   manonNouvelle: 'manon-nouvelle',              //   Manon : « Papa a une nouvelle à nous annoncer » ; elle rentre
   annonceMutation: 'annonce-mutation',          // Papa a annoncé le départ pour Montépilloy
   adieuCousins: 'adieu-cousins',                // au revoir aux cousins à la cabane
-  felixVoiture: 'felix-voiture',                // au départ, Felix accourt devant la voiture (« Le mot de passe… »)
   arriveeMontepilloy: 'arrivee-montepilloy',    // arrivé à Montépilloy (la famille y vit désormais)
   ellipseMontepilloy: 'ellipse-montepilloy',    // Montépilloy : « Quelques années plus tard… » joué
   mamanAccueil: 'maman-accueil',                //   Maman a accueilli Pierre à la maison

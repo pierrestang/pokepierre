@@ -193,8 +193,7 @@ export const ANNOUNCEMENT = [
 ];
 export const ANNOUNCEMENT_EVENT = { ...CABANE_DONE, unlessFlags: [FLAGS.annonceMutation] };
 
-// Le départ : la voiture chargée devant la maison (tournée vers la gauche : le capot donne sur la case CAR_HOOD).
-export const CAR_HOOD = [18, 7];
+// Le départ : la voiture chargée devant la maison (les adieux ont déjà eu lieu à la cabane).
 export const CAR = [
   {
     unlessFlags: [FLAGS.adieuCousins],
@@ -202,13 +201,6 @@ export const CAR = [
     end: true,
   },
   { say: ['La voiture est chargée.'] },
-  // Felix descend de la cabane, accourt et se plante devant le capot.
-  { setFlag: FLAGS.felixVoiture },
-  { walk: 'felix-voiture', to: CAR_HOOD, block: true },
-  { faceTo: 'felix-voiture' },
-  { speaker: 'Felix', say: ['Le mot de passe, tu le gardes, hein ?'] },
-  { walk: 'felix-voiture', to: [17, 8], block: true },          // il s'écarte pour laisser passer la voiture
-  { face: { 'felix-voiture': 'up' } },
   { say: ['Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
   { drive: 'familyCar' },
   { black: true },
