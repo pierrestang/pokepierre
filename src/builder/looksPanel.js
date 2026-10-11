@@ -4,7 +4,7 @@ import { projectLookOf, setProjectLook } from '../data/characters.js';
 import { loadPixelFont } from './pixelFont.js';
 
 // Panneau « PNJ » du créateur (bouton PNJ du bandeau) : l'apparence de chaque personnage nommé du jeu, dans la mise en
-// page du menu Start > PNJ du jeu (systems/NpcLooks.js) : bandeaux bleus, fond crème, la liste sur deux colonnes (sprite
+// page de l'ancien menu Start > PNJ du jeu (retiré le 11 octobre 2026) : bandeaux bleus, fond crème, la liste sur deux colonnes (sprite
 // de face et nom), puis la grille des sprites Gen 4, le sprite actuel cerclé de rouge. Filtres homme / femme / enfant /
 // âgé (data/spriteTags.js). Les choix restent en attente (« * ») jusqu'à « Enregistrer » : le serveur de développement
 // les écrit dans src/data/characterLooks.json (POST /__builder/looks, vite.config.js), que data/characters.js importe :

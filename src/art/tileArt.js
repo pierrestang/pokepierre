@@ -1303,7 +1303,7 @@ function fishingRods(g, px, py, x, y) {
   const base = py - 8;
   g.fillStyle(0x000000, 0.2);
   g.fillRect(px + 1, base + 8, 15, 1);
-  // Les cannes sont posées par-dessus, selon l'histoire (décor `rodsOnRack`, voir ROD_DECALS).
+  // Les cannes sont posées par-dessus, selon l'histoire (des icônes en `decals`, voir data/maps/interiors.js RACK_RODS).
   if (x % 2 === 1) {
     // Épuisette posée contre le mur : manche et filet.
     rect(g, 0x383840, px + 10, base - 21, 1, 23);
@@ -1341,7 +1341,7 @@ const HORSE_STATUE_C = {
 };
 
 // Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene), case (x, y)
-// en pixels px, py. Les cannes à pêche sont des images à part (voir art/uiIcons.js ROD_DECALS).
+// en pixels px, py. Les cannes à pêche sont des icônes à part (`decals` avec `icons`, voir data/maps/interiors.js RACK_RODS).
 const DECALS = {
   statue(g, px, py) {
     HORSE_STATUE.forEach((row, ry) => [...row].forEach((c, rx) => {

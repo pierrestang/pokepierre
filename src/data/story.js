@@ -73,7 +73,7 @@ export const FLAGS = {
   arriveeBordeaux: 'arrivee-bordeaux',          // arrivé à Bordeaux
   bordeauxOuverture: 'bordeaux-ouverture',      //   image d'accueil de Bordeaux vue
   ousmaneRencontre: 'ousmane-rencontre',        //   Ousmane rencontré devant l'immeuble : ils entrent (la coupure)
-  coupure: 'coupure',                          //   dans le noir : « On appelle quelqu'un ? » « Non. » (Pragmatisme)
+  coupure: 'coupure',                          //   dans le noir : « On appelle quelqu'un ? » « Non. » (Ingéniosité)
   coupureReparee: 'coupure-reparee',            //   compteur électrique relevé : la lumière revient (Indépendance)
   preparatifs: 'preparatifs',                   //   Ousmane lance la soirée : enceinte chez Paul, gobelets chez Rémi
   soiree: 'soiree',                             //   la soirée d'intégration, dans l'appartement
@@ -184,7 +184,7 @@ export const FLAGS = {
 // Vertus (traits de caractère) : une seule collection, qui grandit de ville en ville ; 8 au plus dans tout le jeu, une
 // par ville au plus (6 jusqu'à Hull, Adaptation à Hanoï, la Liberté à Paris). Encart « Pierre a reçu la vertu X ! » (étape `trait`),
 // « Pierre utilise X ! » quand une vertu débloque une situation (étape `useTrait`, comptée dans le carnet), carnet
-// (Start > VERTUS) et compteur « Vertus : X sur 8 » (UIScene). `city` : la ville où on la reçoit (id de carte) ;
+// (onglet Vertus du sac, Start > SAC) et compteur « Vertus : X sur 8 » (UIScene). `city` : la ville où on la reçoit (id de carte) ;
 // `phrase` : sa phrase dans le carnet. Les `id` gardent ceux des anciennes sauvegardes quand c'est la même vertu ;
 // les anciennes sont converties au chargement (voir TRAIT_MIGRATION, systems/save.js migrateSave).
 export const TRAITS = {

@@ -12,7 +12,8 @@ import { QUEST_STARTS, questState } from '../data/questStarts.js';
 
 // Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Sac (trois onglets : Objets,
 // Souvenirs, Vertus — le carnet des vertus est dans le sac), Quêtes (aller au début de la quête d'une ville, pour
-// tester), Carte (du voyage), Sauvegarder, Options (musique, sons, les touches), Quitter (retour à l'écran titre).
+// tester), Carte (du voyage), Options (musique, sons, les touches), Quitter (retour à l'écran titre ; la partie est
+// déjà sauvegardée en permanence, pas d'entrée Sauvegarder).
 // L'apparence des PNJ se choisit dans le créateur (panneau PNJ), plus ici ; le vélo, avec la touche V.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).

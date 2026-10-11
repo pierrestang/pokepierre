@@ -395,7 +395,7 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     for (const c of names) sel.append(new Option(`${c.id} — ${c.name}`, c.id));
   }
 
-  // La grille des apparences (comme le menu PNJ du jeu) : chaque personnage Gen 4 de face, « Celle du jeu » en premier.
+  // La grille des apparences (comme l'ancien menu PNJ du jeu) : chaque personnage Gen 4 de face, « Celle du jeu » en premier.
   function openLooks() {
     const it = selectedItem();
     if (!it) return;

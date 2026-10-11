@@ -1,5 +1,5 @@
 // La police de Rouge Feu du jeu (public/assets/fonts/frlg*.png + .xml, BMFont) dessinée sur un canvas du créateur, pour
-// que le panneau PNJ ressemble au menu PNJ du jeu. `light` : la variante claire (sur les bandeaux bleus).
+// que le panneau PNJ garde l'allure de l'ancien menu PNJ du jeu. `light` : la variante claire (sur les bandeaux bleus).
 // Mêmes remplacements que le jeu (systems/frlgFont.js) : guillemets, tirets, accents retirés si la lettre manque.
 
 const REPLACE = { '→': '▶', "'": '’', '"': '“', '«': '“', '»': '”', '—': '-', '–': '-' };

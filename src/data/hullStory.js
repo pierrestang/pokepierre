@@ -4,7 +4,8 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 // Charlotte depuis la soirée de Bordeaux (des retrouvailles) ; Romain et Prophecy le rencontrent ici.
 //   1. L'arrivée, Ousmane vient accueillir Pierre, la coloc ; Léo a appelé ; chez Léo, la soirée est lancée (la nuit tombe).
 //   2. Premier pub : la tournée (chaque commande, puis le barman, en anglais) ; une erreur, on retourne redemander.
-//   3. Deuxième pub : une partie de fléchettes contre un habitué (systems/Darts.js) ; pari gagné : tournée générale.
+//   3. Deuxième pub : Vincent entraîne Pierre dans une partie de fléchettes en équipe contre l'habitué (systems/Darts.js) ;
+//      pari gagné : tournée générale.
 //   De chez Léo au premier pub, puis d'un bar à l'autre jusqu'à l'Asylum, Léo part devant en éclaireur et entre le
 //   premier ; Pierre le suit, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu (data/story.js FOLLOWERS).
 //   4. L'Asylum (Joie de vivre), puis le petit matin devant la boîte : Insouciance ; rentrer dormir.
@@ -137,7 +138,7 @@ export const PUB_A_BAR = [
 
 // ---------- 3. Deuxième pub : les fléchettes ----------
 
-// En arrivant, la bande (qui suivait Pierre) s'attable ; l'habitué propose une partie.
+// En arrivant, la bande (qui suivait Pierre) s'attable ; Vincent vient proposer la partie en équipe.
 const BAND_PUB = ['leo-pub', 'ousmane-pub', 'charlotte-pub', 'anais-pub'];
 export const PUB_B_SEATS = { 'ousmane-pub': [9, 5], 'charlotte-pub': [6, 6], 'anais-pub': [9, 6] };
 
@@ -214,7 +215,7 @@ export const DARTS = [
   },
 ];
 
-// En entrant au second pub derrière Léo : la bande qui suivait Pierre s'attable, puis l'habitué l'aborde.
+// En entrant au second pub derrière Léo : la bande qui suivait Pierre s'attable, puis Vincent vient le chercher.
 export const PUB_B_ENTER = [
   { setFlag: FLAGS.bandePubB },
   { walkAll: Object.entries(PUB_B_SEATS) },

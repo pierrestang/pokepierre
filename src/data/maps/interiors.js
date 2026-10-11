@@ -1825,8 +1825,8 @@ export const interiors = {
 
   // Hull — deuxième pub (dessin : la maison de Fargas d'HGSS en pub anglais, scripts/interieurs/hull.py) : boiseries,
   // plancher, le bar en U à droite (la barmaid dedans, étagère à bouteilles derrière, pompes et pintes), deux banquettes
-  // rouges à gauche (des habitués), la table de la bande au milieu, la cible au mur (l'habitué devant propose une partie
-  // de fléchettes), deux petites tables rondes et des tonneaux près de l'entrée.
+  // rouges à gauche (des habitués), la table de la bande au milieu, la cible au mur (Vincent, devant, entraîne Pierre
+  // dans une partie de fléchettes contre l'habitué), deux petites tables rondes et des tonneaux près de l'entrée.
   hullPubB: {
     name: 'Pub',
     grid: parseGrid([
