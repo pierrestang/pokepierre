@@ -226,7 +226,9 @@ export const saintAyMap = {
       x,
       y: 0,
       ifFlags: [FLAGS.arriveeMontepilloy],
-      dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'],
+      // Avant l'annonce de Papa, rien ne dit encore qu'on partira.
+      dialogue: ['La route du nord. Elle file loin, vers les terres.'],
+      lockedDialogues: [{ ifFlags: [FLAGS.annonceMutation], dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'] }],
       warp: { map: 'routeMontepilloy', x: 10, y: 28, facing: 'up' },
     })),
   ],

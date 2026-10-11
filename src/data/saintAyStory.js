@@ -87,7 +87,7 @@ export const FELIX_CHANTIER = [
   { unlessItems: [ITEMS.corde.id], speaker: 'Felix', say: ['Et la corde : Yanis dit qu\'elle traîne dans les hautes herbes, au sud-ouest.'] },
   { unlessItems: [ITEMS.planches.id], end: true },
   { unlessItems: [ITEMS.corde.id], end: true },
-  // Tout est réuni : la cabane est construite, puis les quatre cousins s'y installent (voir CABANE_FETE).
+  // Tout est réuni : la cabane est construite, puis les cousins s'y installent (voir CABANE_FETE).
   { speaker: 'Felix', say: ['Tout est prêt ? Alors au travail !'] },
   { black: true },
   { take: ITEMS.planches.id },
@@ -99,14 +99,14 @@ export const FELIX_CHANTIER = [
   { travel: { interior: 'cabane', x: 4, y: 5, facing: 'right', cutscene: true } },
 ];
 
-// Dans la cabane toute neuve (voir interiors.cabane) : les quatre cousins assis derrière les deux longues
+// Dans la cabane toute neuve (voir interiors.cabane) : les cousins assis derrière les deux longues
 // tables. Ils s'ennuient déjà : Pierre (Joie de vivre) lance une chanson et toute la bande saute de joie ; puis
 // chacun parle en sautillant. Pierre se retrouve debout devant les tables, toujours dans la cabane.
 export const CABANE_FETE = [
   { black: true },
   { wait: 500 },
   { black: false },
-  { say: ['La cabane est finie. Les quatre cousins s\'installent au QG.'] },
+  { say: ['La cabane est finie. Les cousins s\'installent au QG.'] },
   { speaker: 'Joshua', say: ['Bon… et maintenant, on fait quoi ?'] },
   { speaker: 'Yanis', say: ['On s\'ennuie déjà.'] },
   { useTrait: TRAITS.joie },
@@ -256,6 +256,6 @@ export const OLD_FISHER = [
   { useTrait: TRAITS.joie },
   { say: ['Tu t\'assois à côté de lui et tu fredonnes la chanson de Maman.'] },
   { speaker: 'Vieux pêcheur', say: ['… Elle est pas mal, ta chanson.'] },
-  { speaker: 'Vieux pêcheur', say: ['T\'as le sourire de ta mère, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
+  { speaker: 'Vieux pêcheur', say: ['T\'as le sourire de quelqu\'un d\'heureux, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
   { give: ITEMS.galetLac, text: 'Le vieux pêcheur te donne un galet tout lisse.' },
 ];

@@ -49,7 +49,8 @@ export class ItemBag extends FullScreenPanel {
       } : null));
     }
     if (this.tab === 0) {
-      const slots = OBJECTS.map((o) => (items.has(o.id) ? item(o.id) : o.used && meetsConditions(o.used) ? item(o.id, { used: true }) : null));
+      // Grisé dès qu'il ne sert plus, même s'il est encore dans le sac (les clés de Bordeaux une fois à Hull).
+      const slots = OBJECTS.map((o) => (o.used && meetsConditions(o.used) ? item(o.id, { used: true }) : items.has(o.id) ? item(o.id) : null));
       // Un souvenir qui sert encore (un diplôme avant la fin de sa quête) : à la suite, hors compteur.
       const pending = items.list().filter((i) => i.id in NAMES && SOUVENIRS.some((x) => x.id === i.id) && !isSouvenir(i.id))
         .map((i) => item(i.id, { extra: true }));

@@ -184,7 +184,7 @@ export const CLOSET = [
   { say: [STUCK_HANDLE] },
   { useTrait: TRAITS.ingeniosite },
   { say: ['Tu glisses ta règle dans la fente et tu fais jouer le loquet… Clac !'] },
-  { speaker: 'Margaux', say: ['Quoi ?! Personne m\'avait jamais trouvée !', 'Bon. L\'été prochain, je trouve mieux. Promis.'] },
+  { speaker: 'Margaux', say: ['Quoi ?! Personne m\'avait jamais trouvée !', 'Bon. La prochaine fois, je trouve une cachette encore mieux.'] },
   { setFlag: FLAGS.margauxTrouvee },
 ];
 

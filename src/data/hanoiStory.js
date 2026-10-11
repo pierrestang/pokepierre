@@ -40,7 +40,7 @@ export const ARRIVAL = [
 export const MAILBOX = [
   'Une carte postale ! Elle vient de Hull.',
   '« Pierre ! Alors, Hanoï ? Ici il pleut toujours, rien n\'a changé.',
-  'La maison t\'attend quand tu veux. Léo et toute la bande. »',
+  'La maison t\'attend quand tu veux. Léo et Ousmane. »',
 ];
 
 // ---------- 2. L'agence ----------
@@ -202,7 +202,7 @@ const CARRY = carryText('hanoi');
 export const FLIGHT_TO_AMSTERDAM = [
   {
     say: [
-      'Il y a quelques mois, tu prenais ce billet à Hull, le ventre noué.',
+      'Il y a quelques mois, tu prenais ce billet à Hull, le sourire aux lèvres.',
       'Aujourd\'hui, c\'est un bánh mì dans une main et le billet dans l\'autre. Tu as pris le pli. Amsterdam, à nous deux.',
     ],
   },

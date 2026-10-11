@@ -292,7 +292,7 @@ export const interiors = {
           {
             choose: 'Trois cannes à pêche sont posées là. Tu en prends combien ?',
             choices: [
-              { label: 'Une', steps: [{ speaker: 'Papa', say: ['Voilà. Tu réfléchis. C\'est ça, le pragmatisme.', 'Une seule. Tu tiens ça de moi, pas de ta mère.'] }] },
+              { label: 'Une', steps: [{ speaker: 'Papa', say: ['Voilà. Tu réfléchis. C\'est ça, l\'ingéniosité.', 'Une seule. Tu tiens ça de moi, pas de ta mère.'] }] },
               { label: 'Les trois', steps: [{ speaker: 'Papa', say: ['Trois ?! On déménage, c\'est pas une expédition de pêche.'] }] },
             ],
           },
@@ -374,7 +374,7 @@ export const interiors = {
         script: [
           { unlessFlags: [FLAGS.planCabane], speaker: 'Papa', say: ['Fanny dort enfin. File voir tes cousins, ils viennent d\'emménager !'], end: true },
           { unlessFlags: [FLAGS.cabaneFinie], speaker: 'Papa', say: ['Alors, cette cabane, elle avance ? J\'ai hâte de la voir !'], end: true },
-          { ifFlags: [FLAGS.annonceMutation], speaker: 'Papa', say: ['La voiture est chargée, sur la route du nord. Va dire au revoir à tes cousins.'], end: true },
+          { ifFlags: [FLAGS.annonceMutation], speaker: 'Papa', say: ['La voiture est chargée, devant la maison. Va dire au revoir à tes cousins.'], end: true },
           { speaker: 'Papa', say: ['Tes cousins ont de la chance de t\'avoir.'] },
         ],
       },
@@ -543,7 +543,7 @@ export const interiors = {
         script: [{ speaker: 'Yanis', say: ['« {motDePasse|QG} »… Je l\'ai écrit sur ma main, pour pas l\'oublier.'] }],
       },
     ],
-    // La cabane toute neuve : les quatre cousins s'y installent (une seule fois).
+    // La cabane toute neuve : les cousins s'y installent (une seule fois).
     events: [{ on: 'enter', ifFlags: [FLAGS.cabaneFinie], unlessSouvenirs: [TRAITS.espritEquipe.id], steps: CABANE_FETE }],
   },
 
@@ -873,12 +873,6 @@ export const interiors = {
         ifFlags: [FLAGS.margauxTrouvee], unlessFlags: [FLAGS.finTroisieme],
         dialogue: ['On est dans la même classe, comme promis ! Enfin… presque promis.'],
       },
-      // Margaux cachée (placard d'entretien, voir collegeStory.js CLOSET) : Étienne vient prévenir, à sa place.
-      {
-        id: 'etienne-maths', name: 'Étienne', x: 2, y: 6, facing: 'up', still: true, color: 0x6080a0,
-        unlessFlags: [FLAGS.margauxTrouvee, FLAGS.finTroisieme],
-        dialogue: ['Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance !'],
-      },
       // Camille, une fille de ta classe : la scène du dialogue à choix (voir collegeStory.js CAMILLE).
       {
         id: 'camille', name: 'Camille', x: 6, y: 6, facing: 'up', still: true, color: 0xe080a0,
@@ -929,14 +923,20 @@ export const interiors = {
       ...[4, 5, 6].map((x) => ({ x, y: 1, dialogue: ['Au tableau : « Rédaction : racontez votre plus beau souvenir de vacances. »'] })),
     ],
     npcs: [
-      { id: 'prof-francais', name: 'Professeure', x: 5, y: 2, facing: 'down', color: 0xc06080, dialogue: ['Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit !'] },
+      { id: 'prof-francais', name: 'Professeure', x: 5, y: 2, facing: 'down', color: 0xc06080, dialogue: ['Tu nous écriras sur Saint-Ay ?'] },
       ...collegeStudents([
         [2, 6, 'Ma rédaction fait douze lignes. Dont quatre de titre.'],
         [8, 6, 'J\'ai mis trois couches de blanco. On voit plus rien. Même pas moi.'],
         [2, 8, 'Qui a écrit « vive les vacances » sur la table ? C\'est pas moi. Enfin si.'],
         [8, 8, 'La sonnerie, c\'est le plus beau son du monde.'],
       ]),
-      // Étienne revient ici une fois Margaux trouvée (ou à la fin de la troisième) ; avant, il est en salle de maths.
+      // Étienne, dans sa classe (pas celle de Pierre) : tant que Margaux est cachée (placard d'entretien, voir
+      // collegeStory.js CLOSET), il prévient ; ensuite, les casiers.
+      {
+        id: 'etienne-college', name: 'Étienne', x: 7, y: 6, facing: 'up', still: true, color: 0x6080a0,
+        unlessFlags: [FLAGS.margauxTrouvee, FLAGS.finTroisieme],
+        dialogue: ['Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance !'],
+      },
       ...[{ ifFlags: [FLAGS.margauxTrouvee] }, { ifFlags: [FLAGS.finTroisieme], unlessFlags: [FLAGS.margauxTrouvee] }].map((when) => ({
         id: 'etienne-college', name: 'Étienne', x: 7, y: 6, facing: 'up', still: true, color: 0x6080a0, ...when,
         dialogue: ['Les casiers, c\'était vrai ! Par contre, pas la même classe… On se voit à la récré !'],
@@ -1085,7 +1085,7 @@ export const interiors = {
       {
         id: 'margaux-fin', name: 'Margaux', x: 3, y: 4, facing: 'down', color: 0xf08080,
         ifFlags: [FLAGS.copainsPartent], unlessFlags: [FLAGS.septembre],
-        dialogue: ['Promis, hein ? L\'été prochain, on refait une partie. Dans tout le village.'],
+        dialogue: ['La prochaine partie, c\'est dans tout le village. Je connais déjà ma cachette.'],
       },
       {
         id: 'etienne-fin', name: 'Étienne', x: 9, y: 5, facing: 'left', color: 0x6080a0,
@@ -1224,7 +1224,7 @@ export const interiors = {
       ...[2, 3].map((x) => ({ x, y: 8, ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.affairesPretes], script: PREPARE_DESK })),
       ...[2, 3].map((x) => ({ x, y: 8, dialogue: ['Tes affaires pour demain, prêtes sur le bureau.'] })),
       ...[[0, 8], [1, 8], [1, 7]].map(([x, y]) => ({ x, y, dialogue: ['L\'armoire de Tanguy et Geoffrey. Pliée au carré, elle aussi.'] })),
-      ...[0, 1].map((x) => ({ x, y: 5, dialogue: ['Des manuels de prépa et les BD de Geoffrey.'] })),
+      ...[0, 1].map((x) => ({ x, y: 5, dialogue: ['Des manuels de terminale et les BD de Geoffrey.'] })),
       ...[3, 4, 5, 6, 10, 11].map((x) => ({ x, y: 4, dialogue: ['Un lit au carré. Pas un pli.'] })),
     ],
     events: [
@@ -1270,7 +1270,7 @@ export const interiors = {
     npcs: PRYTANEE_DAY.flatMap((when) => [
       // Internat des garçons : des garçons (apparences imposées, les figurants au hasard comptent aussi des filles).
       { id: 'terminale-1', name: 'Élève', sprite: 'g92', x: 4, y: 6, facing: 'left', ...when, dialogue: ['Vous êtes la chambre du dessous ? Vous ronflez.'] },
-      { id: 'terminale-2', name: 'Élève', sprite: 'g156', x: 7, y: 5, facing: 'down', ...when, dialogue: ['Le bac, c\'est dans un an. Ou dans deux. Je sais plus.'] },
+      { id: 'terminale-2', name: 'Élève', sprite: 'g156', x: 7, y: 5, facing: 'down', ...when, dialogue: ['Le bac, c\'est cette année. Je sais plus où donner de la tête.'] },
       { id: 'terminale-3', name: 'Élève', sprite: 'g23', x: 10, y: 6, facing: 'left', ...when, dialogue: ['Mon lit n\'est jamais assez au carré pour le capitaine. Jamais.'] },
     ]),
   },
@@ -1391,7 +1391,7 @@ export const interiors = {
       { id: 'etudiant-12', name: 'Étudiant', x: 5, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Ousmane m\'a dit que c\'était ici, la meilleure soirée.'] },
       { id: 'etudiant-13', name: 'Étudiant', x: 8, y: 11, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Tu restes jusqu\'à quelle heure ?'] },
       // Dalil, discret, dans un coin : on ne le voit qu'à de rares moments (ici, puis au stade).
-      { id: 'dalil-fete', name: 'Dalil', x: 11, y: 8, facing: 'left', ...PARTY_TIME, still: true, dialogue: ['Il paraît qu\'il va faire beau ce week-end. Parfait pour aller voir les vagues.'] },
+      { id: 'dalil-fete', name: 'Dalil', x: 11, y: 8, facing: 'left', ...PARTY_TIME, still: true, dialogue: ['Moi, c\'est Dalil, un pote d\'Ousmane, de la fac. Il paraît qu\'il va faire beau ce week-end : parfait pour aller voir les vagues.'] },
     ],
     // Le tableau électrique : au fond, sans bulle « ! » (on le cherche dans le noir).
     objects: [
@@ -1690,10 +1690,11 @@ export const interiors = {
         dialogue: ['Il me faut une heure pour choisir mes chaussures. Au moins.'],
       },
       // Après la soirée : de retour chez eux.
-      ...[['leo-apres', 'Léo', 6, 10, 'J\'ai lu la même page six fois… hier. Et aujourd\'hui aussi.'],
-        ['romain-apres', 'Romain', 3, 8, 'Quelle soirée ! On en reparlera longtemps.'],
-        ['prophecy-apres', 'Prophecy', 8, 8, 'Bonne chance pour les exams, Pierre.']].map(([id, name, x, y, line]) => ({
-        id, name, x, y, facing: 'down', ifSouvenirs: [INSOUCIANCE], unlessFlags: [FLAGS.jourResultats], dialogue: [line],
+      // Léo et Prophecy passent les révisions à la bibliothèque (hullLibrary, dès `lendemainHull`) : ils ne sont plus ici.
+      ...[['leo-apres', 'Léo', 6, 10, 'J\'ai lu la même page six fois. Demain, bibliothèque, sinon c\'est foutu.', FLAGS.lendemainHull],
+        ['romain-apres', 'Romain', 3, 8, 'Quelle soirée ! On en reparlera longtemps.', null],
+        ['prophecy-apres', 'Prophecy', 8, 8, 'Bonne chance pour les exams, Pierre.', FLAGS.lendemainHull]].map(([id, name, x, y, line, gone]) => ({
+        id, name, x, y, facing: 'down', ifSouvenirs: [INSOUCIANCE], unlessFlags: [FLAGS.jourResultats, gone].filter(Boolean), dialogue: [line],
       })),
     ],
     events: [{ on: 'enter', ifFlags: [FLAGS.leoAppel], unlessFlags: [FLAGS.leoPlan], steps: LEO_PLAN }],
@@ -2332,9 +2333,16 @@ export const interiors = {
       { id: 'collegue', name: 'Guillaume', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
       { id: 'collegue-tot', name: 'Anthony', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
       // Celle qui accueille Pierre le premier jour (parisStory.js OFFICE_FIRST).
-      { id: 'collegue-accueil', name: 'Camille', lookName: 'Camille (Paris)', x: 2, y: 8, facing: 'down', fidget: true, dialogue: ['Alors, ce premier jour ? Si tu cherches quoi que ce soit, demande-moi !'] },
+      // Camille : « ce premier jour » seulement le premier jour (avant le concert et le premier « Un an plus tard… »).
+      ...[[{ unlessFlags: [FLAGS.concertParis] }, 'Alors, ce premier jour ? Si tu cherches quoi que ce soit, demande-moi !'],
+        [{ ifFlags: [FLAGS.concertParis] }, 'Déjà un an que tu es là, toi ? Le temps file, dans cette tour.']].map(([when, line]) => ({
+        id: 'collegue-accueil', name: 'Camille', lookName: 'Camille (Paris)', x: 2, y: 8, facing: 'down', fidget: true, ...when, dialogue: [line],
+      })),
       { id: 'collegue-point', name: 'Andrea', x: 13, y: 4, facing: 'left', fidget: true, dialogue: HALL_LINES.point },
-      { id: 'collegue-bonne', name: 'Antoine', x: 20, y: 3, facing: 'down', fidget: true, dialogue: HALL_LINES.bonne },
+      // Antoine : « On se voit en haut » seulement quand le badge de Pierre ouvre un étage (après le concert).
+      ...[[{ unlessFlags: [FLAGS.concertParis] }, HALL_LINES.bonneDebut], [{ ifFlags: [FLAGS.concertParis] }, HALL_LINES.bonne]].map(([when, dialogue]) => ({
+        id: 'collegue-bonne', name: 'Antoine', x: 20, y: 3, facing: 'down', fidget: true, ...when, dialogue,
+      })),
       { id: 'accueil', name: 'Yasmine', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
     ],
     objects: elevator('entreprise'),

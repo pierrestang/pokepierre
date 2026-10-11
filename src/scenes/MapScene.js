@@ -1588,7 +1588,9 @@ export class MapScene extends Phaser.Scene {
     }
     const ready = meetsConditions(trigger);
     if (!ready) {
-      if (trigger.dialogue) await this.dialog.open(trigger.dialogue);
+      // `lockedDialogues` : [{ conditions, dialogue }], le premier dont les conditions sont remplies, sinon `dialogue`.
+      const pages = (trigger.lockedDialogues ?? []).find(meetsConditions)?.dialogue ?? trigger.dialogue;
+      if (pages) await this.dialog.open(pages);
       return;
     }
     // Conditions remplies : `readyDialogue` (ou `dialogue` pour un simple message), puis voyage éventuel.

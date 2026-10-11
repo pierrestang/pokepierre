@@ -63,13 +63,14 @@ export const OFFICE_FIRST = [
 export const COLLEAGUE = [
   { ifFlags: [FLAGS.liberteParis], speaker: GUILLAUME, say: ['Tu pars ? Vraiment ? … Tu sais quoi, je t\'envie un peu.'], end: true },
   { ifFlags: [FLAGS.promotionParis], speaker: GUILLAUME, say: ['Alors, monsieur du premier étage ? On ne te voit plus, en bas.'], end: true },
-  { speaker: GUILLAUME, say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
+  { speaker: GUILLAUME, say: ['Le café de la machine ? Je te le déconseille. Dix ans que je le bois quand même.'] },
 ];
 
 // Les collègues du hall, debout : ils parlent à Pierre comme à quelqu'un qui travaille là.
 export const HALL_LINES = {
   tot: ['Salut, Pierre ! Encore là de bonne heure, toi.'],
   point: ['Tiens, Pierre, tu passes au point d\'équipe tout à l\'heure ?'],
+  bonneDebut: ['Bonne journée, hein ! Le hall, c\'est le meilleur étage : il y a le café.'],
   bonne: ['Bonne journée, hein ! On se voit en haut.'],
   cafe: ['La machine à café est encore en panne. Comme tous les lundis.'],
 };

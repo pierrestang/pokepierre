@@ -134,7 +134,7 @@ export const GUESTS = {
   riz: ['Reprends du riz, va ! Il en reste plein la marmite.'],
   dal: ['Le dal, c\'est la recette de ma grand-mère. Elle ne la donne à personne !'],
   ensemble: ['Ici, on ne mange jamais seul. C\'est ça, le meilleur ingrédient.'],
-  grandMere: ['Mange, mon garçon, mange ! Tu es tout maigre.'],
+  grandMere: ['Encore un peu de dal ? Je l\'ai fait ce matin, rien que pour vous.'],
   voisin: ['Encore une galette ? Si, si, j\'insiste !'],
 };
 
@@ -161,7 +161,7 @@ export const SAGE = [
   { wait: 600 },
   { give: ITEMS.talismanIndien, text: 'Le vieux sage glisse dans ta main un talisman : une petite pierre, polie par les années, où l\'on a gravé un chemin qui tourne sur lui-même.' },
   { speaker: 'Vieux sage', say: ['Garde-la sur toi. Elle vient de loin, comme toi.'] },
-  { say: ['Le poids dans ma paume… c\'est le même que le coquillage de Manon, sur la plage de Fort-de-France. Comme si le voyage bouclait quelque chose.'] },
+  { say: ['Le poids dans ma paume… c\'est le même que le coquillage de Manon, dans l\'herbe près des statues de Fort-de-France. Comme si le voyage bouclait quelque chose.'] },
   { speaker: 'Harsh', say: ['Viens, on redescend. La ville nous attend dehors.'] },
   { setFlag: FLAGS.sageDelhi },
 ];

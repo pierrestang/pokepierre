@@ -87,7 +87,7 @@ const ALL_SERVED = ORDERS.map((o) => o.flag);
 
 export const PUB_A_WELCOME = [
   { speaker: 'Léo', say: ['Première tournée, c\'est toi qui régales !'] },
-  { speaker: 'Anaïs', say: ['Comme à Bordeaux, mais c\'est toi qui régales cette fois !'] },
+  { speaker: 'Anaïs', say: ['Moi, je prends ce qu\'il y a de plus anglais sur la carte. Surprends-moi !'] },
   // Charlotte connaît déjà Pierre (la soirée de Bordeaux) : des retrouvailles, pas une rencontre.
   { speaker: 'Charlotte', say: ['Pierre ! Depuis la soirée de Bordeaux… Ça fait plaisir de te revoir. Et devine qui est la coloc d\'Anaïs : moi !'] },
   { speaker: 'Barman', say: ['Alors, qu\'est-ce que je te sers pour la bande ?', 'Va demander à chacun ce qu\'il boit, et reviens me le dire.'] },

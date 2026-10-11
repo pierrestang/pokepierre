@@ -114,9 +114,9 @@ de la ville. et la liste des vols ne la propose pas ;
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Maman | Au salon : programme de la journée, puis la danse (Joie de vivre) | `g126` |
-| Papa | Trie ses cannes dans son atelier | `g119` |
-| Manon | Sœur, devant la maison : le coquillage caché | `g57` |
+| Maman | Au salon : programme de la journée, puis la danse (Joie de vivre) | `g44` |
+| Papa | Trie ses cannes dans son atelier | `g80` |
+| Manon | Sœur, devant la maison : le coquillage caché | `g96` |
 | Capitaine du ferry | « L'ancien pêcheur » : sa canne est cassée, il garde le départ | `g118` |
 | Promeneuse | Devant le mémorial de l'Anse Caffard : « Je viens souvent ici, devant les statues. » / « Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés. » | `g82` |
 | Gamin | Sur la plage : « J'ai vu des poissons sauter près des rochers ! » / « Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ? » | `g58` |
@@ -134,7 +134,7 @@ de la ville. et la liste des vols ne la propose pas ;
      fois) : « Papa trie ses cannes à son atelier. Va l'aider ! »
 2. **Papa : le tri des cannes** (atelier). « Des caisses partout. Papa trie sans lever les yeux. » / Papa :
    « T'es venu m'aider ou regarder ? » / choix « Trois cannes à pêche sont posées là. Tu en prends combien ? »
-   - « Une » : **« Voilà. Tu réfléchis. C'est ça, le pragmatisme. »** / « Une seule. Tu tiens ça de moi, pas de ta
+   - « Une » : **« Voilà. Tu réfléchis. C'est ça, l'ingéniosité. »** / « Une seule. Tu tiens ça de moi, pas de ta
      mère. »
    - « Les trois » : « Trois ?! On déménage, c'est pas une expédition de pêche. »
    - Dans les deux cas : « Papa en garde une et jette les deux autres dans une caisse marquée « À DONNER ». » / « Voilà.
@@ -212,8 +212,8 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
 | Papa, Maman, Manon | Famille : clinique, puis maison | `g119`, `g126`, `g57` |
 | Fanny | La petite sœur, qui vient de naître (berceau, lit), puis petite fille après l'ellipse | `g60` |
 | Felix | Cousin : lance et dirige le chantier de la cabane | `g13` (garçon ; choisi dans le créateur) |
-| Joshua | Cousin : les planches de l'enclos à poules | `g18` |
-| Yanis | Cousin : la corde des hautes herbes | `g96` |
+| Joshua | Cousin : les planches de l'enclos à poules | `g68` |
+| Yanis | Cousin : la corde des hautes herbes | `g59` |
 | Val | Cousin·e, sculpte un cheval en bois dans la maison de Felix : « Regarde, il commence à ressembler à quelque chose. La crinière, c'est le plus dur. » / « Il me faudra encore quelques semaines. Il doit être parfait. » | `g42` |
 | Vieux pêcheur | Méfiant, au bord du lac (objet optionnel) | `g67` |
 | Poules | Gardent le tas de planches | dessinées dans le code, au style des sprites DS |
@@ -242,7 +242,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
 4. **La corde** (hautes herbes du sud-ouest, en marchant dessus) → **Vieille corde** (« Tu trouves une vieille corde,
    cachée dans les hautes herbes. » ; Yanis : « Parfait. Ça tiendra… sûrement. »). L'ordre entre 3 et 4 est libre.
 5. **La cabane.** Felix : « Tout est prêt ? Alors au travail ! » ; écran noir ; dans la cabane : « La cabane est finie.
-   Les quatre cousins s'installent au QG. » ; Joshua « Bon… et maintenant, on fait quoi ? » ; Yanis « On s'ennuie
+   Les cousins s'installent au QG. » ; Joshua « Bon… et maintenant, on fait quoi ? » ; Yanis « On s'ennuie
    déjà. » → **« Pierre utilise Joie de vivre ! »** → « Tu lances une chanson, et tout le monde se met à sauter dans la
    cabane ! » (toute la bande saute de joie) ; Felix « Voilà. Notre QG. » ; Joshua « Personne n'entre sans le mot de
    passe. » ; Yanis « On a un mot de passe ? » ; Felix « Pas encore. Pierre, à toi de le choisir ! » → le joueur écrit
@@ -268,7 +268,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
 - Felix pendant le chantier : « Il nous faut encore les planches : Joshua t'attend devant l'enclos à poules. Écarte les
   poules du tas ! » / « Et la corde : Yanis dit qu'elle traîne dans les hautes herbes, au sud-ouest. »
 - Papa à la maison : « Fanny dort enfin. File voir tes cousins, ils viennent d'emménager ! » ; « Alors, cette cabane,
-  elle avance ? J'ai hâte de la voir ! » ; « La voiture est chargée, sur la route du nord. Va dire au revoir à tes
+  elle avance ? J'ai hâte de la voir ! » ; « La voiture est chargée, devant la maison. Va dire au revoir à tes
   cousins. »
 - La voiture, avant l'adieu : « La voiture est chargée. Va d'abord dire au revoir à tes cousins, à la cabane. »
 
@@ -281,7 +281,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
 - **Galet du lac**, donné par le vieux pêcheur, seulement avec Joie de vivre. Sans elle : « Le vieil homme te tourne le
   dos. Il a l'air de mauvaise humeur. » Avec : « Hm ? Je ne parle pas aux inconnus, moi. » → « Pierre utilise Joie de
   vivre ! » → « Tu t'assois à côté de lui et tu fredonnes la chanson de Maman. » / le pêcheur : « … Elle est pas mal, ta
-  chanson. » / « T'as le sourire de ta mère, toi. » / **« Ce galet, je l'ai trouvé au fond du lac quand j'avais ton âge. Il porte bonheur.
+  chanson. » / « T'as le sourire de quelqu'un d'heureux, toi. » / **« Ce galet, je l'ai trouvé au fond du lac quand j'avais ton âge. Il porte bonheur.
   Garde-le. »** Ensuite : « Prends soin de ce galet. Et de ta petite sœur. »
 
 ### Retour à Saint-Ay (après le départ)
@@ -340,15 +340,15 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Maman | Rappelle le programme | `g126` |
-| Papa | « Le dernier jour, déjà. On est arrivés à Montépilloy, tu tenais à peine sur le siège arrière. » | `g119` |
-| Manon | « Le collège ? Tu verras, on s'y fait vite. Et le matin, tu feras la route à pied avec les copains. » | `g57` |
-| Fanny | « Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! » » | `g49` |
-| Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `g52` |
+| Maman | Rappelle le programme | `g44` |
+| Papa | « Le dernier jour, déjà. On est arrivés à Montépilloy, tu tenais à peine sur le siège arrière. » | `g80` |
+| Manon | « Le collège ? Tu verras, on s'y fait vite. Et le matin, tu feras la route à pied avec les copains. » | `g96` |
+| Fanny | « Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! » » | `g60` |
+| Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `g22` |
 | M. Bouly | Le fermier, et son tracteur en panne | `g33` |
-| Margaux | Copine de classe : lance le cache-cache | `g43` |
+| Margaux | Copine de classe : lance le cache-cache | `g3` |
 | Étienne | Copain de classe | `g30` |
-| Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul au bord de la mare | `g38` |
+| Benoît | Copain de classe, qui n'ira pas au collège avec eux ; après le cache-cache, assis seul au bord de la mare | `g12` |
 
 ### Quêtes, dans l'ordre (les quêtes 2 et 3 dans n'importe quel ordre après l'école)
 1. **Le dernier jour de CM2** : en entrant à l'école, « C'est le dernier jour de CM2. » Margaux : « Dernier jour de CM2 !
@@ -450,14 +450,14 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Surveillant | Accueil, tranche l'embrouille du casier, rappelle l'objectif | `g52` |
-| Principale | Derrière l'accueil : « Bienvenue au collège Bonsecours, Pierre. Le surveillant t'expliquera tout ce qu'il faut savoir. » | `g37` |
+| Principale | Derrière l'accueil : « Bienvenue au collège Bonsecours, Pierre. Le surveillant t'expliquera tout ce qu'il faut savoir. » | `g194` |
 | Rémy | Le « colocataire » du casier 12, apporte l'Audace | `g109` |
 | Camille | Nouvelle de 6e B, la scène du dialogue à choix | `g25` |
 | Professeur | Prof de maths : rappel à l'ordre, puis l'oral du brevet | `g138` |
-| Professeure | Prof de français : « Ta rédaction sur Saint-Ay était très réussie. Tu as le sens du récit ! » | `g54` |
+| Professeure | Prof de français : « Tu nous écriras sur Saint-Ay ? » | `g54` |
 | Professeur de sciences | « Aujourd'hui, on observe des feuilles au microscope. Les feuilles des arbres de Bonsecours ! » | figurant |
-| Margaux | Cachée dans le placard d'entretien au début (passage optionnel) ; une fois trouvée, en salle de maths : « On est dans la même classe, comme promis ! Enfin… presque promis. » | `g43` |
-| Étienne | Tant que Margaux est cachée, en salle de maths, à sa place : « Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance ! » ; ensuite (ou après l'ellipse), en salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `g30` |
+| Margaux | Cachée dans le placard d'entretien au début (passage optionnel) ; une fois trouvée, en salle de maths : « On est dans la même classe, comme promis ! Enfin… presque promis. » | `g3` |
+| Étienne | Dans sa classe, la salle de français (pas celle de Pierre) ; tant que Margaux est cachée : « Margaux a trouvé sa cachette imbattable, comme promis. Bonne chance ! » ; ensuite (ou après l'ellipse), en salle de français, pas dans la classe de Pierre : « Les casiers, c'était vrai ! Par contre, pas la même classe… On se voit à la récré ! » | `g30` |
 | Élèves | Une réplique chacun, dans le hall, le couloir et les trois salles | figurants |
 | Militaires (2) | Barrent la route du Prytanée, en haut de la carte : « Halte ! La route du Prytanée est réservée aux candidats. Reviens avec ton diplôme du brevet. » Le brevet obtenu, l'un d'eux s'écarte sur le bas-côté : « Ton brevet ? Garde-à-vous… C'est en règle. » / « Les portes du Prytanée te sont ouvertes. Droit devant, et tiens-toi bien ! » | `g87` |
 
@@ -504,7 +504,7 @@ la route du nord. »
 Du premier jour jusqu'à la fin de la troisième. Bonus sans objet. Dans le couloir des casiers, un placard d'entretien à la
 poignée cassée : « La poignée tourne dans le vide. » → **« Pierre utilise Ingéniosité ! »** → « Tu glisses ta règle
 dans la fente et tu fais jouer le loquet… Clac ! » / Margaux, à l'intérieur : **« Quoi ?! Personne m'avait jamais
-trouvée ! »** / « Bon. L'été prochain, je trouve mieux. Promis. » Elle retourne ensuite en salle de maths (et Étienne en
+trouvée ! »** / « Bon. La prochaine fois, je trouve une cachette encore mieux. » Elle retourne ensuite en salle de maths (et Étienne en
 salle de français). Après l'ellipse, ou une fois Margaux trouvée, le placard répond seulement « La poignée tourne dans
 le vide. » ; Margaux ne participe à aucune scène obligatoire.
 
@@ -543,7 +543,7 @@ Dialogue à choix (Camille), l'oral du brevet (trois questions : français, math
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Capitaine | Accueil, inspection, garde la porte nord | `g87` |
+| Capitaine | Accueil, inspection, garde la porte nord | `g108` |
 | Tanguy | Camarade de chambre | `g56` |
 | Geoffrey | Camarade de chambre | `g41` |
 | Militaires | Porte sud, drapeau, cour ; la nuit, trois rondes avec lampe | `g87` ; `g8` imposé pour une ronde |
@@ -620,11 +620,11 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Agent immobilier | Remet les clés : « Vos parents ont tout réglé. Voici les clés, l'immeuble est juste à gauche. » | `g35` |
-| Ousmane | Le coloc ; part pour Hull quelques semaines avant Pierre | `g105` |
+| Ousmane | Le coloc ; part pour Hull quelques semaines avant Pierre | `g148` |
 | Paul | Fan de musculation : prête l'enceinte | `g86` |
-| Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `g140` |
+| Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `g0` |
 | Dalil | Discret, à la soirée d'intégration (puis au stade, au retour) | `g2` |
-| Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `g55` |
+| Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `g140` |
 | Anaïs | Étudiante de KEDGE (« de ta promo »), invitée à la soirée ; on la retrouve à Hull | `g107` |
 | Étudiants (13) | À la soirée d'intégration | figurants |
 | Professeure d'anglais | L'oral à KEDGE | `g106` |
@@ -658,7 +658,7 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
      Charlotte : **« Salut ! Charlotte, de KEDGE. Moi aussi, je pars à Hull l'an prochain. On dirait que tout le monde y
      va ! »** (ensuite : « On se revoit à Hull, alors. Promis ? »).
    - Dans un coin, près des lits, sans danser : **Dalil**, discret (on ne le voit qu'à de rares moments : ici, puis au
-     stade, au retour) : « Il paraît qu'il va faire beau ce week-end. Parfait pour aller voir les vagues. »
+     stade, au retour) : « Moi, c'est Dalil, un pote d'Ousmane, de la fac. Il paraît qu'il va faire beau ce week-end : parfait pour aller voir les vagues. »
    - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous :
      gobelets, canettes, pizza froide, confettis… »** / « Ousmane dort encore, tout habillé. » (couché dans le lit de
      gauche). Voir le passage optionnel.
@@ -686,7 +686,9 @@ côté de chez Paul. »
 ### Les gardiens des sorties est
 - Chemin de l'aéroport (en haut à droite), tant que Pierre n'a pas son diplôme d'anglais : l'agent de sécurité. Passer à
   côté de lui : il se tourne vers Pierre (« ! »), **« Halte ! Par ici, c'est l'aéroport. »** / « Pas de diplôme
-  d'anglais, pas d'avion. L'oral, c'est à KEDGE, de l'autre côté de la Garonne. », et Pierre recule d'un pas.
+  d'anglais, pas d'avion. L'oral, c'est à KEDGE, de l'autre côté de la Garonne. » (avant qu'Ousmane annonce l'oral :
+  « Pas de billet, pas d'avion. Reviens quand tu auras une bonne raison de partir. »), et Pierre recule d'un pas. La
+  porte de KEDGE, fermée jusque-là : « KEDGE, l'école de commerce. Les portes sont fermées pour l'instant. »
 - Route de Paris (en bas à droite), jusqu'au diplôme de Bordeaux : l'ouvrier, de la même façon : **« Holà ! Travaux sur la
   route de Paris, personne ne passe. »** / « Reviens plus tard. On aura peut-être fini… peut-être. »
 
@@ -725,8 +727,8 @@ monter sur le vélo. »** (le seul rappel) Ensuite : « Il te va bien, ce vélo 
 
 ### Boîte aux lettres (carte postale)
 Une boîte aux lettres rouge, à gauche de l'immeuble. De Joshua (la « vraie lettre, avec un timbre » promise à Saint-Ay) :
-« Une carte postale ! Elle vient de Joshua. » / « « Pierre, je t'avais promis une vraie lettre, avec un timbre. Voilà le
-timbre. La lettre, c'est cette carte. » / « Felix dit que la cabane tient toujours. Yanis a encore oublié le mot de passe.
+« Une carte postale ! Elle vient de Joshua. » / « « Pierre, je t'avais demandé une vraie lettre, avec un timbre. Comme elle
+n'arrive pas, je commence. La lettre, c'est cette carte. » / « Felix a ajouté un étage au QG. Il faut un nouveau mot de passe : on t'attend pour le choisir.
 Joshua. » »
 
 ### Mini-jeux
@@ -766,9 +768,9 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Ousmane | Coloc de Pierre, toujours avec la bande | `g105` |
-| Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `g55` |
-| Romain | Colocataire de Léo ; rencontre Pierre chez Léo | `g92` |
+| Ousmane | Coloc de Pierre, toujours avec la bande | `g148` |
+| Léo | Meneur de la bande, parle franglais ; rencontré à la soirée de Bordeaux | `g140` |
+| Romain | Colocataire de Léo ; rencontre Pierre chez Léo | `g202` |
 | Prophecy | Colocataire de Léo ; rencontre Pierre chez Léo | `g94` |
 | Charlotte | De la bande, sérieuse, colocataire d'Anaïs ; rencontrée à la soirée de Bordeaux, retrouvée au premier pub | `g43` |
 | Anaïs | De la bande ; de la promo de KEDGE, rencontrée à la soirée de Bordeaux | `g107` |
@@ -787,8 +789,8 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    **La tournée des bars** : à chaque étape (de chez Léo au premier pub, puis au second, puis à l'Asylum), Léo sort le
    premier, part devant en éclaireur (il attend Pierre s'il traîne) et entre le premier ; Pierre le suit ; à partir du
    premier pub, Ousmane, Charlotte et Anaïs suivent Pierre à la queue leu leu, puis s'attablent en arrivant.
-2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** ; Anaïs : « Comme à Bordeaux, mais
-   c'est toi qui régales cette fois ! » ; Charlotte, qui connaît déjà Pierre (la soirée de Bordeaux) : **« Pierre ! Depuis
+2. **Premier pub : la tournée.** Léo : **« Première tournée, c'est toi qui régales ! »** ; Anaïs : « Moi, je prends ce qu'il y a
+   de plus anglais sur la carte. Surprends-moi ! » ; Charlotte, qui connaît déjà Pierre (la soirée de Bordeaux) : **« Pierre ! Depuis
    la soirée de Bordeaux… Ça fait plaisir de te revoir. Et devine qui est la coloc d'Anaïs : moi ! »** ; le barman : « Alors, qu'est-ce
    que je te sers pour la bande ? » Chacun dit sa commande en
    français : Léo « Une Guinness, évidemment. », Ousmane « Un cidre, s'il te plaît. », Charlotte « Un gin tonic ! »,
@@ -970,7 +972,7 @@ de tête, et reprennent leur partie. »
 
 ### Boîte aux lettres (carte postale)
 De Léo et de la bande de Hull : « Une carte postale ! Elle vient de Hull. » / « « Pierre ! Alors, Hanoï ? Ici il pleut
-toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et toute la bande. » »
+toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et Ousmane. » »
 
 ### Vertus
 - **Gagnée** : Adaptation (M. Lam traduit les consignes). Phrase du carnet : « Trouver son chemin partout, même sans en
@@ -982,7 +984,7 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 
 ### Départ et trajet
 - **Condition** : l'appel de Romain. Au guichet de l'aéroport, vol « Amsterdam » : « Il y a quelques mois, tu prenais ce
-  billet à Hull, le ventre noué. » / **« Aujourd'hui, c'est un bánh mì dans une main et le billet dans l'autre. Tu as
+  billet à Hull, le sourire aux lèvres. » / **« Aujourd'hui, c'est un bánh mì dans une main et le billet dans l'autre. Tu as
   pris le pli. Amsterdam, à nous deux. »**
 - **Trajet en avion** ; encart : « Tu emportes : Adaptation. »
 
@@ -1114,8 +1116,8 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
   avant ; option `seated` des PNJ, étape `sit`), qui restent à chaque
   visite : « Tu reviens ? Il y a toujours une place pour toi, et toujours de quoi manger ! », « Reprends du riz, va ! Il
   en reste plein la marmite. », « Le dal, c'est la recette de ma grand-mère. Elle ne la donne à personne ! », « Ici, on
-  ne mange jamais seul. C'est ça, le meilleur ingrédient. », la grand-mère « Mange, mon garçon, mange ! Tu es tout
-  maigre. », le voisin « Encore une galette ? Si, si, j'insiste ! ».
+  ne mange jamais seul. C'est ça, le meilleur ingrédient. », la grand-mère « Encore un peu de dal ? Je l'ai fait ce
+  matin, rien que pour vous. », le voisin « Encore une galette ? Si, si, j'insiste ! ».
 - **Le vieux fort** (`delhiFort`, 21 x 16) : le bas de l'arène de Mauville (HGSS), sans l'arène : dalles de pierre,
   grands piliers, balustrades, marches, deux statues. La musique se tait (musique de la ville à volume nul). Le vieux
   sage attend sur la terrasse, en haut des marches ; ensuite : « Rien ne se perd, jeune voyageur. Rien. »
@@ -1165,7 +1167,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    ici. »** ; « En disant « ici », il pose la main sur son cœur. » → **Talisman indien** (« Le vieux sage glisse dans ta
    main un talisman : une petite pierre, polie par les années, où l'on a gravé un chemin qui tourne sur lui-même. ») ; le vieux sage :
    **« Garde-la sur toi. Elle vient de loin, comme toi. »** ; Pierre, en pensée : **« Le poids dans ma paume… c'est le
-   même que le coquillage de Manon, sur la plage de Fort-de-France. Comme si le voyage bouclait quelque chose. »** Le
+   même que le coquillage de Manon, dans l'herbe près des statues de Fort-de-France. Comme si le voyage bouclait quelque chose. »** Le
    joueur reprend la main ; Harsh et Prophecy le suivent jusqu'à la sortie du fort.
 5. **Quelques mois plus tard.** En sortant du fort (et plus dans le temple) : écran noir, **« Quelques mois plus
    tard… »** (la seule ellipse de la ville) ; Pierre est devant la porte du fort (27, 10).
@@ -1270,7 +1272,8 @@ de jour.
   Yasmine, Camille, Yalin.
   - Le rez-de-chaussée (hall de la Tour Radio de HGSS) : vivant, des collègues debout qui parlent à Pierre comme à l'un
     des leurs : « Salut, Pierre ! Encore là de bonne heure, toi. », « Tiens, Pierre, tu passes au point d'équipe tout à
-    l'heure ? », « Bonne journée, hein ! On se voit en haut. » (Anthony, Andrea, Antoine) ; Yasmine, à l'accueil (« La
+    l'heure ? », « Bonne journée, hein ! Le hall, c'est le meilleur étage : il y a le café. » (Anthony, Andrea, Antoine ;
+    une fois le premier étage ouvert, Antoine dit « Bonne journée, hein ! On se voit en haut. ») ; Yasmine, à l'accueil (« La
     machine à café est encore en panne. Comme tous les lundis. ») ; Camille, qui accueille Pierre ; Guillaume, le
     blasé, près de la machine à café.
   - Le premier étage (un plateau de bureaux) : le manager, trois collègues debout (Mariana : « Bienvenue à l'étage,
@@ -1301,7 +1304,7 @@ de jour.
 | Antoine | Collègue de la tour : il appelle Pierre au sujet de la place de concert | `g98` |
 | Tam, Louis (hommes) | La place de concert, de main en main (l'Opéra, la file du Louvre) ; Louis la rend | `g182`, `g155` |
 | Chanteur | Bercy | `g69` |
-| Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g90` |
+| Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g95` |
 | Philippe, Nico, un ami | Les amis de Hugues, devant la télé le soir du match | `g6`, `g7`, `g137` |
 
 ### Quêtes, dans l'ordre
@@ -1314,8 +1317,10 @@ de jour.
 2. **Premier passage au bureau.** « Le hall de la tour. Cette fois, ton badge passe. » ; Camille vient accueillir
    Pierre : **« Salut ! Tu dois être Pierre ? Moi, c'est Camille. Bienvenue dans l'équipe ! »** / « Ici, c'est le hall : l'accueil, le
    salon, la machine à café. Les étages, ça viendra. Tu vas voir, on est une bonne équipe. » (ensuite : « Alors, ce
-   premier jour ? Si tu cherches quoi que ce soit, demande-moi ! ») ; puis Guillaume, le blasé, vient à Pierre :
-   **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** Les boutons du premier et du dernier étage de
+   premier jour ? Si tu cherches quoi que ce soit, demande-moi ! » ; après le concert : « Déjà un an que tu es là,
+   toi ? Le temps file, dans cette tour. ») ; puis Guillaume, le blasé, vient à Pierre :
+   **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** (en lui reparlant : « Le café de la machine ? Je te
+   le déconseille. Dix ans que je le bois quand même. ») Les boutons du premier et du dernier étage de
    l'ascenseur sont éteints. Pierre ressort.
 3. **Le concert (la place qui a voyagé).** En sortant de la tour, le téléphone sonne : « Ton téléphone sonne. C'est
    Antoine, du bureau. » Antoine (collègue de la tour) : **« Pierre ! Ce soir, concert à Bercy. J'avais une place pour
@@ -1397,7 +1402,7 @@ Charlotte, Romain, Prophecy ; Harsh ; **Dalil, Hugues et Thomas**, silencieux. H
 chacun s'avance vers Pierre, dit son mot, puis se range près de lui. **Absents** (personnages nommés, signalés sans être
 ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de l'utilisateur), Tam et Louis (Paris).
 - Felix (Saint-Ay) : « Depuis Saint-Ay qu'on te suit ! On savait que tu finirais par tous nous réunir. »
-- Margaux (Montépilloy) : « Tu te cachais toujours au même endroit… Mais là, tu es allé tellement loin qu'on a failli ne
+- Margaux (Montépilloy) : « Tu me trouvais toujours… Mais là, c'est toi qui es allé tellement loin qu'on a failli ne
   jamais te trouver ! »
 - Rémy (collège) : « Tu te rappelles le collège ? On n'imaginait pas tout ça, à l'époque. »
 - Ousmane (Bordeaux) : « Bordeaux, les études, nos débuts… On en a fait du chemin depuis, hein ? »
@@ -1479,39 +1484,39 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Personnage | Sprite | Où il apparaît |
 |---|---|---|
 | Pierre | `g198` (Red) | Partout |
-| Maman | `g126` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
-| Papa | `g119` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
-| Manon | `g57` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy |
-| Fanny | `g49` | Saint-Ay, Montépilloy |
-| Jean | `g52` | Montépilloy |
+| Maman | `g44` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
+| Papa | `g80` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
+| Manon | `g96` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy |
+| Fanny | `g60` | Saint-Ay, Montépilloy |
+| Jean | `g22` | Montépilloy |
 | Capitaine du ferry | `g118` | Fort-de-France, le pont du ferry ; sa carte postale à Saint-Ay |
 | Promeneuse | `g82` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
 | Gamin | `g58` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
 | Felix | `g13` (garçon ; choisi dans le créateur) | Saint-Ay ; sa carte postale à Montépilloy |
-| Joshua | `g18` | Saint-Ay |
-| Yanis | `g96` | Saint-Ay |
+| Joshua | `g68` | Saint-Ay |
+| Yanis | `g59` | Saint-Ay |
 | Val | `g42` | Saint-Ay |
 | Vieux pêcheur | `g67` | Saint-Ay |
 | M. Bouly | `g33` | Montépilloy |
-| Margaux | `g43` | Montépilloy, collège |
+| Margaux | `g3` | Montépilloy, collège |
 | Étienne | `g30` | Montépilloy, collège |
-| Benoît | `g38` | Montépilloy (la classe, puis seul au bord de la mare) |
+| Benoît | `g12` | Montépilloy (la classe, puis seul au bord de la mare) |
 | Surveillant | `g52` | Collège |
-| Principale | `g37` | Collège |
+| Principale | `g194` | Collège |
 | Rémy | `g109` | Collège |
 | Camille | `g25` | Collège |
 | Professeur (maths) | `g138` | Collège |
 | Professeure (français) | `g54` | Collège |
 | Professeur de sciences | figurant | Collège |
 | Sentinelles | `g87` | Route de Bonsecours |
-| Capitaine | `g87` | Prytanée |
+| Capitaine | `g108` | Prytanée |
 | Tanguy | `g56` | Prytanée |
 | Geoffrey | `g41` | Prytanée |
 | Militaires | `g87` / `g8` | Prytanée |
 | Agent immobilier | `g35` | Bordeaux |
-| Ousmane | `g105` | Bordeaux, aéroport, Hull, Bordeaux (le stade) |
+| Ousmane | `g148` | Bordeaux, aéroport, Hull, Bordeaux (le stade) |
 | Paul | `g86` | Bordeaux (et le stade, au retour) |
-| Rémi | `g140` | Bordeaux (et le stade, au retour) |
+| Rémi | `g0` | Bordeaux (et le stade, au retour) |
 | Professeure d'anglais | `g106` | Bordeaux (KEDGE) |
 | Hôtesse | `g64` | Aéroport |
 | Léo (de Hull) | `g55` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
@@ -1519,7 +1524,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Prophecy | `g94` | Hull, Delhi, Bordeaux (le retour, le stade) |
 | Charlotte | `g43` | Hull, Bordeaux (le stade) |
 | Anaïs | `g107` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
-| Barman | `g101` | Hull |
+| Barman | `g154` | Hull |
 | Habitué | figurant | Hull |
 | Nouveau | `g58` | Prytanée (hall de l'internat) |
 | Professor | `g136` | Hull |
@@ -1530,7 +1535,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Papi (x 2) | `g39`, `g48` | Hanoï (échecs chinois, optionnel) |
 | Patron (Corning) | `g53` | Amsterdam |
 | Vendeur | `g112` | Amsterdam |
-| Harsh | `g89` | Delhi |
+| Harsh | `g83` | Delhi |
 | Vieux sage | `g71` | Delhi (le vieux fort) |
 | Directeur | `g120` (le stade), `g123` (Paris) | Bordeaux (le stade : la remise des diplômes), Paris (le dernier étage de la tour) |
 | Propriétaire | `g161` | Paris (devant l'immeuble) |
@@ -1538,13 +1543,25 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Manager | `g122` | Paris (1er étage de la tour) |
 | Hugues | `g121` | Paris (au téléphone, puis chez lui : le match), le rêve |
 | Dalil | `g2` | Bordeaux (la soirée d'intégration, le stade), le rêve |
-| Thomas | `g90` | Paris (le restaurant au store rayé, le match), le rêve |
+| Thomas | `g95` | Paris (le restaurant au store rayé, le match), le rêve |
 | Tam, Louis | `g182`, `g155` | Paris (la place de concert) |
 | Chanteur | `g69` | Paris (Bercy) |
 
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
 section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
+
+## Cohérence (11 octobre 2026, revue de production, 2e passe)
+- Route au nord de Saint-Ay : « La route du nord. Elle file loin, vers les terres. » tant que Papa n'a pas annoncé le
+  déménagement ; ensuite « La route de Montépilloy. On y partira en voiture, avec la famille. ».
+- Coloc de Hull : Léo (« J'ai lu la même page six fois. Demain, bibliothèque, sinon c'est foutu. ») et Prophecy n'y
+  sont plus dès le jour des révisions (ils sont à la bibliothèque) ; Romain reste.
+- Prytanée, dortoir des terminales : « Des manuels de terminale et les BD de Geoffrey. » ; un élève : « Le bac, c'est
+  cette année. Je sais plus où donner de la tête. »
+- Montépilloy, Margaux après le cache-cache : « La prochaine partie, c'est dans tout le village. Je connais déjà ma
+  cachette. » (un seul « l'été prochain », le sien au moment du jeu).
+- Sac : les clés de Bordeaux, les consignes en vietnamien, le billet pour Delhi et les clés du studio parisien se
+  grisent dès que Pierre a quitté leur ville (à Hull, à Amsterdam, à Delhi, dans le rêve).
 
 ## Reprises du contrôle ajoutées (11 octobre 2026, revue de production, passe 4)
 
@@ -1700,13 +1717,25 @@ devient le Talisman indien (systems/items.js).
 - **La maison de la voisine** à Montépilloy est fermée (« Personne ne répond. »), et sa boîte aux lettres ne contient
   rien.
 
-### Vertus jamais utilisées
-Adaptation (Hanoï) ne sert nulle part ; Liberté (Paris) sert une fois, au moment où elle est gagnée ; Insouciance sert une fois (Hanoï, le temple). Joie de vivre sert six
-fois (dont trois en passage optionnel ; la dernière à Delhi, dans le sens renversé), Audace cinq fois (dont une optionnelle, à Hanoï), Ingéniosité trois fois (dont une optionnelle et le verrou du panier de Saint-Ay),
-Esprit d'équipe et Autonomie deux fois chacune (Autonomie une fois en passage optionnel). Chaque ville de Saint-Ay à
-Hull a désormais un passage optionnel qui utilise une vertu ; Fort-de-France n'en a pas (aucune vertu n'est acquise
-avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instant : le panier de la cabane de Saint-Ay
-(Ingéniosité).
+### Usages des vertus (décompte du code, 11 octobre 2026)
+Chaque « Pierre utilise X ! » (`useTrait`) du jeu, par vertu :
+- **Joie de vivre (6)** : la fête de la cabane (Saint-Ay), le vieux pêcheur (Saint-Ay, optionnel), Benoît triste
+  (Montépilloy, optionnel), le mal du pays (Prytanée, optionnel), la danse de l'Asylum (Hull), le grand repas (Delhi, dans le sens
+  renversé).
+- **Audace (5)** : le professeur (collège), le capitaine au matin du mur (Prytanée), l'oral d'anglais (Bordeaux), les
+  fléchettes (Hull), les joueurs d'échecs (Hanoï, optionnel).
+- **Ingéniosité (4)** : le panier de la cabane (Saint-Ay, verrou de retour), le placard d'entretien (collège), la
+  coupure de courant (Bordeaux), le vélo du cycliste (Bordeaux, optionnel).
+- **Autonomie (3)** : le rangement du lendemain de soirée (Bordeaux, obligatoire : il ouvre la sortie), le vol pour
+  Hanoï (Hull), la campagne de Corning (Amsterdam).
+- **Esprit d'équipe (2)** : retrouver Benoît (Montépilloy), le mur (Prytanée).
+- **Insouciance (2)** : la panique du temple (Hanoï), la nuit au canal (Amsterdam).
+- **Liberté (1)** : chez le directeur (Paris), au moment où elle est gagnée.
+- **Adaptation (0)** : reçue à Hanoï, elle ne sert encore nulle part.
+
+Chaque ville de Saint-Ay à Hull a un passage optionnel qui utilise une vertu ; Fort-de-France n'en a pas (aucune vertu
+n'est acquise avant). En revenant dans une ancienne ville, un seul verrou existe pour l'instant : le panier de la
+cabane de Saint-Ay (Ingéniosité).
 
 ### Objectifs manquants
 - À Saint-Ay, si la corde est trouvée **après** les planches, personne ne dit « On a tout ! » (Joshua est resté devant

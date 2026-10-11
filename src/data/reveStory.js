@@ -13,7 +13,7 @@ export const CENTER = [14, 10];
 // Les huit qui parlent, dans l'ordre, et la place où chacun se range ensuite (près de Pierre).
 export const SPEAKERS = [
   ['felix', 'Felix', [12, 8], ['Depuis Saint-Ay qu\'on te suit ! On savait que tu finirais par tous nous réunir.']],
-  ['margaux', 'Margaux', [14, 8], ['Tu te cachais toujours au même endroit… Mais là, tu es allé tellement loin qu\'on a failli ne jamais te trouver !']],
+  ['margaux', 'Margaux', [14, 8], ['Tu me trouvais toujours… Mais là, c\'est toi qui es allé tellement loin qu\'on a failli ne jamais te retrouver !']],
   ['remy', 'Rémy', [16, 8], ['Tu te rappelles le collège ? On n\'imaginait pas tout ça, à l\'époque.']],
   ['ousmane', 'Ousmane', [16, 10], ['Bordeaux, les études, nos débuts… On en a fait du chemin depuis, hein ?']],
   ['leo', 'Léo', [16, 12], ['De Hull à aujourd\'hui, mec… On en a vécu, hein ?']],
