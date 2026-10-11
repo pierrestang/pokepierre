@@ -1,6 +1,7 @@
 import { items } from './items.js';
 import { souvenirs } from './souvenirs.js';
 import { memo } from './memo.js';
+import { persist } from './persist.js';
 
 // Drapeaux d'histoire (« la famille te suit », « parti de Fort-de-France »…).
 // État global sauvegardé dans localStorage, comme les souvenirs.
@@ -15,13 +16,20 @@ function load() {
   }
 }
 
-function save() {
+// Drapeaux déjà écrits dans la sauvegarde mais pas encore levés en mémoire : ceux qu'un PNJ lèvera en arrivant au bout
+// de sa marche (MapScene.walkNpc `then`). Si l'onglet se ferme pendant la marche, la partie reprend comme s'il était
+// arrivé.
+const ahead = new Set();
+
+function write() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...raised]));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...new Set([...raised, ...ahead])]));
   } catch {
     // Stockage indisponible : l'état reste en mémoire.
   }
 }
+// Écrit tout de suite hors scène, à la fin de la scène pendant une scénette (systems/persist.js).
+const save = () => persist('flags', write);
 
 const raised = load();
 
@@ -32,9 +40,20 @@ export const flags = {
     save();
   },
   list: () => [...raised],
+  // Retire un drapeau (migration d'une ancienne sauvegarde, systems/save.js).
+  remove(name) {
+    if (!raised.delete(name)) return;
+    save();
+  },
+  // Drapeaux que l'histoire lèvera à coup sûr un peu plus tard (fin d'une marche) : écrits dès maintenant.
+  saveAhead(names) {
+    names.forEach((n) => ahead.add(n));
+    save();
+  },
   reset() {
     raised.clear();
-    save();
+    ahead.clear();
+    write();
   },
 };
 

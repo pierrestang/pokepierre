@@ -9,6 +9,10 @@ import { TRAIT_MIGRATION } from '../data/story.js';
 // ont leur propre sauvegarde (souvenirs.js, flags.js).
 
 const STORAGE_KEY = 'pokepierre.position';
+// Version de la sauvegarde : à augmenter, avec une étape dans MIGRATIONS, quand la structure des données change.
+//   1 (ou absente) : avant le 11 octobre 2026 ; 2 : sauvegarde par scène (systems/persist.js), drapeaux nettoyés.
+export const SAVE_VERSION = 2;
+const VERSION_KEY = 'pokepierre.version';
 
 export function savePosition(location) {
   try {
@@ -34,6 +38,7 @@ export const hasSave = () =>
 export function eraseSave() {
   try {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(VERSION_KEY, String(SAVE_VERSION));
   } catch {
     // rien à effacer
   }
@@ -43,10 +48,31 @@ export function eraseSave() {
   memo.reset();
 }
 
+function savedVersion() {
+  try {
+    return Number(localStorage.getItem(VERSION_KEY) ?? 1) || 1;
+  } catch {
+    return SAVE_VERSION;
+  }
+}
+
+// Les étapes de migration, de la version n à n + 1.
+const MIGRATIONS = {
+  // 1 -> 2 : drapeaux d'étapes retirées du jeu (Felix devant la voiture, Clara à Paris) ; la vieille canne et la pierre
+  // gravée sont déjà converties au chargement du sac (systems/items.js).
+  1: () => ['felix-voiture', 'place-clara'].forEach((f) => flags.remove(f)),
+};
+
 // Anciennes sauvegardes (avant le passage à 8 vertus, voir data/story.js TRAIT_MIGRATION) : vertus renommées
 // converties, vertus retirées supprimées (leur scène reste marquée faite par un drapeau). Sans effet sur une
 // sauvegarde récente : on peut l'appeler à chaque démarrage.
 export function migrateSave() {
+  for (let v = savedVersion(); v < SAVE_VERSION; v++) MIGRATIONS[v]?.();
+  try {
+    localStorage.setItem(VERSION_KEY, String(SAVE_VERSION));
+  } catch {
+    // Stockage indisponible : la migration se refera au prochain démarrage (sans effet).
+  }
   for (const [id, trait] of Object.entries(TRAIT_MIGRATION.renamed)) souvenirs.replace(id, trait);
   for (const [id, flag] of Object.entries(TRAIT_MIGRATION.removed)) {
     if (souvenirs.has(id) && flag) flags.add(flag);

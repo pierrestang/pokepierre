@@ -34,6 +34,9 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   Insouciance, une plume légère ; Adaptation, la Pierre Plante ; Liberté, une aile bleue), et sous la grille sa phrase, sa ville et ses utilisations (« Fort-de-France, utilisée 3 fois. » ou
   « pas encore utilisée »). Le souvenir du carnet qui n'est pas une vertu (la photo du canal) est dans l'onglet
   « Souvenirs ». À l'écran, le compteur « Vertus : X sur 8 », seulement dans les villes qui donnent une vertu.
+- **Sauvegarde** : automatique, à chaque pas (position) et à la fin de chaque scène (drapeaux, objets, vertus : une scène
+  coupée par la fermeture de l'onglet se rejoue entière). Version de sauvegarde 2 (11 octobre 2026), migration des
+  anciennes parties au démarrage.
 - **Objectifs** : le jeu n'a ni journal de quêtes ni ligne « Objectif : » (supprimées le 8 octobre 2026). Le joueur est
   guidé seulement par les PNJ, qui disent où aller et rappellent ce qu'il reste à faire (relevés ci-dessous).
 - **Téléphone** : une réplique au téléphone s'affiche dans la boîte de dialogue normale, avec une petite icône de

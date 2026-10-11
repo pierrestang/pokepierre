@@ -33,6 +33,7 @@ import {
 } from '../systems/effects.js';
 import { fadeMusic, playMusic, setSeaAmbience, sfx, stopMusic } from '../systems/audio.js';
 import { toggleBike, resumeBike, checkBike, pauseBike, unpauseBike } from '../systems/bike.js';
+import { beginScene, endScene } from '../systems/persist.js';
 import { CITY_MUSIC } from '../data/music.js';
 import { applyBuiltLook, lostLook, hiddenUnderTop, TOP_DEPTH } from '../systems/builtMaps.js';
 import LAMP_TILES from '../data/lampTiles.json' with { type: 'json' };
@@ -571,15 +572,19 @@ export class MapScene extends Phaser.Scene {
 
   // Scénette pendant laquelle le joueur ne bouge pas et ne peut rien lancer d'autre.
   // Même si une étape échoue, le joueur retrouve toujours la main.
+  // Ses drapeaux, objets et vertus ne sont écrits dans la sauvegarde qu'à la fin (systems/persist.js) : une scène coupée
+  // par la fermeture de l'onglet se rejoue entière.
   async runScript(steps) {
     this.scripting = true;
     this.player.frozen = true;
     const onBike = pauseBike(this);                 // Pierre descend de vélo le temps de la scène
+    beginScene();
     try {
       await this.runSteps(steps, true);
     } catch (error) {
       console.error('Scénette interrompue', error);
     } finally {
+      endScene();
       this.scripting = false;
       if (!this.transitioning) this.player.frozen = false;
       if (onBike) unpauseBike(this);
@@ -974,6 +979,7 @@ export class MapScene extends Phaser.Scene {
     const npc = this.npcById(id);
     if (!npc) return;
     then.forEach((f) => this.pendingWalkFlags.add(f));
+    if (then.length) flags.saveAhead(then);         // déjà dans la sauvegarde : un onglet fermé pendant la marche ne bloque pas
     const d = npc.data;
     const alive = () => !this.leaving && this.npcs.includes(npc);
     let stuck = 0;                                  // au bout d'une dizaine de secondes bloqué, on abandonne
@@ -1028,6 +1034,7 @@ export class MapScene extends Phaser.Scene {
     const line = ids.map((id) => this.npcById(id)).filter(Boolean);
     if (!line.length) return;
     then.forEach((f) => this.pendingWalkFlags.add(f));
+    if (then.length) flags.saveAhead(then);         // déjà dans la sauvegarde : un onglet fermé pendant la marche ne bloque pas
     const alive = () => !this.leaving && line.every((n) => this.npcs.includes(n));
     const step = (npc, xy) => this.stepTo(npc.sprite, npc.data, xy);
     const near = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;

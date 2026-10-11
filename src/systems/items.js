@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { persist } from './persist.js';
 
 // Objets du joueur (baccalauréat, clés…) : distincts des souvenirs, ils servent à ouvrir
 // des portes et des passages (conditions `ifItems`). Sauvegardés dans localStorage.
@@ -21,13 +22,15 @@ function load() {
   }
 }
 
-function save() {
+function write() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...owned.values()]));
   } catch {
     // Stockage indisponible : l'état reste en mémoire.
   }
 }
+// Écrit tout de suite hors scène, à la fin de la scène pendant une scénette (systems/persist.js).
+const save = () => persist('items', write);
 
 const owned = load();
 

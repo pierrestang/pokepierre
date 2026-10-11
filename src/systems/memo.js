@@ -2,6 +2,8 @@
 // localStorage comme les drapeaux. Dans les répliques des scénettes, `{nom}` est remplacé par la valeur, et
 // `{nom|défaut}` par la valeur ou, faute de valeur, par `défaut` (voir MapScene.runSteps, `say`).
 
+import { persist } from './persist.js';
+
 const STORAGE_KEY = 'pokepierre.memo';
 
 function load() {
@@ -14,13 +16,15 @@ function load() {
 
 let values = load();
 
-function save() {
+function write() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
   } catch {
     // Stockage indisponible : la valeur reste en mémoire.
   }
 }
+// Écrit tout de suite hors scène, à la fin de la scène pendant une scénette (systems/persist.js).
+const save = () => persist('memo', write);
 
 export const memo = {
   get: (key) => values[key] ?? null,

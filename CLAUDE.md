@@ -112,4 +112,13 @@ rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (f
   hautes herbes de la grille sans dessin, poches inaccessibles, portes du jeu hors de la porte dessinée). Sous un toit ou une cime (calque « au-dessus de
   Pierre »), le jeu montre la silhouette du joueur (MapScene.updateSilhouette) ; ses jambes dans les hautes herbes sont
   cachées par le bas de la case dessinée, seulement si elle a vraiment des herbes (effects.js GrassCovers).
+- Sauvegarde et scénettes : **une scène ne pose son drapeau « déjà vue » qu'à sa dernière action**, en même temps que
+  le drapeau qui fait avancer l'histoire, jamais avant. C'est garanti par la sauvegarde par scène (src/systems/persist.js) :
+  pendant une scénette (MapScene.runScript), drapeaux, objets, vertus et memo changent en mémoire tout de suite mais ne
+  sont écrits dans localStorage qu'à la fin de la scène ; une scène coupée (onglet fermé) se rejoue entière. Les drapeaux
+  `then` d'une marche de PNJ sont écrits dès le départ de la marche (flags.saveAhead). Hors scénette (dialogue simple,
+  passage), rien ne protège : n'y poser qu'un seul drapeau. Une scène qui pose un drapeau de garde au début reste à
+  éviter (la règle vaut aussi pour la lecture du code).
+- Version de la sauvegarde : src/systems/save.js SAVE_VERSION (clé `pokepierre.version`) ; tout changement de structure
+  (drapeau renommé ou retiré, objet changé) ajoute une étape dans MIGRATIONS, jouée au démarrage (migrateSave).
 - Demander avant d'ajouter une dépendance.
