@@ -17,7 +17,7 @@ export const BY_NAME = {
   Guillaume: 'g4', Anthony: 'g105', Antoine: 'g98', Quentin: 'g139',
   Andrea: 'g1', Mariana: 'g113', Yasmine: 'g50', 'Camille (Paris)': 'g130', Yalin: 'g5',
   'Benoît': 'g38', 'Étienne': 'g30', Joshua: 'g18',
-  Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g140', Paul: 'g86', Camille: 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g60',
+  Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g140', Paul: 'g86', Camille: 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g153',
   Charlotte: 'g43', 'Anaïs': 'g107', Anais: 'g107',
   // Métiers
   'M. Bouly': 'g33', Militaire: 'g87', Directeur: 'g120', 'Directeur (Paris)': 'g123', Directrice: 'g37', Principale: 'g37', Sentinelle: 'g87',

@@ -396,9 +396,10 @@ export const interiors = {
           { speaker: 'Manon', say: ['Fanny me suit partout, maintenant. Même dans ma chambre !'] },
         ],
       },
-      // Quelques années plus tard, Fanny a grandi : elle joue dans le salon.
+      // Quelques années plus tard, Fanny a grandi : elle joue dans le salon (encore petite : son sprite d'enfant ; ensuite,
+      // celui d'adolescente, nettement plus grand que Jean, son cadet de six ans).
       {
-        id: 'fanny-maison', name: 'Fanny', x: 5, y: 7, facing: 'right', color: 0xf0c0c0,
+        id: 'fanny-maison', name: 'Fanny', sprite: 'g60', x: 5, y: 7, facing: 'right', color: 0xf0c0c0,
         ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.arriveeMontepilloy],
         script: [
           { ifFlags: [FLAGS.annonceMutation], speaker: 'Fanny', say: ['C\'est loin, Montépilloy ? Il y aura des poules ?'], end: true },

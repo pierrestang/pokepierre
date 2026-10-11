@@ -211,7 +211,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Papa, Maman, Manon | Famille : clinique, puis maison | `g119`, `g126`, `g57` |
-| Fanny | La petite sœur, qui vient de naître (berceau, lit), puis petite fille après l'ellipse | `g60` |
+| Fanny | La petite sœur, qui vient de naître (berceau, lit), puis petite fille après l'ellipse | `g60` (imposé à Saint-Ay) |
 | Felix | Cousin : lance et dirige le chantier de la cabane | `g13` (garçon ; choisi dans le créateur) |
 | Joshua | Cousin : les planches de l'enclos à poules | `g68` |
 | Yanis | Cousin : la corde des hautes herbes | `g59` |
@@ -344,7 +344,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 | Maman | Rappelle le programme | `g44` |
 | Papa | « Le dernier jour, déjà. On est arrivés à Montépilloy, tu tenais à peine sur le siège arrière. » | `g80` |
 | Manon | « Le collège ? Tu verras, on s'y fait vite. Et le matin, tu feras la route à pied avec les copains. » | `g96` |
-| Fanny | « Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! » » | `g60` |
+| Fanny | « Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! » » | `g153` |
 | Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `g22` |
 | M. Bouly | Le fermier, et son tracteur en panne | `g33` |
 | Margaux | Copine de classe : lance le cache-cache | `g3` |
@@ -1488,7 +1488,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Maman | `g44` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
 | Papa | `g80` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy, le rêve, Bordeaux (le stade) |
 | Manon | `g96` | Fort-de-France (et le pont du ferry), Saint-Ay, Montépilloy |
-| Fanny | `g60` | Saint-Ay, Montépilloy |
+| Fanny | `g153` (adolescente, 27 px : nettement plus grande que Jean, 23 px, son cadet de six ans ; `g60` petite fille à Saint-Ay) | Saint-Ay, Montépilloy |
 | Jean | `g22` | Montépilloy |
 | Capitaine du ferry | `g118` | Fort-de-France, le pont du ferry ; sa carte postale à Saint-Ay |
 | Promeneuse | `g82` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
