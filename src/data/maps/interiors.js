@@ -1384,6 +1384,19 @@ export const interiors = {
       { id: 'anais-fete', name: 'Anaïs', x: 8, y: 5, facing: 'left', ...PARTY_TIME, dancing: true, script: PARTY_ANAIS },
       { id: 'charlotte-fete', name: 'Charlotte', x: 6, y: 7, facing: 'up', ...PARTY_TIME, dancing: true, script: PARTY_CHARLOTTE },
       { id: 'vincent-fete', name: 'Vincent', x: 8, y: 7, facing: 'left', ...PARTY_TIME, dancing: true, script: PARTY_VINCENT },
+      // Trois invités de KEDGE qui viennent saluer Pierre (sprites choisis dans le panneau PNJ, characterLooks.json).
+      {
+        id: 'pierre-alexandre-fete', name: 'Pierre-Alexandre', x: 0, y: 7, facing: 'right', ...PARTY_TIME, dancing: true,
+        dialogue: ['Salut Pierre ! Moi c\'est Pierre-Alexandre. Tu fais du ski ? Franchement, y a rien de meilleur, faut absolument que tu viennes avec nous cet hiver !'],
+      },
+      {
+        id: 'sam-fete', name: 'Sam', x: 6, y: 10, facing: 'up', ...PARTY_TIME, dancing: true,
+        dialogue: ['Salut Pierre ! Moi c\'est Sam. Enchanté ! Tu sais, je prépare une comédie musicale en ce moment, je passe tout mon temps libre à répéter.', 'Si un jour tu veux monter sur scène, tu me fais signe, d\'accord ? Allez, bienvenue parmi nous, tu vas adorer !'],
+      },
+      {
+        id: 'sybille-fete', name: 'Sybille', x: 9, y: 10, facing: 'left', ...PARTY_TIME, dancing: true,
+        dialogue: ['Coucou Pierre ! Moi c\'est Sybille. Bienvenue à Bordeaux ! Je suis d\'ici, je connais la ville par cœur.', 'Si tu cherches un bon coin ou que tu veux qu\'on te fasse visiter, viens me voir.'],
+      },
       { id: 'etudiant-1', name: 'Étudiant', x: 1, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['Première année à KEDGE ! Et toi ?'] },
       { id: 'etudiant-2', name: 'Étudiant', x: 10, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['C\'est toi qui as rallumé le courant ? Respect.'] },
       { id: 'etudiant-3', name: 'Étudiant', x: 6, y: 4, facing: 'down', ...PARTY_TIME, dancing: true, dialogue: ['L\'enceinte, elle envoie !'] },
@@ -2476,7 +2489,7 @@ export const interiors = {
       { id: 'batteur', name: 'Batteur', sprite: 'g16', x: 8, y: 4, facing: 'down', still: true },
       ...[[3, 6], [4, 6], [5, 6], [7, 6], [8, 6], [9, 6], [2, 7], [4, 7], [5, 7], [7, 7], [8, 7], [10, 7],
         [3, 8], [5, 8], [7, 8], [9, 8], [4, 9], [8, 9]].map(([x, y], i) => ({
-        id: `fan-${i}`, name: 'Fan', sprite: ['g10', 'g20', 'g21', 'g34', 'g73', 'g172', 'g9', 'g17', 'g65'][i % 9],
+        id: `fan-${i}`, name: 'Fan', sprite: ['g184', 'g20', 'g21', 'g34', 'g73', 'g172', 'g190', 'g17', 'g65'][i % 9],
         x, y, facing: 'up', still: true,
         // Au cœur de la foule, on ne les approche pas : seuls ceux du bord et des derniers rangs parlent.
         ...([2, 5, 7, 10].includes(x) || y >= 8 ? { dialogue: [['Quel son !', 'Encore ! Encore !', 'Je connais toutes les paroles !'][i % 3]] } : {}),

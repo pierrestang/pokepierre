@@ -644,6 +644,9 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 | Léo | Étudiant de KEDGE, invité à la soirée ; on le retrouve à Hull | `g140` |
 | Anaïs | Étudiante de KEDGE (« de ta promo »), invitée à la soirée ; on la retrouve à Hull | `g107` |
 | Vincent | Étudiant de KEDGE, extravagant : « Vincent, KEDGE, et futur roi de la piste ! Hull l'an prochain ? Évidemment que j'en suis. Ils ne savent pas ce qui les attend ! » (ensuite : « Hull, prépare-toi : Vincent arrive ! ») ; on le retrouve à Hull | `g186` |
+| Pierre-Alexandre | Invité de la soirée, fou de ski : « Salut Pierre ! Moi c'est Pierre-Alexandre. Tu fais du ski ? Franchement, y a rien de meilleur, faut absolument que tu viennes avec nous cet hiver ! » | `g10` |
+| Sam | Invité de la soirée, franco-anglais (deux parents anglais) au français parfait, fou de comédie musicale, très bienveillant : « Salut Pierre ! Moi c'est Sam. Enchanté ! Tu sais, je prépare une comédie musicale en ce moment, je passe tout mon temps libre à répéter. » / « Si un jour tu veux monter sur scène, tu me fais signe, d'accord ? Allez, bienvenue parmi nous, tu vas adorer ! » | `g179` |
+| Sybille | Invitée de la soirée, vraie Bordelaise, connaît toute la ville : « Coucou Pierre ! Moi c'est Sybille. Bienvenue à Bordeaux ! Je suis d'ici, je connais la ville par cœur. » / « Si tu cherches un bon coin ou que tu veux qu'on te fasse visiter, viens me voir. » | `g157` |
 | Étudiants (13) | À la soirée d'intégration | figurants |
 | Professeure d'anglais | L'oral à KEDGE | `g106` |
 | Hôtesse | Guichet de l'aéroport | `g64` |
@@ -1557,6 +1560,9 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Charlotte | `g43` | Hull, Bordeaux (le stade) |
 | Anaïs | `g107` | Bordeaux (la soirée), Hull, Bordeaux (le stade) |
 | Vincent | `g186` (choisi dans le panneau PNJ) | Bordeaux (la soirée), Hull |
+| Pierre-Alexandre | `g10` (panneau PNJ) | Bordeaux (la soirée) |
+| Sam | `g179` (panneau PNJ) | Bordeaux (la soirée) |
+| Sybille | `g157` (panneau PNJ) | Bordeaux (la soirée) |
 | Barman | `g154` | Hull |
 | Habitué | figurant | Hull |
 | Nouveau | `g58` | Prytanée (hall de l'internat) |
