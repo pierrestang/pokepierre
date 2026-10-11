@@ -827,7 +827,8 @@ et le videur à l'entrée ; une vingtaine de figurants (danseurs, étudiants, cl
    **« Pierreeee ! Mon pote, tombé du ciel pile au bon moment ! »** / « Je suis sur une partie de fléchettes avec les
    Anglais, là. J'ai déjà planté un score de folie, crois-moi. » / **« À nous deux, on les explose. Nos deux scores
    additionnés, et c'est plié. Allez, montre-leur ce qu'un Français a dans le bras ! »** ; choix « Une partie en équipe
-   avec Vincent ? » (« Allez ! » / « Pas maintenant. ») ; le pari avec l'habitué, l'Anglais (voir le passage
+   avec Vincent ? » (« Allez ! » / « Pas maintenant. ») ; Vincent et Pierre vont se placer côte à côte devant la
+   cible (au mur, en 7, 2 : Vincent en 6, 4, Pierre en 7, 4) ; le pari avec l'habitué, l'Anglais (voir le passage
    optionnel), puis une partie de trois lancers ; les 85 points de Vincent s'ajoutent à ceux de Pierre (« Avec les 85
    points de Vincent : N points pour votre équipe. »), contre le score des Anglais (100 à 179, au hasard) (écran façon jeu Pokémon : la
    cible où se plantent les fléchettes, la liste des lancers et le total, la jauge de visée), gagnée ou perdue ; puis

@@ -168,6 +168,8 @@ function rematch(rematches, partner) {
     choices: [{ label: 'Oui', steps: [betGame(rematches, partner)] }, { label: 'Pas maintenant', steps: [] }],
   }];
 }
+// Devant la cible du second pub (interiors.js hullPubB, la cible au mur en 7, 2) : Vincent à gauche, Pierre à droite.
+const DART_SPOTS = { vincent: [6, 4], pierre: [7, 4] };
 const REMATCHES = 8;                              // revanches enchaînées sans reparler à l'habitué
 export const HABITUE_AFTER = [
   { ifFlags: [FLAGS.tourneeOfferte], speaker: 'Habitué', say: ['Good game, mate! Cheers!'], end: true },
@@ -192,6 +194,10 @@ export const DARTS = [
       {
         label: 'Allez !',
         steps: [
+          // Vincent et Pierre vont se placer devant la cible (au mur, en 7, 2), côte à côte, avant de jouer.
+          { walk: 'vincent-pub', to: DART_SPOTS.vincent, block: true },
+          { goTo: DART_SPOTS.pierre, facing: 'up' },
+          { face: { 'vincent-pub': 'up', player: 'up' } },
           // Le pari déjà gagné : la partie, sans pari.
           { ifFlags: [FLAGS.tourneeOfferte], darts: { opponent: 'Habitué', partner: VINCENT, win: ['Well played, mates! Vous revenez quand vous voulez.'], lose: LOST } },
           {
