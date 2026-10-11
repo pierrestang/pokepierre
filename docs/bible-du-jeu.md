@@ -1255,7 +1255,8 @@ de jour.
   scène. On parle aux musiciens depuis le bord de la scène.
 - **Le restaurant** (une maison de Doublonville et le comptoir du café d'Oliville) : le serveur derrière le comptoir,
   deux clients, Thomas.
-- **Chez Hugues** (modèle « maison type 2 », comme les maisons des amis) : la télé allumée, Hugues et trois amis devant.
+- **Chez Hugues** (modèle « maison type 2 », comme les maisons des amis) : la télé allumée, Hugues et trois amis devant
+  (Philippe, Nico et un autre ami, tous des hommes ; plus de nageuse).
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
@@ -1273,6 +1274,7 @@ de jour.
 | Tam, Louis (hommes), Clara | La place de concert, de main en main (l'Opéra, la file du Louvre, le café à terrasse) | `g88`, `g155`, `g15` |
 | Chanteur | Bercy | `g69` |
 | Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g90` |
+| Philippe, Nico, un ami | Les amis de Hugues, devant la télé le soir du match | `g6`, `g7`, `g137` |
 
 ### Quêtes, dans l'ordre
 1. **L'arrivée.** Pas de métro : par la route de Bordeaux, Pierre arrive au bord ouest de l'avenue (1, 11). Personne
@@ -1312,11 +1314,22 @@ de jour.
    restaurant, Thomas finit son service : **« Ah, Pierre ! Deux secondes, je récupère de quoi manger et j'arrive. Hugues
    va encore hurler devant sa télé, tu vas voir ! »** → **De quoi manger** ; Thomas suit Pierre. Chez Hugues : **« Les
    voilà ! Allez, posez tout, ça va commencer, j'attends ce match depuis des semaines ! »** ; Thomas rejoint les autres
-   devant la télé ; **« Le match commence ! C'est France-Argentine. »** ; « Allez les Bleus ! », « Non mais tu as vu
-   cette passe ?! », « Contre l'Argentine, ça se gagne, allez ! » ; **« Buuut ! »** (tout le monde saute de joie),
-   Hugues : « Allez la France ! » ; « Mais l'Argentine revient. Une fois… puis une deuxième. » ; Hugues : « Non… c'est
-   pas possible… » ; **« Le match se termine. »** ; Thomas : « Bon. On les aura la prochaine fois. Allez, il reste à
-   manger ! » ; Pierre, en lui-même : **« On a perdu, mais c'était une belle soirée pour le GOAT… »**
+   devant la télé ; **« Le match commence ! C'est la finale : France-Argentine. »** Le déroulé suit la vraie finale :
+   Philippe « Allez les Bleus ! » ; Hugues « Contre l'Argentine, ça se gagne, allez ! » ; « Penalty pour l'Argentine…
+   Messi le transforme. 1-0. » (Hugues, bulle « … » : « Non, non, non… On n'a pas encore touché un ballon ! ») ; « Contre
+   éclair argentin… Di María, tout seul. 2-0. » (Thomas « Ça fait mal, là. Très mal. » ; Hugues « Deschamps change deux
+   joueurs avant la mi-temps ! C'est la panique ! ») ; « À la mi-temps, le salon est silencieux. » (Nico « Quelqu'un veut
+   encore une part ? » ; Hugues « Pas faim. ») ; « Quatre-vingtième minute. Penalty pour la France ! Mbappé… 2-1 ! »
+   (tout le monde saute ; Hugues **« IL Y A UN MATCH ! »**) ; « Une minute plus tard, Mbappé reprend de volée… 2-2 ! »
+   (Thomas « Je le crois pas ! Deux buts en deux minutes ! », Hugues saute) ; « Prolongation. Cent-huitième minute…
+   Messi, encore lui. 3-2 pour l'Argentine. » (Hugues « Pas lui… Pas maintenant… ») ; « Cent-dix-huitième minute. Main
+   dans la surface : penalty ! Mbappé… 3-3 ! » (Thomas « Un triplé en finale ! Il n'est pas humain ! ») ; « Dernière
+   seconde : Kolo Muani, seul face au gardien… Arrêté ! » (Hugues « NOOON ! Il l'avait au bout du pied ! ») ; « Les tirs
+   au but. » (Thomas « Je ne regarde pas. Dis-moi quand c'est fini. ») ; « Mbappé marque. Coman, arrêté. Tchouaméni, à
+   côté… » ; « Montiel s'avance… et marque. L'Argentine est championne du monde. » ; Hugues : « Non… c'est pas
+   possible… » ; Thomas : « On est passés si près… Bon. On les aura la prochaine fois. Allez, il reste à manger ! » ;
+   Pierre, en lui-même : **« On a perdu, mais c'était une belle soirée pour le GOAT… »** ; écran noir, **« Un an plus
+   tard… »** ; Pierre ressort devant chez Hugues.
 6. **Le directeur (Liberté).** Au bureau, Camille : « Pierre ! Le directeur veut te voir. Dernier étage, rien que
    ça ! » Le bouton du dernier étage s'est allumé. Le directeur : **« Entre, Pierre, assieds-toi. Ça fait un moment que je
    te regarde, et je dois dire que tu te débrouilles vraiment bien. Il y a une belle place pour toi ici, tu sais. »** ;
@@ -1326,8 +1339,8 @@ de jour.
    se brouille doucement (flou), la musique s'éteint, un voile clair monte : le rêve (section suivante).
 
 Rappels : Guillaume (« Alors, monsieur du premier étage ? On ne te voit plus, en bas. », après la Liberté « Tu pars ?
-Vraiment ? … Tu sais quoi, je t'envie un peu. »), le manager, Hugues après le match (« Perdu contre l'Argentine… Mais
-quelle soirée, hein ? Reviens quand tu veux. »), le directeur ensuite (« La porte est ouverte, Pierre. Dans les deux
+Vraiment ? … Tu sais quoi, je t'envie un peu. »), le manager, Hugues après le match (« Ces tirs au but… Je ne les ai toujours pas
+digérés. Reviens quand tu veux. »), le directeur ensuite (« La porte est ouverte, Pierre. Dans les deux
 sens. »).
 
 ### Vertus

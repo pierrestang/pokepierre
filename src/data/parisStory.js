@@ -9,7 +9,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 //   2. Premier passage au bureau : le hall plein de collègues, le collègue blasé ; l'ascenseur ne monte pas.
 //   3. Le concert : la place d'Antoine, un collègue, a passé de main en main (Tam, Louis, Clara) ; Bercy ; un an plus tard.
 //   4. Au bureau, le 1er étage s'allume : la promotion.
-//   5. Le match : Hugues invite, Thomas finit son service au restaurant, France-Argentine chez Hugues.
+//   5. Le match : Hugues invite, Thomas finit son service au restaurant, la finale France-Argentine chez Hugues ; un an plus tard.
 //   6. Au bureau, le dernier étage s'allume : le directeur, la Liberté ; en sortant, le rêve (reveStory.js).
 // Scénettes partagées par la carte et les intérieurs (étapes : voir MapScene.runSteps).
 
@@ -201,8 +201,10 @@ export const THOMAS_SERVICE = [
   { setFlag: FLAGS.thomasSuit },
 ];
 
-// Chez Hugues : le salon, la télé allumée, des amis devant. France-Argentine.
-const WATCHERS = ['hugues', 'ami-match-1', 'ami-match-2', 'amie-match', 'thomas'];
+// Chez Hugues : le salon, la télé allumée, ses amis devant (Philippe, Nico et un autre ami). La finale France-Argentine,
+// comme elle s'est jouée : 2-0 pour l'Argentine, la France revient à 2-2, 3-2 en prolongation, 3-3, puis les tirs au but
+// perdus. Hugues et Thomas portent les réactions. À la fin : « Un an plus tard… », Pierre ressort devant chez Hugues.
+const WATCHERS = ['hugues', 'philippe', 'nico', 'ami-match', 'thomas'];
 export const MATCH = [
   { setFlag: FLAGS.matchArrivee },
   { speaker: 'Hugues', say: ['Les voilà ! Allez, posez tout, ça va commencer, j\'attends ce match depuis des semaines !'] },
@@ -210,23 +212,54 @@ export const MATCH = [
   { walk: 'thomas', to: [7, 5], block: true },
   { face: { thomas: 'up' } },
   { goTo: [6, 6], facing: 'up' },
-  { say: ['Le match commence ! C\'est France-Argentine.'] },
-  { speaker: 'Ami', say: ['Allez les Bleus !'] },
-  { speaker: 'Amie', say: ['Non mais tu as vu cette passe ?!'] },
+  { say: ['Le match commence ! C\'est la finale : France-Argentine.'] },
+  { speaker: 'Philippe', say: ['Allez les Bleus !'] },
   { speaker: 'Hugues', say: ['Contre l\'Argentine, ça se gagne, allez !'] },
-  { say: ['Buuut !'] },
+  // 0-2
+  { say: ['Penalty pour l\'Argentine… Messi le transforme. 1-0.'] },
+  { emote: 'hugues', kind: 'dots' },
+  { speaker: 'Hugues', say: ['Non, non, non… On n\'a pas encore touché un ballon !'] },
+  { say: ['Contre éclair argentin… Di María, tout seul. 2-0.'] },
+  { speaker: 'Thomas', say: ['Ça fait mal, là. Très mal.'] },
+  { speaker: 'Hugues', say: ['Deschamps change deux joueurs avant la mi-temps ! C\'est la panique !'] },
+  { say: ['À la mi-temps, le salon est silencieux.'] },
+  { speaker: 'Nico', say: ['Quelqu\'un veut encore une part ?'] },
+  { speaker: 'Hugues', say: ['Pas faim.'] },
+  // 2-2
+  { say: ['Quatre-vingtième minute. Penalty pour la France ! Mbappé… 2-1 !'] },
   { cheer: WATCHERS },
-  { speaker: 'Hugues', say: ['Allez la France !'] },
-  { say: ['Mais l\'Argentine revient. Une fois… puis une deuxième.'] },
+  { speaker: 'Hugues', say: ['IL Y A UN MATCH !'] },
+  { say: ['Une minute plus tard, Mbappé reprend de volée… 2-2 !'] },
+  { cheer: WATCHERS },
+  { speaker: 'Thomas', say: ['Je le crois pas ! Deux buts en deux minutes !'] },
+  { hop: 'hugues', times: 3 },
+  // 3-2 en prolongation
+  { say: ['Prolongation. Cent-huitième minute… Messi, encore lui. 3-2 pour l\'Argentine.'] },
+  { emote: 'hugues', kind: 'dots' },
+  { speaker: 'Hugues', say: ['Pas lui… Pas maintenant…'] },
+  // 3-3
+  { say: ['Cent-dix-huitième minute. Main dans la surface : penalty ! Mbappé… 3-3 !'] },
+  { cheer: WATCHERS },
+  { speaker: 'Thomas', say: ['Un triplé en finale ! Il n\'est pas humain !'] },
+  { say: ['Dernière seconde : Kolo Muani, seul face au gardien… Arrêté !'] },
+  { speaker: 'Hugues', say: ['NOOON ! Il l\'avait au bout du pied !'] },
+  // Les tirs au but
+  { say: ['Les tirs au but.'] },
+  { speaker: 'Thomas', say: ['Je ne regarde pas. Dis-moi quand c\'est fini.'] },
+  { say: ['Mbappé marque. Coman, arrêté. Tchouaméni, à côté…'] },
+  { say: ['Montiel s\'avance… et marque. L\'Argentine est championne du monde.'] },
   { emote: 'hugues', kind: 'dots' },
   { speaker: 'Hugues', say: ['Non… c\'est pas possible…'] },
-  { say: ['Le match se termine.'] },
-  { speaker: 'Thomas', say: ['Bon. On les aura la prochaine fois. Allez, il reste à manger !'] },
+  { speaker: 'Thomas', say: ['On est passés si près… Bon. On les aura la prochaine fois. Allez, il reste à manger !'] },
   { say: ['On a perdu, mais c\'était une belle soirée pour le GOAT…'] },
   { setFlag: FLAGS.matchParis },
+  { black: true },
+  { wait: 700 },
+  { say: ['Un an plus tard…'] },
+  { travel: { map: 'paris', x: 8, y: 41, facing: 'down' } },
 ];
 
-export const HUGUES_AFTER = ['Perdu contre l\'Argentine… Mais quelle soirée, hein ? Reviens quand tu veux.'];
+export const HUGUES_AFTER = ['Ces tirs au but… Je ne les ai toujours pas digérés. Reviens quand tu veux.'];
 
 // ---------- 6. Le directeur ----------
 

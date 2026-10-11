@@ -2487,9 +2487,10 @@ export const interiors = {
     spawn: { x: 10, y: 6, facing: 'left' },
     npcs: [
       { id: 'hugues', name: 'Hugues', x: 5, y: 5, facing: 'up', dialogue: HUGUES_AFTER },
-      { id: 'ami-match-1', name: 'Ami', sprite: 'g6', x: 4, y: 5, facing: 'up', dialogue: ['La prochaine, on la gagne. Promis.'] },
-      { id: 'amie-match', name: 'Amie', sprite: 'g28', x: 6, y: 5, facing: 'up', dialogue: ['Cette passe, quand même… Magnifique.'] },
-      { id: 'ami-match-2', name: 'Ami', sprite: 'g7', x: 8, y: 5, facing: 'up', dialogue: ['Il reste des parts ? Thomas, t\'es un génie.'] },
+      // Les amis de Hugues : Philippe, Nico et un autre ami (les répliques du match sont surtout à Hugues et Thomas).
+      { id: 'philippe', name: 'Philippe', sprite: 'g6', x: 4, y: 5, facing: 'up', dialogue: ['La prochaine, on la gagne. Promis.'] },
+      { id: 'ami-match', name: 'Ami', sprite: 'g137', x: 6, y: 5, facing: 'up', dialogue: ['Ce triplé, quand même… Magnifique.'] },
+      { id: 'nico', name: 'Nico', sprite: 'g7', x: 8, y: 5, facing: 'up', dialogue: ['Il reste des parts ? Thomas, t\'es un génie.'] },
       // Thomas, qui suivait Pierre : même id que le suiveur (il part de là où il était).
       { id: 'thomas', name: 'Thomas', x: 7, y: 5, facing: 'up', ifFlags: [FLAGS.matchArrivee], dialogue: ['Bon match quand même, hein ?'] },
     ],
