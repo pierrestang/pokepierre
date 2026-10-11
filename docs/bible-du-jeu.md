@@ -1552,6 +1552,26 @@ Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam,
 section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
 
+## Lignes facultatives de Hanoï, Amsterdam et Delhi (11 octobre 2026, validées par Pierre)
+PNJ immobiles (sprites libres, data/maps/<ville>.js) et objets posés sur un élément du décor :
+- **Hanoï** : la vendeuse de phở au bord du lac (« Un phở ? Le bouillon cuit depuis cinq heures ce matin. Comme tous les
+  jours. ») ; le livreur, grande rue (« Ici, pour traverser, tu marches tout droit sans t'arrêter. Les scooters, eux,
+  t'évitent. ») ; la joueuse de badminton (« Tous les matins à six heures, tout le quartier vient ici faire du sport. ») ;
+  un étudiant (« Tu as goûté le café à l'œuf ? Ne fais pas cette tête, c'est délicieux. ») ; objets : l'autel de rue
+  (un pot, « De l'encens et des mandarines, posés pour les ancêtres. »), les fils au-dessus de la rue (un réverbère),
+  la tortue du lac (l'eau, « La légende dit qu'une tortue géante vit encore au fond du lac. »).
+- **Amsterdam** : un cycliste (« Attention, la piste cyclable ! Ici, c'est nous qui avons la priorité. ») ; le marinier,
+  sur le quai à côté de la péniche (« Trente ans que je vis sur l'eau. La terre ferme, ça me donne le mal de mer. ») ;
+  une fleuriste (« Des tulipes ? En cette saison, je n'ai que des bulbes. Il faudra être patient. ») ; une passante
+  (« Il pleut ? Ici, on ne dit pas qu'il pleut. On dit que c'est mardi. ») ; objets : le parapet du pont (les vélos
+  attachés), la maison étroite (« On montait les meubles par la fenêtre, avec un crochet. »), le vieux plan (le
+  panneau de l'entrée : les canaux comme les cernes d'un arbre).
+- **Delhi** : le conducteur de tuk-tuk (« Tuk-tuk ? Pour toi, prix spécial ! … Bon, prix normal. ») ; le vendeur de chaï,
+  à son stand ; la marchande d'épices, au bazar (cardamome et cumin) ; un étudiant (« Ici, on étudie la nuit. Le jour, il
+  fait trop chaud pour penser. ») ; un passant qui parle de la vache du carrefour (pas de sprite de vache : « Tu as vu
+  la vache, au carrefour ? Elle ne bouge pas. Les voitures font le tour. Personne ne klaxonne. ») ; objets : le temple
+  de quartier (les guirlandes et les clochettes), le linge sur les toits (les saris).
+
 ## Robustesse (11 octobre 2026, revue de production, 2e passe)
 - Tant que quelqu'un suit Pierre, il ne peut pas quitter la ville (route, aéroport) : « On t'accompagne : ce n'est pas
   le moment de quitter la ville. » Seul Prophecy, au départ de Delhi, l'accompagne à l'aéroport et à Bordeaux

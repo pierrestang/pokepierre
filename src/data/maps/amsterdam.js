@@ -89,6 +89,11 @@ export const amsterdamMap = {
       ifFlags: [FLAGS.moisAmsterdam], unlessFlags: [FLAGS.canalNuit],
       script: CANAL_NIGHT,
     },
+    // Facultatif : la vie du quartier (lignes validées le 11 octobre 2026).
+    { id: 'cycliste-ams', name: 'Cycliste', sprite: 'g32', x: 5, y: 17, facing: 'right', still: true, dialogue: ['Attention, la piste cyclable ! Ici, c\'est nous qui avons la priorité.'] },
+    { id: 'marinier', name: 'Marinier', sprite: 'g74', x: 13, y: 12, facing: 'right', still: true, dialogue: ['Trente ans que je vis sur l\'eau. La terre ferme, ça me donne le mal de mer.'] },
+    { id: 'fleuriste', name: 'Fleuriste', sprite: 'g115', x: 24, y: 24, facing: 'down', still: true, dialogue: ['Des tulipes ? En cette saison, je n\'ai que des bulbes. Il faudra être patient.'] },
+    { id: 'passante-pluie', name: 'Passante', sprite: 'g125', x: 30, y: 24, facing: 'left', still: true, dialogue: ['Il pleut ? Ici, on ne dit pas qu\'il pleut. On dit que c\'est mardi.'] },
   ],
   events: [
     // L'arrivée : Romain appelle.
@@ -103,7 +108,13 @@ export const amsterdamMap = {
     lights: [[15, 14, 0xffc060], [17, 14, 0xffc060], [19, 14, 0xffd890]],
   },
   // Panneaux « Aéroport » (dessinés) à côté des sorties ; les deux bouts de la grande rue mènent à l'aéroport.
-  objects: [airportSign(2, 12, false), airportSign(33, 12, true)],
+  objects: [
+    airportSign(2, 12, false), airportSign(33, 12, true),
+    // Facultatif : le parapet du pont, la maison étroite, le vieux plan.
+    { x: 10, y: 13, dialogue: ['Des centaines de vélos attachés au parapet. Certains sont là depuis des années.'] },
+    { x: 16, y: 19, dialogue: ['Une maison large comme une porte. On montait les meubles par la fenêtre, avec un crochet.'] },
+    { x: 1, y: 10, dialogue: ['Les canaux font des cercles autour de la vieille ville, comme les cernes d\'un arbre.'] },
+  ],
   triggers: [toAirport(0, 10), toAirport(0, 11), toAirport(35, 10), toAirport(35, 11)],
   surroundings: { outside },
   spawn: { x: 1, y: 10, facing: 'right' },

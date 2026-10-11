@@ -175,6 +175,12 @@ export const newDelhiMap = {
       id: 'harsh-depart', name: 'Harsh', x: 28, y: 11, facing: 'left',
       ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.retourBordeaux], dialogue: HARSH_GOODBYE,
     },
+    // Facultatif : la vie du quartier (lignes validées le 11 octobre 2026). Pas de sprite de vache : un passant en parle.
+    { id: 'tuk-tuk', name: 'Conducteur de tuk-tuk', sprite: 'g46', x: 7, y: 3, facing: 'down', still: true, dialogue: ['Tuk-tuk ? Pour toi, prix spécial ! … Bon, prix normal.'] },
+    { id: 'vendeur-chai', name: 'Vendeur de chaï', sprite: 'g47', x: 29, y: 24, facing: 'down', still: true, dialogue: ['Un chaï, bien sucré, bien chaud. Même en plein été, ici, on boit chaud.'] },
+    { id: 'marchande-epices', name: 'Marchande d\'épices', sprite: 'g76', x: 12, y: 22, facing: 'down', still: true, dialogue: ['Sens ça : cardamome. Et ça : cumin. Tu repartiras avec les deux, je le vois.'] },
+    { id: 'etudiant-nuit', name: 'Étudiant', sprite: 'g84', x: 24, y: 28, facing: 'down', still: true, dialogue: ['Ici, on étudie la nuit. Le jour, il fait trop chaud pour penser.'] },
+    { id: 'passant-vache', name: 'Passant', sprite: 'g85', x: 14, y: 30, facing: 'up', still: true, dialogue: ['Tu as vu la vache, au carrefour ? Elle ne bouge pas. Les voitures font le tour. Personne ne klaxonne.'] },
   ],
   events: [
     // En sortant du fort, la pierre reçue : « Quelques mois plus tard… », puis Prophecy et Harsh devant la porte.
@@ -184,7 +190,12 @@ export const newDelhiMap = {
     { on: 'enter', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.harshCour], steps: [HARSH_WALK] },
   ],
   // Panneaux « Aéroport » (dessinés) à côté des sorties ; les deux bouts de la grande avenue mènent à l'aéroport.
-  objects: [airportSign(2, 18, false), airportSign(22, 15, true)],
+  objects: [
+    airportSign(2, 18, false), airportSign(22, 15, true),
+    // Facultatif : le temple de quartier, le linge sur les toits.
+    { x: 7, y: 24, dialogue: ['Des guirlandes de fleurs orange et des clochettes qu\'on fait sonner en entrant.'] },
+    { x: 3, y: 24, dialogue: ['Des saris de toutes les couleurs sèchent au soleil, comme des drapeaux.'] },
+  ],
   triggers: [
     ...[14, 15, 16, 17].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),
     // Après le repas, devant la porte du fort (la seule case qui y mène) : on rejoint Harsh et on entre avec lui.

@@ -108,6 +108,11 @@ export const hanoiMap = {
     // Facultatif : deux papis jouent aux échecs chinois au bord du lac (Audace).
     { id: 'papi-1', name: 'Papi', sprite: 'g39', x: 18, y: 12, facing: 'right', still: true, script: CHESS_PLAYERS },
     { id: 'papi-2', name: 'Papi', sprite: 'g48', x: 20, y: 12, facing: 'left', still: true, script: CHESS_PLAYERS },
+    // Facultatif : la vie du quartier (lignes validées le 11 octobre 2026).
+    { id: 'vendeuse-pho', name: 'Vendeuse de phở', sprite: 'g66', x: 15, y: 14, facing: 'down', still: true, dialogue: ['Un phở ? Le bouillon cuit depuis cinq heures ce matin. Comme tous les jours.'] },
+    { id: 'livreur-scooter', name: 'Livreur', sprite: 'g26', x: 14, y: 9, facing: 'down', still: true, dialogue: ['Ici, pour traverser, tu marches tout droit sans t\'arrêter. Les scooters, eux, t\'évitent.'] },
+    { id: 'badminton', name: 'Joueuse de badminton', sprite: 'g114', x: 28, y: 17, facing: 'left', still: true, dialogue: ['Tous les matins à six heures, tout le quartier vient ici faire du sport.'] },
+    { id: 'etudiant-cafe', name: 'Étudiant', sprite: 'g27', x: 30, y: 13, facing: 'down', still: true, dialogue: ['Tu as goûté le café à l\'œuf ? Ne fais pas cette tête, c\'est délicieux.'] },
   ],
   events: [
     // L'arrivée : personne n'attend Pierre.
@@ -123,6 +128,10 @@ export const hanoiMap = {
     { on: 'enter', ifFlags: [FLAGS.travailTermine], unlessFlags: [FLAGS.sixMoisHanoi], steps: SIX_MONTHS_LATER },
   ],
   objects: [
+    // Facultatif : l'autel de rue, les fils au-dessus de la rue, la tortue du lac.
+    { x: 7, y: 22, dialogue: ['De l\'encens et des mandarines, posés pour les ancêtres.'] },
+    { x: 6, y: 6, dialogue: ['Des centaines de fils emmêlés au-dessus de la rue. Personne ne sait lequel va où.'] },
+    { x: 14, y: 15, dialogue: ['La légende dit qu\'une tortue géante vit encore au fond du lac.'] },
     // La boîte aux lettres, à droite de ta maison (dessinée) : une carte de la bande de Hull.
     { x: 24, y: 7, dialogue: MAILBOX },
     // Panneaux « Aéroport » à côté des sorties.
