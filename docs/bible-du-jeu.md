@@ -1758,6 +1758,9 @@ devient le Talisman indien (systems/items.js).
 ## Incohérences repérées
 
 ### Noms incertains ou en double
+- **Apparences choisies dans le panneau PNJ (11 octobre 2026)** : Pierre `g202`, Romain `g179` (le même sprite que Sam,
+  l'invité de la soirée de Bordeaux), William `g0` (le même que Rémi), Fanny `g57` partout (ce choix passe avant les
+  sprites par lieu : plus d'enfant à Saint-Ay, et la même taille que Jean). Gardés tels quels, à la demande de Pierre.
 - **Manon** : la sœur de Pierre (`g96`) et une camarade de collège (`lookName` « Manon (collège) », `g15`). Ne pas fusionner.
 - **Julien** : un élève du collège (`g163`) et un collègue de la tour de Paris (`lookName` « Julien (Paris) »). Ne pas fusionner.
 - **Camille** : il n'en reste qu'une, la collègue de Paris ; la fille de la classe de Pierre au collège s'appelle Clélia.
