@@ -153,7 +153,7 @@ export const CANAL_NIGHT = [
   { speaker: 'Romain', say: ['Viens t\'asseoir. Y a six mois, t\'étais à Hanoï, et moi à Hong Kong. Et là, on est posés ensemble à Amsterdam.'] },
   { speaker: 'Romain', say: ['Profite, va. On ne sait jamais où on sera dans six mois. Mais là, maintenant, on est bien.'] },
   { useTrait: TRAITS.insouciance },
-  { say: ['Tu oublies le stage de demain. Romain sort son téléphone et vous prend en photo, tous les deux, devant le canal.'] },
+  { say: ['Tu oublies tout le reste. Romain sort son téléphone et vous prend en photo, tous les deux, devant le canal.'] },
   { souvenir: PHOTO },
   { speaker: 'Romain', say: ['Au fait : ton prochain échange, c\'est à Delhi ! Prophecy y est déjà, il t\'attend là-bas. Tiens, ton billet d\'avion.'] },
   { give: ITEMS.billetNewDelhi, text: 'Romain te donne ton billet d\'avion pour Delhi.' },

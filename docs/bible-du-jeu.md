@@ -1078,8 +1078,8 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
    péniche (17, 12) : « Romain est assis au bord du quai. Les lumières des péniches tremblent sur le canal. » ; Pierre
    s'assoit à côté de lui (16, 12), et tous les deux regardent le canal ; **« Viens t'asseoir. Y a six mois, t'étais à
    Hanoï, et moi à Hong Kong. Et là, on est posés ensemble à Amsterdam. »** / « Profite, va. On ne sait jamais où on sera
-   dans six mois. Mais là, maintenant, on est bien. » → **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de
-   demain. Romain sort son téléphone et vous prend en photo, tous les deux, devant le canal. » → souvenir **Photo du
+   dans six mois. Mais là, maintenant, on est bien. » → **« Pierre utilise Insouciance ! »** → « Tu oublies tout le
+   reste. Romain sort son téléphone et vous prend en photo, tous les deux, devant le canal. » → souvenir **Photo du
    canal** (carnet) ; **« Au fait : ton prochain échange, c'est à Delhi ! Prophecy y est déjà, il t'attend là-bas.
    Tiens, ton billet d'avion. »** → **Billet d'avion pour Delhi** ; Pierre, en lui-même : **« Une ville de plus. Et à
    chaque fois, des gens que je quitte. Je me demande ce qu'ils deviennent, tous. »** ; « Le lendemain, ton billet en
