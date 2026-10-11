@@ -1758,6 +1758,8 @@ devient le Talisman indien (systems/items.js).
 ## Incohérences repérées
 
 ### Noms incertains ou en double
+- **Plus aucun nageur** (11 octobre 2026) : les sprites de nageurs et de nageuses (g26 à g29) ne servent plus ; le livreur
+  et l'étudiant du café de Hanoï ont des sprites ordinaires, et la réserve des figurants n'en contient plus.
 - **Apparences choisies dans le panneau PNJ (11 octobre 2026)** : Pierre `g202`, Romain `g179` (le même sprite que Sam,
   l'invité de la soirée de Bordeaux), William `g0` (le même que Rémi), Fanny `g57` partout (ce choix passe avant les
   sprites par lieu : plus d'enfant à Saint-Ay, et la même taille que Jean). Gardés tels quels, à la demande de Pierre.

@@ -104,9 +104,9 @@ export const hanoiMap = {
     { id: 'papi-2', name: 'Papi', sprite: 'g48', x: 20, y: 12, facing: 'left', still: true, script: CHESS_PLAYERS },
     // Facultatif : la vie du quartier (lignes validées le 11 octobre 2026).
     { id: 'vendeuse-pho', name: 'Vendeuse de phở', sprite: 'g66', x: 15, y: 14, facing: 'down', still: true, dialogue: ['Un phở ? Le bouillon cuit depuis cinq heures ce matin. Comme tous les jours.'] },
-    { id: 'livreur-scooter', name: 'Livreur', sprite: 'g26', x: 14, y: 9, facing: 'down', still: true, dialogue: ['Ici, pour traverser, tu marches tout droit sans t\'arrêter. Les scooters, eux, t\'évitent.'] },
+    { id: 'livreur-scooter', name: 'Livreur', sprite: 'g79', x: 14, y: 9, facing: 'down', still: true, dialogue: ['Ici, pour traverser, tu marches tout droit sans t\'arrêter. Les scooters, eux, t\'évitent.'] },
     { id: 'badminton', name: 'Joueuse de badminton', sprite: 'g114', x: 28, y: 17, facing: 'left', still: true, dialogue: ['Tous les matins à six heures, tout le quartier vient ici faire du sport.'] },
-    { id: 'etudiant-cafe', name: 'Étudiant', sprite: 'g27', x: 30, y: 13, facing: 'down', still: true, dialogue: ['Tu as goûté le café à l\'œuf ? Ne fais pas cette tête, c\'est délicieux.'] },
+    { id: 'etudiant-cafe', name: 'Étudiant', sprite: 'g177', x: 30, y: 13, facing: 'down', still: true, dialogue: ['Tu as goûté le café à l\'œuf ? Ne fais pas cette tête, c\'est délicieux.'] },
   ],
   events: [
     // L'arrivée : personne n'attend Pierre.

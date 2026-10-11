@@ -29,6 +29,6 @@ export const BY_NAME = {
 
 // Figurants sans attribution (ex. les diplômés, les touristes) : choisis d'après leur id et leur place.
 // Aucun n'est le sprite d'un personnage nommé (sinon un figurant lui ressemblerait) : à vérifier en changeant BY_NAME.
-export const EXTRAS = ['g8', 'g29', 'g81', 'g91', 'g117', 'g124', 'g146', 'g151', 'g160', 'g164',
+export const EXTRAS = ['g8', 'g40', 'g81', 'g91', 'g117', 'g124', 'g146', 'g151', 'g160', 'g164',
   'g135', 'g142', 'g163', 'g170', 'g180'];
 
