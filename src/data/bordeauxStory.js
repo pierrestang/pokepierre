@@ -121,7 +121,8 @@ const PARTY_START = [
   { take: ITEMS.enceinte.id },
   { take: ITEMS.gobelets.id },
   { setFlag: FLAGS.soiree },
-  { travel: { ...APARTMENT, y: 7 } },
+  // Au milieu du salon, près de Rémi et Charlotte, loin du tapis de sortie (11, 6) : sinon le premier pas faisait ressortir.
+  { travel: { ...APARTMENT, x: 4, y: 7, facing: 'right' } },
 ];
 const BOTH = [ITEMS.enceinte.id, ITEMS.gobelets.id];
 

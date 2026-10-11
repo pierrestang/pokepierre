@@ -652,7 +652,8 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
      « À une main, tranquille. » / « Tu me la portes ? » ; dans tous les cas → **Enceinte**.
    - Rémi : « C'est so random, les gobelets sont dans le closet. » ; choix « Le closet ? » / « Thanks, bro. » / « Parle
      français ! » ; dans tous les cas → **Gobelets**.
-   - Ousmane : « On est bons. Rentre, ça commence. » ; « La soirée d'intégration bat son plein. L'enceinte de Paul
+   - Ousmane : « On est bons. Rentre, ça commence. » (Pierre arrive au milieu du salon, en (4, 7), loin du tapis de
+     sortie) ; « La soirée d'intégration bat son plein. L'enceinte de Paul
      trône au milieu du salon. » L'appartement est de nuit, comme à l'Asylum, avec des lumières de fête autour de
      l'enceinte (répliques des étudiants, par exemple « C'est toi qui as rallumé le courant ? Respect. »)
    - Parmi les invités, Léo : **« Moi c'est Léo, aussi à KEDGE. Paraît qu'on part tous à Hull l'an prochain pour
