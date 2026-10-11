@@ -15,7 +15,7 @@ import { FLIGHT_TO_AMSTERDAM } from '../hanoiStory.js';
 
 // La suite de l'histoire : le prochain vol, tant qu'on n'est pas arrivé (au plus un à la fois).
 const NEXT_FLIGHTS = [
-  // Hull : le premier vol, avec le diplôme d'anglais, est gardé par Ousmane (voir bordeauxStory.js FLIGHT_TO_HULL).
+  // Hull : le premier vol, avec le diplôme d'anglais ; Pierre part seul (voir bordeauxStory.js FLIGHT_TO_HULL).
   { label: 'Hull (Angleterre)', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull], steps: FLIGHT_TO_HULL },
   // Hanoï : après les adieux de Hull (personne n'accompagne Pierre).
   { label: 'Hanoï (Vietnam)', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
@@ -89,12 +89,6 @@ export const airportMap = {
   doors: [],
   buildings: [],
   npcs: [
-    // Ousmane attend devant le guichet le jour du départ pour Hull.
-    {
-      id: 'ousmane-aeroport', name: 'Ousmane', x: 11, y: 8, facing: 'left',
-      ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull],
-      dialogue: ['Le guichet, c\'est juste là. Prends ton billet pour Hull.'],
-    },
     {
       id: 'hotesse', name: 'Hôtesse', x: 10, y: 6, facing: 'down', color: 0x2c5cb0,
       dialogue: ["Bonjour ! Bienvenue à l'aéroport."],

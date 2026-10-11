@@ -7,7 +7,7 @@ import { builtGrid } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
-  ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AFTER_ORAL, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST,
+  ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AFTER_ORAL, OUSMANE_EXAM, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST,
   ANTITHEFT_KEY, BACK_FROM_DELHI, LEAVING_BORDEAUX,
 } from '../bordeauxStory.js';
 
@@ -122,6 +122,11 @@ export const bordeauxMap = {
       id: 'ousmane-rappel', name: 'Ousmane', x: 6, y: 11, facing: 'left',
       ifFlags: [FLAGS.preparatifs], unlessFlags: [FLAGS.soiree], script: OUSMANE_REMINDS,
     },
+    // Quelques mois après la soirée : Ousmane attend devant l'immeuble et envoie Pierre à son examen d'anglais.
+    {
+      id: 'ousmane-examen', name: 'Ousmane', x: 6, y: 11, facing: 'left',
+      ifFlags: [FLAGS.soireeFinie], unlessItems: [ITEMS.diplomeAnglais.id], dialogue: OUSMANE_EXAM,
+    },
     // L'agent de sécurité garde le chemin de l'aéroport (x 30, rangées 10-12) tant que Pierre n'a pas son diplôme
     // d'anglais ; l'ouvrier, la route de Paris (x 30, rangées 30-33) jusqu'au diplôme de Bordeaux. Passer à côté :
     // ils arrêtent Pierre, qui recule (voir triggers).
@@ -144,7 +149,7 @@ export const bordeauxMap = {
     {
       id: 'ousmane-kedge', name: 'Ousmane', x: 10, y: 34, facing: 'left',
       ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.ousmaneDiplome],
-      dialogue: ['L\'aéroport est par la sortie est. On se retrouve au guichet !'],
+      dialogue: ['L\'aéroport est par la sortie est. On se retrouve à Hull !'],
     },
   ],
   events: [

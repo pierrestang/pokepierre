@@ -4,8 +4,8 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 //   1. Les clés : l'agence, puis Ousmane, le coloc, devant l'immeuble ; ils entrent ensemble.
 //   2. La coupure : l'appartement dans le noir ; Pierre (Ingéniosité) relève le compteur. Pas de vertu à Bordeaux.
 //   3. La soirée d'intégration : l'enceinte chez Paul, les gobelets chez Rémi ; la fête dans l'appartement.
-//   4. Le diplôme d'anglais : l'oral à KEDGE (Rémi devant la porte).
-//   5. Le départ : l'aéroport (sortie est), Ousmane au guichet ; vol pour Hull.
+//   4. Le diplôme d'anglais : Ousmane envoie Pierre à l'université ; l'oral à KEDGE (Rémi devant la porte).
+//   5. Le départ : l'aéroport (sortie est), Pierre seul (Ousmane est parti avant lui) ; vol pour Hull.
 // Scénettes partagées par la carte, les intérieurs et l'aéroport (étapes : voir MapScene.runSteps).
 
 const AGENT = 'Agent immobilier';
@@ -180,14 +180,25 @@ export const OUSMANE_ASLEEP = [
   { say: ['Ousmane dort à poings fermés. Il ronfle.'] },
 ];
 
-// En sortant de la soirée : quelques mois plus tard.
+// En sortant de la soirée : quelques mois plus tard. Ousmane attend devant la porte de l'immeuble et envoie Pierre à
+// l'université, passer son examen d'anglais.
 export const MONTHS_LATER = [
   { black: true },
   { wait: 700 },
   { say: ['Quelques mois plus tard…'] },
   { setFlag: FLAGS.soireeFinie },
   { black: false },
+  { approach: 'ousmane-examen' },
+  {
+    speaker: 'Ousmane',
+    say: [
+      'Pierre ! Qu\'est-ce que tu fais encore là ? C\'est aujourd\'hui, ton examen d\'anglais !',
+      'File à l\'université : KEDGE, le grand bâtiment de pierre, en bas à gauche, au bord de la Garonne.',
+    ],
+  },
 ];
+// Ousmane, devant l'immeuble jusqu'à l'examen : il rappelle où aller.
+export const OUSMANE_EXAM = ['Ton examen d\'anglais, c\'est à KEDGE, le grand bâtiment de pierre en bas à gauche. Vas-y !'];
 
 // ---------- 4. Le diplôme d'anglais ----------
 
@@ -222,19 +233,24 @@ export const ENGLISH_ORAL = [
 ];
 
 // En sortant de KEDGE, le diplôme en poche : Ousmane attend devant la porte et montre le chemin de l'aéroport ; il part
-// devant (il prend l'avion avant Pierre).
+// pour Hull quelques semaines avant Pierre (il n'est pas à l'aéroport).
 export const OUSMANE_AFTER_ORAL = [
   { approach: 'ousmane-kedge' },
-  { speaker: 'Ousmane', say: ['Ça y est, tu l\'as, ton diplôme ! L\'aéroport est par la sortie est. Prends ton billet pour Hull, je pars avant toi.'] },
+  {
+    speaker: 'Ousmane',
+    say: [
+      'Ça y est, tu l\'as, ton diplôme ! Moi, je pars pour Hull quelques semaines avant toi : je te garde une place à la coloc.',
+      'L\'aéroport, c\'est par la sortie est. Prends ton billet pour Hull quand tu es prêt !',
+    ],
+  },
   { walk: 'ousmane-kedge', to: [23, 27], then: [FLAGS.ousmaneDiplome] },
 ];
 
 // ---------- 5. Le départ ----------
 
-// Au guichet de l'aéroport, le vol pour Hull : Ousmane garde le départ.
+// Au guichet de l'aéroport, le vol pour Hull : Pierre est seul, Ousmane est parti quelques semaines avant lui.
 export const FLIGHT_TO_HULL = [
-  { faceTo: 'ousmane-aeroport' },
-  { speaker: 'Ousmane', say: ['Hull, hein. Je pars une semaine avant toi, je te garde une place à la coloc.'] },
+  { say: ['Ousmane est parti pour Hull il y a quelques semaines. Il te garde une place à la coloc. Tu prends ton billet.'] },
   { setFlag: FLAGS.arriveeHull },
   { travel: { map: 'hull', x: 1, y: 35, facing: 'right', plane: true } },
 ];

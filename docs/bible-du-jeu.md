@@ -599,7 +599,7 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Agent immobilier | Remet les clés : « Vos parents ont tout réglé. Voici les clés, l'immeuble est juste à gauche. » | `g35` |
-| Ousmane | Le coloc ; garde aussi le départ à l'aéroport | `g105` |
+| Ousmane | Le coloc ; part pour Hull quelques semaines avant Pierre | `g105` |
 | Paul | Fan de musculation : prête l'enceinte | `g86` |
 | Rémi | Revient d'un échange aux USA, parle franglais : prête les gobelets | `g140` |
 | Dalil | Discret, à la soirée d'intégration (puis au stade, au retour) | `g2` |
@@ -639,14 +639,19 @@ Les tâches de la chambre ; l'infiltration de nuit entre les rondes.
    - En allant vers la porte pendant la fête : fondu, **« Le lendemain matin. L'appartement est sens dessus dessous :
      gobelets, canettes, pizza froide, confettis… »** / « Ousmane dort encore, tout habillé. » (couché dans le lit de
      gauche). Voir le passage optionnel.
-4. **Le diplôme d'anglais.** En sortant de l'appartement : « Quelques mois plus tard… ». Rémi, devant KEDGE : **« T'inquiète, c'est
+4. **Le diplôme d'anglais.** En sortant de l'appartement : « Quelques mois plus tard… ». Ousmane attend devant la porte
+   de l'immeuble et vient voir Pierre : **« Pierre ! Qu'est-ce que tu fais encore là ? C'est aujourd'hui, ton examen
+   d'anglais ! »** / « File à l'université : KEDGE, le grand bâtiment de pierre, en bas à gauche, au bord de la
+   Garonne. » (s'il lui reparle : « Ton examen d'anglais, c'est à KEDGE, le grand bâtiment de pierre en bas à gauche.
+   Vas-y ! »). Rémi, devant KEDGE : **« T'inquiète, c'est
    easy. »** La professeure : « Welcome to your English oral! Three questions. Ready? » → **« Pierre utilise
    Audace ! »** → trois traductions (« Je suis en
    retard », « Ça marche ! », « J'ai hâte ! » ; bonnes réponses « I am late. », « Deal! », « I can't wait! » ; une erreur :
    par exemple « Very French. Try again! ») → « Excellent! Well done, Pierre. » → **Diplôme d'anglais** (« Diplôme
    obtenu : Anglais KEDGE ! ») ; « Avec ça, la route vers l'est t'est ouverte. »
-   En sortant de KEDGE, Ousmane attend devant la porte : **« Ça y est, tu l'as, ton diplôme ! L'aéroport est par la
-   sortie est. Prends ton billet pour Hull, je pars avant toi. »**, puis il part devant.
+   En sortant de KEDGE, Ousmane attend devant la porte : **« Ça y est, tu l'as, ton diplôme ! Moi, je pars pour Hull
+   quelques semaines avant toi : je te garde une place à la coloc. »** / « L'aéroport, c'est par la sortie est. Prends
+   ton billet pour Hull quand tu es prêt ! », puis il part (« On se retrouve à Hull ! » si on lui reparle).
 
 ### Rappels des PNJ
 Ousmane (les clés à l'agence, puis l'aéroport par la sortie est), l'agent immobilier (« L'immeuble est juste à
@@ -706,9 +711,8 @@ Recherche à tâtons dans le noir ; trois choix sans mauvaise réponse (Paul, R�
 
 ### Départ et trajet
 - **Condition** : le diplôme d'anglais (l'agent de sécurité laisse alors passer). La sortie est mène à l'aéroport ;
-  Ousmane devant le guichet : « Le guichet, c'est juste là. Prends ton billet pour Hull. » ; l'hôtesse propose « Hull
-  (Angleterre) » et « Autre » ; Ousmane : **« Hull, hein. Je pars une semaine avant toi, je te garde une place à la
-  coloc. »**
+  Pierre y est seul (Ousmane est parti avant lui). L'hôtesse propose « Hull » et « Autre » ; **« Ousmane est parti pour
+  Hull il y a quelques semaines. Il te garde une place à la coloc. Tu prends ton billet. »**
 - **Trajet en avion**, sans encart « Tu emportes ».
 
 ---
