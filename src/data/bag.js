@@ -1,7 +1,7 @@
 import { FLAGS, ITEMS } from './story.js';
 
-// Le sac (systems/ItemBag.js) en deux onglets : « Objets » (ce qui sert dans une quête ou pour avancer) et « Souvenirs »
-// (ce qui ne sert plus, ou n'a jamais servi). Un souvenir qui a d'abord servi (un diplôme qui ouvre la route, le
+// Le sac (systems/ItemBag.js) en trois onglets : « Objets » (ce qui sert dans une quête ou pour avancer), « Souvenirs »
+// (ce qui ne sert plus, ou n'a jamais servi) et « Vertus » (le carnet des vertus). Un souvenir qui a d'abord servi (un diplôme qui ouvre la route, le
 // coquillage du secret de Manon) reste dans « Objets » jusqu'à ce que sa quête soit finie (`after` : le drapeau
 // d'histoire qui la termine), puis passe tout seul dans « Souvenirs ». Chaque objet et chaque souvenir a sa phrase (ABOUT).
 
@@ -42,5 +42,11 @@ export const SOUVENIRS = [
   { item: ITEMS.diplomeBordeaux, after: FLAGS.arriveeParis, text: 'Ton diplôme de Bordeaux, remis au stade devant toute la bande.' },
 ].map(({ item, ...rest }) => ({ id: item.id, ...rest }));
 
+// Les souvenirs du carnet qui ne sont pas des objets (data/souvenirs, étape `souvenir` des scénettes) : rangés aussi dans
+// l'onglet « Souvenirs », avec leur phrase et leur icône.
+export const CARNET = [
+  { id: 'souvenir-canal', icon: 'photo', text: 'La photo de Romain et toi au bord du canal, la nuit, à Amsterdam.' },
+];
+
 // La phrase de chaque objet ou souvenir, par id.
-export const ABOUT = Object.fromEntries([...OBJECTS, ...SOUVENIRS].map((o) => [o.id, o.text]));
+export const ABOUT = Object.fromEntries([...OBJECTS, ...SOUVENIRS, ...CARNET].map((o) => [o.id, o.text]));

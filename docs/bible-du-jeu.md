@@ -12,17 +12,19 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   Pierre est Lucas (`g198`) ; pas de portrait dans les dialogues, comme dans les jeux DS. Attributions dans `src/data/characters.js` (`BY_NAME`). Un nom absent de cette liste
   reçoit un **figurant** tiré au hasard d'après son identifiant et sa position (`EXTRAS`) ; les apparences se changent
   dans le créateur (panneau PNJ, src/data/characterLooks.json), plus dans le jeu.
-- **Menu Start** (Échap), dans cet ordre : VERTUS, SAC, QUÊTES, CARTE, SAUVEGARDER, OPTIONS (musique, sons, TOUCHES : la
-  liste des touches), QUITTER (retour à l'écran titre). Plus d'entrée PNJ ni d'entrée vélo (11 octobre 2026).
+- **Menu Start** (Échap), dans cet ordre : SAC, QUÊTES, CARTE, SAUVEGARDER, OPTIONS (musique, sons, TOUCHES : la liste
+  des touches), QUITTER (retour à l'écran titre). Plus d'entrée PNJ ni d'entrée vélo ; les vertus sont dans le sac
+  (11 octobre 2026).
 - **Décor** : bâtiments, mobilier et objets sans ombre portée, et bâtiments et objets cernés d'un même trait gris
   très foncé d'un pixel (pour que les planches DPPt et Gen 4 aillent ensemble) ;
   la végétation et les éléments naturels (arbres, buissons, fleurs, rochers) gardent la leur. Cartes aux dimensions
   paires, bordées d'arbres ronds de DPPt dont le jeu cache le bord extérieur.
 - **Vertus** : 8 au plus dans tout le jeu, une par ville au plus ; 6 jusqu'à Hull, Adaptation à Hanoï, la 8e
-  réservée à Paris (pas encore définie). Encart « Pierre a reçu la vertu X ! » (étape `trait`) et « Pierre utilise X ! » (étape `useTrait`,
-  comptée). Carnet dans Start > VERTUS : le total (« Vertus : X sur 8. »), puis une page par vertu reçue avec sa ville,
-  sa phrase et son nombre d'utilisations (« Utilisée N fois. » ou « Pas encore utilisée. »), puis les « souvenirs des
-  PNJ ». À l'écran, le compteur « Vertus : X sur 8 », seulement dans les villes qui donnent une vertu.
+  réservée à Paris (Liberté). Encart « Pierre a reçu la vertu X ! » (étape `trait`) et « Pierre utilise X ! » (étape `useTrait`,
+  comptée). Carnet dans le sac, onglet « Vertus » : le total (« 3 sur 8 ») dans le bandeau, chaque vertu reçue
+  dans la grille, et sous la grille sa phrase, sa ville et ses utilisations (« Fort-de-France, utilisée 3 fois. » ou
+  « pas encore utilisée »). Le souvenir du carnet qui n'est pas une vertu (la photo du canal) est dans l'onglet
+  « Souvenirs ». À l'écran, le compteur « Vertus : X sur 8 », seulement dans les villes qui donnent une vertu.
 - **Objectifs** : le jeu n'a ni journal de quêtes ni ligne « Objectif : » (supprimées le 8 octobre 2026). Le joueur est
   guidé seulement par les PNJ, qui disent où aller et rappellent ce qu'il reste à faire (relevés ci-dessous).
 - **Téléphone** : une réplique au téléphone s'affiche dans la boîte de dialogue normale, avec une petite icône de
@@ -31,7 +33,7 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   « Tu emportes : … » (la vertu reçue dans la ville quittée ; pas d'encart en quittant une ville sans vertu). Sans scène
   de trajet, on passe directement à la carte suivante.
 - **Pêche** : plus de pêche libre ni de vieille canne (retirées le 11 octobre 2026).
-- **Le sac** (Start > SAC, touche I) : deux onglets, « Objets » et « Souvenirs » (src/data/bag.js), une icône par objet,
+- **Le sac** (Start > SAC, touche I) : trois onglets, « Objets », « Souvenirs » et « Vertus » (src/data/bag.js), une icône par objet,
   la grille remplie ligne par ligne dans l'ordre d'obtention, la phrase de l'objet choisi dessous. Un souvenir qui a
   d'abord servi reste dans « Objets » jusqu'à la fin de sa quête. Liste complète : section « Le sac ».
 - **Vélo** (offert à Bordeaux par le cycliste du quai, passage optionnel ; `?velo` dans l'adresse donne l'objet **Vélo**
@@ -1531,7 +1533,8 @@ section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chant
 
 ## Le sac : objets et souvenirs
 
-Depuis le 11 octobre 2026, le sac (Start > SAC, touche I) a deux onglets (src/data/bag.js, systems/ItemBag.js). La grille
+Depuis le 11 octobre 2026, le sac (Start > SAC, touche I) a trois onglets, Objets, Souvenirs et Vertus (src/data/bag.js,
+systems/ItemBag.js ; les vertus : voir Conventions). La grille
 se remplit ligne par ligne (gauche, puis droite), dans l'ordre où Pierre a reçu les objets ; sous la grille, la phrase
 de l'objet choisi, comme dans Pokémon. Flèches pour choisir (à gauche de la colonne de gauche, ou à droite de celle de
 droite : l'autre onglet), Tab pour changer d'onglet. Un souvenir marqué « après X » reste dans « Objets » tant que sa

@@ -9,16 +9,14 @@ import { ItemBag } from './ItemBag.js';
 import { flags } from './flags.js';
 import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
-import { MAX_TRAITS, TRAITS, traitById } from '../data/story.js';
-import { MAPS } from '../data/maps/index.js';
 
-// Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Vertus (le carnet, avec les
-// souvenirs des PNJ), Sac (deux onglets, Objets et Souvenirs), Quêtes (aller au début de la quête d'une ville, pour
+// Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Sac (trois onglets : Objets,
+// Souvenirs, Vertus — le carnet des vertus est dans le sac), Quêtes (aller au début de la quête d'une ville, pour
 // tester), Carte (du voyage), Sauvegarder, Options (musique, sons, les touches), Quitter (retour à l'écran titre).
 // L'apparence des PNJ se choisit dans le créateur (panneau PNJ), plus ici ; le vélo, avec la touche V.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
-const MAIN = { quests: 2, options: 5 };               // place de ces entrées dans le menu principal
+const MAIN = { quests: 1, options: 4 };               // place de ces entrées dans le menu principal
 const VISIBLE = 9;                           // lignes affichées à la fois (la liste des quêtes défile)
 // Options > TOUCHES : les touches du clavier (sur téléphone : les boutons A, B, START et VÉLO).
 const KEYS = [
@@ -66,7 +64,6 @@ export class StartMenu {
       ];
     }
     return [
-      { label: 'VERTUS', action: () => this.showInDialog(this.traitPages()) },
       { label: 'SAC', action: () => this.showPanel(this.itemBag, () => this.close()) },
       { label: 'QUÊTES', action: () => this.showPage('quests', 0) },
       { label: 'CARTE', action: () => this.showPanel(this.regionMap, () => this.close(), this.currentMapId()) },
@@ -74,21 +71,6 @@ export class StartMenu {
       { label: 'OPTIONS', action: () => this.showPage('options', 0) },
       { label: 'QUITTER', action: () => this.quit() },
     ];
-  }
-
-  // Carnet des vertus : le total, puis une page par vertu reçue (sa ville, sa phrase, ses utilisations), puis les
-  // souvenirs des PNJ.
-  traitPages() {
-    const got = Object.values(TRAITS).filter((t) => souvenirs.has(t.id));
-    const others = souvenirs.list().filter((s) => !traitById(s.id)).map((s) => s.name);
-    if (!got.length && !others.length) return ['Ton carnet des vertus est encore vide.'];
-    const times = (n) => (n ? `Utilisée ${n} fois.` : 'Pas encore utilisée.');
-    const pages = [
-      `Vertus : ${got.length} sur ${MAX_TRAITS}.`,
-      ...got.map((t) => `${t.name.toUpperCase()} (${MAPS[t.city]?.name ?? t.city}) : « ${t.phrase} » ${times(souvenirs.uses(t.id))}`),
-    ];
-    if (others.length) pages.push(`Souvenirs (${others.length}) : ${others.join(', ')}.`);
-    return pages;
   }
 
   // Le menu ne s'ouvre qu'en jeu, le joueur à l'arrêt, hors scénette et sans dialogue en cours.
