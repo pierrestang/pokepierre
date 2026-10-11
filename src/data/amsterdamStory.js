@@ -146,19 +146,16 @@ export const MONTHS_LATER = [
 // Le souvenir du canal (carnet).
 const PHOTO = { id: 'souvenir-canal', name: 'Photo du canal' };
 export const CANAL_NIGHT = [
-  { say: ['Romain est assis au bord du quai, les jambes au-dessus de l\'eau. Les lumières des péniches tremblent sur le canal.'] },
+  { say: ['Romain est assis au bord du quai. Les lumières des péniches tremblent sur le canal.'] },
   // Pierre s'assoit à côté de Romain : tous les deux regardent le canal.
   { goTo: [CANAL_SPOT[0] - 1, CANAL_SPOT[1]], facing: 'down' },
   { face: { player: 'down', 'romain-canal': 'down' } },
-  { speaker: 'Romain', say: ['Viens t\'asseoir deux minutes. Regarde-moi ça.'] },
-  { speaker: 'Romain', say: ['Y a six mois, t\'étais à l\'autre bout du monde, à Hanoï. Et moi à Hong Kong. Et là, on est posés ensemble à Amsterdam.'] },
+  { speaker: 'Romain', say: ['Viens t\'asseoir. Y a six mois, t\'étais à Hanoï, et moi à Hong Kong. Et là, on est posés ensemble à Amsterdam.'] },
   { speaker: 'Romain', say: ['Profite, va. On ne sait jamais où on sera dans six mois. Mais là, maintenant, on est bien.'] },
   { useTrait: TRAITS.insouciance },
-  { say: ['Tu oublies le stage de demain. Il y a juste l\'eau, les lumières, et Romain qui rigole.'] },
-  { speaker: 'Romain', say: ['Attends, bouge pas.'] },
-  { say: ['Romain sort son téléphone et vous prend en photo, tous les deux, devant le canal.'] },
+  { say: ['Tu oublies le stage de demain. Romain sort son téléphone et vous prend en photo, tous les deux, devant le canal.'] },
   { souvenir: PHOTO },
-  { speaker: 'Romain', say: ['Au fait, j\'ai une nouvelle pour toi. Ton prochain échange, c\'est à Delhi, en Inde ! Tiens, voilà ton billet d\'avion.'] },
+  { speaker: 'Romain', say: ['Au fait : ton prochain échange, c\'est à Delhi ! Prophecy y est déjà, il t\'attend là-bas. Tiens, ton billet d\'avion.'] },
   { give: ITEMS.billetNewDelhi, text: 'Romain te donne ton billet d\'avion pour Delhi.' },
   { say: ['Une ville de plus. Et à chaque fois, des gens que je quitte. Je me demande ce qu\'ils deviennent, tous.'] },
   { black: true },

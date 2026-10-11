@@ -1037,17 +1037,17 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 6. **Quelques mois plus tard.** En sortant de Corning : **« Quelques mois plus tard… »** (la seule ellipse de la ville). La
    nuit tombe sur Amsterdam (nuit forcée, quelle que soit l'heure, jusqu'à la fin de la scène du canal) : réverbères
    allumés, appliques des portes, fenêtres de la péniche.
-7. **La nuit au bord du canal.** Romain est assis sur le quai devant la péniche (17, 12) : « Romain est assis au bord du
-   quai, les jambes au-dessus de l'eau. Les lumières des péniches tremblent sur le canal. » ; Pierre s'assoit à côté de
-   lui (16, 12), et pendant toute la discussion tous les deux regardent le canal ; **« Viens t'asseoir deux
-   minutes. Regarde-moi ça. »** / « Y a six mois, t'étais à l'autre bout du monde, à Hanoï. Et moi à Hong Kong. Et là, on
-   est posés ensemble à Amsterdam. » / « Profite, va. On ne sait jamais où on sera dans six mois. Mais là, maintenant, on est bien. » →
-   **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de demain. Il y a juste l'eau, les lumières, et Romain qui
-   rigole. » ; Romain prend une photo → souvenir **Photo du canal** (carnet) ; **« Au fait, j'ai une nouvelle pour toi. Ton
-   prochain échange, c'est à Delhi, en Inde ! Tiens, voilà ton billet d'avion. »** → **Billet d'avion
-   Delhi** ; Pierre, en lui-même : **« Une ville de plus. Et à chaque fois, des gens que je quitte. Je me demande ce qu'ils
-   deviennent, tous. »** ; « Le lendemain, ton billet en poche, tu prends la route de l'aéroport. » (Pierre arrive au
-   guichet de l'aéroport d'Amsterdam ; en ressortant, il est encore à Amsterdam.)
+7. **La nuit au bord du canal** (dix bulles d'un seul tenant, encarts compris). Romain est assis sur le quai devant la
+   péniche (17, 12) : « Romain est assis au bord du quai. Les lumières des péniches tremblent sur le canal. » ; Pierre
+   s'assoit à côté de lui (16, 12), et tous les deux regardent le canal ; **« Viens t'asseoir. Y a six mois, t'étais à
+   Hanoï, et moi à Hong Kong. Et là, on est posés ensemble à Amsterdam. »** / « Profite, va. On ne sait jamais où on sera
+   dans six mois. Mais là, maintenant, on est bien. » → **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de
+   demain. Romain sort son téléphone et vous prend en photo, tous les deux, devant le canal. » → souvenir **Photo du
+   canal** (carnet) ; **« Au fait : ton prochain échange, c'est à Delhi ! Prophecy y est déjà, il t'attend là-bas.
+   Tiens, ton billet d'avion. »** → **Billet d'avion pour Delhi** ; Pierre, en lui-même : **« Une ville de plus. Et à
+   chaque fois, des gens que je quitte. Je me demande ce qu'ils deviennent, tous. »** ; « Le lendemain, ton billet en
+   poche, tu prends la route de l'aéroport. » (Pierre arrive au guichet de l'aéroport d'Amsterdam ; en ressortant, il
+   est encore à Amsterdam.)
 
 ### Vertus
 - **Gagnée** : aucune.
