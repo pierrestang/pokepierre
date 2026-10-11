@@ -144,8 +144,8 @@ export const LOUIS = [
   { speaker: 'Louis', say: ['Deux heures de queue pour le Louvre. Mais ça vaut le coup, il paraît.'] },
 ];
 
-// À Bercy : la place est contrôlée, Pierre avance dans la fosse, le chanteur chante (la dernière ligne de la chanson
-// reste à écrire par Pierre). À la fin : « Un an plus tard… », Pierre ressort devant Bercy.
+// À Bercy : la place est contrôlée, Pierre avance dans la fosse, le chanteur chante (paroles écrites par Pierre).
+// À la fin : « Un an plus tard… », Pierre ressort devant Bercy.
 export const CONCERT = [
   { take: ITEMS.placeConcert.id },
   { say: ['Tu montres ta place à l\'entrée. La salle est pleine.'] },
@@ -154,10 +154,11 @@ export const CONCERT = [
   {
     speaker: 'Chanteur',
     say: [
-      'J\'garde le meilleur et j\'ai tourné les pages, j\'ai pas de rancœur et j\'oublie jamais rien.',
-      'J\'ai passé l\'été sous la neige et l\'hiver à la plage, tu ferais quoi à ma place ?',
-      'Donc, y\'a plus rien qui m\'attache, c\'est un jour la baie ou le Taj, moi j\'voulais répondre à ces messages…',
-      '[PAROLES À COMPLÉTER PAR PIERRE]',
+      // Les paroles, telles que Pierre les a écrites.
+      'J’garde le meilleur et j’ai tourné les pages, j’ai pas de rancoeur et j’oublie jamais rien,',
+      'J’ai passé l’été sous la neige et l’hiver à la plage, tu ferais quoi à ma place ?',
+      'Donc nique y a plus rien qui m’attache, c’est un jour la baie ou le Taj,',
+      'Moi je voulais répondre à tes ssage-me, des fois je me perds dans des phases',
     ],
   },
   { cheer: CROWD },

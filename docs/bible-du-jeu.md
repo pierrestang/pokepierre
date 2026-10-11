@@ -1321,11 +1321,10 @@ de jour.
    / « Bercy, c'est le grand dôme, en haut à gauche. Ça commence bientôt ! » (Avant l'appel, ce sont des
    Parisiens comme les autres : Tam « L'Opéra ouvre ce soir. J'attends une amie. », Louis « Deux heures de queue pour le
    Louvre. Mais ça vaut le coup, il paraît. ».) À Bercy : « Tu montres ta place à l'entrée. La salle est pleine. » ;
-   Pierre avance de quelques pas dans l'allée ; **« Le concert commence ! »** ; le chanteur : « J'garde le meilleur et
-   j'ai tourné les pages, j'ai pas de rancœur et j'oublie jamais rien. » / « J'ai passé l'été sous la neige et l'hiver à
-   la plage, tu ferais quoi à ma place ? » / « Donc, y'a plus rien qui m'attache, c'est un jour la baie ou le Taj, moi
-   j'voulais répondre à ces messages… » / **`[PAROLES À COMPLÉTER PAR PIERRE]`** (emplacement de la dernière ligne, à
-   écrire par l'utilisateur) ; la foule saute de joie ; **« Le concert se termine. »** ; Pierre, en lui-même : **« Allez,
+   Pierre avance de quelques pas dans l'allée ; **« Le concert commence ! »** ; le chanteur (paroles écrites par l'utilisateur) : « J’garde le meilleur et j’ai tourné les pages, j’ai pas de
+   rancoeur et j’oublie jamais rien, » / « J’ai passé l’été sous la neige et l’hiver à la plage, tu ferais quoi à ma
+   place ? » / « Donc nique y a plus rien qui m’attache, c’est un jour la baie ou le Taj, » / « Moi je voulais répondre à
+   tes ssage-me, des fois je me perds dans des phases » ; la foule saute de joie ; **« Le concert se termine. »** ; Pierre, en lui-même : **« Allez,
    faut que je rentre. Demain, grosse journée. »** ; écran noir, **« Un an plus tard… »** ; Pierre ressort devant Bercy.
 4. **La promotion.** Au bureau, Camille, près de l'entrée, vient à Pierre : « Pierre ! Le manager te cherchait. Il t'attend au premier étage : l'ascenseur,
    au fond. » Le bouton du premier étage s'est allumé. Au premier étage, le manager traverse le plateau et vient à Pierre : **« Pierre ! Tu t'en sors très bien. À
