@@ -2369,7 +2369,7 @@ export const interiors = {
     npcs: [
       { id: 'manager', name: 'Manager', x: 7, y: 7, facing: 'down', script: MANAGER_TALK },
       { id: 'collegue-etage-1', name: 'Mariana', sprite: 'g113', x: 4, y: 7, facing: 'right', fidget: true, dialogue: ['Bienvenue à l\'étage, Pierre ! Ici, on a même du vrai café.'] },
-      { id: 'collegue-etage-2', name: 'Quentin', sprite: 'g110', x: 11, y: 7, facing: 'left', fidget: true, dialogue: ['Réunion à onze heures. Et à quatorze heures. Et à seize heures.'] },
+      { id: 'collegue-etage-2', name: 'Quentin', sprite: 'g139', x: 11, y: 7, facing: 'left', fidget: true, dialogue: ['Réunion à onze heures. Et à quatorze heures. Et à seize heures.'] },
       { id: 'collegue-etage-3', name: 'Yaline', sprite: 'g5', x: 9, y: 3, facing: 'down', fidget: true, dialogue: ['Le premier étage, c\'est calme. Trop calme, parfois.'] },
     ],
     objects: elevator('entrepriseManager'),

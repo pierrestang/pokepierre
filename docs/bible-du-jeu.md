@@ -1267,12 +1267,12 @@ de jour.
 | Camille | Accueille Pierre le premier jour, puis l'envoie au manager et au directeur | `g130` |
 | Anthony | Collègue debout dans le hall (Antoine aussi, voir plus bas) | `g95` |
 | Andrea, Yasmine | Collègue du hall ; l'accueil | `g1`, `g50` |
-| Mariana, Quentin, Yaline | Collègues du premier étage | `g113`, `g110`, `g5` |
+| Mariana, Quentin, Yaline | Collègues du premier étage | `g113`, `g139`, `g5` |
 | Manager | Le 1er étage : la promotion | `g122` |
 | Directeur | Le dernier étage : la belle place | `g120` |
 | Hugues | L'ami parisien de Pierre, fan de foot : le match chez lui | `g121` |
 | Antoine | Collègue de la tour : il appelle Pierre au sujet de la place de concert | `g98` |
-| Tam, Louis (hommes), Clara | La place de concert, de main en main (l'Opéra, la file du Louvre, le café à terrasse) | `g88`, `g155`, `g15` |
+| Tam, Louis (hommes), Clara | La place de concert, de main en main (l'Opéra, la file du Louvre, le café à terrasse) | `g182`, `g155`, `g15` |
 | Chanteur | Bercy | `g69` |
 | Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g90` |
 | Philippe, Nico, un ami | Les amis de Hugues, devant la télé le soir du match | `g6`, `g7`, `g137` |
@@ -1520,7 +1520,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Hugues | `g121` | Paris (au téléphone, puis chez lui : le match), le rêve |
 | Dalil | `g2` | Bordeaux (la soirée d'intégration, le stade), le rêve |
 | Thomas | `g90` | Paris (le restaurant au store rayé, le match), le rêve |
-| Tam, Louis, Clara | `g88`, `g155`, `g15` | Paris (la place de concert) |
+| Tam, Louis, Clara | `g182`, `g155`, `g15` | Paris (la place de concert) |
 | Chanteur | `g69` | Paris (Bercy) |
 
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
