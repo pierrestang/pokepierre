@@ -223,7 +223,6 @@ export const TRAITS = {
 };
 export const MAX_TRAITS = 8;
 const TRAIT_LIST = Object.values(TRAITS);
-export const traitById = (id) => TRAIT_LIST.find((t) => t.id === id) ?? null;
 export const traitsOfCity = (city) => TRAIT_LIST.filter((t) => t.city === city);
 // Encart du trajet vers la ville suivante : seulement la vertu reçue dans la ville qu'on quitte.
 export const carryText = (city) => `Tu emportes : ${traitsOfCity(city).map((t) => t.name).join(', ')}.`;

@@ -13,9 +13,6 @@ import { loadPixelFont } from './pixelFont.js';
 const SPRITE_W = 32;
 const SPRITE_H = 30;
 const SCALE = 2;
-const BLUE = '#2070e8';
-const CREAM = '#f8f8f0';
-const SELECT = '#90c0f8';
 const RED = '#e03828';
 const NOT_LISTED = ['Anais', 'Leo'];               // doublons d'orthographe (Anaïs, Léo)
 const FILTERS = [

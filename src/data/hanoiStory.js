@@ -15,13 +15,6 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 const PATRON = 'Patron';
 const TOURISTE = 'Touriste';
 
-// Places sur la carte (voir maps/hanoi.js) : dans la grande rue, un peu plus loin que l'agence (après ta maison), où
-// attendent les touristes dès l'arrivée ; devant le temple.
-export const HANOI_SPOTS = {
-  touristsWait: [25, 8],
-  templeFront: [26, 17],
-};
-
 // ---------- 1. L'arrivée ----------
 
 export const ARRIVAL = [
