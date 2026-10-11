@@ -1544,7 +1544,11 @@ section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chant
 ## Le sac : objets et souvenirs
 
 Depuis le 11 octobre 2026, le sac (Start > SAC, touche I) a trois onglets, Objets, Souvenirs et Vertus (src/data/bag.js,
-systems/ItemBag.js ; les vertus : voir Conventions). La grille
+systems/ItemBag.js ; les vertus : voir Conventions). Chaque onglet a une case par objet, souvenir ou vertu à trouver, dans l'ordre du
+jeu, et un compteur dans le bandeau (« 4/16 », « 2/14 », « 1/8 ») : ce qui n'est pas encore trouvé reste une case vide,
+sans nom ni indice ; un objet que le jeu a repris (donné, employé : la canne au capitaine, les planches et la corde de la
+cabane…) garde sa case, grisé, et compte comme trouvé. Un souvenir qui sert encore (un diplôme avant la fin de sa quête)
+s'ajoute à la suite des objets, hors compteur, puis prend sa case dans « Souvenirs ». La grille
 se remplit ligne par ligne (gauche, puis droite), dans l'ordre où Pierre a reçu les objets ; sous la grille, la phrase
 de l'objet choisi, comme dans Pokémon. Flèches pour choisir (à gauche de la colonne de gauche, ou à droite de celle de
 droite : l'autre onglet), Tab pour changer d'onglet. Un souvenir marqué « après X » reste dans « Objets » tant que sa

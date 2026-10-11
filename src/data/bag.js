@@ -6,23 +6,25 @@ import { FLAGS, ITEMS } from './story.js';
 // d'histoire qui la termine), puis passe tout seul dans « Souvenirs ». Chaque objet et chaque souvenir a sa phrase (ABOUT).
 
 // Les objets, dans l'ordre du jeu, chacun avec sa phrase (affichée sous la grille du sac, comme dans Pokémon).
+// `used` : les conditions qui disent qu'il a été trouvé puis donné ou employé (le jeu l'a repris) : il garde sa place dans
+// le sac, grisé, et compte comme trouvé.
 export const OBJECTS = [
-  { item: ITEMS.canneAPeche, text: 'Une canne de la caisse « À DONNER » de Papa, pour le capitaine du ferry.' },
-  { item: ITEMS.planches, text: 'Des planches tirées de l\'enclos à poules, pour la cabane des cousins.' },
-  { item: ITEMS.corde, text: 'Une vieille corde trouvée dans les hautes herbes, pour la cabane des cousins.' },
-  { item: ITEMS.pieceTracteur, text: 'La pièce qui manque au tracteur de M. Bouly, trouvée sous le foin de la grange.' },
+  { item: ITEMS.canneAPeche, used: { ifFlags: [FLAGS.canneOfferte] }, text: 'Une canne de la caisse « À DONNER » de Papa, pour le capitaine du ferry.' },
+  { item: ITEMS.planches, used: { ifFlags: [FLAGS.cabaneFinie] }, text: 'Des planches tirées de l\'enclos à poules, pour la cabane des cousins.' },
+  { item: ITEMS.corde, used: { ifFlags: [FLAGS.cabaneFinie] }, text: 'Une vieille corde trouvée dans les hautes herbes, pour la cabane des cousins.' },
+  { item: ITEMS.pieceTracteur, used: { ifFlags: [FLAGS.tracteurRepare] }, text: 'La pièce qui manque au tracteur de M. Bouly, trouvée sous le foin de la grange.' },
   { item: ITEMS.clesAppartement, text: 'Les clés de ton appartement de Bordeaux, remises par l\'agence.' },
-  { item: ITEMS.enceinte, text: 'L\'enceinte de Paul, pour la soirée d\'intégration.' },
-  { item: ITEMS.gobelets, text: 'Les gobelets de Rémi, pour la soirée d\'intégration.' },
-  { item: ITEMS.cleAntivol, text: 'La clé d\'antivol perdue par le cycliste du quai, au bord de la Garonne.' },
+  { item: ITEMS.enceinte, used: { ifFlags: [FLAGS.soiree] }, text: 'L\'enceinte de Paul, pour la soirée d\'intégration.' },
+  { item: ITEMS.gobelets, used: { ifFlags: [FLAGS.soiree] }, text: 'Les gobelets de Rémi, pour la soirée d\'intégration.' },
+  { item: ITEMS.cleAntivol, used: { ifItems: [ITEMS.velo.id] }, text: 'La clé d\'antivol perdue par le cycliste du quai, au bord de la Garonne.' },
   { item: ITEMS.velo, text: 'Le vieux vélo du cycliste, réparé de tes mains : appuie sur V pour monter dessus.' },
   { item: ITEMS.consignesVietnamien, text: 'Les consignes de ton premier jour à l\'agence, écrites en vietnamien.' },
-  { item: ITEMS.marchandise, text: 'Le bouquet que Romain t\'a demandé de rapporter du marchand de fleurs.' },
+  { item: ITEMS.marchandise, used: { ifFlags: [FLAGS.marchandiseDonnee] }, text: 'Le bouquet que Romain t\'a demandé de rapporter du marchand de fleurs.' },
   { item: ITEMS.billetNewDelhi, text: 'Ton billet pour le prochain échange, remis par Romain au bord du canal.' },
   { item: ITEMS.clesParis, text: 'Les clés de ton studio parisien, remises par le propriétaire.' },
-  { item: ITEMS.placeConcert, text: 'La place pour Bercy, passée d\'Antoine à Tam, puis à Louis.' },
-  { item: ITEMS.platsMatch, text: 'Le repas que Thomas a rapporté du restaurant pour le match.' },
-  { item: ITEMS.talismanIndien, text: 'Une petite pierre où l\'on a gravé un chemin qui tourne sur lui-même, remise par le vieux sage.' },
+  { item: ITEMS.placeConcert, used: { ifFlags: [FLAGS.concertParis] }, text: 'La place pour Bercy, passée d\'Antoine à Tam, puis à Louis.' },
+  { item: ITEMS.platsMatch, used: { ifFlags: [FLAGS.matchArrivee] }, text: 'Le repas que Thomas a rapporté du restaurant pour le match.' },
+  { item: ITEMS.talismanIndien, used: { ifFlags: [FLAGS.sageDelhi] }, text: 'Une petite pierre où l\'on a gravé un chemin qui tourne sur lui-même, remise par le vieux sage.' },
 ].map(({ item, ...rest }) => ({ id: item.id, ...rest }));
 
 // Les souvenirs, dans l'ordre du jeu : { id, text, after? }.
