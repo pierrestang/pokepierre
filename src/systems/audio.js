@@ -481,7 +481,24 @@ function startSong(name, bus) {
   return state;
 }
 
-const stopSong = (state) => state && clearInterval(state.timer);
+// Fondu d'un morceau : chaque musique a son propre volume (`state.gain`), qui monte ou descend en FADE_S secondes ; à
+// chaque changement de lieu, l'ancienne s'éteint pendant que la nouvelle arrive (plus de coupure nette).
+const FADE_S = 1;
+function stopSong(state) {
+  if (!state) return;
+  if (!state.gain || !ctx) {
+    clearInterval(state.timer);
+    return;
+  }
+  const t = ctx.currentTime;
+  state.gain.gain.cancelScheduledValues(t);
+  state.gain.gain.setValueAtTime(state.gain.gain.value, t);
+  state.gain.gain.linearRampToValueAtTime(0, t + FADE_S);
+  setTimeout(() => {
+    clearInterval(state.timer);
+    state.gain.disconnect();
+  }, FADE_S * 1000 + 300);
+}
 
 let mainVolume = 1;
 const applyVolume = () => ctx && mainGain.gain.setTargetAtTime(mainVolume, ctx.currentTime, 0.15);
@@ -495,7 +512,12 @@ export function playMusic(name, volume = 1) {
     pendingSong = { name, volume };                                  // démarrera au premier appui
     return;
   }
-  current = startSong(name, mainGain);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(1, ctx.currentTime + FADE_S);
+  gain.connect(mainGain);
+  current = startSong(name, gain);
+  current.gain = gain;
   applyVolume();
 }
 

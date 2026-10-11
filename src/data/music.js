@@ -8,7 +8,7 @@ export const CITY_MUSIC = {
   routeBonsecours: 'college',
   prytanee: 'prytanee',
   bordeaux: 'bordeaux',
-  airport: 'bordeaux',
+  airport: 'bordeaux',                 // par défaut ; en jeu, la musique de la ville de départ (MapScene.playPlaceMusic)
   hull: 'hull',
   hanoi: 'hanoi',
   amsterdam: 'amsterdam',

@@ -1641,7 +1641,9 @@ export class MapScene extends Phaser.Scene {
   playPlaceMusic() {
     const { map } = this;
     const music = map.music && meetsConditions(map.music) ? map.music : null;
-    playMusic(music?.song ?? CITY_MUSIC[this.fromMap ?? map.id] ?? 'island', music?.volume);
+    // L'aéroport joue la musique de la ville d'où l'on part (memo `aeroport`, voir travel), pas toujours celle de Bordeaux.
+    const city = map.id === 'airport' ? memo.get('aeroport') ?? 'bordeaux' : this.fromMap ?? map.id;
+    playMusic(music?.song ?? CITY_MUSIC[city] ?? 'island', music?.volume);
   }
 
   goTo(sceneKey, data) {

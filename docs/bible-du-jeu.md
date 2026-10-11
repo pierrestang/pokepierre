@@ -34,6 +34,8 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   Insouciance, une plume légère ; Adaptation, la Pierre Plante ; Liberté, une aile bleue), et sous la grille sa phrase, sa ville et ses utilisations (« Fort-de-France, utilisée 3 fois. » ou
   « pas encore utilisée »). Le souvenir du carnet qui n'est pas une vertu (la photo du canal) est dans l'onglet
   « Souvenirs ». À l'écran, le compteur « Vertus : X sur 8 », seulement dans les villes qui donnent une vertu.
+- **Musique** : une par ville (src/data/music.js), fondu enchaîné d'une seconde à chaque changement de lieu (l'ancienne
+  s'éteint pendant que la nouvelle arrive, systems/audio.js) ; l'aéroport joue la musique de la ville de départ.
 - **Sauvegarde** : automatique, à chaque pas (position) et à la fin de chaque scène (drapeaux, objets, vertus : une scène
   coupée par la fermeture de l'onglet se rejoue entière). Version de sauvegarde 2 (11 octobre 2026), migration des
   anciennes parties au démarrage.
