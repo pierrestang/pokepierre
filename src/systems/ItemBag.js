@@ -15,8 +15,11 @@ import { FullScreenPanel, BAR } from './FullScreenPanel.js';
 // photo du canal), chacun avec son icône (art/uiIcons.js), et « Vertus » (le carnet des vertus : chaque vertu reçue, sa
 // phrase, sa ville et ses utilisations).
 // La grille se remplit ligne par ligne (gauche, puis droite), dans l'ordre où Pierre a reçu les objets ; sous la grille,
-// la phrase de l'objet choisi, comme dans Pokémon. Flèches : choisir (à gauche de la colonne de gauche, ou à droite de
-// celle de droite : l'autre onglet) ; Tab : changer d'onglet ; Échap : fermer.
+// la phrase de l'objet choisi, comme dans Pokémon.
+// Clavier : ← → changent d'onglet de partout (en boucle) ; ↑ ↓ parcourent la grille de l'onglet, case par case ; Entrée
+// ouvre la fiche de l'objet (grande icône, nom, phrase entière) ; Échap ferme la fiche, puis le sac. Chaque onglet garde
+// la place de son curseur (même d'une ouverture du sac à l'autre). Le bandeau montre l'onglet ouvert au milieu, en
+// surbrillance et souligné, et ses deux voisins de part et d'autre.
 const ROWS = 4;                 // objets par colonne
 const ROW_H = 30;
 const TABS = ['Objets', 'Souvenirs', 'Vertus'];
@@ -30,8 +33,10 @@ const isSouvenir = (id) => {
 
 export class ItemBag extends FullScreenPanel {
   open() {
-    this.tab = 0;
-    this.index = 0;
+    this.tab ??= 0;
+    this.cursors ??= TABS.map(() => 0);
+    this.detail = false;
+    this.index = Math.min(this.cursors[this.tab], Math.max(0, this.slots().length - 1));
     this.isOpen = true;
     this.render();
   }
@@ -71,15 +76,20 @@ export class ItemBag extends FullScreenPanel {
     this.drawBars(g, 0xe87830, 0xf8f8f0);
     const list = this.slots();
 
-    // Les onglets, dans le bandeau du haut ; l'onglet ouvert sur fond clair.
-    let tx = 6;
-    TABS.forEach((name, i) => {
-      const label = name.toUpperCase();
-      const w = textWidth(s, frlgText(s, label)) + 6;
-      if (i === this.tab) g.fillStyle(0xf8f8f0, 1).fillRoundedRect(X(tx - 3), Y(2), w * u, (BAR - 2) * u, 2 * u);
-      text(label, tx, 1, i === this.tab ? 0xe87830 : 0xffffff);
-      tx += w + 8;
-    });
+    // Les onglets, dans le bandeau du haut : l'onglet ouvert au milieu, sur fond clair et souligné ; à gauche et à droite,
+    // ses voisins (« < SOUVENIRS », « VERTUS > »), là où mènent les flèches ← et →.
+    const n = TABS.length;
+    const width = (label) => textWidth(s, frlgText(s, label));
+    const active = TABS[this.tab].toUpperCase();
+    const mid = 150;
+    const aw = width(active);
+    g.fillStyle(0xf8f8f0, 1).fillRoundedRect(X(mid - aw / 2 - 4), Y(2), (aw + 8) * u, (BAR - 2) * u, 2 * u);
+    g.fillStyle(0xe87830, 1).fillRect(X(mid - aw / 2), Y(BAR - 3), aw * u, u);
+    text(active, mid - aw / 2, 1, 0xe87830);
+    const prev = `< ${TABS[(this.tab + n - 1) % n].toUpperCase()}`;
+    const next = `${TABS[(this.tab + 1) % n].toUpperCase()} >`;
+    text(prev, mid - aw / 2 - 14 - width(prev), 1, 0xffffff);
+    text(next, mid + aw / 2 + 14, 1, 0xffffff);
     // Le compteur : trouvés sur le total de l'onglet (« 3/16 »), et la page.
     const perPage = 2 * ROWS;
     const page = Math.floor(this.index / perPage);
@@ -88,7 +98,8 @@ export class ItemBag extends FullScreenPanel {
     const found = counted.filter(Boolean).length;
     const count = `${found}/${this.tab === 2 ? MAX_TRAITS : counted.length}${pages > 1 ? `  ${page + 1}/${pages}` : ''}`;
     text(count, SCREEN_W - textWidth(s, frlgText(s, count)) - 6, 1, 0xffffff);
-    text('Flèches : choisir   Tab : onglet   Échap : fermer', 6, SCREEN_H - BAR + 1, 0xffffff);
+    text(this.detail ? 'Entrée ou Échap : retour à la liste' : '← → onglet   ↑ ↓ choisir   Entrée : voir   Échap : fermer',
+      6, SCREEN_H - BAR + 1, 0xffffff);
 
     // La grille : chaque case trouvée (icône et nom ; grisée si l'objet a été donné ou employé), les autres vides.
     list.slice(page * perPage, (page + 1) * perPage).forEach((item, j) => {
@@ -113,38 +124,76 @@ export class ItemBag extends FullScreenPanel {
     const top = BAR + 4 + ROWS * ROW_H + 2;
     g.lineStyle(u, 0xe87830, 1).strokeRoundedRect(X(4), Y(top), (SCREEN_W - 8) * u, (SCREEN_H - BAR - top - 3) * u, 3 * u);
     wrapText(s, about, SCREEN_W - 24).slice(0, 3).forEach((line, k) => text(line, 12, top + 3 + k * LINE_HEIGHT));
+    if (this.detail && list[this.index]) this.drawDetail(list[this.index]);
   }
 
+  // La fiche de l'objet choisi (Entrée), par-dessus la grille (son propre fond, ajouté après les cases) : grande icône,
+  // nom, et la phrase entière.
+  drawDetail(item) {
+    const { scene: s, u, X, Y } = this;
+    const g = this.add(s.add.graphics());
+    const left = 24;
+    const top = BAR + 8;
+    const w = SCREEN_W - 2 * left;
+    const h = ROWS * ROW_H - 8;
+    g.fillStyle(0xf8f8f0, 1).fillRoundedRect(X(left), Y(top), w * u, h * u, 4 * u);
+    g.lineStyle(u, 0xe87830, 1).strokeRoundedRect(X(left), Y(top), w * u, h * u, 4 * u);
+    if (item.icon) {
+      this.add(s.add.image(X(left + 24), Y(top + 24), ITEM_ICONS, item.icon).setScale(2 * u).setAlpha(item.used ? 0.4 : 1));
+    }
+    this.text(item.name, left + 48, top + 10, 0xe87830);
+    if (item.used) this.text('(ne sert plus)', left + 48, top + 10 + LINE_HEIGHT);
+    wrapText(s, item.about ?? '', w - 16).slice(0, 4)
+      .forEach((line, k) => this.text(line, left + 8, top + 48 + k * LINE_HEIGHT));
+  }
+
+  // Onglet suivant ou précédent (en boucle), au curseur qu'on y avait laissé.
   setTab(tab) {
     if (tab === this.tab) return;
+    this.cursors[this.tab] = this.index;
     this.tab = tab;
-    this.index = 0;
+    this.index = Math.min(this.cursors[tab], Math.max(0, this.slots().length - 1));
+    this.detail = false;
     sfx('select');
     this.render();
   }
 
   // Touche pendant que le sac est ouvert. Renvoie vrai quand il se ferme.
   onKey(e) {
-    if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+    const n = this.slots().length;
+    if (this.detail) {
+      if (['Escape', 'Enter', ' ', 'Backspace'].includes(e.key)) {
+        this.detail = false;
+        sfx('select');
+        this.render();
+      }
+      return false;
+    }
+    if (e.key === 'Escape' || e.key === 'i' || e.key === 'I') {
+      this.cursors[this.tab] = this.index;
       sfx('select');
       this.close();
       return true;
     }
-    if (e.key === 'Tab') {
-      e.preventDefault?.();
-      this.setTab((this.tab + 1) % TABS.length);
+    if (e.key === 'Enter' || e.key === ' ') {
+      if (!this.slots()[this.index]) return false;            // case vide : rien à voir
+      this.detail = true;
+      sfx('select');
+      this.render();
       return false;
     }
-    const n = this.slots().length;
-    const right = this.index % 2 === 1;
-    // Gauche depuis la colonne de gauche, droite depuis celle de droite (ou un onglet vide) : l'onglet d'à côté.
-    if (e.key === 'ArrowLeft' && (!right || !n)) return this.setTab(Math.max(0, this.tab - 1)), false;
-    if (e.key === 'ArrowRight' && (right || this.index + 1 >= n)) return this.setTab(Math.min(TABS.length - 1, this.tab + 1)), false;
-    const delta = { ArrowDown: 2, ArrowUp: -2, ArrowRight: 1, ArrowLeft: -1 }[e.key];
+    const tabs = TABS.length;
+    if (e.key === 'ArrowLeft') return this.setTab((this.tab + tabs - 1) % tabs), false;
+    if (e.key === 'ArrowRight' || e.key === 'Tab') {
+      e.preventDefault?.();
+      return this.setTab((this.tab + 1) % tabs), false;
+    }
+    const delta = { ArrowDown: 1, ArrowUp: -1 }[e.key];
     if (!delta || !n) return false;
     const next = this.index + delta;
     if (next < 0 || next >= n) return false;
     this.index = next;
+    this.cursors[this.tab] = next;
     sfx('select');
     this.render();
     return false;

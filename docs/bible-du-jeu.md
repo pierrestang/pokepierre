@@ -51,6 +51,9 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
 - **Le sac** (Start > SAC, touche I) : trois onglets, « Objets », « Souvenirs » et « Vertus » (src/data/bag.js), une icône par objet,
   la grille remplie ligne par ligne dans l'ordre d'obtention, la phrase de l'objet choisi dessous. Un souvenir qui a
   d'abord servi reste dans « Objets » jusqu'à la fin de sa quête. Liste complète : section « Le sac ».
+  Clavier : ← → changent d'onglet de partout, en boucle (le bandeau montre l'onglet ouvert au milieu, souligné, et ses
+  deux voisins de part et d'autre) ; ↑ ↓ parcourent la grille case par case ; Entrée ouvre la fiche de l'objet (grande
+  icône, nom, phrase entière) ; Échap ferme la fiche, puis le sac. Chaque onglet garde la place de son curseur.
 - **Vélo** (offert à Bordeaux par le cycliste du quai, passage optionnel ; `?velo` dans l'adresse donne l'objet **Vélo**
   pour l'essayer) : Pierre monte ou descend avec la touche V (rappelée une seule fois, à la
   réception du vélo ; listée dans Options > TOUCHES) ou le bouton VÉLO des commandes tactiles ; sonnette en montant, musique du vélo tant qu'il roule ; il va environ
