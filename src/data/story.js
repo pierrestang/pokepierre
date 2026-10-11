@@ -289,6 +289,8 @@ export const ITEMS = {
 const COPAINS_DONE = { unlessFlags: [FLAGS.copainsPartent] };
 
 // Pas de suiveur à Fort-de-France ni à Saint-Ay : les PNJ y partent devant et attendent sur place.
+// `goes` : les autres cartes où le suiveur accompagne Pierre ; vers toute autre, Pierre ne peut pas quitter la ville
+// tant qu'on le suit (MapScene.followersHoldBack).
 export const FOLLOWERS = [
   // Montépilloy : les copains trouvés au cache-cache suivent Pierre jusqu'à la fin de la partie (ils filent alors à
   // l'école, voir montepilloyStory.js GAME_OVER).
@@ -303,7 +305,7 @@ export const FOLLOWERS = [
   // Prophecy le suit jusqu'à l'aéroport, dans l'avion, puis à Bordeaux jusqu'au stade (il y redevient le PNJ
   // prophecy-depart et rejoint la foule).
   { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.courArrivee] },
-  { id: 'prophecy-depart', name: 'Prophecy', ifFlags: [FLAGS.departDelhi], unlessFlags: [FLAGS.stadeEntree] },
+  { id: 'prophecy-depart', name: 'Prophecy', ifFlags: [FLAGS.departDelhi], unlessFlags: [FLAGS.stadeEntree], goes: ['airport', 'newDelhi', 'bordeaux'] },
   // Paris : Thomas, son service fini, suit Pierre du restaurant jusque chez Hugues (il y redevient le PNJ thomas).
   { id: 'thomas', name: 'Thomas', ifFlags: [FLAGS.thomasSuit], unlessFlags: [FLAGS.matchArrivee] },
   { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.harshRejoint], unlessFlags: [FLAGS.moisDelhi] },

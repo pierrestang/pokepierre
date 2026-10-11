@@ -11,7 +11,8 @@ import { sfx, playMusic } from './audio.js';
 //   pas quand quelqu'un suit Pierre (on descend s'il se met à le suivre) ; pendant une scénette, Pierre descend et
 //   remonte à la fin.
 // - Musique du vélo tant qu'on roule ; l'état est sauvegardé (une partie reprise dehors repart à vélo).
-const STORAGE_KEY = 'pokepierre.velo';
+export const BIKE_KEY = 'pokepierre.velo';               // effacé avec la partie (save.js eraseSave)
+const STORAGE_KEY = BIKE_KEY;
 
 export const hasBike = () => items.has(ITEMS.velo.id);
 

@@ -16,7 +16,7 @@ import { QUEST_STARTS, questState } from '../data/questStarts.js';
 // L'apparence des PNJ se choisit dans le créateur (panneau PNJ), plus ici ; le vélo, avec la touche V.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
-const MAIN = { quests: 1, options: 4 };               // place de ces entrées dans le menu principal
+const MAIN = { quests: 1, options: 3 };               // place de ces entrées dans le menu principal
 const VISIBLE = 9;                           // lignes affichées à la fois (la liste des quêtes défile)
 // Options > TOUCHES : les touches du clavier (sur téléphone : les boutons A, B, START et VÉLO).
 const KEYS = [
@@ -67,7 +67,6 @@ export class StartMenu {
       { label: 'SAC', action: () => this.showPanel(this.itemBag, () => this.close()) },
       { label: 'QUÊTES', action: () => this.showPage('quests', 0) },
       { label: 'CARTE', action: () => this.showPanel(this.regionMap, () => this.close(), this.currentMapId()) },
-      { label: 'SAUVEGARDER', action: () => this.save() },
       { label: 'OPTIONS', action: () => this.showPage('options', 0) },
       { label: 'QUITTER', action: () => this.quit() },
     ];
@@ -134,6 +133,9 @@ export class StartMenu {
     const choice = await this.dialog.choose(`Aller au début de la quête : ${quest.label} ? Ta partie sera remplacée.`, ['ALLER', 'ANNULER']);
     if (choice !== 0) return;
     const state = questState(i);
+    // Un PNJ qui marchait encore : ses drapeaux de fin de marche (posés à l'arrêt de la scène) sont ceux de l'ancienne
+    // partie, on les oublie.
+    this.mapScene()?.pendingWalkFlags?.clear();
     eraseSave();
     state.flags.forEach((f) => flags.add(f));
     state.souvenirs.forEach((s) => souvenirs.add(s));
@@ -144,25 +146,14 @@ export class StartMenu {
     else scene?.goTo('Overworld', { mapId, spawn });
   }
 
-  async save() {
-    this.close();
-    this.mapScene()?.savePosition();
-    sfx('save');
-    await this.dialog.open(['Partie sauvegardée !']);
-  }
-
-  // Retour à l'écran titre, après avoir proposé de sauvegarder.
+  // Retour à l'écran titre. La partie est déjà enregistrée en permanence (chaque pas, chaque fin de scène) : rien à
+  // proposer de sauvegarder.
   async quit() {
     this.close();
-    const choice = await this.dialog.choose("Quitter la partie et revenir à l'écran titre ?", [
-      'SAUVEGARDER ET QUITTER', 'QUITTER SANS SAUVEGARDER', 'ANNULER',
-    ]);
-    if (choice !== 0 && choice !== 1) return;
+    const choice = await this.dialog.choose("Quitter la partie et revenir à l'écran titre ?", ['QUITTER', 'ANNULER']);
+    if (choice !== 0) return;
     const map = this.mapScene();
-    if (choice === 0) {
-      map?.savePosition();
-      sfx('save');
-    }
+    map?.savePosition();
     map?.scene.stop();
     this.scene.scene.start('Title');          // arrête aussi l'interface (relancée à la prochaine partie)
   }

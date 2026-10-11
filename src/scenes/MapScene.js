@@ -170,6 +170,7 @@ export class MapScene extends Phaser.Scene {
       },
     });
     this.refreshActors();
+    this.leaveOccupiedSpawn();
     resumeBike(this);                               // à vélo si on roulait (dehors), voir systems/bike.js
     this.savePosition();
     this.registry.set('city', this.cityName());
@@ -1559,6 +1560,44 @@ export class MapScene extends Phaser.Scene {
     if (choice.ask) await this.runAsk(choice.ask, speaker);            // une sous-question (ex. « Autre »)
   }
 
+  // Une partie reprise sur la case d'un PNJ (ou d'un objet) remis à sa place au chargement : Pierre passe sur la case
+  // libre la plus proche (recherche en largeur sur les cases praticables), au lieu de rester coincé dans le PNJ.
+  leaveOccupiedSpawn() {
+    const busy = (x, y) => this.npcAt(x, y) || this.propAt(x, y);
+    const { tileX, tileY } = this.player;
+    if (!busy(tileX, tileY)) return;
+    const seen = new Set([`${tileX},${tileY}`]);
+    const queue = [[tileX, tileY]];
+    while (queue.length) {
+      const [x, y] = queue.shift();
+      for (const [dx, dy] of [[0, 1], [1, 0], [-1, 0], [0, -1]]) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (seen.has(`${nx},${ny}`) || !this.tileWalkable(nx, ny)) continue;
+        seen.add(`${nx},${ny}`);
+        if (!busy(nx, ny)) {
+          this.player.tileX = nx;
+          this.player.tileY = ny;
+          this.player.sprite.setPosition(...tileCenter(nx, ny));
+          this.player.sprite.updateDepth(0.001);
+          return;
+        }
+        queue.push([nx, ny]);
+      }
+    }
+  }
+
+  // Les suiveurs empêchent de quitter la ville (`goes` : les cartes où ils peuvent aller avec Pierre, voir
+  // data/story.js FOLLOWERS) : sinon ils le suivraient dans la ville suivante.
+  followersHoldBack(map) {
+    const here = this.scene.key === 'Overworld' ? this.map.id : this.fromMap;
+    if (!map || map === here) return false;
+    return (this.followers?.members ?? []).some(({ id }) => {
+      const entry = FOLLOWERS.find((f) => f.id === id && meetsConditions(f));
+      return !(entry?.goes ?? []).includes(map);
+    });
+  }
+
   // Sauvegarde où se trouve le joueur (appelé à l'arrivée et à chaque pas).
   savePosition() {
     if (this.map.builder) return;                   // carte du créateur en essai : la vraie partie reste intacte
@@ -1591,6 +1630,10 @@ export class MapScene extends Phaser.Scene {
       // `lockedDialogues` : [{ conditions, dialogue }], le premier dont les conditions sont remplies, sinon `dialogue`.
       const pages = (trigger.lockedDialogues ?? []).find(meetsConditions)?.dialogue ?? trigger.dialogue;
       if (pages) await this.dialog.open(pages);
+      return;
+    }
+    if (this.followersHoldBack(trigger.warp?.map)) {
+      await this.dialog.open(['On t\'accompagne : ce n\'est pas le moment de quitter la ville.']);
       return;
     }
     // Conditions remplies : `readyDialogue` (ou `dialogue` pour un simple message), puis voyage éventuel.

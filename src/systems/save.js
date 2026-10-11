@@ -3,6 +3,7 @@ import { flags } from './flags.js';
 import { items } from './items.js';
 import { memo } from './memo.js';
 import { TRAIT_MIGRATION } from '../data/story.js';
+import { BIKE_KEY } from './bike.js';
 
 // Position du joueur sauvegardée à chaque pas : { scene, data, spawn: { x, y, facing } }.
 // `scene` + `data` suffisent à relancer la bonne scène ; les souvenirs et drapeaux
@@ -38,6 +39,7 @@ export const hasSave = () =>
 export function eraseSave() {
   try {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(BIKE_KEY);                  // une nouvelle partie ne reprend pas « à vélo »
     localStorage.setItem(VERSION_KEY, String(SAVE_VERSION));
   } catch {
     // rien à effacer

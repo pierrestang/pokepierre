@@ -19,8 +19,9 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   (Hanoï), un canal (Amsterdam), le fort (Delhi), la tour (Paris). Le sujet se lit dans la bande du bas, sous le menu ;
   travelling lent de 9 secondes, un ou deux passants qui vont et viennent, fondu au noir d'une seconde entre deux
   villes, puis on recommence. La musique du titre ne change pas.
-- **Menu Start** (Échap), dans cet ordre : SAC, QUÊTES, CARTE, SAUVEGARDER, OPTIONS (musique, sons, TOUCHES : la liste
-  des touches), QUITTER (retour à l'écran titre). Plus d'entrée PNJ ni d'entrée vélo ; les vertus sont dans le sac
+- **Menu Start** (Échap), dans cet ordre : SAC, QUÊTES, CARTE, OPTIONS (musique, sons, TOUCHES : la liste des
+  touches), QUITTER (retour à l'écran titre, « QUITTER » ou « ANNULER » : tout est déjà sauvegardé, plus d'entrée
+  SAUVEGARDER ni de « Quitter sans sauvegarder »). Plus d'entrée PNJ ni d'entrée vélo ; les vertus sont dans le sac
   (11 octobre 2026).
 - **Décor** : bâtiments, mobilier et objets sans ombre portée, et bâtiments et objets cernés d'un même trait gris
   très foncé d'un pixel (pour que les planches DPPt et Gen 4 aillent ensemble) ;
@@ -1550,6 +1551,15 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
 section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
+
+## Robustesse (11 octobre 2026, revue de production, 2e passe)
+- Tant que quelqu'un suit Pierre, il ne peut pas quitter la ville (route, aéroport) : « On t'accompagne : ce n'est pas
+  le moment de quitter la ville. » Seul Prophecy, au départ de Delhi, l'accompagne à l'aéroport et à Bordeaux
+  (`goes` des FOLLOWERS).
+- Une nouvelle partie (ou QUÊTES) efface aussi le souvenir « à vélo » ; QUÊTES oublie les fins de marche de PNJ de
+  l'ancienne partie.
+- Le vieux pêcheur de Saint-Ay n'a plus de réplique d'indice (Joie de vivre est toujours acquise avant Saint-Ay).
+- Une partie reprise sur la case d'un PNJ : Pierre passe sur la case libre la plus proche.
 
 ## Cohérence (11 octobre 2026, revue de production, 2e passe)
 - Route au nord de Saint-Ay : « La route du nord. Elle file loin, vers les terres. » tant que Papa n'a pas annoncé le

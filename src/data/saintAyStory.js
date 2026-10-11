@@ -251,7 +251,6 @@ export const PULLEY = [
 // l'objet-souvenir de Saint-Ay, un galet du lac.
 export const OLD_FISHER = [
   { ifItems: [ITEMS.galetLac.id], speaker: 'Vieux pêcheur', say: ['Prends soin de ce galet. Et de ta petite sœur.'], end: true },
-  { unlessSouvenirs: [TRAITS.joie.id], say: ['Le vieil homme te tourne le dos. Il a l\'air de mauvaise humeur.'], end: true },
   { speaker: 'Vieux pêcheur', say: ['Hm ? Je ne parle pas aux inconnus, moi.'] },
   { useTrait: TRAITS.joie },
   { say: ['Tu t\'assois à côté de lui et tu fredonnes la chanson de Maman.'] },
