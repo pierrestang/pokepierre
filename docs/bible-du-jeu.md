@@ -1041,7 +1041,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
    quai, les jambes au-dessus de l'eau. Les lumières des péniches tremblent sur le canal. » ; Pierre s'assoit à côté de
    lui (16, 12), et pendant toute la discussion tous les deux regardent le canal ; **« Viens t'asseoir deux
    minutes. Regarde-moi ça. »** / « Y a six mois, t'étais à l'autre bout du monde, à Hanoï. Et moi à Hong Kong. Et là, on
-   est posés ensemble à Amsterdam. » / « Profite, va. Demain c'est encore le stage, mais là, maintenant, on est bien. » →
+   est posés ensemble à Amsterdam. » / « Profite, va. On ne sait jamais où on sera dans six mois. Mais là, maintenant, on est bien. » →
    **« Pierre utilise Insouciance ! »** → « Tu oublies le stage de demain. Il y a juste l'eau, les lumières, et Romain qui
    rigole. » ; Romain prend une photo → souvenir **Photo du canal** (carnet) ; **« Au fait, j'ai une nouvelle pour toi. Ton
    prochain échange, c'est à Delhi, en Inde ! Tiens, voilà ton billet d'avion. »** → **Billet d'avion
@@ -1054,7 +1054,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 - **Utilisées** : **Autonomie** (la campagne de Corning), **Insouciance** (la nuit au canal).
 
 ### Objets et souvenir
-**Bouquet de fleurs** (le marchand de fleurs, donné à Romain), **Billet d'avion Delhi** (remis par Romain), souvenir **Photo
+**Bouquet de fleurs** (le marchand de fleurs, donné à Romain), **Billet d'avion pour Delhi** (remis par Romain), souvenir **Photo
 du canal** (carnet).
 
 ### Départ et trajet
@@ -1628,7 +1628,7 @@ ICONS, src/art/uiIcons.js), créditée au générique.
 | Vélo | Bordeaux, le cycliste du quai (facultatif) | Rouler (touche V) | `velo` | « Le vieux vélo du cycliste, réparé de tes mains : appuie sur V pour monter dessus. » |
 | Consignes en vietnamien | Hanoï, le patron de l'agence | M. Lam les traduit (Adaptation) | `feuille` | « Les consignes de ton premier jour à l'agence, écrites en vietnamien. » |
 | Bouquet de fleurs | Amsterdam, le marchand de fleurs | Donné à Romain | `bouquet` | « Le bouquet que Romain t'a demandé de rapporter du marchand de fleurs. » |
-| Billet d'avion Delhi | Amsterdam, Romain, la nuit au canal | Le vol pour Delhi | `billet` | « Ton billet pour le prochain échange, remis par Romain au bord du canal. » |
+| Billet d'avion pour Delhi | Amsterdam, Romain, la nuit au canal | Le vol pour Delhi | `billet` | « Ton billet pour le prochain échange, remis par Romain au bord du canal. » |
 | Clés du studio | Paris, le propriétaire | Le studio, la tour | `cles` | « Les clés de ton studio parisien, remises par le propriétaire. » |
 | Place de concert | Paris, Louis (Antoine → Tam → Louis) | Bercy | `billet` | « La place pour Bercy, passée d'Antoine à Tam, puis à Louis. » |
 | De quoi manger | Paris, Thomas au restaurant | La soirée du match chez Hugues | `repas` | « Le repas que Thomas a rapporté du restaurant pour le match. » |
