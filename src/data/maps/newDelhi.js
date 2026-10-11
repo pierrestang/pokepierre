@@ -43,7 +43,7 @@ const CROWD_WALKERS = [
   ['passante-11', 'g102', [31, 15], [38, 15], 'rieur'],
 ];
 const CROWD_STANDING = [
-  ['passant-6', 'g178', 12, 16, 'down', 'rieur'],
+  ['passant-6', 'g191', 12, 16, 'down', 'rieur'],
   ['passante-6', 'g19', 21, 12, 'down', 'conseil'],
   ['passant-7', 'g45', 35, 15, 'left', 'silencieux'],
   ['passante-7', 'g75', 23, 13, 'down', 'grandMere'],

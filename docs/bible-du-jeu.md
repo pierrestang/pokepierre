@@ -1154,6 +1154,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Prophecy | De la bande de Hull ; il enchaîne son échange aux États-Unis par ce semestre (prévu de longue date) et accueille Pierre ; il rentre lui aussi finir ses études à Bordeaux | `g94` |
+| Ben, Aaron, Margaux, Jules, Brieux | La bande de Delhi : les cinq autres étudiants français partis en échange en Inde avec Pierre et Prophecy ; assis autour du repas, dans la cour, ils y restent ensuite (chacun redit sa réplique du repas). Margaux de Delhi est un autre personnage que Margaux du cache-cache (Montépilloy) : homonyme, apparence à part (« Margaux (Delhi) ») | `g187`, `g189`, `g200`, `g178`, `g103` |
 | Harsh | Étudiant indien, rencontré sur place (nouveau pour Pierre et pour Prophecy) : la porte d'entrée dans la culture locale | `g83` (cheveux noirs, peau mate, tunique blanche) |
 | Vieux sage | Le vieux fort : il transmet, et donne le talisman indien | `g71` |
 | Étudiante, étudiants, grand-mère, voisin | Les convives du repas, assis en cercle (la grand-mère : `g42`, le voisin : `g38`) | `g25`, `g97`, `g95`, `g110`, `g104`, `g102`, `g103`, `g42`, `g38` |
@@ -1172,18 +1173,19 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
    vous montrer. »** / « Aujourd'hui, il y a une fête dans la cour du palais de grès. Suivez-moi ! » Pas d'écran noir : Harsh
    part devant, à pied, jusqu'à la porte du palais (16, 12) (il attend Pierre s'il traîne : « C'est par ici : la porte du
    palais de grès. Entrez, la fête a commencé ! »), puis il entre ; Prophecy suit Pierre. Pierre entre à son tour.
-3. **Le grand repas partagé (Joie de vivre, dans le sens renversé).** Il remplace l'ancienne danse. Dix bulles d'un
-   seul tenant, encart compris. Dans la cour : « La cour du palais est baignée de soleil. Tout le monde est assis en
-   cercle par terre, autour d'un grand repas. » ; Harsh : **« Viens, assieds-toi avec nous ! Ici, un invité ne reste
-   jamais le ventre vide. »** Prophecy et Harsh vont s'asseoir, et Pierre s'assoit entre eux deux, sur le côté gauche du
-   tapis. Les plats arrivent vers lui (une galette glisse jusqu'à lui depuis chaque convive, étape `pass`) : « À peine
-   assis, une assiette arrive : du riz, du dal, une galette encore chaude. Et on te ressert sans que tu demandes. » ;
-   bulle « … » sur Pierre ; la grand-mère : « Non, non, on ne refuse pas ! Chez nous, l'invité, on le ressert
-   toujours. » ; Pierre, en lui-même : **« Je ne sais même pas quoi faire de toute cette générosité. Juste…
-   l'accepter, peut-être. »** ; Harsh : **« Atithi Devo Bhava. Chez nous, ça veut dire que l'invité est sacré. »** →
-   **« Pierre utilise Joie de vivre ! »** → « Tu goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin. »
-   Tous se relèvent ; Harsh : **« Tu vois ? Tu es des nôtres, maintenant ! Venez, je veux vous montrer un endroit très
-   ancien. »** / **« C'est derrière la vieille porte du fort, de l'autre côté de l'avenue. Suivez-moi ! »** Harsh part seul, le premier, et quitte la cour ;
+3. **Le repas d'intégration (Joie de vivre, dans le sens renversé).** Il remplace l'ancienne danse : le repas
+   d'intégration des étudiants français à l'université, dans la cour. Douze bulles d'un seul tenant, encart compris.
+   « Le repas d'intégration des étudiants français : tout le monde est assis en cercle, autour d'un grand repas. »
+   Prophecy et Harsh vont s'asseoir, et Pierre s'assoit entre eux deux, sur le côté gauche du tapis. Harsh :
+   **« Bienvenue à l'université ! On est tellement heureux de vous recevoir. Vous connaissez notre dicton ? Atithi Devo
+   Bhava : l'invité est un dieu. Ici, vous êtes chez vous. »** Les plats arrivent vers Pierre (une galette glisse
+   jusqu'à lui depuis chaque convive, étape `pass`). Puis la bande de Delhi, une réplique chacun : Ben « Franchement,
+   je m'attendais pas à un accueil pareil ! » ; Aaron « Goûtez-moi ça, c'est une tuerie. » ; Margaux « On est à l'autre
+   bout du monde, vous réalisez ? » ; Brieux « Moi j'ai déjà envie de rester un an de plus. » ; Jules « Bon, qui
+   m'explique comment on mange ça ? » ; bulle « … » sur Pierre ; Pierre, en lui-même : **« Je ne sais même pas quoi
+   faire de toute cette générosité. Juste… l'accepter, peut-être. »** → **« Pierre utilise Joie de vivre ! »** → « Tu
+   goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin. » Tous se relèvent ; Harsh : **« Venez, je veux
+   vous montrer un endroit très ancien : derrière la vieille porte du fort, de l'autre côté de l'avenue ! »** Harsh part seul, le premier, et quitte la cour ;
    fin de la scénette : le joueur reprend la main, Prophecy le suit. Pierre sort de la cour et traverse l'avenue
    lui-même jusqu'à Harsh, qui attend devant la porte du fort (28, 10) ; sur la case devant la porte (27, 10) : « Vous voilà. C'est ici : la vieille porte du
    fort. Entrons. » Ils entrent tous les trois ; Harsh et Prophecy suivent Pierre dans le fort.
@@ -1567,6 +1569,11 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Patron (Corning) | `g53` | Amsterdam |
 | Vendeur | `g112` | Amsterdam |
 | Harsh | `g83` | Delhi |
+| Ben | `g187` (choisi dans le panneau PNJ) | Delhi (la cour du repas) |
+| Aaron | `g189` (panneau PNJ) | Delhi |
+| Margaux (Delhi) | `g200` (panneau PNJ ; homonyme, pas la Margaux de Montépilloy) | Delhi |
+| Jules | `g178` (panneau PNJ) | Delhi |
+| Brieux | `g103` (panneau PNJ) | Delhi |
 | Vieux sage | `g71` | Delhi (le vieux fort) |
 | Directeur | `g120` (le stade), `g123` (Paris) | Bordeaux (le stade : la remise des diplômes), Paris (le dernier étage de la tour) |
 | Propriétaire | `g161` | Paris (devant l'immeuble) |
@@ -1735,6 +1742,8 @@ devient le Talisman indien (systems/items.js).
 ## Incohérences repérées
 
 ### Noms incertains ou en double
+- **Margaux** : deux personnages distincts. La copine du cache-cache (Montépilloy, collège, le rêve, `g3`) et l'étudiante
+  de la bande de Delhi (`lookName` « Margaux (Delhi) », `g200`). Ne jamais les fusionner.
 - **Sprites (11 octobre 2026)** : plus aucun personnage nommé ne partage son sprite avec un autre (sauf les alias d'une même
   personne, Léo / Leo et Anaïs / Anais, et l'uniforme des militaires, sentinelles et agent de sécurité) ; les figurants
   (`EXTRAS`, data/looks.js) et les passants à sprite imposé n'en reprennent plus aucun. Felix, le surveillant et les

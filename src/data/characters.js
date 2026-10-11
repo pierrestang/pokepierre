@@ -27,7 +27,7 @@ function hash(text) {
 
 // Apparence d'un PNJ ou d'un suiveur : l'apparence choisie dans le créateur pour ce PNJ seulement (« Seulement ici »,
 // npcEdits), sinon celle choisie pour son nom (characterLooks.json, panneau PNJ), sinon `sprite` imposé (ex. des figurants garçons), sinon par nom (ou par id), sinon un figurant. `lookName` : le nom sous lequel chercher son apparence quand deux personnages portent le même prénom
-// (« Camille (Paris) »).
+// (« Camille (Paris) », « Margaux (Delhi) » : homonyme de Margaux du cache-cache, un autre personnage, à ne pas fusionner).
 export function lookOf(data) {
   if (data.id === 'chat') return fullLook({ kind: 'cat' });
   if (data.id?.startsWith('poule')) return fullLook({ kind: 'hen' });

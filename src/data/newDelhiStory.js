@@ -82,36 +82,36 @@ export const MEAL_SEATS = { pierre: [9, 10], harsh: [9, 11], prophecy: [10, 12] 
 // La sortie de la cour (au-dessus du tapis de sortie, en bas au milieu).
 const COUR_EXIT = [11, 16];
 const LEFT = ['etudiante-fete', 'harsh-fete'];
-const ACROSS = ['etudiant-dal', 'grand-mere-fete', 'etudiante-riz', 'voisin-fete'];
+const ACROSS = ['ben-fete', 'grand-mere-fete', 'margaux-fete', 'voisin-fete'];
 export const DELHI_PARTY = [
   { setFlag: FLAGS.courArrivee },
-  { say: ['La cour du palais est baignée de soleil. Tout le monde est assis en cercle par terre, autour d\'un grand repas.'] },
-  { speaker: 'Harsh', say: ['Viens, assieds-toi avec nous ! Ici, un invité ne reste jamais le ventre vide.'] },
+  { say: ['Le repas d\'intégration des étudiants français : tout le monde est assis en cercle, autour d\'un grand repas.'] },
   { walk: 'prophecy-fete', to: MEAL_SEATS.prophecy, block: true },
   { face: { 'prophecy-fete': 'up' }, sit: { 'prophecy-fete': true } },
   { walk: 'harsh-fete', to: MEAL_SEATS.harsh, block: true },
   { face: { 'harsh-fete': 'right' }, sit: { 'harsh-fete': true } },
   { goTo: MEAL_SEATS.pierre, facing: 'right' },
   { sit: { player: true } },
+  {
+    speaker: 'Harsh',
+    say: ['Bienvenue à l\'université ! On est tellement heureux de vous recevoir. Vous connaissez notre dicton ? Atithi Devo Bhava : l\'invité est un dieu. Ici, vous êtes chez vous.'],
+  },
   { pass: 'etudiante-fete' },
   { pass: 'harsh-fete' },
   { pass: ACROSS },
-  { say: ['À peine assis, une assiette arrive : du riz, du dal, une galette encore chaude. Et on te ressert sans que tu demandes.'] },
+  // La bande de Delhi, les cinq autres étudiants français de l'échange : une réplique chacun.
+  { speaker: 'Ben', say: ['Franchement, je m\'attendais pas à un accueil pareil !'] },
+  { speaker: 'Aaron', say: ['Goûtez-moi ça, c\'est une tuerie.'] },
+  { speaker: 'Margaux', say: ['On est à l\'autre bout du monde, vous réalisez ?'] },
+  { speaker: 'Brieux', say: ['Moi j\'ai déjà envie de rester un an de plus.'] },
+  { speaker: 'Jules', say: ['Bon, qui m\'explique comment on mange ça ?'] },
   { emote: 'player', kind: 'dots' },
-  { speaker: 'Grand-mère', say: ['Non, non, on ne refuse pas ! Chez nous, l\'invité, on le ressert toujours.'] },
   { say: ['Je ne sais même pas quoi faire de toute cette générosité. Juste… l\'accepter, peut-être.'] },
-  { speaker: 'Harsh', say: ['Atithi Devo Bhava. Chez nous, ça veut dire que l\'invité est sacré.'] },
   { useTrait: TRAITS.joie },
   { say: ['Tu goûtes à tout, tu ris, et tu tends à ton tour le plat à ton voisin.'] },
   { pass: LEFT },
   { sit: { player: false, 'harsh-fete': false, 'prophecy-fete': false } },
-  {
-    speaker: 'Harsh',
-    say: [
-      'Tu vois ? Tu es des nôtres, maintenant ! Venez, je veux vous montrer un endroit très ancien.',
-      'C\'est derrière la vieille porte du fort, de l\'autre côté de l\'avenue. Suivez-moi !',
-    ],
-  },
+  { speaker: 'Harsh', say: ['Venez, je veux vous montrer un endroit très ancien : derrière la vieille porte du fort, de l\'autre côté de l\'avenue !'] },
   // Harsh part seul, le premier ; le joueur reprend la main pendant qu'il s'en va (fin de la scénette), et Prophecy le
   // suit dès que Harsh a quitté la cour (FOLLOWERS). Pierre sort de la cour et traverse l'avenue lui-même.
   { walk: 'harsh-fete', to: COUR_EXIT, block: true },
@@ -132,8 +132,12 @@ export const JOIN_HARSH = [
 // Les convives, assis autour du repas (le repas continue à chaque visite).
 export const GUESTS = {
   etudiante: ['Tu reviens ? Il y a toujours une place pour toi, et toujours de quoi manger !'],
-  riz: ['Reprends du riz, va ! Il en reste plein la marmite.'],
-  dal: ['Le dal, c\'est la recette de ma grand-mère. Elle ne la donne à personne !'],
+  // La bande de Delhi : les cinq autres étudiants français de l'échange (répliques du repas d'intégration).
+  ben: ['Franchement, je m\'attendais pas à un accueil pareil !'],
+  aaron: ['Goûtez-moi ça, c\'est une tuerie.'],
+  margaux: ['On est à l\'autre bout du monde, vous réalisez ?'],
+  brieux: ['Moi j\'ai déjà envie de rester un an de plus.'],
+  jules: ['Bon, qui m\'explique comment on mange ça ?'],
   ensemble: ['Ici, on ne mange jamais seul. C\'est ça, le meilleur ingrédient.'],
   grandMere: ['Encore un peu de dal ? Ici, une assiette vide, ça n\'existe pas.'],
   voisin: ['Encore une galette ? Si, si, j\'insiste !'],

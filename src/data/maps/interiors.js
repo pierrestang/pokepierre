@@ -2178,19 +2178,23 @@ export const interiors = {
         id: 'prophecy-fete', name: 'Prophecy', x: 10, y: 14, facing: 'up',
         ifFlags: [FLAGS.courArrivee], unlessFlags: [FLAGS.feteDelhi], dialogue: ['Ça sent incroyablement bon…'],
       },
-      // Les convives, assis par terre en cercle, tournés vers le tapis ([id, nom, sprite, x, y, regard, réplique]).
+      // Les convives, assis par terre en cercle, tournés vers le tapis ([id, nom, sprite, x, y, regard, réplique]) : les
+      // hôtes indiens et la bande de Delhi (Ben, Aaron, Margaux, Jules, Brieux, les cinq autres étudiants français de
+      // l'échange ; leurs sprites sont choisis dans le panneau PNJ, characterLooks.json). Margaux de Delhi n'est PAS la
+      // Margaux du cache-cache (Montépilloy) : homonyme, apparence à part (`lookName` « Margaux (Delhi) »).
       ...[
         ['etudiante-fete', 'Étudiante', 'g116', 11, 12, 'up', 'etudiante'],
-        ['etudiant-dal', 'Étudiant', 'g187', 12, 12, 'up', 'dal'],
+        ['ben-fete', 'Ben', null, 12, 12, 'up', 'ben'],
         ['etudiante-ensemble', 'Étudiante', 'g97', 13, 12, 'up', 'ensemble'],
         ['grand-mere-fete', 'Grand-mère', 'g143', 14, 11, 'left', 'grandMere'],
-        ['etudiant-riz', 'Étudiant', 'g110', 14, 10, 'left', 'riz'],
-        ['etudiante-riz', 'Étudiante', 'g104', 13, 9, 'down', 'riz'],
+        ['aaron-fete', 'Aaron', null, 14, 10, 'left', 'aaron'],
+        ['margaux-fete', 'Margaux', null, 13, 9, 'down', 'margaux', 'Margaux (Delhi)'],
         ['voisin-fete', 'Voisin', 'g38', 12, 9, 'down', 'voisin'],
-        ['etudiant-ensemble', 'Étudiant', 'g102', 11, 9, 'down', 'ensemble'],
-        ['etudiante-dal', 'Étudiante', 'g103', 10, 9, 'down', 'dal'],
-      ].map(([id, name, sprite, x, y, facing, line]) => ({
-        id, name, sprite, x, y, facing, seated: true, still: true, dialogue: GUESTS[line],
+        ['jules-fete', 'Jules', null, 11, 9, 'down', 'jules'],
+        ['brieux-fete', 'Brieux', null, 10, 9, 'down', 'brieux'],
+      ].map(([id, name, sprite, x, y, facing, line, lookName]) => ({
+        id, name, ...(sprite ? { sprite } : {}), ...(lookName ? { lookName } : {}), x, y, facing, seated: true, still: true,
+        dialogue: GUESTS[line],
       })),
     ],
     // En entrant la première fois (derrière Harsh, avec Prophecy) : la fête.
