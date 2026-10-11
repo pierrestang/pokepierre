@@ -153,7 +153,7 @@ const JEAN_UPSTAIRS_STAIRS = [1, 3];
 export const JEAN = [
   {
     unlessFlags: [FLAGS.ecoleCm2], speaker: 'Jean',
-    say: ['Salut grand frère ! Je répare le grille-pain. Enfin… je l\'ai démonté. Presque pareil.', 'Dépêche-toi, tu vas être en retard à l\'école !'], end: true,
+    say: ['Salut, grand frère ! Je répare le grille-pain. Enfin… je l\'ai démonté. Presque pareil.', 'Dépêche-toi, tu vas être en retard à l\'école !'], end: true,
   },
   { speaker: 'Jean', say: ['Le tracteur de M. Bouly est en panne. Je peux le réparer, mais il me faut un assistant.', 'Rejoins-moi à la ferme !'] },
   { walk: 'jean-maison', to: JEAN_UPSTAIRS_STAIRS, block: true, then: [FLAGS.jeanQuetes] },

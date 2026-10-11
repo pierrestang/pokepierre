@@ -62,6 +62,7 @@ export const fortDeFranceMap = {
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 30
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 31
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 32
+    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 33 (hauteur paire : le bas des tuiles d'eau 2 x 2)
   ]),
   doors: [
     { x: 15, y: 7, interior: 'ffHouse' },

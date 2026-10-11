@@ -81,7 +81,7 @@ export const PAULFIT = [
   { ifItems: [ITEMS.enceinte.id], speaker: 'Paul', say: ['Dos droit, hein ! Et tu me la rends entière.'], end: true },
   { ifFlags: [FLAGS.soiree], speaker: 'Paul', say: ['Alors, elle a tenu le coup, mon enceinte ?'], end: true },
   { unlessFlags: [FLAGS.preparatifs], speaker: 'Paul', say: ['Salut, moi c\'est Paul ! Aujourd\'hui, c\'est jambes. Repasse plus tard.'], end: true },
-  { speaker: 'Paul', say: ['L\'enceinte ? Ok, mais tu la portes comme un vrai, dos droit.'] },
+  { speaker: 'Paul', say: ['L\'enceinte ? OK, mais tu la portes comme un vrai, dos droit.'] },
   {
     choose: 'Comment tu la portes ?',
     choices: [
@@ -97,14 +97,14 @@ export const PAULFIT = [
 
 export const REMI_CUPS = [
   { ifItems: [ITEMS.gobelets.id], speaker: 'Rémi', say: ['Have fun ce soir ! Enfin… amuse-toi bien, quoi.'], end: true },
-  { ifFlags: [FLAGS.soiree], speaker: 'Rémi', say: ['What a night ! Enfin… quelle soirée.'], end: true },
+  { ifFlags: [FLAGS.soiree], speaker: 'Rémi', say: ['What a night! Enfin… quelle soirée.'], end: true },
   { unlessFlags: [FLAGS.preparatifs], speaker: 'Rémi', say: ['Hey ! Moi c\'est Rémi. Je reviens d\'un échange aux USA, ça se voit, non ?'], end: true },
   { speaker: 'Rémi', say: ['C\'est so random, les gobelets sont dans le closet.'] },
   {
     choose: 'Que lui réponds-tu ?',
     choices: [
       { label: 'Le closet ?', steps: [{ speaker: 'Rémi', say: ['Le placard, sorry. Six mois aux States, ça laisse des traces.'] }] },
-      { label: 'Thanks, bro.', steps: [{ speaker: 'Rémi', say: ['You\'re welcome, bro ! On parle la même langue, toi et moi.'] }] },
+      { label: 'Thanks, bro.', steps: [{ speaker: 'Rémi', say: ['You\'re welcome, bro! On parle la même langue, toi et moi.'] }] },
       { label: 'Parle français !', steps: [{ speaker: 'Rémi', say: ['Okay, okay… Les gobelets. Dans le placard. Voilà. Happy ?'] }] },
     ],
   },
@@ -284,7 +284,7 @@ export const CYCLIST = [
       ] },
       { useTrait: TRAITS.ingeniosite },
       { say: ['Tu remets la chaîne sur le pignon, tu resserres la selle et tu regonfles les pneus. Il roule comme neuf !'] },
-      { give: ITEMS.velo, text: 'Tu reçois le Vélo !' },
+      { give: ITEMS.velo, text: 'Tu reçois le vélo !' },
       { speaker: 'Cycliste', say: ['Eh ben ! T\'as des doigts de fée, toi.'] },
       { say: ['Appuie sur V pour monter sur le vélo.'] },
     ],

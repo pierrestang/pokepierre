@@ -93,7 +93,7 @@ export const montepilloyMap = {
     {
       id: 'bouly-bonjour', name: 'M. Bouly', x: 13, y: 16, facing: 'down', color: 0x7c5c2c,
       unlessFlags: [FLAGS.jeanQuetes],
-      dialogue: ['Bonjour mon grand ! Belle journée pour la ferme, hein ?'],
+      dialogue: ['Bonjour, mon grand ! Belle journée pour la ferme, hein ?'],
     },
     {
       id: 'bouly', name: 'M. Bouly', x: 13, y: 16, facing: 'down', color: 0x7c5c2c,

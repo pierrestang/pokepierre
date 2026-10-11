@@ -27,7 +27,7 @@ const TOURIST_2 = { name: 'Touriste', sprite: 'g158', color: 0x80c0e0 };
 const AFTER_VISIT = { ifFlags: [FLAGS.visiteTerminee], unlessFlags: [FLAGS.sixMoisHanoi] };
 
 // Hanoï — capitale du Vietnam, 36 x 30 cases avec sa bordure de sapins. Le long de la grande rue, au nord : une maison
-// violette, la maison noire (l'agence de voyage), ta maison (la seconde maison violette, la boîte aux lettres à sa
+// violette, la maison noire (l'agence de voyages), ta maison (la seconde maison violette, la boîte aux lettres à sa
 // droite) et la maison bleue aux lanternes. Au milieu : le lac Hoàn Kiếm, son îlot à la cloche et son pont de bois ; le
 // temple (toit rouge, murs violets) à droite. Au sud : le portique rouge, les étals, la maison sur pilotis et la grande
 // maison bleue. Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = rue, ~ = lac, D = porte, T = sapins).
@@ -69,7 +69,7 @@ export const hanoiMap = {
   ]),
   doors: [
     { x: 4, y: 6, lockedDialogue: NOT_HOME },        // la maison violette
-    { x: 11, y: 6, interior: 'travelAgency' },       // l'agence de voyage (la maison noire)
+    { x: 11, y: 6, interior: 'travelAgency' },       // l'agence de voyages (la maison noire)
     { x: 20, y: 5, interior: 'hanoiHome' },          // ta maison (la seconde maison violette, porte en retrait)
     { x: 29, y: 7, lockedDialogue: NOT_HOME },       // la maison bleue aux lanternes
     // Le temple (toit rouge) : on y entre en guidant les touristes.

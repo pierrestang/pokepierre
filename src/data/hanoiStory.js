@@ -31,7 +31,7 @@ export const ARRIVAL = [
     say: [
       'Hanoï. La chaleur te saute au visage, les scooters klaxonnent dans tous les sens, l\'odeur du phở monte des trottoirs.',
       'Tu ne comprends rien aux panneaux. Et pourtant, tu te sens déjà chez toi.',
-      'Ta maison est la petite maison violette de la grande rue. Ton nouveau travail commence aujourd\'hui, à l\'agence de voyage : la maison noire, un peu plus loin.',
+      'Ta maison est la petite maison violette de la grande rue. Ton nouveau travail commence aujourd\'hui, à l\'agence de voyages : la maison noire, un peu plus loin.',
     ],
   },
 ];
@@ -203,7 +203,7 @@ export const FLIGHT_TO_AMSTERDAM = [
   {
     say: [
       'Il y a quelques mois, tu prenais ce billet à Hull, le ventre noué.',
-      'Aujourd\'hui, c\'est un banh mi dans une main et le billet dans l\'autre. Tu as pris le pli. Amsterdam, à nous deux.',
+      'Aujourd\'hui, c\'est un bánh mì dans une main et le billet dans l\'autre. Tu as pris le pli. Amsterdam, à nous deux.',
     ],
   },
   { setFlag: FLAGS.arriveeAmsterdam },

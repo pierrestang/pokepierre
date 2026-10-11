@@ -556,7 +556,7 @@ Dialogue à choix (Camille), l'oral du brevet (trois questions : français, math
    premier. » / « La tienne, c'est celle de droite. » ; Geoffrey : « Ton lit, c'est le troisième en partant de la gauche. Au carré, hein. » /
    « Et prépare tes affaires pour demain, sur le bureau. » / « Il reste l'armoire. Demande à Tanguy, c'est un
    maniaque. »
-   - L'inspection : **« GARDE À VOUS ! »** ; « L'armoire d'abord. Toujours l'armoire. » / « … Pliée au carré. Je suis
+   - L'inspection : **« GARDE-À-VOUS ! »** ; « L'armoire d'abord. Toujours l'armoire. » / « … Pliée au carré. Je suis
      presque déçu. » ; « Le lit. Une pièce de monnaie rebondirait dessus. » / « Je n'ai pas de pièce. Mais je le sens. » ;
      « Les affaires pour demain. Même les chaussettes sont alignées. » / « Qui t'a appris ça ? … Ne réponds pas. » ;
      **« Correct. Repos. »** → vertu **Autonomie**.
@@ -572,12 +572,12 @@ Dialogue à choix (Camille), l'oral du brevet (trois questions : français, math
      sorti, mon capitaine. On n'a rien vu, rien entendu. »** ; le capitaine : « Rien vu, rien entendu… Bien. » /
      **« Alors la prochaine fois que « personne » sort, dites-lui d'essuyer ses rangers : il a laissé de la boue jusqu'à
      son lit. »** ;
-     Geoffrey : **« Personne a rien vu. On remet ça quand vous voulez les gars ! »**
+     Geoffrey : **« Personne a rien vu. On remet ça quand vous voulez, les gars ! »**
 3. **Le bac.** **« Quelques années plus tard… »** (la seule ellipse du Prytanée) ; Tanguy : « Debout, Pierre ! C'est
    aujourd'hui, les résultats du bac ! » ; Geoffrey : « On descend voir. Si j'y suis pas, je refais le mur… mais pour de
    bon. » ; Tanguy : « La liste du bac est affichée sur le panneau de la place d'armes. Viens, on va voir ! » Au
    panneau : « La liste des résultats du baccalauréat est affichée. Tu cherches ton nom… » ; Tanguy « T'es dessus ! » ;
-   Geoffrey « On y est tous les trois. Même moi. » → **Baccalauréat** (« Diplôme obtenu : Baccalauréat ! »).
+   Geoffrey « On y est tous les trois. Même moi. » → **Baccalauréat** (« Diplôme obtenu : baccalauréat ! »).
 
 ### Rappels des PNJ
 Le capitaine (« Ta chambre est au premier étage… »), Tanguy (la porte nord, puis le panneau du bac), puis, après le bac :
@@ -899,7 +899,7 @@ Pour la première fois, Pierre arrive seul dans une ville dont il ne parle pas l
 
 ### La carte (36 x 30, redessinée en Gen 4)
 Au nord, le long de la grande rue (est-ouest, vers l'aéroport par ses deux bouts) : une maison violette (porte (4, 6),
-fermée), la maison noire = l'agence de voyage (11, 6), ta maison = la seconde maison violette (20, 5, porte en retrait), avec sa boîte aux
+fermée), la maison noire = l'agence de voyages (11, 6), ta maison = la seconde maison violette (20, 5, porte en retrait), avec sa boîte aux
 lettres rouge à droite (24, 7), et la maison bleue aux lanternes (29, 7, fermée). Au milieu : le lac Hoàn Kiếm, son îlot
 à la cloche et son pont de bois ; M. Lam sur le petit îlot à gauche du pont, près de la cloche (8, 15) ; les papis aux échecs à l'est du pont (18, 12)
 et (20, 12) ; le temple au toit rouge (porte (26, 16)). Au sud : le portique rouge, les étals, la maison sur pilotis, la
@@ -909,14 +909,14 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
 - Carte postale `hanoi` (« antre du Dragon ») : **« Hanoï, Vietnam. »** ; **« Hanoï. La chaleur te saute au visage, les
   scooters klaxonnent dans tous les sens, l'odeur du phở monte des trottoirs. »** / « Tu ne comprends rien aux
   panneaux. Et pourtant, tu te sens déjà chez toi. » / « Ta maison est la petite maison violette de la grande rue. Ton nouveau
-  travail commence aujourd'hui, à l'agence de voyage : la maison noire, un peu plus loin. »
+  travail commence aujourd'hui, à l'agence de voyages : la maison noire, un peu plus loin. »
 - Dans ta maison (avant le premier jour) : « Ta maison à Hanoï. Petite, silencieuse… et rien qu'à toi. » / « L'agence de
   voyage t'attend : la maison noire, sur la grande rue. »
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
-| Patron | Le patron (français) de l'agence de voyage | `g141` (imposé) |
+| Patron | Le patron (français) de l'agence de voyages | `g141` (imposé) |
 | M. Lam | Vieux monsieur de l'îlot, près de la cloche ; a appris le français à l'école | `g129` (imposé) |
 | Passante, Vendeuse, Passant | Ne parlent pas français | `g19`, `g70`, `g14` (imposés) |
 | Touriste (x 2) | Les deux touristes à guider ; tous deux nommés « Touriste » à l'écran | `g24`, `g22` (imposés, aussi quand ils suivent) |
@@ -982,7 +982,7 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 
 ### Départ et trajet
 - **Condition** : l'appel de Romain. Au guichet de l'aéroport, vol « Amsterdam » : « Il y a quelques mois, tu prenais ce
-  billet à Hull, le ventre noué. » / **« Aujourd'hui, c'est un banh mi dans une main et le billet dans l'autre. Tu as
+  billet à Hull, le ventre noué. » / **« Aujourd'hui, c'est un bánh mì dans une main et le billet dans l'autre. Tu as
   pris le pli. Amsterdam, à nous deux. »**
 - **Trajet en avion** ; encart : « Tu emportes : Adaptation. »
 
@@ -1269,7 +1269,7 @@ de jour.
   Les collègues sont de jeunes adultes, chacun avec son nom : Guillaume, Anthony, Antoine, Quentin ; Andrea, Mariana,
   Yasmine, Camille, Yalin.
   - Le rez-de-chaussée (hall de la Tour Radio de HGSS) : vivant, des collègues debout qui parlent à Pierre comme à l'un
-    des leurs : « Salut Pierre ! Encore là de bonne heure, toi. », « Tiens, Pierre, tu passes au point d'équipe tout à
+    des leurs : « Salut, Pierre ! Encore là de bonne heure, toi. », « Tiens, Pierre, tu passes au point d'équipe tout à
     l'heure ? », « Bonne journée, hein ! On se voit en haut. » (Anthony, Andrea, Antoine) ; Yasmine, à l'accueil (« La
     machine à café est encore en panne. Comme tous les lundis. ») ; Camille, qui accueille Pierre ; Guillaume, le
     blasé, près de la machine à café.
@@ -1461,7 +1461,7 @@ Paris.
 | Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) |
 | Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (obligatoire avant de sortir ; photo) ; Hull : le guichet de l'aéroport, avant Hanoï ; Amsterdam : la campagne de Corning |
 | Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Hanoï : la touriste au téléphone à plat, au temple ; Amsterdam : la nuit au canal avec Romain |
-| Adaptation | Hanoï | M. Lam, qui traduit les consignes en vietnamien | « Trouver son chemin partout, même sans en parler la langue. » | Nulle part pour l'instant |
+| Adaptation | Hanoï | M. Lam, qui traduit les consignes en vietnamien | « Trouver son chemin partout, même sans parler la langue. » | Nulle part pour l'instant |
 | Liberté | Paris | Le directeur, au dernier étage de la tour (la place refusée ; pas d'encart « a reçu », directement « Pierre utilise ») | « Écouter qui l'on est vraiment, et refuser une vie qui n'est pas la sienne. » | Paris : le bureau du directeur ; elle s'illumine en dernier dans le fondu de la fin |
 
 Vertus supprimées (leurs scènes restent, sans encart) : Pragmatisme (le tri des cannes), Confiance (le coquillage de

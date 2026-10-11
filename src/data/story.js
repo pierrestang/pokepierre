@@ -213,7 +213,7 @@ export const TRAITS = {
   },
   adaptation: {
     id: 'vertu-adaptation', name: 'Adaptation', city: 'hanoi',
-    phrase: 'Trouver son chemin partout, même sans en parler la langue.',
+    phrase: 'Trouver son chemin partout, même sans parler la langue.',
   },
   liberte: {
     id: 'vertu-liberte', name: 'Liberté', city: 'paris',

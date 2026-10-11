@@ -100,10 +100,12 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
   }
 
   // La couleur du pantalon : la plus fréquente (hors contour sombre) dans les jambes de l'image, au milieu.
+  // Lue toujours sur l'image de face (le pantalon s'y voit) : de profil, la jupe ou le haut donnerait une autre couleur, et
+  // les jambes changeraient de couleur quand le personnage se tourne.
   legColor() {
     const { key } = this.image.texture;
-    const frame = this.image.frame.name;
-    const h = this.image.frame.height;
+    const frame = `${this.prefix}down-0`;
+    const h = this.image.texture.get(frame).height;
     const counts = new Map();
     for (let y = h - 4; y <= h - 3; y++) {
       for (let x = 10; x < 22; x++) {

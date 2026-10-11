@@ -68,7 +68,7 @@ export const COLLEAGUE = [
 
 // Les collègues du hall, debout : ils parlent à Pierre comme à quelqu'un qui travaille là.
 export const HALL_LINES = {
-  tot: ['Salut Pierre ! Encore là de bonne heure, toi.'],
+  tot: ['Salut, Pierre ! Encore là de bonne heure, toi.'],
   point: ['Tiens, Pierre, tu passes au point d\'équipe tout à l\'heure ?'],
   bonne: ['Bonne journée, hein ! On se voit en haut.'],
   cafe: ['La machine à café est encore en panne. Comme tous les lundis.'],

@@ -1372,7 +1372,7 @@ export const interiors = {
       },
       // La soirée : Ousmane et Rémi dans la foule.
       { id: 'ousmane-fete', name: 'Ousmane', x: 7, y: 6, facing: 'left', ...PARTY_TIME, dancing: true, dialogue: ['Regarde-moi ça ! Et dire que tout à l\'heure on était dans le noir.'] },
-      { id: 'remi-fete', name: 'Rémi', x: 5, y: 6, facing: 'right', ...PARTY_TIME, dancing: true, dialogue: ['This party is so lit ! Enfin… grâce à toi, littéralement.'] },
+      { id: 'remi-fete', name: 'Rémi', x: 5, y: 6, facing: 'right', ...PARTY_TIME, dancing: true, dialogue: ['This party is so lit! Enfin… grâce à toi, littéralement.'] },
       // Léo, Anaïs et Charlotte, de KEDGE, qu'on retrouve à Hull (sprites de Hull, par leur nom : voir characters.js).
       { id: 'leo-fete', name: 'Léo', x: 5, y: 5, facing: 'right', ...PARTY_TIME, dancing: true, script: PARTY_LEO },
       { id: 'anais-fete', name: 'Anaïs', x: 8, y: 5, facing: 'left', ...PARTY_TIME, dancing: true, script: PARTY_ANAIS },
@@ -1977,16 +1977,16 @@ export const interiors = {
       {
         on: 'enter',
         unlessFlags: [FLAGS.travailEtape1],
-        steps: [{ say: ['Ta maison à Hanoï. Petite, silencieuse… et rien qu\'à toi.', 'L\'agence de voyage t\'attend : la maison noire, sur la grande rue.'] }],
+        steps: [{ say: ['Ta maison à Hanoï. Petite, silencieuse… et rien qu\'à toi.', 'L\'agence de voyages t\'attend : la maison noire, sur la grande rue.'] }],
       },
     ],
   },
 
-  // Hanoï — l'agence de voyage (la maison noire) : le patron, français, accueille Pierre et lui tend les consignes en
+  // Hanoï — l'agence de voyages (la maison noire) : le patron, français, accueille Pierre et lui tend les consignes en
   // vietnamien ; il le remercie après la visite du temple (voir hanoiStory.js). Le bureau du directeur de la Tour Radio
   // (HGSS) : le patron derrière son grand bureau, sur le tapis.
   travelAgency: {
-    name: 'Agence de voyage',
+    name: 'Agence de voyages',
     grid: parseGrid([
       'XXXXXXXXX',
       'XXXXXXXXX',
@@ -2465,7 +2465,7 @@ export const interiors = {
     // Le groupe joue sur l'estrade : on lui parle depuis le bord de la scène (chacun derrière sa case).
     objects: [
       { x: 4, y: 5, dialogue: ['Le guitariste te fait un clin d\'œil.'] },
-      { x: 6, y: 5, dialogue: ['Le chanteur salue la foule : « Merci Paris ! »'] },
+      { x: 6, y: 5, dialogue: ['Le chanteur salue la foule : « Merci, Paris ! »'] },
       { x: 8, y: 5, dialogue: ['Le batteur fait tourner ses baguettes.'] },
     ],
     events: [{ on: 'enter', unlessFlags: [FLAGS.concertParis], steps: CONCERT }],
