@@ -1357,9 +1357,9 @@ de jour.
    Pierre : **« Salut ! Tu dois être Pierre ? Moi, c'est Camille. Bienvenue dans l'équipe ! »** / « Ici, c'est le hall : l'accueil, le
    salon, la machine à café. Les étages, ça viendra. Tu vas voir, on est une bonne équipe. » (ensuite : « Alors, ce
    premier jour ? Si tu cherches quoi que ce soit, demande-moi ! » ; après le concert : « Déjà un an que tu es là,
-   toi ? Le temps file, dans cette tour. ») ; puis Guillaume, le blasé, vient à Pierre :
-   **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** (en lui reparlant : « Le café de la machine ? Je te
-   le déconseille. Dix ans que je le bois quand même. ») Les boutons du premier et du dernier étage de
+   toi ? Le temps file, dans cette tour. ») ; puis un collègue de passage, sans nom, vient à Pierre :
+   **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** (Guillaume, le blasé, reste près de la machine à
+   café : « Le café de la machine ? Je te le déconseille. Je le bois quand même. ») Les boutons du premier et du dernier étage de
    l'ascenseur sont éteints. Pierre ressort.
 3. **Le concert (la place qui a voyagé).** En sortant de la tour, le téléphone sonne : « Ton téléphone sonne. C'est
    Antoine, du bureau. » Antoine (collègue de la tour) : **« Pierre ! Ce soir, concert à Bercy. J'avais une place pour

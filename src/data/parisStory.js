@@ -53,8 +53,9 @@ export const OFFICE_FIRST = [
       'Ici, c\'est le hall : l\'accueil, le salon, la machine à café. Les étages, ça viendra. Tu vas voir, on est une bonne équipe.',
     ],
   },
-  { approach: 'collegue' },
-  { speaker: GUILLAUME, say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
+  // Un collègue de passage (sans nom), pas Guillaume : la réplique des dix ans de trajet.
+  { approach: 'collegue-trajet' },
+  { speaker: 'Collègue', say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
   { speaker: CAMILLE, say: ['Pour un premier jour, c\'est tout ! Rentre te reposer, on se voit demain.'] },
   { setFlag: FLAGS.jour1Bureau },
 ];
@@ -63,7 +64,7 @@ export const OFFICE_FIRST = [
 export const COLLEAGUE = [
   { ifFlags: [FLAGS.liberteParis], speaker: GUILLAUME, say: ['Tu pars ? Vraiment ? … Tu sais quoi, je t\'envie un peu.'], end: true },
   { ifFlags: [FLAGS.promotionParis], speaker: GUILLAUME, say: ['Alors, monsieur du premier étage ? On ne te voit plus, en bas.'], end: true },
-  { speaker: GUILLAUME, say: ['Le café de la machine ? Je te le déconseille. Dix ans que je le bois quand même.'] },
+  { speaker: GUILLAUME, say: ['Le café de la machine ? Je te le déconseille. Je le bois quand même.'] },
 ];
 
 // Les collègues du hall, debout : ils parlent à Pierre comme à quelqu'un qui travaille là.

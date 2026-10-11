@@ -2396,6 +2396,11 @@ export const interiors = {
       { id: 'accueil', name: 'Yasmine', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
       // Trois collègues de plus, figurants sans réplique (sprites choisis dans le panneau PNJ). Julien de la tour n'est PAS
       // le Julien du collège : homonyme, apparence à part (`lookName` « Julien (Paris) »).
+      // Le collègue de passage, sans nom (parisStory.js OFFICE_FIRST : « Dix ans que je fais ce trajet »).
+      {
+        id: 'collegue-trajet', name: 'Collègue', sprite: 'g49', x: 12, y: 4, facing: 'down', fidget: true,
+        dialogue: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'],
+      },
       { id: 'collegue-pablo', name: 'Pablo', x: 10, y: 7, facing: 'right', fidget: true },
       { id: 'collegue-julien', name: 'Julien', lookName: 'Julien (Paris)', x: 21, y: 7, facing: 'left', fidget: true },
       { id: 'collegue-juliette', name: 'Juliette', x: 16, y: 4, facing: 'down', fidget: true },
