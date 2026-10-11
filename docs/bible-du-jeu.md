@@ -1249,7 +1249,8 @@ de jour.
   - Le premier étage (un plateau de bureaux) : le manager, trois collègues debout (Mariana : « Bienvenue à l'étage,
     Pierre ! Ici, on a même du vrai café. » ; Quentin : « Réunion à onze heures. Et à quatorze heures. Et à seize
     heures. » ; Yaline : « Le premier étage, c'est calme. Trop calme, parfois. »).
-  - Le dernier étage : le bureau du directeur, son assistante (« Le directeur vous attend, Pierre. Entrez, entrez. »).
+  - Le dernier étage : le bureau du directeur. Il est seul, assis dans son fauteuil derrière son bureau ; c'est Pierre
+    qui va lui parler.
 - **Bercy** (le théâtre de danse de Doublonville, transformé en salle de concert) : une estrade au fond, le chanteur
   (`g69`), le guitariste et le batteur ; dix-huit fans tournés vers la scène, l'allée du milieu libre ; lumières de
   scène. On parle aux musiciens depuis le bord de la scène.
@@ -1331,10 +1332,15 @@ de jour.
    Pierre, en lui-même : **« On a perdu, mais c'était une belle soirée pour le GOAT… »** ; écran noir, **« Un an plus
    tard… »** ; Pierre ressort devant chez Hugues.
 6. **Le directeur (Liberté).** Au bureau, Camille : « Pierre ! Le directeur veut te voir. Dernier étage, rien que
-   ça ! » Le bouton du dernier étage s'est allumé. Le directeur : **« Entre, Pierre, assieds-toi. Ça fait un moment que je
-   te regarde, et je dois dire que tu te débrouilles vraiment bien. Il y a une belle place pour toi ici, tu sais. »** ;
-   Pierre : **« C'est gentil, vraiment… Mais je crois que ce n'est pas ma place. Il faut que je parte. »** → **« Pierre
-   utilise LIBERTÉ ! »** (la vertu entre au carnet sans l'encart « a reçu ») → **« Tu emportes : Liberté. »**
+   ça ! » Le bouton du dernier étage s'est allumé. Au dernier étage, le directeur est seul, assis ; Pierre
+   va à lui. Le directeur : **« Ah, Pierre. Ça fait un moment que je vous observe, et je dois dire que vous vous
+   débrouillez vraiment bien. »** / « Il y a une belle place pour vous ici, vous savez. » ; bulle « … » ; Pierre va à la
+   baie vitrée (en haut à droite) : **« C'est beau, d'ici. On voit où tout le monde va. »** / **« Mais moi, j'ai passé ma
+   vie à regarder par la fenêtre d'une voiture, d'un ferry, d'un avion. Si je m'assois derrière cette vitre, je crois
+   que je vais oublier comment on part. »** ; le directeur se lève et vient à lui : **« Vous savez, moi aussi j'ai
+   regardé par cette fenêtre à votre âge. Et je me suis assis. »** / **« Je ne vous dirai pas si j'ai eu raison.
+   Allez-y, Pierre. Et envoyez-moi une carte postale. »** → **« Pierre utilise LIBERTÉ ! »** (la vertu entre au carnet
+   sans l'encart « a reçu ») → **« Tu emportes : Liberté. »**
 7. **Le pont vers le rêve.** En sortant de la tour, Pierre fait un pas et s'arrête ; le joueur n'a plus la main. L'écran
    se brouille doucement (flou), la musique s'éteint, un voile clair monte : le rêve (section suivante).
 

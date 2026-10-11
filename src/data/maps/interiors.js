@@ -23,7 +23,7 @@ import {
 import { ALTAR, PATRON_THANKS, PATRON_WELCOME, TEMPLE_PANIC, patronComes } from '../hanoiStory.js';
 import { CAMPAIGN, CORNING_ENTER, ROMAIN_HOME, ROMAIN_WELCOME, VENDOR } from '../amsterdamStory.js';
 import {
-  COLLEAGUE, CONCERT, DIRECTOR, DIRECTOR_AFTER, DIRECTOR_CALLS, HALL_LINES, HUGUES_AFTER, MANAGER_CALLS, MANAGER_TALK, MATCH,
+  COLLEAGUE, CONCERT, DIRECTOR, DIRECTOR_CALLS, HALL_LINES, HUGUES_AFTER, MANAGER_CALLS, MANAGER_TALK, MATCH,
   OFFICE_FIRST, PROMOTION, THOMAS_SERVICE,
 } from '../parisStory.js';
 import { TALISMAN, TALISMAN_SPOT, WAKE_UP } from '../reveStory.js';
@@ -2367,7 +2367,8 @@ export const interiors = {
     events: [{ on: 'enter', ifFlags: [FLAGS.concertParis], unlessFlags: [FLAGS.promotionParis], steps: PROMOTION }],
   },
 
-  // Paris — la tour, dernier étage : le bureau du directeur (la belle place, et la Liberté) ; son assistante.
+  // Paris — la tour, dernier étage : le bureau du directeur (la belle place, et la Liberté). Il est seul, assis dans son
+  // fauteuil derrière le bureau (la chaise bleue) ; Pierre va lui parler.
   entrepriseDirecteur: {
     name: 'Tour de bureaux - dernier étage',
     grid: parseGrid([
@@ -2387,13 +2388,11 @@ export const interiors = {
     spawn: { x: 1, y: 2, facing: 'down' },
     npcs: [
       {
-        id: 'directeur', name: 'Directeur', x: 4, y: 7, facing: 'down',
-        ifFlags: [FLAGS.directeurInvite], dialogue: DIRECTOR_AFTER,
+        id: 'directeur', name: 'Directeur', x: 4, y: 10, facing: 'up', seated: true,
+        ifFlags: [FLAGS.directeurInvite], script: DIRECTOR,
       },
-      { id: 'assistante', name: 'Assistante', sprite: 'g1', x: 6, y: 3, facing: 'down', fidget: true, dialogue: ['Le directeur vous attend, Pierre. Entrez, entrez.'] },
     ],
     objects: elevator('entrepriseDirecteur'),
-    events: [{ on: 'enter', ifFlags: [FLAGS.directeurInvite], unlessFlags: [FLAGS.liberteParis], steps: DIRECTOR }],
   },
 
   // Paris — le restaurant au store rayé, où Thomas travaille : une maison de Doublonville (coin cuisine, bibliothèque,

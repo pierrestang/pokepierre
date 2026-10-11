@@ -263,22 +263,43 @@ export const HUGUES_AFTER = ['Ces tirs au but… Je ne les ai toujours pas digé
 
 // ---------- 6. Le directeur ----------
 
-// Le bureau du directeur : la belle place, et le refus de Pierre (la Liberté).
+// Le bureau du directeur : il est seul, assis à son fauteuil ; c'est Pierre qui va à lui (interiors.js
+// entrepriseDirecteur). La belle place ; Pierre va à la baie vitrée et refuse ; le directeur se lève et le rejoint (la
+// Liberté).
+export const DIRECTOR_AFTER = ['La porte est ouverte, Pierre. Dans les deux sens.'];
+const WINDOW = [7, 3];                                // devant la baie vitrée, en haut à droite
 export const DIRECTOR = [
+  { ifFlags: [FLAGS.liberteParis], speaker: 'Directeur', say: DIRECTOR_AFTER, end: true },
+  {
+    speaker: 'Directeur',
+    say: [
+      'Ah, Pierre. Ça fait un moment que je vous observe, et je dois dire que vous vous débrouillez vraiment bien.',
+      'Il y a une belle place pour vous ici, vous savez.',
+    ],
+  },
+  { emote: 'player', kind: 'dots' },
+  { goTo: WINDOW, facing: 'up' },
+  {
+    speaker: 'Pierre',
+    say: [
+      'C\'est beau, d\'ici. On voit où tout le monde va.',
+      'Mais moi, j\'ai passé ma vie à regarder par la fenêtre d\'une voiture, d\'un ferry, d\'un avion. Si je m\'assois derrière cette vitre, je crois que je vais oublier comment on part.',
+    ],
+  },
+  { sit: { directeur: false } },                       // il se lève
   { approach: 'directeur' },
   {
     speaker: 'Directeur',
-    say: ['Entre, Pierre, assieds-toi. Ça fait un moment que je te regarde, et je dois dire que tu te débrouilles vraiment bien. Il y a une belle place pour toi ici, tu sais.'],
+    say: [
+      'Vous savez, moi aussi j\'ai regardé par cette fenêtre à votre âge. Et je me suis assis.',
+      'Je ne vous dirai pas si j\'ai eu raison. Allez-y, Pierre. Et envoyez-moi une carte postale.',
+    ],
   },
-  { emote: 'player', kind: 'dots' },
-  { speaker: 'Pierre', say: ['C\'est gentil, vraiment… Mais je crois que ce n\'est pas ma place. Il faut que je parte.'] },
   { trait: TRAITS.liberte, quiet: true },
   { useTrait: TRAITS.liberte },
   { say: [carryText('paris')] },
   { setFlag: FLAGS.liberteParis },
 ];
-
-export const DIRECTOR_AFTER = ['La porte est ouverte, Pierre. Dans les deux sens.'];
 
 // ---------- 7. En sortant de la tour : le rêve ----------
 
