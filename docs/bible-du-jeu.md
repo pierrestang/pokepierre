@@ -1429,10 +1429,11 @@ Dessinée par scripts/build_reve.py avec deux planches du Pokémon Gaia Project 
 ASSETTILESPOKEMONV2/credits/gaia-pixelmister.txt) : une grande plate-forme de brique flotte dans le bleu du Monde
 Distorsion, quatre colonnes brisées de la Colonne Lance à ses coins ; autour, des îlots, des arbres qui poussent de
 travers, un tourbillon, deux tablettes gravées. Un voile pâle, des nappes de brume blanche qui dérivent et de petites
-étincelles (effects.js startDreamMist). Sa propre musique, **« Le rêve »** : très lente (54 à la noire), onirique et mystique
-(do lydien, des accords de septième majeure qui ne se résolvent jamais et glissent d'une couleur éloignée à l'autre :
-do, mi, la bémol, fa, ré bémol ; une nappe qui ondule, des notes de cristal qui montent et redescendent, une cloche à
-chaque mesure, une flûte lointaine et rare avec deux échos ; recomposée le 11 octobre 2026), composition originale jouée par
+étincelles (effects.js startDreamMist). Sa propre musique, **« Le rêve »** : très lente (48 à la noire), onirique et mystique, en
+gamme par tons (pas de demi-ton, des accords augmentés qui flottent et ne se résolvent jamais) ; pas de mélodie
+chantante, mais un chœur lointain (trois voix à peine désaccordées qui entrent très lentement) ; un grondement grave
+tenu sur deux octaves, une nappe qui ondule, des éclats de célesta à des moments irréguliers, un gong grave toutes les
+deux mesures (refaite le 11 octobre 2026), composition originale jouée par
 le synthétiseur du jeu (systems/audio.js `reve`), libre de droits, inscrite au générique. Pas de nom de ville affiché.
 
 ### La grande réunion
