@@ -213,7 +213,8 @@ export const hullMap = {
     { on: 'enter', ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.leoEntrePubA], steps: LEO_SCOUT_A },
     { on: 'enter', ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.leoEntrePubB], steps: LEO_SCOUT_B },
     { on: 'enter', ifFlags: [FLAGS.flechettesJouees], unlessFlags: [FLAGS.leoEntreAsylum], steps: LEO_SCOUT_ASYLUM },
-    { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [INSOUCIANCE], steps: DAWN },
+    // Sorti de l'Asylum, Pierre reprend la main : deux pas, puis l'aube et la bande devant la boîte (hullStory.js DAWN).
+    { on: 'walk', count: 2, ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [INSOUCIANCE], steps: DAWN },
     // Le surlendemain des révisions : Pierre arrive devant le panneau des résultats (voir hullStory.js LIBRARY).
     { on: 'enter', ifFlags: [FLAGS.jourResultats], unlessItems: [ITEMS.diplomeHull.id], steps: RESULTS },
     // Ancienne partie, révisions faites mais pas encore « Le surlendemain » (voir hullStory.js OLD_REVISIONS).

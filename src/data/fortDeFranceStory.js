@@ -39,9 +39,12 @@ const GIVE_ROD = [
     ],
   },
   { take: ITEMS.canneAPeche.id, setFlag: FLAGS.canneOfferte },
-  ...DEPARTURE,
+  { say: ['Le ferry est prêt. Monte à bord quand tu veux.'] },
 ];
+// La canne offerte : le ferry (ou le capitaine) embarque Pierre, qui y va de lui-même (il reprend la main entre les deux).
+const BOARDING = { ifFlags: [FLAGS.canneOfferte], unlessFlags: [FLAGS.departFortDeFrance], steps: DEPARTURE, end: true };
 export const FISHER_AT_FERRY = [
+  BOARDING,
   { unlessSouvenirs: [TRAITS.joie.id], ...GO_SEE_MOM, end: true },
   // La canne cassée : le ferry est bloqué.
   {
@@ -81,6 +84,7 @@ export const RETURN_FERRY = [
 // Le ferry, face au joueur : on embarque par le capitaine, une fois la canne offerte ; après le départ, il fait la navette.
 export const FERRY = [
   { ifFlags: [FLAGS.departFortDeFrance], steps: RETURN_FERRY, end: true },
+  BOARDING,
   { say: ["Le ferry n'embarque pas encore. Le capitaine, sur le ponton, sait ce qu'il te reste à faire."] },
 ];
 

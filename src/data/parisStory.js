@@ -225,55 +225,29 @@ export const THOMAS_SERVICE = [
 ];
 
 // Chez Hugues : le salon, la télé allumée, ses amis devant (Philippe, Nico et un autre ami). La finale France-Argentine,
-// comme elle s'est jouée : 2-0 pour l'Argentine, la France revient à 2-2, 3-2 en prolongation, 3-3, puis les tirs au but
-// perdus. Hugues et Thomas portent les réactions. À la fin : « Un an plus tard… », Pierre ressort devant chez Hugues.
+// comme elle s'est jouée (0-2, 2-2, 2-3 en prolongation, 3-3, tirs au but perdus), en douze bulles sans coupure ;
+// Hugues, Thomas, Philippe et Nico réagissent. À la fin : « Un an plus tard… », Pierre ressort devant chez Hugues.
 const WATCHERS = ['hugues', 'philippe', 'nico', 'ami-match', 'thomas'];
 export const MATCH = [
   { setFlag: FLAGS.matchArrivee },
-  { speaker: 'Hugues', say: ['Les voilà ! Allez, posez tout, ça va commencer, j\'attends ce match depuis des semaines !'] },
+  { speaker: 'Hugues', say: ['Les voilà ! Posez tout, ça commence !'] },
   { take: ITEMS.platsMatch.id },
   { walk: 'thomas', to: [7, 5], block: true },
   { face: { thomas: 'up' } },
   { goTo: [6, 6], facing: 'up' },
-  { say: ['Le match commence ! C\'est la finale : France-Argentine.'] },
-  { speaker: 'Philippe', say: ['Allez les Bleus !'] },
-  { speaker: 'Hugues', say: ['Contre l\'Argentine, ça se gagne, allez !'] },
-  // 0-2
-  { say: ['Penalty pour l\'Argentine… Messi le transforme. 1-0.'] },
-  { emote: 'hugues', kind: 'dots' },
-  { speaker: 'Hugues', say: ['Non, non, non… On n\'a pas encore touché un ballon !'] },
-  { say: ['Contre éclair argentin… Di María, tout seul. 2-0.'] },
-  { speaker: 'Thomas', say: ['Ça fait mal, là. Très mal.'] },
-  { speaker: 'Hugues', say: ['Deschamps change deux joueurs avant la mi-temps ! C\'est la panique !'] },
-  { say: ['À la mi-temps, le salon est silencieux.'] },
-  { speaker: 'Nico', say: ['Quelqu\'un veut encore une part ?'] },
-  { speaker: 'Hugues', say: ['Pas faim.'] },
-  // 2-2
-  { say: ['Quatre-vingtième minute. Penalty pour la France ! Mbappé… 2-1 !'] },
+  { say: ['La finale, France-Argentine. Messi sur penalty, puis Di María : 0-2.'] },
+  { speaker: 'Philippe', say: ['Allez les Bleus, réveillez-vous !'] },
+  { say: ['80e minute : Mbappé sur penalty… puis de volée ! 2-2 !'] },
   { cheer: WATCHERS },
   { speaker: 'Hugues', say: ['IL Y A UN MATCH !'] },
-  { say: ['Une minute plus tard, Mbappé reprend de volée… 2-2 !'] },
-  { cheer: WATCHERS },
-  { speaker: 'Thomas', say: ['Je le crois pas ! Deux buts en deux minutes !'] },
-  { hop: 'hugues', times: 3 },
-  // 3-2 en prolongation
-  { say: ['Prolongation. Cent-huitième minute… Messi, encore lui. 3-2 pour l\'Argentine.'] },
+  { say: ['Prolongation : Messi, encore lui. 2-3.'] },
   { emote: 'hugues', kind: 'dots' },
-  { speaker: 'Hugues', say: ['Pas lui… Pas maintenant…'] },
-  // 3-3
-  { say: ['Cent-dix-huitième minute. Main dans la surface : penalty ! Mbappé… 3-3 !'] },
+  { speaker: 'Nico', say: ['Pas lui… Pas maintenant…'] },
+  { say: ['118e minute : penalty, Mbappé, triplé ! 3-3 !'] },
   { cheer: WATCHERS },
   { speaker: 'Thomas', say: ['Un triplé en finale ! Il n\'est pas humain !'] },
-  { say: ['Dernière seconde : Kolo Muani, seul face au gardien… Arrêté !'] },
-  { speaker: 'Hugues', say: ['NOOON ! Il l\'avait au bout du pied !'] },
-  // Les tirs au but
-  { say: ['Les tirs au but.'] },
-  { speaker: 'Thomas', say: ['Je ne regarde pas. Dis-moi quand c\'est fini.'] },
-  { say: ['Mbappé marque. Coman, arrêté. Tchouaméni, à côté…'] },
-  { say: ['Montiel s\'avance… et marque. L\'Argentine est championne du monde.'] },
-  { emote: 'hugues', kind: 'dots' },
-  { speaker: 'Hugues', say: ['Non… c\'est pas possible…'] },
-  { speaker: 'Thomas', say: ['On est passés si près… Bon. On les aura la prochaine fois. Allez, il reste à manger !'] },
+  { say: ['Tirs au but : Coman arrêté, Tchouaméni à côté… L\'Argentine est championne du monde.'] },
+  { speaker: 'Thomas', say: ['On les aura la prochaine fois. Allez, il reste à manger !'] },
   { say: ['On a perdu, mais c\'était une belle soirée pour le GOAT…'] },
   { setFlag: FLAGS.matchParis },
   { black: true },

@@ -1339,24 +1339,15 @@ de jour.
    chemin, et ramenez de quoi manger. »** / « Thomas finit son service au resto au store rayé, de l'autre côté de la
    Seine. Moi, c'est l'immeuble crème, juste à côté ! » ; Pierre, en lui-même : **« Enfin un truc normal. »** Au
    restaurant, Thomas finit son service : **« Ah, Pierre ! Deux secondes, je récupère de quoi manger et j'arrive. Hugues
-   va encore hurler devant sa télé, tu vas voir ! »** → **De quoi manger** ; Thomas suit Pierre. Chez Hugues : **« Les
-   voilà ! Allez, posez tout, ça va commencer, j'attends ce match depuis des semaines ! »** ; Thomas rejoint les autres
-   devant la télé ; **« Le match commence ! C'est la finale : France-Argentine. »** Le déroulé suit la vraie finale :
-   Philippe « Allez les Bleus ! » ; Hugues « Contre l'Argentine, ça se gagne, allez ! » ; « Penalty pour l'Argentine…
-   Messi le transforme. 1-0. » (Hugues, bulle « … » : « Non, non, non… On n'a pas encore touché un ballon ! ») ; « Contre
-   éclair argentin… Di María, tout seul. 2-0. » (Thomas « Ça fait mal, là. Très mal. » ; Hugues « Deschamps change deux
-   joueurs avant la mi-temps ! C'est la panique ! ») ; « À la mi-temps, le salon est silencieux. » (Nico « Quelqu'un veut
-   encore une part ? » ; Hugues « Pas faim. ») ; « Quatre-vingtième minute. Penalty pour la France ! Mbappé… 2-1 ! »
-   (tout le monde saute ; Hugues **« IL Y A UN MATCH ! »**) ; « Une minute plus tard, Mbappé reprend de volée… 2-2 ! »
-   (Thomas « Je le crois pas ! Deux buts en deux minutes ! », Hugues saute) ; « Prolongation. Cent-huitième minute…
-   Messi, encore lui. 3-2 pour l'Argentine. » (Hugues « Pas lui… Pas maintenant… ») ; « Cent-dix-huitième minute. Main
-   dans la surface : penalty ! Mbappé… 3-3 ! » (Thomas « Un triplé en finale ! Il n'est pas humain ! ») ; « Dernière
-   seconde : Kolo Muani, seul face au gardien… Arrêté ! » (Hugues « NOOON ! Il l'avait au bout du pied ! ») ; « Les tirs
-   au but. » (Thomas « Je ne regarde pas. Dis-moi quand c'est fini. ») ; « Mbappé marque. Coman, arrêté. Tchouaméni, à
-   côté… » ; « Montiel s'avance… et marque. L'Argentine est championne du monde. » ; Hugues : « Non… c'est pas
-   possible… » ; Thomas : « On est passés si près… Bon. On les aura la prochaine fois. Allez, il reste à manger ! » ;
-   Pierre, en lui-même : **« On a perdu, mais c'était une belle soirée pour le GOAT… »** ; écran noir, **« Un an plus
-   tard… »** ; Pierre ressort devant chez Hugues.
+   va encore hurler devant sa télé, tu vas voir ! »** → **De quoi manger** ; Thomas suit Pierre. Chez Hugues, en douze bulles sans coupure (depuis le 11 octobre 2026) : Hugues **« Les voilà ! Posez tout, ça
+   commence ! »** ; Thomas rejoint les autres devant la télé ; « La finale, France-Argentine. Messi sur penalty, puis Di
+   María : 0-2. » ; Philippe « Allez les Bleus, réveillez-vous ! » ; « 80e minute : Mbappé sur penalty… puis de volée !
+   2-2 ! » (tout le monde saute) ; Hugues **« IL Y A UN MATCH ! »** ; « Prolongation : Messi, encore lui. 2-3. » ; Nico
+   « Pas lui… Pas maintenant… » ; « 118e minute : penalty, Mbappé, triplé ! 3-3 ! » ; Thomas « Un triplé en finale ! Il
+   n'est pas humain ! » ; « Tirs au but : Coman arrêté, Tchouaméni à côté… L'Argentine est championne du monde. » ;
+   Thomas « On les aura la prochaine fois. Allez, il reste à manger ! » ; Pierre, en lui-même : **« On a perdu, mais
+   c'était une belle soirée pour le GOAT… »** ; écran noir, **« Un an plus tard… »** ; Pierre ressort devant chez
+   Hugues.
 6. **Le directeur (Liberté).** Au bureau, Camille : « Pierre ! Le directeur veut te voir. Dernier étage, rien que
    ça ! » Le bouton du dernier étage s'est allumé. Au dernier étage, le directeur est seul, assis ; Pierre
    va à lui. Le directeur : **« Ah, Pierre. Ça fait un moment que je vous observe, et je dois dire que vous vous
@@ -1554,6 +1545,18 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
 section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
+
+## Reprises du contrôle ajoutées (11 octobre 2026, revue de production, passe 4)
+
+Les longs enchaînements de scènes rendent maintenant la main au joueur au moins une fois, sans changer les dialogues :
+- **Départ de Fort-de-France** : la canne offerte, « Le ferry est prêt. Monte à bord quand tu veux. » ; Pierre embarque
+  lui-même (le ferry ou le capitaine), puis la traversée.
+- **La cabane de Saint-Ay** : la fête finie (Esprit d'équipe), Pierre sort de la cabane lui-même ; « Quelques années
+  plus tard… » se joue à la sortie, puis Manon au bord du lac.
+- **Prytanée** : le capitaine parti après l'inspection, Pierre reprend la main ; au premier pas, « Le soir même… » et
+  Tanguy propose le mur. De même au matin du mur : après « Personne a rien vu… », un pas, puis « Quelques années plus
+  tard… » et les résultats du bac.
+- **La nuit de Hull** : sorti de l'Asylum, Pierre fait deux pas, puis l'aube et la bande devant la boîte.
 
 ## Guidage ajouté (11 octobre 2026, revue de production, passe 2)
 

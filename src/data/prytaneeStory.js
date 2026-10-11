@@ -71,7 +71,11 @@ const INSPECTION = [
   { speaker: 'Capitaine', say: ['Correct. Repos.'] },
   { trait: TRAITS.autonomie },
   { walk: 'capitaine-inspection', to: DORM_EXIT, block: true, then: [FLAGS.inspection] },
-  // Le mur, la nuit : « Le soir même… », la nuit tombe sur le dortoir.
+];
+
+// Le capitaine parti, Pierre reprend la main ; au pas suivant, le soir tombe (interiors.js dortoir, événement `walk`).
+// Le mur, la nuit : « Le soir même… », la nuit tombe sur le dortoir.
+export const EVENING = [
   { black: true },
   { wait: 600 },
   { say: ['Le soir même…'] },
@@ -168,6 +172,10 @@ export const MORNING = [
   { walk: 'capitaine-matin', to: DORM_EXIT, block: true },
   { speaker: 'Geoffrey', say: ['Personne a rien vu. On remet ça quand vous voulez les gars !'] },
   { setFlag: FLAGS.murMatin },
+];
+
+// Pierre reprend la main au dortoir ; au pas suivant : quelques années plus tard, le jour des résultats du bac.
+export const BAC_DAY = [
   { black: true },
   { wait: 800 },
   { say: ['Quelques années plus tard…'] },

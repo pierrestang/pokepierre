@@ -11,7 +11,7 @@ import {
   AGENT_KEYS, CEREMONY, REUNION_LINES, STADIUM, STADIUM_ARRIVAL, BLACKOUT, ENGLISH_ORAL, METER, OUSMANE_ASLEEP, PARTY, PARTY_ANAIS, PARTY_CHARLOTTE, PARTY_END, PARTY_LEO, PAULFIT, REMI_CUPS,
   TIDY_BED, TIDY_CUPS, TIDY_LIVING_ROOM,
 } from '../bordeauxStory.js';
-import { GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
+import { BAC_DAY, EVENING, GEOFFREY_GUIDE, HOMESICK, MAKE_BED, MORNING, PREPARE_DESK, TANGUY_GUIDE, TIDY_WARDROBE } from '../prytaneeStory.js';
 import {
   SURVEILLANT, COLLEGE_WELCOME, LOCKER, REMI, REMI_INVITE, REMI_WAIT, CAMILLE, PROF, LOCKER_SIDE, SURVEILLANT_SPOT, CLOSET,
 } from '../collegeStory.js';
@@ -1231,6 +1231,9 @@ export const interiors = {
       // Le capitaine, reparti vers son poste pendant que Pierre entrait : il n'est plus devant la porte.
       { on: 'enter', ifFlags: [FLAGS.capitaineParle], unlessFlags: [FLAGS.capitaineAccueil], steps: [{ setFlag: FLAGS.capitaineAccueil }] },
       { on: 'enter', ifFlags: [FLAGS.murReussi], unlessFlags: [FLAGS.murMatin], steps: MORNING },
+      // Entre deux scènes, Pierre reprend la main : un pas, puis le soir (après l'inspection) ou le jour du bac.
+      { on: 'walk', count: 1, ifFlags: [FLAGS.inspection], unlessFlags: [FLAGS.soirMur], steps: EVENING },
+      { on: 'walk', count: 1, ifFlags: [FLAGS.murMatin], unlessFlags: [FLAGS.ellipseBac], steps: BAC_DAY },
     ],
   },
 

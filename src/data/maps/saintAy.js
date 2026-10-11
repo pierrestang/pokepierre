@@ -4,9 +4,9 @@ import { parseGrid } from './parseGrid.js';
 // d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
 import BUILT from '../builtMaps/saint-ay.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS, ITEMS } from '../story.js';
+import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
-  ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS, PULLEY, PULLEY_SPOT,
+  ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS, PULLEY, PULLEY_SPOT, YEARS_LATER,
 } from '../saintAyStory.js';
 
 // Le ferry (le même qu'à Fort-de-France), amarré à gauche du ponton du lac ; une case d'eau entre les deux.
@@ -209,6 +209,8 @@ export const saintAyMap = {
     // Arrivée après la traversée : écran noir, puis Papa et Manon te trouvent au bord du lac.
     { on: 'enter', ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.saArrivee], steps: ARRIVAL },
     // Quelques années plus tard, au bord du lac : Manon vient te chercher.
+    // En sortant de la cabane, l'Esprit d'équipe reçu : « Quelques années plus tard… » (saintAyStory.js YEARS_LATER).
+    { on: 'enter', ifSouvenirs: [TRAITS.espritEquipe.id], unlessFlags: [FLAGS.ellipseSaintAy], steps: YEARS_LATER },
     { on: 'enter', ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.manonNouvelle], steps: MANON_NEWS },
     // En sortant de la clinique : Felix vient te chercher (voir CLINIC_EXIT).
     { on: 'enter', ifFlags: [FLAGS.fannyMain], unlessFlags: [FLAGS.felixInvite], steps: CLINIC_EXIT },

@@ -127,7 +127,11 @@ export const CABANE_FETE = [
   { speaker: 'Felix', say: ['Où que tu ailles après, cette cabane restera la nôtre. On est une équipe.'] },
   { face: { 'felix-cabane': 'down', player: 'down' } },
   { trait: TRAITS.espritEquipe },
-  // Ellipse : quelques années plus tard, Pierre au bord du lac ; Manon vient le chercher (voir MANON_NEWS).
+];
+
+// En sortant de la cabane (le joueur a repris la main) : quelques années plus tard, Pierre au bord du lac ; Manon vient
+// le chercher (voir MANON_NEWS).
+export const YEARS_LATER = [
   { black: true },
   { wait: 600 },
   { say: ['Quelques années plus tard…'] },
