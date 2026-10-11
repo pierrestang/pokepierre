@@ -946,13 +946,14 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
   scooters klaxonnent dans tous les sens, l'odeur du phở monte des trottoirs. »** / « Tu ne comprends rien aux
   panneaux. Et pourtant, tu te sens déjà chez toi. » / « Ta maison est la petite maison violette de la grande rue. Ton nouveau
   travail commence aujourd'hui, à l'agence de voyages : la maison noire, un peu plus loin. »
-- Dans ta maison (avant le premier jour) : « Ta maison à Hanoï. Petite, silencieuse… et rien qu'à toi. » / « L'agence de
+- Dans ta maison (avant le premier jour) : « Ta maison à Hanoï. Petite, mais tu la partages avec Tim, ton coloc. » / « L'agence de
   voyage t'attend : la maison noire, sur la grande rue. »
 
 ### PNJ présents
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Patron | Le patron (français) de l'agence de voyages | `g141` (imposé) |
+| Tim | Le colocataire de Pierre, fou de skate, dans la maison (pendant tout le séjour) : « Salut Pierre ! Moi c'est Tim, ton coloc. Trop content de partager cette aventure avec toi, franchement ça va être génial. » / « Au fait, tu fais du skate ? Moi j'adore ça, faut absolument qu'on aille rouler ensemble un de ces quatre ! » | `g9` |
 | M. Lam | Vieux monsieur de l'îlot, près de la cloche ; a appris le français à l'école | `g129` (imposé) |
 | Passante, Vendeuse, Passant | Ne parlent pas français | `g19`, `g70`, `g14` (imposés) |
 | Touriste (x 2) | Les deux touristes à guider ; tous deux nommés « Touriste » à l'écran | `g24`, `g22` (imposés, aussi quand ils suivent) |
@@ -1580,6 +1581,7 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Papi (x 2) | `g39`, `g48` | Hanoï (échecs chinois, optionnel) |
 | Patron (Corning) | `g53` | Amsterdam |
 | Vendeur | `g112` | Amsterdam |
+| Tim | `g9` (panneau PNJ) | Hanoï (la maison) |
 | Harsh | `g83` | Delhi |
 | Ben | `g187` (choisi dans le panneau PNJ) | Delhi (la cour du repas) |
 | Aaron | `g189` (panneau PNJ) | Delhi |

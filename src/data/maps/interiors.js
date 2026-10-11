@@ -2008,11 +2008,21 @@ export const interiors = {
       'XooooooooooXX',
     ]),
     spawn: { x: 10, y: 6, facing: 'left' },
+    // Tim, le colocataire de Pierre, fou de skate (sprite choisi dans le panneau PNJ, characterLooks.json).
+    npcs: [
+      {
+        id: 'tim', name: 'Tim', x: 6, y: 5, facing: 'down', ifFlags: [FLAGS.arriveeHanoi], unlessFlags: [FLAGS.arriveeAmsterdam],
+        dialogue: [
+          'Salut Pierre ! Moi c\'est Tim, ton coloc. Trop content de partager cette aventure avec toi, franchement ça va être génial.',
+          'Au fait, tu fais du skate ? Moi j\'adore ça, faut absolument qu\'on aille rouler ensemble un de ces quatre !',
+        ],
+      },
+    ],
     events: [
       {
         on: 'enter',
         unlessFlags: [FLAGS.travailEtape1],
-        steps: [{ say: ['Ta maison à Hanoï. Petite, silencieuse… et rien qu\'à toi.', 'L\'agence de voyages t\'attend : la maison noire, sur la grande rue.'] }],
+        steps: [{ say: ['Ta maison à Hanoï. Petite, mais tu la partages avec Tim, ton coloc.', 'L\'agence de voyages t\'attend : la maison noire, sur la grande rue.'] }],
       },
     ],
   },
