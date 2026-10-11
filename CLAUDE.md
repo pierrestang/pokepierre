@@ -50,7 +50,8 @@ rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (f
   (src/systems/effects.js) ; pas d'autres bulles. Mont Chimnée (Rubis/Saphir) : la gare du téléphérique sert
   de ferme à M. Bouly ; caisses du marché de Slateport dans la cabane de pêche (scripts/extract_rs_buildings.py).
 
-- Vélo (src/systems/bike.js) : Lucas à vélo officiel (scripts/build_bike.py -> public/assets/characters/pierre-velo.png),
+- Vélo (src/systems/bike.js) : le héros officiel à vélo de l'apparence de Pierre (Lucas, Dawn, Ethan ou Lyra ; Lucas par
+  défaut ; scripts/build_bike.py -> public/assets/characters/pierre-velo.png, une rangée par héros),
   objet ITEMS.velo offert à Bordeaux par le cycliste du quai (facultatif, bordeauxStory.js CYCLIST ; ?velo dans l'adresse pour l'essayer), touche V (Options > TOUCHES) /
   bouton tactile, plus d'entrée dans le menu Start, seulement dehors et sans suiveur, Pierre descend pendant les scénettes.
 

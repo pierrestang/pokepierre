@@ -57,7 +57,7 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
 - **Vélo** (offert à Bordeaux par le cycliste du quai, passage optionnel ; `?velo` dans l'adresse donne l'objet **Vélo**
   pour l'essayer) : Pierre monte ou descend avec la touche V (rappelée une seule fois, à la
   réception du vélo ; listée dans Options > TOUCHES) ou le bouton VÉLO des commandes tactiles ; sonnette en montant, musique du vélo tant qu'il roule ; il va environ
-  trois fois plus vite qu'à pied (Lucas à vélo de Diamant / Perle). Seulement dehors : « Pas de vélo à l'intérieur ! »,
+  trois fois plus vite qu'à pied (le héros à vélo de l'apparence de Pierre : Ethan de HeartGold / SoulSilver pour g202 ; Lucas par défaut). Seulement dehors : « Pas de vélo à l'intérieur ! »,
   et il descend en entrant dans un bâtiment (à pied en ressortant) ; pas quand quelqu'un le suit (« Ce n'est pas le
   moment de monter sur ton vélo : on t'accompagne. »), il descend si quelqu'un se met à le suivre ; pendant une
   scénette, il descend et remonte à la fin. Une partie reprise dehors repart à vélo.

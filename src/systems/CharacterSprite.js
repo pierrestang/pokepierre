@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { TILE_SIZE } from '../data/tiles.js';
 import { characterTexture, lookFromColor } from '../art/characterArt.js';
-import { sheetOf, BIKE_SHEET, BIKE_PREFIX } from '../art/spriteSheets.js';
+import { sheetOf, BIKE_SHEET, bikePrefix } from '../art/spriteSheets.js';
 import { BED_LOWER } from '../art/frlgArt.js';
 
 export const DIRECTIONS = {
@@ -174,12 +174,13 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     this.lap = g;
   }
 
-  // À vélo (le joueur, voir systems/bike.js) : l'image passe à la planche du vélo, et revient à la marche.
+  // À vélo (le joueur, voir systems/bike.js) : l'image passe à la planche du vélo (le héros à vélo de son apparence), et
+  // revient à la marche.
   setBike(on) {
     if (on === Boolean(this.onBike)) return;
     if (on) {
       this.walkLook = { key: this.image.texture.key, prefix: this.prefix };
-      this.prefix = BIKE_PREFIX;
+      this.prefix = bikePrefix(this.prefix.replace(/-$/, ''));
       this.image.setTexture(BIKE_SHEET);
       this.pedal = 0;
     } else {
