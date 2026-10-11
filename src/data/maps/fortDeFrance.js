@@ -95,9 +95,10 @@ export const fortDeFranceMap = {
   npcs: [
     // Habitants de l'île (sans rôle dans l'histoire).
     {
-      id: 'promeneuse', name: 'Promeneuse', x: 9, y: 15, facing: 'left',
+      // Rose, devant le mémorial (sprite choisi dans le panneau PNJ, characterLooks.json).
+      id: 'promeneuse', name: 'Rose', x: 9, y: 15, facing: 'left',
       dialogue: [
-        'Je viens souvent ici, devant les statues.',
+        'Moi, c\'est Rose. Je viens souvent ici, devant les statues.',
         'Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés.',
       ],
     },

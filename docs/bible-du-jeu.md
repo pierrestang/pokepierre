@@ -122,7 +122,7 @@ de la ville. et la liste des vols ne la propose pas ;
 | Papa | Trie ses cannes dans son atelier | `g80` |
 | Manon | Sœur, devant la maison : le coquillage caché | `g96` |
 | Capitaine du ferry | « L'ancien pêcheur » : sa canne est cassée, il garde le départ | `g118` |
-| Promeneuse | Devant le mémorial de l'Anse Caffard : « Je viens souvent ici, devant les statues. » / « Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés. » | `g82` |
+| Rose | Devant le mémorial de l'Anse Caffard : « Moi, c'est Rose. Je viens souvent ici, devant les statues. » / « Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés. » | `g82` |
 | Gamin | Sur la plage : « J'ai vu des poissons sauter près des rochers ! » / « Un jour, moi aussi je prendrai le ferry. Toi, tu pars quand ? » | `g58` |
 
 ### Quêtes, dans l'ordre (les trois premières dans n'importe quel ordre)
@@ -1523,7 +1523,8 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Fanny | `g153` (adolescente, 27 px : nettement plus grande que Jean, 23 px, son cadet de six ans ; `g60` petite fille à Saint-Ay) | Saint-Ay, Montépilloy |
 | Jean | `g22` | Montépilloy |
 | Capitaine du ferry | `g118` | Fort-de-France, le pont du ferry ; sa carte postale à Saint-Ay |
-| Promeneuse | `g82` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
+| Rose | `g82` (panneau PNJ) | Fort-de-France (devant les statues) |
+| Promeneuse | `g132` | Route de Montépilloy |
 | Gamin | `g58` | Fort-de-France, route de Montépilloy (deux personnes différentes) |
 | Felix | `g13` (garçon ; choisi dans le créateur) | Saint-Ay ; sa carte postale à Montépilloy |
 | Joshua | `g68` | Saint-Ay |
