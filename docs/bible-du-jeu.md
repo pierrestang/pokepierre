@@ -1798,8 +1798,8 @@ devient le Talisman indien (systems/items.js).
 
 ### Quêtes inachevées ou textes provisoires
 - Plus aucun texte provisoire dans l'histoire (le stade de Bordeaux est écrit).
-- Plusieurs répliques provisoires restent avant Hull, à Fort-de-France : la télé, la console de Manon et le frigo
-  (« [Texte provisoire] … »).
+- Plus aucun texte provisoire : la télé, la console de Manon et le frigo de la maison de Fort-de-France ne déclenchent
+  plus de dialogue (11 octobre 2026).
 - **Objets sans usage** : rangés dans l'onglet « Souvenirs » du sac, chacun avec son texte (section « Le sac »). Les
   consignes en vietnamien (Hanoï) restent dans « Objets » après la traduction.
 - **Le gamin de la route de Montépilloy** parle d'un cerf-volant perdu, mais aucun cerf-volant n'est codé.

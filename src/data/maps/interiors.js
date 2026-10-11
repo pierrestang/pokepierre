@@ -164,9 +164,6 @@ export const interiors = {
     spawn: { x: 2, y: 8, facing: 'up' },
     triggers: [0, 1].map((x) => ({ x, y: 2, warp: { interior: 'ffHouseUp', x: 2, y: 3, facing: 'down' } })),
     objects: [
-      { x: 4, y: 2, dialogue: ['[Texte provisoire] La télé. Un vieux jeu est encore branché sur la console…'] },
-      { x: 5, y: 2, dialogue: ['[Texte provisoire] La console de Manon. Elle a encore battu ton record…'] },
-      { x: 10, y: 2, dialogue: ['[Texte provisoire] Le frigo est plein de fruits de la Martinique.'] },
       ...FF_CARTONS.map(([x, y]) => ({ x, y, dialogue: ['Un carton de déménagement, prêt pour Saint-Ay.'] })),
     ],
     // En descendant pour la première fois, Maman pose le cadre de la journée ; à la toute fin, après le talisman, elle
