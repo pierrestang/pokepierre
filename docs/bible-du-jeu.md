@@ -1217,7 +1217,7 @@ grimpe les étages d'une entreprise, comprend que ce n'est pas sa vie, et choisi
 mini-quêtes à lui, dans Paris, sans lien avec l'entreprise. Aucune ligne « Objectif : », **aucune ellipse**.
 
 **La boucle (l'ascenseur, fil rouge).** Pierre passe au bureau, ressort, vit une mini-quête en ville, revient au bureau,
-et l'étage suivant s'allume : le bouton « manager » après le concert, le bouton « directeur » après le match.
+et l'étage suivant s'allume : le bouton du premier étage après le concert, celui du dernier étage après le match.
 
 ### La carte (52 x 48, Gen 4)
 Premier jet de scripts/build_paris.py, retouché à la main dans le créateur ; les portes du jeu sont sur les portes
@@ -1235,14 +1235,19 @@ de jour.
 
 ### Les intérieurs
 - **Ton studio** (modèle « maison type 2 ») : la télé (« Tu ne l'allumes presque jamais. »).
-- **La tour de bureaux**, trois niveaux reliés par l'ascenseur (Rez-de-chaussée, « 1er étage (manager) », « Dernier étage
-  (directeur) » ; les portes rouges de l'ascenseur restent sous Pierre quand il attend devant ; un bouton éteint : « Le bouton « manager » est éteint : ton badge n'y donne pas accès. »).
+- **La tour de bureaux**, trois niveaux reliés par l'ascenseur (« Rez-de-chaussée », « Premier étage », « Dernier
+  étage », sans rien entre parenthèses ; les portes rouges de l'ascenseur restent sous Pierre quand il attend devant ; un
+  bouton éteint : « Le bouton du premier étage est éteint : ton badge n'y donne pas accès. », de même pour le dernier).
+  Les collègues sont de jeunes adultes, chacun avec son nom : Guillaume, Anthony, Antoine, Quentin ; Andrea, Mariana,
+  Yasmine, Camille, Yaline.
   - Le rez-de-chaussée (hall de la Tour Radio de HGSS) : vivant, des collègues debout qui parlent à Pierre comme à l'un
     des leurs : « Salut Pierre ! Encore là de bonne heure, toi. », « Tiens, Pierre, tu passes au point d'équipe tout à
-    l'heure ? », « Bonne journée, hein ! On se voit en haut. » ; l'accueil (« La machine à café est encore en panne.
-    Comme tous les lundis. ») ; le collègue blasé près de la machine à café.
-  - Le 1er étage (un plateau de bureaux) : le manager, deux collègues debout (« Bienvenue à l'étage, Pierre ! Ici, on a
-    même du vrai café. », « Réunion à onze heures. Et à quatorze heures. Et à seize heures. »).
+    l'heure ? », « Bonne journée, hein ! On se voit en haut. » (Anthony, Andrea, Antoine) ; Yasmine, à l'accueil (« La
+    machine à café est encore en panne. Comme tous les lundis. ») ; Camille, qui accueille Pierre ; Guillaume, le
+    blasé, près de la machine à café.
+  - Le premier étage (un plateau de bureaux) : le manager, trois collègues debout (Mariana : « Bienvenue à l'étage,
+    Pierre ! Ici, on a même du vrai café. » ; Quentin : « Réunion à onze heures. Et à quatorze heures. Et à seize
+    heures. » ; Yaline : « Le premier étage, c'est calme. Trop calme, parfois. »).
   - Le dernier étage : le bureau du directeur, son assistante (« Le directeur vous attend, Pierre. Entrez, entrez. »).
 - **Bercy** (le théâtre de danse de Doublonville, transformé en salle de concert) : une estrade au fond, le chanteur
   (`g69`), le guitariste et le batteur ; dix-huit fans tournés vers la scène, l'allée du milieu libre ; lumières de
@@ -1255,7 +1260,11 @@ de jour.
 | Nom | Rôle | Sprite |
 |---|---|---|
 | Propriétaire | Devant l'immeuble : les clés du studio, puis où est le bureau | `g35` |
-| Collègue | Le blasé du rez-de-chaussée, près de la machine à café ; d'autres collègues debout dans la tour | `g36` (et `g74`, `g3`, `g75`, `g76`, `g0`) |
+| Guillaume | Le blasé du rez-de-chaussée, près de la machine à café | `g4` |
+| Camille | Accueille Pierre le premier jour, puis l'envoie au manager et au directeur | `g130` |
+| Anthony, Antoine | Collègues debout dans le hall | `g95`, `g98` |
+| Andrea, Yasmine | Collègue du hall ; l'accueil | `g1`, `g50` |
+| Mariana, Quentin, Yaline | Collègues du premier étage | `g113`, `g110`, `g5` |
 | Manager | Le 1er étage : la promotion | `g122` |
 | Directeur | Le dernier étage : la belle place | `g120` |
 | Hugues | L'ami parisien de Pierre, fan de foot : la place de concert promise, puis le match chez lui | `g121` |
@@ -1270,11 +1279,11 @@ de jour.
    s'y fait. Le bureau n'est pas loin. »** → **Clés du studio** (« Le propriétaire te tend les clés du studio. ») ;
    Pierre, en lui-même : **« Bon. Un appartement, un bureau. C'est ça, maintenant. »** Ensuite le propriétaire : « Votre
    bureau ? La grande tour de verre, de l'autre côté de la Seine, tout en bas à droite. »
-2. **Premier passage au bureau.** « Le hall de la tour. Cette fois, ton badge passe. » ; une collègue vient accueillir
-   Pierre : **« Salut ! Tu dois être Pierre ? Bienvenue dans l'équipe ! »** / « Ici, c'est le hall : l'accueil, le
+2. **Premier passage au bureau.** « Le hall de la tour. Cette fois, ton badge passe. » ; Camille vient accueillir
+   Pierre : **« Salut ! Tu dois être Pierre ? Moi, c'est Camille. Bienvenue dans l'équipe ! »** / « Ici, c'est le hall : l'accueil, le
    salon, la machine à café. Les étages, ça viendra. Tu vas voir, on est une bonne équipe. » (ensuite : « Alors, ce
-   premier jour ? Si tu cherches quoi que ce soit, demande-moi ! ») ; puis le collègue blasé vient à Pierre :
-   **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** Les boutons « manager » et « directeur » de
+   premier jour ? Si tu cherches quoi que ce soit, demande-moi ! ») ; puis Guillaume, le blasé, vient à Pierre :
+   **« Dix ans que je fais ce trajet. On s'habitue, tu verras. »** Les boutons du premier et du dernier étage de
    l'ascenseur sont éteints. Pierre ressort.
 3. **Le concert (la place qui a voyagé).** En sortant de la tour, le téléphone sonne. Hugues : **« Pierre ! Ce soir,
    concert à Bercy. Je t'avais promis une place… mais je l'ai passée à Inès pour qu'elle te la donne, et… bref, elle a un
@@ -1289,8 +1298,8 @@ de jour.
    « Donc, y'a plus rien qui m'attache, c'est un jour la baie ou le Taj, moi j'voulais répondre à ces messages… »
    (paroles fournies par l'utilisateur) ; la foule saute de joie ; **« Le concert se termine. »** ; Pierre, en lui-même :
    **« Allez, faut que je rentre. Demain, grosse journée. »**
-4. **La promotion.** Au bureau, la collègue de l'accueil, près de l'entrée, vient à Pierre : « Pierre ! Le manager te cherchait. Il t'attend au 1er étage : l'ascenseur,
-   au fond. » Le bouton « manager » s'est allumé. Au 1er étage, le manager traverse le plateau et vient à Pierre : **« Pierre ! Tu t'en sors très bien. À
+4. **La promotion.** Au bureau, Camille, près de l'entrée, vient à Pierre : « Pierre ! Le manager te cherchait. Il t'attend au premier étage : l'ascenseur,
+   au fond. » Le bouton du premier étage s'est allumé. Au premier étage, le manager traverse le plateau et vient à Pierre : **« Pierre ! Tu t'en sors très bien. À
    partir d'aujourd'hui, tu travailles ici, avec moi. »** ; « Une promotion. Un bureau plus grand, plus haut. »
 5. **Le match.** En sortant de la tour, un message de Hugues : **« Match ce soir chez moi ! Passe prendre Thomas en
    chemin, et ramenez de quoi manger. »** / « Thomas finit son service au resto au store rayé, de l'autre côté de la
@@ -1303,15 +1312,15 @@ de jour.
    Hugues : « Allez la France ! » ; « Mais l'Argentine revient. Une fois… puis une deuxième. » ; Hugues : « Non… c'est
    pas possible… » ; **« Le match se termine. »** ; Thomas : « Bon. On les aura la prochaine fois. Allez, il reste à
    manger ! » ; Pierre, en lui-même : **« On a perdu, mais c'était une belle soirée pour le GOAT… »**
-6. **Le directeur (Liberté).** Au bureau, la collègue de l'accueil : « Pierre ! Le directeur veut te voir. Dernier étage, rien que
-   ça ! » Le bouton « directeur » s'est allumé. Le directeur : **« Entre, Pierre, assieds-toi. Ça fait un moment que je
+6. **Le directeur (Liberté).** Au bureau, Camille : « Pierre ! Le directeur veut te voir. Dernier étage, rien que
+   ça ! » Le bouton du dernier étage s'est allumé. Le directeur : **« Entre, Pierre, assieds-toi. Ça fait un moment que je
    te regarde, et je dois dire que tu te débrouilles vraiment bien. Il y a une belle place pour toi ici, tu sais. »** ;
    Pierre : **« C'est gentil, vraiment… Mais je crois que ce n'est pas ma place. Il faut que je parte. »** → **« Pierre
    utilise LIBERTÉ ! »** (la vertu entre au carnet sans l'encart « a reçu ») → **« Tu emportes : Liberté. »**
 7. **Le pont vers le rêve.** En sortant de la tour, Pierre fait un pas et s'arrête ; le joueur n'a plus la main. L'écran
    se brouille doucement (flou), la musique s'éteint, un voile clair monte : le rêve (section suivante).
 
-Rappels : le collègue (« Alors, monsieur du premier étage ? On ne te voit plus, en bas. », après la Liberté « Tu pars ?
+Rappels : Guillaume (« Alors, monsieur du premier étage ? On ne te voit plus, en bas. », après la Liberté « Tu pars ?
 Vraiment ? … Tu sais quoi, je t'envie un peu. »), le manager, Hugues après le match (« Perdu contre l'Argentine… Mais
 quelle soirée, hein ? Reviens quand tu veux. »), le directeur ensuite (« La porte est ouverte, Pierre. Dans les deux
 sens. »).

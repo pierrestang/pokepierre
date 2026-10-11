@@ -13,7 +13,10 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 //   6. Au bureau, le dernier étage s'allume : le directeur, la Liberté ; en sortant, le rêve (reveStory.js).
 // Scénettes partagées par la carte et les intérieurs (étapes : voir MapScene.runSteps).
 
-const COLLEGUE = 'Collègue';
+// Les collègues de la tour, de jeunes adultes (interiors.js entreprise) : Camille accueille Pierre le premier jour et
+// l'appelle ensuite à l'accueil ; Guillaume, le blasé, reste près de la machine à café.
+const CAMILLE = 'Camille';
+const GUILLAUME = 'Guillaume';
 const MANAGER = 'Manager';
 // La foule de Bercy (interiors.js bercy).
 const CROWD = Array.from({ length: 18 }, (_, i) => `fan-${i}`);
@@ -44,22 +47,22 @@ export const OFFICE_FIRST = [
   { say: ['Le hall de la tour. Cette fois, ton badge passe.'] },
   { approach: 'collegue-accueil' },
   {
-    speaker: COLLEGUE,
+    speaker: CAMILLE,
     say: [
-      'Salut ! Tu dois être Pierre ? Bienvenue dans l\'équipe !',
+      'Salut ! Tu dois être Pierre ? Moi, c\'est Camille. Bienvenue dans l\'équipe !',
       'Ici, c\'est le hall : l\'accueil, le salon, la machine à café. Les étages, ça viendra. Tu vas voir, on est une bonne équipe.',
     ],
   },
   { approach: 'collegue' },
-  { speaker: COLLEGUE, say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
+  { speaker: GUILLAUME, say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
   { setFlag: FLAGS.jour1Bureau },
 ];
 
-// Le collègue blasé, près de la machine à café.
+// Guillaume, le collègue blasé, près de la machine à café.
 export const COLLEAGUE = [
-  { ifFlags: [FLAGS.liberteParis], speaker: COLLEGUE, say: ['Tu pars ? Vraiment ? … Tu sais quoi, je t\'envie un peu.'], end: true },
-  { ifFlags: [FLAGS.promotionParis], speaker: COLLEGUE, say: ['Alors, monsieur du premier étage ? On ne te voit plus, en bas.'], end: true },
-  { speaker: COLLEGUE, say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
+  { ifFlags: [FLAGS.liberteParis], speaker: GUILLAUME, say: ['Tu pars ? Vraiment ? … Tu sais quoi, je t\'envie un peu.'], end: true },
+  { ifFlags: [FLAGS.promotionParis], speaker: GUILLAUME, say: ['Alors, monsieur du premier étage ? On ne te voit plus, en bas.'], end: true },
+  { speaker: GUILLAUME, say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
 ];
 
 // Les collègues du hall, debout : ils parlent à Pierre comme à quelqu'un qui travaille là.
@@ -70,11 +73,11 @@ export const HALL_LINES = {
   cafe: ['La machine à café est encore en panne. Comme tous les lundis.'],
 };
 
-// De retour au bureau après le concert : le bouton du 1er étage s'est allumé (un collègue le dit).
-// (La collègue de l'accueil, près de l'entrée : elle n'a que quelques pas à faire.)
+// De retour au bureau après le concert : le bouton du premier étage s'est allumé (Camille le dit).
+// (Camille, près de l'entrée : elle n'a que quelques pas à faire.)
 export const MANAGER_CALLS = [
   { approach: 'collegue-accueil' },
-  { speaker: 'Collègue', say: ['Pierre ! Le manager te cherchait. Il t\'attend au 1er étage : l\'ascenseur, au fond.'] },
+  { speaker: CAMILLE, say: ['Pierre ! Le manager te cherchait. Il t\'attend au premier étage : l\'ascenseur, au fond.'] },
 ];
 
 // Au 1er étage : la promotion (pas de scène de travail).
@@ -94,7 +97,7 @@ export const MANAGER_TALK = [
 // De retour au bureau après le match : le dernier étage s'allume.
 export const DIRECTOR_CALLS = [
   { approach: 'collegue-accueil' },
-  { speaker: 'Collègue', say: ['Pierre ! Le directeur veut te voir. Dernier étage, rien que ça !'] },
+  { speaker: CAMILLE, say: ['Pierre ! Le directeur veut te voir. Dernier étage, rien que ça !'] },
   { setFlag: FLAGS.directeurInvite },
 ];
 

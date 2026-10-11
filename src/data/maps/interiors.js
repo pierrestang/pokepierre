@@ -64,10 +64,10 @@ const elevator = (room) => ELEVATORS[room].doors.map((x) => ({
     question: 'Ascenseur : quel étage ?',
     choices: [
       { label: 'Rez-de-chaussée', warp: floor('entreprise') },
-      { label: '1er étage (manager)', ifFlags: [FLAGS.concertParis], warp: floor('entrepriseManager') },
-      { label: '1er étage (manager)', unlessFlags: [FLAGS.concertParis], dialogue: ['Le bouton « manager » est éteint : ton badge n\'y donne pas accès.'] },
-      { label: 'Dernier étage (directeur)', ifFlags: [FLAGS.directeurInvite], warp: floor('entrepriseDirecteur') },
-      { label: 'Dernier étage (directeur)', unlessFlags: [FLAGS.directeurInvite], dialogue: ['Le bouton « directeur » est éteint : ton badge n\'y donne pas accès.'] },
+      { label: 'Premier étage', ifFlags: [FLAGS.concertParis], warp: floor('entrepriseManager') },
+      { label: 'Premier étage', unlessFlags: [FLAGS.concertParis], dialogue: ['Le bouton du premier étage est éteint : ton badge n\'y donne pas accès.'] },
+      { label: 'Dernier étage', ifFlags: [FLAGS.directeurInvite], warp: floor('entrepriseDirecteur') },
+      { label: 'Dernier étage', unlessFlags: [FLAGS.directeurInvite], dialogue: ['Le bouton du dernier étage est éteint : ton badge n\'y donne pas accès.'] },
       { label: 'Rester ici' },
     ],
   },
@@ -2301,7 +2301,8 @@ export const interiors = {
   },
 
   // Paris — la tour de bureaux, rez-de-chaussée : le hall (accueil, salon), vivant, des collègues debout qui parlent à
-  // Pierre comme à l'un des leurs, le collègue blasé près de la machine à café. Le travail reste hors champ. L'ascenseur
+  // Pierre comme à l'un des leurs, Guillaume, le blasé, près de la machine à café. Les collègues de la tour sont de
+  // jeunes adultes : Guillaume, Anthony, Antoine, Quentin ; Andrea, Mariana, Yasmine, Camille, Yaline. Le travail reste hors champ. L'ascenseur
   // (au fond à droite) : « manager » s'allume après le concert, « directeur » après le match (voir parisStory.js).
   entreprise: {
     name: 'Tour de bureaux',
@@ -2321,13 +2322,13 @@ export const interiors = {
     ]),
     spawn: { x: 1, y: 10, facing: 'up' },
     npcs: [
-      { id: 'collegue', name: 'Collègue', sprite: 'g36', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
-      { id: 'collegue-tot', name: 'Collègue', sprite: 'g74', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
+      { id: 'collegue', name: 'Guillaume', sprite: 'g4', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
+      { id: 'collegue-tot', name: 'Anthony', sprite: 'g95', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
       // Celle qui accueille Pierre le premier jour (parisStory.js OFFICE_FIRST).
-      { id: 'collegue-accueil', name: 'Collègue', sprite: 'g130', x: 2, y: 8, facing: 'down', fidget: true, dialogue: ['Alors, ce premier jour ? Si tu cherches quoi que ce soit, demande-moi !'] },
-      { id: 'collegue-point', name: 'Collègue', sprite: 'g3', x: 13, y: 4, facing: 'left', fidget: true, dialogue: HALL_LINES.point },
-      { id: 'collegue-bonne', name: 'Collègue', sprite: 'g75', x: 20, y: 3, facing: 'down', fidget: true, dialogue: HALL_LINES.bonne },
-      { id: 'accueil', name: 'Accueil', sprite: 'g51', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
+      { id: 'collegue-accueil', name: 'Camille', sprite: 'g130', x: 2, y: 8, facing: 'down', fidget: true, dialogue: ['Alors, ce premier jour ? Si tu cherches quoi que ce soit, demande-moi !'] },
+      { id: 'collegue-point', name: 'Andrea', sprite: 'g1', x: 13, y: 4, facing: 'left', fidget: true, dialogue: HALL_LINES.point },
+      { id: 'collegue-bonne', name: 'Antoine', sprite: 'g98', x: 20, y: 3, facing: 'down', fidget: true, dialogue: HALL_LINES.bonne },
+      { id: 'accueil', name: 'Yasmine', sprite: 'g50', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
     ],
     objects: elevator('entreprise'),
     events: [
@@ -2358,8 +2359,9 @@ export const interiors = {
     spawn: { x: 1, y: 2, facing: 'down' },
     npcs: [
       { id: 'manager', name: 'Manager', x: 7, y: 7, facing: 'down', script: MANAGER_TALK },
-      { id: 'collegue-etage-1', name: 'Collègue', sprite: 'g76', x: 4, y: 7, facing: 'right', fidget: true, dialogue: ['Bienvenue à l\'étage, Pierre ! Ici, on a même du vrai café.'] },
-      { id: 'collegue-etage-2', name: 'Collègue', sprite: 'g0', x: 11, y: 7, facing: 'left', fidget: true, dialogue: ['Réunion à onze heures. Et à quatorze heures. Et à seize heures.'] },
+      { id: 'collegue-etage-1', name: 'Mariana', sprite: 'g113', x: 4, y: 7, facing: 'right', fidget: true, dialogue: ['Bienvenue à l\'étage, Pierre ! Ici, on a même du vrai café.'] },
+      { id: 'collegue-etage-2', name: 'Quentin', sprite: 'g110', x: 11, y: 7, facing: 'left', fidget: true, dialogue: ['Réunion à onze heures. Et à quatorze heures. Et à seize heures.'] },
+      { id: 'collegue-etage-3', name: 'Yaline', sprite: 'g5', x: 9, y: 3, facing: 'down', fidget: true, dialogue: ['Le premier étage, c\'est calme. Trop calme, parfois.'] },
     ],
     objects: elevator('entrepriseManager'),
     events: [{ on: 'enter', ifFlags: [FLAGS.concertParis], unlessFlags: [FLAGS.promotionParis], steps: PROMOTION }],
