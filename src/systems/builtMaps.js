@@ -40,10 +40,8 @@ export function preloadBuiltMap(scene, data) {
 function bakeLayers(scene, data, id) {
   const images = Object.fromEntries(data.sheets.map((s) => [s, scene.textures.get(sheetKey(s)).getSourceImage()]));
   const cols = (s) => Math.floor(images[s].width / TILE);
-  // Un canvas à nous, en mémoire ordinaire (willReadFrequently dès la création) : ceux de Phaser (createCanvas, pris
-  // dans son CanvasPool) ont un contexte accéléré par la carte graphique, que le navigateur peut vider en cours de
-  // partie (mémoire graphique, changement de contexte) ; le sol de la carte disparaissait alors, seule la bordure
-  // restait visible (en sortant d'un bâtiment, notamment).
+  // Un canvas à nous, en mémoire ordinaire (willReadFrequently dès la création, comme le relit souvent lostLook et
+  // les touffes d'herbe) plutôt qu'un canvas du pool de Phaser, créé en mode accéléré.
   const bake = (key, layerIds) => {
     if (scene.textures.exists(key)) scene.textures.remove(key);
     const canvas = document.createElement('canvas');
@@ -58,11 +56,15 @@ function bakeLayers(scene, data, id) {
   const hasTop = data.layers.dessus?.some((cell) => stackOf(cell).length > 0);
   if (hasTop) bake(`${id}-dessus`, ['dessus']);
   return {
-    backdrop: { sheet: `${id}-fond`, frame: () => undefined },
+    // Toujours l'image entière (`__BASE`) : sans nom d'image, Phaser prend la PREMIÈRE ajoutée à la texture, et le jeu
+    // découpe des vignettes dans le fond (touffes des hautes herbes, effects.js GrassCovers) ; un dessin réutilisé (retour
+    // d'un bâtiment, carte qui redémarre sur elle-même) s'affichait alors réduit à une vignette de 16 x 10 px dans le
+    // coin : on ne voyait plus que la bordure autour de la carte.
+    backdrop: { sheet: `${id}-fond`, frame: () => '__BASE' },
     topLayer: hasTop ? `${id}-dessus` : null,
     // Le calque « au-dessus de Pierre », par-dessus tous les personnages mais sous le voile de nuit (MapScene
     // applyAmbience, profondeur 40) : la nuit assombrit aussi les toits et les cimes.
-    overlays: hasTop ? [{ sheet: `${id}-dessus`, frame: () => undefined, x: 0, y: 0, h: 0, depth: TOP_DEPTH }] : [],
+    overlays: hasTop ? [{ sheet: `${id}-dessus`, frame: () => '__BASE', x: 0, y: 0, h: 0, depth: TOP_DEPTH }] : [],
   };
 }
 
