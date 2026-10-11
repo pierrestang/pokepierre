@@ -5,7 +5,7 @@ import { parseGrid } from './parseGrid.js';
 import BUILT from '../builtMaps/paris.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
-import { ANTOINE_CALL, HUGUES_MESSAGE, INTO_THE_DREAM, LANDLORD, LOUIS, TAM } from '../parisStory.js';
+import { ANTOINE_CALL, DIRECTOR_REMINDER, HUGUES_MESSAGE, LANDLORD_CALL, MANAGER_REMINDER, INTO_THE_DREAM, LANDLORD, LOUIS, TAM } from '../parisStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la Seine, l'avenue et la rue sud se prolongent ; des arbres ailleurs.
@@ -132,6 +132,10 @@ export const parisMap = {
     { id: 'file-louvre-2', name: 'Touriste', sprite: 'g34', x: 18, y: 15, facing: 'right', still: true, dialogue: ['On m\'a dit vingt minutes. Ça fait une heure.'] },
   ],
   events: [
+    // L'arrivée : le propriétaire appelle ; un an après le concert, puis le match : Camille appelle (la tour attend).
+    { on: 'enter', ifFlags: [FLAGS.arriveeParis], unlessFlags: [FLAGS.appelProprietaire, FLAGS.parisCles], steps: LANDLORD_CALL },
+    { on: 'enter', ifFlags: [FLAGS.concertParis], unlessFlags: [FLAGS.rappelManager, FLAGS.promotionParis], steps: MANAGER_REMINDER },
+    { on: 'enter', ifFlags: [FLAGS.matchParis], unlessFlags: [FLAGS.rappelDirecteur, FLAGS.directeurInvite], steps: DIRECTOR_REMINDER },
     // En sortant de la tour la première fois : Antoine appelle (la place de concert) ; promu : le message de Hugues (le match).
     { on: 'enter', ifFlags: [FLAGS.jour1Bureau], unlessFlags: [FLAGS.concertAppel], steps: ANTOINE_CALL },
     { on: 'enter', ifFlags: [FLAGS.promotionParis], unlessFlags: [FLAGS.messageHugues], steps: HUGUES_MESSAGE },

@@ -231,7 +231,7 @@ Fouille des hautes herbes (coquillage), danse avec Maman.
    Yanis : « Et une corde pour les tenir. J'en ai vu une dans les hautes herbes, tout au sud-ouest. » (au bord du lac,
    ensuite : « J'ai vu une vieille corde dans les hautes herbes, juste sous les grands sapins du bord du lac. Tout en bas à
    gauche du village. ») ; Felix : « Moi,
-   je dirige le chantier. On la perche dans les sapins, au sud du lac. »
+   je dirige le chantier. Rapportez-moi tout ici : on la perchera dans les sapins, au sud du lac. »
 3. **Les planches** (enclos à poules). Joshua : « Les planches sont au fond de l'enclos à poules… derrière les poules. » /
    « Pousse-les pour dégager le tas : mets-toi derrière une poule et appuie sur A. Elles détestent ça ! » Une poule
    poussée jusqu'à la porte s'échappe : « La poule file hors de l'enclos en caquetant ! » → **Planches** (« Tu récupères
@@ -925,8 +925,8 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
 1. **L'agence.** Dès que Pierre entre, le patron le voit (bulle « ! »), contourne son bureau et vient à lui : « Ah, Pierre ! Bienvenue à l'agence. Un Français dans l'équipe, enfin quelqu'un à qui
    parler ! » / « Ton premier jour commence maintenant. Les consignes de la journée sont là-dessus : c'est l'équipe du
    matin qui les a écrites. » → « Le patron te tend un papier. » → **Consignes en vietnamien** ; **« Tout est écrit en
-   vietnamien. Tu n'y comprends pas un mot. »** ; le patron : « Moi, j'ai des clients au téléphone. Débrouille-toi : tu
-   verras, c'est formateur ! » (ensuite : « Toujours pas lu tes consignes ? Demande dehors, quelqu'un saura bien te les
+   vietnamien. Tu n'y comprends pas un mot. »** ; le patron : « Moi, j'ai des clients au téléphone. Débrouille-toi : demande
+   dehors, quelqu'un saura bien te les lire. Tu verras, c'est formateur ! » (ensuite : « Toujours pas lu tes consignes ? Demande dehors, quelqu'un saura bien te les
    lire. »)
 2. **La traduction → Adaptation.** Les passants, quand on leur montre le papier (« Tu montres ton papier. », bulle « … ») :
    la passante « Elle lit, te regarde, relit… puis joint les mains devant elle, désolée. Elle ne parle pas français. » ;
@@ -1229,7 +1229,8 @@ Court, mais chargé d'émotion (`src/data/bordeauxStory.js`, fin du fichier). **
    « Félicitations, Pierre. » → **Diplôme de Bordeaux** (« Le directeur te remet ton diplôme. ») ; nouveaux
    applaudissements ; « La suite, maintenant, c'est à toi de l'écrire. »
 4. **La sortie.** En sortant du stade, Pierre : **« Bon… toutes les bonnes choses ont une fin. Il paraît qu'il faut
-   grandir un jour. Direction Paris. »** L'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton
+   grandir un jour. Direction Paris. »** / « La route de Paris part en bas à droite de la ville, au bout de la rue du
+   bas. » L'ouvrier qui gardait la route de Paris (sortie sud-est) est parti ; « Ton
    diplôme de Bordeaux en poche, tu prends la route de Paris ! » Pierre arrive à Paris par l'ouest de l'avenue, en
    (1, 11).
 
@@ -1305,7 +1306,7 @@ de jour.
 1. **L'arrivée.** Pas de métro : par la route de Bordeaux, Pierre arrive au bord ouest de l'avenue (1, 11). Personne
    ne vient le chercher : le propriétaire attend juste devant l'immeuble aux balcons fleuris (7, 23), et c'est à Pierre
    de le trouver et de lui parler. Le propriétaire : **« Bienvenue ! C'est petit, mais vous verrez, on
-   s'y fait. Le bureau n'est pas loin. »** → **Clés du studio** (« Le propriétaire te tend les clés du studio. ») ;
+   s'y fait. »** / « Votre bureau ? La grande tour de verre, de l'autre côté de la Seine, tout en bas à droite. » → **Clés du studio** (« Le propriétaire te tend les clés du studio. ») ;
    Pierre, en lui-même : **« Bon. Un appartement, un bureau. C'est ça, maintenant. »** Ensuite le propriétaire : « Votre
    bureau ? La grande tour de verre, de l'autre côté de la Seine, tout en bas à droite. »
 2. **Premier passage au bureau.** « Le hall de la tour. Cette fois, ton badge passe. » ; Camille vient accueillir
@@ -1550,6 +1551,47 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
 section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
+
+## Guidage ajouté (11 octobre 2026, revue de production, passe 2)
+
+Chaque fois que le joueur reprend la main, une réplique dit quoi faire et où aller. Ajouts, ville par ville :
+- **Fort-de-France** : après la danse, Maman « Au fait, le capitaine du ferry avait l'air embêté, au ponton. Passe le
+  voir. ». (À la toute fin, Maman rejoue la scène du matin à l'identique, à la demande de l'utilisateur, même si Papa et
+  Manon ne sont plus là.)
+- **Saint-Ay** : au berceau, Maman « Allez, va prendre l'air : tes cousins viennent d'emménager au village. » ; Felix
+  « Rapportez-moi tout ici… » ; la corde trouvée : « Avec les planches, tout y est : direction chez Felix ! » ou « Reste
+  les planches, au fond de l'enclos à poules. Ensuite, chez Felix. » ; les planches sans la corde, Joshua « Reste la
+  corde, dans les hautes herbes du sud-ouest. Après, on ramène tout chez Felix. ».
+- **Montépilloy** : « C'est le dernier jour de CM2. À la sonnerie, tout le monde se retrouve dehors, devant l'école. » ;
+  au début du cache-cache, « Ils se sont cachés dans tout le village : derrière les maisons, du côté de la ferme, près
+  de la mare… » et, si Jean n'a rien demandé, « Et Jean te cherchait aussi : il t'attend dans sa chambre, à la
+  maison. » ; Benoît, si Jean est déjà au tracteur, « Au fait, ton petit frère te cherche ! Il est à la ferme, au
+  tracteur. ».
+- **Prytanée** : le soir du mur est annoncé, « Le soir même… ».
+- **Bordeaux** : dans le noir, « Il doit bien y avoir un compteur quelque part, au fond de la pièce. Cherche à
+  tâtons… » ; l'enceinte ou les gobelets reçus, ce qui reste à trouver, puis « Retourne voir Ousmane, devant
+  l'immeuble. » ; à la soirée, « Fais le tour des invités ; quand tu en auras assez, la porte est juste à côté. » ;
+  Ousmane, la photo donnée, « Allez, va prendre l'air. Moi, je finis de me réveiller. » ; Rémi devant KEDGE, « L'oral,
+  c'est en salle 1, deux étages plus haut. ».
+- **Hull** : le barman, « Va demander à chacun ce qu'il boit, et reviens me le dire. ».
+- **Hanoï** : le patron, « demande dehors, quelqu'un saura bien te les lire » dès la première fois ; chaque passant,
+  après son geste, « D'un geste, on te montre l'îlot du lac : un vieux monsieur s'y tient, près de la cloche. » ;
+  Romain, « l'aéroport, c'est au bout de la grande rue ! ».
+- **Amsterdam** : Romain situe le marchand dès sa demande (« C'est de l'autre côté du canal, la maison à gauche avec
+  les fleurs. Passe le pont ! ») ; le vendeur, « Rapporte-le vite à Romain, hè ! Avant qu'il fane. » ; après « Quelques
+  mois plus tard… », « Ton téléphone vibre : un message de Romain. « Ce soir, je suis au bord du canal, près du pont.
+  Viens, j'ai une nouvelle ! » ».
+- **Delhi** : dans la foule, « Prophecy m'a écrit : il m'attend au bout de la grande avenue, vers l'est. » ; au fort,
+  Harsh « Le vieux sage est là-haut, en haut des marches. Monte le voir. », puis, le talisman reçu, « Viens, on
+  redescend. La ville nous attend dehors. ».
+- **Bordeaux (retour)** : après la remise du diplôme, « Tes parents et toute la bande t'attendent dehors, devant le
+  stade. » ; la route de Paris située au départ.
+- **Paris** : à l'arrivée, le propriétaire appelle (« Je vous attends devant l'immeuble aux balcons fleuris : descendez
+  la rue, c'est sur votre gauche. ») ; il situe la tour en donnant les clés ; Camille à la fin du premier jour (« Pour
+  un premier jour, c'est tout ! Rentre te reposer, on se voit demain. ») ; le manager après la promotion (« Allez, file
+  te changer les idées. On commence demain ! ») ; après chaque « Un an plus tard… », Camille appelle (« Le manager te
+  cherche ! Passe à la tour dès que tu peux : premier étage. », puis « Le directeur veut te voir. À la tour, dernier
+  étage, rien que ça ! ») ; après la Liberté, « Il est temps de sortir de cette tour. ».
 
 ## Le sac : objets et souvenirs
 

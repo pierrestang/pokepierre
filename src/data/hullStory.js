@@ -90,7 +90,7 @@ export const PUB_A_WELCOME = [
   { speaker: 'Anaïs', say: ['Comme à Bordeaux, mais c\'est toi qui régales cette fois !'] },
   // Charlotte connaît déjà Pierre (la soirée de Bordeaux) : des retrouvailles, pas une rencontre.
   { speaker: 'Charlotte', say: ['Pierre ! Depuis la soirée de Bordeaux… Ça fait plaisir de te revoir. Et devine qui est la coloc d\'Anaïs : moi !'] },
-  { speaker: 'Barman', say: ['Alors, qu\'est-ce que je te sers pour la bande ?'] },
+  { speaker: 'Barman', say: ['Alors, qu\'est-ce que je te sers pour la bande ?', 'Va demander à chacun ce qu\'il boit, et reviens me le dire.'] },
 ];
 
 // Tapis de sortie des deux pubs (voir interiors.js hullPubA, hullPubB) : Léo y file devant la bande.

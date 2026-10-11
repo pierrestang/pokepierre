@@ -71,9 +71,10 @@ const INSPECTION = [
   { speaker: 'Capitaine', say: ['Correct. Repos.'] },
   { trait: TRAITS.autonomie },
   { walk: 'capitaine-inspection', to: DORM_EXIT, block: true, then: [FLAGS.inspection] },
-  // Le mur, la nuit (sans texte : la nuit tombe sur le dortoir).
+  // Le mur, la nuit : « Le soir même… », la nuit tombe sur le dortoir.
   { black: true },
   { wait: 600 },
+  { say: ['Le soir même…'] },
   { setFlag: FLAGS.soirMur },
   { black: false },
   { approach: 'tanguy' },

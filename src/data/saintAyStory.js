@@ -56,6 +56,7 @@ export const FANNY_CRADLE = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Elle l\'attrape ! Et elle serre fort. Tu attends… elle ne le lâche pas tout de suite.'] },
   { speaker: 'Maman', say: ['Elle a de la poigne, celle-là.', 'À partir d\'aujourd\'hui, tu vas veiller sur elle.'] },
+  { speaker: 'Maman', say: ['Allez, va prendre l\'air : tes cousins viennent d\'emménager au village.'] },
   { setFlag: FLAGS.fannyMain },
 ];
 
@@ -74,7 +75,7 @@ export const CABANE_PLAN = [
   { speaker: 'Felix', say: ['Bienvenue chez nous ! J\'ai un plan : on construit une cabane. Rien que pour nous.'] },
   { speaker: 'Joshua', say: ['Il faut des planches. Il y en a plein dans l\'enclos à poules… mais il y a les poules.'] },
   { speaker: 'Yanis', say: ['Et une corde pour les tenir. J\'en ai vu une dans les hautes herbes, tout au sud-ouest.'] },
-  { speaker: 'Felix', say: ['Moi, je dirige le chantier. On la perche dans les sapins, au sud du lac.'] },
+  { speaker: 'Felix', say: ['Moi, je dirige le chantier. Rapportez-moi tout ici : on la perchera dans les sapins, au sud du lac.'] },
   { say: ['Joshua et Yanis filent dehors.'] },
   { setFlag: FLAGS.planCabane },
 ];
@@ -149,9 +150,12 @@ export const PLANKS = [
   { give: ITEMS.planches, text: 'Tu récupères des planches.' },
   { speaker: 'Joshua', say: ['Tu as survécu aux poules ? Respect.'] },
   { ifItems: [ITEMS.corde.id], speaker: 'Joshua', say: ['On a tout ! On ramène ça chez Felix.'] },
+  { unlessItems: [ITEMS.corde.id], speaker: 'Joshua', say: ['Reste la corde, dans les hautes herbes du sud-ouest. Après, on ramène tout chez Felix.'] },
 ];
 export const ROPE = [
   { give: ITEMS.corde, text: 'Tu trouves une vieille corde, cachée dans les hautes herbes.' },
+  { ifItems: [ITEMS.planches.id], say: ['Avec les planches, tout y est : direction chez Felix !'] },
+  { unlessItems: [ITEMS.planches.id], say: ['Reste les planches, au fond de l\'enclos à poules. Ensuite, chez Felix.'] },
 ];
 // Les poules collées au tas de planches : on les pousse (A, face à elles) d'une case dans le sens où l'on regarde,
 // pour dégager le tas (voir MapScene.pushNpc). Poussée jusqu'à la porte de l'enclos, une poule s'échappe.

@@ -19,7 +19,7 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 // Au milieu de la foule, quelques pas après l'aéroport (déclencheurs de maps/newDelhi.js).
 export const CROWD = [
   { emote: 'player', kind: 'surprise' },
-  { say: ['Tant de monde, de bruit, de couleurs… Je n\'ai jamais rien vu de pareil.'] },
+  { say: ['Tant de monde, de bruit, de couleurs… Je n\'ai jamais rien vu de pareil.', 'Prophecy m\'a écrit : il m\'attend au bout de la grande avenue, vers l\'est.'] },
   { setFlag: FLAGS.delhiFoule },
 ];
 
@@ -144,7 +144,7 @@ export const GUESTS = {
 // et vient à Pierre quand il arrive en haut des marches. Rien à réussir : un moment suspendu.
 export const FORT_SILENCE = [
   { say: ['Derrière toi, le bruit de la ville s\'est éteint d\'un coup. Il n\'y a plus que le vent entre les vieilles pierres.'] },
-  { speaker: 'Harsh', say: ['Ces murs sont là depuis plus de mille ans. Ici, on parle doucement.'] },
+  { speaker: 'Harsh', say: ['Ces murs sont là depuis plus de mille ans. Ici, on parle doucement.', 'Le vieux sage est là-haut, en haut des marches. Monte le voir.'] },
 ];
 
 export const SAGE = [
@@ -162,6 +162,7 @@ export const SAGE = [
   { give: ITEMS.talismanIndien, text: 'Le vieux sage glisse dans ta main un talisman : une petite pierre, polie par les années, où l\'on a gravé un chemin qui tourne sur lui-même.' },
   { speaker: 'Vieux sage', say: ['Garde-la sur toi. Elle vient de loin, comme toi.'] },
   { say: ['Le poids dans ma paume… c\'est le même que le coquillage de Manon, sur la plage de Fort-de-France. Comme si le voyage bouclait quelque chose.'] },
+  { speaker: 'Harsh', say: ['Viens, on redescend. La ville nous attend dehors.'] },
   { setFlag: FLAGS.sageDelhi },
 ];
 

@@ -146,7 +146,8 @@ export const MAMAN_FDF = [
   { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['Te voilà ! Tu as l\'air tout content… Tu as donné un coup de main à tout le monde, toi.', 'Tu entends cette chanson ? Viens danser avec moi !'] },
   { ifFlags: OTHERS_DONE, dance: 'maman' },
   { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['On part cet après-midi, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi.'] },
-  { ifFlags: OTHERS_DONE, trait: TRAITS.joie, end: true },
+  { ifFlags: OTHERS_DONE, trait: TRAITS.joie },
+  { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['Au fait, le capitaine du ferry avait l\'air embêté, au ponton. Passe le voir.'], end: true },
   // Rappel du programme.
   {
     unlessFlags: [FLAGS.papaFait], speaker: 'Maman',

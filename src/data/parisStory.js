@@ -26,7 +26,7 @@ const CROWD = Array.from({ length: 18 }, (_, i) => `fan-${i}`);
 // Pierre arrive par la route de Bordeaux (bord ouest) ; personne ne vient le chercher. Le propriétaire attend juste
 // devant l'immeuble aux balcons fleuris (7, 23) : c'est à Pierre de le trouver et de lui parler.
 const KEYS = [
-  { speaker: 'Propriétaire', say: ['Bienvenue ! C\'est petit, mais vous verrez, on s\'y fait. Le bureau n\'est pas loin.'] },
+  { speaker: 'Propriétaire', say: ['Bienvenue ! C\'est petit, mais vous verrez, on s\'y fait.', 'Votre bureau ? La grande tour de verre, de l\'autre côté de la Seine, tout en bas à droite.'] },
   { give: ITEMS.clesParis, text: 'Le propriétaire te tend les clés du studio.' },
   { say: ['Bon. Un appartement, un bureau. C\'est ça, maintenant.'] },
   { setFlag: FLAGS.parisCles },
@@ -55,6 +55,7 @@ export const OFFICE_FIRST = [
   },
   { approach: 'collegue' },
   { speaker: GUILLAUME, say: ['Dix ans que je fais ce trajet. On s\'habitue, tu verras.'] },
+  { speaker: CAMILLE, say: ['Pour un premier jour, c\'est tout ! Rentre te reposer, on se voit demain.'] },
   { setFlag: FLAGS.jour1Bureau },
 ];
 
@@ -85,6 +86,7 @@ export const PROMOTION = [
   { approach: 'manager' },
   { speaker: MANAGER, say: ['Pierre ! Tu t\'en sors très bien. À partir d\'aujourd\'hui, tu travailles ici, avec moi.'] },
   { say: ['Une promotion. Un bureau plus grand, plus haut.'] },
+  { speaker: MANAGER, say: ['Allez, file te changer les idées. On commence demain !'] },
   { setFlag: FLAGS.promotionParis },
 ];
 
@@ -102,6 +104,28 @@ export const DIRECTOR_CALLS = [
 ];
 
 // ---------- 3. Le concert : la place qui a voyagé ----------
+
+// À l'arrivée à Paris : le propriétaire du studio appelle et dit où il attend.
+export const LANDLORD_CALL = [
+  { say: ['Ton téléphone vibre. C\'est le propriétaire de ton studio.'] },
+  {
+    speaker: 'Propriétaire', phone: true,
+    say: ['Bonjour ! Je vous attends devant l\'immeuble aux balcons fleuris : descendez la rue, c\'est sur votre gauche.'],
+  },
+  { setFlag: FLAGS.appelProprietaire },
+];
+
+// Un an après le concert, puis un an après le match : Camille appelle, la tour attend Pierre.
+export const MANAGER_REMINDER = [
+  { say: ['Ton téléphone vibre. C\'est Camille, du bureau.'] },
+  { speaker: CAMILLE, phone: true, say: ['Pierre ? Le manager te cherche ! Passe à la tour dès que tu peux : premier étage.'] },
+  { setFlag: FLAGS.rappelManager },
+];
+export const DIRECTOR_REMINDER = [
+  { say: ['Ton téléphone vibre. C\'est Camille, du bureau.'] },
+  { speaker: CAMILLE, phone: true, say: ['Pierre ! Le directeur veut te voir. À la tour, dernier étage, rien que ça !'] },
+  { setFlag: FLAGS.rappelDirecteur },
+];
 
 // En sortant de la tour la première fois : Antoine, un collègue de la tour, appelle.
 export const ANTOINE_CALL = [
@@ -297,6 +321,7 @@ export const DIRECTOR = [
   { trait: TRAITS.liberte, quiet: true },
   { useTrait: TRAITS.liberte },
   { say: [carryText('paris')] },
+  { say: ['Il est temps de sortir de cette tour.'] },
   { setFlag: FLAGS.liberteParis },
 ];
 

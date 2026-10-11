@@ -31,7 +31,10 @@ export const ROMAIN_WELCOME = [
   { approach: 'romain-maison' },
   {
     speaker: 'Romain',
-    say: ['Installe-toi ! Tiens, d\'ailleurs, tu peux me rendre un service ? Va chercher mon bouquet de fleurs chez le marchand de fleurs, j\'ai la flemme d\'y retourner.'],
+    say: [
+      'Installe-toi ! Tiens, d\'ailleurs, tu peux me rendre un service ? Va chercher mon bouquet de fleurs chez le marchand de fleurs, j\'ai la flemme d\'y retourner.',
+      'C\'est de l\'autre côté du canal, la maison à gauche avec les fleurs. Passe le pont !',
+    ],
   },
   { setFlag: FLAGS.romainDemande },
 ];
@@ -74,6 +77,7 @@ export const VENDOR = [
     ],
   },
   { give: ITEMS.marchandise, text: 'Tu reçois le bouquet de fleurs de Romain.' },
+  { speaker: 'Vendeur', say: ['Rapporte-le vite à Romain, hè ! Avant qu\'il fane.'] },
   { setFlag: FLAGS.marchandiseAchetee },
 ];
 
@@ -134,6 +138,7 @@ export const MONTHS_LATER = [
   { say: ['Quelques mois plus tard…'] },
   { setFlag: FLAGS.moisAmsterdam },
   { black: false },
+  { say: ['Ton téléphone vibre : un message de Romain. « Ce soir, je suis au bord du canal, près du pont. Viens, j\'ai une nouvelle ! »'] },
 ];
 
 // ---------- 7. La nuit au bord du canal ----------

@@ -58,7 +58,7 @@ export const PATRON_WELCOME = [
   },
   { give: ITEMS.consignesVietnamien, text: 'Le patron te tend un papier.' },
   { say: ['Tout est écrit en vietnamien. Tu n\'y comprends pas un mot.'] },
-  { speaker: PATRON, say: ['Moi, j\'ai des clients au téléphone. Débrouille-toi : tu verras, c\'est formateur !'] },
+  { speaker: PATRON, say: ['Moi, j\'ai des clients au téléphone. Débrouille-toi : demande dehors, quelqu\'un saura bien te les lire. Tu verras, c\'est formateur !'] },
   { setFlag: FLAGS.travailEtape1 },
 ];
 
@@ -90,6 +90,8 @@ const passer = (id, gesture, idle) => [
       { say: ['Tu montres ton papier.'] },
       { emote: id, kind: 'dots' },
       { say: [gesture] },
+      // … mais tous montrent l'îlot du lac, où M. Lam parle un peu français.
+      { say: ['D\'un geste, on te montre l\'îlot du lac : un vieux monsieur s\'y tient, près de la cloche.'] },
     ],
     end: true,
   },
@@ -186,7 +188,7 @@ export const SIX_MONTHS_LATER = [
     say: [
       'Pierre ! Ça y est, je viens de prendre mon avion. Hong Kong, c\'est fini !',
       'J\'ai trop hâte que tu arrives à Amsterdam pour le stage. On va bien se marrer.',
-      'Je t\'attends là-bas, hein. Ne rate pas ton vol !',
+      'Je t\'attends là-bas, hein. Ne rate pas ton vol : l\'aéroport, c\'est au bout de la grande rue !',
     ],
   },
   { setFlag: FLAGS.appelRomain },

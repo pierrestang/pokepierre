@@ -65,7 +65,7 @@ export const PAPA = [
 
 // En entrant à l'école : dernier jour de CM2.
 export const LAST_DAY = [
-  { say: ['C\'est le dernier jour de CM2.'] },
+  { say: ['C\'est le dernier jour de CM2. À la sonnerie, tout le monde se retrouve dehors, devant l\'école.'] },
   { setFlag: FLAGS.ecoleCm2 },
 ];
 
@@ -79,6 +79,8 @@ export const HIDE_AND_SEEK = [
   { say: ['… huit, neuf, dix !'] },
   { setFlag: FLAGS.cacheCache },
   { black: false },
+  { say: ['Ils se sont cachés dans tout le village : derrière les maisons, du côté de la ferme, près de la mare…'] },
+  { unlessFlags: [FLAGS.jeanQuetes], say: ['Et Jean te cherchait aussi : il t\'attend dans sa chambre, à la maison.'] },
 ];
 
 // Margaux, derrière les bottes de foin de la ferme ; Étienne, dans l'arbre de la prairie près de la mare ; Benoît,
@@ -92,7 +94,7 @@ const GAME_OVER = {
     { speaker: 'Margaux', say: ['Alors on la refait l\'été prochain. Promis ?'] },
     { speaker: 'Étienne', say: ['C\'était trop cool, cette partie !'] },
     { speaker: 'Margaux', say: ['Allez, on file à l\'école récupérer nos cartables !'] },
-    { unlessSouvenirs: [TRAITS.ingeniosite.id], speaker: 'Benoît', say: ['Au fait, ton petit frère te cherche !'] },
+    { unlessSouvenirs: [TRAITS.ingeniosite.id], ifFlags: [FLAGS.jeanQuetes], speaker: 'Benoît', say: ['Au fait, ton petit frère te cherche ! Il est à la ferme, au tracteur.'] },
     { unlessSouvenirs: [TRAITS.ingeniosite.id], unlessFlags: [FLAGS.jeanQuetes], speaker: 'Benoît', say: ['Jean t\'attend dans sa chambre.'] },
     { sound: 'door' },
     { setFlag: FLAGS.copainsPartent },

@@ -154,6 +154,7 @@ export const FLAGS = {
   diplomeBordeaux: 'diplome-bordeaux',          // diplôme reçu devant l'estrade du stade (la route de Paris s'ouvre)
   adieuxBordeaux: 'adieux-bordeaux',            //   en sortant du stade : « Direction Paris. »
   arriveeParis: 'arrivee-paris',                // arrivé à Paris, devant l'immeuble du propriétaire
+  appelProprietaire: 'appel-proprietaire',      //   le propriétaire appelle : il attend devant l'immeuble aux balcons fleuris
   parisCles: 'paris-cles',                      //   le propriétaire a donné les clés
   jour1Bureau: 'jour1-bureau',                  //   premier passage au rez-de-chaussée de la tour (le collègue)
   concertAppel: 'concert-appel',                //   en sortant : Antoine appelle, la place de concert a voyagé (Tam)
@@ -166,7 +167,9 @@ export const FLAGS = {
   messageHugues: 'message-hugues',              //   en sortant : « Match ce soir chez moi ! »
   thomasSuit: 'thomas-suit',                    //     Thomas, à la fin de son service, suit Pierre avec de quoi manger
   matchArrivee: 'match-arrivee',                //     chez Hugues : Thomas pose tout et rejoint les autres
+  rappelManager: 'rappel-manager',              //   un an après le concert : Camille appelle, le manager attend Pierre
   matchParis: 'match-paris',                    //   France-Argentine chez Hugues (perdu)
+  rappelDirecteur: 'rappel-directeur',          //   un an après le match : Camille appelle, le directeur veut voir Pierre
   directeurInvite: 'directeur-invite',          //   au bureau : le dernier étage s'ouvre (le directeur veut voir Pierre)
   liberteParis: 'liberte-paris',                //   Pierre refuse la place du directeur (Liberté)
   reveParis: 'reve-paris',                      //   en sortant de la tour : le rêve (la grande réunion)
