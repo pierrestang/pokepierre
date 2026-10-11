@@ -238,6 +238,9 @@ export class TitleScene extends Phaser.Scene {
   }
 
   launchGame(sceneKey, data) {
+    // Le fond animé s'arrête avant que la partie commence (et non une image plus tard, à l'arrêt du titre) : il ne doit
+    // plus libérer de dessins de carte (builtMaps.js applyBuiltLook) une fois la carte du jeu affichée.
+    this.scene.stop('TitleBackground');
     if (!this.scene.isActive('UI')) this.scene.launch('UI');
     this.scene.start(sceneKey, data);
   }

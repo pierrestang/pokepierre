@@ -40,11 +40,19 @@ export function preloadBuiltMap(scene, data) {
 function bakeLayers(scene, data, id) {
   const images = Object.fromEntries(data.sheets.map((s) => [s, scene.textures.get(sheetKey(s)).getSourceImage()]));
   const cols = (s) => Math.floor(images[s].width / TILE);
+  // Un canvas à nous, en mémoire ordinaire (willReadFrequently dès la création) : ceux de Phaser (createCanvas, pris
+  // dans son CanvasPool) ont un contexte accéléré par la carte graphique, que le navigateur peut vider en cours de
+  // partie (mémoire graphique, changement de contexte) ; le sol de la carte disparaissait alors, seule la bordure
+  // restait visible (en sortant d'un bâtiment, notamment).
   const bake = (key, layerIds) => {
     if (scene.textures.exists(key)) scene.textures.remove(key);
-    const tex = scene.textures.createCanvas(key, data.width * TILE, data.height * TILE);
-    drawLayers(tex.getContext(), data, layerIds, images, cols);
-    tex.refresh();
+    const canvas = document.createElement('canvas');
+    canvas.width = data.width * TILE;
+    canvas.height = data.height * TILE;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = false;                // comme les canvas de Phaser : pixels nets
+    drawLayers(ctx, data, layerIds, images, cols);
+    scene.textures.addCanvas(key, canvas);
   };
   bake(`${id}-fond`, LAYERS.filter((l) => l.id !== 'dessus').map((l) => l.id));
   const hasTop = data.layers.dessus?.some((cell) => stackOf(cell).length > 0);

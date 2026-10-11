@@ -109,9 +109,10 @@ export class MapScene extends Phaser.Scene {
     this.drawLook();
     // Filet de sécurité : si le dessin cuit de la carte est perdu en cours de partie (texture retirée ou vidée, ex.
     // après une scénette ou un voyage), on le refait et on le réaffiche (sinon seule la forêt de bordure se voit).
+    // Vérifié souvent (un quart de seconde) : le contrôle ne lit que cinq pixels.
     if (map.built) {
       this.time.addEvent({
-        delay: 1000, loop: true, callback: () => {
+        delay: 250, loop: true, callback: () => {
           if (!lostLook(this, map)) return;
           applyBuiltLook(this, map, keepLooks);
           this.drawLook();
