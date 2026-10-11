@@ -1021,7 +1021,7 @@ export const interiors = {
       },
       {
         id: 'fanny-chambre', name: 'Fanny', x: 2, y: 6, facing: 'up', color: 0xf0c0c0,
-        dialogue: ['Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! »'],
+        dialogue: ['Fanny, allongée sur le tapis avec un roman, ne lève même pas les yeux.', '« Tu me caches la lumière, là. »'],
       },
       {
         id: 'jean-maison', name: 'Jean', x: 7, y: 5, facing: 'left', color: 0x3c7c5c,

@@ -347,7 +347,7 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
 | Maman | Rappelle le programme | `g44` |
 | Papa | « Le dernier jour, déjà. On est arrivés à Montépilloy, tu tenais à peine sur le siège arrière. » | `g80` |
 | Manon | « Le collège ? Tu verras, on s'y fait vite. Et le matin, tu feras la route à pied avec les copains. » | `g96` |
-| Fanny | « Fanny fait rouler un petit tracteur en bois sur le parquet. « Vroum ! Comme celui de M. Bouly ! » » | `g153` |
+| Fanny | Adolescente : « Fanny, allongée sur le tapis avec un roman, ne lève même pas les yeux. » / « « Tu me caches la lumière, là. » » | `g153` |
 | Jean | Petit frère, né à Montépilloy, 8 ans (présenté par Maman à l'accueil) : la réparation du tracteur | `g22` |
 | M. Bouly | Le fermier, et son tracteur en panne | `g33` |
 | Margaux | Copine de classe : lance le cache-cache | `g3` |
