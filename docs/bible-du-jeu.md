@@ -50,7 +50,7 @@ Bordeaux → Hull → Hanoï → Amsterdam → New Delhi → Bordeaux (stade) �
 
 Après Bordeaux, tous les vols passent par l'**aéroport** (une seule carte, redessinée en Gen 4, tout entier à l'écran : tarmac
 et avions garés derrière la baie vitrée, tableau des départs, guichet, file à cordons, salle d'attente ; pas de vélo). L'hôtesse (`g64`), derrière son comptoir
-(on lui parle par-dessus), propose deux choix : la destination de la suite de l'histoire et « Autre » (les lieux déjà
+(on lui parle par-dessus), propose deux choix (les destinations par le seul nom de la ville, sans le pays) : la destination de la suite de l'histoire et « Autre » (les lieux déjà
 visités, et « Rester ici ») ; sans vol de l'histoire en attente, la liste « Autre » s'ouvre directement. Chaque vol joue
 le **trajet en avion** : l'avion de ligne file au-dessus de l'océan et de ses îles, entre deux couches de nuages, deux
 traînées derrière lui, au bruit des réacteurs. C'est l'aéroport de la ville d'où l'on vient : le jeu la retient (memo
@@ -860,9 +860,10 @@ choix.
 
 ### Départ et trajet
 - **Condition** : le diplôme de Hull et les adieux. Les deux bouts de la grande rue mènent à l'aéroport : « Tu te rends
-  à l'aéroport. » ; vol « Hanoï (Vietnam) », personne ne l'accompagne :
-  **« Pierre utilise Autonomie ! »** → « Pour la première fois, personne ne t'accompagne. Tu prends ton billet pour
-  Hanoï. »
+  à l'aéroport. » ; vol « Hanoï », personne ne l'accompagne :
+  **« Pierre utilise Autonomie ! »** → **« Bordeaux, Hull, et maintenant Hanoï. Chaque départ a laissé un morceau de
+  toi quelque part. »** / « Tu prends ton billet, et tu souris : le prochain morceau t'attend à l'autre bout du
+  monde. »
 - **Trajet en avion** ; encart : « Tu emportes : Insouciance. »
 
 ---
@@ -880,8 +881,9 @@ et (20, 12) ; le temple au toit rouge (porte (26, 16)). Au sud : le portique rou
 grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée dans le créateur (octobre 2026). Portes fermées : « Tu frappes. Personne ne répond… ou alors, en vietnamien. »
 
 ### Arrivée et image d'accueil
-- Carte postale `hanoi` (« antre du Dragon ») : **« Hanoï, Vietnam. »** ; « Personne ne t'attend à la sortie de
-  l'aéroport. Pas d'Ousmane, pas de Léo. » / « Ta maison est la petite maison violette de la grande rue. Ton nouveau
+- Carte postale `hanoi` (« antre du Dragon ») : **« Hanoï, Vietnam. »** ; **« Hanoï. La chaleur te saute au visage, les
+  scooters klaxonnent dans tous les sens, l'odeur du phở monte des trottoirs. »** / « Tu ne comprends rien aux
+  panneaux. Et pourtant, tu te sens déjà chez toi. » / « Ta maison est la petite maison violette de la grande rue. Ton nouveau
   travail commence aujourd'hui, à l'agence de voyage : la maison noire, un peu plus loin. »
 - Dans ta maison (avant le premier jour) : « Ta maison à Hanoï. Petite, silencieuse… et rien qu'à toi. » / « L'agence de
   voyage t'attend : la maison noire, sur la grande rue. »
@@ -954,9 +956,9 @@ toujours, rien n'a changé. » / « La maison t'attend quand tu veux. Léo et to
 **Consignes en vietnamien** (le patron, gardées), **Objet de chance** (l'autel), **Pièce d'échecs chinois** (optionnel).
 
 ### Départ et trajet
-- **Condition** : l'appel de Romain. Au guichet de l'aéroport, vol « Amsterdam (Pays-Bas) » : « Il y a quelques mois, à
-  Hull, tu prenais ce même billet, le ventre noué, parce que personne ne t'accompagnait. » / « Aujourd'hui, tu as
-  traversé une ville entière sans en parler la langue. Tu n'as plus peur de l'inconnu. Tu t'adaptes. »
+- **Condition** : l'appel de Romain. Au guichet de l'aéroport, vol « Amsterdam » : « Il y a quelques mois, tu prenais ce
+  billet à Hull, le ventre noué. » / **« Aujourd'hui, c'est un banh mi dans une main et le billet dans l'autre. Tu as
+  pris le pli. Amsterdam, à nous deux. »**
 - **Trajet en avion** ; encart : « Tu emportes : Adaptation. »
 
 ## 9. Amsterdam (Pays-Bas)
@@ -1031,7 +1033,7 @@ maison de canal aux fleurs, la place à la fontaine fleurie, une maison de canal
 du canal** (carnet).
 
 ### Départ et trajet
-Vol « New Delhi (Inde) », directement (il n'y a plus de retour à Hull) ; trajet en avion, sans encart.
+Vol « New Delhi », directement (il n'y a plus de retour à Hull) ; trajet en avion, sans encart.
 
 ## 10. New Delhi (Inde)
 
@@ -1159,7 +1161,7 @@ tout le monde se perd ici, au début. » ; « Le passant te sourit et te fait si
 lac de Saint-Ay et au coquillage de Manon.
 
 ### Départ et trajet
-À l'aéroport de Delhi (Prophecy est là, avec Pierre), l'hôtesse propose le vol « Bordeaux (France) » (la suite de
+À l'aéroport de Delhi (Prophecy est là, avec Pierre), l'hôtesse propose le vol « Bordeaux » (la suite de
 l'histoire) ; trajet en avion, sans encart (pas de vertu reçue) ; Pierre et Prophecy arrivent à Bordeaux, à côté de la
 sortie vers l'aéroport ; le stade s'ouvre (drapeau `semestre-termine`).
 

@@ -384,7 +384,12 @@ const CARRY = carryText('hull');
 // Le vol pour Hanoï : personne n'accompagne Pierre, il part seul (Autonomie).
 export const FLIGHT_TO_HANOI = [
   { useTrait: TRAITS.autonomie },
-  { say: ['Pour la première fois, personne ne t\'accompagne. Tu prends ton billet pour Hanoï.'] },
+  {
+    say: [
+      'Bordeaux, Hull, et maintenant Hanoï. Chaque départ a laissé un morceau de toi quelque part.',
+      'Tu prends ton billet, et tu souris : le prochain morceau t\'attend à l\'autre bout du monde.',
+    ],
+  },
   { setFlag: FLAGS.arriveeHanoi },
   { travel: { map: 'hanoi', x: 1, y: 8, facing: 'right', plane: true, carry: CARRY } },
 ];

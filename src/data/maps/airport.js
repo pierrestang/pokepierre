@@ -13,22 +13,23 @@ import { FLIGHT_TO_AMSTERDAM } from '../hanoiStory.js';
 // déjà visitées). Une destination n'apparaît que si ses conditions sont remplies (ifFlags / ifItems / ifSouvenirs) ;
 // `notWhen` : cachée quand ces conditions-là sont remplies (elle est alors la suite de l'histoire).
 
-// La suite de l'histoire : le prochain vol, tant qu'on n'est pas arrivé (au plus un à la fois).
+// La suite de l'histoire : le prochain vol, tant qu'on n'est pas arrivé (au plus un à la fois). Les destinations
+// s'affichent par le seul nom de la ville, sans le pays.
 const NEXT_FLIGHTS = [
   // Hull : le premier vol, avec le diplôme d'anglais ; Pierre part seul (voir bordeauxStory.js FLIGHT_TO_HULL).
-  { label: 'Hull (Angleterre)', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull], steps: FLIGHT_TO_HULL },
+  { label: 'Hull', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull], steps: FLIGHT_TO_HULL },
   // Hanoï : après les adieux de Hull (personne n'accompagne Pierre).
-  { label: 'Hanoï (Vietnam)', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
+  { label: 'Hanoï', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
   // Amsterdam : après l'appel de Romain, six mois après le premier jour à Hanoï (monologue au guichet, voir hanoiStory.js).
-  { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.appelRomain], unlessFlags: [FLAGS.arriveeAmsterdam], steps: FLIGHT_TO_AMSTERDAM },
+  { label: 'Amsterdam', ifFlags: [FLAGS.appelRomain], unlessFlags: [FLAGS.arriveeAmsterdam], steps: FLIGHT_TO_AMSTERDAM },
   // New Delhi : avec le billet que Romain remet à Amsterdam, la nuit au bord du canal.
   {
-    label: 'New Delhi (Inde)', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
+    label: 'New Delhi', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
     setFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi,
   },
   // Bordeaux : le semestre de New Delhi fini, depuis l'aéroport de Delhi, avec Prophecy (le stade s'ouvre).
   {
-    label: 'Bordeaux (France)', ifFlags: [FLAGS.semestreTermine], unlessFlags: [FLAGS.retourBordeaux],
+    label: 'Bordeaux', ifFlags: [FLAGS.semestreTermine], unlessFlags: [FLAGS.retourBordeaux],
     setFlags: [FLAGS.retourBordeaux], plane: AIRPORT_EXITS.bordeaux,
   },
 ];
@@ -36,14 +37,14 @@ const NEXT_FLIGHTS = [
 // « Autre » : les lieux déjà visités (on y retourne en avion), sauf la suite de l'histoire, déjà proposée.
 const OTHER_FLIGHTS = [
   { label: 'Bordeaux', ifFlags: [FLAGS.arriveeBordeaux], plane: AIRPORT_EXITS.bordeaux },
-  { label: 'Fort-de-France (Martinique)', plane: { map: 'fortDeFrance', x: 15, y: 10, facing: 'down' } },
+  { label: 'Fort-de-France', plane: { map: 'fortDeFrance', x: 15, y: 10, facing: 'down' } },
   { label: 'Saint-Ay', ifFlags: [FLAGS.departFortDeFrance], plane: { map: 'saintAy', x: 5, y: 10, facing: 'left' } },
   { label: 'Montépilloy', ifFlags: [FLAGS.arriveeMontepilloy], plane: { map: 'montepilloy', x: 16, y: 27, facing: 'up' } },
   { label: 'Prytanée', ifFlags: [FLAGS.arriveePrytanee], plane: { map: 'prytanee', x: 16, y: 23, facing: 'up' } },
-  { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], plane: AIRPORT_EXITS.hull },
-  { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], plane: AIRPORT_EXITS.hanoi },
-  { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.arriveeAmsterdam], plane: AIRPORT_EXITS.amsterdam },
-  { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi },
+  { label: 'Hull', ifFlags: [FLAGS.arriveeHull], plane: AIRPORT_EXITS.hull },
+  { label: 'Hanoï', ifFlags: [FLAGS.arriveeHanoi], plane: AIRPORT_EXITS.hanoi },
+  { label: 'Amsterdam', ifFlags: [FLAGS.arriveeAmsterdam], plane: AIRPORT_EXITS.amsterdam },
+  { label: 'New Delhi', ifFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi },
   { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: AIRPORT_EXITS.paris },
   { label: 'Rester ici', dialogue: ['Très bien, reviens me voir quand tu veux !'] },
 ];
