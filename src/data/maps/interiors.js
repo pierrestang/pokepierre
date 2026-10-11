@@ -93,8 +93,10 @@ const PAPA_TO_SALON = {
 // Collège Bonsecours : des élèves dans les salles et les couloirs, une réplique chacun ([x, y, réplique, direction] ;
 // apparence de figurant au hasard). En classe, assis derrière un pupitre, face au bureau (vers le haut, par défaut).
 // `conditions` : quand ils sont là (ex. pas après l'ellipse de la fin de troisième).
-const collegeStudents = (list, conditions = {}) => list.map(([x, y, line, facing = 'up']) => ({
-  id: `eleve-${x}-${y}`, name: 'Élève', x, y, facing, still: true, ...conditions, dialogue: [line],
+// Un élève peut avoir un prénom et son sprite (`[x, y, réplique, regard, prénom, sprite]`) : il garde alors l'apparence
+// qu'il avait comme figurant (le sprite est fixé, il ne change plus avec la liste des figurants, data/looks.js EXTRAS).
+const collegeStudents = (list, conditions = {}) => list.map(([x, y, line, facing = 'up', name = 'Élève', sprite]) => ({
+  id: `eleve-${x}-${y}`, name, ...(sprite ? { sprite } : {}), x, y, facing, still: true, ...conditions, dialogue: [line],
 }));
 
 // Prytanée, la nuit du mur (de « Le soir même… » au retour) ; le reste du temps, en deux variantes (une condition
@@ -772,10 +774,20 @@ export const interiors = {
     ],
     npcs: [
       ...collegeStudents([
-        [4, 5, 'La principale m\'a dit bonjour. Je crois qu\'elle sait ce que j\'ai fait.', 'right'],
-        [15, 4, 'À la cantine, il y a des frites aujourd\'hui. Enfin, j\'espère.', 'left'],
+        [4, 5, 'La principale m\'a dit bonjour. Je crois qu\'elle sait ce que j\'ai fait.', 'right', 'Alexis', 'g180'],
+        [15, 4, 'À la cantine, il y a des frites aujourd\'hui. Enfin, j\'espère.', 'left', 'Benjamin', 'g142'],
         [7, 6, 'Le surveillant voit tout. Même ce qui se passe derrière lui.', 'up'],
       ]),
+      // Deux camarades de collège. Manon du collège n'est PAS Manon, la sœur de Pierre : homonyme, apparence à part
+      // (`lookName` « Manon (collège) », panneau PNJ).
+      {
+        id: 'manon-college', name: 'Manon', lookName: 'Manon (collège)', x: 21, y: 7, facing: 'left', still: true,
+        dialogue: ['T\'as révisé le contrôle de demain, toi ? Moi j\'ai rien fait, je suis grave en retard.'],
+      },
+      {
+        id: 'yann', name: 'Yann', x: 11, y: 5, facing: 'down', still: true,
+        dialogue: ['Vivement la récré, j\'en peux plus. T\'as cours de quoi après ?'],
+      },
       // On parle à la principale par-dessus le comptoir d'accueil.
       { id: 'principale', name: 'Principale', x: 9, y: 9, facing: 'up', color: 0x8c5ca8, script: PRINCIPALE },
       // Le surveillant attend Pierre dans le hall le premier jour, puis monte au couloir des casiers.
@@ -818,7 +830,7 @@ export const interiors = {
     npcs: [
       ...collegeStudents([
         [2, 4, 'Mon casier sent le goûter de la semaine dernière. Ou d\'avant.', 'right'],
-        [10, 4, 'J\'ai échangé ma carte Dracaufeu contre trois gommes. Je regrette.', 'left'],
+        [10, 4, 'J\'ai échangé ma carte Dracaufeu contre trois gommes. Je regrette.', 'left', 'Louis-Marie', 'g142'],
       ]),
       // Rémy arrive en courant par l'escalier quand Pierre touche le casier 12 (voir collegeStory.js LOCKER_FIGHT),
       // puis, l'embrouille réglée, file en salle de maths.
@@ -879,13 +891,13 @@ export const interiors = {
         ifFlags: [FLAGS.margauxTrouvee], unlessFlags: [FLAGS.finTroisieme],
         dialogue: ['On est dans la même classe, comme promis ! Enfin… presque promis.'],
       },
-      // Camille, une fille de ta classe : la scène du dialogue à choix (voir collegeStory.js CAMILLE).
+      // Clélia, une fille de ta classe : la scène du dialogue à choix (voir collegeStory.js CAMILLE).
       {
-        id: 'camille', name: 'Camille', x: 6, y: 6, facing: 'up', still: true, color: 0xe080a0,
+        id: 'camille', name: 'Clélia', x: 6, y: 6, facing: 'up', still: true, color: 0xe080a0,
         ifFlags: [FLAGS.collegeArrivee], unlessFlags: [FLAGS.finTroisieme], script: CAMILLE,
       },
       // Rémy, arrivé en classe après l'embrouille du casier : il attend Pierre près de l'entrée (trajet court jusqu'à lui,
-      // REMI_INVITE), puis, après l'invitation, il attend dans l'allée (il s'assoit à la scène de Camille).
+      // REMI_INVITE), puis, après l'invitation, il attend dans l'allée (il s'assoit à la scène de Clélia).
       {
         id: 'remi-classe', name: 'Rémy', x: 3, y: 4, facing: 'left', color: 0xc05c3c,
         ifFlags: [FLAGS.remiEnClasse], unlessFlags: [FLAGS.remiInvite, FLAGS.finTroisieme], script: REMI,
@@ -897,8 +909,8 @@ export const interiors = {
       ...collegeStudents([
         [2, 8, 'J\'ai oublié mon compas. Encore. C\'est le troisième cette année.'],
         [4, 8, 'Tu as fait l\'exercice 4 ? Moi non plus. On est deux, ça compte.'],
-        [7, 8, 'Si tu lèves la main, faut répondre. C\'est un piège.'],
-        [3, 6, 'Je dessine dans la marge depuis une heure. Personne a rien vu.'],
+        [7, 8, 'Si tu lèves la main, faut répondre. C\'est un piège.', 'up', 'Maxime', 'g142'],
+        [3, 6, 'Je dessine dans la marge depuis une heure. Personne a rien vu.', 'up', 'Samuel', 'g180'],
       ], { unlessFlags: [FLAGS.finTroisieme] }),
     ],
     events: [
@@ -931,10 +943,11 @@ export const interiors = {
     npcs: [
       { id: 'prof-francais', name: 'Professeure', x: 5, y: 2, facing: 'down', color: 0xc06080, dialogue: ['Tu nous écriras sur Saint-Ay ?'] },
       ...collegeStudents([
-        [2, 6, 'Ma rédaction fait douze lignes. Dont quatre de titre.'],
+        // Julien, du collège : pas le Julien de la tour de Paris (homonyme, un autre personnage).
+        [2, 6, 'Ma rédaction fait douze lignes. Dont quatre de titre.', 'up', 'Julien', 'g163'],
         [8, 6, 'J\'ai mis trois couches de blanco. On voit plus rien. Même pas moi.'],
         [2, 8, 'Qui a écrit « vive les vacances » sur la table ? C\'est pas moi. Enfin si.'],
-        [8, 8, 'La sonnerie, c\'est le plus beau son du monde.'],
+        [8, 8, 'La sonnerie, c\'est le plus beau son du monde.', 'up', 'Corentin', 'g163'],
       ]),
       // Étienne, dans sa classe (pas celle de Pierre) : tant que Margaux est cachée (placard d'entretien, voir
       // collegeStory.js CLOSET), il prévient ; ensuite, les casiers.
@@ -978,7 +991,7 @@ export const interiors = {
     ],
     npcs: [
       ...collegeStudents([
-        [3, 6, 'J\'ai cassé un bécher. Le prof a dit « c\'est pas grave ». Il a menti.'],
+        [3, 6, 'J\'ai cassé un bécher. Le prof a dit « c\'est pas grave ». Il a menti.', 'up', 'Gatien', 'g180'],
         [7, 6, 'Le squelette de la vitrine, il s\'appelle Gérard. C\'est moi qui l\'ai baptisé.'],
         [3, 8, 'Au microscope, j\'ai vu une feuille. Une feuille, mais en très gros.'],
         [7, 8, 'Si on mélange tout, ça explose ? … Non ? Dommage.'],
@@ -1277,7 +1290,7 @@ export const interiors = {
       // Internat des garçons : des garçons (apparences imposées, les figurants au hasard comptent aussi des filles).
       { id: 'terminale-1', name: 'Élève', sprite: 'g92', x: 4, y: 6, facing: 'left', ...when, dialogue: ['Vous êtes la chambre du dessous ? Vous ronflez.'] },
       { id: 'terminale-2', name: 'Élève', sprite: 'g156', x: 7, y: 5, facing: 'down', ...when, dialogue: ['Le bac, c\'est cette année. Je sais plus où donner de la tête.'] },
-      { id: 'terminale-3', name: 'Élève', sprite: 'g23', x: 10, y: 6, facing: 'left', ...when, dialogue: ['Mon lit n\'est jamais assez au carré pour le capitaine. Jamais.'] },
+      { id: 'terminale-3', name: 'Élève', sprite: 'g131', x: 10, y: 6, facing: 'left', ...when, dialogue: ['Mon lit n\'est jamais assez au carré pour le capitaine. Jamais.'] },
     ]),
   },
 

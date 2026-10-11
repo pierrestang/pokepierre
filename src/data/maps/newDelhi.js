@@ -56,7 +56,7 @@ const SOUTH_WALKERS = [
   ['habitante-1', 'Habitante', 'g128', [9, 31], [20, 31], 'voisine'],
   ['livreur', 'Livreur', 'g133', [22, 30], [36, 30], 'livreur'],
   ['etudiant-internat', 'Étudiant', 'g150', [2, 25], [2, 30], 'internat'],
-  ['enfant-1', 'Enfant', 'g23', [22, 28], [28, 28], 'enfants'],
+  ['enfant-1', 'Enfant', 'g134', [22, 28], [28, 28], 'enfants'],
   ['enfant-2', 'Enfant', 'g57', [28, 29], [22, 29], 'enfants'],
 ];
 const SOUTH_STANDING = [

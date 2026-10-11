@@ -82,10 +82,10 @@ const LOCKER_FIGHT = [
 ];
 
 // En salle de maths, une fois Rémy arrivé : le cours n'a pas commencé (le prof range ses copies) ; Rémy vient voir Pierre
-// et le pousse à aller dire salut à Camille, nouvelle elle aussi (il l'accompagne).
-// Les places de la scène de Camille (6, 6) : Pierre s'assoit à sa droite, Rémy à droite de Pierre. Rémy attend dans
-// l'allée en attendant (s'il était déjà assis, la place de Pierre, entre Camille, Rémy et les pupitres, serait fermée).
-export const REMI_WAIT = [9, 5];                                  // au bout de la rangée de Camille, hors du passage
+// et le pousse à aller dire salut à Clélia, nouvelle elle aussi (il l'accompagne).
+// Les places de la scène de Clélia (6, 6) : Pierre s'assoit à sa droite, Rémy à droite de Pierre. Rémy attend dans
+// l'allée en attendant (s'il était déjà assis, la place de Pierre, entre Clélia, Rémy et les pupitres, serait fermée).
+export const REMI_WAIT = [9, 5];                                  // au bout de la rangée de Clélia, hors du passage
 const REMI_SEAT = [8, 6];
 const PIERRE_SEAT = [7, 6];
 export const REMI_INVITE = [
@@ -133,29 +133,29 @@ const RELAX = 'Rémy, derrière toi, chuchote : « Joker. On la refait, tranquil
 const line = (question, choices, answer, wrong) => ({ quiz: { question, choices, answer, wrong: { ...wrong, default: [RELAX] } } });
 export const CAMILLE = [
   { unlessFlags: [FLAGS.remiInvite], say: ['Une fille de ta classe sort ses cahiers.'], end: true },
-  { ifSouvenirs: [TRAITS.audace.id], speaker: 'Camille', say: ['En français, on se met ensemble, c\'est promis ! D\'ici là, je survis aux maths.'], end: true },
-  // Pierre s'assoit à droite de Camille, puis Rémy à droite de Pierre : il n'en bouge plus.
+  { ifSouvenirs: [TRAITS.audace.id], speaker: 'Clélia', say: ['En français, on se met ensemble, c\'est promis ! D\'ici là, je survis aux maths.'], end: true },
+  // Pierre s'assoit à droite de Clélia, puis Rémy à droite de Pierre : il n'en bouge plus.
   { goTo: PIERRE_SEAT, facing: 'left' },
   { walk: 'remi-classe', to: REMI_SEAT, block: true },
-  // Camille et Pierre face à face ; Rémy, à sa place, regarde le tableau.
+  // Clélia et Pierre face à face ; Rémy, à sa place, regarde le tableau.
   { face: { camille: 'right', player: 'left', 'remi-classe': 'up' } },
   { say: ['Tu t\'assois à côté d\'elle. Rémy s\'installe à ta droite, l\'air de rien.', 'La fille sort ses cahiers. Elle lève les yeux vers toi.'] },
   line('Que lui dis-tu ?', ['Salut ! T\'es en 6e B ?', 'Bonjour. Enchanté.', 'Salut, beauté !'], 'Salut ! T\'es en 6e B ?', {
     'Bonjour. Enchanté.': ['Elle hausse un sourcil. « Euh… enchantée aussi ? »', RELAX],
     'Salut, beauté !': ['Elle te regarde, gênée. « … Pardon ? »', RELAX],
   }),
-  { speaker: 'Camille', say: ['Oui ! Moi, c\'est Camille. Tu viens de Montépilloy, toi ?'] },
+  { speaker: 'Clélia', say: ['Oui ! Moi, c\'est Clélia. Tu viens de Montépilloy, toi ?'] },
   line('Que réponds-tu ?', ['Affirmatif.', 'Oui, le village d\'à côté !', 'Oui, j\'y suis célèbre.'], 'Oui, le village d\'à côté !', {
-    'Affirmatif.': ['« Affirmatif » ? Camille se retient de rire. Tu parles comme un robot.', RELAX],
-    'Oui, j\'y suis célèbre.': ['Camille hoche la tête, pas très convaincue. « Ah… d\'accord. »', RELAX],
+    'Affirmatif.': ['« Affirmatif » ? Clélia se retient de rire. Tu parles comme un robot.', RELAX],
+    'Oui, j\'y suis célèbre.': ['Clélia hoche la tête, pas très convaincue. « Ah… d\'accord. »', RELAX],
   }),
-  { speaker: 'Camille', say: ['C\'est pas loin ! Moi, j\'habite juste derrière le collège.'] },
+  { speaker: 'Clélia', say: ['C\'est pas loin ! Moi, j\'habite juste derrière le collège.'] },
   line('Et maintenant ?', ['On mange ensemble, promis ?', 'Bon… au revoir.', 'On se met ensemble en français ?'], 'On se met ensemble en français ?', {
-    'Bon… au revoir.': ['Camille cligne des yeux. « Déjà ? On vient à peine de… bon. »', RELAX],
-    'On mange ensemble, promis ?': ['« Promis » ? Camille recule d\'un pas. « On verra… »', RELAX],
+    'Bon… au revoir.': ['Clélia cligne des yeux. « Déjà ? On vient à peine de… bon. »', RELAX],
+    'On mange ensemble, promis ?': ['« Promis » ? Clélia recule d\'un pas. « On verra… »', RELAX],
   }),
-  { speaker: 'Camille', say: ['Ça marche ! En rédaction, je suis forte : je t\'aiderai. Et toi, tu m\'aides en maths ?'] },
-  { say: ['Camille sourit.'] },
+  { speaker: 'Clélia', say: ['Ça marche ! En rédaction, je suis forte : je t\'aiderai. Et toi, tu m\'aides en maths ?'] },
+  { say: ['Clélia sourit.'] },
   { speaker: 'Rémy', say: ['Trop facile. Je savais que t\'allais gérer.'] },
   { trait: TRAITS.audace },
   { speaker: 'Rémy', say: ['Bon. Notre casier, c\'est notre QG, maintenant. Et toi, t\'es mon pote.'] },

@@ -461,7 +461,10 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
 | Surveillant | Accueil, tranche l'embrouille du casier, rappelle l'objectif | `g52` |
 | Principale | Derrière l'accueil : « Bienvenue au collège Bonsecours, Pierre. Le surveillant t'expliquera tout ce qu'il faut savoir. » | `g194` |
 | Rémy | Le « colocataire » du casier 12, apporte l'Audace | `g109` |
-| Camille | Nouvelle de 6e B, la scène du dialogue à choix | `g25` |
+| Clélia | Nouvelle de 6e B, la scène du dialogue à choix | `g25` |
+| Manon (collège) | Camarade de collège, dans le hall : « T'as révisé le contrôle de demain, toi ? Moi j'ai rien fait, je suis grave en retard. » Homonyme : PAS Manon, la sœur de Pierre (apparence à part, « Manon (collège) ») | `g15` |
+| Yann | Camarade de collège, dans le hall : « Vivement la récré, j'en peux plus. T'as cours de quoi après ? » | `g23` |
+| Alexis, Benjamin, Louis-Marie, Maxime, Samuel, Julien, Corentin, Gatien | Élèves nommés (répliques inchangées) : Alexis et Benjamin dans le hall, Louis-Marie aux casiers, Maxime et Samuel en maths, Julien et Corentin en français, Gatien en sciences. Ils gardent leur apparence de figurant (sprite fixé). Julien du collège n'est pas le Julien de la tour de Paris | `g180`, `g142`, `g142`, `g142`, `g180`, `g163`, `g163`, `g180` |
 | Professeur | Prof de maths : rappel à l'ordre, puis l'oral du brevet | `g138` |
 | Professeure | Prof de français : « Tu nous écriras sur Saint-Ay ? » | `g54` |
 | Professeur de sciences | « Aujourd'hui, on observe des feuilles au microscope. Les feuilles des arbres de Bonsecours ! » | figurant |
@@ -478,16 +481,16 @@ Cache-cache dans tout le village, « Passe-moi la clé ! » (question reposée j
    le partagez. Point. » ; Rémy : « Bon, colocataire, tu mets tes affaires en haut ou en bas ? » (choix « En haut. » /
    « Comme tu veux. » ; dans les deux cas Rémy prend le bas, « c'est plus près de mes chaussures ») ; « Allez, en maths !
    C'est l'escalier au bout du couloir, ça va sonner ! »
-2. **Camille → Audace** (salle de maths). « La salle de maths. Le cours n'a pas encore commencé : le prof range ses
+2. **Clélia → Audace** (salle de maths). « La salle de maths. Le cours n'a pas encore commencé : le prof range ses
    copies, ça discute de table en table. » ; Rémy : « Le cours commence dans cinq minutes. Tu vois la fille, au milieu de
    la classe ? Elle est en 6e B avec nous. » / « Elle connaît personne non plus. Va lui dire salut, je viens avec toi. »
-     Rémy attend au bout de la rangée de Camille. Quand Pierre parle à Camille, il s'assoit à sa droite, puis Rémy à
+     Rémy attend au bout de la rangée de Clélia. Quand Pierre parle à Clélia, il s'assoit à sa droite, puis Rémy à
      droite de Pierre (« Tu t'assois à côté d'elle. Rémy s'installe à ta droite, l'air de rien. ») ; Rémy n'en bouge plus.
    - Trois répliques à choisir, chaque fois une seule bonne : « Salut ! T'es en 6e B ? », « Oui, le village d'à
-     côté ! », « On se met ensemble en français ? ». Une mauvaise réplique fait réagir Camille, puis Rémy : « Rémy, derrière
+     côté ! », « On se met ensemble en français ? ». Une mauvaise réplique fait réagir Clélia, puis Rémy : « Rémy, derrière
      toi, chuchote : « Joker. On la refait, tranquille. » ».
-   - Camille : « Oui ! Moi, c'est Camille. Tu viens de Montépilloy, toi ? » … « C'est pas loin ! Moi, j'habite juste
-     derrière le collège. » … « Ça marche ! En rédaction, je suis forte : je t'aiderai. Et toi, tu m'aides en maths ? » ; « Camille sourit. » ; Rémy :
+   - Clélia : « Oui ! Moi, c'est Clélia. Tu viens de Montépilloy, toi ? » … « C'est pas loin ! Moi, j'habite juste
+     derrière le collège. » … « Ça marche ! En rédaction, je suis forte : je t'aiderai. Et toi, tu m'aides en maths ? » ; « Clélia sourit. » ; Rémy :
      **« Trop facile. Je savais que t'allais gérer. »** → vertu **Audace** ; Rémy : « Bon. Notre casier, c'est notre
      QG, maintenant. Et toi, t'es mon pote. »
    - Le prof : **« Pierre ! Rémy ! Vous faites trop de bruit. »** / « Si vous continuez comme ça, vous n'aurez jamais
@@ -526,7 +529,7 @@ salle de français). Après l'ellipse, ou une fois Margaux trouvée, le placard 
 le vide. » ; Margaux ne participe à aucune scène obligatoire.
 
 ### Vertus
-- **Gagnée** : Audace (Rémy, la scène de Camille). Phrase du carnet : « Oser aller vers les autres, même quand on est
+- **Gagnée** : Audace (Rémy, la scène de Clélia). Phrase du carnet : « Oser aller vers les autres, même quand on est
   timide. »
 - **Utilisées** : **Audace**, à l'oral du brevet ; **Ingéniosité**, pour ouvrir le placard de Margaux (optionnel).
 
@@ -539,7 +542,7 @@ le vide. » ; Margaux ne participe à aucune scène obligatoire.
 Aucune.
 
 ### Mini-jeux
-Dialogue à choix (Camille), l'oral du brevet (trois questions : français, maths, anglais), le placard de Margaux
+Dialogue à choix (Clélia), l'oral du brevet (trois questions : français, maths, anglais), le placard de Margaux
 (optionnel).
 
 ### Départ et trajet
@@ -1496,7 +1499,7 @@ Paris.
 | Joie de vivre | Fort-de-France | Maman, la danse au salon | « Rire et danser partout où l'on va, même le jour du départ. » | Saint-Ay : l'inauguration de la cabane, le vieux pêcheur (galet, optionnel) ; Montépilloy : Benoît triste (optionnel) ; Prytanée : le nouveau (insigne, optionnel) ; Hull : la piste de l'Asylum ; Delhi : le grand repas partagé (dans le sens renversé : Pierre apprend à recevoir) |
 | Esprit d'équipe | Saint-Ay | Les cousins, dans la cabane | « Construire à plusieurs ce qu'on ne ferait jamais seul. » | Montépilloy : le tonneau de Benoît ; Prytanée : faire le mur |
 | Ingéniosité | Montépilloy | Jean, le tracteur de M. Bouly | « Trouver comment réparer ce qui ne marche plus. » | Saint-Ay (retour) : le panier de la cabane (verrou) ; collège : la cachette de Margaux (optionnel) ; Bordeaux : la coupure |
-| Audace | Collège Bonsecours | Rémy, la scène de Camille | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) |
+| Audace | Collège Bonsecours | Rémy, la scène de Clélia | « Oser aller vers les autres, même quand on est timide. » | Collège : l'oral du brevet ; Prytanée : le capitaine au petit matin ; Bordeaux : l'oral de KEDGE ; Hull : le pari des fléchettes (le pari est obligatoire, seule la victoire est facultative) ; Hanoï : les papis aux échecs (optionnel) |
 | Autonomie | Prytanée | Le capitaine, l'inspection | « Faire les choses soi-même, sans attendre qu'on les fasse à sa place. » | Bordeaux : le rangement après la soirée (obligatoire avant de sortir ; photo) ; Hull : le guichet de l'aéroport, avant Hanoï ; Amsterdam : la campagne de Corning |
 | Insouciance | Hull | La bande, à l'aube devant l'Asylum | « Profiter du moment, sans penser à demain. » | Hanoï : la touriste au téléphone à plat, au temple ; Amsterdam : la nuit au canal avec Romain |
 | Adaptation | Hanoï | M. Lam, qui traduit les consignes en vietnamien | « Trouver son chemin partout, même sans parler la langue. » | Nulle part pour l'instant |
@@ -1540,7 +1543,9 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Surveillant | `g52` | Collège |
 | Principale | `g194` | Collège |
 | Rémy | `g109` | Collège |
-| Camille | `g25` | Collège |
+| Clélia | `g25` | Collège |
+| Manon (collège) | `g15` (panneau PNJ ; homonyme de la sœur de Pierre) | Collège |
+| Yann | `g23` (panneau PNJ) | Collège |
 | Professeur (maths) | `g138` | Collège |
 | Professeure (français) | `g54` | Collège |
 | Professeur de sciences | figurant | Collège |
@@ -1749,6 +1754,9 @@ devient le Talisman indien (systems/items.js).
 ## Incohérences repérées
 
 ### Noms incertains ou en double
+- **Manon** : la sœur de Pierre (`g96`) et une camarade de collège (`lookName` « Manon (collège) », `g15`). Ne pas fusionner.
+- **Julien** : un élève du collège (`g163`) et un collègue de la tour de Paris (`lookName` « Julien (Paris) »). Ne pas fusionner.
+- **Camille** : il n'en reste qu'une, la collègue de Paris ; la fille de la classe de Pierre au collège s'appelle Clélia.
 - **Margaux** : deux personnages distincts. La copine du cache-cache (Montépilloy, collège, le rêve, `g3`) et l'étudiante
   de la bande de Delhi (`lookName` « Margaux (Delhi) », `g200`). Ne jamais les fusionner.
 - **Sprites (11 octobre 2026)** : plus aucun personnage nommé ne partage son sprite avec un autre (sauf les alias d'une même

@@ -12,12 +12,12 @@ export const BY_NAME = {
   Jean: 'g52', Felix: 'g93', Romain: 'g92', Prophecy: 'g94', Yanis: 'g96', Ousmane: 'g105', Harsh: 'g83',
   'Léo': 'g55', Tanguy: 'g56', Geoffrey: 'g41', Thomas: 'g90', Hugues: 'g121', Dalil: 'g2',
   Tam: 'g182', Louis: 'g155', Philippe: 'g6', Nico: 'g7',
-  // Paris, les collègues de la tour (jeunes adultes) ; « Camille (Paris) » : la collègue (lookName), pas la Camille
-  // de Montépilloy.
+  // Paris, les collègues de la tour (jeunes adultes) ; « Camille (Paris) » : la collègue (lookName). (La fille de la
+  // classe de Pierre au collège s'appelle Clélia.)
   Guillaume: 'g4', Anthony: 'g105', Antoine: 'g98', Quentin: 'g139',
   Andrea: 'g1', Mariana: 'g113', Yasmine: 'g50', 'Camille (Paris)': 'g130', Yalin: 'g5',
   'Benoît': 'g38', 'Étienne': 'g14', Joshua: 'g18',
-  Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g140', Paul: 'g86', Camille: 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g153',
+  Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g140', Paul: 'g86', 'Clélia': 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g153',
   Charlotte: 'g43', 'Anaïs': 'g107', Anais: 'g107',
   // Métiers
   'M. Bouly': 'g33', Militaire: 'g87', Directeur: 'g120', 'Directeur (Paris)': 'g123', Directrice: 'g37', Principale: 'g37', Sentinelle: 'g87',
@@ -30,5 +30,5 @@ export const BY_NAME = {
 // Figurants sans attribution (ex. les diplômés, les touristes) : choisis d'après leur id et leur place.
 // Aucun n'est le sprite d'un personnage nommé (sinon un figurant lui ressemblerait) : à vérifier en changeant BY_NAME.
 export const EXTRAS = ['g8', 'g29', 'g81', 'g91', 'g117', 'g124', 'g146', 'g151', 'g160', 'g164',
-  'g131', 'g135', 'g142', 'g147', 'g163', 'g170', 'g180'];
+  'g135', 'g142', 'g147', 'g163', 'g170', 'g180'];
 

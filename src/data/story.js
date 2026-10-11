@@ -49,7 +49,7 @@ export const FLAGS = {
   remiArrive: 'remi-arrive',                    //   au casier, Rémy arrive en courant par l'escalier
   casierPartage: 'casier-partage',              //   l'embrouille du casier : Rémy et toi le partagez
   remiEnClasse: 'remi-en-classe',              //   Rémy file en salle de maths (« ça va sonner »)
-  remiInvite: 'remi-invite',                    //   en classe, Rémy t'invite à aller parler à Camille
+  remiInvite: 'remi-invite',                    //   en classe, Rémy t'invite à aller parler à Clélia
   remyAutocollant: 'remy-autocollant',          //   le casier devenu QG : Rémy arrive par l'escalier (l'autocollant)
   remyRepart: 'remy-repart',                    //     … et repart en classe
   finTroisieme: 'fin-troisieme',                //   ellipse : quatre ans plus tard, la fin de la troisième (le brevet)
