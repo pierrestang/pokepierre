@@ -4,6 +4,7 @@ import {
 import { createAssistant } from './assistant.js';
 import { createStudio } from './studio.js';
 import { createNpcLayer } from './npcs.js';
+import { createLooksPanel } from './looksPanel.js';
 import { createEcarts } from './ecarts.js';
 import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
@@ -2138,6 +2139,7 @@ const studio = createStudio({
 });
 
 const npcs = createNpcLayer({ state, base: BASE, remember, changed, requestDraw, setStatus });
+createLooksPanel({ base: BASE, setStatus });             // bouton PNJ : l'apparence des personnages nommés
 
 // Panneau « Écarts » (check-up visuel, src/builder/ecarts.js) : centrer la vue sur un écart.
 function focusCells(r) {

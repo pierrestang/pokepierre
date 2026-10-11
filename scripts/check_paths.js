@@ -6,11 +6,17 @@
 // d'objets et de souvenirs sont ignorées (obstacle supposé présent). Les PNJ qui marchent ou se déplacent
 // pendant une scénette ne sont pas suivis.
 //
+// Vérifie aussi que chaque apparence de personnage enregistrée existe dans la planche des sprites Gen 4
+// (public/assets/characters/gen4-npcs.json) : data/looks.js (BY_NAME, EXTRAS), src/data/characterLooks.json (panneau PNJ
+// du créateur) et les `sprite` imposés des PNJ.
+//
 // Usage : node scripts/check_paths.js
 import { MAPS } from '../src/data/maps/index.js';
 import { interiors } from '../src/data/maps/interiors.js';
 import { FLAGS } from '../src/data/story.js';
 import { createWalkableCheck } from '../src/systems/collision.js';
+import { readFileSync } from 'node:fs';
+import { BY_NAME, EXTRAS } from '../src/data/looks.js';
 
 const ORDER = Object.values(FLAGS);
 
@@ -116,3 +122,17 @@ for (const [key, steps] of found) {
   console.log(`${key}\n    de « ${stepName(steps[0])} » à ${until}`);
 }
 console.log(found.size ? `\n${found.size} problème(s).` : 'Aucun blocage trouvé.');
+
+// Les apparences enregistrées : chaque `g{n}` doit être un sprite de la planche.
+const root = new URL('..', import.meta.url);
+const sprites = new Set(JSON.parse(readFileSync(new URL('public/assets/characters/gen4-npcs.json', root), 'utf8')).characters.map((c) => c.id));
+const looks = JSON.parse(readFileSync(new URL('src/data/characterLooks.json', root), 'utf8'));
+const used = [
+  ...Object.entries(BY_NAME).map(([name, id]) => [`data/looks.js BY_NAME « ${name} »`, id]),
+  ...EXTRAS.map((id) => ['data/looks.js EXTRAS', id]),
+  ...Object.entries(looks).map(([name, id]) => [`characterLooks.json « ${name} »`, id]),
+  ...places.flatMap(({ id, map }) => (map.npcs ?? []).filter((n) => n.sprite).map((n) => [`${id} PNJ ${n.id}`, n.sprite])),
+];
+const missing = used.filter(([, id]) => !sprites.has(id));
+for (const [where, id] of missing) console.log(`Sprite introuvable : ${where} -> ${id}`);
+console.log(missing.length ? `${missing.length} sprite(s) introuvable(s).` : `Sprites : ${used.length} apparences, toutes présentes.`);

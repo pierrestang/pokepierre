@@ -95,6 +95,21 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   check_paths.js et les scripts d'export voient les mêmes places. Après avoir déplacé un PNJ de l'histoire : Tester et
   `node scripts/check_paths.js` (une scénette peut le faire marcher depuis sa place).
 
+## Panneau PNJ : l'apparence des personnages nommés (11 octobre 2026)
+
+Bouton « PNJ » du bandeau (src/builder/looksPanel.js) : un panneau dans la mise en page du menu Start > PNJ du jeu
+(bandeaux bleus, fond crème, police de Rouge Feu dessinée par src/builder/pixelFont.js), qui liste tous les personnages
+nommés du jeu (data/looks.js BY_NAME et ceux déjà choisis dans le créateur) avec leur sprite actuel ; point doré : choisi
+dans le créateur, « * » : choix pas encore enregistré. Un clic ouvre la grille des sprites Gen 4 (le sprite actuel cerclé
+de rouge), avec les filtres Tous / Hommes / Femmes / Enfants / Âgés (classement de chaque sprite dans
+src/data/spriteTags.js) ; « Par défaut » revient à l'attribution du code. « Enregistrer » écrit tous les choix en
+attente d'un coup dans **src/data/characterLooks.json** (POST /__builder/looks { looks }, vite.config.js, qui refuse un
+sprite absent de la planche) ; data/characters.js l'importe : le jeu le prend au prochain lancement. Ordre d'apparence
+dans le jeu (characters.js lookOf) : choix du joueur (Start > PNJ), puis characterLooks.json, puis le `sprite` imposé d'un
+PNJ, puis BY_NAME. Deux personnages du même prénom : `lookName` sur le PNJ (« Camille (Paris) »). `node
+scripts/check_paths.js` vérifie que chaque sprite enregistré (BY_NAME, EXTRAS, characterLooks.json, `sprite` des PNJ)
+existe dans public/assets/characters/gen4-npcs.json.
+
 ## Bâtiments de Hull (7 octobre 2026)
 
 Hull redessinée dans le créateur avec sept bâtiments de g4-batiments posés case par case ; ils sont entrés au catalogue

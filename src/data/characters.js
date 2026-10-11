@@ -1,5 +1,6 @@
 import { fullLook } from '../art/characterArt.js';
 import { SHEETS } from '../art/spriteSheets.js';
+import { BY_NAME, EXTRAS } from './looks.js';
 // Apparences choisies dans le créateur de cartes (éditeur de personnages, « partout »), par nom : { Rémy: 'g110', … }.
 // Elles passent avant les attributions de BY_NAME ; le créateur les écrit via /__builder/looks (vite.config.js).
 import PROJECT_LOOKS from './characterLooks.json' with { type: 'json' };
@@ -38,29 +39,9 @@ export const lookChoices = {
 // Pierre : Lucas, le héros de Diamant / Perle / Platine (sauf choix du joueur).
 export const pierreLook = () => ({ sprite: lookChoices.get('Pierre') ?? 'g198' });
 
-// Personnages par nom affiché (gen4-npcs.json : g126 maman, g138 Prof. Sorbier, g32 marin…).
-export const BY_NAME = {
-  Pierre: 'g198',
-  // Famille
-  Maman: 'g126', Papa: 'g119', Manon: 'g57',
-  // Amis (garçons : jeunes gens des villes de Sinnoh et Johto ; filles : idem)
-  Jean: 'g52', Felix: 'g93', Romain: 'g92', Prophecy: 'g94', Yanis: 'g96', Ousmane: 'g105', Harsh: 'g83',
-  Tom: 'g22', 'Léo': 'g55', Tanguy: 'g56', Geoffrey: 'g41', Thomas: 'g90', Hugues: 'g121', Dalil: 'g2',
-  Tam: 'g182', Louis: 'g155', Clara: 'g15', Philippe: 'g6', Nico: 'g7',
-  'Benoît': 'g38', 'Étienne': 'g108', Joshua: 'g18',
-  Margaux: 'g43', 'Rémy': 'g109', 'Rémi': 'g140', Paul: 'g86', Camille: 'g25', Val: 'g42', Anna: 'g24', Fanny: 'g60',
-  Charlotte: 'g44', 'Anaïs': 'g107', Anais: 'g107',
-  // Métiers
-  'M. Bouly': 'g33', Militaire: 'g87', Directeur: 'g120', Directrice: 'g37', Principale: 'g37', Sentinelle: 'g87',
-  Manager: 'g122', Responsable: 'g36', 'Agent immobilier': 'g35', Vendeur: 'g112', Chanteur: 'g69', Serveur: 'g63',
-  'Capitaine du ferry': 'g118', 'Vieux pêcheur': 'g67', 'Vieux sage': 'g71',
-  Capitaine: 'g87', Surveillant: 'g116', Professor: 'g138', Professeur: 'g138', Professeure: 'g54',
-  "Professeure d'anglais": 'g106', 'Hôtesse': 'g64', Promeneuse: 'g82', Gamin: 'g59', Barman: 'g101', Leo: 'g55',
-};
-
-// Figurants sans attribution (ex. les diplômés, les touristes) : choisis d'après leur id et leur place.
-const EXTRAS = ['g22', 'g24', 'g49', 'g50', 'g55', 'g57', 'g58', 'g88', 'g89', 'g90', 'g93', 'g95', 'g96', 'g98',
-  'g106', 'g107', 'g108', 'g110', 'g112', 'g113'];
+// Les attributions par nom (BY_NAME) et les figurants (EXTRAS) sont dans data/looks.js (sans Phaser : check_paths.js et le
+// créateur les lisent aussi).
+export { BY_NAME };
 
 function hash(text) {
   let h = 0;
@@ -68,14 +49,18 @@ function hash(text) {
   return h;
 }
 
-// Apparence d'un PNJ ou d'un suiveur : `sprite` imposé (ex. des figurants garçons), sinon choix du joueur, sinon par nom
-// (ou par id), sinon un figurant.
+// Apparence d'un PNJ ou d'un suiveur : le choix du joueur (Start > PNJ), sinon l'apparence choisie dans le créateur pour
+// son nom (characterLooks.json, panneau PNJ), sinon `sprite` imposé (ex. des figurants garçons), sinon par nom (ou par
+// id), sinon un figurant. `lookName` : le nom sous lequel chercher son apparence quand deux personnages portent le même prénom
+// (« Camille (Paris) »).
 export function lookOf(data) {
   if (data.id === 'chat') return fullLook({ kind: 'cat' });
   if (data.id?.startsWith('poule')) return fullLook({ kind: 'hen' });
+  const name = data.lookName ?? data.name ?? capitalize(data.id);
+  const chosen = lookChoices.get(name) ?? projectLook(name);
+  if (chosen) return { sprite: chosen };
   if (data.sprite) return { sprite: data.sprite };
-  const name = data.name ?? capitalize(data.id);
-  const sprite = lookChoices.get(name) ?? projectLook(name) ?? BY_NAME[name] ?? BY_NAME[capitalize(data.id)];
+  const sprite = BY_NAME[name] ?? BY_NAME[capitalize(data.id)];
   return { sprite: sprite ?? EXTRAS[hash(`${data.id}:${data.x},${data.y}`) % EXTRAS.length] };
 }
 

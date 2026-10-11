@@ -2331,13 +2331,13 @@ export const interiors = {
     ]),
     spawn: { x: 1, y: 10, facing: 'up' },
     npcs: [
-      { id: 'collegue', name: 'Guillaume', sprite: 'g4', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
-      { id: 'collegue-tot', name: 'Anthony', sprite: 'g95', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
+      { id: 'collegue', name: 'Guillaume', x: 2, y: 4, facing: 'down', script: COLLEAGUE },   // près de la machine à café
+      { id: 'collegue-tot', name: 'Anthony', x: 6, y: 6, facing: 'down', fidget: true, dialogue: HALL_LINES.tot },
       // Celle qui accueille Pierre le premier jour (parisStory.js OFFICE_FIRST).
-      { id: 'collegue-accueil', name: 'Camille', sprite: 'g130', x: 2, y: 8, facing: 'down', fidget: true, dialogue: ['Alors, ce premier jour ? Si tu cherches quoi que ce soit, demande-moi !'] },
-      { id: 'collegue-point', name: 'Andrea', sprite: 'g1', x: 13, y: 4, facing: 'left', fidget: true, dialogue: HALL_LINES.point },
-      { id: 'collegue-bonne', name: 'Antoine', sprite: 'g98', x: 20, y: 3, facing: 'down', fidget: true, dialogue: HALL_LINES.bonne },
-      { id: 'accueil', name: 'Yasmine', sprite: 'g50', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
+      { id: 'collegue-accueil', name: 'Camille', lookName: 'Camille (Paris)', x: 2, y: 8, facing: 'down', fidget: true, dialogue: ['Alors, ce premier jour ? Si tu cherches quoi que ce soit, demande-moi !'] },
+      { id: 'collegue-point', name: 'Andrea', x: 13, y: 4, facing: 'left', fidget: true, dialogue: HALL_LINES.point },
+      { id: 'collegue-bonne', name: 'Antoine', x: 20, y: 3, facing: 'down', fidget: true, dialogue: HALL_LINES.bonne },
+      { id: 'accueil', name: 'Yasmine', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
     ],
     objects: elevator('entreprise'),
     events: [
@@ -2368,9 +2368,9 @@ export const interiors = {
     spawn: { x: 1, y: 2, facing: 'down' },
     npcs: [
       { id: 'manager', name: 'Manager', x: 7, y: 7, facing: 'down', script: MANAGER_TALK },
-      { id: 'collegue-etage-1', name: 'Mariana', sprite: 'g113', x: 4, y: 7, facing: 'right', fidget: true, dialogue: ['Bienvenue à l\'étage, Pierre ! Ici, on a même du vrai café.'] },
-      { id: 'collegue-etage-2', name: 'Quentin', sprite: 'g139', x: 11, y: 7, facing: 'left', fidget: true, dialogue: ['Réunion à onze heures. Et à quatorze heures. Et à seize heures.'] },
-      { id: 'collegue-etage-3', name: 'Yaline', sprite: 'g5', x: 9, y: 3, facing: 'down', fidget: true, dialogue: ['Le premier étage, c\'est calme. Trop calme, parfois.'] },
+      { id: 'collegue-etage-1', name: 'Mariana', x: 4, y: 7, facing: 'right', fidget: true, dialogue: ['Bienvenue à l\'étage, Pierre ! Ici, on a même du vrai café.'] },
+      { id: 'collegue-etage-2', name: 'Quentin', x: 11, y: 7, facing: 'left', fidget: true, dialogue: ['Réunion à onze heures. Et à quatorze heures. Et à seize heures.'] },
+      { id: 'collegue-etage-3', name: 'Yaline', x: 9, y: 3, facing: 'down', fidget: true, dialogue: ['Le premier étage, c\'est calme. Trop calme, parfois.'] },
     ],
     objects: elevator('entrepriseManager'),
     events: [{ on: 'enter', ifFlags: [FLAGS.concertParis], unlessFlags: [FLAGS.promotionParis], steps: PROMOTION }],
@@ -2496,9 +2496,9 @@ export const interiors = {
     npcs: [
       { id: 'hugues', name: 'Hugues', x: 5, y: 5, facing: 'up', dialogue: HUGUES_AFTER },
       // Les amis de Hugues : Philippe, Nico et un autre ami (les répliques du match sont surtout à Hugues et Thomas).
-      { id: 'philippe', name: 'Philippe', sprite: 'g6', x: 4, y: 5, facing: 'up', dialogue: ['La prochaine, on la gagne. Promis.'] },
+      { id: 'philippe', name: 'Philippe', x: 4, y: 5, facing: 'up', dialogue: ['La prochaine, on la gagne. Promis.'] },
       { id: 'ami-match', name: 'Ami', sprite: 'g137', x: 6, y: 5, facing: 'up', dialogue: ['Ce triplé, quand même… Magnifique.'] },
-      { id: 'nico', name: 'Nico', sprite: 'g7', x: 8, y: 5, facing: 'up', dialogue: ['Il reste des parts ? Thomas, t\'es un génie.'] },
+      { id: 'nico', name: 'Nico', x: 8, y: 5, facing: 'up', dialogue: ['Il reste des parts ? Thomas, t\'es un génie.'] },
       // Thomas, qui suivait Pierre : même id que le suiveur (il part de là où il était).
       { id: 'thomas', name: 'Thomas', x: 7, y: 5, facing: 'up', ifFlags: [FLAGS.matchArrivee], dialogue: ['Bon match quand même, hein ?'] },
     ],
