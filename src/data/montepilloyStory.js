@@ -171,7 +171,7 @@ const WRONG_TOOL = {
 };
 const tool = (question, answer) => ({ quiz: { speaker: 'Jean', question, answer, choices: TOOLS, wrong: WRONG_TOOL } });
 
-// La réparation, une fois la pièce rapportée (à M. Bouly ou à Jean, voir BOULY et JEAN_TRACTOR).
+// La réparation, une fois la pièce rapportée à Jean, sous le tracteur (JEAN_TRACTOR ; M. Bouly renvoie vers lui).
 const REPAIR = [
   { take: ITEMS.pieceTracteur.id },
   { say: ['Jean ouvre sa caisse à outils et se glisse sous le tracteur.'] },
@@ -195,8 +195,7 @@ const REPAIR = [
 // M. Bouly, à la ferme : il dit seulement bonjour tant que Jean ne t'a rien demandé (PNJ à part, voir la carte) ;
 // ensuite, il parle de la pièce qui manque.
 export const BOULY = [
-  { ifItems: [ITEMS.pieceTracteur.id], speaker: 'M. Bouly', say: ['La pièce ! Jean, à toi de jouer.'] },
-  { ifItems: [ITEMS.pieceTracteur.id], steps: REPAIR, end: true },
+  { ifItems: [ITEMS.pieceTracteur.id], speaker: 'M. Bouly', say: ['La pièce ! Va vite la donner à Jean, sous le tracteur.'], end: true },
   {
     unlessFlags: [FLAGS.boulyDemande], speaker: 'M. Bouly',
     say: [

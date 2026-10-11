@@ -379,7 +379,8 @@ Pousser les poules (petit casse-tête), fouille des hautes herbes (corde), saisi
    le cache-cache fini, une fois que M. Bouly en a parlé ou que Jean a lancé la réparation (même sans parler à
    M. Bouly) :
    « Tu fouilles le tas de foin… Dessous, une pièce de tracteur ! » / « Jean va être content. » →
-   **Pièce de tracteur**, rapportée à M. Bouly ou à Jean. Le tracteur est un dessin Gen 4 (scripts/build_props.py).
+   **Pièce de tracteur**, rapportée à Jean, sous le tracteur : c'est lui qui lance la réparation (M. Bouly, la pièce
+   en main : « La pièce ! Va vite la donner à Jean, sous le tracteur. »). Le tracteur est un dessin Gen 4 (scripts/build_props.py).
    - « Jean ouvre sa caisse à outils et se glisse sous le tracteur. » ; Jean : **« Passe-moi la clé ! »** → trois
      questions (« La clé de 12 ! », « Le tournevis plat ! », « Le marteau… non, le petit ! ») parmi cinq outils ;
      mauvaises réponses : « Ça, c'est une cuillère. Qui a mis une cuillère dans ma caisse ? », « Le gros ? Tu veux
