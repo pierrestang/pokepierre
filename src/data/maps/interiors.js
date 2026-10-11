@@ -2021,6 +2021,23 @@ export const interiors = {
       },
     ],
     events: [
+      // La première fois : Tim vient tout de suite accueillir Pierre (une seule fois).
+      {
+        on: 'enter',
+        ifFlags: [FLAGS.arriveeHanoi],
+        unlessFlags: [FLAGS.timAccueil, FLAGS.arriveeAmsterdam],
+        steps: [
+          { approach: 'tim' },
+          {
+            speaker: 'Tim',
+            say: [
+              'Pierre ! Te voilà enfin ! Moi c\'est Tim, ton coloc. Trop content de partager cette aventure avec toi, franchement ça va être génial.',
+              'Au fait, tu fais du skate ? Moi j\'adore ça, faut absolument qu\'on aille rouler ensemble un de ces quatre !',
+            ],
+          },
+          { setFlag: FLAGS.timAccueil },
+        ],
+      },
       {
         on: 'enter',
         unlessFlags: [FLAGS.travailEtape1],
@@ -2393,7 +2410,10 @@ export const interiors = {
       ...[[{ unlessFlags: [FLAGS.concertParis] }, HALL_LINES.bonneDebut], [{ ifFlags: [FLAGS.concertParis] }, HALL_LINES.bonne]].map(([when, dialogue]) => ({
         id: 'collegue-bonne', name: 'Antoine', x: 20, y: 3, facing: 'down', fidget: true, ...when, dialogue,
       })),
-      { id: 'accueil', name: 'Yasmine', x: 7, y: 9, facing: 'up', still: true, dialogue: HALL_LINES.cafe },
+      // Yasmine, à l'accueil ; le temps de la quête de la place de concert, elle est en pause au café à terrasse (paris.js).
+      ...[{ unlessFlags: [FLAGS.concertAppel] }, { ifFlags: [FLAGS.concertParis] }].map((when) => ({
+        id: 'accueil', name: 'Yasmine', x: 7, y: 9, facing: 'up', still: true, ...when, dialogue: HALL_LINES.cafe,
+      })),
       // Trois collègues de plus, figurants sans réplique (sprites choisis dans le panneau PNJ). Julien de la tour n'est PAS
       // le Julien du collège : homonyme, apparence à part (`lookName` « Julien (Paris) »).
       // Le collègue de passage, sans nom (parisStory.js OFFICE_FIRST : « Dix ans que je fais ce trajet »).

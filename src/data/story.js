@@ -122,6 +122,7 @@ export const FLAGS = {
   adieuxHull: 'adieux-hull',                    //        devant chez Léo, chacun part en échange (Pierre : Hanoï)
   arriveeHanoi: 'arrivee-hanoi',                // arrivé à Hanoï (Vietnam)
   hanoiOuverture: 'hanoi-ouverture',            //   image d'accueil de Hanoï vue : Pierre arrive seul
+  timAccueil: 'tim-accueil',                    //   en entrant dans sa maison, Tim, le coloc, vient l'accueillir
   travailEtape1: 'travail-etape-1',             //   premier jour à l'agence : le patron t'a tendu les consignes en vietnamien
   consignesTraduites: 'consignes-traduites',    //   M. Lam a lu les consignes : guider les touristes au temple (Adaptation)
   touristesSuivent: 'touristes-suivent',        //   tu guides les deux touristes vers le temple
@@ -158,11 +159,12 @@ export const FLAGS = {
   appelProprietaire: 'appel-proprietaire',      //   le propriétaire appelle : il attend devant l'immeuble aux balcons fleuris
   parisCles: 'paris-cles',                      //   le propriétaire a donné les clés
   jour1Bureau: 'jour1-bureau',                  //   premier passage au rez-de-chaussée de la tour (le collègue)
-  concertAppel: 'concert-appel',                //   en sortant : Antoine appelle, la place de concert a voyagé (Tam)
-  // (Tam remplace Inès : sa valeur d'origine reste, même sens, pour les sauvegardes en cours. Louis a une valeur neuve :
-  // l'ancienne, « place-malik », voulait dire « Malik envoie Pierre chez Clara », pas « la place est rendue ».)
-  placeTam: 'place-ines',                       //     Tam, devant l'Opéra : il l'a donnée à Louis
-  placeLouis: 'place-louis',                    //     Louis, dans la file du Louvre : il rend la place à Pierre
+  concertAppel: 'concert-appel',                //   en sortant : Antoine appelle, la place de concert a voyagé (Hugo)
+  // (Hugo remplace Tam, qui remplaçait Inès : la valeur d'origine reste, même sens, pour les sauvegardes en cours. Louis
+  // a une valeur neuve : « place-louis » voulait dire « Louis rend la place », du temps où il était le dernier maillon.)
+  placeHugo: 'place-ines',                      //     Hugo, devant l'Opéra : il l'a donnée à Louis
+  placeLouis: 'place-louis-yasmine',            //     Louis, dans la file du Louvre : il l'a laissée à Yasmine
+  placeYasmine: 'place-yasmine',                //     Yasmine, au café à terrasse : elle rend la place à Pierre
   concertParis: 'concert-paris',                //   le concert à Bercy (le bouton du 1er étage s'allume)
   promotionParis: 'promotion-paris',            //   au 1er étage, le manager prend Pierre avec lui
   messageHugues: 'message-hugues',              //   en sortant : « Match ce soir chez moi ! »
@@ -278,7 +280,7 @@ export const ITEMS = {
   talismanIndien: { id: 'talisman-indien', name: 'Talisman indien' },
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },
   clesParis: { id: 'cles-paris', name: 'Clés du studio' },                          // Paris : le propriétaire
-  placeConcert: { id: 'place-concert', name: 'Place de concert' },                  // Paris : rendue par Louis
+  placeConcert: { id: 'place-concert', name: 'Place de concert' },                  // Paris : rendue par Yasmine
   platsMatch: { id: 'plats-match', name: 'De quoi manger' },                         // Paris : Thomas, pour le match
   pieceTracteur: { id: 'piece-tracteur', name: 'Pièce de tracteur' },
 };

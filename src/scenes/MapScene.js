@@ -643,7 +643,6 @@ export class MapScene extends Phaser.Scene {
   //   { dream: ms }                      l'écran se brouille (flou), un voile clair monte, la musique s'éteint : l'entrée
   //                                      dans le rêve (Paris) ; { veil: false | ms } dissipe le voile à l'arrivée
   //   { virtuesFade: true }              fondu au noir lent, le carnet des huit vertus une à une (systems/VirtuesFade.js)
-  //   { cards: [{ text, source? }] }     cartons de la toute fin sur fond noir, un à un (systems/EndCards.js)
   //   { hidePlayer: true | false }       Pierre caché ou montré (ex. couché dans son lit : un PNJ le remplace)
   //   { endGame: true | { credits } }    fin du jeu : retour à l'écran titre (`credits` : avec le générique)
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
@@ -680,7 +679,6 @@ export class MapScene extends Phaser.Scene {
       if (step.dream) await this.dreamFade(step.dream);
       if (step.veil !== undefined) await this.liftVeil(step.veil);
       if (step.virtuesFade) await this.scene.get('UI').virtuesFade.play(this.scene.get('UI').curtain);
-      if (step.cards) await this.scene.get('UI').endCards.play(step.cards, this.scene.get('UI').curtain);
       if (step.hidePlayer !== undefined) this.player.sprite.setVisible(!step.hidePlayer);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);

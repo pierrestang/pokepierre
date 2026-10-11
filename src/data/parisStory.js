@@ -7,7 +7,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 // dernière vertu. Aucune ligne « Objectif : » ; deux ellipses, « Un an plus tard », après le concert et après le match.
 //   1. L'arrivée devant l'immeuble aux balcons fleuris : le propriétaire et les clés du studio.
 //   2. Premier passage au bureau : le hall plein de collègues, le collègue blasé ; l'ascenseur ne monte pas.
-//   3. Le concert : la place d'Antoine, un collègue, a passé de main en main (Tam, puis Louis, qui la rend) ; Bercy ; un an plus tard.
+//   3. Le concert : la place d'Antoine, un collègue, a passé de main en main (Hugo, Louis, puis Yasmine, qui la rend) ; Bercy ; un an plus tard.
 //   4. Au bureau, le 1er étage s'allume : la promotion.
 //   5. Le match : Hugues invite, Thomas finit son service au restaurant, la finale France-Argentine chez Hugues ; un an plus tard.
 //   6. Au bureau, le dernier étage s'allume : le directeur, la Liberté ; en sortant, le rêve (reveStory.js).
@@ -137,37 +137,49 @@ export const ANTOINE_CALL = [
     speaker: 'Antoine',
     phone: true,
     say: [
-      'Pierre ! Ce soir, concert à Bercy. J\'avais une place pour toi… mais je l\'ai passée à Tam pour qu\'il te la donne, et… bref, elle a un peu voyagé.',
-      'Tam est devant l\'Opéra. Il saura où elle est passée !',
+      'Pierre ! Ce soir, concert à Bercy. J\'avais une place pour toi… mais je l\'ai passée à Hugo pour qu\'il te la donne, et… bref, elle a un peu voyagé.',
+      'Hugo est devant l\'Opéra. Il saura où elle est passée !',
     ],
   },
   { setFlag: FLAGS.concertAppel },
 ];
 
 // De main en main : chacun dit à qui il l'a passée (avant l'appel de Hugues, ce sont des Parisiens comme les autres).
-export const TAM = [
-  { ifFlags: [FLAGS.placeTam], speaker: 'Tam', say: ['Louis, dans la file du Louvre. Bonne chance !'], end: true },
-  { ifFlags: [FLAGS.concertAppel], speaker: 'Tam', say: ['La place d\'Antoine ? Ah… Je l\'ai donnée à Louis, il en rêvait. Il fait la queue au Louvre, comme d\'habitude.'] },
-  { ifFlags: [FLAGS.concertAppel], setFlag: FLAGS.placeTam, end: true },
-  { speaker: 'Tam', say: ['L\'Opéra ouvre ce soir. J\'attends une amie.'] },
+export const HUGO = [
+  { ifFlags: [FLAGS.placeHugo], speaker: 'Hugo', say: ['Louis, dans la file du Louvre. Bonne chance !'], end: true },
+  { ifFlags: [FLAGS.concertAppel], speaker: 'Hugo', say: ['La place d\'Antoine ? Ah… Je l\'ai donnée à Louis, il en rêvait. Il fait la queue au Louvre, comme d\'habitude.'] },
+  { ifFlags: [FLAGS.concertAppel], setFlag: FLAGS.placeHugo, end: true },
+  { speaker: 'Hugo', say: ['L\'Opéra ouvre ce soir. J\'attends une amie.'] },
 ];
-// Louis, le dernier maillon (Antoine → Tam → Louis) : il rend la place à Pierre.
+// Une ancienne partie où la place est déjà rendue (ou le concert passé) : Louis et Yasmine n'ont plus rien à rendre.
 export const LOUIS = [
-  { ifFlags: [FLAGS.placeLouis], speaker: 'Louis', say: ['Bon concert ! Tu me raconteras.'], end: true },
-  // Une ancienne partie où Clara avait déjà rendu la place (ou le concert passé) : rien à rendre.
+  { ifFlags: [FLAGS.placeLouis], speaker: 'Louis', say: ['Yasmine, au café à terrasse. Elle ne l\'a pas encore utilisée, promis !'], end: true },
   { ifItems: [ITEMS.placeConcert.id], speaker: 'Louis', say: ['Bon concert ! Tu me raconteras.'], end: true },
   { ifFlags: [FLAGS.concertParis], speaker: 'Louis', say: ['Alors, ce concert ? Raconte !'], end: true },
+  { ifFlags: [FLAGS.placeHugo], speaker: 'Louis', say: ['Ta place ? Mince… Je l\'ai laissée à une certaine Yasmine, au café à terrasse, à côté de ton immeuble. Elle adore ce chanteur.'] },
+  { ifFlags: [FLAGS.placeHugo], setFlag: FLAGS.placeLouis, end: true },
+  { speaker: 'Louis', say: ['Deux heures de queue pour le Louvre. Mais ça vaut le coup, il paraît.'] },
+];
+// Yasmine, le dernier maillon (Antoine → Hugo → Louis → Yasmine) : la collègue de l'accueil de la tour (interiors.js
+// entreprise), en pause au café à terrasse ; elle rend la place à Pierre.
+export const YASMINE = [
+  { ifFlags: [FLAGS.placeYasmine], speaker: 'Yasmine', say: ['Bon concert ! Tu me raconteras demain, à la machine à café… si elle marche.'], end: true },
+  { ifItems: [ITEMS.placeConcert.id], speaker: 'Yasmine', say: ['Bon concert ! Tu me raconteras.'], end: true },
   {
-    ifFlags: [FLAGS.placeTam],
+    ifFlags: [FLAGS.placeLouis],
     steps: [
-      { speaker: 'Louis', say: ['Ta place ? Ah, c\'était la tienne ! Je l\'ai gardée bien au chaud, promis. Tiens, reprends-la.'] },
-      { give: ITEMS.placeConcert, text: 'Louis te rend la place de concert.' },
-      { speaker: 'Louis', say: ['Bercy, c\'est le grand dôme, en haut à gauche. Ça commence bientôt !'] },
-      { setFlag: FLAGS.placeLouis },
+      { speaker: 'Yasmine', say: ['Pierre ?! On se croise tous les jours à la tour, et c\'est en terrasse qu\'on se retrouve…'] },
+      {
+        speaker: 'Yasmine',
+        say: ['Ta place ? Oh, c\'était la tienne ! Elle a fait le tour de Paris pour finir chez ta collègue de bureau, c\'est fou. Tiens, reprends-la.'],
+      },
+      { give: ITEMS.placeConcert, text: 'Yasmine te rend la place de concert.' },
+      { speaker: 'Yasmine', say: ['Bercy, c\'est le grand dôme, en haut à gauche. Ça commence bientôt !'] },
+      { setFlag: FLAGS.placeYasmine },
     ],
     end: true,
   },
-  { speaker: 'Louis', say: ['Deux heures de queue pour le Louvre. Mais ça vaut le coup, il paraît.'] },
+  { speaker: 'Yasmine', say: ['Une petite pause en terrasse avant de retourner à la tour. Chut, ne le dis pas au manager !'] },
 ];
 
 // À Bercy : la place est contrôlée, Pierre avance dans la fosse, le chanteur chante (paroles écrites par Pierre).

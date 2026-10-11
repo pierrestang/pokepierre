@@ -42,11 +42,13 @@ const towardCenter = ([x, y]) => {
 };
 export { towardCenter };
 
-// La réunion : le décor se forme (le voile clair se dissipe), les huit parlent, Pierre parle ; le fondu et les vertus ;
-// le réveil.
+// La réunion : le décor se forme (le voile clair se dissipe), Pierre ne sait pas où il est ; les huit parlent, Pierre
+// parle ; le fondu et les vertus ; le réveil.
 export const REUNION = [
   { veil: 3500 },
-  { wait: 900 },
+  { wait: 400 },
+  { speaker: 'Pierre', say: ['Attends… où suis-je ?'] },
+  { wait: 600 },
   ...SPEAKERS.flatMap(([id, name, slot, say]) => [
     { approach: id },
     { speaker: name, say },
@@ -68,14 +70,17 @@ export const REUNION = [
   { travel: { interior: 'ffHouseUp', fromMap: 'fortDeFrance', x: 2, y: 5, facing: 'left' } },
 ];
 
-// Le réveil, à Fort-de-France : la cinématique d'ouverture du jeu, exactement la même (Pierre debout au milieu de sa
-// chambre, l'image de l'île, les vagues, Maman qui appelle : le ferry). Puis une bulle « ! » au-dessus du bureau : le
+// Le réveil, à Fort-de-France : la cinématique d'ouverture du jeu, la même (Pierre debout au milieu de sa chambre,
+// l'image de l'île, les vagues), avec Pierre encore groggy juste avant que Maman appelle (le ferry). Puis une bulle « ! » au-dessus du bureau : le
 // talisman y est posé. Le joueur reprend la main et va le prendre (TALISMAN, interiors.js ffHouseUp).
 export const TALISMAN_SPOT = [6, 3];                  // sur le bureau de Pierre, à côté de l'ordinateur
 export const WAKE_UP = [
   // Il ne serait jamais parti : le talisman du vieux sage n'est plus dans le sac… il est sur le bureau (TALISMAN).
   { take: ITEMS.talismanIndien.id },
-  ...OPENING_CINEMATIC,
+  ...OPENING_CINEMATIC.slice(0, -1),
+  { speaker: 'Pierre', say: ['Quel rêve étrange…'] },
+  { wait: 300 },
+  OPENING_CINEMATIC.at(-1),
   { setFlag: FLAGS.reveilFin },
   { emote: TALISMAN_SPOT, kind: 'surprise' },
   { speaker: 'Pierre', say: ['Ouais… c\'est quoi, cet objet ?'] },
@@ -95,19 +100,13 @@ export const TALISMAN = [
   },
 ];
 
-// Dehors, devant la maison (maps/fortDeFrance.js) : l'île un instant, puis le fondu blanc de l'entrée dans le rêve ; les
-// deux cartons sur fond noir ; le retour à l'écran titre, avec le générique.
+// Dehors, devant la maison (maps/fortDeFrance.js) : l'île un instant, Pierre dit son dernier mot, puis le fondu blanc
+// de l'entrée dans le rêve ; le retour à l'écran titre, avec le générique.
 export const FINALE = [
-  { wait: 1800 },
+  { wait: 1200 },
+  { speaker: 'Pierre', say: ['Tout recommence… encore ?'] },
+  { wait: 600 },
   { dream: 4500 },
-  {
-    cards: [
-      { text: '« Car là où est ton trésor, là aussi sera ton cœur. »' },
-      {
-        text: 'Il a fallu tout ce voyage pour comprendre que le trésor n\'était pas au bout du chemin. Il était dans la chambre d\'où tout est parti. Mais sans le voyage, il n\'aurait jamais su le reconnaître.',
-      },
-    ],
-  },
   { setFlag: FLAGS.finVue },
   { endGame: { credits: true } },
 ];

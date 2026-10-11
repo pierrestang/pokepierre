@@ -946,6 +946,10 @@ grande maison bleue (26, 24, fermée). Les portes suivent la carte retouchée da
   scooters klaxonnent dans tous les sens, l'odeur du phở monte des trottoirs. »** / « Tu ne comprends rien aux
   panneaux. Et pourtant, tu te sens déjà chez toi. » / « Ta maison est la petite maison violette de la grande rue. Ton nouveau
   travail commence aujourd'hui, à l'agence de voyages : la maison noire, un peu plus loin. »
+- Dans ta maison, la première fois : Tim vient tout de suite à Pierre (le joueur n'a pas la main) : **« Pierre ! Te voilà
+  enfin ! Moi c'est Tim, ton coloc. Trop content de partager cette aventure avec toi, franchement ça va être génial. »** /
+  « Au fait, tu fais du skate ? Moi j'adore ça, faut absolument qu'on aille rouler ensemble un de ces quatre ! » (une
+  seule fois, drapeau `timAccueil`).
 - Dans ta maison (avant le premier jour) : « Ta maison à Hanoï. Petite, mais tu la partages avec Tim, ton coloc. » / « L'agence de
   voyage t'attend : la maison noire, sur la grande rue. »
 
@@ -1341,7 +1345,7 @@ de jour.
 | Directeur | Le dernier étage : la belle place | `g123` (« Directeur (Paris) », distinct de celui du stade) |
 | Hugues | L'ami parisien de Pierre, fan de foot : le match chez lui | `g121` |
 | Antoine | Collègue de la tour : il appelle Pierre au sujet de la place de concert | `g98` |
-| Tam, Louis (hommes) | La place de concert, de main en main (l'Opéra, la file du Louvre) ; Louis la rend | `g182`, `g155` |
+| Hugo, Louis (hommes) | La place de concert, de main en main (l'Opéra, la file du Louvre) ; Yasmine, la collègue de l'accueil, la rend | `g182`, `g155` |
 | Chanteur | Bercy | `g69` |
 | Thomas | L'ami parisien de Pierre, travaille au restaurant au store rayé ; le match | `g95` |
 | Philippe, Nico, un ami | Les amis de Hugues, devant la télé le soir du match | `g6`, `g7`, `g137` |
@@ -1363,13 +1367,18 @@ de jour.
    l'ascenseur sont éteints. Pierre ressort.
 3. **Le concert (la place qui a voyagé).** En sortant de la tour, le téléphone sonne : « Ton téléphone sonne. C'est
    Antoine, du bureau. » Antoine (collègue de la tour) : **« Pierre ! Ce soir, concert à Bercy. J'avais une place pour
-   toi… mais je l'ai passée à Tam pour qu'il te la donne, et… bref, elle a un peu voyagé. »** / « Tam est devant
-   l'Opéra. Il saura où elle est passée ! » Tam : « La place d'Antoine ? Ah… Je l'ai donnée à Louis, il en rêvait. Il
+   toi… mais je l'ai passée à Hugo pour qu'il te la donne, et… bref, elle a un peu voyagé. »** / « Hugo est devant
+   l'Opéra. Il saura où elle est passée ! » Hugo : « La place d'Antoine ? Ah… Je l'ai donnée à Louis, il en rêvait. Il
    fait la queue au Louvre, comme d'habitude. » (ensuite : « Louis, dans la file du Louvre. Bonne chance ! ») ; Louis,
-   dans la file du Louvre, le dernier maillon (Antoine → Tam → Louis) : « Ta place ? Ah, c'était la tienne ! Je l'ai
-   gardée bien au chaud, promis. Tiens, reprends-la. » → **Place de concert** (« Louis te rend la place de concert. »)
-   / « Bercy, c'est le grand dôme, en haut à gauche. Ça commence bientôt ! » (Avant l'appel, ce sont des
-   Parisiens comme les autres : Tam « L'Opéra ouvre ce soir. J'attends une amie. », Louis « Deux heures de queue pour le
+   dans la file du Louvre : « Ta place ? Mince… Je l'ai laissée à une certaine Yasmine, au café à terrasse, à côté de ton
+   immeuble. Elle adore ce chanteur. » (ensuite : « Yasmine, au café à terrasse. Elle ne l'a pas encore utilisée,
+   promis ! ») ; Yasmine, la collègue de l'accueil de la tour, en pause au café à terrasse le temps de la quête (absente
+   du hall), le dernier maillon (Antoine → Hugo → Louis → Yasmine) : « Pierre ?! On se croise tous les jours à la tour,
+   et c'est en terrasse qu'on se retrouve… » / « Ta place ? Oh, c'était la tienne ! Elle a fait le tour de Paris pour
+   finir chez ta collègue de bureau, c'est fou. Tiens, reprends-la. » → **Place de concert** (« Yasmine te rend la place
+   de concert. ») / « Bercy, c'est le grand dôme, en haut à gauche. Ça commence bientôt ! » (ensuite : « Bon concert !
+   Tu me raconteras demain, à la machine à café… si elle marche. ») (Avant l'appel, Hugo et Louis sont des Parisiens
+   comme les autres : Hugo « L'Opéra ouvre ce soir. J'attends une amie. », Louis « Deux heures de queue pour le
    Louvre. Mais ça vaut le coup, il paraît. ».) À Bercy : « Tu montres ta place à l'entrée. La salle est pleine. » ;
    Pierre avance de quelques pas dans l'allée ; **« Le concert commence ! »** ; le chanteur (paroles écrites par l'utilisateur) : « J’garde le meilleur et j’ai tourné les pages, j’ai pas de
    rancoeur et j’oublie jamais rien, » / « J’ai passé l’été sous la neige et l’hiver à la plage, tu ferais quoi à ma
@@ -1436,12 +1445,13 @@ chaque mesure, une flûte lointaine et rare avec deux échos ; recomposée le 11
 le synthétiseur du jeu (systems/audio.js `reve`), libre de droits, inscrite au générique. Pas de nom de ville affiché.
 
 ### La grande réunion
-Pierre est immobile au centre ; le joueur n'a plus la main. Le voile clair se dissipe et le décor se forme autour de lui.
+Pierre est immobile au centre ; le joueur n'a plus la main. Le voile clair se dissipe et le décor se forme autour de lui ;
+Pierre : **« Attends… où suis-je ? »**
 Les personnages nommés du jeu sont là, en cercle (27, répartis régulièrement autour de lui) : Maman, Papa, Manon, Fanny,
 Jean ; Felix, Joshua, Yanis, Val ; Margaux, Benoît, Étienne ; Rémy ; Tanguy, Geoffrey ; Ousmane, Paul, Rémi, Léo, Anaïs ;
 Charlotte, Romain, Prophecy ; Harsh ; **Dalil, Hugues et Thomas**, silencieux. Huit prennent la parole, un par ville :
 chacun s'avance vers Pierre, dit son mot, puis se range près de lui. **Absents** (personnages nommés, signalés sans être
-ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de l'utilisateur), Tam et Louis (Paris).
+ajoutés) : M. Lam, le patron de Corning, Camille et M. Bouly (à la demande de l'utilisateur), Hugo et Louis (Paris).
 - Felix (Saint-Ay) : « Depuis Saint-Ay qu'on te suit ! On savait que tu finirais par tous nous réunir. »
 - Margaux (Montépilloy) : « Tu me trouvais toujours… Mais là, c'est toi qui es allé tellement loin qu'on a failli ne
   jamais te trouver ! »
@@ -1461,10 +1471,10 @@ une, de la Joie de vivre à la Liberté ; la Liberté s'illumine en dernier (en 
 (systems/VirtuesFade.js).
 
 ### Le réveil (le twist)
-On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu, et **la cinématique d'ouverture est exactement la
-même** (`fortDeFranceStory.js OPENING_CINEMATIC`, partagée avec le début de partie) : Pierre debout au milieu de sa
+On rouvre sur Fort-de-France, dans la chambre de l'ouverture du jeu, et **la cinématique d'ouverture est rejouée**
+(`fortDeFranceStory.js OPENING_CINEMATIC`, partagée avec le début de partie) : Pierre debout au milieu de sa
 chambre, à côté du lit (pas couché), l'image de l'île et le bruit des vagues, « C'est le dernier matin à
-Fort-de-France. », puis Maman, d'en bas : « Pierre ! Le ferry part cet après-midi ! Descends ! » Puis une bulle « ! »
+Fort-de-France. », puis Pierre, encore groggy : **« Quel rêve étrange… »**, puis Maman, d'en bas : « Pierre ! Le ferry part cet après-midi ! Descends ! » Puis une bulle « ! »
 au-dessus du **bureau** de Pierre (6, 3), où est posé un petit objet (la même image que la pierre gravée du vieux sage) ;
 Pierre : « Ouais… c'est quoi, cet objet ? » Le joueur reprend la main et prend l'objet face au bureau → **Talisman
 indien** (encart d'objet reçu) ; Pierre : **« Je n'ai jamais quitté Fort-de-France. C'était un rêve, ça ne peut être
@@ -1478,11 +1488,8 @@ reviens me voir ! », puis elle retourne à sa place (ensuite : « Le ferry part
 file ! »). Pierre sort de la maison : la carte de Fort-de-France (l'île) s'affiche un instant.
 
 ### La toute fin
-Le **fondu blanc** de l'entrée dans le rêve (flou, voile clair, la musique s'éteint) ; puis, sur fond noir, deux cartons
-qui apparaissent en fondu l'un après l'autre (systems/EndCards.js ; chacun reste au moins 2,5 s, puis jusqu'à un appui) :
-1. **« Car là où est ton trésor, là aussi sera ton cœur. »** (la citation seule, sans sa référence)
-2. **« Il a fallu tout ce voyage pour comprendre que le trésor n'était pas au bout du chemin. Il était dans la chambre
-   d'où tout est parti. Mais sans le voyage, il n'aurait jamais su le reconnaître. »**
+Pierre, devant la maison : **« Tout recommence… encore ? »** ; puis le **fondu blanc** de l'entrée dans le rêve (flou,
+voile clair, la musique s'éteint).
 
 Puis retour à l'écran titre, et le **générique** défile par-dessus (src/data/credits.js : histoire, univers Nintendo /
 Game Freak, sprites des personnages (Vanilla Sunshine et ses contributeurs), décors et intérieurs (Gen 4 Pack complet,
@@ -1600,11 +1607,11 @@ Entre Hanoï et Paris, aucune vertu n'est gagnée. Le carnet range aussi un « s
 | Hugues | `g121` | Paris (au téléphone, puis chez lui : le match), le rêve |
 | Dalil | `g2` | Bordeaux (la soirée d'intégration, le stade), le rêve |
 | Thomas | `g95` | Paris (le restaurant au store rayé, le match), le rêve |
-| Tam, Louis | `g182`, `g155` | Paris (la place de concert) |
+| Hugo, Louis | `g182`, `g155` | Paris (la place de concert) |
 | Chanteur | `g69` | Paris (Bercy) |
 
 Le rêve de la fin réunit tous les personnages nommés du tableau, sauf M. Lam, le patron de Corning, Camille et M. Bouly (voir la
-section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Tam, Louis et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
+section 13 ; Dalil, Hugues et Thomas y sont, silencieux ; Hugo, Louis et le chanteur n'y sont pas) ; huit y parlent : Felix, Margaux, Rémy, Ousmane, Léo, Romain, Harsh, Fanny.
 ---
 
 ## Lignes facultatives de Hanoï, Amsterdam et Delhi (11 octobre 2026, validées par Pierre)
@@ -1731,7 +1738,7 @@ ICONS, src/art/uiIcons.js), créditée au générique.
 | Bouquet de fleurs | Amsterdam, le marchand de fleurs | Donné à Romain | `bouquet` | « Le bouquet que Romain t'a demandé de rapporter du marchand de fleurs. » |
 | Billet d'avion pour Delhi | Amsterdam, Romain, la nuit au canal | Le vol pour Delhi | `billet` | « Ton billet pour le prochain échange, remis par Romain au bord du canal. » |
 | Clés du studio | Paris, le propriétaire | Le studio, la tour | `cles` | « Les clés de ton studio parisien, remises par le propriétaire. » |
-| Place de concert | Paris, Louis (Antoine → Tam → Louis) | Bercy | `billet` | « La place pour Bercy, passée d'Antoine à Tam, puis à Louis. » |
+| Place de concert | Paris, Yasmine (Antoine → Hugo → Louis → Yasmine) | Bercy | `billet` | « La place pour Bercy, passée d'Antoine à Hugo, puis à Louis, puis à Yasmine. » |
 | De quoi manger | Paris, Thomas au restaurant | La soirée du match chez Hugues | `repas` | « Le repas que Thomas a rapporté du restaurant pour le match. » |
 | Talisman indien | Delhi, le vieux sage du fort ; à la fin, sur le bureau de Pierre | La toute fin (le réveil) | `pierre-gravee` | « Une petite pierre où l'on a gravé un chemin qui tourne sur lui-même, remise par le vieux sage. » |
 

@@ -29,7 +29,7 @@ rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (f
 - Écran : format GBA dézoomé, 360 x 240 px (22,5 x 15 cases), voir src/systems/screen.js.
 - Police des dialogues et du menu : police bitmap de Rouge Feu, extraite par scripts/extract_frlg_font.py
   vers public/assets/fonts/ (voir src/systems/frlgFont.js) ; deux lignes par page, pages coupées automatiquement.
-  Sur fond sombre (cartons de fin, générique, vertus) : sa variante claire `frlg-clair` (encre blanche, ombre gris
+  Sur fond sombre (générique, vertus) : sa variante claire `frlg-clair` (encre blanche, ombre gris
   foncé), teintée avec setTint ; jamais setTintFill sur la police d'origine (l'ombre prend la couleur, lettres empâtées).
 - Personnages : uniquement des PNJ de la quatrième génération (Diamant/Perle/Platine, HeartGold/SoulSilver), sprites
   officiels fournis par l'utilisateur (ASSETTILESPOKEMONV2/personnages/gen4-officiels), rassemblés par

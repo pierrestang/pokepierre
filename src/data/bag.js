@@ -22,7 +22,7 @@ export const OBJECTS = [
   { item: ITEMS.marchandise, used: { ifFlags: [FLAGS.marchandiseDonnee] }, text: 'Le bouquet que Romain t\'a demandé de rapporter du marchand de fleurs.' },
   { item: ITEMS.billetNewDelhi, used: { ifFlags: [FLAGS.arriveeNewDelhi] }, text: 'Ton billet pour le prochain échange, remis par Romain au bord du canal.' },
   { item: ITEMS.clesParis, used: { ifFlags: [FLAGS.reveParis] }, text: 'Les clés de ton studio parisien, remises par le propriétaire.' },
-  { item: ITEMS.placeConcert, used: { ifFlags: [FLAGS.concertParis] }, text: 'La place pour Bercy, passée d\'Antoine à Tam, puis à Louis.' },
+  { item: ITEMS.placeConcert, used: { ifFlags: [FLAGS.concertParis] }, text: 'La place pour Bercy, passée d\'Antoine à Hugo, puis à Louis, puis à Yasmine.' },
   { item: ITEMS.platsMatch, used: { ifFlags: [FLAGS.matchArrivee] }, text: 'Le repas que Thomas a rapporté du restaurant pour le match.' },
   { item: ITEMS.talismanIndien, used: { ifFlags: [FLAGS.sageDelhi] }, text: 'Une petite pierre où l\'on a gravé un chemin qui tourne sur lui-même, remise par le vieux sage.' },
 ].map(({ item, ...rest }) => ({ id: item.id, ...rest }));

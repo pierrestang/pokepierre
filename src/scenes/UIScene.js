@@ -1,5 +1,4 @@
 import { VirtuesFade } from '../systems/VirtuesFade.js';
-import { EndCards } from '../systems/EndCards.js';
 import Phaser from 'phaser';
 import { DialogBox } from '../systems/DialogBox.js';
 import { souvenirs, souvenirEvents } from '../systems/souvenirs.js';
@@ -72,7 +71,6 @@ export class UIScene extends Phaser.Scene {
     // Voile clair de l'entrée dans le rêve (étape `dream`), dissipé à l'arrivée (étape `veil: false`).
     this.veil = this.add.rectangle(0, 0, 8000, 8000, 0xeef2ff).setOrigin(0).setDepth(94).setAlpha(0);
     this.virtuesFade = new VirtuesFade(this);              // fin du jeu : le carnet des vertus pendant le fondu au noir
-    this.endCards = new EndCards(this);                    // les cartons de la toute fin, sur fond noir
     this.menu = new StartMenu(this, this.dialog);          // Échap
     this.wordEntry = new WordEntry(this);                  // saisie d'un mot (mot de passe de la cabane)
     if (isTouchDevice()) this.touch = new TouchControls(this);

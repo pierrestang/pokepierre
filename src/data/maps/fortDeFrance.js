@@ -143,8 +143,8 @@ export const fortDeFranceMap = {
       unlessFlags: [FLAGS.manonDemande, FLAGS.departFortDeFrance],
       steps: [{ walk: 'manon', to: [16, 8], block: true }, { talk: 'manon' }],
     },
-    // La toute fin : Pierre sort de la maison après la scène de Maman ; l'île, puis le fondu blanc et les cartons
-    // (reveStory.js FINALE).
+    // La toute fin : Pierre sort de la maison après la scène de Maman ; l'île, son dernier mot, puis le fondu blanc et
+    // le générique (reveStory.js FINALE).
     { on: 'enter', ifFlags: [FLAGS.mamanFin], unlessFlags: [FLAGS.finVue], steps: FINALE },
   ],
   // Guirlande de fanions (art/bunting.js) du faîte du toit au haut du mât, et le long de l'avant-toit : elle apparaît

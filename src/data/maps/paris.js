@@ -5,7 +5,7 @@ import { parseGrid } from './parseGrid.js';
 import BUILT from '../builtMaps/paris.json' with { type: 'json' };
 import { builtGrid, extendEdges } from './builtGrid.js';
 import { FLAGS, ITEMS } from '../story.js';
-import { ANTOINE_CALL, DIRECTOR_REMINDER, HUGUES_MESSAGE, LANDLORD_CALL, MANAGER_REMINDER, INTO_THE_DREAM, LANDLORD, LOUIS, TAM } from '../parisStory.js';
+import { ANTOINE_CALL, DIRECTOR_REMINDER, HUGUES_MESSAGE, LANDLORD_CALL, MANAGER_REMINDER, INTO_THE_DREAM, LANDLORD, LOUIS, HUGO, YASMINE } from '../parisStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
 // Hors de la carte : la Seine, l'avenue et la rue sud se prolongent ; des arbres ailleurs.
@@ -117,13 +117,17 @@ export const parisMap = {
     // Le propriétaire, devant l'immeuble.
     // Le propriétaire, juste devant l'immeuble aux balcons fleuris : Pierre doit le trouver (il ne vient pas à lui).
     { id: 'proprietaire', name: 'Propriétaire', sprite: 'g161', x: 7, y: 23, facing: 'down', script: LANDLORD },
-    // La place de concert, de main en main (parisStory.js) : Tam devant l'Opéra, puis Louis dans la file du Louvre, qui
-    // la rend.
-    { id: 'tam', name: 'Tam', x: 39, y: 23, facing: 'right', script: TAM },
+    // La place de concert, de main en main (parisStory.js) : Hugo devant l'Opéra, Louis dans la file du Louvre, puis
+    // Yasmine, la collègue de l'accueil de la tour, en pause au café à terrasse, qui la rend (le temps de la quête).
+    { id: 'hugo', name: 'Hugo', x: 39, y: 23, facing: 'right', script: HUGO },
     // La file du Louvre, devant sa porte de gauche (21, 14).
     { id: 'file-louvre-1', name: 'Touriste', sprite: 'g21', x: 20, y: 15, facing: 'right', still: true, dialogue: ['La file avance… doucement. Très doucement.'] },
     { id: 'louis', name: 'Louis', x: 19, y: 15, facing: 'right', script: LOUIS },
     { id: 'file-louvre-2', name: 'Touriste', sprite: 'g34', x: 18, y: 15, facing: 'right', still: true, dialogue: ['On m\'a dit vingt minutes. Ça fait une heure.'] },
+    {
+      id: 'yasmine', name: 'Yasmine', x: 15, y: 23, facing: 'left',
+      ifFlags: [FLAGS.concertAppel], unlessFlags: [FLAGS.concertParis], script: YASMINE,
+    },
   ],
   events: [
     // L'arrivée : le propriétaire appelle ; un an après le concert, puis le match : Camille appelle (la tour attend).
