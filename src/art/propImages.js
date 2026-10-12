@@ -1,7 +1,9 @@
 // Objets des cartes en image (props `image: '<nom>'`) : dessinés dans le style Gen 4 par scripts/build_props.py vers
 // public/assets/props/<nom>.png. L'image est posée au milieu du bas de l'emprise du prop, triée en profondeur avec les
 // personnages (on passe derrière ce qui dépasse au-dessus).
-export const PROP_IMAGES = ['tracteur'];
+// Le repas de Delhi (`repas`, le tapis garni ; `plat`, l'assiette tendue à Pierre) : scripts/build_meal.py.
+// La porte de Notre-Dame (Paris), sous l'arche du dessin : scripts/build_props.py.
+export const PROP_IMAGES = ['tracteur', 'repas', 'plat', 'porte-notre-dame'];
 
 export const propKey = (name) => `prop-${name}`;
 

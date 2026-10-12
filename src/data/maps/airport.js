@@ -3,7 +3,8 @@ import { parseGrid } from './parseGrid.js';
 // du jeu (voir builtGrid).
 import BUILT from '../builtMaps/airport.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS, ITEMS, TOULON_QUESTS, visitedFlag } from '../story.js';
+import { FLAGS, ITEMS } from '../story.js';
+import { AIRPORT_EXITS } from './airportLinks.js';
 import { FLIGHT_TO_HULL } from '../bordeauxStory.js';
 import { FLIGHT_TO_HANOI } from '../hullStory.js';
 import { FLIGHT_TO_AMSTERDAM } from '../hanoiStory.js';
@@ -12,51 +13,47 @@ import { FLIGHT_TO_AMSTERDAM } from '../hanoiStory.js';
 // déjà visitées). Une destination n'apparaît que si ses conditions sont remplies (ifFlags / ifItems / ifSouvenirs) ;
 // `notWhen` : cachée quand ces conditions-là sont remplies (elle est alors la suite de l'histoire).
 
-// La suite de l'histoire : le prochain vol, tant qu'on n'est pas arrivé (au plus un à la fois).
+// La suite de l'histoire : le prochain vol, tant qu'on n'est pas arrivé (au plus un à la fois). Les destinations
+// s'affichent par le seul nom de la ville, sans le pays.
 const NEXT_FLIGHTS = [
-  // Hull : le premier vol, avec le diplôme d'anglais, est gardé par Ousmane (voir bordeauxStory.js FLIGHT_TO_HULL).
-  { label: 'Hull (Angleterre)', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull], steps: FLIGHT_TO_HULL },
+  // Hull : le premier vol, avec le diplôme d'anglais ; Pierre part seul (voir bordeauxStory.js FLIGHT_TO_HULL).
+  { label: 'Hull', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull], steps: FLIGHT_TO_HULL },
   // Hanoï : après les adieux de Hull (personne n'accompagne Pierre).
-  { label: 'Hanoï (Vietnam)', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
+  { label: 'Hanoï', ifItems: [ITEMS.diplomeHull.id], ifFlags: [FLAGS.adieuxHull], unlessFlags: [FLAGS.arriveeHanoi], steps: FLIGHT_TO_HANOI },
   // Amsterdam : après l'appel de Romain, six mois après le premier jour à Hanoï (monologue au guichet, voir hanoiStory.js).
-  { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.appelRomain], unlessFlags: [FLAGS.arriveeAmsterdam], steps: FLIGHT_TO_AMSTERDAM },
-  // New Delhi : avec le billet que Romain remet à Amsterdam, la nuit au bord du canal.
+  { label: 'Amsterdam', ifFlags: [FLAGS.appelRomain], unlessFlags: [FLAGS.arriveeAmsterdam], steps: FLIGHT_TO_AMSTERDAM },
+  // Delhi : avec le billet que Romain remet à Amsterdam, la nuit au bord du canal.
   {
-    label: 'New Delhi (Inde)', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
-    setFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 6, facing: 'right' },
+    label: 'Delhi', ifItems: [ITEMS.billetNewDelhi.id], unlessFlags: [FLAGS.arriveeNewDelhi],
+    setFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi,
   },
-  { label: 'Bali (Indonésie)', ...TOULON_QUESTS, unlessFlags: [visitedFlag('bali')], plane: { map: 'bali', x: 15, y: 23, facing: 'up' } },
-  { label: 'Sri Lanka', ifItems: [ITEMS.objetMagiqueBali.id], unlessFlags: [visitedFlag('sriLanka')], plane: { map: 'sriLanka', x: 1, y: 10, facing: 'right' } },
-  { label: 'Thaïlande', ifItems: [ITEMS.objetMagiqueSriLanka.id], unlessFlags: [visitedFlag('thailand')], plane: { map: 'thailand', x: 1, y: 6, facing: 'right' } },
-  { label: 'Népal', ifItems: [ITEMS.objetMagiqueThailande.id], unlessFlags: [visitedFlag('nepal')], plane: { map: 'nepal', x: 1, y: 12, facing: 'right' } },
+  // Bordeaux : le semestre de Delhi fini, depuis l'aéroport de Delhi, avec Prophecy (le stade s'ouvre).
   {
-    label: 'Nouveau pays',
-    ifItems: [ITEMS.objetMagiqueNepal.id],
-    dialogue: ["[Texte provisoire] Ce vol n'est pas encore ouvert : la suite du voyage arrive bientôt !"],
+    label: 'Bordeaux', ifFlags: [FLAGS.semestreTermine], unlessFlags: [FLAGS.retourBordeaux],
+    setFlags: [FLAGS.retourBordeaux], plane: AIRPORT_EXITS.bordeaux,
   },
 ];
 
 // « Autre » : les lieux déjà visités (on y retourne en avion), sauf la suite de l'histoire, déjà proposée.
 const OTHER_FLIGHTS = [
-  { label: 'Fort-de-France (Martinique)', plane: { map: 'fortDeFrance', x: 15, y: 10, facing: 'down' } },
+  { label: 'Bordeaux', ifFlags: [FLAGS.arriveeBordeaux], plane: AIRPORT_EXITS.bordeaux },
+  { label: 'Fort-de-France', plane: { map: 'fortDeFrance', x: 15, y: 10, facing: 'down' } },
   { label: 'Saint-Ay', ifFlags: [FLAGS.departFortDeFrance], plane: { map: 'saintAy', x: 5, y: 10, facing: 'left' } },
   { label: 'Montépilloy', ifFlags: [FLAGS.arriveeMontepilloy], plane: { map: 'montepilloy', x: 16, y: 27, facing: 'up' } },
   { label: 'Prytanée', ifFlags: [FLAGS.arriveePrytanee], plane: { map: 'prytanee', x: 16, y: 23, facing: 'up' } },
-  { label: 'Hull (Angleterre)', ifFlags: [FLAGS.arriveeHull], plane: { map: 'hull', x: 1, y: 35, facing: 'right' } },
-  { label: 'Hanoï (Vietnam)', ifFlags: [FLAGS.arriveeHanoi], plane: { map: 'hanoi', x: 1, y: 8, facing: 'right' } },
-  { label: 'Amsterdam (Pays-Bas)', ifFlags: [FLAGS.arriveeAmsterdam], plane: { map: 'amsterdam', x: 1, y: 10, facing: 'right' } },
-  { label: 'New Delhi (Inde)', ifFlags: [FLAGS.arriveeNewDelhi], plane: { map: 'newDelhi', x: 1, y: 6, facing: 'right' } },
-  { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: { map: 'paris', x: 1, y: 6, facing: 'right' } },
-  { label: 'Toulon', ifFlags: [FLAGS.arriveeToulon], plane: { map: 'toulon', x: 1, y: 6, facing: 'right' } },
-  { label: 'Bali (Indonésie)', ifFlags: [visitedFlag('bali')], plane: { map: 'bali', x: 15, y: 23, facing: 'up' } },
-  { label: 'Sri Lanka', ifFlags: [visitedFlag('sriLanka')], plane: { map: 'sriLanka', x: 1, y: 10, facing: 'right' } },
-  { label: 'Thaïlande', ifFlags: [visitedFlag('thailand')], plane: { map: 'thailand', x: 1, y: 6, facing: 'right' } },
-  { label: 'Népal', ifFlags: [visitedFlag('nepal')], plane: { map: 'nepal', x: 1, y: 12, facing: 'right' } },
+  { label: 'Hull', ifFlags: [FLAGS.arriveeHull], plane: AIRPORT_EXITS.hull },
+  { label: 'Hanoï', ifFlags: [FLAGS.arriveeHanoi], plane: AIRPORT_EXITS.hanoi },
+  { label: 'Amsterdam', ifFlags: [FLAGS.arriveeAmsterdam], plane: AIRPORT_EXITS.amsterdam },
+  { label: 'Delhi', ifFlags: [FLAGS.arriveeNewDelhi], plane: AIRPORT_EXITS.newDelhi },
+  { label: 'Paris', ifFlags: [FLAGS.arriveeParis], plane: AIRPORT_EXITS.paris },
   { label: 'Rester ici', dialogue: ['Très bien, reviens me voir quand tu veux !'] },
 ];
 
-// Un vol : le trajet en avion (FerryScene.playPlane), puis l'arrivée.
-const flight = ({ plane, ...choice }) => (plane ? { ...choice, warp: { ...plane, plane: true } } : choice);
+// Un vol : le trajet en avion (FerryScene.playPlane), puis l'arrivée. On ne propose pas la ville dont l'aéroport est
+// celui où l'on se trouve (memo `aeroport`, voir airportLinks.js).
+const flight = ({ plane, ...choice }) => (plane
+  ? { ...choice, unlessMemo: { aeroport: plane.map }, warp: { ...plane, plane: true } }
+  : choice);
 
 const DESTINATIONS = [
   ...NEXT_FLIGHTS.map(flight),
@@ -93,12 +90,6 @@ export const airportMap = {
   doors: [],
   buildings: [],
   npcs: [
-    // Ousmane attend devant le guichet le jour du départ pour Hull.
-    {
-      id: 'ousmane-aeroport', name: 'Ousmane', x: 11, y: 8, facing: 'left',
-      ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.arriveeHull],
-      dialogue: ['Le guichet, c\'est juste là. Prends ton billet pour Hull.'],
-    },
     {
       id: 'hotesse', name: 'Hôtesse', x: 10, y: 6, facing: 'down', color: 0x2c5cb0,
       dialogue: ["Bonjour ! Bienvenue à l'aéroport."],
@@ -112,10 +103,10 @@ export const airportMap = {
     x,
     y: 13,
     readyDialogue: ["Tu sors de l'aéroport."],
-    warp: { map: 'bordeaux', x: 30, y: 10, facing: 'left' },
+    warp: { airportExit: true },                // dans la ville d'où l'on vient (voir airportLinks.js)
   })),
   // Les écrans du guichet, de part et d'autre de l'hôtesse.
-  objects: [8, 12].map((x) => ({ x, y: 7, dialogue: ['Sur l\'écran, les départs du jour : Hull, Hanoï, Amsterdam, New Delhi… Le monde entier.'] })),
+  objects: [8, 12].map((x) => ({ x, y: 7, dialogue: ['Sur l\'écran, les départs du jour : Hull, Hanoï, Amsterdam, Delhi… Le monde entier.'] })),
   spawn: { x: 10, y: 12, facing: 'up' },
 };
 

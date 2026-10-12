@@ -4,6 +4,7 @@ import {
 import { createAssistant } from './assistant.js';
 import { createStudio } from './studio.js';
 import { createNpcLayer } from './npcs.js';
+import { createLooksPanel } from './looksPanel.js';
 import { createEcarts } from './ecarts.js';
 import { MAPS } from '../data/maps/index.js';
 import { interiors } from '../data/maps/interiors.js';
@@ -1781,7 +1782,7 @@ async function save({ force = false } = {}) {
 // Les cartes du projet dans l'ordre d'arrivée dans le jeu (la route de Montépilloy entre Saint-Ay et Montépilloy, qu'elle
 // relie ; l'aéroport juste avant Hull) ; une carte qui n'est pas dans la liste vient ensuite, par nom.
 const GAME_ORDER = ['fort-de-france', 'saint-ay', 'route-de-montepilloy', 'montepilloy', 'bonsecours', 'prytanee', 'bordeaux',
-  'airport', 'hull'];
+  'airport', 'hull', 'hanoi', 'amsterdam', 'new-delhi', 'paris'];
 const gameRank = (id) => {
   const i = GAME_ORDER.indexOf(id);
   return i < 0 ? GAME_ORDER.length : i;
@@ -2138,6 +2139,7 @@ const studio = createStudio({
 });
 
 const npcs = createNpcLayer({ state, base: BASE, remember, changed, requestDraw, setStatus });
+createLooksPanel({ base: BASE, setStatus });             // bouton PNJ : l'apparence des personnages nommés
 
 // Panneau « Écarts » (check-up visuel, src/builder/ecarts.js) : centrer la vue sur un écart.
 function focusCells(r) {

@@ -48,7 +48,7 @@ export const routeMontepilloyMap = {
   // Deux passants sur la route.
   npcs: [
     {
-      id: 'promeneuse-route', name: 'Promeneuse', x: 12, y: 14, facing: 'left',
+      id: 'promeneuse-route', name: 'Promeneuse', sprite: 'g132', x: 12, y: 14, facing: 'left',   // pas le sprite de Rose (Fort-de-France)
       dialogue: ['Le blé est haut cette année.', 'Quand le vent souffle, on dirait la mer, en jaune.'],
     },
     {

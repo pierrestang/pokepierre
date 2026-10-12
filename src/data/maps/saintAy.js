@@ -4,9 +4,9 @@ import { parseGrid } from './parseGrid.js';
 // d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
 import BUILT from '../builtMaps/saint-ay.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS, ITEMS } from '../story.js';
+import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
-  ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS, PULLEY, PULLEY_SPOT,
+  ARRIVAL, PLANKS, ROPE, CAR, henPush, ENCLOS_EXIT, CABANE_SPOT, CLINIC_EXIT, OLD_FISHER, MANON_NEWS, PULLEY, PULLEY_SPOT, YEARS_LATER,
 } from '../saintAyStory.js';
 
 // Le ferry (le même qu'à Fort-de-France), amarré à gauche du ponton du lac ; une case d'eau entre les deux.
@@ -156,12 +156,6 @@ export const saintAyMap = {
     // En sortant de la clinique, Felix (ton cousin) vient à ta rencontre et part devant, chez lui, où les cousins
     // t'attendent (voir CLINIC_EXIT).
     {
-      // Au départ en voiture : Felix sort de la cabane (sa porte) et accourt jusqu'à la voiture (voir saintAyStory.js CAR).
-      id: 'felix-voiture', name: 'Felix', x: CABANE_SPOT.x, y: CABANE_SPOT.y, facing: 'up', color: COUSIN_COLORS.felix,
-      ifFlags: [FLAGS.felixVoiture], unlessFlags: [FLAGS.arriveeMontepilloy],
-      dialogue: ['Le mot de passe, tu le gardes, hein ?'],
-    },
-    {
       id: 'felix', name: 'Felix', x: 17, y: 21, facing: 'right', color: COUSIN_COLORS.felix,
       ifFlags: [FLAGS.fannyMain], unlessFlags: [FLAGS.felixInvite],
       dialogue: [
@@ -177,6 +171,15 @@ export const saintAyMap = {
     },
     // Le vieux pêcheur de mauvaise humeur, au bord du lac : la chanson de Maman le déride (Joie de vivre).
     { id: 'vieux-pecheur', name: 'Vieux pêcheur', x: 8, y: 8, facing: 'left', still: true, script: OLD_FISHER },
+    // William, l'ami d'enfance de Pierre, au bord du lac pendant tout le séjour à Saint-Ay.
+    {
+      id: 'william', name: 'William', x: 11, y: 13, facing: 'left', still: true,
+      ifFlags: [FLAGS.saArrivee], unlessFlags: [FLAGS.adieuCousins],
+      dialogue: [
+        'Eh, t\'as vu le match hier soir ? Plus tard, je serai footballeur, c\'est sûr !',
+        'Et toi, t\'as hâte de commencer l\'école ? Moi trop ! Paraît qu\'on apprend à lire.',
+      ],
+    },
     // Chantier de la cabane : Joshua devant l'enclos à poules, Yanis au bord du lac, côté sud (vers la corde).
     {
       id: 'joshua', name: 'Joshua', x: 28, y: 8, facing: 'left', color: COUSIN_COLORS.joshua,
@@ -215,6 +218,8 @@ export const saintAyMap = {
     // Arrivée après la traversée : écran noir, puis Papa et Manon te trouvent au bord du lac.
     { on: 'enter', ifFlags: [FLAGS.departFortDeFrance], unlessFlags: [FLAGS.saArrivee], steps: ARRIVAL },
     // Quelques années plus tard, au bord du lac : Manon vient te chercher.
+    // En sortant de la cabane, l'Esprit d'équipe reçu : « Quelques années plus tard… » (saintAyStory.js YEARS_LATER).
+    { on: 'enter', ifSouvenirs: [TRAITS.espritEquipe.id], unlessFlags: [FLAGS.ellipseSaintAy], steps: YEARS_LATER },
     { on: 'enter', ifFlags: [FLAGS.ellipseSaintAy], unlessFlags: [FLAGS.manonNouvelle], steps: MANON_NEWS },
     // En sortant de la clinique : Felix vient te chercher (voir CLINIC_EXIT).
     { on: 'enter', ifFlags: [FLAGS.fannyMain], unlessFlags: [FLAGS.felixInvite], steps: CLINIC_EXIT },
@@ -230,7 +235,9 @@ export const saintAyMap = {
       x,
       y: 0,
       ifFlags: [FLAGS.arriveeMontepilloy],
-      dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'],
+      // Avant l'annonce de Papa, rien ne dit encore qu'on partira.
+      dialogue: ['La route du nord. Elle file loin, vers les terres.'],
+      lockedDialogues: [{ ifFlags: [FLAGS.annonceMutation], dialogue: ['La route de Montépilloy. On y partira en voiture, avec la famille.'] }],
       warp: { map: 'routeMontepilloy', x: 10, y: 28, facing: 'up' },
     })),
   ],

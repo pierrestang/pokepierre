@@ -1,124 +1,220 @@
 import { parseGrid } from './parseGrid.js';
+// Le dessin de la carte : Delhi en Gen 4 (scripts/build_new_delhi.py, thème « Delhi (palais moghols) » du
+// catalogue) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille ci-dessous (sourceGrid) suit ce
+// dessin : avenue, trottoirs, jardins, bassin, portes (sur les portes dessinées).
+import BUILT from '../builtMaps/new-delhi.json' with { type: 'json' };
+import { builtGrid, extendEdges } from './builtGrid.js';
+import { getTile } from '../tiles.js';
 import { FLAGS } from '../story.js';
+import {
+  CROWD, FORT_DOOR_FRONT, GOING_HOME, HARSH_GOODBYE, HARSH_LEADING, HARSH_WALK, JOIN_HARSH, MONTHS_LATER, NEIGHBOURS, PASSERS_BY, PROPHECY_WELCOME,
+} from '../newDelhiStory.js';
 import { toAirport, airportSign } from './airportLinks.js';
 
-const HARSH = { name: 'Harsh', color: 0x8c3cb0 };
+// Hors de la carte : la grande avenue se prolonge, les palmiers ailleurs.
+const outside = extendEdges(['ɐ'], 'Y');
 
-// Hors de la carte : les rues et trottoirs se prolongent, pelouses ailleurs.
-function outside(x, y, grid) {
-  if (y >= 0 && y < grid.length) {
-    const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
-    if (['ɐ', 'ɔ'].includes(edge)) return edge;
-  }
-  return '.';
-}
+// La foule de la grande avenue : chacun va et vient entre deux cases ([id, sprite, de, à, réplique]) ; quelques-uns
+// restent sur place et regardent autour d'eux. Pas d'étals ni d'animaux : le dépaysement, c'est la foule.
+const CROWD_WALKERS = [
+  ['passant-1', 'g195', [9, 14], [17, 14], 'curieux'],
+  ['passante-1', 'g167', [14, 17], [7, 17], 'grandMere'],
+  ['passant-2', 'g175', [21, 13], [11, 13], 'presse'],
+  ['passante-2', 'g40', [10, 15], [18, 15], 'photo'],
+  ['passant-3', 'g79', [25, 16], [31, 16], 'marcheur'],
+  ['passante-3', 'g165', [33, 17], [25, 17], 'conseil'],
+  ['passant-4', 'g38', [30, 14], [37, 14], 'rieur'],
+  ['passante-4', 'g162', [20, 14], [26, 14], 'etudiante'],
+  ['passant-5', 'g177', [36, 16], [32, 13], 'curieux'],
+  ['passante-5', 'g89', [5, 13], [5, 17], 'silencieux'],
+  ['passant-8', 'g99', [6, 14], [13, 14], 'conseil'],
+  ['passante-8', 'g100', [16, 16], [9, 16], 'grandMere'],
+  ['passant-9', 'g111', [27, 17], [37, 17], 'presse'],
+  ['passante-9', 'g61', [22, 14], [14, 15], 'curieux'],
+  ['passant-10', 'g159', [34, 13], [29, 16], 'marcheur'],
+  ['passante-10', 'g88', [19, 13], [25, 13], 'etudiante'],
+  ['passant-11', 'g168', [8, 13], [8, 17], 'photo'],
+  ['passante-11', 'g102', [31, 15], [38, 15], 'rieur'],
+];
+const CROWD_STANDING = [
+  ['passant-6', 'g191', 12, 16, 'down', 'rieur'],
+  ['passante-6', 'g19', 21, 12, 'down', 'conseil'],
+  ['passant-7', 'g45', 35, 15, 'left', 'silencieux'],
+  ['passante-7', 'g75', 23, 13, 'down', 'grandMere'],
+  ['passante-12', 'g104', 16, 13, 'down', 'etudiante'],
+];
+// Le quartier du sud (les maisons, l'internat, la place du bazar) : des habitants, plus calmes que l'avenue
+// ([id, nom, sprite, de, à, réplique] pour ceux qui marchent, [id, nom, sprite, x, y, regard, réplique] sinon).
+const SOUTH_WALKERS = [
+  ['habitant-ancien', 'Habitant', 'g72', [3, 29], [12, 29], 'ancien'],
+  ['habitante-1', 'Habitante', 'g128', [9, 31], [20, 31], 'voisine'],
+  ['livreur', 'Livreur', 'g133', [22, 30], [36, 30], 'livreur'],
+  ['etudiant-internat', 'Étudiant', 'g150', [2, 25], [2, 30], 'internat'],
+  ['enfant-1', 'Enfant', 'g134', [22, 28], [28, 28], 'enfants'],
+  ['enfant-2', 'Enfant', 'g57', [28, 29], [22, 29], 'enfants'],
+];
+const SOUTH_STANDING = [
+  ['vendeur-bazar', 'Vendeur', 'g112', 35, 23, 'left', 'bazar'],
+  ['habitante-2', 'Habitante', 'g127', 10, 27, 'down', 'ancien'],
+  ['habitant-2', 'Habitant', 'g73', 31, 26, 'down', 'voisine'],
+];
+const south = [
+  ...SOUTH_WALKERS.map(([id, name, sprite, from, to, line]) => ({
+    id, name, sprite, x: from[0], y: from[1], facing: 'down', route: [from, to], dialogue: NEIGHBOURS[line],
+  })),
+  ...SOUTH_STANDING.map(([id, name, sprite, x, y, facing, line]) => ({
+    id, name, sprite, x, y, facing, fidget: true, dialogue: NEIGHBOURS[line],
+  })),
+];
 
-const NOT_HOME = ['[Texte provisoire] Personne ne répond...'];
+const crowd = [
+  ...CROWD_WALKERS.map(([id, sprite, from, to, line]) => ({
+    id, name: id.startsWith('passante') ? 'Passante' : 'Passant', sprite, x: from[0], y: from[1], facing: 'down',
+    route: [from, to], dialogue: PASSERS_BY[line],
+  })),
+  ...CROWD_STANDING.map(([id, sprite, x, y, facing, line]) => ({
+    id, name: id.startsWith('passante') ? 'Passante' : 'Passant', sprite, x, y, facing, fidget: true,
+    dialogue: PASSERS_BY[line],
+  })),
+];
 
-// New Delhi — capitale de l'Inde, 32 x 26 cases.
-// Légende : voir src/data/tiles.js (a = vache, d = tuk-tuk, g = drapeau indien,
-// i = soucis, p = stand d'épices, k = lotus, Y = palmier)
+// Delhi — capitale de l'Inde, 40 x 34 cases avec sa bordure de palmiers : un semestre d'échange (voir
+// newDelhiStory.js). Au nord, le long de la grande avenue : l'université (le bâtiment à coupole et lanternes dorées),
+// le palais de grès, la porte du fort, le minaret. Les jardins : la grande arche (India Gate), le bassin aux lotus. Au
+// sud : l'internat (la maison à toit plat), une maison à coupole, la tente du bazar. La grande avenue est pleine de
+// monde. Légende : voir src/data/tiles.js (ɔ = pavés, ɐ = avenue, . = jardin, ~ = bassin, D = porte, Y = palmiers).
 export const newDelhiMap = {
   id: 'newDelhi',
-  name: 'New Delhi',
-  grid: parseGrid([
-    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 0  palmiers : bord de l'écran
-    'ɔɔRRRRRRRRRɔɔRRRRRRRɔɔɔRRRRRRɔYɔ', // 1  havelis, palais moghol
-    'ɔɔRRRRRRRRRYɔRRRRRRRɔYɔRRRRRRɔɔɔ', // 2
-    'ɔɔWWWWWWWWWɔɔWWWWWWWɔɔɔWWWWWWYɔɔ', // 3
-    'ɔɔWDWWDWWDWɔɔWWWDWWWɔɔɔWDWWDWɔɔɔ', // 4  portes
-    'ɔpɔɔɔɔɔɔɔɔɔɔpɔɔɔɔɔɔɔaɔiɔɔɔɔɔɔpɔɔ', // 5  stands d'épices, vache sacrée
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 6  grande avenue (vers l'aéroport)
-    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 7
-    'ɔ<ɔdɔɔɔɔɔɔaɔɔɔɔdɔɔɔɔɔɔɔɔɔɔɔdɔɔ>ɔ', // 8  tuk-tuks  panneaux aéroport
-    '.Y.RRRRR.Y.........Y.......Y....', // 9  pelouses : India Gate
-    '...RRRRR.....RRR.....~k~~k....i.', // 10 statue de Bouddha, bassin aux lotus
-    '...WWWWW...g.RRR.g...~~~k~......', // 11 drapeaux indiens
-    '...WWWWW.....WWW.....k~~~~...Y..', // 12
-    '...WWWWW.Y.a.WWW................', // 13
-    '..i.....i..........Y.i..i.a.i...', // 14 soucis
-    '.Y.i......i.i...i.i...i.......Y.', // 15
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔ', // 16
-    'ɔɔɔRRRRRRRRRɔpɔpɔpɔɔRRRRRRRRRɔɔɔ', // 17 université, marché aux épices, havelis
-    'ɔɔɔRRRRRRRRRɔaɔɔɔɔɔɔRRRRRRRRRɔɔɔ', // 18
-    'ɔɔɔWWWWWWWWWɔɔpɔpɔpɔWWWWWWWWWɔɔɔ', // 19
-    'ɔɔɔWWWWDWWWWɔɔɔɔɔɔɔɔWDWWDWWDWɔɔɔ', // 20 portes
-    'ɔɔɔɔɔɔɔɔɔɔɔɔdɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔdɔɔ', // 21
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 22 rue sud
-    'ɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔ', // 23
-    'ɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔɔaɔɔɔɔɔɔɔɔɔɔɔ', // 24
-    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 25 palmiers : bord de l'écran
+  name: 'Delhi',
+  built: BUILT,
+  sourceGrid: parseGrid([
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 0  bordure : palmiers (dessinés)
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 1
+    'YY....................................YY', // 2  les pavés du nord
+    'YY.ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔ.YY', // 3  l'université, le palais de grès, la porte du fort, le minaret
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 4
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 5
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 6
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 7
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 8
+    'YYɐɐɐɐɐɐɔɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔDɔɔɔɔɔɔɔɔɔ.YY', // 9  porte : la porte du fort (27)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 10
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐDɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 11  porte : le palais (16)
+    'YYɐɐɐɐDɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔ.YY', // 12  porte : l'université (6)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔ.YY', // 13
+    '..ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɐɐɐɔɔ...', // 14  la grande avenue (vers l'aéroport, la bordure y est ouverte, rangées 14 à 17)
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ.......ɐɐɐɐɔɔɔɐɐɐɐɐɐɐɐɐ', // 15
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ.ɔ~~~~ɔ..ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 16
+    'ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ.ɔ~~~~~~ɔ.ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐ', // 17
+    'YYɐɐɐɐɐ...ɐɐɐ...~~~~~~~~ɔ.ɐɐɐɐɐɐɐɐɐɐɔ.YY', // 18  les jardins : India Gate, le bassin aux lotus et son île (banian)
+    'YY......ɔ.ɐɐɐ..ɔ~~ɔ..ɔ~~~ɔ.ɐɐɐɐɔɔɔɔɔɔ.YY', // 19  la place de grès : la tente du bazar, le stand de chai
+    'YY........ɐɐɐ..~~.....~~~~.ɔɔɔɔɔɔɔɔɔɔ.YY', // 20
+    'YY........ɐɐɐ..~~ɔ...ɔ~~~ɔ.ɔɔɔɔɔɔɔɔɔɔ.YY', // 21
+    'YY.ɐɐɐɐɐ..ɐɐɐ..ɔ~~~~~~~~ɔ..ɔɔɔɔɔɔDɔɔɔ.YY', // 22  porte : la tente du bazar (33)
+    'YYɐɐ.ɐɐɐɐɐɐɐɐɐ..ɔ~~~~~~ɔ...ɔɔɔɔɔɔɔɔɔɔ.YY', // 23  les maisons du sud
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐ...ɔ~~~ɔ...ɔɔɔɔɔɔɔɔɔɔɔ.YY', // 24
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐ.........ɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 25
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 26
+    'YYɐɐɐDɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔɔ.YY', // 27  porte : la maison à toit plat (5)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐDɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔɔ.YY', // 28  porte : la maison à coupole (16)
+    'YYɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔɔɔɔɔ.YY', // 29
+    'YY.ɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɐɔɔɔɔɔɔ.YY', // 30
+    'YY....................................YY', // 31  herbe sous les palmiers du bas
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 32
+    'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', // 33
   ]),
   doors: [
-    { x: 3,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 6,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 9,  y: 4,  lockedDialogue: NOT_HOME },
-    { x: 16, y: 4,  lockedDialogue: ['[Texte provisoire] Le palais est fermé aux visiteurs.'] },
-    { x: 24, y: 4,  lockedDialogue: NOT_HOME },
-    { x: 27, y: 4,  lockedDialogue: NOT_HOME },
-    { x: 7,  y: 20, interior: 'delhiUniversity' },   // ton université d'échange
-    { x: 21, y: 20, lockedDialogue: NOT_HOME },
-    { x: 24, y: 20, lockedDialogue: NOT_HOME },
-    { x: 27, y: 20, lockedDialogue: NOT_HOME },
+    { x: 6, y: 12, lockedDialogue: ['L\'université, où tu passes le semestre. Les cours reprennent demain.'] },
+    // Le palais de grès : sa cour, où se tient la fête (après la rencontre avec Harsh).
+    {
+      x: 16, y: 11, interior: 'delhiCour',
+      lock: { ifFlags: [FLAGS.prophecyDelhi] },
+      lockedDialogue: ['Le palais est fermé aux visiteurs.'],
+    },
+    // La vieille porte du fort : le vieux sage, après la fête.
+    {
+      x: 27, y: 9, interior: 'delhiFort',
+      lock: { ifFlags: [FLAGS.harshRejoint] },
+      lockedDialogue: ['Une vieille porte de pierre, plus ancienne que tout le reste de la ville. Elle est fermée.'],
+    },
+    { x: 33, y: 22, lockedDialogue: ['La tente du bazar est fermée pour aujourd\'hui.'] },
+    { x: 5, y: 27, lockedDialogue: ['L\'internat de l\'université, où tu loges pour le semestre.'] },
+    { x: 16, y: 28, lockedDialogue: ['Tu frappes. Personne ne répond.'] },
   ],
-  buildings: [
-    { type: 'haveli', x: 2,  y: 1, variant: 0 },
-    { type: 'haveli', x: 5,  y: 1, variant: 1 },
-    { type: 'haveli', x: 8,  y: 1, variant: 2 },
-    { type: 'mughalPalace', x: 13, y: 1 },
-    { type: 'haveli', x: 23, y: 1, variant: 3 },
-    { type: 'haveli', x: 26, y: 1, variant: 4 },
-    { type: 'indiaGate', x: 3, y: 9 },
-    { type: 'buddha', x: 13, y: 10 },
-    { type: 'delhiUniversity', x: 3, y: 17 },
-    { type: 'haveli', x: 20, y: 17, variant: 4 },
-    { type: 'haveli', x: 23, y: 17, variant: 0 },
-    { type: 'haveli', x: 26, y: 17, variant: 2 },
-  ],
+  // Les bâtiments sont dans le dessin (scripts/build_new_delhi.py).
+  buildings: [],
   npcs: [
-    // Harsh, étudiant à l'université : il t'attend à la sortie et propose d'aller dans le désert.
+    ...crowd,
+    ...south,
+    // Prophecy attend Pierre au bout de l'avenue (déclencheurs plus bas : on ne peut pas le manquer).
+    { id: 'prophecy', name: 'Prophecy', x: 29, y: 15, facing: 'left', ifFlags: [FLAGS.delhiFoule], unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME },
+    // Harsh : il arrive de la foule à l'est quand Prophecy a retrouvé Pierre, puis part devant vers la porte du palais
+    // de grès (la cour de la fête), où il entre (voir newDelhiStory.js PROPHECY_WELCOME).
     {
-      id: 'harsh', ...HARSH, x: 8, y: 21, facing: 'left',
-      ifFlags: [FLAGS.echangeCommence],
-      unlessFlags: [FLAGS.potionDonnee],
-      dialogue: [
-        "[Harsh - texte provisoire] Salut ! Moi c'est Harsh, j'étudie à l'université avec toi.",
-        'Ça te dirait de venir avec moi dans le désert du Rajasthan ?',
-      ],
-      after: ['[Harsh - texte provisoire] Alors, on part dans le désert ?'],
-      setFlag: FLAGS.harshRencontre,
-      ask: {
-        question: 'Aller dans le désert avec Harsh ?',
-        choices: [
-          {
-            label: 'Oui',
-            dialogue: ['[Harsh - texte provisoire] Génial ! En route pour le Rajasthan !'],
-            setFlags: [FLAGS.arriveeRajasthan],
-            warp: { map: 'rajasthan', x: 2, y: 10, facing: 'right' },
-          },
-          { label: 'Non', dialogue: ['[Harsh - texte provisoire] Dommage ! Reviens me voir si tu changes d\'avis.'] },
-        ],
-      },
+      id: 'harsh', name: 'Harsh', x: 37, y: 12, facing: 'left',
+      ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.harshCour], script: HARSH_LEADING,
+    },
+    // Après le repas : Harsh, parti le premier, attend Pierre et Prophecy devant la porte du fort.
+    {
+      id: 'harsh-fete', name: 'Harsh', x: 28, y: 10, facing: 'left',
+      ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.harshRejoint], dialogue: ['C\'est ici : la vieille porte du fort.'],
+    },
+    // Le semestre fini, devant la porte du fort : le retour à Bordeaux ; ensuite Prophecy suit Pierre (FOLLOWERS) et
+    // Harsh reste dire au revoir.
+    {
+      id: 'prophecy-depart', name: 'Prophecy', x: 26, y: 11, facing: 'right',
+      ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.departDelhi], script: GOING_HOME,
     },
     {
-      id: 'harsh-retour', ...HARSH, x: 8, y: 21, facing: 'left',
-      ifFlags: [FLAGS.potionDonnee],
-      dialogue: ['[Harsh - texte provisoire] Quel voyage ! Va raconter ça à la professeure.'],
+      id: 'harsh-depart', name: 'Harsh', x: 28, y: 11, facing: 'left',
+      ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.retourBordeaux], dialogue: HARSH_GOODBYE,
     },
+    // Facultatif : la vie du quartier (lignes validées le 11 octobre 2026). Pas de sprite de vache : un passant en parle.
+    { id: 'tuk-tuk', name: 'Conducteur de tuk-tuk', sprite: 'g46', x: 7, y: 3, facing: 'down', still: true, dialogue: ['Tuk-tuk ? Pour toi, prix spécial ! … Bon, prix normal.'] },
+    { id: 'vendeur-chai', name: 'Vendeur de chaï', sprite: 'g47', x: 29, y: 24, facing: 'down', still: true, dialogue: ['Un chaï, bien sucré, bien chaud. Même en plein été, ici, on boit chaud.'] },
+    { id: 'marchande-epices', name: 'Marchande d\'épices', sprite: 'g76', x: 12, y: 22, facing: 'down', still: true, dialogue: ['Sens ça : cardamome. Et ça : cumin. Tu repartiras avec les deux, je le vois.'] },
+    { id: 'etudiant-nuit', name: 'Étudiant', sprite: 'g84', x: 24, y: 28, facing: 'down', still: true, dialogue: ['Ici, on étudie la nuit. Le jour, il fait trop chaud pour penser.'] },
+    { id: 'passant-vache', name: 'Passant', sprite: 'g85', x: 14, y: 30, facing: 'up', still: true, dialogue: ['Tu as vu la vache, au carrefour ? Elle ne bouge pas. Les voitures font le tour. Personne ne klaxonne.'] },
   ],
   events: [
-    // En sortant de l'université après le premier cours : Harsh t'aborde.
-    {
-      on: 'enter',
-      ifFlags: [FLAGS.echangeCommence],
-      unlessFlags: [FLAGS.harshRencontre],
-      steps: [{ talk: 'harsh' }],
-    },
+    // En sortant du fort, la pierre reçue : « Quelques mois plus tard… », puis Prophecy et Harsh devant la porte.
+    { on: 'enter', ifFlags: [FLAGS.sageDelhi], unlessFlags: [FLAGS.moisDelhi], steps: [...MONTHS_LATER, ...GOING_HOME] },
+    { on: 'enter', ifFlags: [FLAGS.moisDelhi], unlessFlags: [FLAGS.departDelhi], steps: GOING_HOME },
+    // Harsh n'est pas encore arrivé à la porte du palais (partie reprise en chemin) : il repart devant.
+    { on: 'enter', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.harshCour], steps: [HARSH_WALK] },
   ],
-  // Les deux bouts de la grande avenue mènent à l'aéroport.
-  // Panneaux « Aéroport » à côté des sorties.
-  objects: [airportSign(1, 8, false), airportSign(30, 8, true)],
-  triggers: [toAirport(0, 6), toAirport(0, 7), toAirport(31, 6), toAirport(31, 7)],
-  surroundings: { outside, border: 'Y', borderSkip: ['ɐ'] },
-  spawn: { x: 1, y: 6, facing: 'right' },
+  // Panneaux « Aéroport » (dessinés) à côté des sorties ; les deux bouts de la grande avenue mènent à l'aéroport.
+  objects: [
+    airportSign(2, 18, false), airportSign(22, 15, true),
+    // Facultatif : le temple de quartier, le linge sur les toits.
+    { x: 7, y: 24, dialogue: ['Des guirlandes de fleurs orange et des clochettes qu\'on fait sonner en entrant.'] },
+    { x: 3, y: 24, dialogue: ['Des saris de toutes les couleurs sèchent au soleil, comme des drapeaux.'] },
+  ],
+  triggers: [
+    ...[14, 15, 16, 17].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),
+    // Après le repas, devant la porte du fort (la seule case qui y mène) : on rejoint Harsh et on entre avec lui.
+    { x: FORT_DOOR_FRONT[0], y: FORT_DOOR_FRONT[1], ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.harshRejoint], script: JOIN_HARSH },
+  ],
+  surroundings: { outside },
+  spawn: { x: 1, y: 16, facing: 'right' },
 };
+
+// La grille du jeu : celle ci-dessus, accordée aux collisions du dessin.
+newDelhiMap.grid = builtGrid(newDelhiMap.sourceGrid, BUILT);
+
+// À la colonne 4, sur toute la hauteur praticable de la carte, quelques pas après l'aéroport : Pierre découvre la foule.
+// Prophecy, lui, ne repère Pierre que quand il arrive à 5 cases ou moins de lui (dans le carré de 11 x 11 cases autour
+// de lui, sa case exceptée ; on peut aussi lui parler).
+const walkable = (x, y) => {
+  const code = newDelhiMap.grid[y]?.[x];
+  return code !== undefined && !getTile(code).solid && code !== 'D';
+};
+const column = (x, spec) => newDelhiMap.grid.map((row, y) => ({ x, y, ...spec })).filter(({ y }) => walkable(x, y));
+const PROPHECY_AT = [29, 15];
+const around = ([cx, cy], r, spec) => Array.from({ length: (2 * r + 1) ** 2 }, (_, i) => ({
+  x: cx - r + (i % (2 * r + 1)), y: cy - r + Math.floor(i / (2 * r + 1)), ...spec,
+})).filter(({ x, y }) => (x !== cx || y !== cy) && walkable(x, y));
+newDelhiMap.triggers.push(
+  ...column(4, { ifFlags: [FLAGS.arriveeNewDelhi], unlessFlags: [FLAGS.delhiFoule], script: CROWD }),
+  ...around(PROPHECY_AT, 5, { ifFlags: [FLAGS.delhiFoule], unlessFlags: [FLAGS.prophecyDelhi], script: PROPHECY_WELCOME }),
+);

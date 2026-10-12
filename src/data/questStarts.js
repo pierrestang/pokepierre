@@ -18,14 +18,10 @@ export const QUEST_STARTS = [
   { label: 'HULL', maps: ['hull'], upTo: FLAGS.arriveeHull, go: { map: 'hull', x: 1, y: 35, facing: 'right' } },
   { label: 'HANOÏ', maps: ['hanoi'], upTo: FLAGS.arriveeHanoi, go: { map: 'hanoi', x: 1, y: 8, facing: 'right' } },
   { label: 'AMSTERDAM', maps: ['amsterdam'], upTo: FLAGS.arriveeAmsterdam, go: { map: 'amsterdam', x: 1, y: 10, facing: 'right' } },
-  { label: 'NEW DELHI', maps: ['newDelhi', 'rajasthan'], upTo: FLAGS.arriveeNewDelhi, go: { map: 'newDelhi', x: 1, y: 6, facing: 'right' } },
-  { label: 'BORDEAUX (DIPLÔME)', maps: [], upTo: FLAGS.semestreTermine, go: { map: 'bordeaux', x: 30, y: 10, facing: 'left' } },
-  { label: 'PARIS', maps: ['paris'], upTo: FLAGS.arriveeParis, go: { map: 'paris', x: 1, y: 6, facing: 'right' } },
-  { label: 'TOULON', maps: ['toulon', 'camino', 'corse'], upTo: FLAGS.arriveeToulon, go: { map: 'toulon', x: 1, y: 6, facing: 'right' } },
-  { label: 'BALI', maps: ['bali'], upTo: FLAGS.parentsCorse, go: { map: 'bali', x: 15, y: 23, facing: 'up' } },
-  { label: 'SRI LANKA', maps: ['sriLanka'], upTo: FLAGS.parentsCorse, go: { map: 'sriLanka', x: 1, y: 10, facing: 'right' } },
-  { label: 'THAÏLANDE', maps: ['thailand'], upTo: FLAGS.parentsCorse, go: { map: 'thailand', x: 1, y: 6, facing: 'right' } },
-  { label: 'NÉPAL', maps: ['nepal'], upTo: FLAGS.parentsCorse, go: { map: 'nepal', x: 1, y: 12, facing: 'right' } },
+  { label: 'DELHI', maps: ['newDelhi'], upTo: FLAGS.arriveeNewDelhi, go: { map: 'newDelhi', x: 1, y: 16, facing: 'right' } },
+  { label: 'BORDEAUX (DIPLÔME)', maps: [], upTo: FLAGS.retourBordeaux, go: { map: 'bordeaux', x: 30, y: 10, facing: 'left' } },
+  { label: 'PARIS', maps: ['paris'], upTo: FLAGS.arriveeParis, go: { map: 'paris', x: 1, y: 11, facing: 'right' } },
+  { label: 'RÊVE (FIN)', maps: ['reve'], upTo: FLAGS.liberteParis, go: { map: 'paris', x: 42, y: 42, facing: 'down' } },
 ];
 
 // Choix exclusifs de l'histoire : un seul drapeau de chaque groupe (le premier) est levé. Aucun pour l'instant.

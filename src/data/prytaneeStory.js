@@ -50,7 +50,7 @@ const INSPECTION = [
   { setFlag: FLAGS.chambrePrete },
   { walk: 'capitaine-inspection', to: [7, 6], block: true },
   { face: { 'capitaine-inspection': 'up' } },
-  { speaker: 'Capitaine', say: ['GARDE À VOUS !'] },
+  { speaker: 'Capitaine', say: ['GARDE-À-VOUS !'] },
   // Les trois rejoignent leur place (on attend qu'ils y soient), puis se tournent vers le capitaine.
   { walkAll: [['tanguy', [4, 5]], ['geoffrey', [6, 5]]] },
   { goTo: [9, 5], facing: 'down' },
@@ -71,9 +71,14 @@ const INSPECTION = [
   { speaker: 'Capitaine', say: ['Correct. Repos.'] },
   { trait: TRAITS.autonomie },
   { walk: 'capitaine-inspection', to: DORM_EXIT, block: true, then: [FLAGS.inspection] },
-  // Le mur, la nuit (sans texte : la nuit tombe sur le dortoir).
+];
+
+// Le capitaine parti, Pierre reprend la main ; au pas suivant, le soir tombe (interiors.js dortoir, événement `walk`).
+// Le mur, la nuit : « Le soir même… », la nuit tombe sur le dortoir.
+export const EVENING = [
   { black: true },
   { wait: 600 },
+  { say: ['Le soir même…'] },
   { setFlag: FLAGS.soirMur },
   { black: false },
   { approach: 'tanguy' },
@@ -165,8 +170,12 @@ export const MORNING = [
   { speaker: 'Capitaine', say: ['Rien vu, rien entendu… Bien.'] },
   { speaker: 'Capitaine', say: ['Alors la prochaine fois que « personne » sort, dites-lui d\'essuyer ses rangers : il a laissé de la boue jusqu\'à son lit.'] },
   { walk: 'capitaine-matin', to: DORM_EXIT, block: true },
-  { speaker: 'Geoffrey', say: ['Personne a rien vu. On remet ça quand vous voulez les gars !'] },
+  { speaker: 'Geoffrey', say: ['Personne a rien vu. On remet ça quand vous voulez, les gars !'] },
   { setFlag: FLAGS.murMatin },
+];
+
+// Pierre reprend la main au dortoir ; au pas suivant : quelques années plus tard, le jour des résultats du bac.
+export const BAC_DAY = [
   { black: true },
   { wait: 800 },
   { say: ['Quelques années plus tard…'] },
@@ -189,7 +198,7 @@ export const BAC_RESULTS = [
   { face: { 'tanguy-bac': 'left', 'geoffrey-bac': 'right' } },
   { speaker: 'Tanguy', say: ['T\'es dessus !'] },
   { speaker: 'Geoffrey', say: ['On y est tous les trois. Même moi.'] },
-  { give: ITEMS.baccalaureat, text: 'Diplôme obtenu : Baccalauréat !' },
+  { give: ITEMS.baccalaureat, text: 'Diplôme obtenu : baccalauréat !' },
   { say: ['Le capitaine t\'attend à la porte nord, la route de Bordeaux.'] },
 ];
 

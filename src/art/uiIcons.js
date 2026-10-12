@@ -9,7 +9,6 @@ export const POSTCARDS = 'postcards';       // cartes postales de la carte du vo
 const ICON_OF_ITEM = {
   'coquillage-nacre': 'coquillage',
   'canne-a-peche': 'super-canne',
-  'vieille-canne': 'vieille-canne',
   planches: 'planches',
   corde: 'corde',
   baccalaureat: 'diplome',
@@ -17,21 +16,44 @@ const ICON_OF_ITEM = {
   'diplome-anglais': 'livre',
   'diplome-hull': 'carnet',
   'objet-chance': 'amulette',
-  marchandise: 'sac',
+  marchandise: 'bouquet',
   'billet-new-delhi': 'billet',
-  'potion-magique': 'potion',
+  'place-concert': 'billet',
+  'cles-paris': 'cles',
   'diplome-bordeaux': 'carte',
   'piece-tracteur': 'piece-metal',
-  'objet-magique-bali': 'orbe-turquoise',
-  'objet-magique-sri-lanka': 'orbe-rouge',
-  'objet-magique-thailande': 'orbe-verte',
-  'objet-magique-nepal': 'orbe-bleue',
   'cle-antivol': 'cles',
   velo: 'velo',
+  'talisman-indien': 'pierre-gravee',
+  'consignes-vietnamien': 'feuille',
+  'galet-lac': 'galet',
+  brevet: 'parchemin',
+  autocollant: 'autocollant',
+  'reglement-qg': 'plume',
+  enceinte: 'enceinte',
+  gobelets: 'gobelets',
+  'insigne-prytanee': 'insigne',
+  'photo-soiree': 'photo',
+  'piece-echecs': 'piece-echecs',
+  'plats-match': 'repas',
+  'bonne-etoile': 'etoile',
 };
 
 // Image de l'atlas pour un objet (null s'il n'a pas d'icône).
 export const itemIcon = (id) => ICON_OF_ITEM[id] ?? null;
+
+// Icône de chaque vertu (id de data/story.js TRAITS), pour l'onglet « Vertus » du sac.
+const ICON_OF_TRAIT = {
+  'souvenir-maman': 'v-joie',
+  'role-cousins': 'v-equipe',
+  'role-bricoleur': 'v-ingeniosite',
+  'vertu-audace': 'v-audace',
+  'vertu-autonomie': 'v-autonomie',
+  'vertu-insouciance-hull': 'v-insouciance',
+  'vertu-adaptation': 'v-adaptation',
+  'vertu-liberte': 'v-liberte',
+};
+export const traitIcon = (id) => ICON_OF_TRAIT[id] ?? null;
 
 export function preloadUiIcons(scene) {
   const base = `${import.meta.env.BASE_URL}assets/ui/`;

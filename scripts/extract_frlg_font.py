@@ -1,13 +1,16 @@
 """Extrait la police des dialogues de Rouge Feu / Vert Feuille (assets-source/frlg/miscellaneous-fonts.png,
 fournie par l'utilisateur, usage personnel uniquement) en police bitmap BMFont pour Phaser :
-public/assets/fonts/frlg.png + frlg.xml.
+public/assets/fonts/frlg.png + frlg.xml, et sa variante claire frlg-clair.png + frlg-clair.xml (encre blanche, ombre
+gris foncé) pour les textes sur fond sombre (cartons de fin, générique, carnet des vertus, bandeaux) : teinter la
+police d'origine en clair (setTintFill) peignait l'ombre de la même couleur que l'encre, et les lettres s'empâtaient.
 
 Bloc « Normal » de la planche : texte gris foncé ombré de gris clair sur fond blanc, 5 lignes de glyphes
 proportionnels collés les uns aux autres. On découpe sur l'encre seule (sans l'ombre) : chaque glyphe
 est une suite de colonnes contenant de l'encre ; quelques glyphes collés ou en morceaux sont corrigés
 à la main (SPLIT, MERGE). Chaque glyphe garde sa colonne d'ombre à droite ; avance = largeur d'encre + 1.
 
-Usage : python3 scripts/extract_frlg_font.py
+Usage : python3 scripts/extract_frlg_font.py            (police et variante claire)
+       python3 scripts/extract_frlg_font.py --clair    (refait seulement la variante claire, depuis frlg.png)
 """
 import unicodedata
 from pathlib import Path
@@ -100,7 +103,28 @@ def main():
     )
     (OUT / 'frlg.xml').write_text(xml, encoding='utf-8')
     print(f'{len(glyphs)} glyphes -> {(OUT / "frlg.png").relative_to(ROOT)}')
+    light_variant()
+
+
+# Variante claire : mêmes glyphes, mêmes mesures ; l'encre devient blanche et l'ombre gris foncé, comme les textes clairs
+# des jeux sur fond sombre. On la teinte (setTint, multiplication) pour l'or ou le gris : l'ombre reste sombre.
+LIGHT_INK = (248, 248, 248)
+LIGHT_SHADOW = (56, 56, 64)
+
+
+def light_variant():
+    sheet = Image.open(OUT / 'frlg.png').convert('RGBA')
+    sheet.putdata([
+        (*LIGHT_INK, 255) if p[3] and p[:3] == INK else (*LIGHT_SHADOW, 255) if p[3] and p[:3] == SHADOW else p
+        for p in sheet.getdata()
+    ])
+    sheet.save(OUT / 'frlg-clair.png')
+    xml = (OUT / 'frlg.xml').read_text(encoding='utf-8')
+    xml = xml.replace('face="frlg"', 'face="frlg-clair"').replace('file="frlg.png"', 'file="frlg-clair.png"')
+    (OUT / 'frlg-clair.xml').write_text(xml, encoding='utf-8')
+    print(f'variante claire -> {(OUT / "frlg-clair.png").relative_to(ROOT)}')
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    light_variant() if '--clair' in sys.argv else main()

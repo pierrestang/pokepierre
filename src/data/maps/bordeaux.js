@@ -7,18 +7,24 @@ import { builtGrid } from './builtGrid.js';
 import { toAirport, airportSign } from './airportLinks.js';
 import { FLAGS, ITEMS } from '../story.js';
 import {
-  ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AFTER_ORAL, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST,
-  ANTITHEFT_KEY,
+  ARRIVAL, FRONT_DOOR, MONTHS_LATER, OUSMANE_AFTER_ORAL, OUSMANE_EXAM, OUSMANE_AT_DOOR, OUSMANE_REMINDS, REMI_AT_KEDGE, CYCLIST,
+  ANTITHEFT_KEY, BACK_FROM_DELHI, LEAVING_BORDEAUX,
 } from '../bordeauxStory.js';
 
 // Les gardiens des sorties est : leurs répliques, et l'arrêt quand Pierre passe à côté d'eux (il se tourne vers lui, parle,
 // et Pierre recule d'un pas).
 const AIRPORT_GUARD = ["Halte ! Par ici, c'est l'aéroport.", "Pas de diplôme d'anglais, pas d'avion. L'oral, c'est à KEDGE, de l'autre côté de la Garonne."];
+// Avant qu'Ousmane annonce l'oral d'anglais (MONTHS_LATER, `soireeFinie`) : rien sur l'oral.
+const AIRPORT_GUARD_EARLY = ["Halte ! Par ici, c'est l'aéroport.", "Pas de billet, pas d'avion. Reviens quand tu auras une bonne raison de partir."];
+const ORAL_KNOWN = { ifFlags: [FLAGS.soireeFinie] };
+const ORAL_UNKNOWN = { unlessFlags: [FLAGS.soireeFinie] };
 const ROAD_WORKER = ['Holà ! Travaux sur la route de Paris, personne ne passe.', 'Reviens plus tard. On aura peut-être fini… peut-être.'];
+// `lines` : les répliques, ou des variantes [{ conditions, lines }] (la première dont les conditions sont remplies).
 const stopped = (id, speaker, lines, facing, back) => [
   { face: { [id]: facing } },
   { emote: id, kind: 'surprise' },
-  { speaker, say: lines },
+  ...(typeof lines[0] === 'string' ? [{ speaker, say: lines }]
+    : lines.map(({ lines: say, ...when }) => ({ ...when, speaker, say }))),
   { goTo: back, facing: 'right' },
 ];
 
@@ -93,7 +99,7 @@ export const bordeauxMap = {
       lockedDialogue: ["C'est ton futur immeuble, mais tu n'as pas les clés. Va à l'agence."],
     },
     { x: 11, y: 10, interior: 'agence' },                          // la boutique à auvent
-    // Le stade (la rotonde) : la remise des diplômes, une fois le semestre de New Delhi terminé.
+    // Le stade (la rotonde) : la remise des diplômes, une fois le semestre de Delhi terminé.
     {
       x: 21, y: 10, interior: 'stade',
       lock: { ifFlags: [FLAGS.semestreTermine] },
@@ -103,7 +109,7 @@ export const bordeauxMap = {
     {
       x: 8, y: 33, interior: 'kedge',
       lock: { ifFlags: [FLAGS.soireeFinie] },
-      lockedDialogue: ["L'oral d'anglais, c'est pas aujourd'hui."],
+      lockedDialogue: ["KEDGE, l'école de commerce. Les portes sont fermées pour l'instant."],
     },
     { x: 17, y: 33, interior: 'studioPaulfit' },                  // le studio de Paul
     { x: 23, y: 33, interior: 'appartRemi' },                     // l'appartement de Rémi, près du campus
@@ -122,13 +128,18 @@ export const bordeauxMap = {
       id: 'ousmane-rappel', name: 'Ousmane', x: 6, y: 11, facing: 'left',
       ifFlags: [FLAGS.preparatifs], unlessFlags: [FLAGS.soiree], script: OUSMANE_REMINDS,
     },
+    // Quelques mois après la soirée : Ousmane attend devant l'immeuble et envoie Pierre à son examen d'anglais.
+    {
+      id: 'ousmane-examen', name: 'Ousmane', x: 6, y: 11, facing: 'left',
+      ifFlags: [FLAGS.soireeFinie], unlessItems: [ITEMS.diplomeAnglais.id], dialogue: OUSMANE_EXAM,
+    },
     // L'agent de sécurité garde le chemin de l'aéroport (x 30, rangées 10-12) tant que Pierre n'a pas son diplôme
     // d'anglais ; l'ouvrier, la route de Paris (x 30, rangées 30-33) jusqu'au diplôme de Bordeaux. Passer à côté :
     // ils arrêtent Pierre, qui recule (voir triggers).
-    {
+    ...[[ORAL_UNKNOWN, AIRPORT_GUARD_EARLY], [ORAL_KNOWN, AIRPORT_GUARD]].map(([when, dialogue]) => ({
       id: 'agent-aeroport', name: 'Agent de sécurité', sprite: 'g87', x: 30, y: 11, facing: 'left',
-      unlessItems: [ITEMS.diplomeAnglais.id], dialogue: AIRPORT_GUARD,
-    },
+      unlessItems: [ITEMS.diplomeAnglais.id], ...when, dialogue,
+    })),
     {
       id: 'ouvrier-route', name: 'Ouvrier', sprite: 'g79', x: 30, y: 31, facing: 'left',
       unlessFlags: [FLAGS.diplomeBordeaux], dialogue: ROAD_WORKER,
@@ -144,7 +155,7 @@ export const bordeauxMap = {
     {
       id: 'ousmane-kedge', name: 'Ousmane', x: 10, y: 34, facing: 'left',
       ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.ousmaneDiplome],
-      dialogue: ['L\'aéroport est par la sortie est. On se retrouve au guichet !'],
+      dialogue: ['L\'aéroport est par la sortie est. On se retrouve à Hull !'],
     },
   ],
   events: [
@@ -153,17 +164,21 @@ export const bordeauxMap = {
     { on: 'enter', ifFlags: [FLAGS.soiree], unlessFlags: [FLAGS.soireeFinie], steps: MONTHS_LATER },
     // En sortant de KEDGE avec le diplôme d'anglais : Ousmane.
     { on: 'enter', ifItems: [ITEMS.diplomeAnglais.id], unlessFlags: [FLAGS.ousmaneDiplome], steps: OUSMANE_AFTER_ORAL },
+    // De retour de Delhi (le vol, avec Prophecy) : Prophecy indique le stade.
+    { on: 'enter', ifFlags: [FLAGS.retourBordeaux], unlessFlags: [FLAGS.stadeIndique], steps: BACK_FROM_DELHI },
+    // En sortant du stade, diplômé : « Direction Paris. »
+    { on: 'enter', ifFlags: [FLAGS.diplomeBordeaux], unlessFlags: [FLAGS.adieuxBordeaux], steps: LEAVING_BORDEAUX },
   ],
   // Panneaux « Aéroport » à côté des sorties ; les noms sur les portes.
   objects: [
     airportSign(29, 9, true),
-    // La boîte aux lettres, à gauche de l'immeuble (dessinée) : la vraie lettre promise par Joshua, à Saint-Ay.
+    // La boîte aux lettres, à gauche de l'immeuble (dessinée) : la vraie lettre que Joshua demandait, à Saint-Ay.
     {
       x: 3, y: 10,
       dialogue: [
         'Une carte postale ! Elle vient de Joshua.',
-        '« Pierre, je t\'avais promis une vraie lettre, avec un timbre. Voilà le timbre. La lettre, c\'est cette carte.',
-        'Felix dit que la cabane tient toujours. Yanis a encore oublié le mot de passe. Joshua. »',
+        '« Pierre, je t\'avais demandé une vraie lettre, avec un timbre. Comme elle n\'arrive pas, je commence. La lettre, c\'est cette carte.',
+        'Felix a ajouté un étage au QG. Il faut un nouveau mot de passe : on t\'attend pour le choisir. Joshua. »',
       ],
     },
     ...[16, 18].map((x) => ({ x, y: 33, dialogue: ['Sur la porte : « PAUL ».'] })),
@@ -173,7 +188,7 @@ export const bordeauxMap = {
     // À côté de l'agent et de l'ouvrier : ils arrêtent Pierre, qui recule d'un pas.
     ...[10, 12].map((y) => ({
       x: 30, y, unlessItems: [ITEMS.diplomeAnglais.id],
-      script: stopped('agent-aeroport', 'Agent de sécurité', AIRPORT_GUARD, y < 11 ? 'up' : 'down', [29, y]),
+      script: stopped('agent-aeroport', 'Agent de sécurité', [{ ...ORAL_UNKNOWN, lines: AIRPORT_GUARD_EARLY }, { ...ORAL_KNOWN, lines: AIRPORT_GUARD }], y < 11 ? 'up' : 'down', [29, y]),
     })),
     ...[30, 32, 33].map((y) => ({
       x: 30, y, unlessFlags: [FLAGS.diplomeBordeaux],
@@ -202,7 +217,7 @@ export const bordeauxMap = {
       dialogue: ['La route est bloquée.'],
       readyDialogue: ['Ton diplôme de Bordeaux en poche, tu prends la route de Paris !'],
       setFlags: [FLAGS.arriveeParis],
-      warp: { map: 'paris', x: 1, y: 6, facing: 'right' },
+      warp: { map: 'paris', x: 1, y: 11, facing: 'right' },   // le bord ouest de Paris, côté Bordeaux
     })),
     // Est : l'aéroport, débloqué par le diplôme d'anglais.
     ...[10, 11, 12].map((y) => ({

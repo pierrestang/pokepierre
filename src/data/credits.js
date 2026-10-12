@@ -1,0 +1,57 @@
+// Le générique de fin (TitleScene, après la fin du jeu) : les rubriques et leurs lignes, dans l'ordre du défilement.
+// Les ressources de fans et leurs conditions sont détaillées dans ASSETTILESPOKEMONV2/credits/ et
+// assets-source/fan/food/CREDITS.txt ; ce générique en reprend les crédits à afficher.
+export const CREDITS = [
+  ['Poképierre', ['Le voyage de Pierre, de Fort-de-France à Paris.']],
+  ['Histoire', ['Pierre']],
+  ['Univers et personnages', [
+    'Pokémon Rouge Feu, Émeraude, Rubis, Saphir,',
+    'Diamant, Perle, Platine, HeartGold et SoulSilver :',
+    'Nintendo, Game Freak.',
+    'Projet de fan, non commercial.',
+  ]],
+  ['Personnages', [
+    'Sprites Gen 4 (Gen 4 OW Collection) : compilés',
+    'par Vanilla Sunshine, avec Neo-Spriteman,',
+    'Purple Zaffre, Maicerochico et Atomic Reactor',
+  ]],
+  ['Décors et intérieurs', [
+    'Intérieurs HGSS ripés et préparés par SirMaIo',
+    'Tilesets HGSS et DPPt : Akizakura16',
+    'Gen 4 Pack : Magiscarf, WesleyFG, SailorVicious,',
+    'Shawn Frost, NSora-96, PeekyChew, Kyle-Dove,',
+    'Claisprojects.com, Minorthreat0987, The-Red-Ex,',
+    'UltimoSpriter, TyranitarDark, DarkDragonn,',
+    'rafa-cac, Phyromatical, Alucus, Newtiteuf,',
+    'ChaoticCherryCake, moca',
+    'Bâtiments, mobilier, arbres, véhicules :',
+    'JesusCarrasco, Kaliser, LotusKing, Aigue--marine,',
+    'WilsonScarloxy, justin8964 (Dewitty), Speedialga,',
+    'terriblejared, ultimatetraveler',
+    'Le rêve, tilesets Monde Distorsion et Colonne Lance :',
+    'Pokémon Gaia Project (zetavares852 et ses',
+    'contributeurs), compilés par PixelMister',
+    'Game Corner HGSS : ripé par spaceemotion,',
+    'assemblé par JulieHaru',
+    'Aéroport : TobalCR',
+    'Rips de pièces DS : The Spriters Resource',
+  ]],
+  ['Objets', [
+    'Icônes du sac et des vertus : HeartGold et SoulSilver,',
+    'planche ripée par Nx-Kun (The Spriters Resource)',
+    'Voiture de la famille : pinkscales',
+    'Plats : Free Pixel foods, ghostpixxells (CC0)',
+    'Vaisselle : PeekyChew',
+  ]],
+  ['Polices', [
+    'Police des dialogues : Pokémon Rouge Feu',
+    'Titre : Pixelify Sans (Google Fonts, licence OFL)',
+  ]],
+  ['Musique', [
+    'Musiques des villes : compositions originales,',
+    'jouées par le synthétiseur du jeu.',
+    '« Le rêve » : composition originale (octobre 2026),',
+    'libre de droits.',
+  ]],
+  ['Merci', ['À toute la famille, à tous les amis,', 'et à chaque ville du voyage.']],
+];

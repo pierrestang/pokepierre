@@ -1,6 +1,7 @@
 import { parseGrid } from './parseGrid.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
-import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON } from '../fortDeFranceStory.js';
+import { FERRY, FISHER_AT_PIER_END, FISHER_AT_FERRY, MANON, RETURN_FERRY } from '../fortDeFranceStory.js';
+import { FINALE } from '../reveStory.js';
 // Le dessin de la carte : la version DS faite avec le créateur de cartes (scripts/convert_maps_v2.py, thème DS, puis
 // retouches dans builder.html) ; ses collisions s'imposent à la grille du jeu (voir builtGrid). La grille et les
 // bâtiments d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
@@ -61,6 +62,7 @@ export const fortDeFranceMap = {
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 30
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 31
     'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 32
+    'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', // 33 (hauteur paire : le bas des tuiles d'eau 2 x 2)
   ]),
   doors: [
     { x: 15, y: 7, interior: 'ffHouse' },
@@ -93,9 +95,10 @@ export const fortDeFranceMap = {
   npcs: [
     // Habitants de l'île (sans rôle dans l'histoire).
     {
-      id: 'promeneuse', name: 'Promeneuse', x: 9, y: 15, facing: 'left',
+      // Rose, devant le mémorial (sprite choisi dans le panneau PNJ, characterLooks.json).
+      id: 'promeneuse', name: 'Rose', x: 9, y: 15, facing: 'left',
       dialogue: [
-        'Je viens souvent ici, devant les statues.',
+        'Moi, c\'est Rose. Je viens souvent ici, devant les statues.',
         'Elles regardent vers le large… On ne doit pas oublier ceux qui ne sont jamais arrivés.',
       ],
     },
@@ -121,8 +124,14 @@ export const fortDeFranceMap = {
     },
     {
       id: 'pecheur', name: 'Capitaine du ferry', x: 15, y: 27, facing: 'up', still: true,
-      ifFlags: [FLAGS.papaFait],
+      ifFlags: [FLAGS.papaFait], unlessFlags: [FLAGS.departFortDeFrance],
       script: FISHER_AT_FERRY,
+    },
+    // Après le départ : le capitaine fait la navette pour Saint-Ay (l'île garde une sortie, voir RETURN_FERRY).
+    {
+      id: 'pecheur', name: 'Capitaine du ferry', x: 15, y: 27, facing: 'up', still: true,
+      ifFlags: [FLAGS.departFortDeFrance],
+      script: RETURN_FERRY,
     },
   ],
   // En sortant de la maison pour la première fois, Manon vient te parler : elle se place à ta droite (16, 8), sans te
@@ -134,6 +143,9 @@ export const fortDeFranceMap = {
       unlessFlags: [FLAGS.manonDemande, FLAGS.departFortDeFrance],
       steps: [{ walk: 'manon', to: [16, 8], block: true }, { talk: 'manon' }],
     },
+    // La toute fin : Pierre sort de la maison après la scène de Maman ; l'île, son dernier mot, puis le fondu blanc et
+    // le générique (reveStory.js FINALE).
+    { on: 'enter', ifFlags: [FLAGS.mamanFin], unlessFlags: [FLAGS.finVue], steps: FINALE },
   ],
   // Guirlande de fanions (art/bunting.js) du faîte du toit au haut du mât, et le long de l'avant-toit : elle apparaît
   // quand Pierre reçoit la Joie de vivre (la danse avec Maman, voir data/fortDeFranceStory.js). Points en pixels.

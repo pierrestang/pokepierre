@@ -40,21 +40,31 @@ export function preloadBuiltMap(scene, data) {
 function bakeLayers(scene, data, id) {
   const images = Object.fromEntries(data.sheets.map((s) => [s, scene.textures.get(sheetKey(s)).getSourceImage()]));
   const cols = (s) => Math.floor(images[s].width / TILE);
+  // Un canvas à nous, en mémoire ordinaire (willReadFrequently dès la création, comme le relit souvent lostLook et
+  // les touffes d'herbe) plutôt qu'un canvas du pool de Phaser, créé en mode accéléré.
   const bake = (key, layerIds) => {
     if (scene.textures.exists(key)) scene.textures.remove(key);
-    const tex = scene.textures.createCanvas(key, data.width * TILE, data.height * TILE);
-    drawLayers(tex.getContext(), data, layerIds, images, cols);
-    tex.refresh();
+    const canvas = document.createElement('canvas');
+    canvas.width = data.width * TILE;
+    canvas.height = data.height * TILE;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = false;                // comme les canvas de Phaser : pixels nets
+    drawLayers(ctx, data, layerIds, images, cols);
+    scene.textures.addCanvas(key, canvas);
   };
   bake(`${id}-fond`, LAYERS.filter((l) => l.id !== 'dessus').map((l) => l.id));
   const hasTop = data.layers.dessus?.some((cell) => stackOf(cell).length > 0);
   if (hasTop) bake(`${id}-dessus`, ['dessus']);
   return {
-    backdrop: { sheet: `${id}-fond`, frame: () => undefined },
+    // Toujours l'image entière (`__BASE`) : sans nom d'image, Phaser prend la PREMIÈRE ajoutée à la texture, et le jeu
+    // découpe des vignettes dans le fond (touffes des hautes herbes, effects.js GrassCovers) ; un dessin réutilisé (retour
+    // d'un bâtiment, carte qui redémarre sur elle-même) s'affichait alors réduit à une vignette de 16 x 10 px dans le
+    // coin : on ne voyait plus que la bordure autour de la carte.
+    backdrop: { sheet: `${id}-fond`, frame: () => '__BASE' },
     topLayer: hasTop ? `${id}-dessus` : null,
     // Le calque « au-dessus de Pierre », par-dessus tous les personnages mais sous le voile de nuit (MapScene
     // applyAmbience, profondeur 40) : la nuit assombrit aussi les toits et les cimes.
-    overlays: hasTop ? [{ sheet: `${id}-dessus`, frame: () => undefined, x: 0, y: 0, h: 0, depth: TOP_DEPTH }] : [],
+    overlays: hasTop ? [{ sheet: `${id}-dessus`, frame: () => '__BASE', x: 0, y: 0, h: 0, depth: TOP_DEPTH }] : [],
   };
 }
 
@@ -64,8 +74,11 @@ export function preloadBuiltLooks(scene, maps) {
 }
 
 // Une carte du jeu dessinée avec le créateur (map.built) : son dessin remplace le rendu Rouge Feu.
-// Seuls les dessins du lieu affiché restent en mémoire : ceux des autres cartes et pièces sont libérés (et refaits à la
-// prochaine visite). Sans cela, les grands canvas s'accumulaient au fil des portes ; sur téléphone (Safari limite la
+// Seuls les dessins du lieu affiché, et de la ville autour d'une pièce (`keep`), restent en mémoire : ceux des autres
+// cartes et pièces sont libérés (et refaits à la prochaine visite). La ville gardée pendant qu'on est dans un bâtiment,
+// on la retrouve telle quelle en ressortant : rien à refaire, donc pas d'image intermédiaire (avant, elle était
+// refaite à chaque sortie ; un dessin sorti vide ne se voyait réparé qu'une seconde plus tard, par le filet de sécurité
+// de MapScene, et entre-temps seule la forêt de bordure s'affichait). Sans cela, les grands canvas s'accumulaient au fil des portes ; sur téléphone (Safari limite la
 // mémoire des canvas), un nouveau dessin pouvait sortir vide : plus de sol en sortant d'une maison. Un dessin vide ou
 // disparu est refait.
 export const TOP_DEPTH = 30;                      // calque « au-dessus de Pierre » (personnages < 11, nuit 40)
@@ -95,16 +108,19 @@ export function lostLook(scene, map) {
   return points.every(([x, y]) => ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data[3] === 0);
 }
 
-export function applyBuiltLook(scene, map) {
+export function applyBuiltLook(scene, map, keep = []) {
   for (const [id, other] of baked) {
-    if (id === map.id && other === map) continue;
+    if ((id === map.id && other === map) || keep.includes(id)) continue;
     forgetLook(scene, other);
     baked.delete(id);
   }
   if (map.backdrop && !lostLook(scene, map)) return;
   if (map.backdrop) forgetLook(scene, map);
   map.baseOverlays ??= map.overlays ?? [];
-  const look = bakeLayers(scene, map.built, `jeu-${map.id}`);
+  // Un dessin sorti vide (mémoire des canvas pleine, sur téléphone) est refait tout de suite, avant le premier affichage.
+  let look = bakeLayers(scene, map.built, `jeu-${map.id}`);
+  map.backdrop = look.backdrop;
+  if (lostLook(scene, map)) look = bakeLayers(scene, map.built, `jeu-${map.id}`);
   map.backdrop = look.backdrop;
   map.topLayer = look.topLayer;
   map.overlays = [...map.baseOverlays, ...look.overlays];
@@ -150,10 +166,14 @@ export function useBuiltLook(map, data) {
 }
 
 // L'intérieur du jeu dessiné avec ce dessin (même identifiant que l'intérieur : hullPubA…), ou null.
+// Un intérieur dont le dessin est une carte de builtMaps (la cour de Delhi) se retrouve par l'id de son dessin.
 export function gameInteriorOf(interiors, data) {
-  const room = interiors[data.id];
+  const room = interiors[data.id] ?? Object.values(interiors).find((r) => r.built?.id === data.id && r.sourceGrid);
   return room?.sourceGrid && room.built ? room : null;
 }
+
+// La clé (dans interiors) de l'intérieur trouvé par gameInteriorOf.
+export const interiorIdOf = (interiors, room) => Object.keys(interiors).find((id) => interiors[id] === room);
 
 // Essai d'un intérieur depuis le créateur : le dessin en cours remplace le sien (grille et PNJ recalculés).
 export function useBuiltInterior(room, data) {

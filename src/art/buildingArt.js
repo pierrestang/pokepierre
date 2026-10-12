@@ -1633,7 +1633,19 @@ function drawResultsBoard(g, ox, oy, { label = 'BAC' } = {}) {
   }
 }
 
+// Table de chevet (1 x 1) de la chambre de Fort-de-France, à la fin du jeu : plateau de bois clair, tiroir, bouton ;
+// cernée du trait gris très foncé des meubles, sans ombre portée. La pierre gravée est posée dessus (décor `icons`).
+function drawNightstand(g, ox, oy) {
+  rect(g, 0x383038, ox + 1, oy + 3, 14, 13);              // contour
+  rect(g, 0xd8a868, ox + 2, oy + 4, 12, 4);               // plateau
+  rect(g, 0xe8c088, ox + 2, oy + 4, 12, 1);
+  rect(g, 0xa86c38, ox + 2, oy + 8, 12, 7);               // façade
+  rect(g, 0x7c4c28, ox + 3, oy + 11, 10, 1);              // tiroir
+  rect(g, 0xf0d8a0, ox + 7, oy + 9, 2, 1);                // bouton
+}
+
 const BUILDINGS = {
+  nightstand: drawNightstand,
   partySpeaker: drawPartySpeaker,
   resultsBoard: drawResultsBoard,
   house: drawHouse,

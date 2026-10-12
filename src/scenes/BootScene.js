@@ -11,7 +11,7 @@ import { giveBikeForTesting } from '../systems/bike.js';
 import { interiors } from '../data/maps/interiors.js';
 import {
   requestedBuiltMap, loadBuiltMap, preloadBuiltMap, bakeBuiltMap, preloadBuiltLooks, gameMapOf, useBuiltLook, protectSave,
-  gameInteriorOf, useBuiltInterior, cityOfInterior,
+  gameInteriorOf, interiorIdOf, useBuiltInterior, cityOfInterior,
 } from '../systems/builtMaps.js';
 
 // Point d'entrée : charge les images, puis affiche l'écran titre (qui lance ensuite l'interface et la partie).
@@ -55,9 +55,9 @@ export class BootScene extends Phaser.Scene {
     const room = this.builtMap && gameInteriorOf(interiors, this.builtMap);
     if (room) {
       useBuiltInterior(room, this.builtMap);
+      const id = interiorIdOf(interiors, room);
       this.scene.launch('UI');
-      this.scene.start('Interior', { interior: this.builtMap.id, fromMap: cityOfInterior(MAPS, this.builtMap.id),
-        spawn: this.builtMap.spawn });
+      this.scene.start('Interior', { interior: id, fromMap: cityOfInterior(MAPS, id), spawn: this.builtMap.spawn });
       return;
     }
     if (this.builtMap) {

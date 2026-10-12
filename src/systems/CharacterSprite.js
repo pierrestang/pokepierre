@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { TILE_SIZE } from '../data/tiles.js';
 import { characterTexture, lookFromColor } from '../art/characterArt.js';
-import { sheetOf, BIKE_SHEET, BIKE_PREFIX } from '../art/spriteSheets.js';
+import { sheetOf, BIKE_SHEET, bikePrefix } from '../art/spriteSheets.js';
 import { BED_LOWER } from '../art/frlgArt.js';
 
 export const DIRECTIONS = {
@@ -10,6 +10,12 @@ export const DIRECTIONS = {
   left:  { dx: -1, dy: 0 },
   right: { dx: 1,  dy: 0 },
 };
+
+// Assis par terre : les jambes (les 4 dernières rangées de l'image, pieds compris) sont cachées, le buste descend de 3
+// pixels, et des jambes repliées en tailleur sont dessinées sous lui (voir drawLap).
+const SEAT_CUT = 4;
+const SEAT_DROP = 3;
+const LAP_EDGE = 0x303038;
 
 export const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
@@ -71,14 +77,110 @@ export class CharacterSprite extends Phaser.GameObjects.Container {
     if (this.inBed) return;
     this.facing = dir;
     this.image.setFrame(`${this.prefix}${dir}-0`);
+    if (this.seated) {
+      this.image.setCrop(0, 0, this.image.width, this.image.height - SEAT_CUT);
+      this.drawLap();
+    }
   }
 
-  // À vélo (le joueur, voir systems/bike.js) : l'image passe à la planche du vélo, et revient à la marche.
+  // Assis par terre (le repas de Delhi) : les jambes sont coupées et le buste descend sur la case.
+  sit(on = true) {
+    if (on === Boolean(this.seated)) return;
+    this.seated = on;
+    this.walkTimer?.remove();
+    this.image.setFrame(`${this.prefix}${this.facing}-0`);
+    if (on) {
+      this.image.setCrop(0, 0, this.image.width, this.image.height - SEAT_CUT).setY(this.image.y + SEAT_DROP);
+      this.drawLap();
+    } else {
+      this.image.setCrop().setY(this.image.y - SEAT_DROP);
+      this.lap?.destroy();
+      this.lap = null;
+    }
+  }
+
+  // La couleur du pantalon : la plus fréquente (hors contour sombre) dans les jambes de l'image, au milieu.
+  // Lue toujours sur l'image de face (le pantalon s'y voit) : de profil, la jupe ou le haut donnerait une autre couleur, et
+  // les jambes changeraient de couleur quand le personnage se tourne.
+  legColor() {
+    const { key } = this.image.texture;
+    const frame = `${this.prefix}down-0`;
+    const h = this.image.texture.get(frame).height;
+    const counts = new Map();
+    for (let y = h - 4; y <= h - 3; y++) {
+      for (let x = 10; x < 22; x++) {
+        const c = this.scene.textures.getPixel(x, y, key, frame);
+        if (!c || c.alpha < 128 || c.r + c.g + c.b < 150) continue;
+        const v = c.color;
+        counts.set(v, (counts.get(v) ?? 0) + 1);
+      }
+    }
+    return [...counts].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 0x506080;
+  }
+
+  // Les hanches : la plus étroite des deux dernières rangées visibles du buste (sous les mains), en x du conteneur
+  // ({ left, right } inclus). Les jambes repliées prennent cette largeur : jamais plus larges que le corps.
+  hipSpan() {
+    const { key } = this.image.texture;
+    const frame = this.image.frame.name;
+    const w = this.image.frame.width;
+    const h = this.image.frame.height;
+    let best = null;
+    for (let y = h - SEAT_CUT - 2; y <= h - SEAT_CUT - 1; y++) {
+      let left = null;
+      let right = null;
+      for (let x = 0; x < w; x++) {
+        const c = this.scene.textures.getPixel(x, y, key, frame);
+        if (!c || c.alpha < 128) continue;
+        left ??= x;
+        right = x;
+      }
+      if (left !== null && (!best || right - left < best.right - best.left)) best = { left, right };
+    }
+    const half = Math.floor(w / 2);
+    return best ? { left: best.left - half, right: best.right - half } : { left: -5, right: 5 };
+  }
+
+  // Les jambes repliées, sous le buste, de la largeur des hanches : de face, en travers (les deux pieds aux bouts) ; de
+  // dos, sous le corps ; de profil, les genoux vers l'avant.
+  drawLap() {
+    this.lap?.destroy();
+    const g = this.scene.add.graphics();
+    const fill = this.legColor();
+    const shade = Phaser.Display.Color.IntegerToColor(fill).darken(25).color;
+    const box = (x, y, w, h) => {
+      g.fillStyle(LAP_EDGE).fillRect(x, y, w, h);
+      g.fillStyle(fill).fillRect(x + 1, y + 1, w - 2, h - 2);
+      g.fillStyle(shade).fillRect(x + 1, y + h - 2, w - 2, 1);
+    };
+    const f = this.facing;
+    const { left, right } = this.hipSpan();
+    const width = right - left + 1;
+    if (f === 'down') {
+      box(left, 6, width, 5);
+      const mid = Math.floor((left + right) / 2);
+      g.fillStyle(LAP_EDGE).fillRect(mid, 8, 1, 2);              // le croisement des jambes
+      g.fillRect(left + 1, 9, 2, 1).fillRect(right - 2, 9, 2, 1); // les pieds
+    } else if (f === 'up') {
+      box(left, 4, width, 5);
+    } else {
+      // De profil : les genoux dépassent un peu vers l'avant (2 pixels), jamais vers l'arrière.
+      const dir = f === 'right' ? 1 : -1;
+      box(dir > 0 ? left : left - 2, 6, width + 2, 5);
+      g.fillStyle(LAP_EDGE).fillRect(dir > 0 ? right + 1 : left - 1, 9, 1, 1);   // le pied, devant
+    }
+    if (f === 'up') this.addAt(g, 0);
+    else this.add(g);
+    this.lap = g;
+  }
+
+  // À vélo (le joueur, voir systems/bike.js) : l'image passe à la planche du vélo (le héros à vélo de son apparence), et
+  // revient à la marche.
   setBike(on) {
     if (on === Boolean(this.onBike)) return;
     if (on) {
       this.walkLook = { key: this.image.texture.key, prefix: this.prefix };
-      this.prefix = BIKE_PREFIX;
+      this.prefix = bikePrefix(this.prefix.replace(/-$/, ''));
       this.image.setTexture(BIKE_SHEET);
       this.pedal = 0;
     } else {

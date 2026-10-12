@@ -39,11 +39,31 @@ ICONS = {
     'potion': (66, 23, 15, 21),
     'piece-metal': (567, 184, 17, 18),      # Bloc de métal
     'amulette': (503, 384, 20, 22),
-    'orbe-rouge': (372, 386, 14, 14),
-    'orbe-bleue': (388, 386, 14, 14),
-    'orbe-verte': (404, 386, 14, 14),
-    'orbe-turquoise': (365, 305, 18, 19),
+    'bouquet': (474, 382, 22, 22),          # Gracidée : le bouquet de fleurs de Romain (Amsterdam)
     'velo': (108, 375, 23, 21),             # Bicyclette (objet rare)
+    'pierre-gravee': (481, 223, 20, 17),    # Galet Lisse : le talisman indien du vieux sage (Delhi), aussi à la fin
+    # Ajoutées le 11 octobre 2026 (même planche) : une icône pour chaque objet et souvenir du sac (data/bag.js).
+    'feuille': (351, 224, 17, 19),          # Rune Sort (papier aux signes rouges) : les consignes en vietnamien
+    'galet': (193, 262, 16, 17),            # Pierre Ovale : le galet du lac de Saint-Ay
+    'parchemin': (333, 181, 17, 19),        # Rune Sort (papier scellé) : le diplôme du brevet
+    'autocollant': (589, 390, 15, 15),      # Poupée Mélofée (la frimousse rose) : l'autocollant Pokémon de Rémy
+    'plume': (540, 140, 18, 17),            # Plume Blanche : le règlement du QG, écrit à la plume par les cousins
+    'enceinte': (251, 376, 19, 20),         # Radio (boîtier à grille) : l'enceinte de Paul
+    'gobelets': (349, 19, 15, 20),          # Pot de lait / bocal : les gobelets de Rémi
+    'insigne': (464, 142, 16, 16),          # Pièce Rune dorée : l'insigne du Prytanée
+    'photo': (226, 377, 20, 16),            # Carte bleue (Pokégear) : la photo de la soirée
+    'piece-echecs': (334, 223, 15, 20),     # Pierre Pyramide bleue : la pièce d'échecs chinois
+    'repas': (462, 21, 18, 17),             # Galette Lava (biscuit) : de quoi manger, pour le match
+    'etoile': (299, 18, 23, 22),            # l'étoile jaune (objets de soin) : la bonne étoile du grand-père
+    # Les huit vertus (onglet « Vertus » du sac, src/art/uiIcons.js traitIcon), même planche :
+    'v-joie': (65, 411, 21, 18),            # Grelot Zen : la chanson de Maman, la danse (Joie de vivre)
+    'v-equipe': (568, 138, 21, 21),         # Multi Exp : ce qu'on gagne ensemble (Esprit d'équipe)
+    'v-ingeniosite': (311, 222, 20, 21),    # Cherch'Objet : l'outil qui trouve et répare (Ingéniosité)
+    'v-audace': (244, 137, 22, 22),         # Bandeau rouge : le courage d'oser (Audace)
+    'v-autonomie': (159, 374, 22, 22),      # Sac : faire son sac soi-même, au Prytanée (Autonomie)
+    'v-insouciance': (520, 140, 18, 17),    # Plume légère : ne pas s'en faire (Insouciance)
+    'v-adaptation': (277, 303, 20, 20),     # Pierre Plante : la pierre qui fait évoluer (Adaptation)
+    'v-liberte': (549, 222, 22, 22),        # Aile bleue : partir où l'on veut (Liberté)
 }
 
 
@@ -58,11 +78,7 @@ POSTCARDS = {
     'bordeaux': (0, 6, 1),          # parc National, l'après-midi
     'hanoi': (1, 4, 0),             # antre du Dragon : le pavillon sur l'eau, comme la tour de la Tortue
     'paris': (0, 6, 2),             # parc National, la nuit : les réverbères
-    'corse': (1, 1, 1),             # îles Tourbillon, l'après-midi : côte rocheuse
     'hull': (1, 1, 2),              # îles Tourbillon, la nuit : l'estuaire de la Humber sous la pluie
-    'sriLanka': (1, 6, 0),          # chutes Tohjo : cascade dans la jungle
-    'thailand': (1, 0, 1),          # tour Ferraille : temple de bois
-    'nepal': (1, 3, 0),             # route de Glace : la montagne
     'montepilloy': (0, 5, 1),       # bois aux Chênes, l'après-midi : la campagne au soleil couchant
     'montepilloySeptembre': (0, 5, 0),   # bois aux Chênes, le matin : septembre, le premier jour de collège
     'routeBonsecours': (0, 6, 0),   # parc National, le matin : l'allée et la cour du collège
@@ -146,7 +162,7 @@ def cut_out(crop):
 
 def build_icons():
     im = Image.open(SRC / 'hgss-items.png').convert('RGB')
-    atlas = Image.new('RGBA', (CELL * (len(ICONS) + len(SMALL_RODS)), CELL), (0, 0, 0, 0))
+    atlas = Image.new('RGBA', (CELL * (len(ICONS) + len(SMALL_RODS) + 1), CELL), (0, 0, 0, 0))
     frames = {}
     for i, (name, (x, y, w, h)) in enumerate(ICONS.items()):
         icon = cut_out(im.crop((x - 1, y - 1, x + w + 1, y + h + 1)))
@@ -159,6 +175,13 @@ def build_icons():
         rod = standing_rod(name)
         atlas.paste(rod, (i * CELL + 12, ROD_TOP), rod)
         frames[f'{name}-petite'] = {'frame': {'x': i * CELL, 'y': 0, 'w': CELL, 'h': CELL}}
+    # La pierre gravée en petit (moitié de taille, centrée) : posée sur la table de chevet de la fin du jeu.
+    i = len(ICONS) + len(SMALL_RODS)
+    x, y, w, h = ICONS['pierre-gravee']
+    stone = cut_out(im.crop((x - 1, y - 1, x + w + 1, y + h + 1)))
+    stone = stone.resize((stone.width // 2, stone.height // 2), Image.NEAREST)
+    atlas.paste(stone, (i * CELL + (CELL - stone.width) // 2, (CELL - stone.height) // 2), stone)
+    frames['pierre-gravee-petite'] = {'frame': {'x': i * CELL, 'y': 0, 'w': CELL, 'h': CELL}}
     atlas.save(OUT / 'item-icons.png')
     (OUT / 'item-icons.json').write_text(json.dumps({'frames': frames, 'meta': {'image': 'item-icons.png'}}, indent=1))
     print(f'{len(frames)} icônes -> public/assets/ui/item-icons.png')

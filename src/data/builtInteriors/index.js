@@ -7,7 +7,6 @@ import modele_maison_type_2 from './modeles/maison-type-2.json' with { type: 'js
 import agence from './agence.json' with { type: 'json' };
 import appartRemi from './appartRemi.json' with { type: 'json' };
 import appartement from './appartement.json' with { type: 'json' };
-import baliCabane from './baliCabane.json' with { type: 'json' };
 import bercy from './bercy.json' with { type: 'json' };
 import bistro from './bistro.json' with { type: 'json' };
 import bonsecours from './bonsecours.json' with { type: 'json' };
@@ -19,9 +18,10 @@ import boulyBarn from './boulyBarn.json' with { type: 'json' };
 import cabane from './cabane.json' with { type: 'json' };
 import coffeeShop from './coffeeShop.json' with { type: 'json' };
 import corning from './corning.json' with { type: 'json' };
-import corseParents from './corseParents.json' with { type: 'json' };
-import corseVoisins from './corseVoisins.json' with { type: 'json' };
-import delhiUniversity from './delhiUniversity.json' with { type: 'json' };
+// La cour de la fête de Delhi : un « intérieur » à ciel ouvert, dessiné comme une carte du créateur (planches
+// d'extérieur) ; son dessin est dans builtMaps (liste « Extérieurs » du créateur), pas ici.
+import delhiCour from '../builtMaps/delhi-cour.json' with { type: 'json' };
+import delhiFort from './delhiFort.json' with { type: 'json' };
 import dortoir from './dortoir.json' with { type: 'json' };
 import dortoirEtage2 from './dortoirEtage2.json' with { type: 'json' };
 import dortoirHall from './dortoirHall.json' with { type: 'json' };
@@ -34,6 +34,7 @@ import ffHouseUp from './ffHouseUp.json' with { type: 'json' };
 import ffHut from './ffHut.json' with { type: 'json' };
 import hanoiHome from './hanoiHome.json' with { type: 'json' };
 import hospital from './hospital.json' with { type: 'json' };
+import huguesAppart from './huguesAppart.json' with { type: 'json' };
 import hullAsylum from './hullAsylum.json' with { type: 'json' };
 import hullColoc from './hullColoc.json' with { type: 'json' };
 import hullHouse from './hullHouse.json' with { type: 'json' };
@@ -47,21 +48,16 @@ import kedgeSalle1 from './kedgeSalle1.json' with { type: 'json' };
 import kedgeSalle2 from './kedgeSalle2.json' with { type: 'json' };
 import kedgeSalle3 from './kedgeSalle3.json' with { type: 'json' };
 import maisonCommune from './maisonCommune.json' with { type: 'json' };
-import monastere from './monastere.json' with { type: 'json' };
 import montHouse from './montHouse.json' with { type: 'json' };
 import montHouseUp from './montHouseUp.json' with { type: 'json' };
 import parisAppart from './parisAppart.json' with { type: 'json' };
 import playerHouse from './playerHouse.json' with { type: 'json' };
 import playerHouseUp from './playerHouseUp.json' with { type: 'json' };
 import school from './school.json' with { type: 'json' };
-import sriLankaTemple from './sriLankaTemple.json' with { type: 'json' };
 import stade from './stade.json' with { type: 'json' };
 import studioPaulfit from './studioPaulfit.json' with { type: 'json' };
 import temple from './temple.json' with { type: 'json' };
-import tente from './tente.json' with { type: 'json' };
 import travelAgency from './travelAgency.json' with { type: 'json' };
-import watInterieur from './watInterieur.json' with { type: 'json' };
-import yanisAppart from './yanisAppart.json' with { type: 'json' };
 
 export const MODELES = {
   'chambre-type-1': modele_chambre_type_1,
@@ -73,7 +69,6 @@ export const BUILT_INTERIORS = {
   agence: composeInterior(agence, MODELES),
   appartRemi: composeInterior(appartRemi, MODELES),
   appartement: composeInterior(appartement, MODELES),
-  baliCabane: composeInterior(baliCabane, MODELES),
   bercy: composeInterior(bercy, MODELES),
   bistro: composeInterior(bistro, MODELES),
   bonsecours: composeInterior(bonsecours, MODELES),
@@ -85,9 +80,8 @@ export const BUILT_INTERIORS = {
   cabane: composeInterior(cabane, MODELES),
   coffeeShop: composeInterior(coffeeShop, MODELES),
   corning: composeInterior(corning, MODELES),
-  corseParents: composeInterior(corseParents, MODELES),
-  corseVoisins: composeInterior(corseVoisins, MODELES),
-  delhiUniversity: composeInterior(delhiUniversity, MODELES),
+  delhiCour: composeInterior(delhiCour, MODELES),
+  delhiFort: composeInterior(delhiFort, MODELES),
   dortoir: composeInterior(dortoir, MODELES),
   dortoirEtage2: composeInterior(dortoirEtage2, MODELES),
   dortoirHall: composeInterior(dortoirHall, MODELES),
@@ -100,6 +94,7 @@ export const BUILT_INTERIORS = {
   ffHut: composeInterior(ffHut, MODELES),
   hanoiHome: composeInterior(hanoiHome, MODELES),
   hospital: composeInterior(hospital, MODELES),
+  huguesAppart: composeInterior(huguesAppart, MODELES),
   hullAsylum: composeInterior(hullAsylum, MODELES),
   hullColoc: composeInterior(hullColoc, MODELES),
   hullHouse: composeInterior(hullHouse, MODELES),
@@ -113,19 +108,14 @@ export const BUILT_INTERIORS = {
   kedgeSalle2: composeInterior(kedgeSalle2, MODELES),
   kedgeSalle3: composeInterior(kedgeSalle3, MODELES),
   maisonCommune: composeInterior(maisonCommune, MODELES),
-  monastere: composeInterior(monastere, MODELES),
   montHouse: composeInterior(montHouse, MODELES),
   montHouseUp: composeInterior(montHouseUp, MODELES),
   parisAppart: composeInterior(parisAppart, MODELES),
   playerHouse: composeInterior(playerHouse, MODELES),
   playerHouseUp: composeInterior(playerHouseUp, MODELES),
   school: composeInterior(school, MODELES),
-  sriLankaTemple: composeInterior(sriLankaTemple, MODELES),
   stade: composeInterior(stade, MODELES),
   studioPaulfit: composeInterior(studioPaulfit, MODELES),
   temple: composeInterior(temple, MODELES),
-  tente: composeInterior(tente, MODELES),
   travelAgency: composeInterior(travelAgency, MODELES),
-  watInterieur: composeInterior(watInterieur, MODELES),
-  yanisAppart: composeInterior(yanisAppart, MODELES),
 };

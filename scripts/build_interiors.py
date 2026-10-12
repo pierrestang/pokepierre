@@ -105,7 +105,8 @@ def hgss_base(plan):
     """Pièce partie d'une vraie pièce HGSS (scripts/hgss_rooms.py) : {'sol', 'decor', 'dessus', 'solid', 'w', 'h'},
     retouchée par plan['splice'] (bandes remplacées), plan['erase'] (rectangles vidés de leurs meubles, sol gardé et
     praticable) et plan['paste'] (morceaux
-    d'autres pièces HGSS collés : {'from': (carte, x, y, w, h), 'to': (x, y), 'sol': False})"""
+    d'autres pièces HGSS collés : {'from': (carte, x, y, w, h), 'to': (x, y), 'sol': False, 'flat': False} ; `flat` : tout
+    le morceau passe sous les personnages, rien au-dessus de Pierre, ex. les portes d'ascenseur au mur du fond)"""
     import hgss_rooms as HG
     name, x0, y0, w, h = plan['hgss']
     r = HG.room(name, x0, y0, w, h)
@@ -142,8 +143,12 @@ def hgss_base(plan):
                     continue
                 if p.get('sol') and piece['sol'][j]:
                     r['sol'][i] = piece['sol'][j]
-                r['decor'][i] = r['decor'][i] + piece['decor'][j]
-                r['dessus'][i] = r['dessus'][i] + piece['dessus'][j]
+                if p.get('flat'):
+                    r['decor'][i] = r['decor'][i] + r['dessus'][i] + piece['decor'][j] + piece['dessus'][j]
+                    r['dessus'][i] = []
+                else:
+                    r['decor'][i] = r['decor'][i] + piece['decor'][j]
+                    r['dessus'][i] = r['dessus'][i] + piece['dessus'][j]
                 r['solid'][i] = 1 if (piece['solid'][j] and (piece['decor'][j] or piece['dessus'][j])) else r['solid'][i]
     return r
 

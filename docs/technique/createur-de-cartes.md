@@ -72,8 +72,8 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   personnages du lieu, toutes étapes confondues ; on en choisit un et on le place (glisser, flèches, Maj + flèche pour
   sa direction, « Remettre à sa place »). Ses marches dans l'histoire visent des cases fixes : il y va depuis sa
   nouvelle place. Apparence (« Choisir… » : la grille de tous les personnages Gen 4, de face, comme le menu PNJ du jeu) : « partout » (par nom, écrite tout de suite dans src/data/characterLooks.json
-  par le serveur de développement, /__builder/looks ; elle passe avant BY_NAME de characters.js, après le choix du
-  joueur dans le menu Start > PNJ) ou « Seulement ici » (npcEdits.moved[id].sprite, avec le dessin, à enregistrer). La
+  par le serveur de développement, /__builder/looks ; elle passe avant BY_NAME de characters.js ; le menu Start > PNJ
+  du jeu a été retiré) ou « Seulement ici » (npcEdits.moved[id].sprite, avec le dessin, à enregistrer). La
   molette sur un panneau le fait défiler (pas de zoom). La case « Plus d'options » (retenue dans le navigateur) ajoute le reste du panneau :
   - Quête du lieu : les étapes de l'histoire qui concernent ce lieu (drapeaux de story.js dans l'ordre du jeu, libellés
     = leurs commentaires) et qui les fait avancer (« par Papa », « ailleurs : Cabane de pêche ») ; choisir une étape
@@ -94,6 +94,34 @@ bouton rouvre le dernier ouvert de l'autre espace (`pokepierre.builder.lastOpen`
   par src/data/maps/npcEdits.js au chargement des données (maps/index.js, interiors.js) et à l'essai : le jeu,
   check_paths.js et les scripts d'export voient les mêmes places. Après avoir déplacé un PNJ de l'histoire : Tester et
   `node scripts/check_paths.js` (une scénette peut le faire marcher depuis sa place).
+
+## La cour de la fête de Delhi, une carte du créateur (11 octobre 2026)
+
+La cour du palais de grès (le grand repas, intérieur `delhiCour` du jeu) est dessinée avec des planches d'extérieur ;
+elle n'était que dans src/data/builtInteriors (liste « Intérieurs », sans ses planches). Son dessin est désormais la
+carte **src/data/builtMaps/delhi-cour.json** (« Cour du palais (Delhi) » dans la liste « Extérieurs »), modifiable
+et réenregistrée là comme les autres cartes ; src/data/builtInteriors/index.js la lit pour l'intérieur. « Tester »
+l'ouvre comme la cour, dans son contexte (systems/builtMaps.js gameInteriorOf retrouve un intérieur par l'id de son
+dessin), et l'outil Personnages montre ses convives. scripts/export_audit.mjs exporte aussi les intérieurs dessinés dans
+builtMaps : audit_maps.py la vérifie (les portes des deux pavillons, dessinées mais sans porte du jeu, sont bloquées).
+scripts/build_delhi_cour.py l'écrit directement là (le relancer efface les retouches).
+
+## Panneau PNJ : l'apparence des personnages nommés (11 octobre 2026)
+
+Bouton « PNJ » du bandeau (src/builder/looksPanel.js) : un panneau dans la mise en page de l'ancien menu Start > PNJ du jeu
+(bandeaux bleus, fond crème, police de Rouge Feu dessinée par src/builder/pixelFont.js), qui liste tous les personnages
+nommés du jeu (data/looks.js BY_NAME et ceux déjà choisis dans le créateur) avec leur sprite actuel ; point doré : choisi
+dans le créateur, « * » : choix pas encore enregistré. Un clic ouvre la grille des sprites Gen 4 (le sprite actuel cerclé
+de rouge), avec les filtres Tous / Hommes / Femmes / Enfants / Âgés (classement de chaque sprite dans
+src/data/spriteTags.js) ; « Par défaut » revient à l'attribution du code. « Enregistrer » écrit tous les choix en
+attente d'un coup dans **src/data/characterLooks.json** (POST /__builder/looks { looks }, vite.config.js, qui refuse un
+sprite absent de la planche) ; data/characters.js l'importe : le jeu le prend au prochain lancement. Ordre d'apparence
+dans le jeu (characters.js lookOf) : l'apparence « Seulement ici » de l'outil Personnages (npcEdits, `spriteHere`), puis
+characterLooks.json, puis le `sprite` imposé d'un PNJ, puis BY_NAME (le choix du
+joueur dans Start > PNJ n'existe plus ; d'anciens choix gardés dans une sauvegarde sont ignorés). Deux personnages du même prénom : `lookName` sur le PNJ (« Camille (Paris) »), que l'outil Personnages utilise aussi
+pour l'apparence « partout ». `node
+scripts/check_paths.js` vérifie que chaque sprite enregistré (BY_NAME, EXTRAS, characterLooks.json, `sprite` des PNJ)
+existe dans public/assets/characters/gen4-npcs.json.
 
 ## Bâtiments de Hull (7 octobre 2026)
 
@@ -390,7 +418,7 @@ catalogue posés comme le mode simple (maisons étroites au toit orange, agence 
 lanternes de bois, étals, nénuphars, cloche de l'îlot, cerisiers, palmier). Les cases libres qu'on n'atteint pas
 (derrière les maisons) sont bloquées. La grille du jeu (src/data/maps/hanoi.js sourceGrid) reprend GROUND avec les portes
 sur les portes dessinées. convert_maps_v2.py ne refait pas Hanoï ; le script réécrit la carte (une retouche faite dans le
-créateur serait perdue au prochain passage). Les villes suivantes (New Delhi… Rajasthan) ne sont que des premiers jets
+créateur serait perdue au prochain passage). Les villes suivantes (Rajasthan, Paris…) ne sont que des premiers jets
 de convert_maps_v2.py (`python3 scripts/convert_maps_v2.py <id>…`), pas encore branchés dans le jeu.
 
 ## Amsterdam (octobre 2026)
@@ -412,6 +440,49 @@ réécrit la carte : il refuse sans `--force` (une retouche faite dans le créat
 La carte a depuis été retouchée à la main dans le créateur (maisons remontées, place à la fontaine fleurie, jardinières
 du quai sud) : amsterdam.js suit ce dessin (portes : Corning (13, 7), maison commune (22, 8), coffee shop (4, 22)…), et
 `build_amsterdam.py --force` effacerait ces retouches.
+
+## Delhi (octobre 2026)
+
+Thème « Delhi (palais moghols) » du catalogue (scripts/build_catalogue.py, THEMES['new-delhi']), fait d'éléments de
+la bibliothèque Gen 4 qui n'étaient pas encore au catalogue (relevés dans public/assets/v2/g4-<type>.elements.json :
+attention, chaque élément y est noté [x0, y0, x1, y1] en cases, bornes comprises) : bâtiments (palais de grès, coupole aux
+lanternes dorées, maisons à coupole dorée (quatre), mausolées, porte du fort, minaret, maisons à toit plat, tentes de
+bazar ; LIB_BUILDINGS, ombre gris-bleu SLATE retirée) et éléments (grande arche « India Gate », grand bassin moghol,
+fontaine octogonale, étals rayés, stand de chai, brasero, lanterne de bronze, barrière dorée, cloche de temple, mât à
+fanions, taxi jaune et noir, palmier à grandes palmes, gulmohar, banian, soucis, fleurs en tulipe).
+
+Delhi est redessiné par scripts/build_new_delhi.py (src/data/builtMaps/new-delhi.json), comme Hanoï et Amsterdam :
+le sol du convertisseur (grande avenue, trottoirs, jardins, bassin aux lotus), les éléments du thème (au nord
+l'université = la coupole aux lanternes, le palais, la porte du fort, le minaret ; les jardins avec India Gate et la
+fontaine ; au sud les maisons, le bazar, les étals), la bordure de palmiers (forêt du créateur, arbre `g4-palmier`,
+scripts/paint_forest.mjs), ouverte sur la grande avenue (l'aéroport). Le script refuse sans `--force` (une retouche faite
+dans le créateur serait perdue). La grille du jeu (src/data/maps/newDelhi.js sourceGrid) reprend GROUND, la bordure en
+'Y', les portes sur les portes dessinées. La carte a depuis été retouchée à la main dans le créateur (40 x 34, octobre
+2026) : la grille du jeu suit ce dessin (sol relu d'après les couleurs, portes recalées), et `--force` l'effacerait. Le créateur range désormais Hanoï, Amsterdam et Delhi dans l'ordre du jeu
+(builder.js GAME_ORDER).
+
+## Paris (octobre 2026)
+
+Thème « Paris (monuments et cafés) » du catalogue (scripts/build_catalogue.py, THEMES['paris']), fait de dessins de la
+bibliothèque Gen 4 qui n'étaient pas encore au catalogue. Bâtiments (LIB_BUILDINGS, ids `maison-…`) : opéra, cathédrale
+gothique, Grand Palais, grande salle (Bercy), tour de bureaux vitrée, palais à deux ailes, musée-gare, grand immeuble à
+mansardes, immeubles d'ardoise, aux balcons fleuris, crème, de brique et pierre, café à terrasse, bistrot à auvent,
+boutique au store rayé, gratte-ciel, pavillon d'ardoise. Éléments : réverbères à globe (la lampe du thème) et à
+lanterne, fontaine à jet, petite fontaine de pierre, bancs de métal et jaune, statue sur socle, table de terrasse à
+parasol, deux monospaces, bateau-mouche, yacht, ponts de pierre (arche, tablier), bassin à fontaine, haies (jardinière,
+bac), if en cône, platane, arbres d'alignement (sans la grille d'arbre sombre sous le tronc : build_catalogue.py
+no_grate), arbre en colonne. Quelques dessins gardent un emblème Pokémon (cathédrale,
+opéra, Grand Palais, grande salle) ; le toit de l'opéra est violet et celui du musée-gare rose.
+
+Paris est redessiné par scripts/build_paris.py (src/data/builtMaps/paris.json), comme Delhi : le sol du
+convertisseur (avenue, pavés, jardin, Seine), les éléments du thème, la bordure d'arbres ronds (forêt du créateur,
+scripts/paint_forest.mjs), ouverte sur la grande avenue (Bordeaux, l'aéroport), la Seine et la rue sud (Toulon). Les
+ponts de pierre (élément `pont-pierre-vertical`, 4 x 4) se traversent par leurs deux colonnes du milieu (SOLID_FIX), sur
+des cases 'I'. Le script refuse sans `--force`. La grille du jeu (src/data/maps/paris.js sourceGrid) reprend GROUND
+(bordure 'ƀ', Seine 'G'), les portes sur les portes dessinées. Paris est dans l'ordre du créateur (builder.js GAME_ORDER). La carte a depuis été retouchée à
+la main dans le créateur (52 x 48, octobre 2026) : la grille du jeu suit ce dessin (sol relu d'après les couleurs, portes
+recalées, deux cases de porte rendues traversables : l'opéra (41, 22) et l'immeuble crème (8, 40)), et `--force`
+l'effacerait.
 
 ## L'aéroport (octobre 2026)
 

@@ -6,7 +6,7 @@ import { builtGrid } from './builtGrid.js';
 import { toAirport } from './airportLinks.js';
 import { FLAGS, ITEMS, TRAITS } from '../story.js';
 import {
-  ARRIVAL, OUSMANE_WALK, DAWN, NEXT_DAY, RESULTS, FAREWELL, HULL_SPOTS, NIGHT, DAWN_TIME, LEO_SCOUT_A, LEO_SCOUT_B,
+  ARRIVAL, OUSMANE_WALK, DAWN, RESULTS, OLD_REVISIONS, FAREWELL, HULL_SPOTS, NIGHT, DAWN_TIME, LEO_SCOUT_A, LEO_SCOUT_B,
   LEO_SCOUT_ASYLUM,
 } from '../hullStory.js';
 
@@ -117,14 +117,18 @@ export const hullMap = {
     {
       x: 33, y: 20, interior: 'hullHouse',                        // chez Léo, avec Romain et Prophecy : après le pub
       lock: { ifFlags: [FLAGS.leoAppel] },
-      lockedDialogue: ["La maison de Léo, Romain et Prophecy. Personne ne répond pour l'instant."],
+      lockedDialogue: ["Une maison. Personne ne répond pour l'instant."],      // avant l'appel de Léo : ses colocs sont des inconnus
     },
     {
       x: 11, y: 31, interior: 'hullColoc',                        // la coloc de Pierre et Ousmane
       lock: { ifFlags: [FLAGS.hullAccueil] },
       lockedDialogue: NOT_HOME,
     },
-    { x: 22, y: 31, lockedDialogue: ['La coloc de Charlotte et Anaïs. Personne ne répond.'] },
+    // La coloc de Charlotte et Anaïs : nommée seulement une fois Charlotte retrouvée au premier pub.
+    {
+      x: 22, y: 31, lockedDialogue: ['Une maison. Personne ne répond.'],
+      lockedDialogues: [{ ifFlags: [FLAGS.tourneeServie], dialogue: ['La coloc de Charlotte et Anaïs. Personne ne répond.'] }],
+    },
     { x: 27, y: 31, lockedDialogue: NOT_HOME },
     {
       x: 33, y: 31, interior: 'hullPubB',                         // l'immeuble à jardinières, plus bas
@@ -177,7 +181,8 @@ export const hullMap = {
       ['charlotte-aube', 'Charlotte', 26, 9, 'down', 'Les exams… on en reparle demain.'],
       ['anais-aube', 'Anaïs', 31, 9, 'down', 'Je sens plus mes pieds.'],
       ['romain-aube', 'Romain', 32, 9, 'down', 'Quelle nuit !'],
-      ['prophecy-aube', 'Prophecy', 25, 9, 'down', 'On refait ça quand ?']].map(([id, name, x, y, facing, line]) => ({
+      ['prophecy-aube', 'Prophecy', 25, 9, 'down', 'On refait ça quand ?'],
+      ['vincent-aube', 'Vincent', 33, 10, 'left', 'J\'ai dansé jusqu\'à l\'aube… et je recommencerais !']].map(([id, name, x, y, facing, line]) => ({
       id, name, x, y, facing, ifFlags: [FLAGS.asylumFini], unlessFlags: [FLAGS.lendemainHull, FLAGS.bandeRentree], dialogue: [line],
     })),
     // Le jour des résultats : Léo à côté du panneau.
@@ -189,7 +194,8 @@ export const hullMap = {
     // Les adieux, devant chez Léo : chacun part en échange (voir hullStory.js FAREWELL).
     ...[['leo-adieux', 'Léo', 32, 21, 'down'], ['ousmane-adieux', 'Ousmane', 34, 21, 'down'],
       ['charlotte-adieux', 'Charlotte', 31, 22, 'right'], ['anais-adieux', 'Anaïs', 30, 21, 'right'],
-      ['prophecy-adieux', 'Prophecy', 35, 22, 'left'], ['romain-adieux', 'Romain', 30, 22, 'right']].map(([id, name, x, y, facing]) => ({
+      ['prophecy-adieux', 'Prophecy', 35, 22, 'left'], ['romain-adieux', 'Romain', 30, 22, 'right'],
+      ['vincent-adieux', 'Vincent', 36, 21, 'left']].map(([id, name, x, y, facing]) => ({
       id, name, x, y, facing, ...FAREWELL_TIME, script: FAREWELL,
     })),
     // Léo et Ousmane restent à Hull : ils gardent la maison.
@@ -209,9 +215,12 @@ export const hullMap = {
     { on: 'enter', ifFlags: [FLAGS.leoPlan], unlessFlags: [FLAGS.leoEntrePubA], steps: LEO_SCOUT_A },
     { on: 'enter', ifFlags: [FLAGS.tourneeServie], unlessFlags: [FLAGS.leoEntrePubB], steps: LEO_SCOUT_B },
     { on: 'enter', ifFlags: [FLAGS.flechettesJouees], unlessFlags: [FLAGS.leoEntreAsylum], steps: LEO_SCOUT_ASYLUM },
-    { on: 'enter', ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [INSOUCIANCE], steps: DAWN },
-    // En sortant de la bibliothèque : le lendemain, les résultats.
-    { on: 'enter', ifFlags: [FLAGS.revisions], unlessFlags: [FLAGS.jourResultats], steps: NEXT_DAY },
+    // Sorti de l'Asylum, Pierre reprend la main : deux pas, puis l'aube et la bande devant la boîte (hullStory.js DAWN).
+    { on: 'walk', count: 2, ifFlags: [FLAGS.asylumFini], unlessSouvenirs: [INSOUCIANCE], steps: DAWN },
+    // Le surlendemain des révisions : Pierre arrive devant le panneau des résultats (voir hullStory.js LIBRARY).
+    { on: 'enter', ifFlags: [FLAGS.jourResultats], unlessItems: [ITEMS.diplomeHull.id], steps: RESULTS },
+    // Ancienne partie, révisions faites mais pas encore « Le surlendemain » (voir hullStory.js OLD_REVISIONS).
+    { on: 'enter', ifFlags: [FLAGS.revisions], unlessFlags: [FLAGS.jourResultats], steps: OLD_REVISIONS },
   ],
   // La grande rue mène à l'aéroport par ses deux bouts.
   triggers: [32, 33, 34, 35].flatMap((y) => [toAirport(0, y), toAirport(39, y)]),

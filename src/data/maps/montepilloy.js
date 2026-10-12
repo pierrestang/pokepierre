@@ -4,7 +4,7 @@ import { parseGrid } from './parseGrid.js';
 // d'origine restent la source de la conversion (sourceGrid, sourceBuildings).
 import BUILT from '../builtMaps/montepilloy.json' with { type: 'json' };
 import { builtGrid } from './builtGrid.js';
-import { FLAGS, ITEMS } from '../story.js';
+import { FLAGS } from '../story.js';
 import {
   ARRIVAL, HIDE_AND_SEEK, FOUND_MARGAUX, FOUND_ETIENNE, BOULY, SEPTEMBER_MORNING, NORTH_EXIT, JEAN_AT_TRACTOR, JEAN_TRACTOR,
   BENOIT_SAD,
@@ -93,7 +93,7 @@ export const montepilloyMap = {
     {
       id: 'bouly-bonjour', name: 'M. Bouly', x: 13, y: 16, facing: 'down', color: 0x7c5c2c,
       unlessFlags: [FLAGS.jeanQuetes],
-      dialogue: ['Bonjour mon grand ! Belle journée pour la ferme, hein ?'],
+      dialogue: ['Bonjour, mon grand ! Belle journée pour la ferme, hein ?'],
     },
     {
       id: 'bouly', name: 'M. Bouly', x: 13, y: 16, facing: 'down', color: 0x7c5c2c,

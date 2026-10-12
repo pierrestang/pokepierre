@@ -1,68 +1,47 @@
-"""Logo du jeu : une Poké Ball en pixel art, en aplats (« flat », sans ombre ni reflet), sur fond bleu uni, dessinée pixel par pixel sur une grille de 16 x 16,
-puis agrandie sans lissage. Icône de l'onglet (favicon), de l'écran d'accueil (iPhone, Android) et du
-manifeste, vers public/.
+"""Logo du jeu : Poké Ball sur fond bleu à coins arrondis, à partir de assets-source/logo.png (2048 x 2048).
+Icône de l'onglet (favicon), de l'écran d'accueil (iPhone, Android) et du manifeste, vers public/.
 
 Usage : python3 scripts/build_icons.py
 """
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'public'
+SRC = ROOT / 'assets-source' / 'logo.png'
 
-C = {
-    '.': (0, 0, 0, 0),
-    'B': (56, 112, 224, 255),     # fond bleu
-    'k': (24, 24, 32, 255),       # contour et bande noire
-    'R': (232, 56, 56, 255),      # rouge
-    'W': (248, 248, 248, 255),    # blanc
-}
-# La Poké Ball (12 x 12), posée au centre du fond bleu uni (16 x 16).
-BALL = [
-    '....kkkk....',
-    '..kkRRRRkk..',
-    '.kRRRRRRRRk.',
-    '.kRRRRRRRRk.',
-    'kRRRkkkkRRRk',
-    'kkkkkWWkkkkk',
-    'kkkkkWWkkkkk',
-    'kWWWkkkkWWWk',
-    '.kWWWWWWWWk.',
-    '.kWWWWWWWWk.',
-    '..kkWWWWkk..',
-    '....kkkk....',
-]
+BLUE = (8, 52, 118)   # fond bleu du logo
+RADIUS = 375          # rayon des coins arrondis de la source (en px, sur 2048)
 
 
-def grid():
-    rows = [['B'] * 16 for _ in range(16)]
-    rows[0][0] = rows[0][15] = rows[15][0] = rows[15][15] = '.'          # coins arrondis
-    for y, line in enumerate(BALL):
-        for x, c in enumerate(line):
-            if c != '.':
-                rows[y + 2][x + 2] = c
-    return [''.join(r) for r in rows]
+def mask(size, inset):
+    """Masque du carré à coins arrondis, légèrement rentré pour éliminer le liseré blanc des coins de la source."""
+    m = Image.new('L', (size, size), 0)
+    ImageDraw.Draw(m).rounded_rectangle((inset, inset, size - 1 - inset, size - 1 - inset), RADIUS - inset, fill=255)
+    return m
 
 
-LOGO = grid()
-
-
-def logo(size):
-    im = Image.new('RGBA', (16, 16))
-    im.putdata([C[c] for row in LOGO for c in row])
-    return im.resize((size, size), Image.NEAREST)
+def sources():
+    src = Image.open(SRC).convert('RGB')
+    n = src.width
+    # Plein cadre (iPhone, Android) : coins repeints en bleu, le système arrondit lui-même.
+    full = Image.new('RGB', (n, n), BLUE)
+    full.paste(src, (0, 0), mask(n, 12))
+    # Onglet : coins transparents.
+    tab = src.convert('RGBA')
+    tab.putalpha(mask(n, 6))
+    return full, tab
 
 
 def main():
-    logo(32).save(OUT / 'favicon.png')
-    logo(48).save(OUT / 'favicon.ico', sizes=[(16, 16), (32, 32), (48, 48)])
-    logo(192).save(OUT / 'icon-192.png')
-    logo(512).save(OUT / 'icon-512.png')
+    full, tab = sources()
+    small = lambda im, s: im.resize((s, s), Image.LANCZOS)
+    small(tab, 32).save(OUT / 'favicon.png')
+    small(tab, 48).save(OUT / 'favicon.ico', sizes=[(16, 16), (32, 32), (48, 48)])
+    small(full, 192).save(OUT / 'icon-192.png')
+    small(full, 512).save(OUT / 'icon-512.png')
     # iPhone : pas de transparence (les coins seraient noirs), iOS arrondit lui-même.
-    full = logo(180)
-    bg = Image.new('RGB', full.size, C['B'][:3])
-    bg.paste(full, (0, 0), full)
-    bg.save(OUT / 'apple-touch-icon.png')
+    small(full, 180).save(OUT / 'apple-touch-icon.png')
     print('ok -> public/favicon.png, favicon.ico, icon-192.png, icon-512.png, apple-touch-icon.png')
 
 

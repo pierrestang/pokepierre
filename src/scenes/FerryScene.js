@@ -181,7 +181,7 @@ export class FerryScene extends Phaser.Scene {
     const CAPTAIN = 'Capitaine du ferry';
     await say(['Alors, petit, tu sais ce qui nage sous nos pieds ?', 'Des thons, des daurades, des balarous… et même des poissons volants !'], CAPTAIN);
     await say(["Le meilleur moment pour pêcher, c'est à l'aube, quand la mer est d'huile. Après, ils se méfient."], CAPTAIN);
-    await say(['Les coryphènes, quand on les sort de l\'eau, elles changent de couleur : bleu, vert, or…'], CAPTAIN);
+    await say(['Les coryphènes, quand on les sort de l\'eau, ils changent de couleur : bleu, vert, or…'], CAPTAIN);
     await say(['Et mon plus gros ? Un marlin bleu, long comme ce ferry ! Bon… presque. Mais il tirait comme un bœuf !'], CAPTAIN);
     await say(['Le capitaine continue… et continue encore. La traversée va être longue.']);
     face('pierre', 'up');

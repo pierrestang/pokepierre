@@ -1,21 +1,25 @@
 import Phaser from 'phaser';
 import { MAPS, START_MAP } from '../data/maps/index.js';
-import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
-import { applyBuiltLook } from '../systems/builtMaps.js';
-import { startSeaShimmer, startFallingLeaves } from '../systems/effects.js';
+import { interiors } from '../data/maps/interiors.js';
 import { FONT, touchScreen } from '../systems/screen.js';
-import { FRLG_FONT, frlgText } from '../systems/frlgFont.js';
+import { FRLG_FONT, FRLG_FONT_LIGHT, frlgText } from '../systems/frlgFont.js';
 import { FLAGS } from '../data/story.js';
 import { flags } from '../systems/flags.js';
 import { hasSave, loadPosition, eraseSave } from '../systems/save.js';
 import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
+import { CREDITS } from '../data/credits.js';
 
-// Écran titre : la carte de la partie en cours (sa ville ; Fort-de-France pour une nouvelle partie) défile doucement en
-// fond (caméra zoomée), avec son dessin Gen 4 ; le titre et le menu sont affichés par une seconde caméra sans zoom. « Nouvelle partie » / « Continuer la partie » :
-// flèches haut/bas pour choisir, Entrée ou Espace pour valider.
+// Écran titre : en fond, la traversée des villes déjà atteintes (Fort-de-France seule pour une nouvelle partie), voir
+// TitleBackground.js ; le titre et le menu restent fixes au centre, sur leur voile semi-transparent. « Nouvelle partie » / « Continuer la partie » :
+// flèches haut/bas pour choisir, Entrée ou Espace pour valider. Après la fin du jeu (`credits`), le générique défile
+// d'abord par-dessus l'écran titre (une touche le passe).
 export class TitleScene extends Phaser.Scene {
   constructor() {
     super('Title');
+  }
+
+  init(data) {
+    this.withCredits = Boolean(data?.credits);
   }
 
   create() {
@@ -23,23 +27,11 @@ export class TitleScene extends Phaser.Scene {
     playMusic('title');
     setSeaAmbience(true);
 
-    // Fond : la carte de la partie en cours, avec ses vaguelettes et ses feuilles qui tombent.
-    const map = MAPS[this.backgroundMapId()] ?? MAPS[START_MAP];
-    const fill = map.surroundings ?? 'T';
-    this.cameras.main.setBackgroundColor(fill === 'w' ? 0x4078e0 : 0x000000);
-    if (map.built) applyBuiltLook(this, map);
-    renderMap(this, map);
-    for (const o of map.overlays ?? []) {
-      this.add.image(o.x, o.y, o.sheet, o.frame(this)).setOrigin(0).setDepth(o.depth ?? 10 + (o.y + o.h) / 10000);
-    }
-    // Autour de la carte : la mer animée (ajoutée par renderMap) ou son décor répété, comme en jeu.
-    if (fill && fill !== 'w') {
-      const around = createSurroundings(this, map, fill);
-      around.resize(map.grid[0].length * 16 + 2 * this.scale.width, map.grid.length * 16 + 2 * this.scale.height);
-    }
-    startSeaShimmer(this, map);
-    startFallingLeaves(this, map);
-    const background = [...this.children.list];
+    // Fond : la traversée des villes déjà atteintes (scène TitleBackground, lancée dessous ; voir TitleBackground.js).
+    this.scene.launch('TitleBackground');
+    this.scene.sendToBack('TitleBackground');
+    this.events.once('shutdown', () => this.scene.stop('TitleBackground'));
+    const background = [];
 
     // Interface (seconde caméra, sans zoom)
     this.shade = this.add.graphics();
@@ -60,7 +52,7 @@ export class TitleScene extends Phaser.Scene {
     this.tweens.add({ targets: this.title, scale: 1.03, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
 
     this.uiCam = this.cameras.add(0, 0, this.scale.width, this.scale.height);
-    this.uiCam.ignore(background);
+    this.uiCam.ignore(background);                       // (le fond est dans sa propre scène)
     // Décor animé ajouté ensuite (feuilles qui tombent) : seulement dans la caméra du fond.
     const hideFromUi = (obj) => {
       if (!this.creatingMenu) this.uiCam.ignore(obj);
@@ -70,31 +62,10 @@ export class TitleScene extends Phaser.Scene {
     this.uiObjects = [this.shade, this.title, this.subtitle, this.panel, this.hint];
 
     this.showMainMenu();
+    if (this.withCredits) this.rollCredits();
     this.input.keyboard.on('keydown', (e) => this.onKey(e));
     this.scale.on('resize', this.layout, this);
     this.events.once('shutdown', () => this.scale.off('resize', this.layout, this));
-    this.panBackground(map);
-  }
-
-  // La ville de la partie en cours (celle d'un bâtiment pour un intérieur, l'arrivée d'un voyage), sinon Fort-de-France.
-  backgroundMapId() {
-    if (!this.canContinue) return START_MAP;
-    const saved = loadPosition();
-    const data = saved?.data ?? {};
-    return data.mapId ?? data.fromMap ?? data.next?.data?.mapId ?? START_MAP;
-  }
-
-  // Lent travelling sur la carte, d'un bout à l'autre et retour.
-  panBackground(map) {
-    const cam = this.cameras.main;
-    const w = map.grid[0].length * 16;
-    const h = map.grid.length * 16;
-    // Assez zoomé pour que la carte remplisse l'écran, et la caméra reste dans la carte (rien autour).
-    const zoom = Math.max(2, Math.ceil(this.scale.height / h), Math.ceil(this.scale.width / w));
-    cam.setZoom(zoom);
-    cam.setBounds(0, 0, w, h);
-    cam.centerOn(w * 0.3, h * 0.45);
-    this.tweens.add({ targets: cam, scrollX: cam.scrollX + w * 0.4, duration: 26000, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
 
   showMainMenu() {
@@ -137,6 +108,7 @@ export class TitleScene extends Phaser.Scene {
       const o = options[i];
       if (o.header || o.disabled) return;
       t.setInteractive().on('pointerdown', () => {
+        if (this.creditsShown) return;                                 // le toucher passe d'abord le générique
         sfx('confirm');
         this.selected = i;
         o.action();
@@ -155,7 +127,10 @@ export class TitleScene extends Phaser.Scene {
     // Titre à la largeur de l'écran (téléphone en portrait).
     const titleSize = Math.min(96, Math.floor(width * 0.16), Math.floor(height * 0.17));
     this.title.setFontSize(titleSize).setStroke('#2c3858', titleSize / 8).setPosition(cx, height * 0.24);
-    this.subtitle.setFontSize(Math.min(26, Math.floor(width * 0.058))).setPosition(cx, height * 0.24 + titleSize * 0.83);
+    // « Génération 1 » : proportionné au titre (moins de la moitié de sa taille), juste sous lui.
+    const subSize = Math.min(44, Math.floor(width * 0.09), Math.floor(titleSize * 0.46));
+    this.subtitle.setFontSize(subSize).setStroke('#2c3858', Math.max(4, subSize / 5))
+      .setPosition(cx, height * 0.24 + titleSize * 0.62 + subSize * 0.6);
 
     const scale = height < 600 || width < 380 ? 2 : 3;
     const lineH = 17 * scale;
@@ -179,7 +154,54 @@ export class TitleScene extends Phaser.Scene {
     this.hint.setPosition(cx, top + panelH + 30);
   }
 
+  // Le générique : fond noir, les rubriques (en or) et leurs lignes montent lentement du bas de l'écran ; à la fin, ou
+  // à la première touche, il s'efface sur l'écran titre.
+  rollCredits() {
+    const { width, height } = this.scale;
+    const scale = height < 600 || width < 380 ? 2 : 3;
+    const lineH = 16 * scale;
+    this.creatingMenu = true;                                          // objets d'interface (voir create)
+    const back = this.add.rectangle(0, 0, width * 4, height * 4, 0x000000).setOrigin(0).setDepth(200);
+    const lines = [];
+    let y = height + lineH;
+    for (const [heading, rows] of CREDITS) {
+      lines.push(this.add.bitmapText(width / 2, y, FRLG_FONT_LIGHT, frlgText(this, heading)).setOrigin(0.5, 0).setScale(scale)
+        .setTint(0xf8d048).setDepth(201));
+      y += lineH * 1.3;
+      for (const row of rows) {
+        lines.push(this.add.bitmapText(width / 2, y, FRLG_FONT_LIGHT, frlgText(this, row)).setOrigin(0.5, 0).setScale(scale)
+          .setTint(0xe8e8f0).setDepth(201));
+        y += lineH;
+      }
+      y += lineH * 1.6;
+    }
+    this.creatingMenu = false;
+    this.cameras.main.ignore([back, ...lines]);
+    const distance = y;                                                // jusqu'à ce que la dernière ligne sorte en haut
+    this.credits = { back, lines };
+    this.creditsShown = true;
+    this.creditsTween = this.tweens.add({
+      targets: lines, y: `-=${distance}`, duration: distance * 22, ease: 'Linear', onComplete: () => this.endCredits(),
+    });
+    this.input.once('pointerdown', () => this.endCredits());
+  }
+
+  endCredits() {
+    if (!this.credits) return;
+    const { back, lines } = this.credits;
+    this.credits = null;
+    this.creditsTween?.stop();
+    this.tweens.add({
+      targets: [back, ...lines], alpha: 0, duration: 900,
+      onComplete: () => {
+        [back, ...lines].forEach((o) => o.destroy());
+        this.creditsShown = false;
+      },
+    });
+  }
+
   onKey(e) {
+    if (this.credits) return this.endCredits();                       // une touche passe le générique
     const selectable = this.options
       .map((o, i) => (o.header || o.disabled ? null : i))
       .filter((i) => i !== null);
@@ -202,6 +224,14 @@ export class TitleScene extends Phaser.Scene {
 
   continueGame() {
     const saved = loadPosition();
+    // Une ancienne sauvegarde sur un lieu retiré du jeu (les villes d'après Paris, le bistrot, Bercy…) : reprise à Paris.
+    const gone = (saved?.scene === 'Interior' && !interiors[saved.data?.interior])
+      || (saved?.scene === 'Overworld' && !MAPS[saved.data?.mapId]);
+    if (gone) return this.launchGame('Overworld', { mapId: 'paris', spawn: { x: 6, y: 23, facing: 'down' } });
+    // Après la fin du jeu : dans la chambre de Fort-de-France (le ferry permet ensuite de quitter l'île).
+    if (flags.has(FLAGS.finVue)) {
+      return this.launchGame('Interior', { interior: 'ffHouseUp', fromMap: START_MAP, spawn: { x: 2, y: 5, facing: 'left' } });
+    }
     if (saved) return this.launchGame(saved.scene, { ...saved.data, spawn: saved.spawn });
     // Progression sans position enregistrée : reprise à l'arrivée de la dernière ville atteinte.
     if (flags.has(FLAGS.departFortDeFrance)) {
@@ -211,6 +241,9 @@ export class TitleScene extends Phaser.Scene {
   }
 
   launchGame(sceneKey, data) {
+    // Le fond animé s'arrête avant que la partie commence (et non une image plus tard, à l'arrêt du titre) : il ne doit
+    // plus libérer de dessins de carte (builtMaps.js applyBuiltLook) une fois la carte du jeu affichée.
+    this.scene.stop('TitleBackground');
     if (!this.scene.isActive('UI')) this.scene.launch('UI');
     this.scene.start(sceneKey, data);
   }

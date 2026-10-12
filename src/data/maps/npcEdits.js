@@ -23,6 +23,9 @@ export function applyNpcEdits(map, built) {
     const sprite = moved?.sprite ?? origin.sprite;
     if (sprite) npc.sprite = sprite;
     else delete npc.sprite;
+    // Apparence « Seulement ici » du créateur : elle passe avant celle choisie « partout » (characters.js lookOf).
+    if (moved?.sprite) npc.spriteHere = moved.sprite;
+    else delete npc.spriteHere;
   }
   for (const extra of edits.extras ?? []) {
     map.npcs.push({

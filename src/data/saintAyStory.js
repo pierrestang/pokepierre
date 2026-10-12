@@ -56,6 +56,7 @@ export const FANNY_CRADLE = [
   { emote: 'player', kind: 'surprise' },
   { say: ['Elle l\'attrape ! Et elle serre fort. Tu attends… elle ne le lâche pas tout de suite.'] },
   { speaker: 'Maman', say: ['Elle a de la poigne, celle-là.', 'À partir d\'aujourd\'hui, tu vas veiller sur elle.'] },
+  { speaker: 'Maman', say: ['Allez, va prendre l\'air : tes cousins viennent d\'emménager au village.'] },
   { setFlag: FLAGS.fannyMain },
 ];
 
@@ -74,7 +75,7 @@ export const CABANE_PLAN = [
   { speaker: 'Felix', say: ['Bienvenue chez nous ! J\'ai un plan : on construit une cabane. Rien que pour nous.'] },
   { speaker: 'Joshua', say: ['Il faut des planches. Il y en a plein dans l\'enclos à poules… mais il y a les poules.'] },
   { speaker: 'Yanis', say: ['Et une corde pour les tenir. J\'en ai vu une dans les hautes herbes, tout au sud-ouest.'] },
-  { speaker: 'Felix', say: ['Moi, je dirige le chantier. On la perche dans les sapins, au sud du lac.'] },
+  { speaker: 'Felix', say: ['Moi, je dirige le chantier. Rapportez-moi tout ici : on la perchera dans les sapins, au sud du lac.'] },
   { say: ['Joshua et Yanis filent dehors.'] },
   { setFlag: FLAGS.planCabane },
 ];
@@ -86,7 +87,7 @@ export const FELIX_CHANTIER = [
   { unlessItems: [ITEMS.corde.id], speaker: 'Felix', say: ['Et la corde : Yanis dit qu\'elle traîne dans les hautes herbes, au sud-ouest.'] },
   { unlessItems: [ITEMS.planches.id], end: true },
   { unlessItems: [ITEMS.corde.id], end: true },
-  // Tout est réuni : la cabane est construite, puis les quatre cousins s'y installent (voir CABANE_FETE).
+  // Tout est réuni : la cabane est construite, puis les cousins s'y installent (voir CABANE_FETE).
   { speaker: 'Felix', say: ['Tout est prêt ? Alors au travail !'] },
   { black: true },
   { take: ITEMS.planches.id },
@@ -98,14 +99,14 @@ export const FELIX_CHANTIER = [
   { travel: { interior: 'cabane', x: 4, y: 5, facing: 'right', cutscene: true } },
 ];
 
-// Dans la cabane toute neuve (voir interiors.cabane) : les quatre cousins assis derrière les deux longues
+// Dans la cabane toute neuve (voir interiors.cabane) : les cousins assis derrière les deux longues
 // tables. Ils s'ennuient déjà : Pierre (Joie de vivre) lance une chanson et toute la bande saute de joie ; puis
 // chacun parle en sautillant. Pierre se retrouve debout devant les tables, toujours dans la cabane.
 export const CABANE_FETE = [
   { black: true },
   { wait: 500 },
   { black: false },
-  { say: ['La cabane est finie. Les quatre cousins s\'installent au QG.'] },
+  { say: ['La cabane est finie. Les cousins s\'installent au QG.'] },
   { speaker: 'Joshua', say: ['Bon… et maintenant, on fait quoi ?'] },
   { speaker: 'Yanis', say: ['On s\'ennuie déjà.'] },
   { useTrait: TRAITS.joie },
@@ -126,7 +127,11 @@ export const CABANE_FETE = [
   { speaker: 'Felix', say: ['Où que tu ailles après, cette cabane restera la nôtre. On est une équipe.'] },
   { face: { 'felix-cabane': 'down', player: 'down' } },
   { trait: TRAITS.espritEquipe },
-  // Ellipse : quelques années plus tard, Pierre au bord du lac ; Manon vient le chercher (voir MANON_NEWS).
+];
+
+// En sortant de la cabane (le joueur a repris la main) : quelques années plus tard, Pierre au bord du lac ; Manon vient
+// le chercher (voir MANON_NEWS).
+export const YEARS_LATER = [
   { black: true },
   { wait: 600 },
   { say: ['Quelques années plus tard…'] },
@@ -149,9 +154,12 @@ export const PLANKS = [
   { give: ITEMS.planches, text: 'Tu récupères des planches.' },
   { speaker: 'Joshua', say: ['Tu as survécu aux poules ? Respect.'] },
   { ifItems: [ITEMS.corde.id], speaker: 'Joshua', say: ['On a tout ! On ramène ça chez Felix.'] },
+  { unlessItems: [ITEMS.corde.id], speaker: 'Joshua', say: ['Reste la corde, dans les hautes herbes du sud-ouest. Après, on ramène tout chez Felix.'] },
 ];
 export const ROPE = [
   { give: ITEMS.corde, text: 'Tu trouves une vieille corde, cachée dans les hautes herbes.' },
+  { ifItems: [ITEMS.planches.id], say: ['Avec les planches, tout y est : direction chez Felix !'] },
+  { unlessItems: [ITEMS.planches.id], say: ['Reste les planches, au fond de l\'enclos à poules. Ensuite, chez Felix.'] },
 ];
 // Les poules collées au tas de planches : on les pousse (A, face à elles) d'une case dans le sens où l'on regarde,
 // pour dégager le tas (voir MapScene.pushNpc). Poussée jusqu'à la porte de l'enclos, une poule s'échappe.
@@ -193,8 +201,7 @@ export const ANNOUNCEMENT = [
 ];
 export const ANNOUNCEMENT_EVENT = { ...CABANE_DONE, unlessFlags: [FLAGS.annonceMutation] };
 
-// Le départ : la voiture chargée devant la maison (tournée vers la gauche : le capot donne sur la case CAR_HOOD).
-export const CAR_HOOD = [18, 7];
+// Le départ : la voiture chargée devant la maison (les adieux ont déjà eu lieu à la cabane).
 export const CAR = [
   {
     unlessFlags: [FLAGS.adieuCousins],
@@ -202,13 +209,6 @@ export const CAR = [
     end: true,
   },
   { say: ['La voiture est chargée.'] },
-  // Felix descend de la cabane, accourt et se plante devant le capot.
-  { setFlag: FLAGS.felixVoiture },
-  { walk: 'felix-voiture', to: CAR_HOOD, block: true },
-  { faceTo: 'felix-voiture' },
-  { speaker: 'Felix', say: ['Le mot de passe, tu le gardes, hein ?'] },
-  { walk: 'felix-voiture', to: [17, 8], block: true },          // il s'écarte pour laisser passer la voiture
-  { face: { 'felix-voiture': 'up' } },
   { say: ['Tu montes à l\'arrière, à côté de Manon et de Fanny.'] },
   { drive: 'familyCar' },
   { black: true },
@@ -251,11 +251,10 @@ export const PULLEY = [
 // l'objet-souvenir de Saint-Ay, un galet du lac.
 export const OLD_FISHER = [
   { ifItems: [ITEMS.galetLac.id], speaker: 'Vieux pêcheur', say: ['Prends soin de ce galet. Et de ta petite sœur.'], end: true },
-  { unlessSouvenirs: [TRAITS.joie.id], say: ['Le vieil homme te tourne le dos. Il a l\'air de mauvaise humeur.'], end: true },
   { speaker: 'Vieux pêcheur', say: ['Hm ? Je ne parle pas aux inconnus, moi.'] },
   { useTrait: TRAITS.joie },
   { say: ['Tu t\'assois à côté de lui et tu fredonnes la chanson de Maman.'] },
   { speaker: 'Vieux pêcheur', say: ['… Elle est pas mal, ta chanson.'] },
-  { speaker: 'Vieux pêcheur', say: ['T\'as le sourire de ta mère, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
+  { speaker: 'Vieux pêcheur', say: ['T\'as le sourire de quelqu\'un d\'heureux, toi.', 'Ce galet, je l\'ai trouvé au fond du lac quand j\'avais ton âge. Il porte bonheur. Garde-le.'] },
   { give: ITEMS.galetLac, text: 'Le vieux pêcheur te donne un galet tout lisse.' },
 ];

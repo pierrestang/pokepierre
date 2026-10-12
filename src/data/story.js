@@ -27,7 +27,6 @@ export const FLAGS = {
   manonNouvelle: 'manon-nouvelle',              //   Manon : « Papa a une nouvelle à nous annoncer » ; elle rentre
   annonceMutation: 'annonce-mutation',          // Papa a annoncé le départ pour Montépilloy
   adieuCousins: 'adieu-cousins',                // au revoir aux cousins à la cabane
-  felixVoiture: 'felix-voiture',                // au départ, Felix accourt devant la voiture (« Le mot de passe… »)
   arriveeMontepilloy: 'arrivee-montepilloy',    // arrivé à Montépilloy (la famille y vit désormais)
   ellipseMontepilloy: 'ellipse-montepilloy',    // Montépilloy : « Quelques années plus tard… » joué
   mamanAccueil: 'maman-accueil',                //   Maman a accueilli Pierre à la maison
@@ -50,7 +49,7 @@ export const FLAGS = {
   remiArrive: 'remi-arrive',                    //   au casier, Rémy arrive en courant par l'escalier
   casierPartage: 'casier-partage',              //   l'embrouille du casier : Rémy et toi le partagez
   remiEnClasse: 'remi-en-classe',              //   Rémy file en salle de maths (« ça va sonner »)
-  remiInvite: 'remi-invite',                    //   en classe, Rémy t'invite à aller parler à Camille
+  remiInvite: 'remi-invite',                    //   en classe, Rémy t'invite à aller parler à Clélia
   remyAutocollant: 'remy-autocollant',          //   le casier devenu QG : Rémy arrive par l'escalier (l'autocollant)
   remyRepart: 'remy-repart',                    //     … et repart en classe
   finTroisieme: 'fin-troisieme',                //   ellipse : quatre ans plus tard, la fin de la troisième (le brevet)
@@ -74,12 +73,14 @@ export const FLAGS = {
   arriveeBordeaux: 'arrivee-bordeaux',          // arrivé à Bordeaux
   bordeauxOuverture: 'bordeaux-ouverture',      //   image d'accueil de Bordeaux vue
   ousmaneRencontre: 'ousmane-rencontre',        //   Ousmane rencontré devant l'immeuble : ils entrent (la coupure)
-  coupure: 'coupure',                          //   dans le noir : « On appelle quelqu'un ? » « Non. » (Pragmatisme)
+  coupure: 'coupure',                          //   dans le noir : « On appelle quelqu'un ? » « Non. » (Ingéniosité)
   coupureReparee: 'coupure-reparee',            //   compteur électrique relevé : la lumière revient (Indépendance)
   preparatifs: 'preparatifs',                   //   Ousmane lance la soirée : enceinte chez Paul, gobelets chez Rémi
   soiree: 'soiree',                             //   la soirée d'intégration, dans l'appartement
   leoSoiree: 'leo-soiree',                      //     Léo (KEDGE) rencontré à la soirée
   anaisSoiree: 'anais-soiree',                  //     Anaïs (KEDGE) rencontrée à la soirée
+  charlotteSoiree: 'charlotte-soiree',          //     Charlotte (KEDGE) rencontrée à la soirée
+  vincentSoiree: 'vincent-soiree',              //     Vincent (KEDGE) rencontré à la soirée
   lendemainSoiree: 'lendemain-soiree',          //   en quittant la fête : le lendemain matin, l'appartement en désordre
   ousmaneLeve: 'ousmane-leve',                  //     tout rangé : Ousmane sort du lit (la photo de la soirée)
   gobeletsRanges: 'gobelets-ranges',            //     à faire avant de sortir (Autonomie) : les gobelets ramassés
@@ -109,11 +110,19 @@ export const FLAGS = {
   asylumFini: 'asylum-fini',                    //        dernière chanson à l'Asylum : sortie au petit matin
   bandeRentree: 'bande-rentree',                //        au petit matin, chacun est rentré chez soi
   lendemainHull: 'lendemain-hull',              //        rentré dormir : le lendemain, veille d'examen
-  revisions: 'revisions',                       //        révisions à la bibliothèque : « T'es prêt. »
-  jourResultats: 'jour-resultats',              //        le lendemain : les résultats affichés devant l'université
+  missionLivres: 'mission-livres',              //        à la bibliothèque, chacun demande un livre à Pierre
+  livreGrammaire: 'livre-grammaire',            //          le manuel de grammaire trouvé (pour Ousmane)
+  livreDico: 'livre-dico',                      //          le dictionnaire trouvé (pour Léo)
+  livreExpressions: 'livre-expressions',        //          le recueil d'expressions trouvé (pour Charlotte)
+  grammaireRendue: 'grammaire-rendue',          //          rapporté à Ousmane
+  dicoRendu: 'dico-rendu',                      //          rapporté à Léo
+  expressionsRendu: 'expressions-rendu',        //          rapporté à Charlotte
+  revisions: 'revisions',                       //        les trois livres rapportés : fin des révisions
+  jourResultats: 'jour-resultats',              //        le surlendemain : les résultats affichés devant l'université
   adieuxHull: 'adieux-hull',                    //        devant chez Léo, chacun part en échange (Pierre : Hanoï)
   arriveeHanoi: 'arrivee-hanoi',                // arrivé à Hanoï (Vietnam)
   hanoiOuverture: 'hanoi-ouverture',            //   image d'accueil de Hanoï vue : Pierre arrive seul
+  timAccueil: 'tim-accueil',                    //   en entrant dans sa maison, Tim, le coloc, vient l'accueillir
   travailEtape1: 'travail-etape-1',             //   premier jour à l'agence : le patron t'a tendu les consignes en vietnamien
   consignesTraduites: 'consignes-traduites',    //   M. Lam a lu les consignes : guider les touristes au temple (Adaptation)
   touristesSuivent: 'touristes-suivent',        //   tu guides les deux touristes vers le temple
@@ -124,47 +133,60 @@ export const FLAGS = {
   appelRomain: 'appel-romain',                  //   Romain t'appelle : il t'attend à Amsterdam (le vol s'ouvre)
   arriveeAmsterdam: 'arrivee-amsterdam',        // arrivé à Amsterdam
   appelAmsterdam: 'appel-amsterdam',            //   à l'arrivée, Romain appelle : rendez-vous à la maison commune
-  romainDemande: 'romain-demande',              //   Romain t'a demandé d'aller chercher sa marchandise au coffee shop
-  marchandiseAchetee: 'marchandise-achetee',    //   achetée au coffee shop
-  marchandiseDonnee: 'marchandise-donnee',      //   rendue à Romain : il t'envoie à ton stage chez Corning
-  stageCorning: 'stage-corning',                //   la campagne présentée à Laurent (Autonomie, Audace)
+  romainDemande: 'romain-demande',              //   Romain t'a demandé d'aller chercher son bouquet chez le marchand de fleurs
+  marchandiseAchetee: 'marchandise-achetee',    //   le bouquet, pris chez le marchand de fleurs
+  marchandiseDonnee: 'marchandise-donnee',      //   donné à Romain : il t'envoie à ton stage chez Corning
+  stageCorning: 'stage-corning',                //   la campagne présentée au patron de Corning (Autonomie, Audace)
   moisAmsterdam: 'mois-amsterdam',              //   en sortant de Corning : « Quelques mois plus tard… » (la nuit tombe)
-  canalNuit: 'canal-nuit',                      //   la nuit au bord du canal avec Romain (Insouciance), le billet pour New Delhi
-  arriveeNewDelhi: 'arrivee-new-delhi',         // arrivé à New Delhi (Inde)
-  echangeCommence: 'echange-commence',          // échange universitaire commencé à Delhi
-  harshRencontre: 'harsh-rencontre',            // Harsh t'a proposé d'aller dans le désert
-  arriveeRajasthan: 'arrivee-rajasthan',        // parti dans le désert du Rajasthan
-  potionDonnee: 'potion-donnee',                // potion magique apportée au vieux sage
-  semestreTermine: 'semestre-termine',          // félicitations de la professeure : semestre terminé
+  canalNuit: 'canal-nuit',                      //   la nuit au bord du canal avec Romain (Insouciance), le billet pour Delhi
+  arriveeNewDelhi: 'arrivee-new-delhi',         // arrivé à Delhi (Inde)
+  delhiFoule: 'delhi-foule',                    //   la traversée de la foule : Pierre n'a jamais rien vu de pareil
+  prophecyDelhi: 'prophecy-delhi',              //   Prophecy accueille Pierre au bout de l'avenue ; Harsh se présente
+  harshCour: 'harsh-cour',                      //   Harsh, parti devant, est entré dans la cour du palais (la fête)
+  courArrivee: 'cour-arrivee',                  //   Pierre et Prophecy arrivent dans la cour : Prophecy ne le suit plus
+  feteDelhi: 'fete-delhi',                      //   le repas dans la cour (Joie de vivre) ; Harsh part devant, vers la porte du fort
+  harshRejoint: 'harsh-rejoint',                //   Pierre et Prophecy rejoignent Harsh devant la porte du fort ; ils entrent ensemble
+  sageDelhi: 'sage-delhi',                      //   le vieux sage, derrière la porte du fort : le talisman indien
+  moisDelhi: 'mois-delhi',                      //   « Quelques mois plus tard… » (la seule ellipse de la ville)
+  departDelhi: 'depart-delhi',                  //   Prophecy et Harsh devant le fort : on rentre ; Prophecy suit Pierre jusqu'à Bordeaux
+  semestreTermine: 'semestre-termine',          //   Prophecy : on rentre à Bordeaux (le stade s'ouvre)
+  retourBordeaux: 'retour-bordeaux',            // de retour à Bordeaux, par le vol depuis l'aéroport de Delhi
+  stadeIndique: 'stade-indique',                //   Prophecy, à l'arrivée : la remise des diplômes, au stade
+  stadeEntree: 'stade-entree',                  //   dans le stade : Prophecy rejoint la foule, Pierre avance seul
   diplomeBordeaux: 'diplome-bordeaux',          // diplôme reçu devant l'estrade du stade (la route de Paris s'ouvre)
-  arriveeParis: 'arrivee-paris',                // arrivé à Paris
-  repasParis: 'repas-paris',                    // mangé au restaurant, rencontré le cuisinier
-  parisAccueil: 'paris-accueil',                // message d'arrivée à Paris déjà montré
-  emmenagementParis: 'emmenagement-paris',      // tu as dit au chef que tu emménages : l'appartement s'ouvre
-  rechercheTravail: 'recherche-travail',        // offre trouvée sur l'ordinateur : l'entreprise s'ouvre
-  travailParis: 'travail-paris',                // premier jour dans l'entreprise parisienne
-  promotion: 'promotion',                       // promotion accordée par le manager (1er étage)
-  verreBistro: 'verre-bistro',                  // verre avec Hugues et Thomas au bistrot
-  concertBercy: 'concert-bercy',                // concert vu à Bercy
-  ruptureConventionnelle: 'rupture-conventionnelle', // acceptée par le directeur : la route de Toulon s'ouvre
-  arriveeToulon: 'arrivee-toulon',              // arrivé à Toulon
-  toulonAccueil: 'toulon-accueil',              // message d'arrivée à Toulon déjà montré
-  chezYanis: 'chez-yanis',                      // arrivé dans l'appartement de Yanis
-  caminoEnCours: 'camino-en-cours',             // parti sur le Chemin de Saint-Jacques avec Yanis
-  caminoFini: 'camino-fini',                    // arrivé à Saint-Jacques, bus du retour pris
-  parentsCorse: 'parents-corse',                // tu as dit bonjour à tes parents en Corse
-};
-
-// Quêtes de Toulon terminées (Chemin de Saint-Jacques + Corse) : Bali s'ouvre à l'aéroport.
-export const TOULON_QUESTS = {
-  ifFlags: [FLAGS.caminoFini, FLAGS.parentsCorse],
-  ifSouvenirs: ['souvenir-leo', 'souvenir-theo'],
+  adieuxBordeaux: 'adieux-bordeaux',            //   en sortant du stade : « Direction Paris. »
+  arriveeParis: 'arrivee-paris',                // arrivé à Paris, devant l'immeuble du propriétaire
+  appelProprietaire: 'appel-proprietaire',      //   le propriétaire appelle : il attend devant l'immeuble aux balcons fleuris
+  parisCles: 'paris-cles',                      //   le propriétaire a donné les clés
+  jour1Bureau: 'jour1-bureau',                  //   premier passage au rez-de-chaussée de la tour (le collègue)
+  concertAppel: 'concert-appel',                //   en sortant : Antoine appelle, la place de concert a voyagé (Hugo)
+  // (Hugo remplace Tam, qui remplaçait Inès : la valeur d'origine reste, même sens, pour les sauvegardes en cours. Louis
+  // a une valeur neuve : « place-louis » voulait dire « Louis rend la place », du temps où il était le dernier maillon.)
+  placeHugo: 'place-ines',                      //     Hugo, devant l'Opéra : il l'a donnée à Louis
+  placeLouis: 'place-louis-yasmine',            //     Louis, dans la file du Louvre : il l'a laissée à Yasmine
+  placeYasmine: 'place-yasmine',                //     Yasmine, au café à terrasse : elle rend la place à Pierre
+  concertParis: 'concert-paris',                //   le concert à Bercy (le bouton du 1er étage s'allume)
+  promotionParis: 'promotion-paris',            //   au 1er étage, le manager prend Pierre avec lui
+  messageHugues: 'message-hugues',              //   en sortant : « Match ce soir chez moi ! »
+  thomasSuit: 'thomas-suit',                    //     Thomas, à la fin de son service, suit Pierre avec de quoi manger
+  matchArrivee: 'match-arrivee',                //     chez Hugues : Thomas pose tout et rejoint les autres
+  rappelManager: 'rappel-manager',              //   un an après le concert : Camille appelle, le manager attend Pierre
+  matchParis: 'match-paris',                    //   France-Argentine chez Hugues (perdu)
+  rappelDirecteur: 'rappel-directeur',          //   un an après le match : Camille appelle, le directeur veut voir Pierre
+  directeurInvite: 'directeur-invite',          //   au bureau : le dernier étage s'ouvre (le directeur veut voir Pierre)
+  liberteParis: 'liberte-paris',                //   Pierre refuse la place du directeur (Liberté)
+  reveParis: 'reve-paris',                      //   en sortant de la tour : le rêve (la grande réunion)
+  finDuJeu: 'fin-du-jeu',                       //   la réunion, le fondu, le réveil à Fort-de-France : la fin
+  reveilFin: 'reveil-fin',                      //   la fin : Pierre se lève de son lit, à Fort-de-France
+  talismanPris: 'talisman-pris',                //   il prend le talisman posé sur son bureau
+  mamanFin: 'maman-fin',                        //   en bas, Maman rejoue la scène du matin (ton père, ta sœur…)
+  finVue: 'fin-vue',                            //   dehors : fondu blanc, les cartons, retour au titre et générique
 };
 
 // Vertus (traits de caractère) : une seule collection, qui grandit de ville en ville ; 8 au plus dans tout le jeu, une
-// par ville au plus (6 jusqu'à Hull, Adaptation à Hanoï, 1 place réservée après). Encart « Pierre a reçu la vertu X ! » (étape `trait`),
+// par ville au plus (6 jusqu'à Hull, Adaptation à Hanoï, la Liberté à Paris). Encart « Pierre a reçu la vertu X ! » (étape `trait`),
 // « Pierre utilise X ! » quand une vertu débloque une situation (étape `useTrait`, comptée dans le carnet), carnet
-// (Start > VERTUS) et compteur « Vertus : X sur 8 » (UIScene). `city` : la ville où on la reçoit (id de carte) ;
+// (onglet Vertus du sac, Start > SAC) et compteur « Vertus : X sur 8 » (UIScene). `city` : la ville où on la reçoit (id de carte) ;
 // `phrase` : sa phrase dans le carnet. Les `id` gardent ceux des anciennes sauvegardes quand c'est la même vertu ;
 // les anciennes sont converties au chargement (voir TRAIT_MIGRATION, systems/save.js migrateSave).
 export const TRAITS = {
@@ -194,12 +216,15 @@ export const TRAITS = {
   },
   adaptation: {
     id: 'vertu-adaptation', name: 'Adaptation', city: 'hanoi',
-    phrase: 'Trouver son chemin partout, même sans en parler la langue.',
+    phrase: 'Trouver son chemin partout, même sans parler la langue.',
+  },
+  liberte: {
+    id: 'vertu-liberte', name: 'Liberté', city: 'paris',
+    phrase: 'Écouter qui l\'on est vraiment, et refuser une vie qui n\'est pas la sienne.',
   },
 };
 export const MAX_TRAITS = 8;
 const TRAIT_LIST = Object.values(TRAITS);
-export const traitById = (id) => TRAIT_LIST.find((t) => t.id === id) ?? null;
 export const traitsOfCity = (city) => TRAIT_LIST.filter((t) => t.city === city);
 // Encart du trajet vers la ville suivante : seulement la vertu reçue dans la ville qu'on quitte.
 export const carryText = (city) => `Tu emportes : ${traitsOfCity(city).map((t) => t.name).join(', ')}.`;
@@ -227,7 +252,6 @@ export const ITEMS = {
   // Objets-souvenirs facultatifs, un par ville.
   galetLac: { id: 'galet-lac', name: 'Galet du lac' },                            // Saint-Ay : le vieux pêcheur méfiant
   canneAPeche: { id: 'canne-a-peche', name: 'Canne à pêche' },
-  vieilleCanne: { id: 'vieille-canne', name: 'Vieille canne' },     // pour pêcher face à l'eau (facultatif)
   planches: { id: 'planches', name: 'Planches' },
   // Bordeaux, facultatif : la clé d'antivol du cycliste, perdue dans les hautes herbes ; en remerciement, son vieux vélo,
   // réparé sur place (Ingéniosité). Voir bordeauxStory.js CYCLIST, systems/bike.js.
@@ -235,6 +259,7 @@ export const ITEMS = {
   velo: { id: 'velo', name: 'Vélo' },
   corde: { id: 'corde', name: 'Vieille corde' },
   brevet: { id: 'brevet', name: 'Diplôme du brevet' },                         // collège : remis par le prof
+  bonneEtoile: { id: 'bonne-etoile', name: 'Bonne étoile' },                  // Montépilloy : Papy, avant le Prytanée
   autocollant: { id: 'autocollant', name: 'Autocollant de Rémy' },             // collège : objet-souvenir (le casier)
   reglementQG: { id: 'reglement-qg', name: 'Règlement du QG' },               // Saint-Ay : le panier de la cabane (verrou)
   baccalaureat: { id: 'baccalaureat', name: 'Baccalauréat' },
@@ -242,22 +267,22 @@ export const ITEMS = {
   enceinte: { id: 'enceinte', name: 'Enceinte' },                              // Bordeaux : prêtée par Paul
   gobelets: { id: 'gobelets', name: 'Gobelets' },                              // Bordeaux : prêtés par Rémi
   diplomeAnglais: { id: 'diplome-anglais', name: "Diplôme d'anglais" },
-  diplomeHull: { id: 'diplome-hull', name: 'Diplôme d\'anglais de Hull' },
+  diplomeHull: { id: 'diplome-hull', name: 'Diplôme de Hull' },
   insigne: { id: 'insigne-prytanee', name: 'Insigne du Prytanée' },          // Prytanée : objet-souvenir (le nouveau)
   photoSoiree: { id: 'photo-soiree', name: 'Photo de la soirée' },           // Bordeaux : objet-souvenir (le rangement)
-  objetChance: { id: 'objet-chance', name: 'Objet de chance' },
+  objetChance: { id: 'objet-chance', name: 'Amulette du temple' },                  // Hanoï : l'autel du temple
   // Hanoï : les consignes du premier jour, écrites en vietnamien (le patron) ; facultatif, la pièce des papis du lac.
   consignesVietnamien: { id: 'consignes-vietnamien', name: 'Consignes en vietnamien' },
   pieceEchecs: { id: 'piece-echecs', name: "Pièce d'échecs chinois" },
-  marchandise: { id: 'marchandise', name: 'Marchandise' },
-  billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour New Delhi" },  // remis par Romain, à Amsterdam
-  potionMagique: { id: 'potion-magique', name: 'Potion magique' },
+  marchandise: { id: 'marchandise', name: 'Bouquet de fleurs' },   // id d'origine gardé (sauvegardes)
+  billetNewDelhi: { id: 'billet-new-delhi', name: "Billet d'avion pour Delhi" },  // remis par Romain, à Amsterdam
+  // Delhi : la pierre gravée que le vieux sage remet à Pierre ; le même objet, sur son bureau, à la toute fin.
+  talismanIndien: { id: 'talisman-indien', name: 'Talisman indien' },
   diplomeBordeaux: { id: 'diplome-bordeaux', name: 'Diplôme de Bordeaux' },
+  clesParis: { id: 'cles-paris', name: 'Clés du studio' },                          // Paris : le propriétaire
+  placeConcert: { id: 'place-concert', name: 'Place de concert' },                  // Paris : rendue par Yasmine
+  platsMatch: { id: 'plats-match', name: 'De quoi manger' },                         // Paris : Thomas, pour le match
   pieceTracteur: { id: 'piece-tracteur', name: 'Pièce de tracteur' },
-  objetMagiqueBali: { id: 'objet-magique-bali', name: 'Objet magique de Bali' },
-  objetMagiqueSriLanka: { id: 'objet-magique-sri-lanka', name: 'Objet magique du Sri Lanka' },
-  objetMagiqueThailande: { id: 'objet-magique-thailande', name: 'Objet magique de Thaïlande' },
-  objetMagiqueNepal: { id: 'objet-magique-nepal', name: 'Objet magique du Népal' },
 };
 
 // Personnages qui marchent derrière le joueur, dans cet ordre, quand leurs conditions sont remplies.
@@ -267,17 +292,27 @@ export const ITEMS = {
 const COPAINS_DONE = { unlessFlags: [FLAGS.copainsPartent] };
 
 // Pas de suiveur à Fort-de-France ni à Saint-Ay : les PNJ y partent devant et attendent sur place.
+// `goes` : les autres cartes où le suiveur accompagne Pierre ; vers toute autre, Pierre ne peut pas quitter la ville
+// tant qu'on le suit (MapScene.followersHoldBack).
 export const FOLLOWERS = [
   // Montépilloy : les copains trouvés au cache-cache suivent Pierre jusqu'à la fin de la partie (ils filent alors à
   // l'école, voir montepilloyStory.js GAME_OVER).
   { id: 'margaux', name: 'Margaux', color: 0xf08080, ifFlags: [FLAGS.trouveMargaux], ...COPAINS_DONE },
   { id: 'etienne', name: 'Étienne', color: 0x6080a0, ifFlags: [FLAGS.trouveEtienne], ...COPAINS_DONE },
   { id: 'benoit', name: 'Benoît', color: 0xa07040, ifFlags: [FLAGS.trouveBenoit], ...COPAINS_DONE },
-  // Hanoï : les deux touristes te suivent de l'agence jusqu'au temple, et en ressortent avec toi.
-  { id: 'touriste-1', name: 'Touriste', sprite: 'g24', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
-  { id: 'touriste-2', name: 'Touriste', sprite: 'g22', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
-  // Chemin de Saint-Jacques : Yanis marche avec toi jusqu'à Saint-Jacques.
-  { id: 'yanis', color: 0xc0b040, ifFlags: [FLAGS.caminoEnCours], unlessFlags: [FLAGS.caminoFini] },
+  // Hanoï : les deux touristes te suivent de la grande rue jusqu'au temple, et en ressortent avec toi.
+  { id: 'touriste-1', name: 'Touriste', sprite: 'g149', color: 0xe0a0d0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
+  { id: 'touriste-2', name: 'Touriste', sprite: 'g158', color: 0x80c0e0, ifFlags: [FLAGS.touristesSuivent], unlessFlags: [FLAGS.visiteTerminee] },
+  // Delhi : Prophecy suit Pierre de la rencontre jusqu'à la cour du palais (il y redevient le PNJ prophecy-fete) ;
+  // après la fête, Prophecy le suit jusqu'à la porte du fort, puis Harsh aussi, jusqu'au vieux sage et à la sortie du fort ; à la fin du semestre,
+  // Prophecy le suit jusqu'à l'aéroport, dans l'avion, puis à Bordeaux jusqu'au stade (il y redevient le PNJ
+  // prophecy-depart et rejoint la foule).
+  { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.prophecyDelhi], unlessFlags: [FLAGS.courArrivee] },
+  { id: 'prophecy-depart', name: 'Prophecy', ifFlags: [FLAGS.departDelhi], unlessFlags: [FLAGS.stadeEntree], goes: ['airport', 'newDelhi', 'bordeaux'] },
+  // Paris : Thomas, son service fini, suit Pierre du restaurant jusque chez Hugues (il y redevient le PNJ thomas).
+  { id: 'thomas', name: 'Thomas', ifFlags: [FLAGS.thomasSuit], unlessFlags: [FLAGS.matchArrivee] },
+  { id: 'harsh-fete', name: 'Harsh', ifFlags: [FLAGS.harshRejoint], unlessFlags: [FLAGS.moisDelhi] },
+  { id: 'prophecy-fete', name: 'Prophecy', ifFlags: [FLAGS.feteDelhi], unlessFlags: [FLAGS.moisDelhi] },
   // Hull, la tournée des bars : Léo part devant en éclaireur ; Ousmane, Charlotte et Anaïs suivent Pierre à la queue
   // leu leu, du premier pub au second, puis du second à l'Asylum (mêmes id que leurs PNJ dans les bars : ils partent de
   // leur place à table, et s'y rassoient en arrivant, voir hullStory.js et interiors.js).
@@ -286,4 +321,6 @@ export const FOLLOWERS = [
     { id: 'charlotte-pub', name: 'Charlotte', ifFlags: [from], unlessFlags: [until] },
     { id: 'anais-pub', name: 'Anaïs', ifFlags: [from], unlessFlags: [until] },
   ]),
+  // Vincent, rencontré au second pub (la partie de fléchettes en équipe) : il suit la bande jusqu'à l'Asylum.
+  { id: 'vincent-pub', name: 'Vincent', ifFlags: [FLAGS.flechettesJouees], unlessFlags: [FLAGS.bandeAsylum] },
 ];

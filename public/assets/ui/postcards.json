@@ -40,7 +40,7 @@
     "h": 160
    }
   },
-  "corse": {
+  "hull": {
    "frame": {
     "x": 0,
     "y": 800,
@@ -48,7 +48,7 @@
     "h": 160
    }
   },
-  "hull": {
+  "montepilloy": {
    "frame": {
     "x": 0,
     "y": 960,
@@ -56,7 +56,7 @@
     "h": 160
    }
   },
-  "sriLanka": {
+  "montepilloySeptembre": {
    "frame": {
     "x": 0,
     "y": 1120,
@@ -64,7 +64,7 @@
     "h": 160
    }
   },
-  "thailand": {
+  "routeBonsecours": {
    "frame": {
     "x": 0,
     "y": 1280,
@@ -72,42 +72,10 @@
     "h": 160
    }
   },
-  "nepal": {
-   "frame": {
-    "x": 0,
-    "y": 1440,
-    "w": 256,
-    "h": 160
-   }
-  },
-  "montepilloy": {
-   "frame": {
-    "x": 0,
-    "y": 1600,
-    "w": 256,
-    "h": 160
-   }
-  },
-  "montepilloySeptembre": {
-   "frame": {
-    "x": 0,
-    "y": 1760,
-    "w": 256,
-    "h": 160
-   }
-  },
-  "routeBonsecours": {
-   "frame": {
-    "x": 0,
-    "y": 1920,
-    "w": 256,
-    "h": 160
-   }
-  },
   "prytanee": {
    "frame": {
     "x": 0,
-    "y": 2080,
+    "y": 1440,
     "w": 256,
     "h": 160
    }

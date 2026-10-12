@@ -56,7 +56,10 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     // Un modèle partagé : la pièce choisie dans le sélecteur « Pièce » (builder.js, modèles d'intérieurs).
     if (state.base?.kind === 'modele') return interiors[state.base.room] ?? null;
     if (state.base?.kind === 'interieur' && interiors[m.id]) return interiors[m.id];
-    return interiors[m.id]?.built ? interiors[m.id] : Object.values(MAPS).find((g) => g.built?.id === m.id) ?? null;
+    if (interiors[m.id]?.built) return interiors[m.id];
+    // Un intérieur dessiné comme une carte (la cour de Delhi, builtMaps/delhi-cour.json).
+    return Object.values(MAPS).find((g) => g.built?.id === m.id)
+      ?? Object.values(interiors).find((r) => r.built?.id === m.id) ?? null;
   }
 
   // ---------- Frise de la quête ----------
@@ -392,12 +395,12 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
     for (const c of names) sel.append(new Option(`${c.id} — ${c.name}`, c.id));
   }
 
-  // La grille des apparences (comme le menu PNJ du jeu) : chaque personnage Gen 4 de face, « Celle du jeu » en premier.
+  // La grille des apparences (comme l'ancien menu PNJ du jeu) : chaque personnage Gen 4 de face, « Celle du jeu » en premier.
   function openLooks() {
     const it = selectedItem();
     if (!it) return;
     const n = it.npc;
-    const name = n.name ?? n.id;
+    const name = n.lookName ?? n.name ?? n.id;          // lookName : deux PNJ du même prénom (« Camille (Paris) »)
     const here = $('npc-look-here').checked;
     const current = here ? state.map.npcEdits?.moved?.[n.id]?.sprite ?? '' : projectLookOf(name) ?? '';
     $('npc-look-who').textContent = name;
@@ -432,7 +435,7 @@ export function createNpcLayer({ state, base, remember, changed, requestDraw, se
   // Apparence d'un PNJ du jeu : partout (par nom, src/data/characterLooks.json, écrit tout de suite par le serveur de
   // développement) ou seulement ici (npcEdits.moved[id].sprite, enregistré avec le dessin).
   async function setLook(n, sprite) {
-    const name = n.name ?? n.id;
+    const name = n.lookName ?? n.name ?? n.id;          // lookName : deux PNJ du même prénom (« Camille (Paris) »)
     if ($('npc-look-here').checked) {
       remember();
       const e = edits();

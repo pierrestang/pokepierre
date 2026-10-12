@@ -314,6 +314,26 @@
         box-shadow: 0 6px 18px rgba(0,0,0,.5); }
       .colour-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; padding: 0; cursor: pointer; }
       .colour-swatch.on { border-color: #fff; }
+      /* Panneau PNJ (src/builder/looksPanel.js) : la mise en page du menu Start > PNJ du jeu. */
+      #looks-panel { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+        background: rgba(0, 0, 0, 0.55); }
+      #looks-panel[hidden] { display: none !important; }
+      .looks-frame { width: min(760px, 96vw); height: min(560px, 92vh); display: flex; flex-direction: column;
+        background: #f8f8f0; border-radius: 6px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); }
+      .looks-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; background: #2070e8; padding: 4px 8px; min-height: 34px; }
+      .looks-bar .grow { flex: 1; }
+      .looks-bar canvas, .looks-body canvas { image-rendering: pixelated; display: block; }
+      .looks-body { flex: 1; min-height: 0; overflow: auto; padding: 6px 8px; }
+      .looks-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; align-content: start; }
+      .looks-grid { display: grid; grid-template-columns: repeat(auto-fill, 60px); gap: 4px; align-content: start; }
+      .looks-row, .looks-cell { border: 0; background: transparent; padding: 0; border-radius: 4px; cursor: pointer; }
+      .looks-row:hover, .looks-cell:hover, .looks-cell.on { background: #90c0f8; }
+      .looks-btn { border: 2px solid rgba(255, 255, 255, 0.5); background: #1858c0; border-radius: 4px; padding: 2px 4px;
+        cursor: pointer; }
+      .looks-btn.on, .looks-btn:hover:not(:disabled) { border-color: #fff; background: #3088f8; }
+      .looks-btn:disabled { opacity: 0.45; cursor: default; }
+      #looks-filters { display: flex; gap: 4px; }
+      #looks-filters[hidden], .looks-btn[hidden] { display: none; }
     </style>
   </head>
   <body>
@@ -340,6 +360,7 @@
         <span class="grow"></span>
         <button class="btn icon" id="undo" title="Annuler (Ctrl+Z)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
         <button class="btn icon" id="redo" title="Rétablir (Ctrl+Maj+Z)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+        <button class="btn" id="looks-open" title="L'apparence de chaque personnage nommé du jeu (enregistrée dans src/data/characterLooks.json)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="label">PNJ</span></button>
         <button class="btn" id="test" title="Jouer la carte dans le jeu"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span class="label">Tester</span></button>
         <button class="btn primary" id="save" title="Enregistrer (Ctrl+S)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg><span class="label">Enregistrer</span></button>
         <button class="btn" id="back" title="Revenir au jeu"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span class="label">Jeu</span></button>
@@ -537,5 +558,21 @@
     </dialog>
 
     <script type="module" src="/src/builder/builder.js"></script>
-  </body>
+      <!-- Panneau PNJ : l'apparence des personnages nommés (src/builder/looksPanel.js). -->
+    <div id="looks-panel" hidden>
+      <div class="looks-frame">
+        <div class="looks-bar" id="looks-title"></div>
+        <div class="looks-body" id="looks-body"></div>
+        <div class="looks-bar">
+          <div id="looks-filters" hidden></div>
+          <button class="looks-btn" id="looks-default" hidden title="L'apparence prévue dans le code (src/data/looks.js)"></button>
+          <button class="looks-btn" id="looks-back" hidden title="Retour à la liste (Échap)"></button>
+          <span class="grow"></span>
+          <button class="looks-btn" id="looks-cancel" hidden title="Oublier les choix pas encore enregistrés"></button>
+          <button class="looks-btn" id="looks-save" title="Écrire les choix dans src/data/characterLooks.json"></button>
+          <button class="looks-btn" id="looks-close" title="Fermer (Échap)"></button>
+        </div>
+      </div>
+    </div>
+</body>
 </html>

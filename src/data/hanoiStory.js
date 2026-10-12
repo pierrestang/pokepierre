@@ -5,7 +5,7 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 //   2. L'agence : le patron (français) l'accueille pour son premier jour et lui tend les consignes, écrites en vietnamien.
 //   3. Dans la rue, les passants ne peuvent pas l'aider ; M. Lam, au bord du lac, parle un peu français et traduit les
 //      consignes (guider deux touristes au temple) : Adaptation.
-//   4. Les deux touristes le suivent jusqu'au temple ; l'une panique, son téléphone est à plat (Insouciance) ; l'objet de
+//   4. Les deux touristes (qui attendent dans la grande rue dès l'arrivée) le suivent jusqu'au temple ; l'une panique, son téléphone est à plat (Insouciance) ; l'objet de
 //      chance sur l'autel ; leurs remerciements en sortant.
 //   5. Le patron le remercie ; en sortant de l'agence, six mois plus tard, Romain appelle : il l'attend à Amsterdam.
 //   6. Au guichet de l'aéroport, le vol pour Amsterdam, en écho au départ de Hull.
@@ -15,12 +15,6 @@ import { FLAGS, ITEMS, TRAITS, carryText } from './story.js';
 const PATRON = 'Patron';
 const TOURISTE = 'Touriste';
 
-// Places sur la carte (voir maps/hanoi.js) : devant l'agence, où attendent les touristes ; devant le temple.
-export const HANOI_SPOTS = {
-  agencyFront: [12, 8],
-  templeFront: [26, 17],
-};
-
 // ---------- 1. L'arrivée ----------
 
 export const ARRIVAL = [
@@ -28,8 +22,9 @@ export const ARRIVAL = [
   { setFlag: FLAGS.hanoiOuverture },
   {
     say: [
-      'Personne ne t\'attend à la sortie de l\'aéroport. Pas d\'Ousmane, pas de Léo.',
-      'Ta maison est la petite maison violette de la grande rue. Ton nouveau travail commence aujourd\'hui, à l\'agence de voyage : la maison noire, un peu plus loin.',
+      'Hanoï. La chaleur te saute au visage, les scooters klaxonnent dans tous les sens, l\'odeur du phở monte des trottoirs.',
+      'Tu ne comprends rien aux panneaux. Et pourtant, tu te sens déjà chez toi.',
+      'Ta maison est la petite maison violette de la grande rue. Ton nouveau travail commence aujourd\'hui, à l\'agence de voyages : la maison noire, un peu plus loin.',
     ],
   },
 ];
@@ -38,14 +33,14 @@ export const ARRIVAL = [
 export const MAILBOX = [
   'Une carte postale ! Elle vient de Hull.',
   '« Pierre ! Alors, Hanoï ? Ici il pleut toujours, rien n\'a changé.',
-  'La maison t\'attend quand tu veux. Léo et toute la bande. »',
+  'La maison t\'attend quand tu veux. Léo et Ousmane. »',
 ];
 
 // ---------- 2. L'agence ----------
 
 // Le patron parle français : il accueille Pierre et lui tend les consignes du jour… en vietnamien.
 export const PATRON_WELCOME = [
-  { ifFlags: [FLAGS.consignesTraduites], speaker: PATRON, say: ['Les touristes t\'attendent devant l\'agence. Le temple, c\'est de l\'autre côté du lac !'], end: true },
+  { ifFlags: [FLAGS.consignesTraduites], speaker: PATRON, say: ['Les touristes t\'attendent dans la grande rue, un peu plus loin. Le temple, c\'est de l\'autre côté du lac !'], end: true },
   { ifFlags: [FLAGS.travailEtape1], speaker: PATRON, say: ['Toujours pas lu tes consignes ? Demande dehors, quelqu\'un saura bien te les lire.'], end: true },
   {
     speaker: PATRON,
@@ -56,9 +51,13 @@ export const PATRON_WELCOME = [
   },
   { give: ITEMS.consignesVietnamien, text: 'Le patron te tend un papier.' },
   { say: ['Tout est écrit en vietnamien. Tu n\'y comprends pas un mot.'] },
-  { speaker: PATRON, say: ['Moi, j\'ai des clients au téléphone. Débrouille-toi : tu verras, c\'est formateur !'] },
+  { speaker: PATRON, say: ['Moi, j\'ai des clients au téléphone. Débrouille-toi : demande dehors, quelqu\'un saura bien te les lire. Tu verras, c\'est formateur !'] },
   { setFlag: FLAGS.travailEtape1 },
 ];
+
+// En entrant à l'agence (le premier jour, puis au retour de la visite) : le patron voit Pierre (« ! »), contourne son
+// bureau et vient à lui pour lancer le dialogue (voir interiors.js travelAgency).
+export const patronComes = (id, steps) => [{ emote: id, kind: 'surprise' }, { approach: id }, ...steps];
 
 // Le retour à l'agence, après la visite : le patron remercie Pierre.
 export const PATRON_THANKS = [
@@ -84,6 +83,8 @@ const passer = (id, gesture, idle) => [
       { say: ['Tu montres ton papier.'] },
       { emote: id, kind: 'dots' },
       { say: [gesture] },
+      // … mais tous montrent l'îlot du lac, où M. Lam parle un peu français.
+      { say: ['D\'un geste, on te montre l\'îlot du lac : un vieux monsieur s\'y tient, près de la cloche.'] },
     ],
     end: true,
   },
@@ -96,16 +97,16 @@ export const VENDEUSE = passer('vendeuse', 'La vendeuse hausse les épaules en r
 export const PASSANT = passer('passant', 'Il fronce les sourcils, retourne le papier dans tous les sens, puis te le rend avec un petit salut d\'excuse.',
   'Un passant vérifie la chaîne de son vélo. Il ne fait pas attention à toi.');
 
-// M. Lam, sur le banc du lac : il a appris le français à l'école, il y a longtemps. Il traduit les consignes.
+// M. Lam, sur le petit îlot du lac, près de la cloche : il a appris le français à l'école, il y a longtemps. Il traduit les consignes.
 export const MR_LAM = [
   { ifFlags: [FLAGS.consignesTraduites], speaker: 'M. Lam', say: ['Le temple au toit rouge, de l\'autre côté du lac. Bonne visite, jeune homme !'], end: true },
   { unlessItems: [ITEMS.consignesVietnamien.id], speaker: 'M. Lam', say: ['Bonjour, bonjour ! Le lac est beau, ce matin, n\'est-ce pas ?'], end: true },
-  { say: ['Tu montres ton papier au vieux monsieur du banc.'] },
+  { say: ['Tu montres ton papier au vieux monsieur, près de la cloche.'] },
   { speaker: 'M. Lam', say: ['Oh ! Tu parles français ? Je l\'ai appris à l\'école, il y a… très longtemps.', 'Voyons voir. Mes yeux ne sont plus tout jeunes…'] },
   {
     speaker: 'M. Lam',
     say: [
-      '« Aller chercher les deux touristes devant l\'agence. Leur faire visiter le temple. Ne pas les perdre. »',
+      '« Aller chercher les deux touristes qui attendent dans la grande rue, un peu plus loin que l\'agence. Leur faire visiter le temple. Ne pas les perdre. »',
       'Le temple, c\'est le grand bâtiment au toit rouge, de l\'autre côté du lac.',
     ],
   },
@@ -116,15 +117,24 @@ export const MR_LAM = [
 
 // ---------- 4. Les touristes et le temple ----------
 
-// Devant l'agence : les deux touristes attendent leur guide ; ils suivent Pierre jusqu'au temple.
+// Dans la grande rue, un peu plus loin que l'agence : les deux touristes attendent leur guide dès l'arrivée de Pierre.
+// Avant que M. Lam ait lu les consignes, Pierre ne sait pas que c'est lui ; ensuite, ils le suivent jusqu'au temple.
 export const TOURISTS_MEET = [
-  { speaker: TOURISTE, say: ['Bonjour ! C\'est vous, notre guide ? On vous attendait devant l\'agence.', 'On aimerait tellement voir le temple !'] },
+  {
+    unlessFlags: [FLAGS.consignesTraduites], speaker: TOURISTE,
+    say: ['Bonjour ! On attend notre guide. L\'agence nous a dit de patienter ici, dans la grande rue.'], end: true,
+  },
+  { speaker: TOURISTE, say: ['Bonjour ! C\'est vous, notre guide ? On vous attendait !', 'On aimerait tellement voir le temple !'] },
   { say: ['Tu leur fais signe de te suivre.'] },
   { setFlag: FLAGS.touristesSuivent },
 ];
 
-// Au temple : l'une des touristes panique, son téléphone est à plat ; Pierre (Insouciance) lui dit de profiter du moment.
+// Au temple : Pierre avance de trois pas (les touristes entrent derrière lui, on les voit tous), puis se retourne ; l'une
+// des touristes panique, son téléphone est à plat ; Pierre (Insouciance) lui dit de profiter du moment.
 export const TEMPLE_PANIC = [
+  { goTo: [6, 6], facing: 'up' },
+  { wait: 400 },
+  { face: { player: 'down' } },
   { speaker: TOURISTE, say: ['Oh non… Mon téléphone est à plat ! Pas une seule photo du temple…', 'Tout ce voyage, et je ne pourrai rien montrer. Je veux rentrer à l\'hôtel.'] },
   { useTrait: TRAITS.insouciance },
   { speaker: 'Pierre', say: ['Laisse tomber les photos. Regarde autour de toi : tu y es, là, maintenant. Profite.'] },
@@ -139,11 +149,19 @@ export const ALTAR = {
   after: ['L\'autel est paisible. L\'encens fume doucement.'],
 };
 
-// En sortant du temple avec l'objet de chance : les touristes remercient Pierre.
+// En sortant du temple (avec ou sans l'objet de chance) : les touristes remercient Pierre, et l'envoient raconter sa
+// journée au patron de l'agence.
+// Pierre fait un pas hors de la porte ; les touristes qui le suivaient (FOLLOWERS) redeviennent des PNJ là où ils sont, et
+// vont se placer de chaque côté de la porte (maps/hanoi.js), chacun sur sa case, avant de parler.
+export const TEMPLE_FRONT = { pierre: [26, 18], touriste1: [25, 17], touriste2: [27, 17] };
 export const TOURISTS_THANKS = [
-  { speaker: TOURISTE, say: ['Merci pour la visite ! Sans téléphone, j\'ai tout regardé. Vraiment regardé.'] },
-  { speaker: TOURISTE, say: ['Un super guide. Et même pas besoin de parler vietnamien !'] },
+  { goTo: TEMPLE_FRONT.pierre, facing: 'up' },
   { setFlag: FLAGS.visiteTerminee },
+  { walk: 'touriste-1', to: TEMPLE_FRONT.touriste1, block: true },
+  { walk: 'touriste-2', to: TEMPLE_FRONT.touriste2, block: true },
+  { face: { 'touriste-1': 'right', 'touriste-2': 'left', player: 'up' } },
+  { speaker: TOURISTE, say: ['Merci pour la visite ! Sans téléphone, j\'ai tout regardé. Vraiment regardé.'] },
+  { speaker: TOURISTE, say: ['Un super guide. Et même pas besoin de parler vietnamien !', 'On va dire à ton patron, à l\'agence, que tu es le meilleur. Va vite lui raconter !'] },
 ];
 
 // ---------- 5. Six mois plus tard : l'appel de Romain ----------
@@ -163,7 +181,7 @@ export const SIX_MONTHS_LATER = [
     say: [
       'Pierre ! Ça y est, je viens de prendre mon avion. Hong Kong, c\'est fini !',
       'J\'ai trop hâte que tu arrives à Amsterdam pour le stage. On va bien se marrer.',
-      'Je t\'attends là-bas, hein. Ne rate pas ton vol !',
+      'Je t\'attends là-bas, hein. Ne rate pas ton vol : l\'aéroport, c\'est au bout de la grande rue !',
     ],
   },
   { setFlag: FLAGS.appelRomain },
@@ -177,8 +195,8 @@ const CARRY = carryText('hanoi');
 export const FLIGHT_TO_AMSTERDAM = [
   {
     say: [
-      'Il y a quelques mois, à Hull, tu prenais ce même billet, le ventre noué, parce que personne ne t\'accompagnait.',
-      'Aujourd\'hui, tu as traversé une ville entière sans en parler la langue. Tu n\'as plus peur de l\'inconnu. Tu t\'adaptes.',
+      'Il y a quelques mois, tu prenais ce billet à Hull, le sourire aux lèvres.',
+      'Aujourd\'hui, c\'est un bánh mì dans une main et le billet dans l\'autre. Tu as pris le pli. Amsterdam, à nous deux.',
     ],
   },
   { setFlag: FLAGS.arriveeAmsterdam },

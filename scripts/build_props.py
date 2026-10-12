@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Objets posés sur les cartes (props des cartes du jeu) dessinés dans le style Gen 4 DS, faute d'asset (octobre 2026) :
-le tracteur de M. Bouly et la caisse à outils de Jean (Montépilloy). Volumes ombrés, reflets, liseré gris très foncé
+le tracteur de M. Bouly (Montépilloy), la porte de Notre-Dame (Paris). Volumes ombrés, reflets, liseré gris très foncé
 (32, 32, 32) comme les objets des cartes (scripts/outline_buildings.py), pas d'ombre portée.
 
 Écrit public/assets/props/<nom>.png (voir src/art/propImages.js). Usage : python3 scripts/build_props.py
@@ -75,31 +75,35 @@ def tractor():
     return outline(img)
 
 
-def toolbox():
-    """Caisse à outils de métal rouge, couvercle entrouvert : une clé et un tournevis dépassent (16 x 14 px)."""
-    img = Image.new('RGBA', (16, 14))
+def cathedral_door():
+    """La grande porte de Notre-Dame (Paris) : le dessin de la cathédrale n'a qu'une ouverture noire. Deux battants de bois
+    sous l'arche, taillés à sa forme : image de 48 x 48 (les cases x 24-26, rangées 39-41 de la carte), l'ouverture en
+    x 11-36, son sommet en marches (y 14, 9, puis 7 au milieu), le bas en y 37 (le seuil sombre du dessin reste dessous)."""
+    img = Image.new('RGBA', (48, 48))
     d = ImageDraw.Draw(img)
-    red, light, dark = (200, 48, 40, 255), (240, 104, 84, 255), (132, 28, 26, 255)
-    d.line((6, 1, 9, 1), fill=(80, 80, 88, 255))                    # poignée
-    d.line((5, 2, 5, 3), fill=(80, 80, 88, 255))
-    d.line((10, 2, 10, 3), fill=(80, 80, 88, 255))
-    d.line((3, 1, 3, 5), fill=(190, 190, 198, 255))                 # tournevis
-    d.point((3, 0), fill=(240, 196, 48, 255))
-    d.line((12, 2, 13, 5), fill=(170, 170, 180, 255))               # clé
-    d.rectangle((12, 1, 14, 2), fill=(170, 170, 180, 255))
-    d.rectangle((1, 4, 14, 6), fill=light)                          # couvercle
-    d.line((1, 4, 14, 4), fill=(255, 150, 130, 255))
-    d.rectangle((1, 7, 14, 13), fill=red)                           # caisse
-    d.line((1, 7, 14, 7), fill=dark)
-    d.rectangle((1, 12, 14, 13), fill=dark)
-    d.rectangle((7, 8, 8, 9), fill=(232, 196, 64, 255))             # fermoir
-    d.line((2, 8, 2, 11), fill=light)
-    return outline(img)
+    top = {x: (14 if x <= 13 or x >= 34 else 9 if x <= 16 or x >= 31 else 7) for x in range(11, 37)}
+    wood, plank, light, iron = (150, 96, 52, 255), (116, 72, 38, 255), (186, 128, 70, 255), (84, 78, 80, 255)
+    for x, t in top.items():
+        d.line((x, t, x, 37), fill=wood)
+        if (x - 11) % 4 == 3:
+            d.line((x, t + 1, x, 37), fill=plank)                      # les planches
+        d.point((x, t), fill=EDGE)                                       # le haut, sous l'arche
+        d.point((x, t + 1), fill=light)
+    for x in (11, 36):
+        d.line((x, top[x], x, 37), fill=EDGE)                            # les montants
+    d.line((23, 7, 23, 37), fill=EDGE)                                   # les deux battants
+    d.line((24, 7, 24, 37), fill=plank)
+    for y in (17, 29):                                                   # les pentures de fer
+        d.line((12, y, 22, y), fill=iron)
+        d.line((25, y, 35, y), fill=iron)
+    for x in (21, 26):                                                   # les anneaux
+        d.ellipse((x - 1, 22, x + 1, 24), outline=(232, 196, 64, 255))
+    return img
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    for name, fn in (('tracteur', tractor), ('caisse-outils', toolbox)):
+    for name, fn in (('tracteur', tractor), ('porte-notre-dame', cathedral_door)):
         fn().save(OUT / f'{name}.png')
         print(f'public/assets/props/{name}.png')
 

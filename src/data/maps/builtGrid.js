@@ -45,3 +45,13 @@ export function interiorGrid(sourceGrid, built) {
     return code;
   }));
 }
+
+// Bandes hors de la carte (surroundings.outside) : sur chaque rangée, la case du bord gauche ou droit se prolonge si elle
+// fait partie de `kept` (une rue, un canal…) ; ailleurs, et au-dessus ou au-dessous de la carte, `fill`.
+export const extendEdges = (kept, fill) => (x, y, grid) => {
+  if (y >= 0 && y < grid.length) {
+    const edge = grid[y][x < 0 ? 0 : grid[0].length - 1];
+    if (kept.includes(edge)) return edge;
+  }
+  return fill;
+};

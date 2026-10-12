@@ -1,0 +1,17 @@
+Ressources du grand repas de New Delhi (choisies par l'utilisateur, octobre 2026 ; voir scripts/build_meal.py).
+
+ghostpixxells-preview.png
+  « Free Pixel foods » de ghostpixxells (itch.io) : https://ghostpixxells.itch.io/pixelfood
+  Licence CC0 1.0 (domaine public) : usage, modification et redistribution libres.
+  Fichier : l'image d'aperçu de la page (icônes de 32 px agrandies deux fois), téléchargée le 9 octobre 2026.
+  Utilisés : le riz, les boulettes en sauce, les beignets, le bol de lentilles, la galette (réduits à 16 px, ombre
+  portée retirée).
+
+peekychew-cafe-restaurant-bar.png
+  « Cafe, Restaurant and Bar Tiles » de PeekyChew (DeviantArt) :
+  https://www.deviantart.com/peekychew/art/Cafe-Restaurant-and-Bar-Tiles-532856201
+  Conditions de l'auteur : « Feel free to use and edit in any way you like, but please credit ».
+  Fichier : l'image pleine taille de la page (688 x 352), téléchargée le 9 octobre 2026.
+  Utilisés : l'assiette blanche et la carafe.
+
+Crédit à afficher : « Plats : Free Pixel foods, ghostpixxells (CC0) ; vaisselle : PeekyChew ».

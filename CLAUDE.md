@@ -4,8 +4,8 @@
 
 ## Vision
 RPG 2D vue de dessus, inspiré de Pokémon Rouge Feu / Vert Feuille.
-Le jeu retrace le parcours de vie de Pierre : une ville par lieu vécu (une dizaine), de Fort-de-France à Hull,
-puis Hanoï. Pas de combats.
+Le jeu retrace le parcours de vie de Pierre : une ville par lieu vécu, de Fort-de-France à Paris, la dernière ; puis un
+rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (fin du jeu). Pas de combats.
 
 ## Stack
 - Phaser 3 + Vite, JavaScript.
@@ -24,9 +24,13 @@ puis Hanoï. Pas de combats.
   objets, bâtiments, arbres). Ce qui n'a pas d'équivalent Rouge Feu reste dessiné dans le code (src/art/).
 - Ressources de fans (assets-source/fan/) : voiture de la famille tirée de « FRLG Tilesets - Cars » de
   pinkscales (DeviantArt), libre pour un projet de fan non commercial, avec crédit à pinkscales.
+  Le grand repas de Delhi (scripts/build_meal.py, assets-source/fan/food/CREDITS.txt) : plats de « Free Pixel
+  foods » de ghostpixxells (itch.io, CC0), vaisselle Gen 4 de PeekyChew (DeviantArt, crédit demandé).
 - Écran : format GBA dézoomé, 360 x 240 px (22,5 x 15 cases), voir src/systems/screen.js.
 - Police des dialogues et du menu : police bitmap de Rouge Feu, extraite par scripts/extract_frlg_font.py
   vers public/assets/fonts/ (voir src/systems/frlgFont.js) ; deux lignes par page, pages coupées automatiquement.
+  Sur fond sombre (générique, vertus) : sa variante claire `frlg-clair` (encre blanche, ombre gris
+  foncé), teintée avec setTint ; jamais setTintFill sur la police d'origine (l'ombre prend la couleur, lettres empâtées).
 - Personnages : uniquement des PNJ de la quatrième génération (Diamant/Perle/Platine, HeartGold/SoulSilver), sprites
   officiels fournis par l'utilisateur (ASSETTILESPOKEMONV2/personnages/gen4-officiels), rassemblés par
   scripts/build_gen4_npcs.py dans public/assets/characters/gen4-npcs.png (`g{n}`, liste dans gen4-npcs.json ; voir
@@ -46,9 +50,10 @@ puis Hanoï. Pas de combats.
   (src/systems/effects.js) ; pas d'autres bulles. Mont Chimnée (Rubis/Saphir) : la gare du téléphérique sert
   de ferme à M. Bouly ; caisses du marché de Slateport dans la cabane de pêche (scripts/extract_rs_buildings.py).
 
-- Vélo (src/systems/bike.js) : Lucas à vélo officiel (scripts/build_bike.py -> public/assets/characters/pierre-velo.png),
-  objet ITEMS.velo offert à Bordeaux par le cycliste du quai (facultatif, bordeauxStory.js CYCLIST ; ?velo dans l'adresse pour l'essayer), touche V / menu Start /
-  bouton tactile, seulement dehors et sans suiveur, Pierre descend pendant les scénettes.
+- Vélo (src/systems/bike.js) : le héros officiel à vélo de l'apparence de Pierre (Lucas, Dawn, Ethan ou Lyra ; Lucas par
+  défaut ; scripts/build_bike.py -> public/assets/characters/pierre-velo.png, une rangée par héros),
+  objet ITEMS.velo offert à Bordeaux par le cycliste du quai (facultatif, bordeauxStory.js CYCLIST ; ?velo dans l'adresse pour l'essayer), touche V (Options > TOUCHES) /
+  bouton tactile, plus d'entrée dans le menu Start, seulement dehors et sans suiveur, Pierre descend pendant les scénettes.
 
 - Mobile (src/systems/TouchControls.js, src/systems/screen.js) : écran de jeu le plus grand possible (zoom non
   entier) ; en portrait, en haut, toute la largeur, et les
@@ -60,8 +65,9 @@ puis Hanoï. Pas de combats.
   par case » : éditeur « V2 » à trois calques avec collisions. En dev, les cartes sont enregistrées dans src/data/builtMaps/<id>.json et s'ouvrent dans
   le jeu avec ?carte=<id>. Les cartes de Fort-de-France à Hull sont générées par scripts/convert_maps_v2.py puis
   retouchées à la main ; --force efface ces retouches. Hanoï : scripts/build_hanoi.py (sol du convertisseur, éléments du
-  catalogue) ; Amsterdam : scripts/build_amsterdam.py (même principe, forêt par scripts/paint_forest.mjs) ; les villes
-  suivantes ne sont que des premiers jets dans le créateur, pas encore utilisés par le jeu. Ordre de reconstruction : build_v2_tiles.py, puis
+  catalogue) ; Amsterdam : scripts/build_amsterdam.py (même principe, forêt par scripts/paint_forest.mjs) ; Delhi :
+  scripts/build_new_delhi.py (même principe, assets Gen 4 nouveaux au catalogue) ; Paris : scripts/build_paris.py (idem) ; le rêve
+  de la fin : scripts/build_reve.py (planches du Gaia Project, PixelMister : Monde Distorsion, ruines de la Colonne Lance). Ordre de reconstruction : build_v2_tiles.py, puis
   convert_maps_v2.py et build_g4_library.py. Avant de changer un bâtiment : check_paths.js (les rues de Hull et
   Bordeaux sont étroites). Détails : docs/technique/createur-de-cartes.md, à lire avant de toucher au créateur, aux
   planches V2/Gen 4 ou aux cartes générées.
@@ -78,13 +84,13 @@ puis Hanoï. Pas de combats.
 - src/systems/ : déplacement, collisions, dialogues.
 
 ## Vertus
-- 8 vertus au maximum dans tout le jeu, une par ville au maximum : 6 jusqu'à Hull, Adaptation à Hanoï, la 8e réservée
-  à Paris (src/data/story.js TRAITS).
-- Les 7 vertus, leur ville et leur situation type : Joie de vivre (Fort-de-France : une ambiance éteinte à
+- 8 vertus dans tout le jeu, une par ville au maximum : 6 jusqu'à Hull, Adaptation à Hanoï, Liberté à Paris (la
+  dernière ; src/data/story.js TRAITS).
+- Les 8 vertus, leur ville et leur situation type : Joie de vivre (Fort-de-France : une ambiance éteinte à
   rallumer) ; Esprit d'équipe (Saint-Ay : un obstacle qu'on ne franchit qu'à plusieurs) ; Ingéniosité (Montépilloy :
   un mécanisme à réparer ou bricoler) ; Audace (collège : une situation intimidante) ; Autonomie (Prytanée : faire
   seul, sans qu'on le demande) ; Insouciance (Hull : un souci qui gâche le moment, à mettre de côté) ; Adaptation
-  (Hanoï : se débrouiller sans parler la langue, dans l'inconnu).
+  (Hanoï : se débrouiller sans parler la langue, dans l'inconnu) ; Liberté (Paris : refuser une vie qui n'est pas la sienne).
 - Pas de ligne « Objectif : » : ce sont les PNJ qui disent où aller.
 - Les vertus servent comme des CS : chaque ville utilise au moins une vertu déjà acquise sur la route principale, et
   une dans un passage optionnel, y compris en revenant dans les anciennes villes. Sans la bonne vertu, une réplique
@@ -107,4 +113,13 @@ puis Hanoï. Pas de combats.
   hautes herbes de la grille sans dessin, poches inaccessibles, portes du jeu hors de la porte dessinée). Sous un toit ou une cime (calque « au-dessus de
   Pierre »), le jeu montre la silhouette du joueur (MapScene.updateSilhouette) ; ses jambes dans les hautes herbes sont
   cachées par le bas de la case dessinée, seulement si elle a vraiment des herbes (effects.js GrassCovers).
+- Sauvegarde et scénettes : **une scène ne pose son drapeau « déjà vue » qu'à sa dernière action**, en même temps que
+  le drapeau qui fait avancer l'histoire, jamais avant. C'est garanti par la sauvegarde par scène (src/systems/persist.js) :
+  pendant une scénette (MapScene.runScript), drapeaux, objets, vertus et memo changent en mémoire tout de suite mais ne
+  sont écrits dans localStorage qu'à la fin de la scène ; une scène coupée (onglet fermé) se rejoue entière. Les drapeaux
+  `then` d'une marche de PNJ sont écrits dès le départ de la marche (flags.saveAhead). Hors scénette (dialogue simple,
+  passage), rien ne protège : n'y poser qu'un seul drapeau. Une scène qui pose un drapeau de garde au début reste à
+  éviter (la règle vaut aussi pour la lecture du code).
+- Version de la sauvegarde : src/systems/save.js SAVE_VERSION (clé `pokepierre.version`) ; tout changement de structure
+  (drapeau renommé ou retiré, objet changé) ajoute une étape dans MIGRATIONS, jouée au démarrage (migrateSave).
 - Demander avant d'ajouter une dépendance.

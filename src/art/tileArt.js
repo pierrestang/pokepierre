@@ -1,6 +1,5 @@
 import { TILE_SIZE as S } from '../data/tiles.js';
 import { rect, sprite, hash } from './pixel.js';
-import { pixelText } from './buildingArt.js';
 import { mod2, inFullTreeBlock, inForest } from '../data/treeBlocks.js';
 
 // Dessin procédural de chaque tuile (16x16), dans l'esprit de Rouge Feu.
@@ -1304,7 +1303,7 @@ function fishingRods(g, px, py, x, y) {
   const base = py - 8;
   g.fillStyle(0x000000, 0.2);
   g.fillRect(px + 1, base + 8, 15, 1);
-  // Les cannes sont posées par-dessus, selon l'histoire (décor `rodsOnRack`, voir ROD_DECALS).
+  // Les cannes sont posées par-dessus, selon l'histoire (des icônes en `decals`, voir data/maps/interiors.js RACK_RODS).
   if (x % 2 === 1) {
     // Épuisette posée contre le mur : manche et filet.
     rect(g, 0x383840, px + 10, base - 21, 1, 23);
@@ -1342,73 +1341,8 @@ const HORSE_STATUE_C = {
 };
 
 // Décors qui changent avec l'histoire, dessinés par-dessus la carte (voir `decals` dans MapScene), case (x, y)
-// en pixels px, py. Les cannes à pêche sont des images à part (voir art/uiIcons.js ROD_DECALS).
+// en pixels px, py. Les cannes à pêche sont des icônes à part (`decals` avec `icons`, voir data/maps/interiors.js RACK_RODS).
 const DECALS = {
-  // Mémorial de l'Anse Caffard (Cap 110) : les six statues de pierre blanche, comme sur la carte d'origine (voir
-  // capStatues), posées sur une carte du créateur (Fort-de-France). (x, y) : coin du groupe, comme le plateau 'ɱ'.
-  capStatues(g, px, py) {
-    capStatues(g, px, py);
-  },
-  // Tablier du pont ferroviaire de Newland Avenue, au-dessus de la rue : poutre d'acier bleu avec le nom de la
-  // rue peint dessus, rails sur le dessus. (x, y) : case en haut à gauche ; `w` cases de large.
-  railBridge(g, px, py, { w = 6 } = {}) {
-    const W = w * S;
-    rect(g, 0x1c2c48, px, py - 6, W, 30);
-    rect(g, 0x2c4c7c, px, py - 5, W, 22);
-    rect(g, 0x5c7cac, px, py - 5, W, 1);
-    for (let x = 4; x < W; x += 12) rect(g, 0x243c64, px + x, py - 4, 2, 20);          // rivets et montants
-    rect(g, 0x6c6c6c, px, py - 10, W, 4);                                                // ballast et rails
-    rect(g, 0xb0b0b0, px, py - 9, W, 1);
-    rect(g, 0xb0b0b0, px, py - 7, W, 1);
-    rect(g, 0xf0f0e8, px + 6, py + 2, W - 12, 9);                                       // bandeau peint
-    pixelText(g, 'NEWLAND AVENUE', px + Math.round((W - 61) / 2), py + 4, 1, 0x1c2c48);
-    rect(g, 0x000000, px, py + 24, W, 1);
-  },
-  // Le pont de la Humber, au loin sur l'estuaire : deux hautes tours, câbles en guirlande, tablier fin
-  // (tout petit, gris-bleu, dans la brume). `w` cases de large.
-  humberBridge(g, px, py, { w = 8 } = {}) {
-    const W = w * S;
-    const C = 0x8898b0;
-    const deck = py + 10;
-    rect(g, C, px, deck, W, 2);
-    for (const tx of [Math.round(W * 0.2), Math.round(W * 0.8)]) {
-      rect(g, C, px + tx - 1, deck - 22, 3, 26);
-      rect(g, 0xa8b8d0, px + tx - 1, deck - 22, 1, 26);
-    }
-    const t1 = Math.round(W * 0.2);
-    const t2 = Math.round(W * 0.8);
-    for (let x = 0; x <= W; x++) {                                          // câble porteur
-      let y;
-      if (x < t1) y = deck - 22 + Math.round((22 * (t1 - x)) / t1 * 0.8);
-      else if (x > t2) y = deck - 22 + Math.round((22 * (x - t2)) / (W - t2) * 0.8);
-      else { const u = (x - t1) / (t2 - t1); y = deck - 22 + Math.round(20 * 4 * u * (1 - u)); }
-      rect(g, 0x9aaac0, px + x, py + (y - py), 1, 1);
-      if (x % 4 === 0 && y < deck) rect(g, 0xb0bccc, px + x, y + 1, 1, deck - y - 1);   // suspentes
-    }
-    rect(g, 0x506078, px, deck + 2, W, 1);
-  },
-  // Le cheval que Val sculpte (maison de Felix) : statuette en bois sur son socle, copeaux sur la table.
-  // Le lendemain de la soirée de Bordeaux : gobelets rouges renversés au sol (posés sur la case (x, y)).
-  partyCups(g, px, py) {
-    for (const [dx, dy, lying] of [[2, 6, false], [8, 9, true], [11, 4, false]]) {
-      if (lying) {
-        rect(g, 0xc02828, px + dx, py + dy, 5, 3);
-        rect(g, 0xf0f0f0, px + dx + 5, py + dy, 1, 3);                          // bord blanc, couché
-      } else {
-        rect(g, 0xc02828, px + dx, py + dy + 1, 4, 4);
-        rect(g, 0xf0f0f0, px + dx, py + dy, 4, 1);                              // bord blanc
-        rect(g, 0x801818, px + dx, py + dy + 5, 4, 1);
-      }
-    }
-  },
-  // … et le salon sens dessus dessous : confettis et papiers froissés.
-  partyMess(g, px, py) {
-    for (const [dx, dy, c] of [[1, 2, 0xf05090], [5, 11, 0x40a0f0], [9, 3, 0xf0d040], [13, 8, 0x60c060], [3, 14, 0xf0d040],
-      [11, 13, 0xf05090], [7, 6, 0x40a0f0]]) rect(g, c, px + dx, py + dy, 2, 1);
-    rect(g, 0xe8e8e0, px + 4, py + 7, 4, 3);                                    // papiers froissés
-    rect(g, 0xc8c8c0, px + 5, py + 8, 2, 1);
-    rect(g, 0xe8e8e0, px + 10, py + 10, 3, 3);
-  },
   statue(g, px, py) {
     HORSE_STATUE.forEach((row, ry) => [...row].forEach((c, rx) => {
       if (c !== '.') rect(g, HORSE_STATUE_C[c], px - 3 + rx, py - 5 + ry, 1, 1);
@@ -1465,17 +1399,6 @@ const DECALS = {
     rect(g, 0xf0d070, px + 1, py, 1, 1);
     rect(g, 0x303030, px + 2, py + 2, 20, 12);
     for (const [i, c] of [[0, 0x283c98], [1, 0xf4f4f4], [2, 0xd03038]]) rect(g, c, px + 3 + i * 6, py + 3, 6, 10);
-  },
-  // Piste de danse de l'Asylum : dalles lumineuses de couleurs (w x h cases), posée au sol.
-  danceFloor(g, px, py, { w = 4, h = 3 } = {}) {
-    const colors = [0x9040d0, 0x3070e0, 0xe04090, 0x30b0c0];
-    for (let y = 0; y < h * 2; y++) {
-      for (let x = 0; x < w * 2; x++) {
-        rect(g, 0x201828, px + x * 8, py + y * 8, 8, 8);
-        rect(g, colors[(x + y * 3) % colors.length], px + x * 8 + 1, py + y * 8 + 1, 6, 6);
-        rect(g, 0xf8e8ff, px + x * 8 + 2, py + y * 8 + 2, 2, 1);
-      }
-    }
   },
 };
 

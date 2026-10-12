@@ -107,7 +107,8 @@ function freq(note) {
 }
 
 // Une note : oscillateur + enveloppe (attaque nette, léger déclin, relâche courte).
-function tone(bus, { type = 'pulse', duty = 0.5, f, start, dur, vol = 0.2, slide = 0, decay = 0.6, vibrato = false }) {
+// `attack` : montée du volume en secondes (les nappes du rêve entrent doucement).
+function tone(bus, { type = 'pulse', duty = 0.5, f, start, dur, vol = 0.2, slide = 0, decay = 0.6, vibrato = false, attack = 0.005 }) {
   const osc = ctx.createOscillator();
   if (type === 'pulse') osc.setPeriodicWave(waves[duty]);
   else osc.type = type;
@@ -126,8 +127,8 @@ function tone(bus, { type = 'pulse', duty = 0.5, f, start, dur, vol = 0.2, slide
   }
   const g = ctx.createGain();
   g.gain.setValueAtTime(0, start);
-  g.gain.linearRampToValueAtTime(vol, start + 0.005);
-  g.gain.linearRampToValueAtTime(vol * decay, start + Math.min(dur * 0.6, 0.12));
+  g.gain.linearRampToValueAtTime(vol, start + attack);
+  g.gain.linearRampToValueAtTime(vol * decay, start + attack + Math.min(dur * 0.6, 0.12));
   g.gain.setValueAtTime(vol * decay, start + dur - 0.02);
   g.gain.linearRampToValueAtTime(0, start + dur);
   osc.connect(g).connect(bus);
@@ -304,7 +305,7 @@ const AMSTERDAM_LEAD = [
 ];
 const AMSTERDAM_CHORDS = ['F', 'Dm', 'Bb', 'C', 'F', 'Dm', 'C', 'F'];
 
-// New Delhi et le Rajasthan : mode oriental sur ré, rythme en 3 + 3 + 2.
+// Delhi : mode oriental sur ré, rythme en 3 + 3 + 2.
 const NEWDELHI_LEAD = [
   ['D5', 2], ['D#5', 1], ['F#5', 1], ['G5', 2], ['A5', 2],
   ['A#5', 2], ['A5', 1], ['G5', 1], ['F#5', 4],
@@ -330,84 +331,6 @@ const PARIS_LEAD = [
 ];
 const PARIS_CHORDS = ['Am', 'Dm', 'E', 'Am', 'Dm', 'Am', 'E', 'Am'];
 
-// Toulon et le Chemin : le port au soleil, en sol majeur.
-const TOULON_LEAD = [
-  ['D5', 2], ['G5', 2], ['B5', 2], ['G5', 2],
-  ['C6', 2], ['B5', 1], ['A5', 1], ['G5', 2], ['E5', 2],
-  ['F#5', 2], ['A5', 2], ['D6', 3], ['C6', 1],
-  ['B5', 4], ['G5', 4],
-  ['E5', 2], ['G5', 2], ['B5', 2], ['E6', 2],
-  ['D6', 2], ['C6', 2], ['G5', 4],
-  ['A5', 2], ['F#5', 2], ['D5', 2], ['F#5', 2],
-  ['G5', 6], [r, 2],
-];
-const TOULON_CHORDS = ['G', 'C', 'D', 'G', 'Em', 'C', 'D', 'G'];
-
-// La Corse : montagne et maquis, mode de ré, posé.
-const CORSE_LEAD = [
-  ['D5', 2], ['F5', 2], ['A5', 3], ['G5', 1],
-  ['E5', 2], ['G5', 2], ['C5', 4],
-  ['F5', 2], ['E5', 1], ['D5', 1], ['A5', 4],
-  ['C6', 2], ['B5', 2], ['A5', 4],
-  ['A5', 2], ['D6', 2], ['C6', 2], ['A5', 2],
-  ['G5', 2], ['E5', 2], ['C5', 2], ['E5', 2],
-  ['E5', 3], ['D5', 1], ['C5', 2], ['E5', 2],
-  ['D5', 6], [r, 2],
-];
-const CORSE_CHORDS = ['Dm', 'C', 'Dm', 'Am', 'Dm', 'C', 'Am', 'Dm'];
-
-// Bali : couleurs de gamelan, en mi, sans batterie.
-const BALI_LEAD = [
-  ['E5', 1], ['G5', 1], ['B5', 2], ['E6', 2], ['B5', 2],
-  ['C6', 2], ['B5', 1], ['G5', 1], ['E5', 4],
-  ['A5', 2], ['C6', 2], ['E5', 2], ['A5', 2],
-  ['G5', 2], ['F5', 2], ['E5', 4],
-  ['B4', 2], ['E5', 2], ['F5', 2], ['G5', 2],
-  ['B5', 2], ['C6', 2], ['G5', 4],
-  ['E5', 2], ['A5', 2], ['C6', 2], ['B5', 2],
-  ['E5', 6], [r, 2],
-];
-const BALI_CHORDS = ['Em', 'C', 'Am', 'Em', 'Em', 'C', 'Am', 'Em'];
-
-// Le Sri Lanka : la jungle et ses cascades, en la majeur, entraînant.
-const SRILANKA_LEAD = [
-  ['C#5', 2], ['E5', 2], ['A5', 2], ['E5', 2],
-  ['F#5', 2], ['A5', 2], ['D6', 4],
-  ['B5', 2], ['G#5', 2], ['E5', 2], ['G#5', 2],
-  ['A5', 6], [r, 2],
-  ['F#5', 2], ['A5', 2], ['C#6', 2], ['A5', 2],
-  ['D6', 2], ['C#6', 1], ['B5', 1], ['A5', 4],
-  ['G#5', 2], ['B5', 2], ['E5', 2], ['G#5', 2],
-  ['A5', 6], [r, 2],
-];
-const SRILANKA_CHORDS = ['A', 'D', 'E', 'A', 'F#m', 'D', 'E', 'A'];
-
-// La Thaïlande : pentatonique en sol, comme une cloche de temple.
-const THAILAND_LEAD = [
-  ['B4', 2], ['D5', 2], ['E5', 2], ['D5', 2],
-  ['B4', 2], ['A4', 2], ['G4', 4],
-  ['E5', 2], ['G5', 2], ['A5', 2], ['G5', 2],
-  ['A5', 3], ['G5', 1], ['D5', 4],
-  ['D5', 2], ['E5', 2], ['G5', 2], ['B5', 2],
-  ['A5', 2], ['G5', 2], ['E5', 4],
-  ['D5', 2], ['E5', 2], ['A4', 2], ['B4', 2],
-  ['G4', 6], [r, 2],
-];
-const THAILAND_CHORDS = ['G', 'Em', 'C', 'D', 'G', 'Em', 'D', 'G'];
-
-// Le Népal : les sommets, lent et majestueux, en mi mineur.
-const NEPAL_LEAD = [
-  ['B4', 4], ['E5', 4],
-  ['G5', 4], ['E5', 4],
-  ['D5', 3], ['G5', 1], ['B5', 4],
-  ['A5', 4], ['F#5', 4],
-  ['G5', 2], ['A5', 2], ['B5', 4],
-  ['C6', 2], ['B5', 2], ['G5', 4],
-  ['A5', 2], ['F#5', 2], ['D5', 4],
-  ['E5', 8],
-];
-const NEPAL_CHORDS = ['Em', 'C', 'G', 'D', 'Em', 'C', 'D', 'Em'];
-
 // Vélo : air vif et sautillant en ré majeur, pour rouler (voir systems/bike.js). Mélodie originale.
 const VELO_LEAD = [
   ['D5', 1], ['F#5', 1], ['A5', 2], ['F#5', 1], ['A5', 1], ['D6', 2],
@@ -420,6 +343,34 @@ const VELO_LEAD = [
   ['D6', 2], ['A5', 2], ['D6', 4],
 ];
 const VELO_CHORDS = ['D', 'A', 'Bm', 'A', 'G', 'D', 'G', 'D'];
+
+// Le rêve de la fin du jeu : lent, onirique, en mi mineur, avec un fa dièse sur l'accord de do (couleur lydienne,
+// mystérieuse). Nappe tenue, arpèges lents et cloches à la place de la basse sautillante (style 'dream'). Mélodie
+// originale, composée pour le jeu (libre de droits, voir src/data/credits.js).
+// Le rêve : onirique et mystique. Do lydien (le fa dièse qui flotte), des accords de septième majeure qui ne se résolvent
+// jamais, et des glissements d'un accord à un autre très éloigné (do, mi, la bémol, ré bémol) ; une flûte lointaine,
+// rare, qui laisse de la place au silence. 8 mesures de 8 croches.
+const REVE_LEAD = [
+  ['G5', 6], ['B5', 2],
+  ['F#5', 4], ['E5', 2], ['A5', 2],
+  ['G#5', 6], ['D#6', 2],
+  ['C6', 4], ['G5', 4],
+  ['A5', 3], ['E6', 1], ['C6', 4],
+  ['F5', 4], ['G#5', 2], ['C6', 2],
+  ['F#6', 4], ['D6', 2], ['B5', 2],
+  ['E5', 6], [r, 2],
+];
+// Chaque mesure : la note tenue au grave (`bass`) et les quatre notes de la nappe.
+const REVE_CHORDS = [
+  { bass: 'C', tones: ['C', 'E', 'G', 'B'] },          // do majeur 7
+  { bass: 'C', tones: ['D', 'F#', 'A', 'E'] },         // ré sur do : la couleur lydienne
+  { bass: 'E', tones: ['E', 'G#', 'B', 'D#'] },        // mi majeur 7
+  { bass: 'G#', tones: ['G#', 'C', 'D#', 'G'] },       // la bémol majeur 7
+  { bass: 'F', tones: ['F', 'A', 'C', 'E'] },          // fa majeur 7
+  { bass: 'C#', tones: ['C#', 'F', 'G#', 'C'] },       // ré bémol majeur 7
+  { bass: 'C', tones: ['G', 'B', 'D', 'F#'] },         // sol sur do : lydien encore
+  { bass: 'C', tones: ['C', 'E', 'G', 'B'] },
+];
 
 const CHORDS = {
   C: ['C', 'E', 'G'], D: ['D', 'F#', 'A'], E: ['E', 'G#', 'B'], F: ['F', 'A', 'C'], G: ['G', 'B', 'D'], A: ['A', 'C#', 'E'],
@@ -439,13 +390,8 @@ const SONGS = {
   amsterdam: { tempo: 120, lead: AMSTERDAM_LEAD, chords: AMSTERDAM_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
   newDelhi: { tempo: 110, lead: NEWDELHI_LEAD, chords: NEWDELHI_CHORDS, duty: 0.125, drums: 'biguine', leadVol: 0.11, arp: true },
   paris: { tempo: 126, lead: PARIS_LEAD, chords: PARIS_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
-  toulon: { tempo: 124, lead: TOULON_LEAD, chords: TOULON_CHORDS, duty: 0.5, drums: true, leadVol: 0.11, arp: true },
-  corse: { tempo: 96, lead: CORSE_LEAD, chords: CORSE_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
-  bali: { tempo: 100, lead: BALI_LEAD, chords: BALI_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
-  sriLanka: { tempo: 116, lead: SRILANKA_LEAD, chords: SRILANKA_CHORDS, duty: 0.25, drums: 'biguine', leadVol: 0.11, arp: true },
-  thailand: { tempo: 108, lead: THAILAND_LEAD, chords: THAILAND_CHORDS, duty: 0.125, drums: false, leadVol: 0.11, arp: true },
   velo: { tempo: 152, lead: VELO_LEAD, chords: VELO_CHORDS, duty: 0.25, drums: true, leadVol: 0.11, arp: true },
-  nepal: { tempo: 84, lead: NEPAL_LEAD, chords: NEPAL_CHORDS, duty: 0.5, drums: false, leadVol: 0.11, arp: true },
+  reve: { tempo: 54, lead: REVE_LEAD, chords: REVE_CHORDS, style: 'dream', drums: false, leadVol: 0.085 },
 };
 
 let current = null;       // musique en cours : { name, timer, ... }
@@ -464,8 +410,19 @@ function startSong(name, bus) {
   }
   const total = t;
   song.chords.forEach((chord, bar) => {
-    const [root, third, fifth] = CHORDS[chord];
     const b = bar * 8;
+    if (song.style === 'dream') {
+      // Le rêve ({ bass, tones }) : la note grave tenue toute la mesure, une nappe de quatre notes qui ondule (deux
+      // sinusoïdes à peine désaccordées), des notes de cristal qui montent puis redescendent, et une cloche lointaine à
+      // chaque mesure, une octave et une quinte au-dessus.
+      const [a, c, e, g] = chord.tones;
+      events.push({ t: b, kind: 'drone', note: `${chord.bass}2`, len: 8 });
+      for (const n of [`${a}4`, `${c}4`, `${e}4`, `${g}4`]) events.push({ t: b, kind: 'pad', note: n, len: 8 });
+      [`${a}5`, `${c}5`, `${e}5`, `${g}5`, `${e}5`, `${c}5`].forEach((n, i) => events.push({ t: b + 0.5 + i * 1.25, kind: 'glass', note: n, len: 3 }));
+      events.push({ t: b, kind: 'bell', note: `${bar % 2 ? c : e}6`, len: 6 });
+      return;
+    }
+    const [root, third, fifth] = CHORDS[chord];
     if (song.drums === 'biguine') {
       // Basse sur le rythme 3 + 3 + 2, qui saute d'octave.
       [[0, 2, 2.6], [3, 3, 2.6], [6, 2, 1.8]].forEach(([i, o, len]) => events.push({ t: b + i, kind: 'bass', note: `${root}${o}`, len }));
@@ -507,7 +464,22 @@ function startSong(name, bus) {
       const at = state.loopStart + e.t * eighth;
       if (at > horizon) break;
       const dur = (e.len ?? 0.5) * eighth;
-      if (e.kind === 'lead') {
+      if (e.kind === 'lead' && song.style === 'dream') {
+        // Une flûte lointaine (triangle) qui entre doucement, et deux échos de plus en plus faibles, comme dans une grande
+        // salle vide.
+        tone(bus, { type: 'triangle', f: freq(e.note), start: at, dur: dur * 0.98, vol: song.leadVol * 1.6, decay: 0.8, vibrato: true, attack: 0.25 });
+        tone(bus, { type: 'sine', f: freq(e.note), start: at + eighth * 2, dur, vol: song.leadVol * 0.45, decay: 0.7, vibrato: true });
+        tone(bus, { type: 'sine', f: freq(e.note) * 2, start: at + eighth * 4, dur, vol: song.leadVol * 0.18, decay: 0.6 });
+      } else if (e.kind === 'drone') tone(bus, { type: 'triangle', f: freq(e.note), start: at, dur, vol: 0.13, decay: 0.9, attack: 1.2 });
+      else if (e.kind === 'pad') {
+        tone(bus, { type: 'sine', f: freq(e.note), start: at, dur, vol: 0.03, decay: 0.85, attack: 1.6 });
+        tone(bus, { type: 'sine', f: freq(e.note) * 1.006, start: at, dur, vol: 0.022, decay: 0.85, attack: 1.9 });
+      }
+      else if (e.kind === 'glass') tone(bus, { type: 'sine', f: freq(e.note), start: at, dur, vol: 0.05, decay: 0.3 });
+      else if (e.kind === 'bell') {
+        tone(bus, { type: 'sine', f: freq(e.note), start: at, dur, vol: 0.05, decay: 0.15 });
+        tone(bus, { type: 'sine', f: freq(e.note) * 2.76, start: at, dur: dur * 0.5, vol: 0.012, decay: 0.1 });
+      } else if (e.kind === 'lead') {
         tone(bus, { duty: song.duty, f: freq(e.note), start: at, dur: dur * 0.94, vol: song.leadVol, vibrato: true });
         // Écho : même note, un peu plus tard, plus douce et plus fine.
         tone(bus, { duty: 0.125, f: freq(e.note), start: at + eighth * 0.75, dur: dur * 0.9, vol: song.leadVol * 0.35, vibrato: true });
@@ -529,7 +501,24 @@ function startSong(name, bus) {
   return state;
 }
 
-const stopSong = (state) => state && clearInterval(state.timer);
+// Fondu d'un morceau : chaque musique a son propre volume (`state.gain`), qui monte ou descend en FADE_S secondes ; à
+// chaque changement de lieu, l'ancienne s'éteint pendant que la nouvelle arrive (plus de coupure nette).
+const FADE_S = 1;
+function stopSong(state) {
+  if (!state) return;
+  if (!state.gain || !ctx) {
+    clearInterval(state.timer);
+    return;
+  }
+  const t = ctx.currentTime;
+  state.gain.gain.cancelScheduledValues(t);
+  state.gain.gain.setValueAtTime(state.gain.gain.value, t);
+  state.gain.gain.linearRampToValueAtTime(0, t + FADE_S);
+  setTimeout(() => {
+    clearInterval(state.timer);
+    state.gain.disconnect();
+  }, FADE_S * 1000 + 300);
+}
 
 let mainVolume = 1;
 const applyVolume = () => ctx && mainGain.gain.setTargetAtTime(mainVolume, ctx.currentTime, 0.15);
@@ -543,8 +532,19 @@ export function playMusic(name, volume = 1) {
     pendingSong = { name, volume };                                  // démarrera au premier appui
     return;
   }
-  current = startSong(name, mainGain);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(1, ctx.currentTime + FADE_S);
+  gain.connect(mainGain);
+  current = startSong(name, gain);
+  current.gain = gain;
   applyVolume();
+}
+
+// La musique du lieu s'éteint (ou baisse jusqu'à `to`) lentement, en `ms` millisecondes (ex. l'entrée dans le rêve).
+export function fadeMusic(ms, to = 0) {
+  mainVolume = to;
+  if (ctx) mainGain.gain.setTargetAtTime(to, ctx.currentTime, ms / 3000);
 }
 
 export function stopMusic() {

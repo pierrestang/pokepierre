@@ -39,9 +39,12 @@ const GIVE_ROD = [
     ],
   },
   { take: ITEMS.canneAPeche.id, setFlag: FLAGS.canneOfferte },
-  ...DEPARTURE,
+  { say: ['Le ferry est prêt. Monte à bord quand tu veux.'] },
 ];
+// La canne offerte : le ferry (ou le capitaine) embarque Pierre, qui y va de lui-même (il reprend la main entre les deux).
+const BOARDING = { ifFlags: [FLAGS.canneOfferte], unlessFlags: [FLAGS.departFortDeFrance], steps: DEPARTURE, end: true };
 export const FISHER_AT_FERRY = [
+  BOARDING,
   { unlessSouvenirs: [TRAITS.joie.id], ...GO_SEE_MOM, end: true },
   // La canne cassée : le ferry est bloqué.
   {
@@ -65,8 +68,23 @@ export const FISHER_AT_FERRY = [
   { speaker: CAPITAINE, say: ["Ton père en a toute une collection, dans son atelier. Il en aurait pas une en trop, des fois ?"] },
 ];
 
-// Le ferry, face au joueur : on embarque par le capitaine, une fois la canne offerte.
+// Après le départ (retour par l'aéroport, ou « Continuer » après la fin du jeu) : le ferry reste en service et le
+// capitaine ramène Pierre à Saint-Ay. Sans cela, l'île n'aurait plus aucune sortie.
+export const RETURN_FERRY = [
+  { speaker: CAPITAINE, say: ['Te revoilà, petit ! Le ferry fait toujours la traversée pour Saint-Ay.'] },
+  {
+    choose: 'Tu prends le ferry pour Saint-Ay ?',
+    choices: [
+      { label: 'Oui', steps: [{ black: true }, { travel: { map: 'saintAy', x: 5, y: 10, facing: 'left', ferry: true } }] },
+      { label: 'Non', steps: [{ speaker: CAPITAINE, say: ['Je ne bouge pas d\'ici. Reviens quand tu veux.'] }] },
+    ],
+  },
+];
+
+// Le ferry, face au joueur : on embarque par le capitaine, une fois la canne offerte ; après le départ, il fait la navette.
 export const FERRY = [
+  { ifFlags: [FLAGS.departFortDeFrance], steps: RETURN_FERRY, end: true },
+  BOARDING,
   { say: ["Le ferry n'embarque pas encore. Le capitaine, sur le ponton, sait ce qu'il te reste à faire."] },
 ];
 
@@ -132,7 +150,8 @@ export const MAMAN_FDF = [
   { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['Te voilà ! Tu as l\'air tout content… Tu as donné un coup de main à tout le monde, toi.', 'Tu entends cette chanson ? Viens danser avec moi !'] },
   { ifFlags: OTHERS_DONE, dance: 'maman' },
   { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['On part cet après-midi, et alors ? Là où on va, on rira aussi. Garde toujours ça avec toi.'] },
-  { ifFlags: OTHERS_DONE, trait: TRAITS.joie, end: true },
+  { ifFlags: OTHERS_DONE, trait: TRAITS.joie },
+  { ifFlags: OTHERS_DONE, speaker: 'Maman', say: ['Au fait, le capitaine du ferry avait l\'air embêté, au ponton. Passe le voir.'], end: true },
   // Rappel du programme.
   {
     unlessFlags: [FLAGS.papaFait], speaker: 'Maman',
@@ -143,4 +162,14 @@ export const MAMAN_FDF = [
     say: ['Ta sœur mijote quelque chose dehors… Va voir ce qu\'elle prépare.'],
   },
   { speaker: 'Maman', say: ['Après, reviens me voir.'] },
+];
+
+// La cinématique d'ouverture du jeu, dans la chambre (interiors.js ffHouseUp) : l'image d'accueil de l'île et le bruit
+// des vagues, puis Maman appelle d'en bas. Rejouée telle quelle à la toute fin (reveStory.js WAKE_UP).
+export const OPENING_CINEMATIC = [
+  { sea: true },
+  { opening: { postcard: 'fortDeFrance', text: "C'est le dernier matin à Fort-de-France." } },
+  { sea: false },
+  { wait: 300 },
+  { speaker: 'Maman', say: ['Pierre ! Le ferry part cet après-midi ! Descends !'] },
 ];

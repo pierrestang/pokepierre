@@ -4,8 +4,8 @@ import { FLAGS, ITEMS, TRAITS } from './story.js';
 //   1. Les clés : l'agence, puis Ousmane, le coloc, devant l'immeuble ; ils entrent ensemble.
 //   2. La coupure : l'appartement dans le noir ; Pierre (Ingéniosité) relève le compteur. Pas de vertu à Bordeaux.
 //   3. La soirée d'intégration : l'enceinte chez Paul, les gobelets chez Rémi ; la fête dans l'appartement.
-//   4. Le diplôme d'anglais : l'oral à KEDGE (Rémi devant la porte).
-//   5. Le départ : l'aéroport (sortie est), Ousmane au guichet ; vol pour Hull.
+//   4. Le diplôme d'anglais : Ousmane envoie Pierre à l'université ; l'oral à KEDGE (Rémi devant la porte).
+//   5. Le départ : l'aéroport (sortie est), Pierre seul (Ousmane est parti avant lui) ; vol pour Hull.
 // Scénettes partagées par la carte, les intérieurs et l'aéroport (étapes : voir MapScene.runSteps).
 
 const AGENT = 'Agent immobilier';
@@ -51,6 +51,7 @@ export const BLACKOUT = [
   { speaker: 'Ousmane', say: ['C\'est quoi ce délire ? On appelle quelqu\'un ?'] },
   { speaker: 'Pierre', say: ['Non.'] },
   { useTrait: TRAITS.ingeniosite },
+  { say: ['Il doit bien y avoir un compteur quelque part, au fond de la pièce. Cherche à tâtons…'] },
   { setFlag: FLAGS.coupure },
 ];
 
@@ -80,7 +81,7 @@ export const PAULFIT = [
   { ifItems: [ITEMS.enceinte.id], speaker: 'Paul', say: ['Dos droit, hein ! Et tu me la rends entière.'], end: true },
   { ifFlags: [FLAGS.soiree], speaker: 'Paul', say: ['Alors, elle a tenu le coup, mon enceinte ?'], end: true },
   { unlessFlags: [FLAGS.preparatifs], speaker: 'Paul', say: ['Salut, moi c\'est Paul ! Aujourd\'hui, c\'est jambes. Repasse plus tard.'], end: true },
-  { speaker: 'Paul', say: ['L\'enceinte ? Ok, mais tu la portes comme un vrai, dos droit.'] },
+  { speaker: 'Paul', say: ['L\'enceinte ? OK, mais tu la portes comme un vrai, dos droit.'] },
   {
     choose: 'Comment tu la portes ?',
     choices: [
@@ -90,22 +91,26 @@ export const PAULFIT = [
     ],
   },
   { give: ITEMS.enceinte },
+  { ifItems: [ITEMS.gobelets.id], say: ['L\'enceinte et les gobelets : tout y est. Retourne voir Ousmane, devant l\'immeuble.'] },
+  { unlessItems: [ITEMS.gobelets.id], say: ['Reste les gobelets, chez Rémi, juste à côté. Ensuite, retour chez Ousmane.'] },
 ];
 
 export const REMI_CUPS = [
   { ifItems: [ITEMS.gobelets.id], speaker: 'Rémi', say: ['Have fun ce soir ! Enfin… amuse-toi bien, quoi.'], end: true },
-  { ifFlags: [FLAGS.soiree], speaker: 'Rémi', say: ['What a night ! Enfin… quelle soirée.'], end: true },
+  { ifFlags: [FLAGS.soiree], speaker: 'Rémi', say: ['What a night! Enfin… quelle soirée.'], end: true },
   { unlessFlags: [FLAGS.preparatifs], speaker: 'Rémi', say: ['Hey ! Moi c\'est Rémi. Je reviens d\'un échange aux USA, ça se voit, non ?'], end: true },
   { speaker: 'Rémi', say: ['C\'est so random, les gobelets sont dans le closet.'] },
   {
     choose: 'Que lui réponds-tu ?',
     choices: [
       { label: 'Le closet ?', steps: [{ speaker: 'Rémi', say: ['Le placard, sorry. Six mois aux States, ça laisse des traces.'] }] },
-      { label: 'Thanks, bro.', steps: [{ speaker: 'Rémi', say: ['You\'re welcome, bro ! On parle la même langue, toi et moi.'] }] },
+      { label: 'Thanks, bro.', steps: [{ speaker: 'Rémi', say: ['You\'re welcome, bro! On parle la même langue, toi et moi.'] }] },
       { label: 'Parle français !', steps: [{ speaker: 'Rémi', say: ['Okay, okay… Les gobelets. Dans le placard. Voilà. Happy ?'] }] },
     ],
   },
   { give: ITEMS.gobelets },
+  { ifItems: [ITEMS.enceinte.id], say: ['Les gobelets et l\'enceinte : tout y est. Retourne voir Ousmane, devant l\'immeuble.'] },
+  { unlessItems: [ITEMS.enceinte.id], say: ['Reste l\'enceinte, chez Paul, juste à côté. Ensuite, retour chez Ousmane.'] },
 ];
 
 // Les deux objets réunis : la soirée commence (fondu, l'appartement en mode fête).
@@ -116,7 +121,8 @@ const PARTY_START = [
   { take: ITEMS.enceinte.id },
   { take: ITEMS.gobelets.id },
   { setFlag: FLAGS.soiree },
-  { travel: { ...APARTMENT, y: 7 } },
+  // Au milieu du salon, près de Rémi et Charlotte, loin du tapis de sortie (11, 6) : sinon le premier pas faisait ressortir.
+  { travel: { ...APARTMENT, x: 4, y: 7, facing: 'right' } },
 ];
 const BOTH = [ITEMS.enceinte.id, ITEMS.gobelets.id];
 
@@ -134,12 +140,22 @@ export const FRONT_DOOR = [
   { ifFlags: [FLAGS.preparatifs], unlessFlags: [FLAGS.soiree], ifItems: BOTH, steps: [{ approach: 'ousmane-rappel' }, ...PARTY_START] },
 ];
 
-export const PARTY = [{ say: ['La soirée d\'intégration bat son plein. L\'enceinte de Paul trône au milieu du salon.'] }];
+export const PARTY = [{ say: ['La soirée d\'intégration bat son plein. L\'enceinte de Paul trône au milieu du salon.', 'Fais le tour des invités ; quand tu en auras assez, la porte est juste à côté.'] }];
 // Parmi les invités, Léo et Anaïs, de KEDGE : on les retrouve à Hull (voir hullStory.js).
 export const PARTY_LEO = [
   { ifFlags: [FLAGS.leoSoiree], speaker: 'Léo', say: ['La prochaine soirée, c\'est à Hull !'], end: true },
   { speaker: 'Léo', say: ['Moi c\'est Léo, aussi à KEDGE. Paraît qu\'on part tous à Hull l\'an prochain pour l\'échange… Ça va être quelque chose.'] },
   { setFlag: FLAGS.leoSoiree },
+];
+export const PARTY_CHARLOTTE = [
+  { ifFlags: [FLAGS.charlotteSoiree], speaker: 'Charlotte', say: ['On se revoit à Hull, alors. Promis ?'], end: true },
+  { speaker: 'Charlotte', say: ['Salut ! Charlotte, de KEDGE. Moi aussi, je pars à Hull l\'an prochain. On dirait que tout le monde y va !'] },
+  { setFlag: FLAGS.charlotteSoiree },
+];
+export const PARTY_VINCENT = [
+  { ifFlags: [FLAGS.vincentSoiree], speaker: 'Vincent', say: ['Hull, prépare-toi : Vincent arrive !'], end: true },
+  { speaker: 'Vincent', say: ['Vincent, KEDGE, et futur roi de la piste ! Hull l\'an prochain ? Évidemment que j\'en suis. Ils ne savent pas ce qui les attend !'] },
+  { setFlag: FLAGS.vincentSoiree },
 ];
 export const PARTY_ANAIS = [
   { ifFlags: [FLAGS.anaisSoiree], speaker: 'Anaïs', say: ['À Hull, alors !'], end: true },
@@ -165,6 +181,7 @@ const OUSMANE_WAKES = [
   { approach: 'ousmane-leve' },
   { speaker: 'Ousmane', say: ['Attends… t\'as tout rangé ? Tout seul ?', 'Tiens, j\'ai retrouvé ça sous les confettis.'] },
   { give: ITEMS.photoSoiree, text: 'Tu reçois la photo de la soirée !' },
+  { speaker: 'Ousmane', say: ['Allez, va prendre l\'air. Moi, je finis de me réveiller.'] },
 ];
 // Une tâche du rangement (la première : Autonomie), puis le réveil d'Ousmane si c'était la dernière.
 const tidy = (text, flag) => [
@@ -180,20 +197,31 @@ export const OUSMANE_ASLEEP = [
   { say: ['Ousmane dort à poings fermés. Il ronfle.'] },
 ];
 
-// En sortant de la soirée : quelques mois plus tard.
+// En sortant de la soirée : quelques mois plus tard. Ousmane attend devant la porte de l'immeuble et envoie Pierre à
+// l'université, passer son examen d'anglais.
 export const MONTHS_LATER = [
   { black: true },
   { wait: 700 },
   { say: ['Quelques mois plus tard…'] },
   { setFlag: FLAGS.soireeFinie },
   { black: false },
+  { approach: 'ousmane-examen' },
+  {
+    speaker: 'Ousmane',
+    say: [
+      'Pierre ! Qu\'est-ce que tu fais encore là ? C\'est aujourd\'hui, ton examen d\'anglais !',
+      'File à l\'université : KEDGE, le grand bâtiment de pierre, en bas à gauche, au bord de la Garonne.',
+    ],
+  },
 ];
+// Ousmane, devant l'immeuble jusqu'à l'examen : il rappelle où aller.
+export const OUSMANE_EXAM = ['Ton examen d\'anglais, c\'est à KEDGE, le grand bâtiment de pierre en bas à gauche. Vas-y !'];
 
 // ---------- 4. Le diplôme d'anglais ----------
 
 export const REMI_AT_KEDGE = [
   { face: { 'remi-kedge': 'left', player: 'right' } },
-  { speaker: 'Rémi', say: ['T\'inquiète, c\'est easy.'] },
+  { speaker: 'Rémi', say: ['T\'inquiète, c\'est easy. L\'oral, c\'est en salle 1, deux étages plus haut.'] },
   { setFlag: FLAGS.remiKedge },
   { face: { player: 'up' } },
 ];
@@ -217,24 +245,29 @@ export const ENGLISH_ORAL = [
     'I am hasted!': ['Pardon? Try again!'],
   }),
   { speaker: PROF, say: ['Excellent! Well done, Pierre.'] },
-  { give: ITEMS.diplomeAnglais, text: 'Diplôme obtenu : Anglais KEDGE !' },
+  { give: ITEMS.diplomeAnglais, text: 'Diplôme obtenu : diplôme d\'anglais !' },
   { speaker: PROF, say: ['Avec ça, la route vers l\'est t\'est ouverte.'] },
 ];
 
 // En sortant de KEDGE, le diplôme en poche : Ousmane attend devant la porte et montre le chemin de l'aéroport ; il part
-// devant (il prend l'avion avant Pierre).
+// pour Hull quelques semaines avant Pierre (il n'est pas à l'aéroport).
 export const OUSMANE_AFTER_ORAL = [
   { approach: 'ousmane-kedge' },
-  { speaker: 'Ousmane', say: ['Ça y est, tu l\'as, ton diplôme ! L\'aéroport est par la sortie est. Prends ton billet pour Hull, je pars avant toi.'] },
+  {
+    speaker: 'Ousmane',
+    say: [
+      'Ça y est, tu l\'as, ton diplôme ! Moi, je pars pour Hull quelques semaines avant toi : je te garde une place à la coloc.',
+      'L\'aéroport, c\'est par la sortie est. Prends ton billet pour Hull quand tu es prêt !',
+    ],
+  },
   { walk: 'ousmane-kedge', to: [23, 27], then: [FLAGS.ousmaneDiplome] },
 ];
 
 // ---------- 5. Le départ ----------
 
-// Au guichet de l'aéroport, le vol pour Hull : Ousmane garde le départ.
+// Au guichet de l'aéroport, le vol pour Hull : Pierre est seul, Ousmane est parti quelques semaines avant lui.
 export const FLIGHT_TO_HULL = [
-  { faceTo: 'ousmane-aeroport' },
-  { speaker: 'Ousmane', say: ['Hull, hein. Je pars une semaine avant toi, je te garde une place à la coloc.'] },
+  { say: ['Ousmane est parti pour Hull il y a quelques semaines. Il te garde une place à la coloc. Tu prends ton billet.'] },
   { setFlag: FLAGS.arriveeHull },
   { travel: { map: 'hull', x: 1, y: 35, facing: 'right', plane: true } },
 ];
@@ -257,9 +290,9 @@ export const CYCLIST = [
       ] },
       { useTrait: TRAITS.ingeniosite },
       { say: ['Tu remets la chaîne sur le pignon, tu resserres la selle et tu regonfles les pneus. Il roule comme neuf !'] },
-      { give: ITEMS.velo, text: 'Tu reçois le Vélo !' },
+      { give: ITEMS.velo, text: 'Tu reçois le vélo !' },
       { speaker: 'Cycliste', say: ['Eh ben ! T\'as des doigts de fée, toi.'] },
-      { say: ['Appuie sur V (ou sur le bouton VÉLO) pour monter dessus. Dans les bâtiments, on le laisse dehors.'] },
+      { say: ['Appuie sur V pour monter sur le vélo.'] },
     ],
     end: true,
   },
@@ -277,3 +310,74 @@ export const ANTITHEFT_KEY = [
   { give: ITEMS.cleAntivol, text: 'Tu trouves la clé d\'antivol du cycliste !' },
 ];
 
+
+// ---------- Le retour de Delhi : la remise des diplômes ----------
+
+// Court, sans vertu ni « Objectif : » : Prophecy mène Pierre au stade, toute la bande et les parents y sont, Pierre
+// s'avance seul vers l'estrade, reçoit son diplôme, puis part pour Paris.
+
+// À l'arrivée (le vol depuis Delhi, devant la sortie vers l'aéroport) : Prophecy, rentré avec Pierre et qui marche à
+// ses côtés (story.js FOLLOWERS), indique le stade (la rotonde, juste à côté, porte (21, 10)).
+export const BACK_FROM_DELHI = [
+  { faceTo: 'prophecy-depart' },
+  {
+    speaker: 'Prophecy',
+    say: [
+      'Alors c\'est ça, Bordeaux ! Ça doit te faire bizarre, d\'y revenir.',
+      'Allez, viens ! Tout le monde nous attend au stade, la grande rotonde, juste là. C\'est le grand jour !',
+    ],
+  },
+  { setFlag: FLAGS.stadeIndique },
+];
+
+// Les places dans le stade (interiors.js stade) : Prophecy rejoint la foule des diplômés ; devant l'estrade, la case
+// où Pierre reçoit son diplôme (déclencheurs sur la rangée 6, x 11 à 14).
+export const STADIUM = { prophecy: [15, 9], stage: [11, 12, 13, 14].map((x) => [x, 6]) };
+const GRADUATES = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => `diplome-${i}`);
+const BAND = ['ousmane-stade', 'leo-stade', 'paul-stade', 'remi-stade', 'anais-stade', 'charlotte-stade', 'romain-stade',
+  'maman-stade', 'papa-stade', 'prophecy-depart', 'dalil-stade'];
+
+// En entrant : la foule ; Prophecy (qui ne suit plus Pierre) va rejoindre les autres ; le directeur appelle Pierre.
+export const STADIUM_ARRIVAL = [
+  { say: ['Les gradins sont pleins. Toute la promotion est là, en toge… et, au bord de la piste, des visages que tu connais.'] },
+  { setFlag: FLAGS.stadeEntree },
+  { faceTo: 'prophecy-depart' },
+  { speaker: 'Prophecy', say: ['Je file rejoindre les autres. Vas-y, toi : c\'est ton moment !'] },
+  { walk: 'prophecy-depart', to: STADIUM.prophecy, block: true },
+  { face: { 'prophecy-depart': 'up' } },
+  { speaker: 'Directeur', say: ['Bienvenue à tous pour la remise des diplômes de la promotion !', 'Pierre ! Quand tu es prêt, avance-toi jusqu\'à l\'estrade.'] },
+];
+
+// Devant l'estrade (Pierre y est allé seul) : les applaudissements, le diplôme.
+export const CEREMONY = [
+  { face: { player: 'up' } },
+  { say: ['Tu t\'avances jusqu\'à l\'estrade. Tout le stade applaudit.'] },
+  { cheer: [...GRADUATES, ...BAND] },
+  { speaker: 'Directeur', say: ['Félicitations, Pierre.'] },
+  { give: ITEMS.diplomeBordeaux, text: 'Le directeur te remet ton diplôme.' },
+  { cheer: [...GRADUATES, ...BAND] },
+  { speaker: 'Directeur', say: ['La suite, maintenant, c\'est à toi de l\'écrire.'] },
+  { say: ['Tes parents et toute la bande t\'attendent dehors, devant le stade.'] },
+  { setFlag: FLAGS.diplomeBordeaux },
+];
+
+// La bande et les parents, au bord de la piste : les retrouvailles (chacun dit d'où il revient).
+export const REUNION_LINES = {
+  ousmane: ['Pierre ! Hull, Hanoï, Amsterdam, Delhi… T\'as fait le tour du monde, toi. Aujourd\'hui, on finit ce qu\'on a commencé ensemble.'],
+  leo: ['Bro ! Je rentre de Hull pour l\'occasion. La maison est bien gardée, t\'inquiète.'],
+  paul: ['Tu te souviens de mon enceinte ? Je ne l\'ai jamais revue… Allez, c\'est oublié. Aujourd\'hui, c\'est la fête !'],
+  remi: ['Moi, les States, c\'était avant. Cette fois, je suis resté à Bordeaux… mais j\'ai suivi tous vos trips en photo, man !'],
+  anais: ['Bali, c\'était magique. Mais rien ne vaut ça : tous ensemble, ici.'],
+  charlotte: ['Le Canada, la neige, le sirop d\'érable… et me revoilà ! Je n\'aurais raté ça pour rien au monde.'],
+  romain: ['Hong Kong, puis Amsterdam avec toi… Maintenant, je me sens chez moi n\'importe où. Mais ici, avec vous, c\'est autre chose.'],
+  prophecy: ['Les États-Unis, puis Delhi avec toi… Quel voyage. Et maintenant, le diplôme !'],
+  maman: ['Mon Pierre ! Regarde-toi, diplômé ! Viens là que je te serre fort ! Je suis tellement fière, mon grand !'],
+  papa: ['Un diplôme. Du concret, enfin.', '… Bon. Je suis fier de toi, fiston. Mais ne le répète pas trop.'],
+  dalil: ['Peu importe où on ira après… il y aura toujours un océan quelque part pour nous ramener ici.'],
+};
+
+// En sortant du stade, le diplôme en poche : Pierre, tourné vers Paris (la route s'ouvre au sud-est).
+export const LEAVING_BORDEAUX = [
+  { speaker: 'Pierre', say: ['Bon… toutes les bonnes choses ont une fin. Il paraît qu\'il faut grandir un jour. Direction Paris.', 'La route de Paris part en bas à droite de la ville, au bout de la rue du bas.'] },
+  { setFlag: FLAGS.adieuxBordeaux },
+];

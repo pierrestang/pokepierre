@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { hiddenEdges } from '../builder/mapModel.js';
 import { TILE_SIZE, getTile } from '../data/tiles.js';
 import { FOLLOWERS } from '../data/story.js';
-import { CATCHES, FISHING_ROD } from '../data/fishing.js';
 import { renderMap, createSurroundings } from '../systems/tileRenderer.js';
 import { drawBuilding } from '../art/buildingArt.js';
 import { drawDecal, drawPulleyFixed, drawPulleyStuck } from '../art/tileArt.js';
@@ -25,14 +24,16 @@ import { propKey } from '../art/propImages.js';
 import { MESS_SHEET, messFrame } from '../art/partyMess.js';
 import { savePosition } from '../systems/save.js';
 import { memo } from '../systems/memo.js';
+import { AIRPORT_EXITS } from '../data/maps/airportLinks.js';
 import { gameView, SCREEN_W, SCREEN_H } from '../systems/screen.js';
 import { canopyTiles } from '../data/treeBlocks.js';
 import {
-  GrassCovers, TALL_PLANTS, InteractHint, ensureSmallBubbles, stepEffect, footprint, startFallingLeaves, startSeaShimmer,
+  GrassCovers, TALL_PLANTS, InteractHint, ensureSmallBubbles, stepEffect, footprint, startFallingLeaves, startSeaShimmer, startDreamMist,
   startSeagulls, startJumpingFish, lightWindows, applyTimeOfDay, drawnWater,
 } from '../systems/effects.js';
-import { playMusic, setSeaAmbience, sfx } from '../systems/audio.js';
+import { fadeMusic, playMusic, setSeaAmbience, sfx, stopMusic } from '../systems/audio.js';
 import { toggleBike, resumeBike, checkBike, pauseBike, unpauseBike } from '../systems/bike.js';
+import { beginScene, endScene } from '../systems/persist.js';
 import { CITY_MUSIC } from '../data/music.js';
 import { applyBuiltLook, lostLook, hiddenUnderTop, TOP_DEPTH } from '../systems/builtMaps.js';
 import LAMP_TILES from '../data/lampTiles.json' with { type: 'json' };
@@ -57,6 +58,7 @@ const PLAYER_NAME = 'Pierre'; // nom affiché sur les répliques du joueur (`rep
 //   props:    [{ type, x, y, w, h, dialogue?, ifFlags?, unlessFlags? }] — obstacles dessinés comme un
 //             bâtiment (voir art/buildingArt.js), bloquants tant que leurs conditions sont remplies
 //   events:   [{ on: 'enter', ifFlags?, unlessFlags?, steps: [{ say, speaker? } | { setFlag } | { talk: npcId }] }]
+//             { on: 'walk', count, … } : joué dès le `count`-ième pas du joueur depuis son arrivée sur la carte
 //             `talk` : le PNJ se tourne vers le joueur et dit son dialogue (+ souvenir éventuel).
 //             scénettes jouées automatiquement à l'arrivée sur la carte.
 //   surroundings: code de tuile qui remplit l'écran autour de la carte (sinon celui de la scène ; false : du noir).
@@ -88,6 +90,8 @@ export class MapScene extends Phaser.Scene {
     this.leaving = false;
     this.actorsReady = false;                       // voir refreshActors (place des nouveaux suiveurs)
     this.emerged = {};                              // personnages sortis de leur cachette (voir emerge)
+    this.stepsTaken = 0;                            // pas du joueur depuis son arrivée (événements `walk`)
+    this.scripting = false;                         // une scénette interrompue par un changement de lieu ne bloque plus
     this.ambienceKey = undefined;                   // ambiance jour / nuit / petit matin (voir applyAmbience)
     this.ambience = null;
     this.events.once('shutdown', () => { this.leaving = true; });
@@ -95,17 +99,22 @@ export class MapScene extends Phaser.Scene {
     // (sinon ils réapparaîtraient à leur place de départ à la visite suivante).
     this.pendingWalkFlags = new Set();
     this.events.once('shutdown', () => this.pendingWalkFlags.forEach(flags.add));
-    this.scene.get('UI')?.curtain?.setAlpha(0);             // rideau noir d'une scénette précédente
+    // Rideau noir d'une scénette précédente : levé, sauf pour un lieu qui s'ouvre dans le noir (`openDark` : conditions,
+    // ex. le réveil de la fin, après le fondu au noir du rêve).
+    if (!(map.openDark && meetsConditions(map.openDark))) this.scene.get('UI')?.curtain?.setAlpha(0);
     // Carte dessinée avec le créateur de cartes (map.built) : son dessin remplace le rendu Rouge Feu.
-    if (map.built) applyBuiltLook(this, map);
+    // Dans un bâtiment, le dessin de la ville reste en mémoire (on le retrouve intact en ressortant).
+    const keepLooks = this.scene.key === 'Interior' && this.fromMap ? [this.fromMap] : [];
+    if (map.built) applyBuiltLook(this, map, keepLooks);
     this.drawLook();
     // Filet de sécurité : si le dessin cuit de la carte est perdu en cours de partie (texture retirée ou vidée, ex.
     // après une scénette ou un voyage), on le refait et on le réaffiche (sinon seule la forêt de bordure se voit).
+    // Vérifié souvent (un quart de seconde) : le contrôle ne lit que cinq pixels.
     if (map.built) {
       this.time.addEvent({
-        delay: 1000, loop: true, callback: () => {
+        delay: 250, loop: true, callback: () => {
           if (!lostLook(this, map)) return;
-          applyBuiltLook(this, map);
+          applyBuiltLook(this, map, keepLooks);
           this.drawLook();
         },
       });
@@ -129,6 +138,7 @@ export class MapScene extends Phaser.Scene {
     this.hint = new InteractHint(this);
     this.startIdleNpcs();
     startFallingLeaves(this, map);
+    startDreamMist(this, map);
     // Autour de la carte : la mer animée (voir renderMap) ou un décor répété.
     const fillTile = map.surroundings ?? this.surroundingTile;
     this.surroundings = fillTile && fillTile !== 'w' ? createSurroundings(this, map, fillTile) : null;
@@ -163,6 +173,7 @@ export class MapScene extends Phaser.Scene {
       },
     });
     this.refreshActors();
+    this.leaveOccupiedSpawn();
     resumeBike(this);                               // à vélo si on roulait (dehors), voir systems/bike.js
     this.savePosition();
     this.registry.set('city', this.cityName());
@@ -171,7 +182,7 @@ export class MapScene extends Phaser.Scene {
     this.input.keyboard.on('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') this.tryInteract(e);
       // Vélo : V (ou B), à l'arrêt, hors dialogue, menu et scénette.
-      if (['v', 'V', 'b', 'B'].includes(e.key) && !e.repeat && !this.dialog?.isOpen && !this.menuOpen && !this.scripting
+      if (['v', 'V'].includes(e.key) && !e.repeat && !this.dialog?.isOpen && !this.menuOpen && !this.scripting
         && !this.transitioning) toggleBike(this);
     });
 
@@ -364,6 +375,7 @@ export class MapScene extends Phaser.Scene {
       const bed = data.inBed && bedAt(this.map, data.x, data.y);
       const sprite = new CharacterSprite(this, data.x, data.y, lookOf(data), data.facing, { bed: bed && { ...bed, child: data.child } });
       if (data.dancing) this.startDancing(sprite, data);
+      if (data.seated) sprite.sit(true);
       this.npcs.push({ data, sprite });
     }
 
@@ -405,12 +417,13 @@ export class MapScene extends Phaser.Scene {
         this.props.push({ data, graphics });
         continue;
       }
-      // Objet en image (art/propImages.js, style Gen 4) : au milieu du bas de son emprise, trié en profondeur. (Le désordre
-      // de la soirée, `type: 'image'`, a sa propre planche : plus bas.)
+      // Objet en image (art/propImages.js, style Gen 4) : au milieu du bas de son emprise (décalé de `dy` px), trié en
+      // profondeur ; `flat` (un tapis) : à plat sur le sol, sous tous les personnages. (Le désordre de la soirée,
+      // `type: 'image'`, a sa propre planche : plus bas.)
       if (data.image && data.type !== 'image') {
         const bottom = (data.y + data.h) * TILE_SIZE;
-        const graphics = this.add.image((data.x + data.w / 2) * TILE_SIZE, bottom, propKey(data.image))
-          .setOrigin(0.5, 1).setDepth(10 + (bottom - 1) / 10000);
+        const graphics = this.add.image((data.x + data.w / 2) * TILE_SIZE, bottom + (data.dy ?? 0), propKey(data.image))
+          .setOrigin(0.5, 1).setDepth(data.flat ? 9.5 : 10 + (bottom - 1) / 10000);
         this.props.push({ data, graphics });
         continue;
       }
@@ -563,15 +576,19 @@ export class MapScene extends Phaser.Scene {
 
   // Scénette pendant laquelle le joueur ne bouge pas et ne peut rien lancer d'autre.
   // Même si une étape échoue, le joueur retrouve toujours la main.
+  // Ses drapeaux, objets et vertus ne sont écrits dans la sauvegarde qu'à la fin (systems/persist.js) : une scène coupée
+  // par la fermeture de l'onglet se rejoue entière.
   async runScript(steps) {
     this.scripting = true;
     this.player.frozen = true;
     const onBike = pauseBike(this);                 // Pierre descend de vélo le temps de la scène
+    beginScene();
     try {
       await this.runSteps(steps, true);
     } catch (error) {
       console.error('Scénette interrompue', error);
     } finally {
+      endScene();
       this.scripting = false;
       if (!this.transitioning) this.player.frozen = false;
       if (onBike) unpauseBike(this);
@@ -623,12 +640,18 @@ export class MapScene extends Phaser.Scene {
   //   { walkLine: [ids], to: [x, y], block?, then? }  les PNJ marchent en file, l'un derrière l'autre (walkLine)
   //   { choose: question, speaker?, choices: [{ label, steps }] }
   //   { wait: ms }  { travel: warp }  { end: true } (arrête la scénette)
+  //   { dream: ms }                      l'écran se brouille (flou), un voile clair monte, la musique s'éteint : l'entrée
+  //                                      dans le rêve (Paris) ; { veil: false | ms } dissipe le voile à l'arrivée
+  //   { fadeOut: ms }                    fondu au noir lent, en `ms` (le rideau reste noir ; ex. la fin du rêve)
+  //   { hidePlayer: true | false }       Pierre caché ou montré (ex. couché dans son lit : un PNJ le remplace)
+  //   { endGame: true | { credits } }    fin du jeu : retour à l'écran titre (`credits` : avec le générique)
   //   { drive: type } : le joueur monte dans la voiture (prop), qui s'en va
   //   { hop: id | [ids], times? } : petits sauts sur place ('player' : Pierre)
   //   { cheer: [ids] } : tous sautent ensemble, des notes et des cœurs s'envolent
-  //   { darts: { opponent, win, lose, onWin?, onLose? } } : partie de fléchettes, trois lancers (systems/Darts.js), contre
-  //                                      un adversaire au score tiré au hasard ; gagnée ou perdue, la scénette continue
-  //                                      (après les étapes `onWin` ou `onLose`, s'il y en a)
+  //   { darts: { opponent, win, lose, partner?, onWin?, onLose? } } : partie de fléchettes, trois lancers (systems/Darts.js),
+  //                                      contre un adversaire au score tiré au hasard ; `partner` ({ name, score }) : un
+  //                                      coéquipier dont le score s'ajoute (l'adversaire joue alors en équipe, lui aussi) ;
+  //                                      gagnée ou perdue, la scénette continue (après `onWin` ou `onLose`, s'il y en a)
   // Renvoie true si la scénette s'est arrêtée sur `end` (ou un voyage).
   //   Fin de scène : une marche bloquante (`block`) suivie seulement de drapeaux (setFlag) ne fait plus attendre le
   //   joueur ; il reprend la main pendant que le PNJ s'en va, et ces drapeaux sont posés à son arrivée (voir walkNpc).
@@ -653,8 +676,14 @@ export class MapScene extends Phaser.Scene {
         return steps.slice(i + 1).some((rest) => rest.end && meetsConditions(rest));
       }
       if (step.black !== undefined) await this.setCurtain(step.black);
+      if (step.dream) await this.dreamFade(step.dream);
+      if (step.veil !== undefined) await this.liftVeil(step.veil);
+      if (step.fadeOut) await this.fadeOut(step.fadeOut);
+      if (step.hidePlayer !== undefined) this.player.sprite.setVisible(!step.hidePlayer);
       if (step.sea !== undefined) setSeaAmbience(step.sea);
       if (step.face) this.faceActors(step.face);
+      if (step.sit) for (const [id, on] of Object.entries(step.sit)) this.actorSprite(id)?.sit(on);
+      if (step.pass) await this.passDishes(step.pass);
       if (step.emote) await this.emote(step.emote, step.kind);
       if (step.sound) sfx(step.sound);
       if (step.gather) await this.gather(step.gather, step.area);
@@ -717,8 +746,11 @@ export class MapScene extends Phaser.Scene {
       if (step.souvenir) await giveSouvenir(this.dialog, step.souvenir);
       if (step.take && items.remove(step.take)) this.refreshActors();
       if (step.trait && souvenirs.add(step.trait)) {
-        sfx('trait');
-        await this.dialog.open([`Pierre a reçu la vertu ${step.trait.name.toUpperCase()} !`]);
+        // `quiet` : la vertu entre dans le carnet sans l'encart « a reçu » (Paris : « Pierre utilise » suit aussitôt).
+        if (!step.quiet) {
+          sfx('trait');
+          await this.dialog.open([`Pierre a reçu la vertu ${step.trait.name.toUpperCase()} !`]);
+        }
         this.refreshActors();                       // PNJ et suiveurs qui dépendent du trait
       }
       if (step.useTrait) {
@@ -735,9 +767,65 @@ export class MapScene extends Phaser.Scene {
         this.travel(step.travel);
         return true;
       }
+      if (step.endGame) {
+        this.endGame(step.endGame);
+        return true;
+      }
       if (step.end) return true;
     }
     return false;
+  }
+
+  // L'entrée dans le rêve : la caméra se brouille peu à peu, un voile clair monte (UIScene.veil), la musique et la mer
+  // s'éteignent ; le tout en `ms`. Le voile reste : la carte suivante le dissipe (étape `veil: false`).
+  async dreamFade(ms) {
+    const cam = this.cameras.main;
+    const blur = cam.postFX?.addBlur(1, 1, 1, 0);
+    fadeMusic(ms);
+    setSeaAmbience(false);
+    if (blur) this.tweens.add({ targets: blur, strength: 3, duration: ms, ease: 'Sine.easeIn' });
+    const veil = this.scene.get('UI').veil;
+    await new Promise((resolve) => this.tweens.add({ targets: veil, alpha: 1, duration: ms, ease: 'Sine.easeIn', onComplete: resolve }));
+  }
+
+  // Le voile clair du rêve se dissipe (en `ms`, 2,5 s par défaut) : le décor se forme autour de Pierre.
+  liftVeil(ms) {
+    const veil = this.scene.get('UI').veil;
+    return new Promise((resolve) => this.tweens.add({ targets: veil, alpha: 0, duration: ms || 2500, ease: 'Sine.easeOut', onComplete: resolve }));
+  }
+
+  // Fin du jeu : la musique s'arrête, retour à l'écran titre (la partie reste enregistrée : « Continuer » reprend Pierre
+  // dans sa chambre de Fort-de-France).
+  endGame({ credits = false } = {}) {
+    this.transitioning = true;
+    stopMusic();
+    const ui = this.scene.get('UI');
+    ui.curtain.setAlpha(1);
+    ui.veil.setAlpha(0);
+    this.scene.stop('UI');
+    this.scene.start('Title', { credits });
+  }
+
+  // Case où revenir sur cette carte quand on la quitte par son bord (ex. vers l'aéroport) : la case voisine, vers
+  // l'intérieur, tournée vers l'intérieur ; null si la case (par défaut celle de Pierre) n'est pas au bord.
+  edgeReturn(x = this.player.tileX, y = this.player.tileY) {
+    const W = this.grid[0].length;
+    const H = this.grid.length;
+    const at = (dx, dy, facing) => ({ map: this.map.id, x: x + dx, y: y + dy, facing });
+    if (x === 0) return at(1, 0, 'right');
+    if (x === W - 1) return at(-1, 0, 'left');
+    if (y === 0) return at(0, 1, 'down');
+    if (y === H - 1) return at(0, -1, 'up');
+    return null;
+  }
+
+  // Vers l'aéroport sans passer par un bord (une scénette y emmène Pierre) : au retour, la route de l'aéroport de cette
+  // carte la plus proche de l'endroit où il était.
+  nearestAirportReturn() {
+    const { tileX: px, tileY: py } = this.player;
+    const roads = (this.map.triggers ?? []).filter((t) => t.warp?.map === 'airport');
+    const near = roads.sort((a, b) => Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py))[0];
+    return near ? this.edgeReturn(near.x, near.y) : null;
   }
 
   // Le joueur monte dans la voiture (prop de type `type`), qui démarre en tremblant puis file du côté où elle
@@ -894,6 +982,7 @@ export class MapScene extends Phaser.Scene {
     const npc = this.npcById(id);
     if (!npc) return;
     then.forEach((f) => this.pendingWalkFlags.add(f));
+    if (then.length) flags.saveAhead(then);         // déjà dans la sauvegarde : un onglet fermé pendant la marche ne bloque pas
     const d = npc.data;
     const alive = () => !this.leaving && this.npcs.includes(npc);
     let stuck = 0;                                  // au bout d'une dizaine de secondes bloqué, on abandonne
@@ -902,7 +991,10 @@ export class MapScene extends Phaser.Scene {
     while (alive() && (d.x !== tx || d.y !== ty) && !playerOnTarget() && stuck < 40) {
       // On contourne le joueur si possible ; sinon on attend qu'il se pousse.
       const path = this.pathTo(d, tx, ty, [this.player.tileX, this.player.tileY]) ?? this.pathTo(d, tx, ty);
-      const far = () => Math.abs(this.player.tileX - d.x) + Math.abs(this.player.tileY - d.y) > 6;
+      // `lead` : le PNJ attend le joueur resté en arrière (à plus de 6 cases, et plus loin que lui du but) ; s'il est
+      // passé devant, le PNJ continue.
+      const far = () => Math.abs(this.player.tileX - d.x) + Math.abs(this.player.tileY - d.y) > 6
+        && Math.abs(this.player.tileX - tx) + Math.abs(this.player.tileY - ty) > Math.abs(d.x - tx) + Math.abs(d.y - ty);
       if (!path?.length || (lead && far())) {
         if (!path?.length) stuck++;
         await this.wait(250);
@@ -945,6 +1037,7 @@ export class MapScene extends Phaser.Scene {
     const line = ids.map((id) => this.npcById(id)).filter(Boolean);
     if (!line.length) return;
     then.forEach((f) => this.pendingWalkFlags.add(f));
+    if (then.length) flags.saveAhead(then);         // déjà dans la sauvegarde : un onglet fermé pendant la marche ne bloque pas
     const alive = () => !this.leaving && line.every((n) => this.npcs.includes(n));
     const step = (npc, xy) => this.stepTo(npc.sprite, npc.data, xy);
     const near = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
@@ -1159,12 +1252,13 @@ export class MapScene extends Phaser.Scene {
     const start = `${this.player.tileX},${this.player.tileY}`;
     const seen = new Set([start]);
     const queue = [[this.player.tileX, this.player.tileY]];
-    const interior = this.scene.key === 'Interior';
-    // Sorties d'un intérieur : tapis de sortie et escaliers (ex. le couloir des casiers n'a que des escaliers).
+    // Sorties d'un intérieur : tapis de sortie et escaliers (ex. le couloir des casiers n'a que des escaliers). Une pièce
+    // sans aucune (les étages de la tour de Paris : on n'en sort que par l'ascenseur) suit la règle du dehors.
     const exit = (cx, cy) => {
       const code = this.grid[cy]?.[cx];
       return code !== undefined && (getTile(code).exit || getTile(code).stairs);
     };
+    const interior = this.scene.key === 'Interior' && this.grid.some((row, cy) => [...row].some((_, cx) => exit(cx, cy)));
     while (queue.length) {
       const [cx, cy] = queue.shift();
       if (interior ? exit(cx, cy) : seen.size >= 40) return true;
@@ -1183,6 +1277,12 @@ export class MapScene extends Phaser.Scene {
   }
 
   // Rideau noir de l'interface (sous les dialogues) : posé d'un coup, levé en fondu.
+  // Fondu au noir lent (le rideau de l'UIScene), en `ms` ; le rideau reste noir.
+  fadeOut(ms) {
+    const curtain = this.scene.get('UI').curtain;
+    return new Promise((resolve) => this.tweens.add({ targets: curtain, alpha: 1, duration: ms, onComplete: resolve }));
+  }
+
   setCurtain(on) {
     const curtain = this.scene.get('UI').curtain;
     if (on) {
@@ -1244,6 +1344,20 @@ export class MapScene extends Phaser.Scene {
 
   faceActors(facing) {
     for (const [id, dir] of Object.entries(facing)) this.actorSprite(id)?.setFacing(dir);
+  }
+
+  // Des plats tendus à Pierre (le repas de Delhi) : de chaque convive de `ids`, un plat (props/plat.png) glisse
+  // jusqu'à lui, l'un après l'autre (décalés), puis disparaît à son arrivée.
+  async passDishes(ids) {
+    const to = this.player.sprite;
+    const all = [ids].flat().map((id) => this.actorSprite(id)).filter(Boolean);
+    await Promise.all(all.map((from, i) => new Promise((resolve) => {
+      const dish = this.add.image(from.x, from.y - 6, propKey('plat')).setDepth(TOP_DEPTH + 0.3);
+      this.tweens.add({
+        targets: dish, x: to.x, y: to.y - 4, delay: i * 260, duration: 520, ease: 'Sine.easeInOut',
+        onComplete: () => { dish.destroy(); resolve(); },
+      });
+    })));
   }
 
   // Petits sauts sur place (un personnage qui parle avec entrain, ou la joie de toute la bande).
@@ -1419,26 +1533,6 @@ export class MapScene extends Phaser.Scene {
     const object = this.map.objects?.find((o) => o.x === x && o.y === y && (o.warp || meetsConditions(o)));
     if (object?.warp) this.runTrigger(object);
     else if (object) this.talkTo(object);
-    else if (this.grid[y]?.[x] && getTile(this.grid[y][x]).water && items.has(FISHING_ROD)) {
-      this.runScript(this.fishingSteps(getTile(this.grid[y][x]).water));
-    }
-  }
-
-  // Pêche avec la canne (voir data/fishing.js), face à l'eau : Pierre attend (« … »), puis ça mord ou non. Les prises sont
-  // relâchées (rien ne s'ajoute au sac).
-  fishingSteps(water) {
-    const catches = CATCHES[water];
-    const steps = [
-      { say: ['Tu lances ta ligne…'] },
-      { emote: 'player', kind: 'dots' },
-    ];
-    if (Math.random() < 0.4) return [...steps, { say: ['Rien ne mord… Tu remballes ta ligne.'] }];
-    const fish = Math.random() < 0.1 ? 'une vieille botte' : Phaser.Utils.Array.GetRandom(catches);
-    return [
-      ...steps,
-      { emote: 'player', kind: 'surprise' },
-      { say: [`Ça mord ! Tu remontes ${fish} !`, fish === 'une vieille botte' ? 'Tu la poses sur la rive.' : `Tu ${fish.startsWith('une') ? 'la' : 'le'} relâches doucement.`] },
-    ];
   }
 
   // Parler à un PNJ / examiner un objet, puis poser sa question éventuelle (`ask`).
@@ -1474,6 +1568,44 @@ export class MapScene extends Phaser.Scene {
     if (choice.ask) await this.runAsk(choice.ask, speaker);            // une sous-question (ex. « Autre »)
   }
 
+  // Une partie reprise sur la case d'un PNJ (ou d'un objet) remis à sa place au chargement : Pierre passe sur la case
+  // libre la plus proche (recherche en largeur sur les cases praticables), au lieu de rester coincé dans le PNJ.
+  leaveOccupiedSpawn() {
+    const busy = (x, y) => this.npcAt(x, y) || this.propAt(x, y);
+    const { tileX, tileY } = this.player;
+    if (!busy(tileX, tileY)) return;
+    const seen = new Set([`${tileX},${tileY}`]);
+    const queue = [[tileX, tileY]];
+    while (queue.length) {
+      const [x, y] = queue.shift();
+      for (const [dx, dy] of [[0, 1], [1, 0], [-1, 0], [0, -1]]) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (seen.has(`${nx},${ny}`) || !this.tileWalkable(nx, ny)) continue;
+        seen.add(`${nx},${ny}`);
+        if (!busy(nx, ny)) {
+          this.player.tileX = nx;
+          this.player.tileY = ny;
+          this.player.sprite.setPosition(...tileCenter(nx, ny));
+          this.player.sprite.updateDepth(0.001);
+          return;
+        }
+        queue.push([nx, ny]);
+      }
+    }
+  }
+
+  // Les suiveurs empêchent de quitter la ville (`goes` : les cartes où ils peuvent aller avec Pierre, voir
+  // data/story.js FOLLOWERS) : sinon ils le suivraient dans la ville suivante.
+  followersHoldBack(map) {
+    const here = this.scene.key === 'Overworld' ? this.map.id : this.fromMap;
+    if (!map || map === here) return false;
+    return (this.followers?.members ?? []).some(({ id }) => {
+      const entry = FOLLOWERS.find((f) => f.id === id && meetsConditions(f));
+      return !(entry?.goes ?? []).includes(map);
+    });
+  }
+
   // Sauvegarde où se trouve le joueur (appelé à l'arrivée et à chaque pas).
   savePosition() {
     if (this.map.builder) return;                   // carte du créateur en essai : la vraie partie reste intacte
@@ -1483,8 +1615,15 @@ export class MapScene extends Phaser.Scene {
 
   handleStep(x, y) {
     this.savePosition();
+    this.stepsTaken += 1;
     const trigger = this.map.triggers?.find((t) => t.x === x && t.y === y);
     if (trigger) this.runTrigger(trigger);
+    // Scénette à partir du n-ième pas depuis l'arrivée (ex. la sortie de la tour de Paris, avant le rêve) ; ses
+    // conditions doivent l'empêcher de se rejouer (un drapeau levé par la scénette). Jamais sur une porte : Pierre
+    // changerait de lieu en pleine scénette (elle reprendra au pas suivant).
+    const door = getTile(this.grid[y][x]).door || (this.map.doors ?? []).some((d) => d.x === x && d.y === y);
+    const walk = (this.map.events ?? []).find((e) => e.on === 'walk' && this.stepsTaken >= e.count && meetsConditions(e));
+    if (walk && !trigger && !door && !this.scripting) this.runScript(walk.steps);
     this.onTileEntered(getTile(this.grid[y][x]), x, y);
   }
 
@@ -1496,7 +1635,13 @@ export class MapScene extends Phaser.Scene {
     }
     const ready = meetsConditions(trigger);
     if (!ready) {
-      if (trigger.dialogue) await this.dialog.open(trigger.dialogue);
+      // `lockedDialogues` : [{ conditions, dialogue }], le premier dont les conditions sont remplies, sinon `dialogue`.
+      const pages = (trigger.lockedDialogues ?? []).find(meetsConditions)?.dialogue ?? trigger.dialogue;
+      if (pages) await this.dialog.open(pages);
+      return;
+    }
+    if (this.followersHoldBack(trigger.warp?.map)) {
+      await this.dialog.open(['On t\'accompagne : ce n\'est pas le moment de quitter la ville.']);
       return;
     }
     // Conditions remplies : `readyDialogue` (ou `dialogue` pour un simple message), puis voyage éventuel.
@@ -1522,8 +1667,23 @@ export class MapScene extends Phaser.Scene {
   // `car: true` : on passe d'abord par le trajet en voiture (même écran de voyage, voir FerryScene).
   // `carry` : encart affiché à la fin du trajet (ex. « Tu emportes : … », voir FerryScene).
   // `plane: true` : en avion (même écran de voyage).
-  travel({ map, interior, ferry, deck, car, plane, carry, ...spawn }) {
-    if (interior) this.goTo('Interior', { interior, fromMap: this.fromMap ?? this.map.id, spawn });
+  travel({ map, interior, fromMap, ferry, deck, car, plane, carry, airportExit, ...spawn }) {
+    // L'aéroport : on retient la ville d'où l'on y entre (ses portes y ramènent) ; `airportExit` : ses portes.
+    if (airportExit) {
+      // On ressort à côté de l'endroit où l'on était entré (par le même bout de la rue) ; sinon (arrivée par une
+      // scénette, ancienne partie), à la sortie habituelle de la ville.
+      const city = memo.get('aeroport') ?? 'bordeaux';
+      const back = memo.get('aeroportRetour');
+      const { map: exitMap, ...at } = back?.map === city ? back : AIRPORT_EXITS[city] ?? AIRPORT_EXITS.bordeaux;
+      this.goTo('Overworld', { mapId: exitMap, spawn: at });
+      return;
+    }
+    if (map === 'airport' && !plane && this.map.id !== 'airport') {
+      memo.set('aeroport', this.fromMap ?? this.map.id);
+      memo.set('aeroportRetour', this.scene.key === 'Overworld' ? this.edgeReturn() ?? this.nearestAirportReturn() : null);
+    }
+    // `fromMap` : la ville où l'on ressort d'un intérieur (par défaut, celle où l'on est).
+    if (interior) this.goTo('Interior', { interior, fromMap: fromMap ?? this.fromMap ?? this.map.id, spawn });
     else if (ferry || car || plane) {
       this.goTo('Ferry', { deck, road: car, plane, carry, next: { sceneKey: 'Overworld', data: { mapId: map, spawn } } });
     }
@@ -1534,7 +1694,9 @@ export class MapScene extends Phaser.Scene {
   playPlaceMusic() {
     const { map } = this;
     const music = map.music && meetsConditions(map.music) ? map.music : null;
-    playMusic(music?.song ?? CITY_MUSIC[this.fromMap ?? map.id] ?? 'island', music?.volume);
+    // L'aéroport joue la musique de la ville d'où l'on part (memo `aeroport`, voir travel), pas toujours celle de Bordeaux.
+    const city = map.id === 'airport' ? memo.get('aeroport') ?? 'bordeaux' : this.fromMap ?? map.id;
+    playMusic(music?.song ?? CITY_MUSIC[city] ?? 'island', music?.volume);
   }
 
   goTo(sceneKey, data) {
@@ -1564,13 +1726,17 @@ export class MapScene extends Phaser.Scene {
     this.player.update();
   }
 
-  // Partie de fléchettes : trois lancers de Pierre, puis le score de l'adversaire (au hasard) et sa réaction.
-  async dartsGame({ opponent, win, lose }) {
+  // Partie de fléchettes : trois lancers de Pierre (plus le score d'un coéquipier), puis le score de l'adversaire (au
+  // hasard ; en équipe, deux joueurs : un score plus haut) et sa réaction.
+  async dartsGame({ opponent, win, lose, partner }) {
     const throws = await playDarts(this.scene.get('UI'));
-    const total = throws.reduce((n, t) => n + t.points, 0);
-    const theirs = 10 + Math.floor(Math.random() * 90);
-    await this.dialog.open([`Tes lancers : ${throws.map((t) => t.label.replace(/[.!…]+$/, '')).join(', ')}. Total : ${total} points.`]);
-    await this.dialog.open([`${theirs} points pour moi.`, ...(total > theirs ? win : lose)], { speaker: opponent });
+    const mine = throws.reduce((n, t) => n + t.points, 0);
+    const total = mine + (partner?.score ?? 0);
+    const theirs = partner ? 100 + Math.floor(Math.random() * 80) : 10 + Math.floor(Math.random() * 90);
+    const pages = [`Tes lancers : ${throws.map((t) => t.label.replace(/[.!…]+$/, '')).join(', ')}. Total : ${mine} points.`];
+    if (partner) pages.push(`Avec les ${partner.score} points de ${partner.name} : ${total} points pour votre équipe.`);
+    await this.dialog.open(pages);
+    await this.dialog.open([`${theirs} points pour ${partner ? 'nous' : 'moi'}.`, ...(total > theirs ? win : lose)], { speaker: opponent });
     return total > theirs;
   }
 

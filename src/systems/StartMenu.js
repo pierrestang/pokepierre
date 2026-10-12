@@ -5,23 +5,26 @@ import { items } from './items.js';
 import { sfx, options, setMusicEnabled, setSfxEnabled } from './audio.js';
 import { drawFrame } from './frame.js';
 import { RegionMap } from './RegionMap.js';
-import { NpcLooks } from './NpcLooks.js';
 import { ItemBag } from './ItemBag.js';
 import { flags } from './flags.js';
 import { eraseSave } from './save.js';
 import { QUEST_STARTS, questState } from '../data/questStarts.js';
-import { MAX_TRAITS, TRAITS, traitById } from '../data/story.js';
-import { MAPS } from '../data/maps/index.js';
-import { hasBike, toggleBike } from './bike.js';
 
-// Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Carte (du voyage),
-// Vertus (le carnet, avec les souvenirs des PNJ), Objets (le sac, avec les icônes), Quêtes (aller au début de la
-// quête d'une ville, pour tester), PNJ (choisir l'apparence de chaque personnage), Sauvegarder, Options (musique,
-// sons), Quitter la partie (retour à l'écran titre), Vélo (monter ou descendre, une fois le vélo obtenu), Fermer.
+// Menu Start façon Pokémon (touche Échap) : panneau en haut à droite de l'écran de jeu. Sac (trois onglets : Objets,
+// Souvenirs, Vertus — le carnet des vertus est dans le sac), Quêtes (aller au début de la quête d'une ville, pour
+// tester), Carte (du voyage), Options (musique, sons, les touches), Quitter (retour à l'écran titre ; la partie est
+// déjà sauvegardée en permanence, pas d'entrée Sauvegarder).
+// L'apparence des PNJ se choisit dans le créateur (panneau PNJ), plus ici ; le vélo, avec la touche V.
 // Flèches haut/bas pour choisir, Entrée / Espace pour valider, Échap pour fermer.
 // Vit dans la UIScene ; les scènes de carte bloquent le joueur tant qu'il est ouvert (`isOpen`).
-const MAIN = { quests: 3, options: 6 };               // place de ces entrées dans le menu principal
+const MAIN = { quests: 1, options: 3 };               // place de ces entrées dans le menu principal
 const VISIBLE = 9;                           // lignes affichées à la fois (la liste des quêtes défile)
+// Options > TOUCHES : les touches du clavier (sur téléphone : les boutons A, B, START et VÉLO).
+const KEYS = [
+  'Flèches : se déplacer. Maj (tenue) : courir.',
+  'Entrée ou Espace : parler, examiner, valider. Échap : le menu.',
+  'I : le sac. V : monter sur le vélo ou en descendre (dehors seulement).',
+];
 
 export class StartMenu {
   constructor(scene, dialog) {
@@ -34,7 +37,6 @@ export class StartMenu {
     this.texts = [];
     this.container = scene.add.container(0, 0, [this.bg]).setDepth(110).setVisible(false);
     this.regionMap = new RegionMap(scene);
-    this.npcLooks = new NpcLooks(scene);
     this.itemBag = new ItemBag(scene);
     scene.input.keyboard.on('keydown', (e) => this.onKey(e));
     const onResize = () => this.isOpen && !this.panel && this.render();   // un panneau se redessine lui-même
@@ -52,6 +54,7 @@ export class StartMenu {
       return [
         { label: `MUSIQUE : ${options.music ? 'OUI' : 'NON'}`, action: () => { setMusicEnabled(!options.music); this.render(); } },
         { label: `SONS : ${options.sfx ? 'OUI' : 'NON'}`, action: () => { setSfxEnabled(!options.sfx); this.render(); } },
+        { label: 'TOUCHES', action: () => this.showInDialog(KEYS) },
         { label: 'RETOUR', action: () => this.showPage('main', MAIN.options) },
       ];
     }
@@ -62,32 +65,12 @@ export class StartMenu {
       ];
     }
     return [
-      { label: 'CARTE', action: () => this.showPanel(this.regionMap, () => this.close(), this.currentMapId()) },
-      { label: 'VERTUS', action: () => this.showInDialog(this.traitPages()) },
-      { label: 'OBJETS', action: () => this.showPanel(this.itemBag, () => this.close()) },
+      { label: 'SAC', action: () => this.showPanel(this.itemBag, () => this.close()) },
       { label: 'QUÊTES', action: () => this.showPage('quests', 0) },
-      { label: 'PNJ', action: () => this.showPanel(this.npcLooks, () => this.afterNpcLooks()) },
-      { label: 'SAUVEGARDER', action: () => this.save() },
+      { label: 'CARTE', action: () => this.showPanel(this.regionMap, () => this.close(), this.currentMapId()) },
       { label: 'OPTIONS', action: () => this.showPage('options', 0) },
-      { label: 'QUITTER LA PARTIE', action: () => this.quit() },
-      ...(hasBike() ? [{ label: this.mapScene()?.player?.riding ? 'VÉLO : DESCENDRE' : 'VÉLO : MONTER', action: () => this.useBike() }] : []),
-      { label: 'FERMER', action: () => this.close() },
+      { label: 'QUITTER', action: () => this.quit() },
     ];
-  }
-
-  // Carnet des vertus : le total, puis une page par vertu reçue (sa ville, sa phrase, ses utilisations), puis les
-  // souvenirs des PNJ.
-  traitPages() {
-    const got = Object.values(TRAITS).filter((t) => souvenirs.has(t.id));
-    const others = souvenirs.list().filter((s) => !traitById(s.id)).map((s) => s.name);
-    if (!got.length && !others.length) return ['Ton carnet des vertus est encore vide.'];
-    const times = (n) => (n ? `Utilisée ${n} fois.` : 'Pas encore utilisée.');
-    const pages = [
-      `Vertus : ${got.length} sur ${MAX_TRAITS}.`,
-      ...got.map((t) => `${t.name.toUpperCase()} (${MAPS[t.city]?.name ?? t.city}) : « ${t.phrase} » ${times(souvenirs.uses(t.id))}`),
-    ];
-    if (others.length) pages.push(`Souvenirs (${others.length}) : ${others.join(', ')}.`);
-    return pages;
   }
 
   // Le menu ne s'ouvre qu'en jeu, le joueur à l'arrêt, hors scénette et sans dialogue en cours.
@@ -109,13 +92,6 @@ export class StartMenu {
     sfx('menu');
     this.isOpen = true;
     this.showPanel(this.itemBag, () => this.close());
-  }
-
-  // Vélo : le menu se ferme, Pierre monte ou descend (voir systems/bike.js).
-  useBike() {
-    this.close();
-    const map = this.mapScene();
-    if (map) toggleBike(map);
   }
 
   close() {
@@ -145,15 +121,6 @@ export class StartMenu {
     return map?.fromMap ?? map?.map.id;
   }
 
-  // Panneau PNJ fermé : si une apparence a changé, la scène est relancée sur place pour l'appliquer.
-  afterNpcLooks() {
-    this.close();
-    const map = this.mapScene();
-    if (!this.npcLooks.changed || !map) return;
-    const { tileX: x, tileY: y, facing } = map.player;
-    map.scene.restart({ ...map.location().data, spawn: { x, y, facing } });
-  }
-
   async showInDialog(pages) {
     this.close();
     await this.dialog.open(pages);
@@ -167,6 +134,9 @@ export class StartMenu {
     const choice = await this.dialog.choose(`Aller au début de la quête : ${quest.label} ? Ta partie sera remplacée.`, ['ALLER', 'ANNULER']);
     if (choice !== 0) return;
     const state = questState(i);
+    // Un PNJ qui marchait encore : ses drapeaux de fin de marche (posés à l'arrêt de la scène) sont ceux de l'ancienne
+    // partie, on les oublie.
+    this.mapScene()?.pendingWalkFlags?.clear();
     eraseSave();
     state.flags.forEach((f) => flags.add(f));
     state.souvenirs.forEach((s) => souvenirs.add(s));
@@ -177,25 +147,14 @@ export class StartMenu {
     else scene?.goTo('Overworld', { mapId, spawn });
   }
 
-  async save() {
-    this.close();
-    this.mapScene()?.savePosition();
-    sfx('save');
-    await this.dialog.open(['Partie sauvegardée !']);
-  }
-
-  // Retour à l'écran titre, après avoir proposé de sauvegarder.
+  // Retour à l'écran titre. La partie est déjà enregistrée en permanence (chaque pas, chaque fin de scène) : rien à
+  // proposer de sauvegarder.
   async quit() {
     this.close();
-    const choice = await this.dialog.choose("Quitter la partie et revenir à l'écran titre ?", [
-      'SAUVEGARDER ET QUITTER', 'QUITTER SANS SAUVEGARDER', 'ANNULER',
-    ]);
-    if (choice !== 0 && choice !== 1) return;
+    const choice = await this.dialog.choose("Quitter la partie et revenir à l'écran titre ?", ['QUITTER', 'ANNULER']);
+    if (choice !== 0) return;
     const map = this.mapScene();
-    if (choice === 0) {
-      map?.savePosition();
-      sfx('save');
-    }
+    map?.savePosition();
     map?.scene.stop();
     this.scene.scene.start('Title');          // arrête aussi l'interface (relancée à la prochaine partie)
   }
