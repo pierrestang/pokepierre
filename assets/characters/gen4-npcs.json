@@ -1,0 +1,1026 @@
+{
+ "w": 32,
+ "h": 30,
+ "characters": [
+  {
+   "id": "g0",
+   "file": "NPC_001_Ace_Trainer_M.png",
+   "name": "Ace Trainer M"
+  },
+  {
+   "id": "g1",
+   "file": "NPC_002_Ace_Trainer_F.png",
+   "name": "Ace Trainer F"
+  },
+  {
+   "id": "g2",
+   "file": "NPC_003_Ace_Trainer_M.png",
+   "name": "Ace Trainer M"
+  },
+  {
+   "id": "g3",
+   "file": "NPC_004_Ace_Trainer_F.png",
+   "name": "Ace Trainer F"
+  },
+  {
+   "id": "g4",
+   "file": "NPC_005_Ace_Trainer_M.png",
+   "name": "Ace Trainer M"
+  },
+  {
+   "id": "g5",
+   "file": "NPC_006_Ace_Trainer_F.png",
+   "name": "Ace Trainer F"
+  },
+  {
+   "id": "g6",
+   "file": "NPC_007_Black_Belt.png",
+   "name": "Black Belt"
+  },
+  {
+   "id": "g7",
+   "file": "NPC_008_Black_Belt.png",
+   "name": "Black Belt"
+  },
+  {
+   "id": "g8",
+   "file": "NPC_009_Battle_Girl.png",
+   "name": "Battle Girl"
+  },
+  {
+   "id": "g9",
+   "file": "NPC_010_Boarder.png",
+   "name": "Boarder"
+  },
+  {
+   "id": "g10",
+   "file": "NPC_011_Skier_M.png",
+   "name": "Skier M"
+  },
+  {
+   "id": "g11",
+   "file": "NPC_012_Skier_F.png",
+   "name": "Skier F"
+  },
+  {
+   "id": "g12",
+   "file": "NPC_013_Bug_Catcher.png",
+   "name": "Bug Catcher"
+  },
+  {
+   "id": "g13",
+   "file": "NPC_014_Bug_Catcher.png",
+   "name": "Bug Catcher"
+  },
+  {
+   "id": "g14",
+   "file": "NPC_015_Camper.png",
+   "name": "Camper"
+  },
+  {
+   "id": "g15",
+   "file": "NPC_016_Picnicker.png",
+   "name": "Picnicker"
+  },
+  {
+   "id": "g16",
+   "file": "NPC_017_Roughneck.png",
+   "name": "Roughneck"
+  },
+  {
+   "id": "g17",
+   "file": "NPC_018_Biker.png",
+   "name": "Biker"
+  },
+  {
+   "id": "g18",
+   "file": "NPC_019_Cyclist_M.png",
+   "name": "Cyclist M"
+  },
+  {
+   "id": "g19",
+   "file": "NPC_020_Cyclist_F.png",
+   "name": "Cyclist F"
+  },
+  {
+   "id": "g20",
+   "file": "NPC_021_Cameraman.png",
+   "name": "Cameraman"
+  },
+  {
+   "id": "g21",
+   "file": "NPC_022_Reporter.png",
+   "name": "Reporter"
+  },
+  {
+   "id": "g22",
+   "file": "NPC_023_Youngster.png",
+   "name": "Youngster"
+  },
+  {
+   "id": "g23",
+   "file": "NPC_024_Youngster.png",
+   "name": "Youngster"
+  },
+  {
+   "id": "g24",
+   "file": "NPC_025_Lass.png",
+   "name": "Lass"
+  },
+  {
+   "id": "g25",
+   "file": "NPC_026_Lass.png",
+   "name": "Lass"
+  },
+  {
+   "id": "g26",
+   "file": "NPC_027_Swimmer_M.png",
+   "name": "Swimmer M"
+  },
+  {
+   "id": "g27",
+   "file": "NPC_028_Swimmer_M.png",
+   "name": "Swimmer M"
+  },
+  {
+   "id": "g28",
+   "file": "NPC_029_Swimmer_F.png",
+   "name": "Swimmer F"
+  },
+  {
+   "id": "g29",
+   "file": "NPC_030_Swimmer_F.png",
+   "name": "Swimmer F"
+  },
+  {
+   "id": "g30",
+   "file": "NPC_031_Tuber_M.png",
+   "name": "Tuber M"
+  },
+  {
+   "id": "g31",
+   "file": "NPC_032_Tuber_F.png",
+   "name": "Tuber F"
+  },
+  {
+   "id": "g32",
+   "file": "NPC_033_Sailor.png",
+   "name": "Sailor"
+  },
+  {
+   "id": "g33",
+   "file": "NPC_034_Rancher.png",
+   "name": "Rancher"
+  },
+  {
+   "id": "g34",
+   "file": "NPC_035_Cowgirl.png",
+   "name": "Cowgirl"
+  },
+  {
+   "id": "g35",
+   "file": "NPC_036_Gentleman.png",
+   "name": "Gentleman"
+  },
+  {
+   "id": "g36",
+   "file": "NPC_037_Gentleman.png",
+   "name": "Gentleman"
+  },
+  {
+   "id": "g37",
+   "file": "NPC_038_Socialite.png",
+   "name": "Socialite"
+  },
+  {
+   "id": "g38",
+   "file": "NPC_039_Poke_Fan_M.png",
+   "name": "Poke Fan M"
+  },
+  {
+   "id": "g39",
+   "file": "NPC_040_Poke_Fan_M.png",
+   "name": "Poke Fan M"
+  },
+  {
+   "id": "g40",
+   "file": "NPC_041_Poke_Fan_F.png",
+   "name": "Poke Fan F"
+  },
+  {
+   "id": "g41",
+   "file": "NPC_042_Rich_Boy.png",
+   "name": "Rich Boy"
+  },
+  {
+   "id": "g42",
+   "file": "NPC_043_Lady.png",
+   "name": "Lady"
+  },
+  {
+   "id": "g43",
+   "file": "NPC_044_Beauty.png",
+   "name": "Beauty"
+  },
+  {
+   "id": "g44",
+   "file": "NPC_045_Beauty.png",
+   "name": "Beauty"
+  },
+  {
+   "id": "g45",
+   "file": "NPC_046_Hiker.png",
+   "name": "Hiker"
+  },
+  {
+   "id": "g46",
+   "file": "NPC_047_Clown.png",
+   "name": "Clown"
+  },
+  {
+   "id": "g47",
+   "file": "NPC_048_Firebreather.png",
+   "name": "Firebreather"
+  },
+  {
+   "id": "g48",
+   "file": "NPC_049_Collector.png",
+   "name": "Collector"
+  },
+  {
+   "id": "g49",
+   "file": "NPC_050.png",
+   "name": "NPC_050"
+  },
+  {
+   "id": "g50",
+   "file": "NPC_051_Aroma_Lady.png",
+   "name": "Aroma Lady"
+  },
+  {
+   "id": "g51",
+   "file": "NPC_052.png",
+   "name": "NPC_052"
+  },
+  {
+   "id": "g52",
+   "file": "NPC_053_Super_Nerd.png",
+   "name": "Super Nerd"
+  },
+  {
+   "id": "g53",
+   "file": "NPC_054_Scientist_M.png",
+   "name": "Scientist M"
+  },
+  {
+   "id": "g54",
+   "file": "NPC_055_Scientist_F.png",
+   "name": "Scientist F"
+  },
+  {
+   "id": "g55",
+   "file": "NPC_056_School_Kid_M.png",
+   "name": "School Kid M"
+  },
+  {
+   "id": "g56",
+   "file": "NPC_057_School_Kid_M.png",
+   "name": "School Kid M"
+  },
+  {
+   "id": "g57",
+   "file": "NPC_058_School_Kid_F.png",
+   "name": "School Kid F"
+  },
+  {
+   "id": "g58",
+   "file": "NPC_059.png",
+   "name": "NPC_059"
+  },
+  {
+   "id": "g59",
+   "file": "NPC_060.png",
+   "name": "NPC_060"
+  },
+  {
+   "id": "g60",
+   "file": "NPC_061.png",
+   "name": "NPC_061"
+  },
+  {
+   "id": "g61",
+   "file": "NPC_062.png",
+   "name": "NPC_062"
+  },
+  {
+   "id": "g62",
+   "file": "NPC_063_Baby.png",
+   "name": "Baby"
+  },
+  {
+   "id": "g63",
+   "file": "NPC_064_Waiter.png",
+   "name": "Waiter"
+  },
+  {
+   "id": "g64",
+   "file": "NPC_065_Waitress.png",
+   "name": "Waitress"
+  },
+  {
+   "id": "g65",
+   "file": "NPC_066_Idol.png",
+   "name": "Idol"
+  },
+  {
+   "id": "g66",
+   "file": "NPC_067_Maid.png",
+   "name": "Maid"
+  },
+  {
+   "id": "g67",
+   "file": "NPC_068_Fisherman.png",
+   "name": "Fisherman"
+  },
+  {
+   "id": "g68",
+   "file": "NPC_069_Guitarist.png",
+   "name": "Guitarist"
+  },
+  {
+   "id": "g69",
+   "file": "NPC_070_Artist.png",
+   "name": "Artist"
+  },
+  {
+   "id": "g70",
+   "file": "NPC_071_Kimono_Girl.png",
+   "name": "Kimono Girl"
+  },
+  {
+   "id": "g71",
+   "file": "NPC_072_Sage.png",
+   "name": "Sage"
+  },
+  {
+   "id": "g72",
+   "file": "NPC_073_Elder.png",
+   "name": "Elder"
+  },
+  {
+   "id": "g73",
+   "file": "NPC_074.png",
+   "name": "NPC_074"
+  },
+  {
+   "id": "g74",
+   "file": "NPC_075.png",
+   "name": "NPC_075"
+  },
+  {
+   "id": "g75",
+   "file": "NPC_076.png",
+   "name": "NPC_076"
+  },
+  {
+   "id": "g76",
+   "file": "NPC_077.png",
+   "name": "NPC_077"
+  },
+  {
+   "id": "g77",
+   "file": "NPC_078_Medium.png",
+   "name": "Medium"
+  },
+  {
+   "id": "g78",
+   "file": "NPC_079_Medium.png",
+   "name": "Medium"
+  },
+  {
+   "id": "g79",
+   "file": "NPC_080_Worker.png",
+   "name": "Worker"
+  },
+  {
+   "id": "g80",
+   "file": "NPC_081_Ruin_Maniac.png",
+   "name": "Ruin Maniac"
+  },
+  {
+   "id": "g81",
+   "file": "NPC_082_Psychic.png",
+   "name": "Psychic"
+  },
+  {
+   "id": "g82",
+   "file": "NPC_083_Parasol_Lady.png",
+   "name": "Parasol Lady"
+  },
+  {
+   "id": "g83",
+   "file": "NPC_084_Poke_Maniac.png",
+   "name": "Poke Maniac"
+  },
+  {
+   "id": "g84",
+   "file": "NPC_085_Burglar.png",
+   "name": "Burglar"
+  },
+  {
+   "id": "g85",
+   "file": "NPC_086_Juggler.png",
+   "name": "Juggler"
+  },
+  {
+   "id": "g86",
+   "file": "NPC_087_Jogger.png",
+   "name": "Jogger"
+  },
+  {
+   "id": "g87",
+   "file": "NPC_088_Policeman.png",
+   "name": "Policeman"
+  },
+  {
+   "id": "g88",
+   "file": "NPC_089.png",
+   "name": "NPC_089"
+  },
+  {
+   "id": "g89",
+   "file": "NPC_090.png",
+   "name": "NPC_090"
+  },
+  {
+   "id": "g90",
+   "file": "NPC_091.png",
+   "name": "NPC_091"
+  },
+  {
+   "id": "g91",
+   "file": "NPC_092.png",
+   "name": "NPC_092"
+  },
+  {
+   "id": "g92",
+   "file": "NPC_093.png",
+   "name": "NPC_093"
+  },
+  {
+   "id": "g93",
+   "file": "NPC_094.png",
+   "name": "NPC_094"
+  },
+  {
+   "id": "g94",
+   "file": "NPC_095.png",
+   "name": "NPC_095"
+  },
+  {
+   "id": "g95",
+   "file": "NPC_096.png",
+   "name": "NPC_096"
+  },
+  {
+   "id": "g96",
+   "file": "NPC_097.png",
+   "name": "NPC_097"
+  },
+  {
+   "id": "g97",
+   "file": "NPC_098.png",
+   "name": "NPC_098"
+  },
+  {
+   "id": "g98",
+   "file": "NPC_099.png",
+   "name": "NPC_099"
+  },
+  {
+   "id": "g99",
+   "file": "NPC_100.png",
+   "name": "NPC_100"
+  },
+  {
+   "id": "g100",
+   "file": "NPC_101.png",
+   "name": "NPC_101"
+  },
+  {
+   "id": "g101",
+   "file": "NPC_102.png",
+   "name": "NPC_102"
+  },
+  {
+   "id": "g102",
+   "file": "NPC_103.png",
+   "name": "NPC_103"
+  },
+  {
+   "id": "g103",
+   "file": "NPC_104.png",
+   "name": "NPC_104"
+  },
+  {
+   "id": "g104",
+   "file": "NPC_105.png",
+   "name": "NPC_105"
+  },
+  {
+   "id": "g105",
+   "file": "NPC_106.png",
+   "name": "NPC_106"
+  },
+  {
+   "id": "g106",
+   "file": "NPC_107.png",
+   "name": "NPC_107"
+  },
+  {
+   "id": "g107",
+   "file": "NPC_108.png",
+   "name": "NPC_108"
+  },
+  {
+   "id": "g108",
+   "file": "NPC_109.png",
+   "name": "NPC_109"
+  },
+  {
+   "id": "g109",
+   "file": "NPC_110.png",
+   "name": "NPC_110"
+  },
+  {
+   "id": "g110",
+   "file": "NPC_111.png",
+   "name": "NPC_111"
+  },
+  {
+   "id": "g111",
+   "file": "NPC_112.png",
+   "name": "NPC_112"
+  },
+  {
+   "id": "g112",
+   "file": "NPC_113_Mart_M.png",
+   "name": "Mart M"
+  },
+  {
+   "id": "g113",
+   "file": "NPC_114_Mart_F.png",
+   "name": "Mart F"
+  },
+  {
+   "id": "g114",
+   "file": "NPC_115_Nurse_1.png",
+   "name": "Nurse 1"
+  },
+  {
+   "id": "g115",
+   "file": "NPC_115_Nurse_2.png",
+   "name": "Nurse 2"
+  },
+  {
+   "id": "g116",
+   "file": "NPC_116.png",
+   "name": "NPC_116"
+  },
+  {
+   "id": "g117",
+   "file": "NPC_117.png",
+   "name": "NPC_117"
+  },
+  {
+   "id": "g118",
+   "file": "NPC_118.png",
+   "name": "NPC_118"
+  },
+  {
+   "id": "g119",
+   "file": "NPC_119.png",
+   "name": "NPC_119"
+  },
+  {
+   "id": "g120",
+   "file": "NPC_120_Director.png",
+   "name": "Director"
+  },
+  {
+   "id": "g121",
+   "file": "NPC_121_Bill.png",
+   "name": "Bill"
+  },
+  {
+   "id": "g122",
+   "file": "NPC_122_Primo.png",
+   "name": "Primo"
+  },
+  {
+   "id": "g123",
+   "file": "NPC_123_Magnus.png",
+   "name": "Magnus"
+  },
+  {
+   "id": "g124",
+   "file": "NPC_124_DJ_Mary.png",
+   "name": "DJ Mary"
+  },
+  {
+   "id": "g125",
+   "file": "NPC_125_Daisy_Oak.png",
+   "name": "Daisy Oak"
+  },
+  {
+   "id": "g126",
+   "file": "NPC_126_Mom.png",
+   "name": "Mom"
+  },
+  {
+   "id": "g127",
+   "file": "NPC_127_Mom.png",
+   "name": "Mom"
+  },
+  {
+   "id": "g128",
+   "file": "NPC_128_Mom.png",
+   "name": "Mom"
+  },
+  {
+   "id": "g129",
+   "file": "NPC_129_Kurt.png",
+   "name": "Kurt"
+  },
+  {
+   "id": "g130",
+   "file": "NPC_130_Cheryl.png",
+   "name": "Cheryl"
+  },
+  {
+   "id": "g131",
+   "file": "NPC_131_Riley.png",
+   "name": "Riley"
+  },
+  {
+   "id": "g132",
+   "file": "NPC_132_Marley.png",
+   "name": "Marley"
+  },
+  {
+   "id": "g133",
+   "file": "NPC_133_Buck.png",
+   "name": "Buck"
+  },
+  {
+   "id": "g134",
+   "file": "NPC_134_Mira.png",
+   "name": "Mira"
+  },
+  {
+   "id": "g135",
+   "file": "NPC_135_Looker.png",
+   "name": "Looker"
+  },
+  {
+   "id": "g136",
+   "file": "NPC_136_Prof_Oak.png",
+   "name": "Prof Oak"
+  },
+  {
+   "id": "g137",
+   "file": "NPC_137_Prof_Elm.png",
+   "name": "Prof Elm"
+  },
+  {
+   "id": "g138",
+   "file": "NPC_138_Prof_Rowan.png",
+   "name": "Prof Rowan"
+  },
+  {
+   "id": "g139",
+   "file": "NPC_139_Silver.png",
+   "name": "Silver"
+  },
+  {
+   "id": "g140",
+   "file": "NPC_140_Barry.png",
+   "name": "Barry"
+  },
+  {
+   "id": "g141",
+   "file": "NPC_141_Tower_Tycoon_Palmer.png",
+   "name": "Tower Tycoon Palmer"
+  },
+  {
+   "id": "g142",
+   "file": "NPC_142_Factory_Head_Thorton.png",
+   "name": "Factory Head Thorton"
+  },
+  {
+   "id": "g143",
+   "file": "NPC_143_Hall_Matron_Argenta.png",
+   "name": "Hall Matron Argenta"
+  },
+  {
+   "id": "g144",
+   "file": "NPC_144_Arcade_Star_Dahlia.png",
+   "name": "Arcade Star Dahlia"
+  },
+  {
+   "id": "g145",
+   "file": "NPC_145_Castle_Valet_Darach.png",
+   "name": "Castle Valet Darach"
+  },
+  {
+   "id": "g146",
+   "file": "NPC_146_Caitlin.png",
+   "name": "Caitlin"
+  },
+  {
+   "id": "g147",
+   "file": "NPC_147_Eusine.png",
+   "name": "Eusine"
+  },
+  {
+   "id": "g148",
+   "file": "NPC_148_Gym_Leader_Brock.png",
+   "name": "Gym Leader Brock"
+  },
+  {
+   "id": "g149",
+   "file": "NPC_149_Gym_Leader_Misty.png",
+   "name": "Gym Leader Misty"
+  },
+  {
+   "id": "g150",
+   "file": "NPC_150_Gym_Leader_Lt_Surge.png",
+   "name": "Gym Leader Lt Surge"
+  },
+  {
+   "id": "g151",
+   "file": "NPC_151_Gym_Leader_Erika.png",
+   "name": "Gym Leader Erika"
+  },
+  {
+   "id": "g152",
+   "file": "NPC_152_Gym_Leader_Sabrina.png",
+   "name": "Gym Leader Sabrina"
+  },
+  {
+   "id": "g153",
+   "file": "NPC_153_Gym_Leader_Janine.png",
+   "name": "Gym Leader Janine"
+  },
+  {
+   "id": "g154",
+   "file": "NPC_154_Gym_Leader_Blaine.png",
+   "name": "Gym Leader Blaine"
+  },
+  {
+   "id": "g155",
+   "file": "NPC_155_Gym_Leader_Falkner.png",
+   "name": "Gym Leader Falkner"
+  },
+  {
+   "id": "g156",
+   "file": "NPC_156_Gym_Leader_Bugsy.png",
+   "name": "Gym Leader Bugsy"
+  },
+  {
+   "id": "g157",
+   "file": "NPC_157_Gym_Leader_Whitney.png",
+   "name": "Gym Leader Whitney"
+  },
+  {
+   "id": "g158",
+   "file": "NPC_158_Gym_Leader_Morty.png",
+   "name": "Gym Leader Morty"
+  },
+  {
+   "id": "g159",
+   "file": "NPC_159_Gym_Leader_Chuck.png",
+   "name": "Gym Leader Chuck"
+  },
+  {
+   "id": "g160",
+   "file": "NPC_160_Gym_Leader_Jasmine.png",
+   "name": "Gym Leader Jasmine"
+  },
+  {
+   "id": "g161",
+   "file": "NPC_161_Gym_Leader_Pryce.png",
+   "name": "Gym Leader Pryce"
+  },
+  {
+   "id": "g162",
+   "file": "NPC_162_Gym_Leader_Clair.png",
+   "name": "Gym Leader Clair"
+  },
+  {
+   "id": "g163",
+   "file": "NPC_163_Gym_Leader_Roark.png",
+   "name": "Gym Leader Roark"
+  },
+  {
+   "id": "g164",
+   "file": "NPC_164_Gym_Leader_Gardenia.png",
+   "name": "Gym Leader Gardenia"
+  },
+  {
+   "id": "g165",
+   "file": "NPC_165_Gym_Leader_Maylene.png",
+   "name": "Gym Leader Maylene"
+  },
+  {
+   "id": "g166",
+   "file": "NPC_166_Gym_Leader_Crasher_Wake.png",
+   "name": "Gym Leader Crasher Wake"
+  },
+  {
+   "id": "g167",
+   "file": "NPC_167_Gym_Leader_Fantina.png",
+   "name": "Gym Leader Fantina"
+  },
+  {
+   "id": "g168",
+   "file": "NPC_168_Gym_Leader_Byron.png",
+   "name": "Gym Leader Byron"
+  },
+  {
+   "id": "g169",
+   "file": "NPC_169_Gym_Leader_Candice.png",
+   "name": "Gym Leader Candice"
+  },
+  {
+   "id": "g170",
+   "file": "NPC_170_Gym_Leader_Volkner.png",
+   "name": "Gym Leader Volkner"
+  },
+  {
+   "id": "g171",
+   "file": "NPC_171_Elite_Four_Will.png",
+   "name": "Elite Four Will"
+  },
+  {
+   "id": "g172",
+   "file": "NPC_172_Elite_Four_Koga.png",
+   "name": "Elite Four Koga"
+  },
+  {
+   "id": "g173",
+   "file": "NPC_173_Elite_Four_Bruno.png",
+   "name": "Elite Four Bruno"
+  },
+  {
+   "id": "g174",
+   "file": "NPC_174_Elite_Four_Karen.png",
+   "name": "Elite Four Karen"
+  },
+  {
+   "id": "g175",
+   "file": "NPC_175_Elite_Four_Aaron.png",
+   "name": "Elite Four Aaron"
+  },
+  {
+   "id": "g176",
+   "file": "NPC_176_Elite_Four_Bertha.png",
+   "name": "Elite Four Bertha"
+  },
+  {
+   "id": "g177",
+   "file": "NPC_177_Elite_Four_Flint.png",
+   "name": "Elite Four Flint"
+  },
+  {
+   "id": "g178",
+   "file": "NPC_178_Elite_Four_Lucian.png",
+   "name": "Elite Four Lucian"
+  },
+  {
+   "id": "g179",
+   "file": "NPC_179_Champion_Blue_Oak.png",
+   "name": "Champion Blue Oak"
+  },
+  {
+   "id": "g180",
+   "file": "NPC_180_Champion_Red.png",
+   "name": "Champion Red"
+  },
+  {
+   "id": "g181",
+   "file": "NPC_181_Champion_Lance.png",
+   "name": "Champion Lance"
+  },
+  {
+   "id": "g182",
+   "file": "NPC_182_Champion_Steven_Stone.png",
+   "name": "Champion Steven Stone"
+  },
+  {
+   "id": "g183",
+   "file": "NPC_183_Champion_Cynthia.png",
+   "name": "Champion Cynthia"
+  },
+  {
+   "id": "g184",
+   "file": "NPC_184_Rocket_Grunt_M.png",
+   "name": "Rocket Grunt M"
+  },
+  {
+   "id": "g185",
+   "file": "NPC_185_Rocket_Grunt_F.png",
+   "name": "Rocket Grunt F"
+  },
+  {
+   "id": "g186",
+   "file": "NPC_186_Rocket_Executive_Petrel.png",
+   "name": "Rocket Executive Petrel"
+  },
+  {
+   "id": "g187",
+   "file": "NPC_187_Rocket_Executive_Proton.png",
+   "name": "Rocket Executive Proton"
+  },
+  {
+   "id": "g188",
+   "file": "NPC_188_Rocket_Executive_Ariana.png",
+   "name": "Rocket Executive Ariana"
+  },
+  {
+   "id": "g189",
+   "file": "NPC_189_Rocket_Executive_Archer.png",
+   "name": "Rocket Executive Archer"
+  },
+  {
+   "id": "g190",
+   "file": "NPC_190_Rocket_Boss_Giovanni.png",
+   "name": "Rocket Boss Giovanni"
+  },
+  {
+   "id": "g191",
+   "file": "NPC_191_Galactic_Grunt_M.png",
+   "name": "Galactic Grunt M"
+  },
+  {
+   "id": "g192",
+   "file": "NPC_192_Galactic_Grunt_F.png",
+   "name": "Galactic Grunt F"
+  },
+  {
+   "id": "g193",
+   "file": "NPC_193_Galactic_Commander_Mars.png",
+   "name": "Galactic Commander Mars"
+  },
+  {
+   "id": "g194",
+   "file": "NPC_194_Galactic_Commander_Jupiter.png",
+   "name": "Galactic Commander Jupiter"
+  },
+  {
+   "id": "g195",
+   "file": "NPC_195_Galactic_Commander_Saturn.png",
+   "name": "Galactic Commander Saturn"
+  },
+  {
+   "id": "g196",
+   "file": "NPC_196_Galactic_Commander_Charon.png",
+   "name": "Galactic Commander Charon"
+  },
+  {
+   "id": "g197",
+   "file": "NPC_197_Galactic_Boss_Cyrus.png",
+   "name": "Galactic Boss Cyrus"
+  },
+  {
+   "id": "g198",
+   "file": "NPC_198_Lucas.png",
+   "name": "Lucas"
+  },
+  {
+   "id": "g199",
+   "file": "NPC_199_Lucas.png",
+   "name": "Lucas"
+  },
+  {
+   "id": "g200",
+   "file": "NPC_201_Dawn.png",
+   "name": "Dawn"
+  },
+  {
+   "id": "g201",
+   "file": "NPC_202_Dawn.png",
+   "name": "Dawn"
+  },
+  {
+   "id": "g202",
+   "file": "NPC_203_Ethan.png",
+   "name": "Ethan"
+  },
+  {
+   "id": "g203",
+   "file": "NPC_206_Lyra.png",
+   "name": "Lyra"
+  }
+ ]
+}

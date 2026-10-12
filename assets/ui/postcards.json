@@ -1,0 +1,87 @@
+{
+ "frames": {
+  "fortDeFrance": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "saintAy": {
+   "frame": {
+    "x": 0,
+    "y": 160,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "bordeaux": {
+   "frame": {
+    "x": 0,
+    "y": 320,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "hanoi": {
+   "frame": {
+    "x": 0,
+    "y": 480,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "paris": {
+   "frame": {
+    "x": 0,
+    "y": 640,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "hull": {
+   "frame": {
+    "x": 0,
+    "y": 800,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "montepilloy": {
+   "frame": {
+    "x": 0,
+    "y": 960,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "montepilloySeptembre": {
+   "frame": {
+    "x": 0,
+    "y": 1120,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "routeBonsecours": {
+   "frame": {
+    "x": 0,
+    "y": 1280,
+    "w": 256,
+    "h": 160
+   }
+  },
+  "prytanee": {
+   "frame": {
+    "x": 0,
+    "y": 1440,
+    "w": 256,
+    "h": 160
+   }
+  }
+ },
+ "meta": {
+  "image": "postcards.png"
+ }
+}
