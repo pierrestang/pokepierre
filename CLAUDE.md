@@ -58,7 +58,8 @@ rêve où tous les personnages se retrouvent, et le réveil à Fort-de-France (f
 - Mobile (src/systems/TouchControls.js, src/systems/screen.js) : écran de jeu le plus grand possible (zoom non
   entier) ; en portrait, en haut, toute la largeur, et les
   commandes dessous ; en paysage, les commandes de chaque côté. `?touch` dans l'adresse force l'affichage tactile
-  sur ordinateur. Logo (Poké Ball sur fond bleu) et icônes d'écran d'accueil : scripts/build_icons.py.
+  sur ordinateur. Logo (Poké Ball verte) et icônes d'écran d'accueil : scripts/build_icons.py ; logo « PokéPierre »
+  de l'écran titre (src/scenes/TitleScene.js) : scripts/build_title_logo.py.
 
 - Créateur de cartes (builder.html, src/builder/ ; entrée « Créateur » du menu titre) : mode simple par
   défaut (matières aux bords automatiques, éléments entiers, thème par ville : src/builder/studio.js), et mode « Case

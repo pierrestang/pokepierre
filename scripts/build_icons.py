@@ -1,5 +1,6 @@
-"""Logo du jeu : Poké Ball sur fond bleu à coins arrondis, à partir de assets-source/logo.png (2048 x 2048).
-Icône de l'onglet (favicon), de l'écran d'accueil (iPhone, Android) et du manifeste, vers public/.
+"""Logo du jeu : Poké Ball verte sur carré vert à coins arrondis, à partir de assets-source/icone-pokeball-verte.png
+(2048 x 2048, le carré posé sur un fond vert sombre). Icône de l'onglet (favicon), de l'écran d'accueil (iPhone,
+Android) et du manifeste, vers public/.
 
 Usage : python3 scripts/build_icons.py
 """
@@ -8,28 +9,27 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'public'
-SRC = ROOT / 'assets-source' / 'logo.png'
+SRC = ROOT / 'assets-source' / 'icone-pokeball-verte.png'
 
-BLUE = (8, 52, 118)   # fond bleu du logo
-RADIUS = 375          # rayon des coins arrondis de la source (en px, sur 2048)
+BOX = (78, 75, 1968, 1965)  # le carré à coins arrondis dans la source (le reste : fond vert sombre)
+RADIUS = 198                # rayon de ses coins (en px de la source)
 
 
 def mask(size, inset):
-    """Masque du carré à coins arrondis, légèrement rentré pour éliminer le liseré blanc des coins de la source."""
+    """Masque du carré à coins arrondis, légèrement rentré pour éliminer le liseré sombre des coins."""
     m = Image.new('L', (size, size), 0)
     ImageDraw.Draw(m).rounded_rectangle((inset, inset, size - 1 - inset, size - 1 - inset), RADIUS - inset, fill=255)
     return m
 
 
 def sources():
-    src = Image.open(SRC).convert('RGB')
-    n = src.width
-    # Plein cadre (iPhone, Android) : coins repeints en bleu, le système arrondit lui-même.
-    full = Image.new('RGB', (n, n), BLUE)
-    full.paste(src, (0, 0), mask(n, 12))
+    square = Image.open(SRC).convert('RGB').crop(BOX)
+    n = square.width
+    # Plein cadre (iPhone, Android) : le système arrondit lui-même, plus que la source (coins sombres cachés).
+    full = square
     # Onglet : coins transparents.
-    tab = src.convert('RGBA')
-    tab.putalpha(mask(n, 6))
+    tab = square.convert('RGBA')
+    tab.putalpha(mask(n, 4))
     return full, tab
 
 

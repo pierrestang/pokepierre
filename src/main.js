@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene.js';
 import { TitleScene } from './scenes/TitleScene.js';
-import { TitleBackground } from './scenes/TitleBackground.js';
 import { OverworldScene } from './scenes/OverworldScene.js';
 import { InteriorScene } from './scenes/InteriorScene.js';
 import { UIScene } from './scenes/UIScene.js';
@@ -14,9 +13,9 @@ import { eraseSave, migrateSave } from './systems/save.js';
 // Anciennes sauvegardes : vertus converties avant tout affichage.
 migrateSave();
 
-// La police des dialogues doit être chargée avant de dessiner le premier texte (1,5 s au plus).
+// Les polices (interface, écran titre) doivent être chargées avant de dessiner le premier texte (1,5 s au plus).
 await Promise.race([
-  document.fonts.load('24px "Pixelify Sans"').catch(() => {}),
+  Promise.all(['24px "Pixelify Sans"', '24px "Lilita One"'].map((f) => document.fonts.load(f).catch(() => {}))),
   new Promise((resolve) => setTimeout(resolve, 1500)),
 ]);
 
@@ -32,7 +31,7 @@ const game = new Phaser.Game({
   backgroundColor: '#000000',
   pixelArt: true,
   // UIScene en dernier : elle s'affiche par-dessus les scènes de jeu.
-  scene: [BootScene, TitleBackground, TitleScene, OverworldScene, InteriorScene, FerryScene, UIScene],
+  scene: [BootScene, TitleScene, OverworldScene, InteriorScene, FerryScene, UIScene],
 });
 
 // Téléphone tourné : le navigateur annonce le changement avant d'avoir la nouvelle taille de l'écran (iPhone),
