@@ -15,7 +15,7 @@ migrateSave();
 
 // Les polices (interface, écran titre) doivent être chargées avant de dessiner le premier texte (1,5 s au plus).
 await Promise.race([
-  Promise.all(['24px "Pixelify Sans"', '24px "Lilita One"'].map((f) => document.fonts.load(f).catch(() => {}))),
+  Promise.all(['24px "Pixelify Sans"', '24px "Lilita One"', '900 24px "Montserrat"'].map((f) => document.fonts.load(f).catch(() => {}))),
   new Promise((resolve) => setTimeout(resolve, 1500)),
 ]);
 

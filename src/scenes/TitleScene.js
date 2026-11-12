@@ -9,15 +9,16 @@ import { hasSave, loadPosition, eraseSave } from '../systems/save.js';
 import { options as audioOptions, playMusic, setSeaAmbience, sfx, stopMusic } from '../systems/audio.js';
 import { CREDITS } from '../data/credits.js';
 
-// Écran titre, façon Pokémon Émeraude : ciel en dégradé (bleu profond, bleu-vert, vert émeraude) traversé de nuages
-// pixelisés en parallaxe, logo « PokéPierre » qui descend avec un rebond,
-// « VERSION HORIZONS » dessous, en arc ; « APPUYEZ SUR START » clignote.
+// Écran titre, façon Pokémon Émeraude : fond lisse en dégradé jaune-orange (les teintes de l'icône Dracolosse), une
+// lueur jaune qui respire doucement, logo « PokéPierre » qui descend avec un rebond, « VERSION HORIZONS » dessous à la
+// manière de « VERSION EMERAUDE » (blanc, gros contour noir, relief, la deuxième ligne plus grande, en arc) ;
+// « APPUYEZ SUR START » clignote.
 // Entrée / Espace / clic / toucher : le menu (cadre pixel art) prend la place de « APPUYEZ SUR START », sur le même
 // écran. Échap / Retour (ou un toucher hors du cadre) y revient. Après la fin du jeu (`credits`), le générique défile
 // d'abord par-dessus l'écran (une touche le passe).
-// Tout est placé sur l'écran de jeu (SCREEN_W x SCREEN_H), agrandi par la caméra (facteur entier sur ordinateur) : le
-// ciel et les nuages en pixel art (1 pixel de jeu) ; le logo (image haute résolution) et les textes (police
-// vectorielle) en pixels plus fins, de TEXT_PIXEL pixels d'écran.
+// Tout est placé sur l'écran de jeu (SCREEN_W x SCREEN_H), agrandi par la caméra (facteur entier sur ordinateur) ; le
+// fond, le logo, le sous-titre et les textes sont redessinés à la résolution de l'écran (un pixel d'image par pixel
+// d'écran, voir fit) : lisses, pas pixelisés.
 
 // ---------- Textes ----------
 const SUBTITLE = ['VERSION', 'HORIZONS'];      // deux lignes en arc sous le logo
@@ -28,43 +29,46 @@ const CONFIRM_ERASE = 'Effacer la partie en cours ?';
 // ---------- Fichiers ----------
 // Logo : scripts/build_title_logo.py (depuis assets-source/logo-titre.png), `scale` pixels d'image par pixel de jeu.
 const LOGO = { key: 'title-logo', url: 'assets/ui/title-logo.png', scale: 4 };
-// Police des textes de l'écran titre (Google Fonts, licence libre OFL ; chargée dans index.html et main.js).
+// Polices de l'écran titre (Google Fonts, licence libre OFL ; chargées dans index.html et main.js) : Lilita One pour
+// les textes, Montserrat Black (900) pour le sous-titre, proche des lettres de « VERSION EMERAUDE ».
 const TITLE_FONT = '"Lilita One", "Arial Black", sans-serif';
+const SUBTITLE_FONT = '900 {size}px "Montserrat", "Arial Black", sans-serif';
 // Musique en fichier (ex. 'assets/audio/title.ogg', dans public/) ; null : la musique synthétisée du titre (audio.js).
 const MUSIC_FILE = null;
 
 // ---------- Couleurs ----------
-// Ciel, de haut en bas : chaque bande passe à la suivante par une rangée tramée (damier).
-const SKY = [0x14509c, 0x185ca4, 0x1a68a8, 0x1c74a8, 0x1e7ea4, 0x20889c, 0x229094, 0x24988c, 0x26a084, 0x2aa87c];
-const CLOUD = 0x6cc0d4;
-const CLOUD_LIGHT = 0x9cdce4;
-const CLOUD_SHADE = 0x58acc4;
-// Textes blancs dégradés vers le gris en bas, à contour sombre.
-const INK = ['#ffffff', '#ffffff', '#c8ccd8'];
-const INK_STROKE = '#101830';
-const MENU = { border: 0x183c34, line: 0x8cc8a4, fill: 0xf0fcf2, text: '#203830', disabled: '#9cb0a6', header: '#3c7860' };
+// Fond : dégradé radial, du centre (SKY_CENTER, en fractions de l'écran) vers les bords, couleurs prises sur l'icône.
+const SKY = ['#f9c414', '#fa9914', '#f96e18'];
+const SKY_CENTER = { x: 0.5, y: 0.42 };
+const GLOW = 'rgba(255, 226, 120, 0.55)';      // lueur jaune au centre, qui respire (GLOW_MS)
+// Textes blancs à contour brun très foncé ; sous-titre blanc à contour et relief noirs.
+const INK = '#ffffff';
+const INK_STROKE = '#2a1406';
+const SUB_INK = '#ffffff';
+const SUB_STROKE = '#0c0c10';
+const MENU = { border: 0x5a2a0c, line: 0xf3b24a, fill: 0xfff8ea, text: '#3a1e0c', disabled: '#bca48e', header: '#b0541a' };
 
 // ---------- Mouvements ----------
-// Nuages : une bande par couche, du fond (lente) au premier plan (rapide), en pixels de jeu par seconde.
-const CLOUD_LAYERS = [
-  { y: 0, h: 30, speed: 2, alpha: 0.5, seed: 3 },
-  { y: 34, h: 30, speed: 3, alpha: 0.55, seed: 5 },
-  { y: 70, h: 32, speed: 4, alpha: 0.6, seed: 7 },
-  { y: 106, h: 34, speed: 6, alpha: 0.65, seed: 11 },
-  { y: 146, h: 36, speed: 8, alpha: 0.7, seed: 13 },
-  { y: 188, h: 40, speed: 11, alpha: 0.75, seed: 17 },
-];
 const LOGO_Y = 50;                 // centre du logo à l'arrivée
-const SUBTITLE_Y = 90;             // milieu de « VERSION » (au sommet de l'arc) ; « HORIZONS » une ligne plus bas
-const SUBTITLE_SIZE = 20;          // taille des deux lignes du sous-titre
-const SUBTITLE_CURVE = 0.003;      // arc du sous-titre : une lettre à d px du milieu descend de SUBTITLE_CURVE x d² px
+// Sous-titre, une ligne par entrée : hauteur de son milieu (au sommet de l'arc), largeur visée (la taille de la
+// police s'y ajuste) et arc (une lettre à d px du milieu descend de curve x d² px et penche d'autant).
+const SUBTITLE_LINES = [
+  { y: 104, width: 118, curve: 0.0012 },
+  { y: 128, width: 178, curve: 0.0022 },
+];
+const SUBTITLE_SPACING = -0.04;    // espace entre les lettres, en fraction de la taille (négatif : serrées)
+const SUBTITLE_DEPTH = 0.1;        // relief vers le bas à droite, en fraction de la taille
+const SUBTITLE_STROKE = 0.13;      // épaisseur du contour noir, en fraction de la taille
+const GLOW_MS = 4000;              // respiration de la lueur (un aller-retour)
 const LOGO_DROP_MS = 1100;
 const FADE_IN_MS = 700;
 const FADE_OUT_MS = 350;
-const BLINK_MS = 1000;             // clignotement de « APPUYEZ SUR START » (un aller-retour)
-const PROMPT_Y = 178;              // « APPUYEZ SUR START » et le menu, centrés à cette hauteur
+const BLINK_MS = 1200;             // clignotement de « APPUYEZ SUR START » (un aller-retour)
+const BLINK_ALPHA = 0.35;          // opacité au plus bas du clignotement (reste lisible)
+const PROMPT_Y = 186;              // « APPUYEZ SUR START » et le menu, centrés à cette hauteur
+const PROMPT_SIZE = 15;
+const COPYRIGHT_SIZE = 11;
 const MENU_LINE = 13;
-const TEXT_PIXEL = 2;              // taille d'un pixel du logo et des textes, en pixels d'écran (plus grand : plus pixelisé)
 
 // Les trois choix, dans l'ordre affiché.
 const MENU_ORDER = ['continue', 'new', 'builder'];
@@ -90,17 +94,13 @@ export class TitleScene extends Phaser.Scene {
     this.startMusic();
     setSeaAmbience(false);
 
-    this.add.image(0, 0, this.skyTexture()).setOrigin(0);
-    this.clouds = CLOUD_LAYERS.map((layer, i) =>
-      this.add.tileSprite(0, layer.y, SCREEN_W, layer.h, this.cloudTexture(i, layer)).setOrigin(0).setAlpha(layer.alpha));
+    // Fond, lueur, logo et sous-titre : textures dessinées à la résolution de l'écran par fit().
+    this.sky = this.add.image(0, 0, '__DEFAULT').setOrigin(0);
+    this.glow = this.add.image(0, 0, '__DEFAULT').setOrigin(0);
     this.logo = this.add.image(SCREEN_W / 2, -40, LOGO.key);
-    // Sous-titre sur deux lignes en arc, qui suivent la courbure du logo (le haut au centre).
-    this.subtitle = this.add.container(0, 0, [
-      ...this.arcText(SUBTITLE[0], SUBTITLE_Y),
-      ...this.arcText(SUBTITLE[1], SUBTITLE_Y + SUBTITLE_SIZE + 1),
-    ]).setAlpha(0);
-    this.prompt = this.titleText(SCREEN_W / 2, PROMPT_Y, PRESS_START, 12);
-    this.titleText(SCREEN_W / 2, SCREEN_H - 11, COPYRIGHT, 10);
+    this.subtitle = this.add.image(0, 0, '__DEFAULT').setOrigin(0).setAlpha(0);
+    this.prompt = this.titleText(SCREEN_W / 2, PROMPT_Y, PRESS_START, PROMPT_SIZE);
+    this.titleText(SCREEN_W / 2, SCREEN_H - 12, COPYRIGHT, COPYRIGHT_SIZE);
     this.menu = this.add.container(0, 0).setVisible(false);
 
     // Arrivée : fondu depuis le noir, le logo tombe et rebondit, puis le sous-titre.
@@ -110,7 +110,8 @@ export class TitleScene extends Phaser.Scene {
       targets: this.logo, y: LOGO_Y, duration: LOGO_DROP_MS, delay: 200, ease: 'Bounce.easeOut',
       onComplete: () => this.tweens.add({ targets: this.subtitle, alpha: 1, duration: 400 }),
     });
-    this.blink = this.tweens.add({ targets: this.prompt, alpha: 0.15, duration: BLINK_MS / 2, yoyo: true, repeat: -1 });
+    this.blink = this.tweens.add({ targets: this.prompt, alpha: BLINK_ALPHA, duration: BLINK_MS / 2, yoyo: true, repeat: -1 });
+    this.tweens.add({ targets: this.glow, alpha: 0.35, duration: GLOW_MS / 2, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
 
     this.fit();
     this.scale.on('resize', this.fit, this);
@@ -118,14 +119,6 @@ export class TitleScene extends Phaser.Scene {
     this.input.keyboard.on('keydown', (e) => this.onKey(e));
     this.input.on('pointerdown', (pointer) => this.onPointer(pointer));
     if (this.withCredits) this.rollCredits();
-  }
-
-  update(time, delta) {
-    // Nuages : décalage entier (pixels nets), chaque couche à sa vitesse.
-    this.clouds.forEach((c, i) => {
-      c.scroll = (c.scroll ?? 0) + (CLOUD_LAYERS[i].speed * delta) / 1000;
-      c.tilePositionX = Math.floor(c.scroll);
-    });
   }
 
   // Écran de jeu centré dans la fenêtre : facteur entier sur ordinateur, le plus grand possible au doigt.
@@ -138,14 +131,18 @@ export class TitleScene extends Phaser.Scene {
     const cam = this.cameras.main;
     cam.setViewport(Math.floor((width - w) / 2), Math.floor((height - h) / 2), w, h);
     cam.setZoom(zoom).centerOn(SCREEN_W / 2, SCREEN_H / 2);
-    // Logo et textes redessinés à une case de TEXT_PIXEL pixels d'écran (sans lissage) : légèrement pixelisés.
-    this.textResolution = Math.max(1, zoom / TEXT_PIXEL);
-    this.texts.forEach((t) => t.active && t.setResolution(this.textResolution));
-    this.pixelateLogo(this.textResolution);
+    // Tout est redessiné à un pixel d'image par pixel d'écran : net malgré le rendu pixel art du jeu (sans lissage).
+    const res = Math.max(1, zoom);
+    this.textResolution = res;
+    this.texts.forEach((t) => t.active && t.setResolution(res));
+    this.sky.setTexture(this.skyTexture(res)).setScale(1 / res);
+    this.glow.setTexture(this.glowTexture(res)).setScale(1 / res);
+    this.subtitle.setTexture(this.subtitleTexture(res)).setScale(1 / res);
+    this.scaleLogo(res);
   }
 
-  // Le logo réduit (avec lissage) à `res` pixels par pixel de jeu, puis affiché sans lissage.
-  pixelateLogo(res) {
+  // Le logo réduit (avec lissage) à `res` pixels par pixel de jeu.
+  scaleLogo(res) {
     const src = this.textures.get(LOGO.key).getSourceImage();
     const w = Math.round((src.width / LOGO.scale) * res);
     const h = Math.round((src.height / LOGO.scale) * res);
@@ -162,93 +159,105 @@ export class TitleScene extends Phaser.Scene {
 
   // ---------- Décor ----------
 
-  // Le ciel : bandes de couleur, tramées à chaque passage.
-  skyTexture() {
-    const key = 'title-sky';
-    if (this.textures.exists(key)) return key;
-    const tex = this.textures.createCanvas(key, SCREEN_W, SCREEN_H);
-    const ctx = tex.getContext();
-    const band = SCREEN_H / SKY.length;
-    for (let y = 0; y < SCREEN_H; y++) {
-      const i = Math.min(SKY.length - 1, Math.floor(y / band));
-      const edge = i < SKY.length - 1 && y >= Math.floor((i + 1) * band) - 2;
-      for (let x = 0; x < SCREEN_W; x += edge ? 1 : SCREEN_W) {
-        const next = edge && (x + y) % 2 === 0;
-        ctx.fillStyle = hex(next ? SKY[i + 1] : SKY[i]);
-        ctx.fillRect(x, y, edge ? 1 : SCREEN_W, 1);
-      }
+  // Toile de l'écran de jeu à `res` pixels par pixel de jeu, dessinée une fois par résolution.
+  canvasTexture(name, res, draw, h = SCREEN_H) {
+    const w = Math.round(SCREEN_W * res);
+    const key = `${name}-${w}`;
+    if (!this.textures.exists(key)) {
+      const tex = this.textures.createCanvas(key, w, Math.round(h * res));
+      const ctx = tex.getContext();
+      ctx.scale(res, res);
+      draw(ctx);
+      tex.refresh();
     }
-    tex.refresh();
     return key;
   }
 
-  // Une bande de nuages en escalier (marches de 2 px), qui se raccorde d'un bord à l'autre (défilement en boucle).
-  cloudTexture(index, { h, seed }) {
-    const key = `title-clouds-${index}`;
-    if (this.textures.exists(key)) return key;
-    const tex = this.textures.createCanvas(key, SCREEN_W, h);
-    const ctx = tex.getContext();
-    let r = seed;
-    const rand = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
-    // Des traînées de nuages (ovales très étirés, contour en marches de 2 px), à des hauteurs un peu différentes.
-    const covered = Array.from({ length: h }, () => new Array(SCREEN_W).fill(false));
-    for (let x = Math.floor(rand() * 40); x < SCREEN_W; x += 40 + Math.floor(rand() * 120)) {
-      const w = 24 + Math.floor(rand() * 80);
-      const rh = Math.floor(h * (0.18 + rand() * 0.2));
-      const cy = h / 2 + Math.round((rand() - 0.5) * (h - 2 * rh));
-      for (let dx = 0; dx < w; dx++) {
-        const t = Math.abs(dx - (dx % 2) + 1 - w / 2) / (w / 2);                   // par colonnes de 2 px
-        const half = Math.floor((rh * Math.sqrt(Math.max(0, 1 - t * t))) / 2) * 2;
-        const col = (x + dx) % SCREEN_W;
-        for (let y = Math.max(0, cy - half); y < Math.min(h, cy + half); y++) covered[y][col] = true;
-      }
-    }
-    const at = (x, y) => y >= 0 && y < h && covered[y][x];
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < SCREEN_W; x++) {
-        if (!covered[y][x]) continue;
-        // Liseré clair en haut, ombre en bas, plein au milieu.
-        ctx.fillStyle = hex(!at(x, y - 2) ? CLOUD_LIGHT : !at(x, y + 2) ? CLOUD_SHADE : CLOUD);
-        ctx.fillRect(x, y, 1, 1);
-      }
-    }
-    tex.refresh();
-    return key;
+  // Le fond : dégradé radial lisse, jaune au centre, orange vif sur les bords.
+  skyTexture(res) {
+    return this.canvasTexture('title-sky', res, (ctx) => {
+      const cx = SCREEN_W * SKY_CENTER.x;
+      const cy = SCREEN_H * SKY_CENTER.y;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.hypot(SCREEN_W, SCREEN_H) * 0.55);
+      SKY.forEach((c, i) => g.addColorStop(i / (SKY.length - 1), c));
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+    });
   }
 
-  // Texte lisse dans la police du titre, centré sur (x, y). Par défaut blanc dégradé (INK) à contour sombre ;
-  // `color` : une couleur simple, `stroke` null : sans contour.
+  // La lueur : halo jaune clair au centre, transparent vers les bords.
+  glowTexture(res) {
+    return this.canvasTexture('title-glow', res, (ctx) => {
+      const cx = SCREEN_W * SKY_CENTER.x;
+      const cy = SCREEN_H * SKY_CENTER.y;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, SCREEN_W * 0.42);
+      g.addColorStop(0, GLOW);
+      g.addColorStop(1, 'rgba(255, 226, 120, 0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+    });
+  }
+
+  // « VERSION HORIZONS » à la manière de « VERSION EMERAUDE » : lettres blanches très grasses, serrées, posées sur un
+  // arc (SUBTITLE_LINES), entourées d'un gros contour noir commun avec un relief vers le bas à droite. Deux passes : tout
+  // le noir (relief et contours) d'abord, puis le blanc, pour que les contours des lettres voisines se fondent.
+  subtitleTexture(res) {
+    return this.canvasTexture('title-subtitle', res, (ctx) => {
+      const letters = SUBTITLE.flatMap((text, i) => this.arcLetters(ctx, text, SUBTITLE_LINES[i]));
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      const each = (fn) => letters.forEach((l) => {
+        ctx.save();
+        ctx.font = l.font;
+        ctx.translate(l.x, l.y);
+        ctx.rotate(l.angle);
+        fn(l);
+        ctx.restore();
+      });
+      ctx.fillStyle = SUB_STROKE;
+      ctx.strokeStyle = SUB_STROKE;
+      each((l) => {
+        ctx.lineWidth = l.size * SUBTITLE_STROKE * 2;
+        const depth = l.size * SUBTITLE_DEPTH;
+        for (let k = 0; k <= 4; k++) {
+          const o = (depth * k) / 4;
+          ctx.strokeText(l.c, o, o);
+          ctx.fillText(l.c, o, o);
+        }
+      });
+      ctx.fillStyle = SUB_INK;
+      each((l) => ctx.fillText(l.c, 0, 0));
+    });
+  }
+
+  // Les lettres d'une ligne du sous-titre : taille ajustée à la largeur visée, position et inclinaison sur l'arc.
+  arcLetters(ctx, text, { y, width, curve }) {
+    const fontAt = (size) => SUBTITLE_FONT.replace('{size}', size);
+    ctx.font = fontAt(100);
+    const chars = [...text];
+    const raw = chars.map((c) => ctx.measureText(c).width / 100);
+    const per = (size) => raw.map((w) => (w + SUBTITLE_SPACING) * size);
+    const size = width / (per(1).reduce((a, b) => a + b, 0) - SUBTITLE_SPACING);
+    const advances = per(size);
+    let x = -width / 2;
+    return chars.map((c, i) => {
+      const d = x + (advances[i] - SUBTITLE_SPACING * size) / 2;
+      x += advances[i];
+      return { c, size, font: fontAt(size), x: SCREEN_W / 2 + d, y: y + curve * d * d, angle: Math.atan(2 * curve * d) };
+    });
+  }
+
+  // Texte lisse dans la police du titre, centré sur (x, y). Par défaut blanc (INK) à contour sombre ; `stroke` null :
+  // sans contour.
   titleText(x, y, text, size, color = INK, stroke = INK_STROKE) {
-    const gradient = Array.isArray(color);
     const t = this.add.text(x, y, text, {
-      fontFamily: TITLE_FONT, fontSize: `${size}px`, color: gradient ? color[0] : color,
+      fontFamily: TITLE_FONT, fontSize: `${size}px`, color,
       resolution: this.textResolution ?? 1,
-      ...(stroke && { stroke, strokeThickness: Math.max(2, Math.round(size / 5)) }),
+      ...(stroke && { stroke, strokeThickness: Math.max(3, Math.round(size / 3.5)) }),
     }).setOrigin(0.5);
-    if (gradient) {
-      const g = t.context.createLinearGradient(0, 0, 0, t.height);
-      color.forEach((c, i) => g.addColorStop(i / (color.length - 1), c));
-      t.setFill(g);
-    }
     this.texts.push(t);
     return t;
-  }
-
-  // Une ligne du sous-titre en arc, lettre par lettre : centrée à l'écran, son milieu à `y` ; chaque lettre descend et
-  // s'incline selon sa distance au milieu (SUBTITLE_CURVE), comme posée sur un cercle.
-  arcText(text, y) {
-    const measure = document.createElement('canvas').getContext('2d');
-    measure.font = `${SUBTITLE_SIZE}px ${TITLE_FONT}`;
-    const spacing = 1;
-    const advances = [...text].map((c) => measure.measureText(c).width + spacing);
-    const total = advances.reduce((a, b) => a + b, 0) - spacing;
-    let x = -total / 2;
-    return [...text].map((c, i) => {
-      const d = x + (advances[i] - spacing) / 2;
-      x += advances[i];
-      return this.titleText(SCREEN_W / 2 + d, y + SUBTITLE_CURVE * d * d, c, SUBTITLE_SIZE)
-        .setAngle(Phaser.Math.RadToDeg(Math.atan(2 * SUBTITLE_CURVE * d)));
-    });
   }
 
   // ---------- Musique ----------
@@ -480,7 +489,7 @@ export class TitleScene extends Phaser.Scene {
 
 const hex = (color) => `#${color.toString(16).padStart(6, '0')}`;
 
-// Cadre de menu façon boîte de dialogue : bord sombre aux coins coupés, fond vert très pâle, liseré vert intérieur.
+// Cadre de menu façon boîte de dialogue : bord brun aux coins coupés, fond crème, liseré orangé intérieur.
 function drawMenuFrame(g, x, y, w, h) {
   g.fillStyle(MENU.border, 1);
   g.fillRect(x + 1, y, w - 2, h).fillRect(x, y + 1, w, h - 2);

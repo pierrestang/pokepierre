@@ -12,9 +12,11 @@ l'ordre du jeu. Il ne propose rien : il décrit l'existant. Sources : `src/data/
   Pierre est Lucas (`g198`) ; pas de portrait dans les dialogues, comme dans les jeux DS. Attributions dans `src/data/characters.js` (`BY_NAME`). Un nom absent de cette liste
   reçoit un **figurant** tiré au hasard d'après son identifiant et sa position (`EXTRAS`) ; les apparences se changent
   dans le créateur (panneau PNJ, src/data/characterLooks.json), plus dans le jeu.
-- **Écran titre** (src/scenes/TitleScene.js), façon Pokémon Émeraude : ciel en dégradé bleu profond → émeraude,
-  nuages pixelisés en parallaxe, logo « PokéPierre » (scripts/build_title_logo.py) qui tombe avec un rebond, sous-titre
-  « VERSION HORIZONS » en arc sous le logo ; « APPUYEZ SUR START » clignote (police Lilita One, textes lisses). Entrée / Espace / clic : le menu le remplace sur le même écran (Continuer la
+- **Écran titre** (src/scenes/TitleScene.js), façon Pokémon Émeraude : fond lisse en dégradé jaune → orange (les
+  teintes de l'icône Dracolosse) avec une lueur qui respire, logo « PokéPierre » (scripts/build_title_logo.py) qui tombe
+  avec un rebond, sous-titre « VERSION HORIZONS » dessiné comme « VERSION EMERAUDE » (Montserrat Black blanc, contour et
+  relief noirs, « HORIZONS » plus grand et en arc) ; « APPUYEZ SUR START » clignote (Lilita One blanche à contour brun).
+  Tout est rendu à la résolution de l'écran : rien n'est pixelisé. Entrée / Espace / clic : le menu le remplace sur le même écran (Continuer la
   partie, Nouvelle partie, Créateur ; Échap revient). Textes, couleurs, musique et ordre des choix : les
   constantes en haut du fichier.
 - **Menu Start** (Échap), dans cet ordre : SAC, QUÊTES, CARTE, OPTIONS (musique, sons, TOUCHES : la liste des
