@@ -1,5 +1,5 @@
-"""Logo du jeu : Poké Ball verte sur carré vert à coins arrondis, à partir de assets-source/icone-pokeball-verte.png
-(2048 x 2048, le carré posé sur un fond vert sombre). Icône de l'onglet (favicon), de l'écran d'accueil (iPhone,
+"""Logo du jeu : Dracolosse sur carré orange à coins arrondis, à partir de assets-source/icone-dracolosse.png
+(4096 x 4096, le carré remplit l'image, coins blancs). Icône de l'onglet (favicon), de l'écran d'accueil (iPhone,
 Android) et du manifeste, vers public/.
 
 Usage : python3 scripts/build_icons.py
@@ -9,14 +9,15 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'public'
-SRC = ROOT / 'assets-source' / 'icone-pokeball-verte.png'
+SRC = ROOT / 'assets-source' / 'icone-dracolosse.png'
 
-BOX = (78, 75, 1968, 1965)  # le carré à coins arrondis dans la source (le reste : fond vert sombre)
-RADIUS = 198                # rayon de ses coins (en px de la source)
+BOX = (0, 0, 4096, 4096)  # le carré à coins arrondis dans la source (le reste : coins blancs)
+RADIUS = 620                # rayon de ses coins (en px de la source)
+ORANGE = (248, 121, 22)     # couleur du fond du carré
 
 
 def mask(size, inset):
-    """Masque du carré à coins arrondis, légèrement rentré pour éliminer le liseré sombre des coins."""
+    """Masque du carré à coins arrondis, légèrement rentré pour éliminer le liseré blanc des coins."""
     m = Image.new('L', (size, size), 0)
     ImageDraw.Draw(m).rounded_rectangle((inset, inset, size - 1 - inset, size - 1 - inset), RADIUS - inset, fill=255)
     return m
@@ -25,11 +26,13 @@ def mask(size, inset):
 def sources():
     square = Image.open(SRC).convert('RGB').crop(BOX)
     n = square.width
-    # Plein cadre (iPhone, Android) : le système arrondit lui-même, plus que la source (coins sombres cachés).
-    full = square
+    # Plein cadre (iPhone, Android) : le système arrondit lui-même ; coins blancs repeints en orange du fond,
+    # pour qu'ils ne se voient pas là où l'arrondi du système est plus petit que celui de la source.
+    full = Image.new('RGB', square.size, ORANGE)
+    full.paste(square, (0, 0), mask(n, 12))
     # Onglet : coins transparents.
     tab = square.convert('RGBA')
-    tab.putalpha(mask(n, 4))
+    tab.putalpha(mask(n, 12))
     return full, tab
 
 
