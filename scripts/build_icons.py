@@ -1,5 +1,5 @@
 """Logo du jeu : Dracolosse sur carré orange à coins arrondis, à partir de assets-source/icone-dracolosse.png
-(4096 x 4096, le carré remplit l'image, coins blancs). Icône de l'onglet (favicon), de l'écran d'accueil (iPhone,
+(4096 x 4096, fond dégradé jaune-orange, le carré remplit l'image, coins blancs). Icône de l'onglet (favicon), de l'écran d'accueil (iPhone,
 Android) et du manifeste, vers public/.
 
 Usage : python3 scripts/build_icons.py
@@ -13,7 +13,7 @@ SRC = ROOT / 'assets-source' / 'icone-dracolosse.png'
 
 BOX = (0, 0, 4096, 4096)  # le carré à coins arrondis dans la source (le reste : coins blancs)
 RADIUS = 620                # rayon de ses coins (en px de la source)
-ORANGE = (248, 121, 22)     # couleur du fond du carré
+ORANGE = (250, 112, 25)     # couleur du fond du carré
 
 
 def mask(size, inset):
